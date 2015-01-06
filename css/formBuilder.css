@@ -13,69 +13,69 @@
   overflow-x: hidden;
   overflow-y: auto
 }
-.cb_wrap, .frmb_wrap {
+.cb-wrap, .frmb-wrap {
   vertical-align: top
 }
-.cb_wrap {
+.cb-wrap {
   float: right;
   background: #fff;
   width:36%;
 }
-.frmb_wrap {
+.frmb-wrap {
   float: left;
   width: 62%;
   margin-right: 2%
 }
-.frmb_wrap .action_links {
+.frmb-wrap .action-links {
   display: none;
   float: right;
   overflow: hidden;
   width: 400px;
   text-align: right
 }
-.frmb_wrap .action_links .active {
+.frmb-wrap .action-links .active {
   font-weight: 700;
   color: #000
 }
-.frmb_wrap .action_links:hover, .frmb_wrap.dev_mode .action_links {
+.frmb-wrap .action-links:hover, .frmb-wrap.dev-mode .action-links {
   width: 550px
 }
-.action_links .action_links_inner {
+.action-links .action-links_inner {
   display: inline-block;
   overflow: hidden;
   width: 0;
   height: 20px;
   line-height: 30px
 }
-.action_links .dev_mode_link {
+.action-links .dev-mode-link {
   color: #666;
   cursor: pointer;
   padding-right: 2px
 }
-.cb_wrap h4, .frmb_wrap h4 {
+.cb-wrap h4, .frmb-wrap h4 {
   margin-top: 0;
   color: #666
 }
-.cb_wrap h4 {
+.cb-wrap h4 {
   text-align: left
 }
-.cb_wrap .save:hover {
+.cb-wrap .save:hover {
   color: #08fe00
 }
-.cb_wrap .showTooltip a {
+.cb-wrap .showTooltip a {
   text-decoration: underline;
   color: #fff
 }
-.action_links a.clear_all:hover, .del-button:hover, ul.frmb span.required {
+.action-links a.clear-all:hover, .del-button:hover, ul.frmb span.required {
   color: red
 }
-.action_links a {
+.action-links a {
   color: #666
 }
-.view_xml {
+.view-xml {
   float: right
 }
-.action_links a.view_xml:hover {
+.action-links a.view-xml:hover {
   color: #000
 }
 .frm-elements {
@@ -98,17 +98,19 @@
   clear: both
 }
 .frm-elements .fields .remove {
-  right: 14px;
+  right: 11px;
   top: 50%;
-  margin-top: -7px
+  margin-top: -11px;
+  -webkit-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
 }
-.frm-elements .ol_opt_sortable li:nth-child(1) .remove, .frm-elements .ol_opt_sortable li:nth-child(2) .remove {
+.frm-elements .sortable-options li:nth-child(1) .remove, .frm-elements .sortable-options li:nth-child(2) .remove {
   display: none
 }
-ol.ol_opt_sortable {
+ol.sortable-options {
   margin-top: 0
 }
-ol.ol_opt_sortable li {
+ol.sortable-options li {
   cursor: move
 }
 .frm-elements .fields div {
@@ -138,7 +140,7 @@ ol.ol_opt_sortable li {
   border-radius: 0;
   border: 1px solid #E00000
 }
-.frm-elements input[type=text].fld-max_length {
+.frm-elements input[type=text].fld-max-length {
   width: 10%
 }
 .frm-elements input.field_error {
@@ -166,23 +168,23 @@ ol.ol_opt_sortable li {
   font-weight: 400;
   font-size: .75em
 }
-.frm-elements label.max_length-label {
+.frm-elements label.max-length-label {
   line-height: 1em
 }
-.frm-elements .allow_multi input {
+.frm-elements .allow-multi input {
   margin-top: 10px
 }
-.frm-elements .allow_multi, .frm-elements .name_wrap, .frm-elements .select_opt {
+.frm-elements .allow-multi, .frm-elements .name_wrap, .frm-elements .select-option {
   display: none
 }
-.allow_select .frm-elements .allow_multi, .allow_select .frm-elements .select_opt, .edit_names .frm-elements .name_wrap {
+.allow-select .frm-elements .allow-multi, .allow-select .frm-elements .select-option, .edit-names .frm-elements .name_wrap {
   display: block!important
 }
 .frm-fld {
   clear: left;
   padding: 5px 0
 }
-.frm-fld .avail_roles {
+.frm-fld .available-roles {
   display: none;
   padding: 5px 10px;
   margin: 5px 0 10px 133px;
@@ -191,13 +193,13 @@ ol.ol_opt_sortable li {
   -webkit-box-shadow: inset 0 0 2px 0 #999;
   box-shadow: inset 0 0 2px 0 #999
 }
-.frm-elements .avail_roles label {
+.frm-elements .available-roles label {
   font-weight: 400;
   width: auto;
   float: none;
   display: inline
 }
-.frm-elements .avail_roles input {
+.frm-elements .available-roles input {
   display: inline;
   top: auto
 }
@@ -217,7 +219,7 @@ ol.ol_opt_sortable li {
 .frmb .tooltip {
   left: 20px
 }
-.frmb .prev_holder {
+.frmb .prev-holder {
   display: block;
   background: url(../img/frmb_sprite.png) no-repeat
 }
@@ -231,10 +233,10 @@ ol.ol_opt_sortable li {
 .frmb .disabled .field_label {
   display: block
 }
-.frm-elements .fields div:hover, .frmb .legend, .frmb .prev_holder, .frmb .prev_holder * {
+.frm-elements .fields div:hover, .frmb .legend, .frmb .prev-holder, .frmb .prev-holder * {
   cursor: move
 }
-.prev_holder input[type=checkbox], .prev_holder input[type=radio] {
+.prev-holder input[type=checkbox], .prev-holder input[type=radio] {
   margin-right: 5px
 }
 .frmb li.disabled input[type=checkbox] {
@@ -246,7 +248,7 @@ ol.ol_opt_sortable li {
   font-weight: 400;
   color: #666
 }
-.frmb li.disabled .prev_holder {
+.frmb li.disabled .prev-holder {
   cursor: default;
   padding-left: 5px;
   line-height: 28px
@@ -262,20 +264,18 @@ ol.ol_opt_sortable li {
   display: inline-block
 }
 .frmb a.del-button, .frmb a.remove {
-  background: url(/img/bg/sprites/fresh.png) -141px -101px no-repeat;
-  text-indent: -9999px;
   position: absolute;
-  top: 4px;
-  right: 4px;
-  padding-right: 1px;
+  top: -1px;
+  right: -1px;
   display: inline-block;
   -ms-filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
   -moz-opacity: 0;
   -khtml-opacity: 0;
   opacity: 0;
-  -webkit-border-radius: 7px;
-  border-radius: 7px
+  padding:3px 4px;
+  -webkit-border-radius: 0 5px 0 0;
+  border-radius: 0 5px 0 0;
 }
 .frmb li a.remove {
   -ms-filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
@@ -285,7 +285,8 @@ ol.ol_opt_sortable li {
   opacity: 1
 }
 .frmb a.del-button:hover, .frmb a.remove:hover {
-  border-color: #c66865
+  border-color: #c66865;
+  color:#c66865;
 }
 .frmb li {
   clear: both;
@@ -399,32 +400,32 @@ ol.ol_opt_sortable li {
 .frmb-control li.checkbox {
   /*background-position: 10px -252px*/
 }
-.frmb .prev_holder.type_5 {
+.frmb .prev-holder.type_5 {
   background-position: 0 -442px;
   height: 12px
 }
 .frmb-control li.rich_text {
   /*background-position: 10px -79px*/
 }
-.frmb .prev_holder.type_7 {
+.frmb .prev-holder.type_7 {
   background-position: 0 -519px;
   height: 154px
 }
 .frmb-control li.date_input {
   /*background-position: 10px -79px*/
 }
-.frmb .prev_holder.type_3 {
+.frmb .prev-holder.type_3 {
   background-position: 0 -395px;
   height: 28px
 }
 .frmb-control li.select {
   /*background-position: 10px -123px*/
 }
-.frmb .prev_holder.type_6 {
+.frmb .prev-holder.type_6 {
   background-position: 0 -473px;
   height: 27px
 }
-.frmb .prev_holder.type_10 {
+.frmb .prev-holder.type_10 {
   background: 0 0;
   line-height: 1.5em;
   font-size: 13px
@@ -432,20 +433,20 @@ ol.ol_opt_sortable li {
 .frmb-control li.text_input {
   /*background-position: 10px 6px*/
 }
-.frmb .prev_holder.type_1, .frmb .prev_holder.type_11 {
+.frmb .prev-holder.type_1, .frmb .prev-holder.type_11 {
   background-position: 0 -344px;
   height: 32px
 }
 .frmb-control li.user_field {
   /*background-position: 10px -294px*/
 }
-.frmb-control li.radio_group {
+.frmb-control li.radio-group {
   /*background-position: 10px -166px*/
 }
-.frmb-control li.checkbox_group {
+.frmb-control li.checkboxGroup {
   /*background-position: 10px -209px*/
 }
-.frmb .prev_holder.type_9 {
+.frmb .prev-holder.type_9 {
   background-position: 0 -693px;
   height: 32px
 }
@@ -478,7 +479,7 @@ ul.frmb-control li.ui-state-highlight {
   padding: 0 30px;
   margin-top: 0
 }
-.action_links a.export_xml:hover, .toggle-form.closed:hover {
+.action-links a.export_xml:hover, .toggle-form.closed:hover {
   color: #6fc245
 }
 .toggle-form.open {
