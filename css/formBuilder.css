@@ -7,7 +7,7 @@
   padding-left: 40px;
   height: 1055px
 }
-.idea_template_wrap {
+.template-textarea-wrap {
   display: none;
   height: 250px;
   overflow-x: hidden;
@@ -324,7 +324,7 @@ ol.sortable-options li {
   display: inline;
   visibility: visible
 }
-.mj_tt {
+.frmb-tt {
   position: absolute;
   border: 1px solid #333;
   background-color: #666;
@@ -335,7 +335,7 @@ ol.sortable-options li {
   text-align: left;
   font-size: 12px
 }
-.mj_tt:after, .mj_tt:before {
+.frmb-tt:after, .frmb-tt:before {
   content: '';
   position: absolute;
   border-style: solid;
@@ -348,11 +348,11 @@ ol.sortable-options li {
   bottom: -10px;
   left: 20px
 }
-.mj_tt:before {
+.frmb-tt:before {
   border-color: #333 transparent;
   bottom: -11px
 }
-.mj_tt a {
+.frmb-tt a {
   text-decoration: underline;
   color: #fff
 }
@@ -404,7 +404,7 @@ ol.sortable-options li {
   background-position: 0 -442px;
   height: 12px
 }
-.frmb-control li.rich_text {
+.frmb-control li.rich-text {
   /*background-position: 10px -79px*/
 }
 .frmb .prev-holder.type_7 {
@@ -430,7 +430,7 @@ ol.sortable-options li {
   line-height: 1.5em;
   font-size: 13px
 }
-.frmb-control li.text_input {
+.frmb-control li.text-input {
   /*background-position: 10px 6px*/
 }
 .frmb .prev-holder.type_1, .frmb .prev-holder.type_11 {
@@ -443,7 +443,7 @@ ol.sortable-options li {
 .frmb-control li.radio-group {
   /*background-position: 10px -166px*/
 }
-.frmb-control li.checkboxGroup {
+.frmb-control li.checkbox-group {
   /*background-position: 10px -209px*/
 }
 .frmb .prev-holder.type_9 {

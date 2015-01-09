@@ -78,7 +78,7 @@
     var startIndex, doCancel;
 
     // object full of useful utilities
-    var helpers = {
+    var _helpers = {
       startMoving: function(event, ui) {
         ui.item.addClass('moving');
         startIndex = $('li', this).index(ui.item);
@@ -112,7 +112,7 @@
       // saves the field data to our canvas (elem)
       save: function() {
         $(ulObj).children('li').not('.disabled').each(function() {
-          helpers.saveOptions($(this));
+          _helpers.saveOptions($(this));
         });
         elem.val($(ulObj).toSpigitXML());
       },
@@ -150,12 +150,12 @@
       htmlDecode: function(value) {
         return $('<div/>').html(value).text();
       },
-      validateForm: function(e) {
+      validateForm: function() {
         var errors = [];
         // check for empty field labels
-        $('input[name="label"]', '#' + frmbID).each(function() {
+        $('input[name="label"], input[type="text"].option', '#' + frmbID).each(function() {
           if ($(this).val() === '') {
-            var field = $(this).parents('li:eq(0)'),
+            var field = $(this).parents('li.form-field'),
               fieldAttr = $(this);
             errors.push({
               field: field,
@@ -164,22 +164,10 @@
             });
           }
         });
-        // TODO: add helper function for empty field checking,
-        // these function are too similar!
 
-        $('input[type="text"].option', '#' + frmbID).each(function() {
-          if ($(this).val() === '') {
-            var field = $(this).parents('li:eq(1)'),
-              fieldAttr = $(this);
-            errors.push({
-              field: field,
-              error: opts.messages.optionEmpty,
-              attribute: fieldAttr
-            });
-          }
-        });
+        // TODO add error = { noVal: opts.messages.labelEmpty }
 
-        if (errors.length !== 0) {
+        if (errors.length) {
           alert('Error: ' + errors[0].error);
           $('html, body').animate({
             scrollTop: errors[0].field.offset().top
@@ -190,8 +178,6 @@
               errors[0].attribute.addClass('error');
             });
           });
-        } else {
-          // setValues(e);
         }
       },
       disabledTT: function(field) {
@@ -199,16 +185,16 @@
         if (title) {
           field.removeAttr('title').data('tip_text', title);
           var tt = $('<p/>', {
-            'class': 'mj_tt'
+            'class': 'frmb-tt'
           }).html(title);
           field.append(tt);
           tt.css({
             top: -tt.outerHeight(),
             left: -15
           });
-          field.mouseleave(function(e) {
+          field.mouseleave(function() {
             $(this).attr('data-tooltip', field.data('tip_text'));
-            $('.mj_tt').remove();
+            $('.frmb-tt').remove();
           });
         }
       }
@@ -224,7 +210,7 @@
     // create array of field objects to cycle through
     var frmbFields = [{
       type: 11,
-      'class': 'text_input',
+      'class': 'text-input',
       label: opts.messages.text
     }, {
       type: 6,
@@ -232,7 +218,7 @@
       label: opts.messages.select
     }, {
       type: 7,
-      'class': 'richText',
+      'class': 'rich-text',
       label: opts.messages.richText
     }, {
       type: 5,
@@ -289,42 +275,42 @@
       viewXML = $('<a/>', {
         id: frmbID + '-export-xml',
         text: opts.messages.viewXML,
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'view-xml'
       }),
       allowSelect = $('<a/>', {
         id: frmbID + '-allow-select',
         text: opts.messages.allowSelect,
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'allow-select'
       }),
       editXML = $('<a/>', {
         id: frmbID + '-edit-xml',
         text: opts.messages.editXML,
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'edit-xml'
       }),
       editNames = $('<a/>', {
         id: frmbID + '-edit-names',
         text: opts.messages.editNames,
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'edit-names'
       }),
       clearAll = $('<a/>', {
         id: frmbID + '-clear-all',
         text: opts.messages.clearAll,
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'clear-all'
       }),
       saveAll = $('<div/>', {
         id: frmbID + '-save',
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'button-primary',
         title: opts.messages.save
       }).html('<a class="save speuiButton_v1 corner-all-3 primary"><span>' + opts.messages.save + '</span></a>'),
       viewVars = $('<a/>', {
         id: frmbID + '-view-vars',
-        href: 'javascript:void(0)',
+        href: '#',
         'class': 'view-vars',
         title: opts.messages.viewVars
       }).html(opts.messages.viewVars),
@@ -350,8 +336,8 @@
             curIndex = ui.placeholder.index();
         doCancel = ((curIndex <= 1) || (curIndex === lastIndex));
       },
-      start: helpers.startMoving,
-      stop: helpers.stopMoving,
+      start: _helpers.startMoving,
+      stop: _helpers.stopMoving,
       cancel: 'input, .disabled, .sortable-options',
       // items: 'li:not(.no-fields)',
       receive: function(event, ui) {
@@ -369,8 +355,8 @@
       connectWith: ulObj,
       cursor: 'move',
       placeholder: 'ui-state-highlight',
-      start: helpers.startMoving,
-      stop: helpers.stopMoving,
+      start: _helpers.startMoving,
+      stop: _helpers.stopMoving,
       revert: 150,
       change: function(event, ui) {
         if (ui.placeholder.index() === 0 || ui.placeholder.index() === $('> li', ulObj).last().index()) {
@@ -395,7 +381,7 @@
         }
       },
       update: function(event, ui) {
-        // helpers.stopMoving;
+        // _helpers.stopMoving;
         elem.stopIndex = ($('li', ulObj).index(ui.item) === 0 ? '0' : $('li', ulObj).index(ui.item));
         if ($('li', ulObj).index(ui.item) < 0) {
           $(this).sortable('cancel');
@@ -423,13 +409,13 @@
     // Not pretty but we need to save a lot so users don't have to keep clicking a save button
     $('ul.frmb input').on('change', function() {
       if ($(this).parents('li.disabled').length === 0) {
-        helpers.save();
+        _helpers.save();
       }
     });
     $('ul.frmb input').on('blur', function() {
       if ($(this).parents('li.disabled').length === 0) {
         // validateInput($(this));
-        helpers.save();
+        _helpers.save();
       }
     });
 
@@ -475,13 +461,13 @@
       fields.each(function() {
         var fType = $(this).attr('type'),
           values = [];
-        values.label = helpers.htmlEncode($(this).attr('label'));
+        values.label = _helpers.htmlEncode($(this).attr('label'));
         values.name = isNew ? nameAttr($(this)) : $(this).attr('name');
         values.role = $(this).attr('role');
         values.required = $(this).attr('required');
         values.maxLength = $(this).attr('max-length');
         values.type = fType;
-        values.description = ($(this).attr('description') !== undefined ? helpers.htmlEncode($(this).attr('description')) : '');
+        values.description = ($(this).attr('description') !== undefined ? _helpers.htmlEncode($(this).attr('description')) : '');
         if (fType === 5) {
           $(this).children().each(function() {
             values.push([$(this).text(), this.baseline]);
@@ -547,7 +533,7 @@
         }
 
         var field = '',
-          name = helpers.safename(values.name),
+          name = _helpers.safename(values.name),
           multiDisplay = (values.type === '10') ? 'none' : 'none';
 
         field += advFields(values);
@@ -604,10 +590,17 @@
       var advFields = '',
         key,
         roles = values.role !== undefined ? values.role.split(',') : [];
-      advFields += '<div class="frm-fld"><label>' + opts.messages.label + ' *</label>';
-      advFields += '<input type="text" name="label" value="' + values.label + '" class="fld-label"  /></div>';
+      var fieldLabel = $('<div>', {class:'frm-fld'});
+      $('<label/>').html(opts.messages.label+' *').appendTo(fieldLabel);
+      $('<input>', {type: 'text', name:'label', value: values.label, class: 'fld-label'}).appendTo(fieldLabel);
+      advFields += fieldLabel[0].outerHTML;
 
-      advFields += '<div class="frm-fld description_wrap"><label>' + opts.messages.description + '</label>';
+      var fieldDesc = $('<div>', {class: 'frm-fld description-wrap'});
+      $('<label/>').html(opts.messages.description+' *').appendTo(fieldDesc);
+      // $('<input>', )
+
+
+      advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
       advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description" id="description-' + lastID + '" /></div>';
 
       advFields += '<div class="frm-fld name_wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
@@ -646,7 +639,7 @@
         required = values.required,
         tooltip = values.description !== '' ? '<span class="element-info corner-all-3 tooltip-element">?<span class="tooltip tooltip-left-side corner-all-3" aria-required="true">' + values.description + '<span class="indicator top-side"></span></span></span>' : '';
 
-      li += '<li id="frm-' + lastID + '-item" class="' + values.type + '">';
+      li += '<li id="frm-' + lastID + '-item" class="' + values.type + ' form-field">';
       li += '<div class="legend">';
       li += delBtn;
       li += '<span id="txt-title-' + lastID + '" class="field_label">' + label + '</span>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>' + toggleBtn + '</div>';
@@ -666,13 +659,13 @@
         $('li', ulObj).eq(elem.stopIndex).after(li);
       } else {
         $(ulObj).append(li);
-        helpers.initTooltip($('#frm-' + lastID + '-item').find('.tooltip-element'));
+        _helpers.initTooltip($('#frm-' + lastID + '-item').find('.tooltip-element'));
       }
 
       $('#frm-' + lastID + '-item').hide().slideDown(250);
 
       lastID++;
-      helpers.save();
+      _helpers.save();
     };
 
     // Select field html, since there may be multiple
@@ -706,7 +699,7 @@
     $('#' + frmbID).delegate('.toggle-form', 'click', function(e) {
       e.preventDefault();
       var targetID = $(this).attr('id');
-      $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250, helpers.saveOptions($(this).parents('li:eq(0)')));
+      $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250, _helpers.saveOptions($(this).parents('li:eq(0)')));
       $('#' + targetID + '-fld').slideToggle(250, function() {});
     });
 
@@ -727,7 +720,7 @@
         if (!closestToolTip.length) {
           var tt = $('<span class="element-info corner-all-3 tooltip-element">?<span class="tooltip tooltip-left-side corner-all-3" aria-required="true">' + $(this).val() + '<span class="indicator top-side"></span></span></span>');
           $('.toggle-form', $(this).closest('li')).before(tt);
-          helpers.initTooltip(tt);
+          _helpers.initTooltip(tt);
         } else {
           closestToolTip.text($(this).val()).append('<span class="indicator top-side"></span>');
           $('.legend .tooltip-element', $(this).closest('li')).show();
@@ -739,11 +732,11 @@
       }
     });
 
-    helpers.updateMultipleSelect();
+    _helpers.updateMultipleSelect();
 
     // format name attribute
     $('#' + frmbID).delegate('input[name="name"]', 'keyup', function() {
-      $(this).val(helpers.safename($(this).val()));
+      $(this).val(_helpers.safename($(this).val()));
       if ($(this).val() === '') {
         $(this).addClass('field_error').attr('placeholder', opts.messages.cannotBeEmpty);
       } else {
@@ -752,7 +745,7 @@
     });
 
     $('#' + frmbID).delegate('input.fld-max-length', 'keyup', function() {
-      $(this).val(helpers.isNan($(this).val()));
+      $(this).val(_helpers.isNan($(this).val()));
     });
 
     // Delete field
@@ -783,7 +776,7 @@
             click: function() {
               $('#frm-' + deleteID + '-item').slideUp(250, function() {
                 $(this).remove();
-                helpers.save();
+                _helpers.save();
               });
               $(this).dialog('close');
             }
@@ -798,14 +791,14 @@
       } else {
         $('#frm-' + deleteID + '-item').slideUp(250, function() {
           $(this).remove();
-          helpers.save();
+          _helpers.save();
         });
       }
     });
 
     // Attach a callback to toggle required asterisk
     $('#' + frmbID).delegate('input.required', 'click', function() {
-      var requiredAsterisk = $(this).parents('li:eq(0)').find('.required-asterisk');
+      var requiredAsterisk = $(this).parents('li.form-field').find('.required-asterisk');
       requiredAsterisk.toggle();
     });
 
@@ -827,7 +820,7 @@
     });
 
     $('#' + frmbID).delegate('li.disabled .form-element', 'mouseenter', function() {
-      helpers.disabledTT($(this));
+      _helpers.disabledTT($(this));
     });
 
     // Attach a callback to add new options
@@ -836,13 +829,13 @@
       var isMultiple = $(this).parents('.fields').first().find('input[name="multiple"]')[0].checked,
         name = $(this).parents('.fields').find('.select-option:eq(0)').attr('name');
       $(this).parents('.fields').first().find('.sortable-options').append(selectFieldHtml('', name, false, isMultiple));
-      helpers.updateMultipleSelect();
+      _helpers.updateMultipleSelect();
     });
 
     // Attach a callback to close link
     $('#' + frmbID).delegate('.close_field', 'click', function(e) {
       e.preventDefault();
-      $(this).parents('li:eq(0)').find('.toggle-form').trigger('click');
+      $(this).parents('li.form-field').find('.toggle-form').trigger('click');
     });
 
     // Attach a callback to add new radio fields
@@ -852,7 +845,7 @@
     });
 
     $('.frm-elements .fields .remove, .frmb .del-button').on('hover', function() {
-      $(this).parents('li:eq(0)').toggleClass('delete');
+      $(this).parents('li.form-field').toggleClass('delete');
     });
 
     // View XML
@@ -909,7 +902,7 @@
       if (confirm(opts.messages.clearAllMessage)) {
         $(ulObj).empty();
         elem.val('');
-        helpers.save();
+        _helpers.save();
         var values = {
           label: [opts.messages.descriptionField],
           name: ['content'],
@@ -929,9 +922,9 @@
       if ($(this).find('.ldkInlineEdit').length === 0) {
         e.preventDefault();
         if (!ulObj.parent('.frmb-wrap').hasClass('edit-xml')) {
-          helpers.save();
+          _helpers.save();
         }
-        helpers.validateForm(e);
+        _helpers.validateForm(e);
       }
     });
 
@@ -1005,12 +998,12 @@
       var formWrap = ulObj.parent('.frmb-wrap');
       $(this).toggleClass('active');
       $('textarea.idea_template').show();
-      $('.idea_template_wrap').slideToggle(250);
+      $('.template-textarea-wrap').slideToggle(250);
       formWrap.toggleClass('edit-xml');
     });
 
     elem.parent().find('p[id*="ideaTemplate"]').remove();
-    elem.wrap('<div class="idea_template_wrap"/>');
+    elem.wrap('<div class="template-textarea-wrap"/>');
     elem.getTemplate();
 
   };
