@@ -1,7 +1,7 @@
 /**
  * jQuery Form Builder
  * Description: A drag and drop editor to make building forms fast and easy.
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Kevin Chappell
  */
 (function($) {
@@ -307,7 +307,7 @@
         href: '#',
         'class': 'button-primary',
         title: opts.messages.save
-      }).html('<a class="save speuiButton_v1 corner-all-3 primary"><span>' + opts.messages.save + '</span></a>'),
+      }).html('<a class="save fb-button corner-all-3 primary"><span>' + opts.messages.save + '</span></a>'),
       viewVars = $('<a/>', {
         id: frmbID + '-view-vars',
         href: '#',
@@ -929,17 +929,17 @@
     });
 
 
-    var TriggerDev = false;
+    var triggerDevMode = false;
     // Super secret Developer Tools
     // if (spigitUserId === 1) {
-    $('.save.speuiButton_v1').mouseover(function() {
-      TriggerDev = true;
+    $('.save.fb-button').mouseover(function() {
+      triggerDevMode = true;
     }).mouseout(function() {
-      TriggerDev = false;
+      triggerDevMode = false;
     });
     $(document.documentElement).keydown(function(e) {
       var k = e.keyCode || e.which;
-      if (k === 77 && TriggerDev) { // M key
+      if (k === 77 && triggerDevMode) { // M key
         $('.action-links').toggle();
         $('.view-xml').toggle();
       }
