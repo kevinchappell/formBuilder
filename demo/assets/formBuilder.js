@@ -1,3 +1,8 @@
+/*
+formBuilder - git@github.com:kevinchappell/formBuilder.git
+Version: 1.1.0
+Author: Kevin Chappell <kevin.b.chappell@gmail.com>
+*/
 (function($) {
   'use strict';
   var FormBuilder = function(element, options) {

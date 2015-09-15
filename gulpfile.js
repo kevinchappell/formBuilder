@@ -71,6 +71,11 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
+gulp.task('img', function() {
+  return gulp.src('src/img/*')
+    .pipe(gulp.dest('demo/assets/img'));
+});
+
 gulp.task('js', function() {
   return gulp.src(files.js)
     .pipe(concat('formBuilder.js'))
@@ -78,6 +83,7 @@ gulp.task('js', function() {
       pkg: pkg,
       now: new Date()
     }))
+    .pipe(gulp.dest('demo/assets'))
     .pipe(gulp.dest('dist/'))
     .pipe(ugly())
     .pipe(header(banner, {
@@ -133,4 +139,4 @@ gulp.task('release', function() {
 
 
 gulp.task('default', ['js', 'watch']);
-gulp.task('demo', ['js', 'css', 'watch', 'serve']);
+gulp.task('demo', ['js', 'css', 'img', 'watch', 'serve']);

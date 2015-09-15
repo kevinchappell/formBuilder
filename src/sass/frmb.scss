@@ -1,0 +1,173 @@
+.frmb {
+  .prev-holder.type_5 {
+    background-position: 0 -442px;
+    height: 12px;
+  }
+
+  .prev-holder.type_7 {
+    background-position: 0 -519px;
+    height: 154px;
+  }
+
+  .prev-holder.type_3 {
+    background-position: 0 -395px;
+    height: 28px;
+  }
+
+  .prev-holder.type_6 {
+    background-position: 0 -473px;
+    height: 27px;
+  }
+
+  .prev-holder.type_10 {
+    background: 0 0;
+    line-height: 1.5em;
+    font-size: 13px;
+  }
+
+  .prev-holder.type_1, .prev-holder.type_11 {
+    background-position: 0 -344px;
+    height: 32px;
+  }
+
+  .prev-holder.type_9 {
+    background-position: 0 -693px;
+    height: 32px;
+  }
+
+  li {
+    clear: both;
+    position: relative;
+    margin-left: 0;
+    margin-bottom: 5px;
+    background-color: #fff;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    transition: border 250ms ease-in-out;
+    padding: 6px;
+
+    &:hover {
+      border: 1px solid #a5aab0;
+
+      li:hover {
+        background: #fefefe;
+      }
+    }
+
+    &.no-fields label {
+      font-weight: 400;
+    }
+
+    &.frmb-placeholder, &.ui-state-highlight {
+      background: url("img/frmb-sprite.png") 50% 100% no-repeat;
+      height: 24px;
+      visibility: visible;
+    }
+
+    &.disabled input[type=checkbox] {
+      float: left;
+      margin-right: 10px;
+    }
+
+    &.disabled label {
+      font-size: 12px;
+      font-weight: 400;
+      color: #666;
+    }
+
+    &.disabled .prev-holder {
+      cursor: default;
+      padding-left: 5px;
+      line-height: 28px;
+    }
+
+    a.remove {
+      filter: alpha(opacity = 100);
+      -moz-opacity: 1;
+      -khtml-opacity: 1;
+      opacity: 1;
+    }
+  }
+
+  a.btn {
+    color: #000;
+    border: 1px solid #ccc;
+    line-height: 13px;
+    text-decoration: none;
+    width: 11px;
+    height: 12px;
+    text-align: center;
+    display: inline-block;
+  }
+
+  a.del-button, a.remove {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    display: inline-block;
+    filter: alpha(opacity = 0);
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
+    padding: 3px 4px;
+    -webkit-border-radius: 0 5px 0 0;
+    border-radius: 0 5px 0 0;
+  }
+
+  a.del-button:hover, a.remove:hover {
+    border-color: #c66865;
+    color: #c66865;
+  }
+
+  li.delete:hover, li:hover li.delete:hover {
+    background-color: #fdd;
+  }
+
+  li.disabled {
+    padding: 0 5px;
+  }
+
+  li.disabled:hover {
+    border-color: transparent;
+  }
+
+  li.disabled .form-element {
+    overflow: visible;
+    float: none;
+    margin-bottom: 10px;
+    position: relative;
+    padding: 5px 0;
+  }
+
+  li.disabled .tooltip-element {
+    display: inline;
+    visibility: visible;
+  }
+
+  .frm-holder {
+    display: none;
+  }
+
+  .tooltip {
+    left: 20px;
+  }
+
+  .prev-holder {
+    display: block;
+    background: url("img/frmb-sprite.png") no-repeat;
+  }
+
+  .required_asterisk {
+    display: none;
+  }
+
+  .field_label, .legend {
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  .disabled .field_label {
+    display: block;
+  }
+}
