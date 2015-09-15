@@ -6,7 +6,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 (function($) {
   'use strict';
   var FormBuilder = function(element, options) {
-    ZeroClipboard = window.ZeroClipboard;
+    var ZeroClipboard = window.ZeroClipboard;
 
     var defaults = {
       disableFields: {
@@ -80,10 +80,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     // object full of useful utilities
     var _helpers = {
       startMoving: function(event, ui) {
+        event = event;
         ui.item.addClass('moving');
         startIndex = $('li', this).index(ui.item);
       },
       stopMoving: function(event, ui) {
+        event = event;
         ui.item.removeClass('moving');
         if (doCancel) {
           $(ui.sender).sortable('cancel');
@@ -210,35 +212,35 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     // create array of field objects to cycle through
     var frmbFields = [{
       type: 11,
-      'class': 'text-input',
+      className: 'text-input',
       label: opts.messages.text
     }, {
       type: 6,
-      'class': 'select',
+      className: 'select',
       label: opts.messages.select
     }, {
       type: 7,
-      'class': 'rich-text',
+      className: 'rich-text',
       label: opts.messages.richText
     }, {
       type: 5,
-      'class': 'checkbox',
+      className: 'checkbox',
       label: opts.messages.checkbox
     }, {
       type: 10,
-      'class': 'checkbox-group',
+      className: 'checkbox-group',
       label: opts.messages.checkboxGroup
     }, {
       type: 10,
-      'class': 'radio-group',
+      className: 'radio-group',
       label: opts.messages.radioGroup
     }, {
       type: 3,
-      'class': 'date_input',
+      className: 'date_input',
       label: opts.messages.dateField
     }, {
       type: 9,
-      'class': 'autocomplete',
+      className: 'autocomplete',
       label: opts.messages.autocomplete
     }];
 
@@ -260,14 +262,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // Loop through
     for (var i = frmbFields.length - 1; i >= 0; i--) {
-      var icon = '<span class="'+frmbFields[i].class+'"></span>';
+      var icon = '<span class="' + frmbFields[i].className + '"></span>';
       $('<li/>', {
-        // 'class': frmbFields[i].class,
+        // 'class': frmbFields[i].className,
         'type': frmbFields[i].type,
-        'name': frmbFields[i].class,
+        'name': frmbFields[i].className,
         'multiple': frmbFields[i].multiple,
         'label': frmbFields[i].label
-      }).html(icon+frmbFields[i].label).appendTo(cbUL);
+      }).html(icon + frmbFields[i].label).appendTo(cbUL);
     }
 
     // Build our headers and action links
@@ -334,7 +336,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       opacity: 0.9,
       beforeStop: function(event, ui) {
         var lastIndex = $('> li', ulObj).length - 1,
-            curIndex = ui.placeholder.index();
+          curIndex = ui.placeholder.index();
         doCancel = ((curIndex <= 1) || (curIndex === lastIndex));
       },
       start: _helpers.startMoving,
@@ -591,13 +593,22 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var advFields = '',
         key,
         roles = values.role !== undefined ? values.role.split(',') : [];
-      var fieldLabel = $('<div>', {class:'frm-fld'});
-      $('<label/>').html(opts.messages.label+' *').appendTo(fieldLabel);
-      $('<input>', {type: 'text', name:'label', value: values.label, class: 'fld-label'}).appendTo(fieldLabel);
+      var fieldLabel = $('<div>', {
+        class: 'frm-fld'
+      });
+      $('<label/>').html(opts.messages.label + ' *').appendTo(fieldLabel);
+      $('<input>', {
+        type: 'text',
+        name: 'label',
+        value: values.label,
+        class: 'fld-label'
+      }).appendTo(fieldLabel);
       advFields += fieldLabel[0].outerHTML;
 
-      var fieldDesc = $('<div>', {class: 'frm-fld description-wrap'});
-      $('<label/>').html(opts.messages.description+' *').appendTo(fieldDesc);
+      var fieldDesc = $('<div>', {
+        class: 'frm-fld description-wrap'
+      });
+      $('<label/>').html(opts.messages.description + ' *').appendTo(fieldDesc);
       // $('<input>', )
 
 
@@ -853,7 +864,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     $('#' + frmbID + '-export-xml').click(function(e) {
       e.preventDefault();
       var xml = elem.val(),
-      $pre = $('<pre />').text(xml);
+        $pre = $('<pre />').text(xml);
       $pre.dialog({
         resizable: false,
         modal: true,
@@ -933,8 +944,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
 
     var triggerDevMode = false,
-        keys     = [],
-        devCode  = '68,69,86';
+      keys = [],
+      devCode = '68,69,86';
     // Super secret Developer Tools
     $('.save.fb-button').mouseover(function() {
       triggerDevMode = true;
@@ -942,8 +953,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       triggerDevMode = false;
     });
     $(document.documentElement).keydown(function(e) {
-      keys.push( e.keyCode );
-      if ( keys.toString().indexOf( devCode ) >= 0 ) { // M key
+      keys.push(e.keyCode);
+      if (keys.toString().indexOf(devCode) >= 0) { // M key
         $('.action-links').toggle();
         $('.view-xml').toggle();
         console.log('developer mode activated');
@@ -1038,7 +1049,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var c = 1;
 
       if ($(this).children().length >= 1) {
-        serialStr += '<idea-template>\n\t<fields>';
+        serialStr += '<form-template>\n\t<fields>';
 
         // build new xml
         $(this).children().each(function() {
@@ -1079,7 +1090,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           }
           liCount++;
         });
-        serialStr += '\n\t</fields>\n</idea-template>';
+        serialStr += '\n\t</fields>\n</form-template>';
       } // if "$(this).children().length >= 1"
 
     });
