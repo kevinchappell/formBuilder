@@ -2,41 +2,6 @@
 @import "reset";
 @import "theme";
 
-.loading {
-  position: fixed;
-  width: 90px;
-  height: 104px;
-  left: 50%;
-  top: 50%;
-  margin-top: -62px;
-  margin-left: -60px;
-  z-index: 10;
-  background: url('data:image/svg+xml;utf8,<svg version="1.1" id="Loading" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 250 288" enable-background="new 0 0 250 288" xml:space="preserve"><polygon id="segment-1" fill="#00B9FF" points="250,72 125,0 125,144"><animate attributeName="points" dur="150ms" begin="0s; segment6open.end" restart="always" fill="freeze" id="segment1" to="250,72 187.1,108 125,144" /><animate attributeName="points" dur="150ms" begin="segment6.end" fill="freeze" id="segment1open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" /><animate attributeName="fill" dur="150ms" fill="freeze" from="#00B9FF" to="#5697C3" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment6.end" from="#5697C3" to="#00B9FF" /><set attributeName="visibility" attributeType="XML" begin="segment2.begin" from="visible" to="hidden" /><set attributeName="visibility" attributeType="XML" begin="segment1open.begin" from="hidden" to="visible" /></polygon><polygon id="segment-2" fill="#00B9FF" points="250,72 125,0 125,144" transform="translate(187.1, -36.3) rotate(60)"><animate attributeName="points" dur="150ms" fill="freeze" begin="segment1.end" id="segment2" to="250,72 187.1,108 125,144" /><animate attributeName="points" dur="150ms" begin="segment1open.end" fill="freeze" id="segment2open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment1.end" id="" from="#00B9FF" to="#5697C3" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment1open.end" from="#5697C3" to="#00B9FF" /><set attributeName="visibility" attributeType="XML" begin="segment3.begin" from="visible" to="hidden" /><set attributeName="visibility" attributeType="XML" begin="segment2open.begin" from="hidden" to="visible" /></polygon><polygon id="segment-3" fill="#00B9FF" points="250,72 125,0 125,144" transform="translate(312.1, 107.7) rotate(120)"><animate attributeName="points" dur="150ms" fill="freeze" begin="segment2.end" id="segment3" to="250,72 187.1,108 125,144" /><animate attributeName="points" dur="150ms" begin="segment2open.end" fill="freeze" id="segment3open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment2.end" from="#00B9FF" to="#5697C3" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment2open.end" from="#5697C3" to="#00B9FF" /><set attributeName="visibility" attributeType="XML" begin="segment4.begin" from="visible" to="hidden" /><set attributeName="visibility" attributeType="XML" begin="segment3open.begin" from="hidden" to="visible" /></polygon><polygon id="segment-4" fill="#00B9FF" points="250,72 125,0 125,144" transform="translate(250, 288) rotate(180)"><animate attributeName="points" dur="150ms" fill="freeze" begin="segment3.end" id="segment4" to="250,72 187.1,108 125,144" /><animate attributeName="points" dur="150ms" begin="segment3open.end" fill="freeze" id="segment4open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment3.end" from="#00B9FF" to="#5697C3" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment3open.end" from="#5697C3" to="#00B9FF" /><set attributeName="visibility" attributeType="XML" begin="segment5.begin" from="visible" to="hidden" /><set attributeName="visibility" attributeType="XML" begin="segment4open.begin" from="hidden" to="visible" /></polygon><polygon id="segment-5" fill="#00B9FF" points="250,72 125,0 125,144" transform="translate(62.6, 324.5) rotate(240)"><animate attributeName="points" dur="150ms" fill="freeze" begin="segment4.end" id="segment5" to="250,72 187.1,108 125,144" /><animate attributeName="points" dur="150ms" begin="segment4open.end" fill="freeze" id="segment5open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment4.end" from="#00B9FF" to="#5697C3" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment4open.end" from="#5697C3" to="#00B9FF" /><set attributeName="visibility" attributeType="XML" begin="segment6.begin" from="visible" to="hidden" /><set attributeName="visibility" attributeType="XML" begin="segment5open.begin" from="hidden" to="visible" /></polygon><polygon id="segment-6" fill="#00B9FF" points="250,72 125,0 125,144" transform="translate(-62.3, 180.6) rotate(299.99)"><animate attributeName="points" dur="150ms" fill="freeze" begin="segment5.end" id="segment6" to="250,72 187.1,108 125,144" /><animate attributeName="points" dur="150ms" begin="segment5open.end" fill="freeze" id="segment6open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment6.end" from="#00B9FF" to="#5697C3" /><animate attributeName="fill" dur="150ms" fill="freeze" begin="segment5open.end" from="#5697C3" to="#00B9FF" /><set attributeName="visibility" attributeType="XML" begin="segment1open.begin" from="visible" to="hidden" /><set attributeName="visibility" attributeType="XML" begin="segment6open.begin" from="hidden" to="visible" /></polygon></svg>');
-}
-
-@keyframes toast {
-  0% {
-    transform: translate(0, 50px);
-  }
-
-  10% {
-    transform: translate(0, 0);
-  }
-
-  90% {
-    transform: translate(0, 0);
-  }
-
-  100% {
-    transform: translate(300px, 0);
-  }
-}
-
-
-.demo-wrap {
-  opacity: 0.5;
-}
-
 .donate-plea {
   width: 50%;
   font-size: .75em;
