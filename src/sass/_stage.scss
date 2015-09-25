@@ -1,0 +1,153 @@
+.frmb {
+  li {
+    clear: both;
+    position: relative;
+    margin-left: 0;
+    margin-bottom: 5px;
+    background-color: $white;
+    border-radius: 5px;
+    border: 1px solid $white;
+    transition: border 250ms ease-in-out;
+    padding: 6px;
+
+    &:hover {
+      border: 1px solid $grey-light-30;
+
+      li:hover {
+        background: #fefefe;
+      }
+    }
+
+    &.no-fields label {
+      font-weight: 400;
+    }
+
+    &.frmb-placeholder, &.ui-state-highlight {
+      /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#545454+0,000000+75&amp;1+0,0+75 */
+      background: -moz-radial-gradient(center, ellipse cover, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
+      /* FF3.6+ */
+      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(84, 84, 84, 1)), color-stop(75%, rgba(0, 0, 0, 0)));
+      /* Chrome,Safari4+ */
+      background: -webkit-radial-gradient(center, ellipse cover, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
+      /* Chrome10+,Safari5.1+ */
+      background: -o-radial-gradient(center, ellipse cover, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
+      /* Opera 12+ */
+      background: -ms-radial-gradient(center, ellipse cover, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
+      /* IE10+ */
+      background: radial-gradient(ellipse at center, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
+      /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#545454', endColorstr='#00000000',GradientType=1 );
+      /* IE6-9 fallback on horizontal gradient */
+      border: 0 none;
+      -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      border: 0 none;
+      height: 5px;
+      visibility: visible;
+    }
+
+    &.disabled input[type=checkbox] {
+      float: left;
+      margin-right: 10px;
+    }
+
+    &.disabled label {
+      font-size: 12px;
+      font-weight: 400;
+      color: $grey;
+    }
+
+    &.disabled .prev-holder {
+      cursor: default;
+      line-height: 28px;
+      padding-left: 5px;
+    }
+
+    a.remove {
+      opacity: 1;
+    }
+
+    &.cta {
+      font-size: 30px;
+      padding: 20% 0;
+      text-align: center;
+    }
+  }
+
+  a.btn {
+    border: 1px solid $white;
+    color: $black;
+    display: inline-block;
+    height: 12px;
+    line-height: 13px;
+    text-align: center;
+    text-decoration: none;
+    width: 11px;
+  }
+
+  a.del-button, a.remove {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    display: inline-block;
+    opacity: 0;
+    padding: 3px 4px;
+    border-radius: 0 5px 0 0;
+    border-color: $grey-light-30;
+  }
+
+  a.del-button:hover, a.remove:hover {
+    border-color: $remove;
+    color: $remove;
+  }
+
+  li.delete:hover, li:hover li.delete:hover {
+    background-color: #fdd;
+  }
+
+  &.disabled {
+    padding: 0 5px;
+
+    :hover {
+      border-color: transparent;
+    }
+
+    .form-element {
+      float: none;
+      margin-bottom: 10px;
+      overflow: visible;
+      padding: 5px 0;
+      position: relative;
+    }
+
+    .tooltip-element {
+      display: inline;
+      visibility: visible;
+    }
+  }
+
+  .frm-holder {
+    display: none;
+  }
+
+  .tooltip {
+    left: 20px;
+  }
+
+  .prev-holder {
+    display: block;
+  }
+
+  .required_asterisk {
+    display: none;
+  }
+
+  .field-label, .legend {
+    color: $grey;
+    margin-bottom: 5px;
+  }
+
+  .disabled .field-label {
+    display: block;
+  }
+}

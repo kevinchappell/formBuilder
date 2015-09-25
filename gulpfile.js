@@ -1,20 +1,20 @@
 'use strict';
 
 var gulp = require('gulp'),
+  git = require('gulp-git'),
+  bump = require('gulp-bump'),
+  sass = require('gulp-sass'),
+  babel = require('gulp-babel'),
+  ugly = require('gulp-uglify'),
   bsync = require('browser-sync'),
   jshint = require('gulp-jshint'),
   concat = require('gulp-concat'),
-  ugly = require('gulp-uglify'),
   header = require('gulp-header'),
-  sass = require('gulp-sass'),
-  autoprefixer = require('gulp-autoprefixer'),
   cssmin = require('gulp-cssmin'),
-  gzip = require('gulp-gzip'),
   pkg = require('./package.json'),
-  git = require('gulp-git'),
-  bump = require('gulp-bump'),
   filter = require('gulp-filter'),
   tagVersion = require('gulp-tag-version'),
+  autoprefixer = require('gulp-autoprefixer'),
   reload = bsync.reload;
 
 var files = {
@@ -22,11 +22,13 @@ var files = {
     'test/**/*.spec.js'
   ],
   js: [
-    'src/js/formBuilder.js'
+    'src/js/form-builder.js'
   ],
   sass: [
-    'demo/assets/sass/demo.scss',
-    'src/sass/formBuilder.scss'
+    'src/sass/form-builder.scss'
+  ],
+  demoSass: [
+    'demo/assets/sass/demo.scss'
   ]
 };
 
@@ -41,14 +43,35 @@ var banner = [
 ].join('\n');
 
 gulp.task('watch', function() {
-  gulp.watch(['src/**/*.js', 'demo/assets/demo.js'], ['lint', 'js']);
+  gulp.watch(['src/**/*.js'], ['lint', 'js']);
   gulp.watch('demo/index.html', reload);
+  files.sass.push('src/sass/*.scss');
   gulp.watch(files.sass, ['css']);
 });
 
 gulp.task('css', function() {
 
   return gulp.src(files.sass)
+    .pipe(sass())
+    .pipe(autoprefixer({
+      cascade: true
+    }))
+    .pipe(cssmin())
+    .pipe(header(banner, {
+      pkg: pkg,
+      now: new Date()
+    }))
+    .pipe(gulp.dest('demo/assets'))
+    .pipe(gulp.dest('dist/'))
+    .pipe(reload({
+      stream: true
+    }));
+
+});
+
+gulp.task('demoCss', function() {
+
+  return gulp.src(files.demoSass)
     .pipe(sass())
     .pipe(autoprefixer({
       cascade: true
@@ -78,7 +101,8 @@ gulp.task('img', function() {
 
 gulp.task('js', function() {
   return gulp.src(files.js)
-    .pipe(concat('formBuilder.js'))
+    .pipe(babel())
+    .pipe(concat('form-builder.js'))
     .pipe(header(banner, {
       pkg: pkg,
       now: new Date()
@@ -90,10 +114,8 @@ gulp.task('js', function() {
       pkg: pkg,
       now: new Date()
     }))
-    .pipe(concat('formBuilder.min.js'))
-    .pipe(gulp.dest('dist/'))
+    .pipe(concat('form-builder.min.js'))
     .pipe(gulp.dest('demo/assets'))
-    .pipe(gzip())
     .pipe(gulp.dest('dist/'))
     .pipe(reload({
       stream: true
@@ -137,6 +159,5 @@ gulp.task('release', function() {
 });
 
 
-
 gulp.task('default', ['js', 'watch']);
-gulp.task('demo', ['js', 'css', 'img', 'watch', 'serve']);
+gulp.task('demo', ['js', 'css', 'demoCss', 'img', 'watch', 'serve']);

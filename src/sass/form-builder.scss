@@ -1,9 +1,11 @@
-@import "frmb";
+@import "variables";
+@import "font";
+@import "stage";
 
-.fresh textarea.idea_template, textarea.idea_template {
+textarea.idea-template {
   display: none;
   width: 617px;
-  color: #fefefe;
+  color: $off-white;
   font: 13px/19px courier;
   padding-left: 40px;
   height: 1055px;
@@ -27,11 +29,11 @@
 
 .cb-wrap {
   float: right;
-  background: #fff;
   width: 36%;
 }
 
 .frmb-wrap {
+  position: relative;
   float: left;
   width: 62%;
   margin-right: 2%;
@@ -43,11 +45,21 @@
     overflow: hidden;
     text-align: right;
   }
+
+  &.empty {
+    &:after {
+      content: attr(data-content);
+      position: absolute;
+      text-align: center;
+      top: 50%;
+      width: 100%;
+    }
+  }
 }
 
 .frmb-wrap .action-links .active {
   font-weight: 700;
-  color: #000;
+  color: $black;
 }
 
 .action-links .action-links-inner {
@@ -59,36 +71,33 @@
 
 .action-links .dev-mode-link {
   transition: color 250ms;
-  color: #666;
+  color: $grey;
   cursor: pointer;
   padding-right: 2px;
 }
 
-.cb-wrap h4, .frmb-wrap h4 {
+.cb-wrap {
+  h4 {
+    margin-top: 0;
+    color: $grey;
+  }
+
+  .save:hover {
+    color: $success;
+  }
+}
+
+.frmb-wrap h4 {
   margin-top: 0;
-  color: #666;
-}
-
-.cb-wrap h4 {
-  text-align: left;
-  padding: 5px 10px;
-}
-
-.cb-wrap .save:hover {
-  color: #08fe00;
-}
-
-.cb-wrap .showTooltip a {
-  text-decoration: underline;
-  color: #fff;
+  color: $grey;
 }
 
 .action-links a.clear-all:hover, .del-button:hover, ul.frmb span.required {
-  color: red;
+  color: $error;
 }
 
 .action-links a {
-  color: #666;
+  color: $grey;
 }
 
 .view-xml {
@@ -96,10 +105,10 @@
 }
 
 .action-links a.view-xml:hover {
-  color: #000;
+  color: $black;
 }
 
-.frm-elements {
+.form-elements {
   background: #f7f7f7;
   box-shadow: inset 0 0 2px 0 #999;
   border-radius: 3px;
@@ -107,20 +116,20 @@
   padding: 10px 5px;
 }
 
-.frm-elements .false-label, .frm-elements .fields {
+.form-elements .false-label, .form-elements .fields {
   margin-top: 10px;
 }
 
-.frm-elements .fields {
+.form-elements .fields {
   width: 70%;
   float: left;
 }
 
-.frm-elements .fields .add-area .add {
+.form-elements .fields .add-area .add {
   clear: both;
 }
 
-.frm-elements .fields .remove {
+.form-elements .fields .remove {
   right: 11px;
   top: 50%;
   margin-top: -11px;
@@ -128,7 +137,7 @@
   border-radius: 0 3px 3px 0;
 }
 
-.frm-elements .sortable-options li:nth-child(1) .remove, .frm-elements .sortable-options li:nth-child(2) .remove {
+.form-elements .sortable-options li:nth-child(1) .remove, .form-elements .sortable-options li:nth-child(2) .remove {
   display: none;
 }
 
@@ -140,44 +149,45 @@ ol.sortable-options li {
   cursor: move;
 }
 
-.frm-elements .fields div {
+.form-elements .fields div {
   clear: both;
   position: relative;
 }
 
-.frm-elements .fields input[type=checkbox], .frm-elements .fields input[type=radio] {
+.form-elements .fields input[type=checkbox], .form-elements .fields input[type=radio] {
   float: left;
   margin-right: 5px;
 }
 
-.frm-elements .fields input[type=text] {
-  width: 75%;
+.form-elements .fields input[type=text] {
+  width: 39%;
+  margin-right: 2%;
 }
 
-.frm-elements input[type=text] {
+.form-elements input[type=text] {
   width: 70%;
   transition: background 250ms ease-in-out;
   padding: 5px;
   border: 1px solid #AFAFAB;
-  background-color: #fff;
+  background-color: $white;
 }
 
-.frm-elements input[type=text].error {
+.form-elements input[type=text].error {
   -webkit-border-radius: 0;
   border-radius: 0;
-  border: 1px solid #E00000;
+  border: 1px solid $error;
 }
 
-.frm-elements input[type=text].fld-max-length {
+.form-elements input[type=text].fld-max-length {
   width: 10%;
 }
 
-.frm-elements input.field_error {
-  background: #ffefef;
+.form-elements input.field_error {
+  background: $off-white;
   border: 1px solid #afafab;
 }
 
-.frm-elements .false-label, .frm-elements label {
+.form-elements .false-label, .form-elements label {
   width: 15%;
   float: left;
   margin-left: 5px;
@@ -188,32 +198,32 @@ ol.sortable-options li {
   line-height: 32px;
 }
 
-.frm-elements label.multiple, .frm-elements label.required_label, .frm-elements label.roles_label {
+.form-elements label.multiple, .form-elements label.required_label, .form-elements label.roles_label {
   float: none;
   display: inline;
   font-weight: 400;
   width: auto;
 }
 
-.frm-elements label em {
+.form-elements label em {
   display: block;
   font-weight: 400;
   font-size: 0.75em;
 }
 
-.frm-elements label.max-length-label {
+.form-elements label.max-length-label {
   line-height: 1em;
 }
 
-.frm-elements .allow-multi input {
+.form-elements .allow-multi input {
   margin-top: 10px;
 }
 
-.frm-elements .allow-multi, .frm-elements .name_wrap, .frm-elements .select-option {
-  display: none;
+.form-elements .allow-multi, .form-elements .name_wrap, .form-elements .select-option {
+  // display: none;
 }
 
-.allow-select .frm-elements .allow-multi, .allow-select .frm-elements .select-option, .edit-names .frm-elements .name_wrap {
+.allow-select .form-elements .allow-multi, .allow-select .form-elements .select-option, .edit-names .form-elements .name_wrap {
   display: block !important;
 }
 
@@ -227,28 +237,28 @@ ol.sortable-options li {
   padding: 5px 10px;
   margin: 5px 0 10px 133px;
   width: 434px;
-  background: #efefef;
+  background: darken($white, 10%);
   -webkit-box-shadow: inset 0 0 2px 0 #999;
   box-shadow: inset 0 0 2px 0 #999;
 }
 
-.frm-elements .available-roles label {
+.form-elements .available-roles label {
   font-weight: 400;
   width: auto;
   float: none;
   display: inline;
 }
 
-.frm-elements .available-roles input {
+.form-elements .available-roles input {
   display: inline;
   top: auto;
 }
 
-.frm-elements, .frm-fld, .multi-row span, textarea {
+.form-elements, .frm-fld, .multi-row span, textarea {
   display: block;
 }
 
-.frm-elements:after, .frm-fld:after {
+.form-elements:after, .frm-fld:after {
   content: ".";
   display: block;
   height: 0;
@@ -256,7 +266,7 @@ ol.sortable-options li {
   visibility: hidden;
 }
 
-.frm-elements .fields div:hover, .frmb .legend, .frmb .prev-holder, .frmb .prev-holder * {
+.form-elements .fields div:hover, .frmb .legend, .frmb .prev-holder, .frmb .prev-holder * {
   cursor: move;
 }
 
@@ -267,11 +277,11 @@ ol.sortable-options li {
 // tooltips
 .frmb-tt {
   position: absolute;
-  border: 1px solid #333;
-  background-color: #666;
+  border: 1px solid darken($grey, 25%);
+  background-color: $grey;
   border-radius: 5px;
   padding: 5px;
-  color: #ccc;
+  color: lighten($grey, 10%);
   z-index: 20;
   text-align: left;
   font-size: 12px;
@@ -292,19 +302,19 @@ ol.sortable-options li {
 }
 
 .frmb-tt:before {
-  border-color: #333 transparent;
+  border-color: darken($grey, 25%) transparent;
   bottom: -11px;
 }
 
 .frmb-tt a {
   text-decoration: underline;
-  color: #fff;
+  color: $white;
 }
 
 .frmb li.moving, .frmb li.ui-sortable-helper, .frmb-control li.moving, .frmb-control li.ui-sortable-helper {
   transition: box-shadow 250ms ease-in-out;
-  box-shadow: 2px 2px 6px 0 #666;
-  border: 1px solid #fff;
+  box-shadow: 2px 2px 6px 0 $grey;
+  border: 1px solid $white;
 }
 
 .frmb li:hover .del-button, .frmb li:hover .toggle-form {
@@ -322,55 +332,27 @@ ol.sortable-options li {
 }
 
 .frmb-control li {
-  position: relative;
   cursor: move;
   list-style: none;
-  border-radius: 5px;
-  border: 1px solid #fff;
-  margin: 0;
+  border-radius: 2px;
+  margin: 0 0 5px;
   padding: 10px;
   text-align: left;
-  background: #fefefe;
-  background: linear-gradient(to bottom, #fefefe 0%, #eeeeee 100%);
+  background: $white;
+  border: 1px solid $white;
 
-  span {
-    float: left;
-    width: 24px;
-    height: 24px;
-    margin-right: 5px;
-    background: url("img/frmb-sprite.png") no-repeat -1px 0;
+  &:before {
+    margin-right: 10px;
+  }
 
-    &.checkbox {
-      background-position: -1px -258px;
-    }
+  &:hover {
+    border: 1px solid $grey-light;
+    border-top: 1px solid lighten($grey-light, 10%);
+    border-bottom: 1px solid darken($grey-light, 10%);
+  }
 
-    &.date_input {
-      background-position: -1px -86px;
-    }
-
-    &.text-input {
-      background-position: -1px 0px;
-    }
-
-    &.autocomplete {
-      background-position: -1px -301px;
-    }
-
-    &.radio-group {
-      background-position: -1px -172px;
-    }
-
-    &.checkbox-group {
-      background-position: -1px -215px;
-    }
-
-    &.select {
-      background-position: -1px -129px;
-    }
-
-    &.rich-text {
-      background-position: -1px -86px;
-    }
+  &.ui-state-highlight {
+    background-image: none;
   }
 }
 
@@ -378,14 +360,6 @@ ol.sortable-options li {
   margin: 0;
   padding: 0;
   min-width: 208px;
-}
-
-ul.frmb-control li.ui-state-highlight {
-  background-image: none;
-}
-
-ul.frmb-control li:hover {
-  border: 1px solid #a5aab0;
 }
 
 .frmb-xml pre.ui-dialog-content {
@@ -404,28 +378,24 @@ ul.frmb-control li:hover {
 }
 
 .toggle-form.open {
-  line-height: 14px;
+  // line-height: 14px;
 }
 
 a.btn.toggle-form {
-  border: 0 none;
+  border-radius: 2px;
   margin-left: 5px;
-  width: 16px;
-  height: 16px;
-  line-height: 20px;
-  text-indent: -9999px;
+  width: 20px;
+  height: 20px;
+  line-height: 21px;
   opacity: 0;
-  background: url('data:image/svg+xml;utf8,<?xml version="1.0" ?><svg height="22px" version="1.1" viewBox="0 0 22 22" width="22px" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns:xlink="http://www.w3.org/1999/xlink"><title/><defs/><g fill="none" fill-rule="evenodd" id="miu" stroke="none" stroke-width="1"><path d="M6.52081529,19.553286 L13.5208152,19.553286 L13.5208151,3.55328599 L6.52081521,3.55328599 L6.52081529,19.553286 Z M6.52081528,-0.476770888 L6.52081528,2.47686997 L13.5197166,2.47686992 L13.5197166,-0.476770935 C13.5197166,-1.47918477 12.5173028,-1.47918477 12.5173028,-1.47918477 L7.52322913,-1.47918472 C7.52322913,-1.47918472 6.52081528,-1.47918472 6.52081528,-0.476770888 Z M6.50416988,20.5208153 L10.0208153,25.5075707 L13.5192284,20.5208153 L6.50416988,20.5208153 Z" fill="#000000" id="editor_pencil_pen_edit_write_glyph" transform="translate(10.020815, 12.020815) rotate(45.000000) translate(-10.020815, -12.020815) "/></g></svg>') no-repeat 50% 50%;
-  background-size: 90%;
-}
 
-a.toggle-form img {
-  background: url('data:image/svg+xml;utf8,<?xml version="1.0" ?><svg height="22px" version="1.1" viewBox="0 0 22 22" width="22px" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns:xlink="http://www.w3.org/1999/xlink"><title/><defs/><g fill="none" fill-rule="evenodd" id="miu" stroke="none" stroke-width="1"><path d="M6.52081529,19.553286 L13.5208152,19.553286 L13.5208151,3.55328599 L6.52081521,3.55328599 L6.52081529,19.553286 Z M6.52081528,-0.476770888 L6.52081528,2.47686997 L13.5197166,2.47686992 L13.5197166,-0.476770935 C13.5197166,-1.47918477 12.5173028,-1.47918477 12.5173028,-1.47918477 L7.52322913,-1.47918472 C7.52322913,-1.47918472 6.52081528,-1.47918472 6.52081528,-0.476770888 Z M6.50416988,20.5208153 L10.0208153,25.5075707 L13.5192284,20.5208153 L6.50416988,20.5208153 Z" fill="#000000" id="editor_pencil_pen_edit_write_glyph" transform="translate(10.020815, 12.020815) rotate(45.000000) translate(-10.020815, -12.020815) "/></g></svg>') no-repeat 50% 50% #fff;
-  background-size: 90%;
-}
+  &:hover {
+    border-color: lighten($grey, 40%);
+  }
 
-td.formtitles {
-  width: 200px;
+  &:before {
+    margin: 0;
+  }
 }
 
 ul.frmb {
@@ -436,7 +406,7 @@ ul.frmb {
   padding: 5px 5px 0;
 }
 
-.spigit-field-vars .copy_var {
+.formb-field-vars .copy-var {
   display: inline-block;
   width: 24px;
   height: 24px;
@@ -444,20 +414,18 @@ ul.frmb {
   text-indent: -9999px;
 }
 
-.spigit-field-vars .clipboard {
+.formb-field-vars .clipboard {
   background: url("img/clipboard-sprite.png") 50% 0 no-repeat;
 }
 
-.spigit-field-vars .clipboard.copied {
+.formb-field-vars .clipboard.copied {
   background: url("img/clipboard-sprite.png") 50% -27px no-repeat;
 }
 
 .ite-warning {
-  -webkit-box-shadow: 1px 1px 4px 0 rgba(50, 50, 50, 0.5);
   box-shadow: 1px 1px 4px 0 rgba(50, 50, 50, 0.5);
-  -webkit-border-radius: 0;
   border-radius: 0;
-  border: 1px solid #DDD;
+  border: 1px solid #ddd;
 }
 
 .ite-warning .ui-dialog-buttonpane {
@@ -498,17 +466,8 @@ ul.frmb {
 }
 
 .ite-warning h3 {
-  color: #666;
+  color: $grey;
   margin-bottom: 10px;
-}
-
-.ite-warning h3 span {
-  background: url(/img/bg/sprites/fresh.png) -473px -281px no-repeat;
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  margin-right: 10px;
-  margin-bottom: -5px;
 }
 
 .ite-warning button {
@@ -519,7 +478,7 @@ ul.frmb {
 .fb-button {
   padding: 5px 10px;
   background: #00A261;
-  color: #fff;
+  color: $white;
   border-radius: 5px;
   cursor: pointer;
 
@@ -535,7 +494,7 @@ ul.frmb {
 
 .required-asterisk {
   display: none;
-  color: red;
+  color: $error;
 }
 
 /*   ------------   TOOLTIP   ------------   */
@@ -544,11 +503,11 @@ ul.frmb {
 }
 
 *[tooltip]:hover:after {
-  background: #333;
+  background: darken($grey, 25%);
   background: rgba(0, 0, 0, 0.9);
   border-radius: 5px 5px 5px 0;
   bottom: 23px;
-  color: #fff;
+  color: $white;
   content: attr(tooltip);
   padding: 10px 5px;
   position: absolute;
@@ -572,8 +531,8 @@ ul.frmb {
 }
 
 .tooltip-element {
-  color: #fff;
-  background: #000;
+  color: $white;
+  background: $black;
   width: 16px;
   height: 16px;
   border-radius: 8px;

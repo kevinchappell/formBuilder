@@ -1,4 +1,4 @@
-formBuilder
+formBuilder v1.2.0
 ===========
 
 A jQuery plugin for drag and drop form creation
@@ -20,5 +20,9 @@ jQuery(document).ready(function($) {
 ## TODO
 - Add parser to render non-editable form.
 - Add callback for `autocomplete` field.
-- Custom icons and styling
+- HTML5 fields and attributes
+- JSON data as default instead of XML
+- More examples
 
+## Changelog
+- v1.2.0 - Add default fields, and call-to-action text
