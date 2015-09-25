@@ -1,4 +1,4 @@
-formBuilder
+formBuilder v1.2.0
 ===========
 
 A jQuery plugin for drag and drop form creation
