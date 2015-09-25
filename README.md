@@ -24,3 +24,5 @@ jQuery(document).ready(function($) {
 - JSON data as default instead of XML
 - More examples
 
+## Changelog
+- v1.2.0 - Add default fields, and call-to-action text
