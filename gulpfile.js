@@ -32,7 +32,6 @@ var files = {
   ]
 };
 
-
 var banner = [
   '/*',
   '<%= pkg.name %> - <%= pkg.repository.url %>',
@@ -158,6 +157,12 @@ gulp.task('release', function() {
   return increment('major');
 });
 
+// Deploy the demo
+gulp.task('deploy', function(){
+  git.exec({args : 'subtree push --prefix demo origin gh-pages'}, function (err, stdout) {
+    console.error('There was an error deploying to GitHub Pages\n', err);
+  });
+});
 
 gulp.task('default', ['js', 'watch']);
 gulp.task('demo', ['js', 'css', 'demoCss', 'img', 'watch', 'serve']);
