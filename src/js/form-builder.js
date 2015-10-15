@@ -166,15 +166,38 @@
 
     // updatePreview will generate the preview for radio and checkbox groups
     _helpers.updatePreview = function(field) {
-      var preview;
+      var fieldClass = field.attr('class');
 
+      if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
+        return;
+      }
 
-      // $('.sortable-options li', field).each(function() {
-      //   var option = $('.select-option', $(this))[0].outerHTML;
-      //   var label = $('.option-label', $(this)).val();
-      //   preview += option + ' ' + label + '<br/>';
-      // });
-      $('.prev-holder', field).html(preview);
+      fieldClass = fieldClass.replace(' form-field', '');
+
+      var preview,
+        previewData = {
+          type: fieldClass,
+          label: $('.fld-label', field).val()
+        };
+
+      if (fieldClass.match(/(select|checkbox-group|radio-group)/)) {
+        previewData.values = [];
+
+        $('.sortable-options li', field).each(function() {
+          let option = {};
+          option.selected = $('.select-option', $(this)).is(':checked');
+          option.value = {
+            label: $('.option-label', $(this)).val(),
+            value: $('.option-value', $(this)).val()
+          };
+
+          previewData.values.push(option);
+        });
+      }
+
+      preview = fieldPreview(previewData);
+
+      $('.prev-holder', field).replaceWith(preview);
     };
 
 
@@ -835,12 +858,12 @@
     });
 
     // toggle fields
-    $sortableFields.delegate('.toggle-form', 'click', function(e) {
+    $sortableFields.on('click', '.toggle-form', function(e) {
       e.preventDefault();
       var targetID = $(this).attr('id');
       $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
       $(document.getElementById(targetID + '-fld')).slideToggle(250, function() {
-        // do something after attr toggle
+        _helpers.save();
       });
     });
 

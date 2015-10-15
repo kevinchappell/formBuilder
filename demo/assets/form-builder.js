@@ -172,14 +172,38 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // updatePreview will generate the preview for radio and checkbox groups
     _helpers.updatePreview = function (field) {
-      var preview;
+      var fieldClass = field.attr('class');
 
-      // $('.sortable-options li', field).each(function() {
-      //   var option = $('.select-option', $(this))[0].outerHTML;
-      //   var label = $('.option-label', $(this)).val();
-      //   preview += option + ' ' + label + '<br/>';
-      // });
-      $('.prev-holder', field).html(preview);
+      if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
+        return;
+      }
+
+      fieldClass = fieldClass.replace(' form-field', '');
+
+      var preview,
+          previewData = {
+        type: fieldClass,
+        label: $('.fld-label', field).val()
+      };
+
+      if (fieldClass.match(/(select|checkbox-group|radio-group)/)) {
+        previewData.values = [];
+
+        $('.sortable-options li', field).each(function () {
+          var option = {};
+          option.selected = $('.select-option', $(this)).is(':checked');
+          option.value = {
+            label: $('.option-label', $(this)).val(),
+            value: $('.option-value', $(this)).val()
+          };
+
+          previewData.values.push(option);
+        });
+      }
+
+      preview = fieldPreview(previewData);
+
+      $('.prev-holder', field).replaceWith(preview);
     };
 
     // update preview to label
@@ -711,6 +735,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // Append the new field to the editor
     var appendFieldLi = function appendFieldLi(title, field, values) {
+      console.log(values);
       var label = $(field).find('input[name="label"]').val() !== '' ? $(field).find('input[name="label"]').val() : title;
 
       var li = '',
@@ -835,11 +860,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // toggle fields
-    $sortableFields.delegate('.toggle-form', 'click', function (e) {
+    $sortableFields.on('click', '.toggle-form', function (e) {
       e.preventDefault();
       var targetID = $(this).attr('id');
       $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
       $(document.getElementById(targetID + '-fld')).slideToggle(250, function () {
+        _helpers.save();
         // do something after attr toggle
       });
     });
