@@ -770,7 +770,7 @@
           break;
         case 'checkbox-group':
         case 'radio-group':
-        let type = attrs.type.replace('-group', '');
+          let type = attrs.type.replace('-group', '');
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
             preview += `<div><input type="${type}" id="${type}-${epoch}-${i}" value="${attrs.values[i].value.value}" /><label for="${type}-${epoch}-${i}">${attrs.values[i].value.label}</label></div>`;
@@ -1179,7 +1179,7 @@
               var required = $('input.required', $field).is(':checked') ? 'required="true" ' : 'required="false" ',
                 multipleChecked = $('input[name="multiple"]', $field).is(':checked'),
                 multiple = multipleChecked ? 'style="multiple" ' : '',
-                t = $field.attr(opts.attributes[att]), // field type
+                t = $field.attr(opts.attributes[att]).replace(' form-field', ''), // field type
                 type = 'type="' + t + '" ',
                 fName = 'name="' + $('input.fld-name', $field).val() + '" ',
                 fLabel = 'label="' + $('input.fld-label', $field).val() + '" ',
@@ -1193,14 +1193,14 @@
                 fSlash = (t !== 'select' && t !== 'checkbox-group' ? '/' : '');
 
               serialStr += '\n\t\t<field ' + fName + fLabel + multiple + roles + desc + (maxLengthVal !== '' ? (maxLengthVal !== undefined ? maxLength : '') : '') + required + type + fSlash + '>';
-
-              if (t === 'select' || t === 'checkbox-group') {
+              if (t.match(/(select|checkbox-group|radio-group)/)) {
                 c = 1;
-                $('input[type=text][class=option]', $field).each(function() {
-                  if ($(this).attr('name') !== 'title') {
-                    var selected = $(this).prev().is(':checked') ? ' selected="true"' : '';
-                    serialStr += '\n\t\t\t<option' + selected + '>' + $(this).val() + '</option>';
-                  }
+                $('.sortable-options li', $field).each(function() {
+                  let $option = $(this),
+                    optionLabel = 'label="' + $('.option-label', $option).val() + '"',
+                    optionValue = $('.option-value', $option).val(),
+                    selected = $('.select-option', $option).is(':checked') ? ' selected="true"' : '';
+                  serialStr += '\n\t\t\t<option' + selected + ' ' + optionLabel + '>' + optionValue + '</option>';
                   c++;
                 });
                 serialStr += '\n\t\t</field>';

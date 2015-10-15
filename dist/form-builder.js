@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.2.0
+Version: 1.3.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1176,7 +1176,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
               var required = $('input.required', $field).is(':checked') ? 'required="true" ' : 'required="false" ',
                   multipleChecked = $('input[name="multiple"]', $field).is(':checked'),
                   multiple = multipleChecked ? 'style="multiple" ' : '',
-                  t = $field.attr(opts.attributes[att]),
+                  t = $field.attr(opts.attributes[att]).replace(' form-field', ''),
                   // field type
               type = 'type="' + t + '" ',
                   fName = 'name="' + $('input.fld-name', $field).val() + '" ',
@@ -1191,14 +1191,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
                   fSlash = t !== 'select' && t !== 'checkbox-group' ? '/' : '';
 
               serialStr += '\n\t\t<field ' + fName + fLabel + multiple + roles + desc + (maxLengthVal !== '' ? maxLengthVal !== undefined ? maxLength : '' : '') + required + type + fSlash + '>';
-
-              if (t === 'select' || t === 'checkbox-group') {
+              if (t.match(/(select|checkbox-group|radio-group)/)) {
                 c = 1;
-                $('input[type=text][class=option]', $field).each(function () {
-                  if ($(this).attr('name') !== 'title') {
-                    var selected = $(this).prev().is(':checked') ? ' selected="true"' : '';
-                    serialStr += '\n\t\t\t<option' + selected + '>' + $(this).val() + '</option>';
-                  }
+                $('.sortable-options li', $field).each(function () {
+                  var $option = $(this),
+                      optionLabel = 'label="' + $('.option-label', $option).val() + '"',
+                      optionValue = $('.option-value', $option).val(),
+                      selected = $('.select-option', $option).is(':checked') ? ' selected="true"' : '';
+                  serialStr += '\n\t\t\t<option' + selected + ' ' + optionLabel + '>' + optionValue + '</option>';
                   c++;
                 });
                 serialStr += '\n\t\t</field>';
