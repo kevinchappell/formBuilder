@@ -1,4 +1,4 @@
-formBuilder v1.3.2
+formBuilder v1.3.3
 ===========
 
 A jQuery plugin for drag and drop form creation
@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
 
 ## [Demo](http://kevinchappell.github.io/formBuilder/) ##
 
-## TODO
+## Coming in 2.0
 - Add parser to render non-editable form.
 - Add callback for `autocomplete` field.
 - HTML5 fields and attributes
@@ -25,6 +25,7 @@ jQuery(document).ready(function($) {
 - More examples
 
 ## Changelog
+- v1.3.3 - Bugfix: preview not toggling correctly
 - v1.3.2 - Bugfix: preview for Multiple fields not updating
 - v1.3.1 - Bugfix: multiple value fields not saving XML
 - v1.3.0 - Live previews, icon font
