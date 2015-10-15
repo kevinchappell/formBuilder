@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.3.1
+Version: 1.3.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -203,7 +203,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       preview = fieldPreview(previewData);
 
-      $('.prev-holder', field).replaceWith(preview);
+      $('.prev-holder', field).html(preview);
     };
 
     // update preview to label
@@ -735,7 +735,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // Append the new field to the editor
     var appendFieldLi = function appendFieldLi(title, field, values) {
-      console.log(values);
       var label = $(field).find('input[name="label"]').val() !== '' ? $(field).find('input[name="label"]').val() : title;
 
       var li = '',
@@ -748,7 +747,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       li += '<div class="legend">';
       li += delBtn;
       li += '<span id="txt-title-' + lastID + '" class="field-label">' + label + '</span>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>' + toggleBtn + '</div>';
-      li += fieldPreview(values);
+      li += '<div class="prev-holder">' + fieldPreview(values) + '</div>';
       li += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
       li += '<div class="form-elements">';
       li += '<div class="frm-fld">';
@@ -815,8 +814,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           preview = '<' + attrs.type + '></' + attrs.type + '>';
       }
 
-      preview = '<div class="prev-holder">' + preview + '</div>';
-
       return preview;
     };
 
@@ -866,7 +863,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
       $(document.getElementById(targetID + '-fld')).slideToggle(250, function () {
         _helpers.save();
-        // do something after attr toggle
       });
     });
 
