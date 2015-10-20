@@ -1,4 +1,4 @@
-formBuilder v1.3.3
+formBuilder v1.3.4
 ===========
 
 A jQuery plugin for drag and drop form creation
@@ -25,6 +25,7 @@ jQuery(document).ready(function($) {
 - More examples
 
 ## Changelog
+- v1.3.4 - Bugfix: fix self closing xml for radio-group field
 - v1.3.3 - Bugfix: preview not toggling correctly
 - v1.3.2 - Bugfix: preview for Multiple fields not updating
 - v1.3.1 - Bugfix: multiple value fields not saving XML

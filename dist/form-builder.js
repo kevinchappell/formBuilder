@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.3.2
+Version: 1.3.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1200,7 +1200,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
                   multiple = multipleChecked ? 'style="multiple" ' : '',
                   t = $field.attr(opts.attributes[att]).replace(' form-field', ''),
                   // field type
-              type = 'type="' + t + '" ',
+              multipleField = t.match(/(select|checkbox-group|radio-group)/),
+                  type = 'type="' + t + '" ',
                   fName = 'name="' + $('input.fld-name', $field).val() + '" ',
                   fLabel = 'label="' + $('input.fld-label', $field).val() + '" ',
                   roleVals = $.map($('input.roles-field:checked', $field), function (n) {
@@ -1210,10 +1211,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
                   desc = 'description="' + $('input.fld-description', $field).val() + '" ',
                   maxLengthVal = $('input.fld-max-length', $field).val(),
                   maxLength = 'max-length="' + (maxLengthVal !== undefined ? maxLengthVal : '') + '" ',
-                  fSlash = t !== 'select' && t !== 'checkbox-group' ? '/' : '';
+                  fSlash = !multipleField ? '/' : '';
 
               serialStr += '\n\t\t<field ' + fName + fLabel + multiple + roles + desc + (maxLengthVal !== '' ? maxLengthVal !== undefined ? maxLength : '' : '') + required + type + fSlash + '>';
-              if (t.match(/(select|checkbox-group|radio-group)/)) {
+              if (multipleField) {
                 c = 1;
                 $('.sortable-options li', $field).each(function () {
                   var $option = $(this),
