@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.3.3
+Version: 1.3.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -556,29 +556,18 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     var prepFieldVars = function prepFieldVars($field, isNew) {
       isNew = isNew || false;
-      var fType = $field.data('attrs').type,
+
+      var fieldAttrs = $field.data('attrs') || {},
+          fType = fieldAttrs.type || $field.attr('type'),
           values = {};
+
       values.label = _helpers.htmlEncode($field.attr('label'));
-      values.name = isNew ? nameAttr($field) : $field.name;
+      values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
       values.role = $field.attr('role');
       values.required = $field.attr('required');
       values.maxLength = $field.attr('max-length');
       values.type = fType;
       values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
-      if (fType === 'checkbox') {
-        $field.children().each(function () {
-          values.push([$field.text(), this.baseline]);
-        });
-      } else if (fType === 'select' || fType === 'checkbox-group') {
-        values.multiple = $field.hasClass('checkbox-group') ? true : $field.attr('style') === 'multiple' ? true : false;
-        values.values = [];
-        $field.children().each(function (i) {
-          values.values.push({
-            value: $field.text(),
-            selected: $field.attr('default') === i ? true : false
-          });
-        });
-      }
 
       appendNewField(values);
 
@@ -712,7 +701,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       advFields += '<div class="frm-fld name_wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
       advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name" id="title-' + lastID + '" /></div>';
 
-      advFields += '<div class="frm-fld"><label>' + opts.messages.roles + '</label>';
+      advFields += '<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>';
 
       advFields += '<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles_label">' + opts.messages.limitRole + '</label>';
       advFields += '<div class="frm-fld available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>';
@@ -1218,10 +1207,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
                 c = 1;
                 $('.sortable-options li', $field).each(function () {
                   var $option = $(this),
-                      optionLabel = 'label="' + $('.option-label', $option).val() + '"',
-                      optionValue = $('.option-value', $option).val(),
+                      optionValue = 'value="' + $('.option-value', $option).val() + '"',
+                      optionLabel = $('.option-label', $option).val(),
                       selected = $('.select-option', $option).is(':checked') ? ' selected="true"' : '';
-                  serialStr += '\n\t\t\t<option' + selected + ' ' + optionLabel + '>' + optionValue + '</option>';
+                  serialStr += '\n\t\t\t<option' + selected + ' ' + optionValue + '>' + optionLabel + '</option>';
                   c++;
                 });
                 serialStr += '\n\t\t</field>';
