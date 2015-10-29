@@ -24,11 +24,4 @@ jQuery(document).ready(function($) {
 - JSON data as default instead of XML
 - More examples
 
-## Changelog
-- v1.3.5 - Bugfix: XML parse and save
-- v1.3.4 - Bugfix: fix self closing xml for radio-group field
-- v1.3.3 - Bugfix: preview not toggling correctly
-- v1.3.2 - Bugfix: preview for Multiple fields not updating
-- v1.3.1 - Bugfix: multiple value fields not saving XML
-- v1.3.0 - Live previews, icon font
-- v1.2.0 - Add default fields, and call-to-action text
+## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/README.md) ##

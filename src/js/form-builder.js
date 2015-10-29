@@ -677,7 +677,7 @@
         key,
         roles = values.role !== undefined ? values.role.split(',') : [];
       var fieldLabel = $('<div>', {
-        'class': 'frm-fld'
+        'class': 'frm-fld label-wrap'
       });
       $('<label/>').html(opts.messages.label + ' *').appendTo(fieldLabel);
       $('<input>', {

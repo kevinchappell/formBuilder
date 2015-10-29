@@ -347,8 +347,6 @@ ol.sortable-options li {
 
   &:hover {
     border: 1px solid $grey-light;
-    border-top: 1px solid lighten($grey-light, 10%);
-    border-bottom: 1px solid darken($grey-light, 10%);
   }
 
   &.ui-state-highlight {
