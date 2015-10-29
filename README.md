@@ -24,4 +24,4 @@ jQuery(document).ready(function($) {
 - JSON data as default instead of XML
 - More examples
 
-## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/README.md) ##
+## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
