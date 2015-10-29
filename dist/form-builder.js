@@ -700,7 +700,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
       advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description" id="description-' + lastID + '" /></div>';
 
-      advFields += '<div class="frm-fld name_wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
+      advFields += '<div class="frm-fld name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
       advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name" id="title-' + lastID + '" /></div>';
 
       advFields += '<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>';
@@ -716,7 +716,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       advFields += '</div></div>';
 
       // if field type is not checkbox, checkbox/radio group or select list, add max length
-      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete']) < 0) {
+      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group']) < 0) {
         advFields += '<div class="frm-fld"><label class="max-length-label">' + opts.messages.maxLength + '</label>';
         advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length" id="max-length-' + lastID + '" /></div>';
       }
@@ -1124,7 +1124,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     $(document.getElementById(frmbID + '-edit-names')).click(function (e) {
       e.preventDefault();
       $(this).toggleClass('active');
-      $('.name_wrap', $sortableFields).slideToggle(250, function () {
+      $('.name-wrap', $sortableFields).slideToggle(250, function () {
         $formWrap.toggleClass('edit-names');
       });
     });
