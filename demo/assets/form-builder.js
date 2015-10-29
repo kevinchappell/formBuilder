@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.3.4
+Version: 1.3.5
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -144,9 +144,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     };
 
     /**
-     * [initTooltip description]
-     * @param  {[type]} tt [description]
-     * @return {[type]}    [description]
+     * hide and show mouse tracking tooltips, only used for disabled
+     * fields in the editor.
+     * @todo   remove or refactor to make better use
+     * @param  {object} tt jQuery option with nexted tooltip
+     * @return {void}
      */
     _helpers.initTooltip = function (tt) {
       var tooltip = tt.find('.tooltip');
@@ -192,10 +194,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         $('.sortable-options li', field).each(function () {
           var option = {};
           option.selected = $('.select-option', $(this)).is(':checked');
-          option.value = {
-            label: $('.option-label', $(this)).val(),
-            value: $('.option-value', $(this)).val()
-          };
+          option.value = $('.option-value', $(this)).val();
+          option.label = $('.option-label', $(this)).val();
 
           previewData.values.push(option);
         });
@@ -559,6 +559,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       var fieldAttrs = $field.data('attrs') || {},
           fType = fieldAttrs.type || $field.attr('type'),
+          isMultiple = fType.match(/(select|checkbox-group|radio-group)/),
           values = {};
 
       values.label = _helpers.htmlEncode($field.attr('label'));
@@ -569,10 +570,21 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       values.type = fType;
       values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
 
+      if (isMultiple) {
+        values.multiple = true;
+        values.values = [];
+        $field.children().each(function (i) {
+          var value = {
+            label: $(this).text(),
+            value: $(this).attr('value'),
+            selected: $field.attr('default') === i ? true : false
+          };
+          values.values.push(value);
+        });
+      }
+
       appendNewField(values);
-
       $formWrap.removeClass('empty');
-
       disabledBeforeAfter();
     };
 
@@ -595,16 +607,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       if (!values.values || !values.values.length) {
         values.values = [{
           selected: 'false',
-          value: {
-            label: 'Option 1',
-            value: 'option-1'
-          }
+          label: 'Option 1',
+          value: 'option-1'
         }, {
           selected: 'false',
-          value: {
-            label: 'Option 2',
-            value: 'option-2'
-          }
+          label: 'Option 2',
+          value: 'option-2'
         }];
       }
 
@@ -622,21 +630,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       field += '</div>';
       field += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-        field += selectFieldOptions(values.values[i].value, name, values.values[i].selected, values.multiple);
+        field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
       field += '<div class="field_actions"><a href="#" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="#" class="close_field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
-      $('.sortable-options').sortable({
-        // stop: function (event, ui) {
-        //   if ($.browser.msie && parseInt($.browser.version, 10) < 9) {
-        //     $("li a.btn.remove", $(this)).css("display", "inline-block");
-        //     $("li:eq(0) .remove, li:eq(1) .remove", $(this)).css("display", "none");
-        //   }
-        // }
-      }); // making the dynamically added option fields sortable.
+      $('.sortable-options').sortable(); // making the dynamically added option fields sortable.
     };
 
     var appendNewField = function appendNewField(values) {
@@ -777,7 +778,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           var options;
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
-            options += '<option value="' + attrs.values[i].value.value + '">' + attrs.values[i].value.label + '</option>';
+            options += '<option value="' + attrs.values[i].value + '">' + attrs.values[i].label + '</option>';
           }
           preview = '<' + attrs.type + ' class="no-drag">' + options + '</' + attrs.type + '>';
           break;
@@ -786,7 +787,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           var type = attrs.type.replace('-group', '');
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
-            preview += '<div><input type="' + type + '" id="' + type + '-' + epoch + '-' + i + '" value="' + attrs.values[i].value.value + '" /><label for="' + type + '-' + epoch + '-' + i + '">' + attrs.values[i].value.label + '</label></div>';
+            preview += '<div><input type="' + type + '" id="' + type + '-' + epoch + '-' + i + '" value="' + attrs.values[i].value + '" /><label for="' + type + '-' + epoch + '-' + i + '">' + attrs.values[i].label + '</label></div>';
           }
           break;
         case 'text':
@@ -807,8 +808,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     };
 
     // Select field html, since there may be multiple
-    var selectFieldOptions = function selectFieldOptions(values, name, selected, multiple) {
-      var selectedType = multiple ? 'checkbox' : 'radio';
+    var selectFieldOptions = function selectFieldOptions(values, name, selected, multipleSelect) {
+      var selectedType = multipleSelect ? 'checkbox' : 'radio';
 
       if (typeof values !== 'object') {
         values = {
@@ -816,8 +817,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           value: ''
         };
       } else {
-        values.label = values.hasOwnProperty('label') ? values.label : '';
-        values.value = values.hasOwnProperty('value') ? values.value : '';
+        values.label = values.label || '';
+        values.value = values.value || '';
       }
 
       field = '<li>';
