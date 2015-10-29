@@ -522,6 +522,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     elem.getTemplate = function () {
       var xml = elem.val() !== '' ? $.parseXML(elem.val()) : false,
           fields = $(xml).find('field');
+
       if (fields.length > 0) {
         fields.each(function () {
           prepFieldVars($(this));
@@ -946,6 +947,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           $(this).remove();
           _helpers.save();
         });
+      }
+
+      if ($('.form-field', $sortableFields).length === 1) {
+        $formWrap.addClass('empty');
       }
     });
 

@@ -517,6 +517,7 @@
     elem.getTemplate = function() {
       var xml = (elem.val() !== '' ? $.parseXML(elem.val()) : false),
         fields = $(xml).find('field');
+
       if (fields.length > 0) {
         fields.each(function() {
           prepFieldVars($(this));
@@ -945,6 +946,11 @@
           _helpers.save();
         });
       }
+
+      if ($('.form-field', $sortableFields).length === 1) {
+        $formWrap.addClass('empty');
+      }
+
     });
 
     // Attach a callback to toggle required asterisk

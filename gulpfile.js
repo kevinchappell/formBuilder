@@ -160,7 +160,12 @@ gulp.task('release', function() {
 // Deploy the demo
 gulp.task('deploy', function(){
   git.exec({args : 'subtree push --prefix demo origin gh-pages'}, function (err, stdout) {
-    console.error('There was an error deploying to GitHub Pages\n', err);
+    if(err){
+      console.error('There was an error deploying the Demo to gh-pages\n', err);
+      throw err;
+    } else {
+      console.log('Demo was successfully deployed!\n');
+    }
   });
 });
 
