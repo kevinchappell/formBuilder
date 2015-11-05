@@ -44,3 +44,32 @@ legend {
   background: $off-white;
   padding: 5px 10px;
 }
+
+#rendered-form {
+  clear: both;
+  float: left;
+  width: 62%;
+  margin-right: 2%;
+
+  .form-group {
+    > label {
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+  }
+}
+
+.render-description {
+  width: 36%;
+  float: right;
+}
+
+#main_content {
+  hr {
+    clear: both;
+  }
+}
+
+.build-form {
+  margin-bottom: 30px;
+}

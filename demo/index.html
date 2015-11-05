@@ -32,18 +32,52 @@
         <p>To start building forms with this plugin simply call <code>formBuilder()</code> on the textarea you would like to make your editor. FormBuilder takes a number of options and is translatable through these options.</p>
         <pre><code>jQuery(document).ready(function($) {
   'use strict';
-  $('textarea').formBuilder();
+  $(document.getElementById('form-builder-template')).formBuilder();
 });
 </code></pre>
-        <h2><strong>Example</strong></h2>
-        <form action="">
-          <textarea name="formBuilder" id="formBuilder" cols="30" rows="10"></textarea>
-        </form>
+        <div class="build-form">
+          <h2><strong>Build The Form</strong></h2>
+          <form action="">
+            <textarea name="form-builder-template" id="form-builder-template" cols="30" rows="10"></textarea>
+          </form>
+          <br style="clear:both">
+        </div>
+        <div class="render-form">
+          <h2><strong>Render The Form</strong></h2>
+          <form id="rendered-form">
+            <p class="cta">Add some fields to the formBuilder above and render them here.</p>
+          </form>
+          <div class="render-description">
+            <p>Once you&apos;ve created a form you&apos;ll need a way to render it. formRender is the companion plugin to formBuilder that renders the form data. To use you&apos;'ll call formRender on the <code>textarea</code> containing your saved data like so:</p>
+            <pre><code>var template = document.getElementById('form-builder-template');
+$(template).formRender();
+</code></pre>
+            <p>By default <code>formRender()</code> will replace the textarea with the rendered form but passing a <code>container</code> option to the plugin will render the form to the specified jQuery object. Example:</p>
+            <pre><code>var template = document.getElementById('form-builder-template'),
+formContainer = document.getElementById('rendered-form'),
+formRenderOpts = { container: $(formContainer) };
+$(template).formRender(formRenderOpts);
+</code></pre>
+            <h3>Try it out</h3>
+            <button id="render-form-button" class="btn btn-primary">Render form</button>
+          </div>
+        </div>
         <br style="clear:both">
         <h2><a id="note" class="anchor" href="#note" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thank you</h2>
-        <p>Just want to say thanks for all the positive notes and feedback, without it formBuilder would be dead in the water so keep it up.</p>
         <p>If you found this plugin useful or even mildly interesting why not tweet about it? <a href="https://twitter.com/share" class="twitter-share-button" data-via="kevinchappell" data-hashtags="formBuilder">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+          <script>
+          ! function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+              p = /^http:/.test(d.location) ? 'http' : 'https';
+            if (!d.getElementById(id)) {
+              js = d.createElement(s);
+              js.id = id;
+              js.src = p + '://platform.twitter.com/widgets.js';
+              fjs.parentNode.insertBefore(js, fjs);
+            }
+          }(document, 'script', 'twitter-wjs');
+          </script>
+        </p>
       </section>
     </div>
     <!-- FOOTER  -->
@@ -65,23 +99,38 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.js"></script>
-
-  <script src="assets/form-builder.js"></script>
+  <script src="assets/form-builder.min.js"></script>
+  <script src="assets/form-render.min.js"></script>
   <script>
   jQuery(document).ready(function($) {
     'use strict';
-    $('textarea').formBuilder();
+    var template = document.getElementById('form-builder-template'),
+      formContainer = document.getElementById('rendered-form'),
+      renderBtn = document.getElementById('render-form-button');
+    $(template).formBuilder();
+
+    $(renderBtn).click(function() {
+      $(template).formRender({
+        container: $(formContainer)
+      });
+    });
   });
   </script>
   <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-    ga('create', 'UA-4784386-21', 'auto');
-    ga('send', 'pageview');
+  ga('create', 'UA-4784386-21', 'auto');
+  ga('send', 'pageview');
   </script>
 </body>
 

@@ -77,12 +77,7 @@
   a.btn {
     border: 1px solid $white;
     color: $black;
-    display: inline-block;
-    height: 12px;
-    line-height: 13px;
-    text-align: center;
     text-decoration: none;
-    width: 11px;
   }
 
   a.del-button, a.remove {
@@ -91,7 +86,6 @@
     right: -1px;
     display: inline-block;
     opacity: 0;
-    padding: 3px 4px;
     border-radius: 0 5px 0 0;
     border-color: $grey-light-30;
   }
