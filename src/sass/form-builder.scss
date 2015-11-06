@@ -1,3 +1,4 @@
+@import "bs";
 @import "variables";
 @import "font";
 @import "stage";
@@ -130,10 +131,9 @@ textarea.idea-template {
 }
 
 .form-elements .fields .remove {
-  right: 11px;
-  top: 50%;
-  margin-top: -11px;
-  -webkit-border-radius: 0 3px 3px 0;
+  right: 9px;
+  top: 9px;
+  padding: .2em .6em;
   border-radius: 0 3px 3px 0;
 }
 
@@ -188,7 +188,7 @@ ol.sortable-options li {
 }
 
 .form-elements .false-label, .form-elements label {
-  width: 15%;
+  width: 18%;
   float: left;
   margin-left: 5px;
   padding-right: 5%;
@@ -318,9 +318,6 @@ ol.sortable-options li {
 }
 
 .frmb li:hover .del-button, .frmb li:hover .toggle-form {
-  filter: alpha(opacity = 100);
-  -moz-opacity: 1;
-  -khtml-opacity: 1;
   opacity: 1;
 }
 
@@ -382,9 +379,6 @@ ol.sortable-options li {
 a.btn.toggle-form {
   border-radius: 2px;
   margin-left: 5px;
-  width: 20px;
-  height: 20px;
-  line-height: 21px;
   opacity: 0;
 
   &:hover {

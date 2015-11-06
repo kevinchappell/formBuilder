@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.3.5
+Version: 1.4.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -8,7 +8,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 (function ($) {
   'use strict';
   var FormBuilder = function FormBuilder(element, options) {
-    var ZeroClipboard = window.ZeroClipboard;
 
     var defaults = {
       // Uneditable fields or other content you would like to
@@ -90,7 +89,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         selectionsMessage: 'Allow Multiple Selections',
         text: 'Text Field',
         warning: 'Warning!',
-        viewVars: 'View Field Variables',
         viewXML: 'View XML',
         yes: 'Yes'
       }
@@ -407,16 +405,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       'class': 'save-btn-wrap',
       title: opts.messages.save
     }).html('<a class="save fb-button primary"><span>' + opts.messages.save + '</span></a>'),
-        viewVars = $('<a/>', {
-      id: frmbID + '-view-vars',
-      href: '#',
-      'class': 'view-vars',
-      title: opts.messages.viewVars
-    }).html(opts.messages.viewVars),
         actionLinksInner = $('<div/>', {
       id: frmbID + '-action-links-inner',
       'class': 'action-links-inner'
-    }).append(editXML, ' | ', viewVars, ' | ', editNames, ' | ', allowSelect, ' | ', clearAll, ' |&nbsp;'),
+    }).append(editXML, ' | ', editNames, ' | ', allowSelect, ' | ', clearAll, ' |&nbsp;'),
         devMode = $('<span/>', {
       'class': 'dev-mode-link'
     }).html(opts.messages.devMode + ' ' + opts.messages.off),
@@ -1018,38 +1010,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         dialogClass: 'frmb-xml',
         overlay: {
           color: '#333333'
-        }
-      });
-    });
-
-    // View Field Vars
-    $(document.getElementById(frmbID + '-view-vars')).click(function (e) {
-      e.preventDefault();
-      var fieldVars = '<table width="100%">';
-      fieldVars += '<tr><td width="50%" height="30"><strong>' + opts.messages.fieldVars + '</strong></td><td align="center"><strong>' + opts.messages.copy + '</strong></td></tr>';
-      $sortableFields.children('li').not('.disabled').each(function () {
-        fieldVars += '<tr><td>$__' + $('input[name="name"]', $(this)).val() + '__</td><td align="center"><span id=' + $('input[name="name"]', $(this)).val() + '_' + Math.random().toString(36).substr(2, 6) + '_var" class="copy-var clipboard" data-clipboard-text="$__' + $('input[name="name"]', $(this)).val() + '__"></span></td></tr>';
-      });
-      fieldVars += '</table>';
-
-      $('<div />').html(fieldVars).dialog({
-        modal: true,
-        width: 400,
-        dialogClass: 'spigit-field-vars',
-        overlay: {
-          color: '#333333'
-        },
-        open: function open() {
-          $('.copy-var').each(function () {
-            var thisID = $(this).attr('id');
-            var clip = new ZeroClipboard(document.getElementById(thisID));
-            clip.on('load', function (client) {
-              client.on('complete', function () {
-                $('.copy-var').removeClass('copied');
-                $(this).addClass('copied');
-              });
-            });
-          });
         }
       });
     });

@@ -21,8 +21,11 @@ var files = {
   test: [
     'test/**/*.spec.js'
   ],
-  js: [
+  formBuilder: [
     'src/js/form-builder.js'
+  ],
+  formRender: [
+    'src/js/form-render.js'
   ],
   sass: [
     'src/sass/form-builder.scss'
@@ -46,6 +49,7 @@ gulp.task('watch', function() {
   gulp.watch('demo/index.html', reload);
   files.sass.push('src/sass/*.scss');
   gulp.watch(files.sass, ['css']);
+  gulp.watch(files.demoSass, ['demoCss']);
 });
 
 gulp.task('css', function() {
@@ -88,7 +92,7 @@ gulp.task('demoCss', function() {
 });
 
 gulp.task('lint', function() {
-  return gulp.src(files.js)
+  return gulp.src(files.formBuilder)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
@@ -99,14 +103,33 @@ gulp.task('img', function() {
 });
 
 gulp.task('js', function() {
-  return gulp.src(files.js)
+  gulp.src(files.formRender)
+    .pipe(babel())
+    .pipe(concat('form-render.js'))
+    .pipe(header(banner, {
+      pkg: pkg,
+      now: new Date()
+    }))
+    .pipe(gulp.dest('dist/'))
+    .pipe(ugly())
+    .pipe(header(banner, {
+      pkg: pkg,
+      now: new Date()
+    }))
+    .pipe(concat('form-render.min.js'))
+    .pipe(gulp.dest('demo/assets'))
+    .pipe(gulp.dest('dist/'))
+    .pipe(reload({
+      stream: true
+    }));
+
+  return gulp.src(files.formBuilder)
     .pipe(babel())
     .pipe(concat('form-builder.js'))
     .pipe(header(banner, {
       pkg: pkg,
       now: new Date()
     }))
-    .pipe(gulp.dest('demo/assets'))
     .pipe(gulp.dest('dist/'))
     .pipe(ugly())
     .pipe(header(banner, {

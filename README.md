@@ -1,4 +1,4 @@
-formBuilder v1.3.5
+formBuilder v1.4
 ===========
 
 A jQuery plugin for drag and drop form creation
@@ -11,11 +11,13 @@ To start building forms with this plugin simply call `formBuilder()` on the text
 ```
 jQuery(document).ready(function($) {
   'use strict';
-  $('textarea').formBuilder();
+  var template = document.getElementById('form-builder');
+  $(template).formBuilder();
 });
 ```
 
 ## [Demo](http://kevinchappell.github.io/formBuilder/) ##
+[![form-builder](https://cloud.githubusercontent.com/assets/1457540/10989863/89d81010-8444-11e5-9717-d2c618439793.gif)](http://kevinchappell.github.io/formBuilder/)
 
 ## Coming in 2.0
 - Add parser to render non-editable form.
