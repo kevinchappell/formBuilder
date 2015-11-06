@@ -11,7 +11,8 @@ To start building forms with this plugin simply call `formBuilder()` on the text
 ```
 jQuery(document).ready(function($) {
   'use strict';
-  $('textarea').formBuilder();
+  var template = document.getElementById('form-builder');
+  $(template).formBuilder();
 });
 ```
 
