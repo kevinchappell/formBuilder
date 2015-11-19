@@ -22,9 +22,11 @@ var files = {
     'test/**/*.spec.js'
   ],
   formBuilder: [
+    'src/js/kc-toggle.js',
     'src/js/form-builder.js'
   ],
   formRender: [
+    'src/js/kc-toggle.js',
     'src/js/form-render.js'
   ],
   sass: [

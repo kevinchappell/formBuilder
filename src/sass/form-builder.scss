@@ -2,6 +2,7 @@
 @import "variables";
 @import "font";
 @import "stage";
+@import "kc-toggle";
 
 textarea.idea-template {
   display: none;
@@ -198,11 +199,16 @@ ol.sortable-options li {
   line-height: 32px;
 }
 
-.form-elements label.multiple, .form-elements label.required_label, .form-elements label.roles_label {
-  float: none;
-  display: inline;
-  font-weight: 400;
-  width: auto;
+.form-elements {
+  label.multiple,
+  label.required_label,
+  label.toggle-label,
+  label.roles_label {
+    float: none;
+    display: inline;
+    font-weight: 400;
+    width: auto;
+  }
 }
 
 .form-elements label em {

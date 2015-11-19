@@ -3,7 +3,51 @@ formBuilder - git@github.com:kevinchappell/formBuilder.git
 Version: 1.4.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
+'use strict';
 
+(function ($) {
+  'use strict';
+
+  var Toggle = function Toggle(element, options) {
+
+    var defaults = {
+      theme: 'fresh',
+      labels: {
+        off: 'Off',
+        on: 'On'
+      }
+    };
+
+    var opts = $.extend(defaults, options),
+        $kcToggle = $('<div class="kc-toggle"/>').insertAfter(element).append(element);
+
+    $kcToggle.toggleClass('on', element.is(':checked'));
+
+    var kctOn = '<div class="kct-on">' + opts.labels.on + '</div>',
+        kctOff = '<div class="kct-off">' + opts.labels.off + '</div>',
+        kctHandle = '<div class="kct-handle"></div>',
+        kctInner = '<div class="kct-inner">' + kctOn + kctHandle + kctOff + '</div>';
+
+    $kcToggle.append(kctInner);
+
+    $kcToggle.click(function () {
+      element.attr('checked', !element.attr('checked'));
+      $(this).toggleClass('on');
+    });
+  };
+
+  $.fn.kcToggle = function (options) {
+    var toggle = this;
+    return toggle.each(function () {
+      var element = $(this);
+      if (element.data('kcToggle')) {
+        return;
+      }
+      var kcToggle = new Toggle(element, options);
+      element.data('kcToggle', kcToggle);
+    });
+  };
+})(jQuery);
 // render the formBuilder XML into html
 'use strict';
 
@@ -45,7 +89,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     _helpers.fieldRender = function (field) {
       var fieldMarkup = '',
           optionsMarkup = '';
-
       var fieldAttrs = _helpers.parseAttrs(field.attributes),
           fieldDesc = fieldAttrs.description,
           // @todo
@@ -108,6 +151,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           break;
         case 'checkbox':
           fieldMarkup = '<input ' + fieldAttrsString + '> ' + fieldLabel;
+
+          if (fieldAttrs.toggle) {
+            setTimeout(function () {
+              $(document.getElementById(fieldAttrs.id)).kcToggle();
+            }, 100);
+          }
           break;
         default:
           fieldMarkup = '<' + fieldAttrs.type + '></' + fieldAttrs.type + '>';
