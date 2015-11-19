@@ -21,15 +21,20 @@ var files = {
   test: [
     'test/**/*.spec.js'
   ],
-  formBuilder: [
-    'src/js/form-builder.js'
-  ],
-  formRender: [
-    'src/js/form-render.js'
-  ],
-  sass: [
-    'src/sass/form-builder.scss'
-  ],
+  formBuilder: {
+    js: [
+      'src/js/kc-toggle.js',
+      'src/js/form-builder.js'
+    ],
+    sass: ['src/sass/form-builder.scss']
+  },
+  formRender: {
+    js: [
+      'src/js/kc-toggle.js',
+      'src/js/form-render.js'
+    ],
+    sass: ['src/sass/form-render.scss']
+  },
   demoSass: [
     'demo/assets/sass/demo.scss'
   ]
@@ -47,28 +52,34 @@ var banner = [
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'js']);
   gulp.watch('demo/index.html', reload);
-  files.sass.push('src/sass/*.scss');
-  gulp.watch(files.sass, ['css']);
+  gulp.watch('src/sass/*.scss', ['css']);
   gulp.watch(files.demoSass, ['demoCss']);
 });
 
 gulp.task('css', function() {
 
-  return gulp.src(files.sass)
-    .pipe(sass())
-    .pipe(autoprefixer({
-      cascade: true
-    }))
-    .pipe(cssmin())
-    .pipe(header(banner, {
-      pkg: pkg,
-      now: new Date()
-    }))
-    .pipe(gulp.dest('demo/assets'))
-    .pipe(gulp.dest('dist/'))
-    .pipe(reload({
-      stream: true
-    }));
+  let sassFiles = [
+    files.formBuilder.sass,
+    files.formRender.sass
+  ];
+
+  return sassFiles.forEach(function(sassFile) {
+    gulp.src(sassFile)
+      .pipe(sass())
+      .pipe(autoprefixer({
+        cascade: true
+      }))
+      .pipe(cssmin())
+      .pipe(header(banner, {
+        pkg: pkg,
+        now: new Date()
+      }))
+      .pipe(gulp.dest('demo/assets'))
+      .pipe(gulp.dest('dist/'))
+      .pipe(reload({
+        stream: true
+      }));
+  });
 
 });
 
@@ -92,7 +103,8 @@ gulp.task('demoCss', function() {
 });
 
 gulp.task('lint', function() {
-  return gulp.src(files.formBuilder)
+  let js = files.formBuilder.js.concat(files.formRender.js);
+  return gulp.src(js)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
@@ -102,46 +114,39 @@ gulp.task('img', function() {
     .pipe(gulp.dest('demo/assets/img'));
 });
 
-gulp.task('js', function() {
-  gulp.src(files.formRender)
-    .pipe(babel())
-    .pipe(concat('form-render.js'))
-    .pipe(header(banner, {
-      pkg: pkg,
-      now: new Date()
-    }))
-    .pipe(gulp.dest('dist/'))
-    .pipe(ugly())
-    .pipe(header(banner, {
-      pkg: pkg,
-      now: new Date()
-    }))
-    .pipe(concat('form-render.min.js'))
-    .pipe(gulp.dest('demo/assets'))
-    .pipe(gulp.dest('dist/'))
-    .pipe(reload({
-      stream: true
-    }));
 
-  return gulp.src(files.formBuilder)
-    .pipe(babel())
-    .pipe(concat('form-builder.js'))
-    .pipe(header(banner, {
-      pkg: pkg,
-      now: new Date()
-    }))
-    .pipe(gulp.dest('dist/'))
-    .pipe(ugly())
-    .pipe(header(banner, {
-      pkg: pkg,
-      now: new Date()
-    }))
-    .pipe(concat('form-builder.min.js'))
-    .pipe(gulp.dest('demo/assets'))
-    .pipe(gulp.dest('dist/'))
-    .pipe(reload({
-      stream: true
-    }));
+gulp.task('js', function() {
+
+  let jsFiles = new Map();
+  jsFiles.set('formBuilder', files.formBuilder.js);
+  jsFiles.set('formRender', files.formRender.js);
+
+  return jsFiles.forEach(function(jsFileGlob, key) {
+    let fileName = key.replace(/([A-Z])/g, function($1) {
+      return '-' + $1.toLowerCase();
+    });
+
+    gulp.src(jsFileGlob)
+      .pipe(babel())
+      .pipe(concat(fileName + '.js'))
+      .pipe(header(banner, {
+        pkg: pkg,
+        now: new Date()
+      }))
+      .pipe(gulp.dest('dist/'))
+      .pipe(ugly())
+      .pipe(header(banner, {
+        pkg: pkg,
+        now: new Date()
+      }))
+      .pipe(concat(fileName + '.min.js'))
+      .pipe(gulp.dest('demo/assets'))
+      .pipe(gulp.dest('dist/'))
+      .pipe(reload({
+        stream: true
+      }));
+
+  });
 });
 
 gulp.task('serve', function() {
@@ -154,19 +159,13 @@ gulp.task('serve', function() {
 
 
 function increment(importance) {
-  // get all the files to bump version in
   return gulp.src(['./package.json', './bower.json'])
-    // bump the version number in those files
     .pipe(bump({
       type: importance
     }))
-    // save it back to filesystem
     .pipe(gulp.dest('./'))
-    // commit the changed version number
     .pipe(git.commit('bumps package version'))
-    // read only one file to get the version number
     .pipe(filter('package.json'))
-    // **tag it in the repository**
     .pipe(tagVersion());
 }
 
@@ -181,9 +180,11 @@ gulp.task('release', function() {
 });
 
 // Deploy the demo
-gulp.task('deploy', function(){
-  git.exec({args : 'subtree push --prefix demo origin gh-pages'}, function (err, stdout) {
-    if(err){
+gulp.task('deploy', function() {
+  git.exec({
+    args: 'subtree push --prefix demo origin gh-pages'
+  }, function(err, stdout) {
+    if (err) {
       console.error('There was an error deploying the Demo to gh-pages\n', err);
       throw err;
     } else {

@@ -1,4 +1,3 @@
-
 // render the formBuilder XML into html
 (function($) {
   'use strict';
@@ -34,10 +33,9 @@
      */
     _helpers.fieldRender = function(field) {
       var fieldMarkup = '',
-      optionsMarkup = '';
-
+        optionsMarkup = '';
       var fieldAttrs = _helpers.parseAttrs(field.attributes),
-        fieldDesc = fieldAttrs.description,// @todo
+        fieldDesc = fieldAttrs.description, // @todo
         fieldOptions = $('option', field);
       fieldAttrs.id = fieldAttrs.name;
       if (fieldAttrs.type !== 'checkbox') {
@@ -97,6 +95,12 @@
           break;
         case 'checkbox':
           fieldMarkup = `<input ${fieldAttrsString}> ${fieldLabel}`;
+
+          if (fieldAttrs.toggle) {
+            setTimeout(function() {
+              $(document.getElementById(fieldAttrs.id)).kcToggle();
+            }, 100);
+          }
           break;
         default:
           fieldMarkup = `<${fieldAttrs.type}></${fieldAttrs.type}>`;
