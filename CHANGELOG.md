@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.5.2 - Bugfix: formRender radio-group invalid name property
 - v1.5.1 - Bugfix: Add minimal Bootstrap styling for `formRender`
 - v1.5 - Feature: checkbox inputs can now be made into toggle switch. [details here](https://github.com/kevinchappell/formBuilder/pull/24)
 - v1.4.0 - Feature: `formRender` is a companion plugin to render saved formData into a usable form. [details here](https://github.com/kevinchappell/formBuilder/pull/20)
