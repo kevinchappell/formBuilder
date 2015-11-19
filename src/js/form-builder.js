@@ -1187,7 +1187,6 @@
 
                 var fToggle = $('.checkbox-toggle', $field).is(':checked') ? 'toggle="true" ' : '';
 
-
               serialStr += '\n\t\t<field ' + fName + fLabel + fToggle + multiple + roles + desc + (maxLengthVal !== '' ? (maxLengthVal !== undefined ? maxLength : '') : '') + required + type + fSlash + '>';
               if (multipleField) {
                 c = 1;

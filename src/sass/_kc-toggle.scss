@@ -10,6 +10,12 @@
   background: #e9e9e9;
   border: 1px solid #cbcbcb;
   vertical-align: bottom;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   .kct-inner {
     position: absolute;
