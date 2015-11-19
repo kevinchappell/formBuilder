@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.5.0
+Version: 1.5.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -131,14 +131,17 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           delete fieldAttrs['class'];
 
           if (fieldOptions.length) {
-            fieldOptions.each(function (index, el) {
-              var optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
-              optionAttrs.name = fieldAttrs.name + '[]';
-              optionAttrs.id = fieldAttrs.id + '-' + index;
-              var optionAttrsString = _helpers.attrString(optionAttrs);
+            (function () {
+              var optionName = fieldAttrs.name + '[]';
+              fieldOptions.each(function (index, el) {
+                var optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
+                optionAttrs.name = optionName;
+                optionAttrs.id = fieldAttrs.id + '-' + index;
+                var optionAttrsString = _helpers.attrString(optionAttrs);
 
-              optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + el.innerHTML + '</label><br>';
-            });
+                optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + el.innerHTML + '</label><br>';
+              });
+            })();
           }
           fieldMarkup = fieldLabel + '<div class="' + fieldAttrs.type + '-group">' + optionsMarkup + '</div>';
           break;

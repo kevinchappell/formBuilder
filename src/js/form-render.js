@@ -75,9 +75,10 @@
           delete fieldAttrs.class;
 
           if (fieldOptions.length) {
+            let optionName = fieldAttrs.name + '[]'
             fieldOptions.each(function(index, el) {
               let optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
-              optionAttrs.name = fieldAttrs.name + '[]';
+              optionAttrs.name = optionName;
               optionAttrs.id = fieldAttrs.id + '-' + index;
               let optionAttrsString = _helpers.attrString(optionAttrs);
 
