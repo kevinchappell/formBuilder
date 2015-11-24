@@ -540,15 +540,29 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
     });
 
+    var $stageWrap = $('<div/>', {
+      id: frmbID + '-stage-wrap',
+      'class': 'stage-wrap'
+    });
+
+    var $formWrap = $('<div/>', {
+      id: frmbID + '-form-wrap',
+      'class': 'form-wrap'
+    });
+
+    elem.before($stageWrap).appendTo($stageWrap);
+
     // Replace the textarea with sortable list.
-    elem.before($sortableFields).parent().prepend(frmbHeader).addClass('frmb-wrap').append(actionLinks, viewXML, saveAll);
+    //elem.before($sortableFields).parent().prepend(frmbHeader).addClass('frmb-wrap').append(actionLinks, viewXML, saveAll);
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap'
     }).append(cbHeader, cbUL);
 
-    var $formWrap = $('.frmb-wrap').before(cbWrap).append(actionLinks);
+    $stageWrap.append($sortableFields, cbWrap, actionLinks, viewXML, saveAll);
+    $stageWrap.before($formWrap);
+    $formWrap.append($stageWrap, cbWrap);
 
     var doSave = function doSave() {
       if ($(this).parents('li.disabled').length === 0) {
@@ -579,7 +593,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
             appendNewField(opts.defaultFields[i]);
           }
         } else {
-          $formWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
+          $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
         disabledBeforeAfter();
       }
@@ -631,7 +645,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
 
       appendNewField(values);
-      $formWrap.removeClass('empty');
+      $stageWrap.removeClass('empty');
       disabledBeforeAfter();
     };
 
@@ -1002,7 +1016,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
 
       if ($('.form-field', $sortableFields).length === 1) {
-        $formWrap.addClass('empty');
+        $stageWrap.addClass('empty');
       }
     });
 
@@ -1098,7 +1112,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     $(document.getElementById(frmbID + '-save')).click(function (e) {
       if ($(this).find('.ldkInlineEdit').length === 0) {
         e.preventDefault();
-        if (!$formWrap.hasClass('edit-xml')) {
+        if (!$stageWrap.hasClass('edit-xml')) {
           _helpers.save();
         }
         _helpers.validateForm(e);
@@ -1126,9 +1140,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     $('.dev-mode-link').click(function (e) {
       e.preventDefault();
       var dml = $(this);
-      $formWrap.toggleClass('dev-mode');
+      $stageWrap.toggleClass('dev-mode');
       dml.parent().css('opacity', 1);
-      if ($formWrap.hasClass('dev-mode')) {
+      if ($stageWrap.hasClass('dev-mode')) {
         dml.siblings('.action-links-inner').css('width', '100%');
         dml.html(opts.messages.devMode + ' ' + opts.messages.on).css('color', '#8CC63F');
       } else {
@@ -1145,7 +1159,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       e.preventDefault();
       $(this).toggleClass('active');
       $('.name-wrap', $sortableFields).slideToggle(250, function () {
-        $formWrap.toggleClass('edit-names');
+        $stageWrap.toggleClass('edit-names');
       });
     });
 
@@ -1154,7 +1168,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       e.preventDefault();
       $(this).toggleClass('active');
       $('.allow-multi, .select-option', $sortableFields).slideToggle(250, function () {
-        $formWrap.toggleClass('allow-select');
+        $stageWrap.toggleClass('allow-select');
       });
     });
 
@@ -1164,7 +1178,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       $(this).toggleClass('active');
       $('textarea.idea-template').show();
       $('.template-textarea-wrap').slideToggle(250);
-      $formWrap.toggleClass('edit-xml');
+      $stageWrap.toggleClass('edit-xml');
     });
 
     elem.parent().find('p[id*="ideaTemplate"]').remove();
