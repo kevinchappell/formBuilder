@@ -25,7 +25,13 @@ textarea.idea-template {
   }
 }
 
-.cb-wrap, .frmb-wrap {
+.form-wrap:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.cb-wrap, .stage-wrap {
   vertical-align: top;
 }
 
@@ -34,7 +40,7 @@ textarea.idea-template {
   width: 36%;
 }
 
-.frmb-wrap {
+.stage-wrap {
   position: relative;
   float: left;
   width: 62%;
@@ -55,11 +61,12 @@ textarea.idea-template {
       text-align: center;
       top: 50%;
       width: 100%;
+      margin-top: -1em;
     }
   }
 }
 
-.frmb-wrap .action-links .active {
+.stage-wrap .action-links .active {
   font-weight: 700;
   color: $black;
 }
@@ -89,7 +96,7 @@ textarea.idea-template {
   }
 }
 
-.frmb-wrap h4 {
+.stage-wrap h4 {
   margin-top: 0;
   color: $grey;
 }

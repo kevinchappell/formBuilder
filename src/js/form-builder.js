@@ -168,7 +168,7 @@
     // updatePreview will generate the preview for radio and checkbox groups
     _helpers.updatePreview = function(field) {
       var fieldClass = field.attr('class'),
-      $prevHolder = $('.prev-holder', field);
+        $prevHolder = $('.prev-holder', field);
 
       if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
         return;
@@ -491,15 +491,29 @@
       }
     });
 
+    var $stageWrap = $('<div/>', {
+      id: frmbID + '-stage-wrap',
+      'class': 'stage-wrap'
+    });
+
+    var $formWrap = $('<div/>', {
+      id: frmbID + '-form-wrap',
+      'class': 'form-wrap'
+    });
+
+    elem.before($stageWrap).appendTo($stageWrap);
+
     // Replace the textarea with sortable list.
-    elem.before($sortableFields).parent().prepend(frmbHeader).addClass('frmb-wrap').append(actionLinks, viewXML, saveAll);
+    //elem.before($sortableFields).parent().prepend(frmbHeader).addClass('frmb-wrap').append(actionLinks, viewXML, saveAll);
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap'
     }).append(cbHeader, cbUL);
 
-    var $formWrap = $('.frmb-wrap').before(cbWrap).append(actionLinks);
+    $stageWrap.append($sortableFields, cbWrap, actionLinks, viewXML, saveAll);
+    $stageWrap.before($formWrap);
+    $formWrap.append($stageWrap, cbWrap);
 
     var doSave = function() {
       if ($(this).parents('li.disabled').length === 0) {
@@ -530,7 +544,7 @@
             appendNewField(opts.defaultFields[i]);
           }
         } else {
-          $formWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
+          $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
         disabledBeforeAfter();
       }
@@ -582,7 +596,7 @@
       }
 
       appendNewField(values);
-      $formWrap.removeClass('empty');
+      $stageWrap.removeClass('empty');
       disabledBeforeAfter();
     };
 
@@ -956,7 +970,7 @@
       }
 
       if ($('.form-field', $sortableFields).length === 1) {
-        $formWrap.addClass('empty');
+        $stageWrap.addClass('empty');
       }
 
     });
@@ -1054,7 +1068,7 @@
     $(document.getElementById(frmbID + '-save')).click(function(e) {
       if ($(this).find('.ldkInlineEdit').length === 0) {
         e.preventDefault();
-        if (!$formWrap.hasClass('edit-xml')) {
+        if (!$stageWrap.hasClass('edit-xml')) {
           _helpers.save();
         }
         _helpers.validateForm(e);
@@ -1083,9 +1097,9 @@
     $('.dev-mode-link').click(function(e) {
       e.preventDefault();
       var dml = $(this);
-      $formWrap.toggleClass('dev-mode');
+      $stageWrap.toggleClass('dev-mode');
       dml.parent().css('opacity', 1);
-      if ($formWrap.hasClass('dev-mode')) {
+      if ($stageWrap.hasClass('dev-mode')) {
         dml.siblings('.action-links-inner').css('width', '100%');
         dml.html(opts.messages.devMode + ' ' + opts.messages.on).css('color', '#8CC63F');
       } else {
@@ -1102,7 +1116,7 @@
       e.preventDefault();
       $(this).toggleClass('active');
       $('.name-wrap', $sortableFields).slideToggle(250, function() {
-        $formWrap.toggleClass('edit-names');
+        $stageWrap.toggleClass('edit-names');
       });
     });
 
@@ -1111,7 +1125,7 @@
       e.preventDefault();
       $(this).toggleClass('active');
       $('.allow-multi, .select-option', $sortableFields).slideToggle(250, function() {
-        $formWrap.toggleClass('allow-select');
+        $stageWrap.toggleClass('allow-select');
       });
     });
 
@@ -1121,7 +1135,7 @@
       $(this).toggleClass('active');
       $('textarea.idea-template').show();
       $('.template-textarea-wrap').slideToggle(250);
-      $formWrap.toggleClass('edit-xml');
+      $stageWrap.toggleClass('edit-xml');
     });
 
     elem.parent().find('p[id*="ideaTemplate"]').remove();
@@ -1185,7 +1199,7 @@
                 maxLength = 'max-length="' + (maxLengthVal !== undefined ? maxLengthVal : '') + '" ',
                 fSlash = (!multipleField ? '/' : '');
 
-                var fToggle = $('.checkbox-toggle', $field).is(':checked') ? 'toggle="true" ' : '';
+              var fToggle = $('.checkbox-toggle', $field).is(':checked') ? 'toggle="true" ' : '';
 
               serialStr += '\n\t\t<field ' + fName + fLabel + fToggle + multiple + roles + desc + (maxLengthVal !== '' ? (maxLengthVal !== undefined ? maxLength : '') : '') + required + type + fSlash + '>';
               if (multipleField) {
