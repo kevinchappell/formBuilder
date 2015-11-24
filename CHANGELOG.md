@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.5.3 - Bugfix: multiple formBuilder on one page.
 - v1.5.2 - Bugfix: formRender radio-group invalid name property
 - v1.5.1 - Bugfix: Add minimal Bootstrap styling for `formRender`
 - v1.5 - Feature: checkbox inputs can now be made into toggle switch. [details here](https://github.com/kevinchappell/formBuilder/pull/24)
