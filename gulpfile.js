@@ -56,7 +56,7 @@ gulp.task('watch', function() {
   gulp.watch(files.demoSass, ['demoCss']);
 });
 
-gulp.task('css', function() {
+function buildCSS() {
 
   let sassFiles = [
     files.formBuilder.sass,
@@ -81,7 +81,9 @@ gulp.task('css', function() {
       }));
   });
 
-});
+}
+
+gulp.task('css', buildCSS);
 
 gulp.task('demoCss', function() {
 
@@ -114,8 +116,7 @@ gulp.task('img', function() {
     .pipe(gulp.dest('demo/assets/img'));
 });
 
-
-gulp.task('js', function() {
+function buildJS() {
 
   let jsFiles = new Map();
   jsFiles.set('formBuilder', files.formBuilder.js);
@@ -147,7 +148,9 @@ gulp.task('js', function() {
       }));
 
   });
-});
+}
+
+gulp.task('js', buildJS);
 
 gulp.task('serve', function() {
   bsync.init({
@@ -159,14 +162,32 @@ gulp.task('serve', function() {
 
 
 function increment(importance) {
-  return gulp.src(['./package.json', './bower.json'])
+  var stream = gulp.src(['./package.json', './bower.json'])
     .pipe(bump({
       type: importance
     }))
-    .pipe(gulp.dest('./'))
+    .pipe(gulp.dest('./'));
+
+  console.log('\nBuilding JS');
+  buildJS();
+  buildCSS();
+  console.log('Building CSS\n');
+  stream
     .pipe(git.commit('bumps package version'))
     .pipe(filter('package.json'))
     .pipe(tagVersion());
+
+  git.push('origin', 'master', {
+    args: '--tags --force'
+  }, function(err, stdout) {
+    if (err) {
+      console.error('\e[31mCould not push tags\e[32m\n', err);
+      throw err;
+    } else {
+      console.log('\e[32mTags Successfully pushed\e[39m\n');
+    }
+  });
+
 }
 
 gulp.task('patch', function() {
