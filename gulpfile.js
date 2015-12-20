@@ -9,6 +9,7 @@ var gulp = require('gulp'),
   bsync = require('browser-sync'),
   jshint = require('gulp-jshint'),
   concat = require('gulp-concat'),
+  rename = require('gulp-rename'),
   header = require('gulp-header'),
   cssmin = require('gulp-cssmin'),
   pkg = require('./package.json'),
@@ -69,6 +70,12 @@ function buildCSS() {
       .pipe(autoprefixer({
         cascade: true
       }))
+      .pipe(header(banner, {
+        pkg: pkg,
+        now: new Date()
+      }))
+      .pipe(gulp.dest('dist/'))
+      .pipe(rename({ suffix: '.min' }))
       .pipe(cssmin())
       .pipe(header(banner, {
         pkg: pkg,
@@ -214,5 +221,6 @@ gulp.task('deploy', function() {
   });
 });
 
+gulp.task('build', ['js', 'css']);
 gulp.task('default', ['js', 'watch']);
 gulp.task('demo', ['js', 'css', 'demoCss', 'img', 'watch', 'serve']);
