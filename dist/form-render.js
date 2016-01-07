@@ -88,6 +88,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
      */
     _helpers.fieldRender = function (field) {
       var fieldMarkup = '',
+          fieldLabel = '',
           optionsMarkup = '';
       var fieldAttrs = _helpers.parseAttrs(field.attributes),
           fieldDesc = fieldAttrs.description,
@@ -98,7 +99,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         fieldAttrs['class'] = 'form-control';
       }
 
-      var fieldLabel = '<label for="' + fieldAttrs.id + '">' + fieldAttrs.label + '</label>';
+      if (fieldAttrs.type !== 'hidden') {
+        fieldLabel = '<label for="' + fieldAttrs.id + '">' + fieldAttrs.label + '</label>';
+      }
 
       delete fieldAttrs.label;
       delete fieldAttrs.description;
@@ -148,6 +151,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'text':
         case 'password':
         case 'email':
+        case 'hidden':
         case 'date':
         case 'autocomplete':
           fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + '>';
@@ -165,7 +169,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           fieldMarkup = '<' + fieldAttrs.type + '></' + fieldAttrs.type + '>';
       }
 
-      return '<div class="form-group">' + fieldMarkup + '</div>';
+      if (fieldAttrs.type !== 'hidden') {
+        fieldMarkup = _helpers.markup('div', {
+          'class': 'form-group'
+        }, fieldMarkup);
+      }
+
+      return fieldMarkup;
     };
 
     _helpers.attrString = function (attrs) {

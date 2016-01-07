@@ -105,6 +105,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         fieldRemoveWarning: 'Are you sure you want to remove this field?',
         getStarted: 'Drag a field from the right to this area',
         hide: 'Edit',
+        hidden: 'Hidden Input',
         label: 'Label',
         labelEmpty: 'Field Label cannot be empty',
         limitRole: 'Limit access to one or more of the following roles:',
@@ -368,6 +369,20 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         name: 'radio-group'
       }
     }, {
+      label: opts.messages.hidden,
+      attrs: {
+        type: 'hidden',
+        className: 'hidden-input',
+        name: 'hidden-input'
+      }
+    }, {
+      label: opts.messages.dateField,
+      attrs: {
+        type: 'date',
+        className: 'calendar',
+        name: 'date-input'
+      }
+    }, {
       label: opts.messages.checkboxGroup,
       attrs: {
         type: 'checkbox-group',
@@ -380,13 +395,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         type: 'checkbox',
         className: 'checkbox',
         name: 'checkbox'
-      }
-    }, {
-      label: opts.messages.dateField,
-      attrs: {
-        type: 'date',
-        className: 'calendar',
-        name: 'date-input'
       }
     }, {
       label: opts.messages.autocomplete,
@@ -421,7 +429,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // Build our headers and action links
     var cbHeader = $('<h4/>').html(opts.messages.editorTitle),
-        frmbHeader = $('<h4/>').html(opts.messages.preview),
         viewXML = $('<a/>', {
       id: frmbID + '-export-xml',
       text: opts.messages.viewXML,
@@ -719,7 +726,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         'textarea': appendTextarea,
         'radio-group': appendSelectList,
         'checkbox-group': appendSelectList,
-        'text': appendInput
+        'text': appendInput,
+        'hidden': appendInput
       };
 
       if (typeof appendFieldType[values.type] === 'function') {
@@ -858,6 +866,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           break;
         case 'text':
         case 'password':
+        case 'hidden':
         case 'email':
         case 'date':
         case 'checkbox':

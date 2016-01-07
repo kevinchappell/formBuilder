@@ -33,6 +33,7 @@
      */
     _helpers.fieldRender = function(field) {
       var fieldMarkup = '',
+        fieldLabel = '',
         optionsMarkup = '';
       var fieldAttrs = _helpers.parseAttrs(field.attributes),
         fieldDesc = fieldAttrs.description, // @todo
@@ -42,7 +43,9 @@
         fieldAttrs.class = 'form-control';
       }
 
-      var fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label}</label>`;
+      if (fieldAttrs.type !== 'hidden') {
+        fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label}</label>`;
+      }
 
       delete fieldAttrs.label;
       delete fieldAttrs.description;
@@ -75,7 +78,7 @@
           delete fieldAttrs.class;
 
           if (fieldOptions.length) {
-            let optionName = fieldAttrs.name + '[]'
+            let optionName = fieldAttrs.name + '[]';
             fieldOptions.each(function(index, el) {
               let optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
               optionAttrs.name = optionName;
@@ -90,6 +93,7 @@
         case 'text':
         case 'password':
         case 'email':
+        case 'hidden':
         case 'date':
         case 'autocomplete':
           fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}>`;
@@ -107,7 +111,13 @@
           fieldMarkup = `<${fieldAttrs.type}></${fieldAttrs.type}>`;
       }
 
-      return `<div class="form-group">${fieldMarkup}</div>`;
+      if (fieldAttrs.type !== 'hidden') {
+        fieldMarkup = _helpers.markup('div', {
+          class: 'form-group'
+        }, fieldMarkup);
+      }
+
+      return fieldMarkup;
     };
 
     _helpers.attrString = function(attrs) {
