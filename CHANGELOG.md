@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.6.0 - Feature: Hidden input field type added
 - v1.5.4 - update gulp to autopush tags
 - v1.5.3 - Bugfix: multiple formBuilder on one page.
 - v1.5.2 - Bugfix: formRender radio-group invalid name property
