@@ -47,6 +47,13 @@
         fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label}</label>`;
       }
 
+      if (fieldAttrs.required === 'false') {
+        delete fieldAttrs.required;
+      } else {
+        fieldAttrs.required = null;
+        fieldAttrs['aria-required'] = 'true';
+      }
+
       delete fieldAttrs.label;
       delete fieldAttrs.description;
 
@@ -124,7 +131,8 @@
       var attributes = [];
       for (var attr in attrs) {
         if (attrs.hasOwnProperty(attr)) {
-          attributes.push(attr + '="' + attrs[attr] + '"');
+          let attrVal = attrs[attr] ? '="' + attrs[attr] + '"' : '';
+          attributes.push(attr + attrVal);
         }
       }
       return attributes.join(' ');
