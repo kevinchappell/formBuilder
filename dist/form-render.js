@@ -103,6 +103,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         fieldLabel = '<label for="' + fieldAttrs.id + '">' + fieldAttrs.label + '</label>';
       }
 
+      if (fieldAttrs.required === 'false') {
+        delete fieldAttrs.required;
+      } else {
+        fieldAttrs.required = null;
+        fieldAttrs['aria-required'] = 'true';
+      }
+
       delete fieldAttrs.label;
       delete fieldAttrs.description;
 
@@ -182,7 +189,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var attributes = [];
       for (var attr in attrs) {
         if (attrs.hasOwnProperty(attr)) {
-          attributes.push(attr + '="' + attrs[attr] + '"');
+          var attrVal = attrs[attr] ? '="' + attrs[attr] + '"' : '';
+          attributes.push(attr + attrVal);
         }
       }
       return attributes.join(' ');
