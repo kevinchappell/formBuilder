@@ -4,13 +4,18 @@
 
 .donate-plea {
   width: 50%;
-  font-size: .75em;
-  float: right;
-  text-align: right;
+  float: left;
+  text-align: left;
 
   form {
-    float: right;
+    float: left;
+    margin-bottom: 10px;
   }
+}
+
+.copyright {
+  float: right;
+  text-align: right;
 }
 
 header {}

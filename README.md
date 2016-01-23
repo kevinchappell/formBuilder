@@ -1,4 +1,4 @@
-formBuilder v1.6.0
+formBuilder v1.6.1
 ===========
 
 [![Join the chat at https://gitter.im/kevinchappell/formBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kevinchappell/formBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -22,8 +22,6 @@ jQuery(document).ready(function($) {
 [![form-builder](https://cloud.githubusercontent.com/assets/1457540/10989863/89d81010-8444-11e5-9717-d2c618439793.gif)](http://kevinchappell.github.io/formBuilder/)
 
 ## Coming in 2.0
-- Add parser to render non-editable form.
-- Add callback for `autocomplete` field.
 - HTML5 fields and attributes
 - JSON data as default instead of XML
 - More examples
