@@ -30,6 +30,7 @@
      * Generate preview markup
      * @param  {object} field
      * @return {string}       preview markup for field
+     * @todo
      */
     _helpers.fieldRender = function(field) {
       var fieldMarkup = '',
@@ -73,7 +74,7 @@
             fieldOptions.each(function(index, el) {
               let optionAttrs = _helpers.parseAttrs(el.attributes),
                 optionAttrsString = _helpers.attrString(optionAttrs),
-                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue;
+                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
 
               optionsMarkup += `<option ${optionAttrsString}>${optionText}</option>`;
             });
@@ -92,7 +93,7 @@
               optionAttrs.name = optionName;
               optionAttrs.id = fieldAttrs.id + '-' + index;
               let optionAttrsString = _helpers.attrString(optionAttrs),
-                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue;
+                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
 
               optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionText}</label><br>`;
             });
