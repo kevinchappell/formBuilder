@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.1
+Version: 1.6.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -85,6 +85,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
      * Generate preview markup
      * @param  {object} field
      * @return {string}       preview markup for field
+     * @todo
      */
     _helpers.fieldRender = function (field) {
       var fieldMarkup = '',
