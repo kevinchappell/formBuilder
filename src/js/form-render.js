@@ -72,9 +72,10 @@
           if (fieldOptions.length) {
             fieldOptions.each(function(index, el) {
               let optionAttrs = _helpers.parseAttrs(el.attributes),
-                optionAttrsString = _helpers.attrString(optionAttrs);
+                optionAttrsString = _helpers.attrString(optionAttrs),
+                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue;
 
-              optionsMarkup += `<option ${optionAttrsString}>${el.innerHTML}</option>`;
+              optionsMarkup += `<option ${optionAttrsString}>${optionText}</option>`;
             });
           }
           fieldMarkup = `${fieldLabel}<select ${fieldAttrsString}>${optionsMarkup}</select>`;
@@ -90,9 +91,10 @@
               let optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
               optionAttrs.name = optionName;
               optionAttrs.id = fieldAttrs.id + '-' + index;
-              let optionAttrsString = _helpers.attrString(optionAttrs);
+              let optionAttrsString = _helpers.attrString(optionAttrs),
+                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue;
 
-              optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${el.innerHTML}</label><br>`;
+              optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionText}</label><br>`;
             });
           }
           fieldMarkup = `${fieldLabel}<div class="${fieldAttrs.type}-group">${optionsMarkup}</div>`;
