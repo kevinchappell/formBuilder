@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.0
+Version: 1.6.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -128,9 +128,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           if (fieldOptions.length) {
             fieldOptions.each(function (index, el) {
               var optionAttrs = _helpers.parseAttrs(el.attributes),
-                  optionAttrsString = _helpers.attrString(optionAttrs);
+                  optionAttrsString = _helpers.attrString(optionAttrs),
+                  optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
 
-              optionsMarkup += '<option ' + optionAttrsString + '>' + el.innerHTML + '</option>';
+              optionsMarkup += '<option ' + optionAttrsString + '>' + optionText + '</option>';
             });
           }
           fieldMarkup = fieldLabel + '<select ' + fieldAttrsString + '>' + optionsMarkup + '</select>';
@@ -147,9 +148,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
                 var optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
                 optionAttrs.name = optionName;
                 optionAttrs.id = fieldAttrs.id + '-' + index;
-                var optionAttrsString = _helpers.attrString(optionAttrs);
+                var optionAttrsString = _helpers.attrString(optionAttrs),
+                    optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
 
-                optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + el.innerHTML + '</label><br>';
+                optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionText + '</label><br>';
               });
             })();
           }
