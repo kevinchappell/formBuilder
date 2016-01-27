@@ -283,7 +283,7 @@
       }
     };
 
-    var opts = $.extend(defaults, options),
+    var opts = $.extend(true, defaults, options),
       elem = $(element),
       frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
 
