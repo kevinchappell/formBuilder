@@ -177,8 +177,9 @@ function increment(importance) {
 
   console.log('\nBuilding JS');
   buildJS();
-  buildCSS();
   console.log('Building CSS\n');
+  buildCSS();
+
   stream
     .pipe(git.commit('bumps package version'))
     .pipe(filter('package.json'))

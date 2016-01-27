@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.3
+Version: 1.6.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -332,7 +332,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
     };
 
-    var opts = $.extend(defaults, options),
+    var opts = $.extend(true, defaults, options),
         elem = $(element),
         frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
 

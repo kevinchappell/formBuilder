@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.6.4 - Bugfix: User options should be deep copied with `$.extend`
 - v1.6.3 - Bugfix: Remove `max-length` attribute for hidden fields, Update preview and label for `textarea`
 - v1.6.2 - Bugfix: Option text not rendered in IE #39
 - v1.6.1 - Bugfix: required attribute should not be rendered when false.
