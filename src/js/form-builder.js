@@ -82,6 +82,7 @@
         select: 'Select',
         selectionsMessage: 'Allow Multiple Selections',
         text: 'Text Field',
+        textArea: 'Text Area',
         toggle: 'Toggle',
         warning: 'Warning!',
         viewXML: 'View XML',
@@ -306,7 +307,7 @@
         name: 'select'
       }
     }, {
-      label: opts.messages.richText,
+      label: opts.messages.textArea,
       attrs: {
         type: 'rich-text',
         className: 'rich-text',
@@ -609,7 +610,7 @@
 
     // multi-line textarea
     var appendTextarea = function(values) {
-      appendFieldLi(opts.messages.richText, advFields(values), values);
+      appendFieldLi(opts.messages.textArea, advFields(values), values);
     };
 
     var appendInput = function(values) {
@@ -734,7 +735,7 @@
       advFields += '</div></div>';
 
       // if field type is not checkbox, checkbox/radio group or select list, add max length
-      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group']) < 0) {
+      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden']) < 0) {
         advFields += '<div class="frm-fld"><label class="max-length-label">' + opts.messages.maxLength + '</label>';
         advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length" id="max-length-' + lastID + '" /></div>';
       }
@@ -798,9 +799,11 @@
       var i,
         preview = '',
         epoch = new Date().getTime();
+          let toggle = attrs.toggle ? 'toggle' : '';
       switch (attrs.type) {
         case 'textarea':
-          preview = `<${attrs.type}></${attrs.type}>`;
+        case 'rich-text':
+          preview = `<textarea class="form-control"></textarea>`;
           break;
         case 'select':
           var options;
@@ -808,7 +811,7 @@
           for (i = attrs.values.length - 1; i >= 0; i--) {
             options += `<option value="${attrs.values[i].value}">${attrs.values[i].label}</option>`;
           }
-          preview = `<${attrs.type} class="no-drag">${options}</${attrs.type}>`;
+          preview = `<${attrs.type} class="no-drag form-control">${options}</${attrs.type}>`;
           break;
         case 'checkbox-group':
         case 'radio-group':
@@ -820,15 +823,16 @@
           break;
         case 'text':
         case 'password':
-        case 'hidden':
         case 'email':
         case 'date':
+          preview = `<input type="${attrs.type}" placeholder="" class="form-control">`;
+          break;
+        case 'hidden':
         case 'checkbox':
-          let toggle = attrs.toggle ? 'toggle' : '';
           preview = `<input type="${attrs.type}" ${toggle} placeholder="">`;
           break;
         case 'autocomplete':
-          preview = `<input class="ui-autocomplete-input" autocomplete="on" placeholder="">`;
+          preview = `<input class="ui-autocomplete-input form-control" autocomplete="on" placeholder="">`;
           break;
         default:
           preview = `<${attrs.type}></${attrs.type}>`;

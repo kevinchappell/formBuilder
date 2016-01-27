@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.2
+Version: 1.6.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -134,6 +134,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         select: 'Select',
         selectionsMessage: 'Allow Multiple Selections',
         text: 'Text Field',
+        textArea: 'Text Area',
         toggle: 'Toggle',
         warning: 'Warning!',
         viewXML: 'View XML',
@@ -355,7 +356,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         name: 'select'
       }
     }, {
-      label: opts.messages.richText,
+      label: opts.messages.textArea,
       attrs: {
         type: 'rich-text',
         className: 'rich-text',
@@ -658,7 +659,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // multi-line textarea
     var appendTextarea = function appendTextarea(values) {
-      appendFieldLi(opts.messages.richText, advFields(values), values);
+      appendFieldLi(opts.messages.textArea, advFields(values), values);
     };
 
     var appendInput = function appendInput(values) {
@@ -781,7 +782,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       advFields += '</div></div>';
 
       // if field type is not checkbox, checkbox/radio group or select list, add max length
-      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group']) < 0) {
+      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden']) < 0) {
         advFields += '<div class="frm-fld"><label class="max-length-label">' + opts.messages.maxLength + '</label>';
         advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length" id="max-length-' + lastID + '" /></div>';
       }
@@ -844,9 +845,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var i,
           preview = '',
           epoch = new Date().getTime();
+      var toggle = attrs.toggle ? 'toggle' : '';
       switch (attrs.type) {
         case 'textarea':
-          preview = '<' + attrs.type + '></' + attrs.type + '>';
+        case 'rich-text':
+          preview = '<textarea class="form-control"></textarea>';
           break;
         case 'select':
           var options;
@@ -854,7 +857,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           for (i = attrs.values.length - 1; i >= 0; i--) {
             options += '<option value="' + attrs.values[i].value + '">' + attrs.values[i].label + '</option>';
           }
-          preview = '<' + attrs.type + ' class="no-drag">' + options + '</' + attrs.type + '>';
+          preview = '<' + attrs.type + ' class="no-drag form-control">' + options + '</' + attrs.type + '>';
           break;
         case 'checkbox-group':
         case 'radio-group':
@@ -866,15 +869,16 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           break;
         case 'text':
         case 'password':
-        case 'hidden':
         case 'email':
         case 'date':
+          preview = '<input type="' + attrs.type + '" placeholder="" class="form-control">';
+          break;
+        case 'hidden':
         case 'checkbox':
-          var toggle = attrs.toggle ? 'toggle' : '';
           preview = '<input type="' + attrs.type + '" ' + toggle + ' placeholder="">';
           break;
         case 'autocomplete':
-          preview = '<input class="ui-autocomplete-input" autocomplete="on" placeholder="">';
+          preview = '<input class="ui-autocomplete-input form-control" autocomplete="on" placeholder="">';
           break;
         default:
           preview = '<' + attrs.type + '></' + attrs.type + '>';
