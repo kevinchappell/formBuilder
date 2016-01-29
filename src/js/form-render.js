@@ -123,7 +123,7 @@
 
       if (fieldAttrs.type !== 'hidden') {
         fieldMarkup = _helpers.markup('div', {
-          class: 'form-group'
+          class: 'form-group field-' + fieldAttrs.id
         }, fieldMarkup);
       }
 
