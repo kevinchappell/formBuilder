@@ -18,12 +18,8 @@
 		"jquery"
 	],
 	"ignore": [
-		"**/.*",
-		"gulpfile.js",
-		"package.json",
-		"params.json",
-		"src",
-		"test",
-		"node_modules"
+		"*",
+    "!dist",
+    "!dist/**/*"
 	]
 }
