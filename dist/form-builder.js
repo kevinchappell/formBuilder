@@ -143,7 +143,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     };
 
     var startIndex,
-        doCancel,
+        doCancel = false,
         _helpers = {};
 
     /**
@@ -486,7 +486,15 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       beforeStop: function beforeStop(event, ui) {
         var lastIndex = $('> li', $sortableFields).length - 1,
             curIndex = ui.placeholder.index();
-        doCancel = curIndex <= 1 || curIndex === lastIndex;
+        if (opts.disableFields.before) {
+          console.log(doCancel, curIndex, lastIndex);
+          doCancel = curIndex <= 1;
+        } else if (opts.disableFields.after) {
+          console.log(doCancel, curIndex, lastIndex);
+          doCancel = curIndex === lastIndex;
+        } else {
+          doCancel = false;
+        }
       },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
@@ -526,9 +534,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         }
       },
       beforeStop: function beforeStop(event, ui) {
-        var lastIndex = $('> li', $sortableFields).length - 1,
-            curIndex = ui.placeholder.index();
-        doCancel = curIndex <= 1 || curIndex === lastIndex ? true : false;
         if (ui.placeholder.parent().hasClass('frmb-control')) {
           doCancel = true;
         }
