@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.6
+Version: 1.6.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -168,6 +168,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       if (doCancel) {
         $(ui.sender).sortable('cancel');
         $(this).sortable('cancel');
+      } else {
+        _helpers.save();
       }
     };
 
@@ -487,10 +489,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         var lastIndex = $('> li', $sortableFields).length - 1,
             curIndex = ui.placeholder.index();
         if (opts.disableFields.before) {
-          console.log(doCancel, curIndex, lastIndex);
           doCancel = curIndex <= 1;
         } else if (opts.disableFields.after) {
-          console.log(doCancel, curIndex, lastIndex);
           doCancel = curIndex === lastIndex;
         } else {
           doCancel = false;
