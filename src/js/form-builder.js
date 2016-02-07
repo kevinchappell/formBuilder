@@ -165,6 +165,7 @@
         _helpers.updatePreview($(this));
       });
       elem.val($sortableFields.toXML());
+      elem.trigger('change');
     };
 
     // updatePreview will generate the preview for radio and checkbox groups
@@ -799,7 +800,7 @@
       var i,
         preview = '',
         epoch = new Date().getTime();
-          let toggle = attrs.toggle ? 'toggle' : '';
+      let toggle = attrs.toggle ? 'toggle' : '';
       switch (attrs.type) {
         case 'textarea':
         case 'rich-text':

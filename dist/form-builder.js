@@ -216,6 +216,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         _helpers.updatePreview($(this));
       });
       elem.val($sortableFields.toXML());
+      elem.trigger('change');
     };
 
     // updatePreview will generate the preview for radio and checkbox groups
