@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.5
+Version: 1.6.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
