@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.5
+Version: 1.6.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -598,6 +598,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       } else if (!xml) {
         // Load default fields if none are set
         if (opts.defaultFields.length) {
+          opts.defaultFields.reverse();
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
             appendNewField(opts.defaultFields[i]);
           }

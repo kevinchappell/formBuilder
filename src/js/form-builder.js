@@ -549,6 +549,7 @@
       } else if (!xml) {
         // Load default fields if none are set
         if (opts.defaultFields.length) {
+          opts.defaultFields.reverse();
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
             appendNewField(opts.defaultFields[i]);
           }
