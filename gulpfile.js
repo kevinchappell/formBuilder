@@ -185,8 +185,10 @@ function increment(importance) {
     .pipe(filter('package.json'))
     .pipe(tagVersion());
 
-  git.push('origin', 'master', {
-    args: '--tags'
+  git.push('origin', 'master');
+
+  git.exec({
+    args: 'push --tags'
   }, function(err, stdout) {
     if (err) {
       console.error('Could not push tags\n', err);
