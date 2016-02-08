@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.6.8 - Bugfix: Description and required not rendered in formRender
 - v1.6.7 - Bugfix: fields are not sortable
 - v1.6.6 - Bugfix: change should be triggered when hidden textarea updated
 - v1.6.5 - Feature: Make rendered fields targetable

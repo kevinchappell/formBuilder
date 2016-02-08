@@ -37,15 +37,12 @@
         fieldLabel = '',
         optionsMarkup = '';
       var fieldAttrs = _helpers.parseAttrs(field.attributes),
-        fieldDesc = fieldAttrs.description, // @todo
+        fieldDesc = fieldAttrs.description || '',
+        fieldRequired = '',
         fieldOptions = $('option', field);
       fieldAttrs.id = fieldAttrs.name;
       if (fieldAttrs.type !== 'checkbox') {
         fieldAttrs.class = 'form-control';
-      }
-
-      if (fieldAttrs.type !== 'hidden') {
-        fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label}</label>`;
       }
 
       if (fieldAttrs.required === 'false') {
@@ -53,6 +50,14 @@
       } else {
         fieldAttrs.required = null;
         fieldAttrs['aria-required'] = 'true';
+        fieldRequired = `<span class="required">*</span>`;
+      }
+
+      if (fieldAttrs.type !== 'hidden') {
+        if (fieldDesc) {
+          fieldDesc = `<span class="tooltip-element" tooltip="${fieldDesc}">?</span>`;
+        }
+        fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label} ${fieldRequired} ${fieldDesc}</label>`;
       }
 
       delete fieldAttrs.label;
