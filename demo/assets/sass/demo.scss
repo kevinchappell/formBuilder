@@ -2,6 +2,10 @@
 @import "reset";
 @import "theme";
 
+.demo-wrap {
+  width: 100%;
+}
+
 .donate-plea {
   width: 50%;
   float: left;
@@ -67,6 +71,7 @@ legend {
 .render-description {
   width: 36%;
   float: right;
+  overflow: hidden;
 }
 
 #main_content {

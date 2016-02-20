@@ -294,8 +294,12 @@ ol.sortable-options li {
   border: 1px solid $white;
 }
 
-.frmb li:hover .del-button, .frmb li:hover .toggle-form {
-  opacity: 1;
+.frmb li {
+  &:hover, .fb-mobile & {
+    .del-button, .toggle-form {
+      opacity: 1;
+    }
+  }
 }
 
 .fresh .frmb .legend .element-info {

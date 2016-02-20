@@ -107,9 +107,23 @@
       }
     };
 
+    defaults.messages.subtypes.password = defaults.messages.subtypes.text;
+    defaults.messages.subtypes.email = defaults.messages.subtypes.text;
+    defaults.messages.subtypes.color = defaults.messages.subtypes.text;
+
     var startIndex,
       doCancel = false,
       _helpers = {};
+
+    _helpers.mobileClass = function() {
+      var mobileClass = '';
+      (function(a) {
+        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
+          mobileClass = ' fb-mobile';
+        }
+      })(navigator.userAgent || navigator.vendor || window.opera);
+      return mobileClass;
+    };
 
     /**
      * Callback for when a drag begins
@@ -473,7 +487,7 @@
       },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
-      cancel: 'input, select, .disabled, .sortable-options, .add, .btn, .no-drag',
+      cancel: 'input, select, .disabled, .frm-fld, .btn, .no-drag',
       // items: 'li:not(.no-fields)',
       receive: function(event, ui) {
         // if (doCancel) {
@@ -536,7 +550,7 @@
 
     var $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
-      'class': 'form-wrap form-builder'
+      'class': 'form-wrap form-builder' + _helpers.mobileClass()
     });
 
     elem.before($stageWrap).appendTo($stageWrap);
@@ -609,7 +623,7 @@
 
       var fieldAttrs = $field.data('attrs') || {},
         fType = fieldAttrs.type || $field.attr('type'),
-        isMultiple = fType.match(/(select|checkbox-group|radio-group)/),
+        isMultiple = fType.match(/(checkbox-group|radio-group)/),
         values = {};
 
       values.label = _helpers.htmlEncode($field.attr('label'));
@@ -681,7 +695,7 @@
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="field_actions"><a href="#" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="#" class="close_field">' + opts.messages.close + '</a></div>';
+      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close_field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
@@ -710,6 +724,9 @@
         'radio-group': appendSelectList,
         'checkbox-group': appendSelectList,
         'text': appendInput,
+        'password': appendInput,
+        'email': appendInput,
+        'color': appendInput,
         'hidden': appendInput
       };
 
@@ -750,7 +767,7 @@
       advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
       advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description form-control" id="description-' + lastID + '" /></div>';
 
-      advFields += getSubType(values.type);
+      advFields += getSubTypeField(values.type);
 
       advFields += getPlaceholder(values.type);
 
@@ -779,6 +796,11 @@
     };
 
     var getSubType = function(type) {
+      let subTypes = opts.messages.subtypes;
+      return subTypes[type] || type;
+    };
+
+    var getSubTypeField = function(type) {
       let subTypes = opts.messages.subtypes,
         subType = '';
 
@@ -786,7 +808,8 @@
         let subTypeLabel = `<label>${opts.messages.subtype}</label>`;
         subType += `<select name="subtype" class="fld-subtype form-control" id="subtype-${lastID}">`;
         subTypes[type].forEach(function(element, index) {
-          subType += `<option value="${element}">${element}</option>`;
+          let selected = type === element ? 'selected' : '';
+          subType += `<option value="${element}" ${selected}>${element}</option>`;
         });
         subType += `</select>`;
         subType = `<div class="frm-fld subtype-wrap">${subTypeLabel} ${subType}</div>`;
@@ -813,8 +836,8 @@
       var label = ($(field).find('input[name="label"]').val() !== '' ? $(field).find('input[name="label"]').val() : title);
 
       var li = '',
-        delBtn = '<a id="del_' + lastID + '" class="del-button btn delete-confirm" href="#" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>',
-        toggleBtn = '<a id="frm-' + lastID + '" class="toggle-form btn icon-pencil" href="#" title="' + opts.messages.hide + '"></a> ',
+        delBtn = '<a id="del_' + lastID + '" class="del-button btn delete-confirm" href="javascript: void(0);" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>',
+        toggleBtn = '<a id="frm-' + lastID + '" class="toggle-form btn icon-pencil" href="javascript: void(0);" title="' + opts.messages.hide + '"></a> ',
         required = values.required,
         toggle = values.toggle || undefined,
         tooltip = values.description !== '' ? '<span class="tooltip-element" tooltip="' + values.description + '">?</span>' : '';
@@ -926,7 +949,7 @@
       field += '<input type="' + selectedType + '" ' + selected + ' class="select-option" name="' + name + '" />';
       field += '<input type="text" class="option-label" placeholder="' + opts.messages.optionLabelPlaceholder + '" value="' + values.label + '" />';
       field += '<input type="text" class="option-value" placeholder="' + opts.messages.optionValuePlaceholder + '" value="' + values.value + '" />';
-      field += '<a href="#" class="remove btn" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>';
+      field += '<a href="javascript: void(0);" class="remove btn" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>';
       field += '</li>';
 
       return field;
@@ -935,7 +958,7 @@
     // ---------------------- UTILITIES ---------------------- //
 
     // delete options
-    $sortableFields.delegate('.remove', 'click', function(e) {
+    $sortableFields.on('click touchstart', '.remove', function(e) {
       e.preventDefault();
       var optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
       if (optionsCount <= 2) {
@@ -947,18 +970,39 @@
       }
     });
 
+    // touch focus
+    $sortableFields.on('touchstart', 'input', function(e) {
+      if (e.handled !== true) {
+        if ($(this).attr('type') === 'checkbox') {
+          $(this).trigger('click');
+        } else {
+          $(this).focus();
+          let fieldVal = $(this).val();
+          $(this).val(fieldVal);
+        }
+      } else {
+        return false;
+      }
+    });
+
     // toggle fields
-    $sortableFields.on('click', '.toggle-form', function(e) {
+    $sortableFields.on('mousedown touchstart', '.toggle-form', function(e) {
+      e.stopPropagation();
       e.preventDefault();
-      var targetID = $(this).attr('id');
-      $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
-      $(document.getElementById(targetID + '-fld')).slideToggle(250, function() {
-        _helpers.save();
-      });
+      if (e.handled !== true) {
+        var targetID = $(this).attr('id');
+        $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
+        $(document.getElementById(targetID + '-fld')).slideToggle(250, function() {
+          _helpers.save();
+        });
+        e.handled = true;
+      } else {
+        return false;
+      }
     });
 
     // update preview to label
-    $sortableFields.delegate('input[name="label"]', 'keyup', function() {
+    $sortableFields.on('keyup change', 'input[name="label"]', function() {
       $('.field-label', $(this).closest('li')).text($(this).val());
     });
 
