@@ -121,6 +121,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         optionValuePlaceholder: 'Value',
         optionEmpty: 'Option value required',
         paragraph: 'Paragraph',
+        placeholder: 'Placeholder',
+        placeholders: {
+          text: '',
+          textarea: '',
+          email: 'Enter you email',
+          password: 'ENter your password'
+        },
         preview: 'Preview',
         radioGroup: 'Radio Group',
         radio: 'Radio',
@@ -134,7 +141,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         select: 'Select',
         selectColor: 'Select Color',
         selectionsMessage: 'Allow Multiple Selections',
-        subtype: 'Subtype',
+        subtype: 'HTML5 type',
         subtypes: {
           text: ['text', 'password', 'email', 'color']
         },
@@ -374,7 +381,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     }, {
       label: opts.messages.textArea,
       attrs: {
-        type: 'rich-text',
+        type: 'textarea',
         className: 'rich-text',
         name: 'rich-text'
       }
@@ -774,7 +781,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         type: 'text',
         name: 'label',
         value: values.label,
-        'class': 'fld-label'
+        'class': 'fld-label form-control'
       }).appendTo(fieldLabel);
       advFields += fieldLabel[0].outerHTML;
 
@@ -784,12 +791,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       $('<label/>').html(opts.messages.description + ' *').appendTo(fieldDesc);
 
       advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
-      advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description" id="description-' + lastID + '" /></div>';
+      advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description form-control" id="description-' + lastID + '" /></div>';
 
       advFields += getSubType(values.type);
 
+      advFields += getPlaceholder(values.type);
+
       advFields += '<div class="frm-fld name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
-      advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name" id="title-' + lastID + '" /></div>';
+      advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>';
 
       advFields += '<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>';
 
@@ -806,7 +815,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       // if field type is not checkbox, checkbox/radio group or select list, add max length
       if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden']) < 0) {
         advFields += '<div class="frm-fld"><label class="max-length-label">' + opts.messages.maxLength + '</label>';
-        advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length" id="max-length-' + lastID + '" /></div>';
+        advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length form-control" id="max-length-' + lastID + '" /></div>';
       }
 
       return advFields;
@@ -817,8 +826,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           subType = '';
 
       if (subTypes[type]) {
-        var subTypeLabel = '<label>' + opts.messages.subtype + ' <span class="required">*</span></label>';
-        subType += '<select name="subtype" class="fld-subtype" id="subtype-' + lastID + '">';
+        var subTypeLabel = '<label>' + opts.messages.subtype + '</label>';
+        subType += '<select name="subtype" class="fld-subtype form-control" id="subtype-' + lastID + '">';
         subTypes[type].forEach(function (element, index) {
           subType += '<option value="' + element + '">' + element + '</option>';
         });
@@ -827,6 +836,19 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
 
       return subType;
+    };
+
+    var getPlaceholder = function getPlaceholder(type) {
+      var placeholders = opts.messages.placeholders,
+          placeholder = '';
+
+      if (typeof placeholders[type] !== 'undefined') {
+        var placeholderLabel = '<label>' + opts.messages.placeholder + '</label>';
+        placeholder += '<input type="text" name="placeholder" placeholder="' + placeholders[type] + '" class="fld-placeholder form-control" id="placeholder-' + lastID + '">';
+        placeholder = '<div class="frm-fld placeholder-wrap">' + placeholderLabel + ' ' + placeholder + '</div>';
+      }
+
+      return placeholder;
     };
 
     // Append the new field to the editor
@@ -1272,11 +1294,30 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     };
     var opts = $.extend(defaults, options);
 
-    var serialStr = '';
+    var serialStr = '',
+        _helpers = {};
 
-    var getType = function getType($field) {
+    _helpers.getType = function ($field) {
       var type = $('.fld-subtype', $field).val() || $field.attr('class').replace(' form-field', '');
       return type;
+    };
+
+    _helpers.hyphenCase = function (str) {
+      return str.replace(/([A-Z])/g, function ($1) {
+        return '-' + $1.toLowerCase();
+      });
+    };
+
+    _helpers.attrString = function (attrs) {
+      var attributes = [];
+      for (var attr in attrs) {
+        if (attrs.hasOwnProperty(attr) && attrs[attr]) {
+          var attrName = _helpers.hyphenCase(attr),
+              attrString = attrName + '="' + attrs[attr] + '"';
+          attributes.push(attrString);
+        }
+      }
+      return attributes.join(' ');
     };
 
     // Begin the core plugin
@@ -1292,27 +1333,26 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           var $field = $(this);
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
-              var required = $('input.required', $field).is(':checked') ? 'required="true" ' : 'required="false" ',
-                  multipleChecked = $('input[name="multiple"]', $field).is(':checked'),
-                  multiple = multipleChecked ? 'style="multiple" ' : '',
-                  t = getType($field),
-                  // field type
-              multipleField = t.match(/(select|checkbox-group|radio-group)/),
-                  type = 'type="' + t + '" ',
-                  fName = 'name="' + $('input.fld-name', $field).val() + '" ',
-                  fLabel = 'label="' + $('input.fld-label', $field).val() + '" ',
-                  roleVals = $.map($('input.roles-field:checked', $field), function (n) {
+              var roleVals = $.map($('input.roles-field:checked', $field), function (n) {
                 return n.value;
-              }).join(','),
-                  roles = roleVals !== '' ? 'role="' + roleVals + '" ' : '',
-                  desc = 'description="' + $('input.fld-description', $field).val() + '" ',
-                  maxLengthVal = $('input.fld-max-length', $field).val(),
-                  maxLength = 'max-length="' + (maxLengthVal !== undefined ? maxLengthVal : '') + '" ',
+              }).join(',');
+              var xmlAttrs = {
+                required: $('input.required', $field).is(':checked'),
+                multiple: $('input[name="multiple"]', $field).is(':checked'),
+                type: _helpers.getType($field),
+                name: $('input.fld-name', $field).val(),
+                placeholder: $('input.fld-placeholder', $field).val(),
+                label: $('input.fld-label', $field).val(),
+                description: $('input.fld-description', $field).val(),
+                maxLength: $('input.fld-max-length', $field).val(),
+                role: roleVals,
+                toggle: $('.checkbox-toggle', $field).is(':checked')
+              },
+                  multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
+                  attrsString = _helpers.attrString(xmlAttrs),
                   fSlash = !multipleField ? '/' : '';
 
-              var fToggle = $('.checkbox-toggle', $field).is(':checked') ? 'toggle="true" ' : '';
-
-              serialStr += '\n\t\t<field ' + fName + fLabel + fToggle + multiple + roles + desc + (maxLengthVal !== '' ? maxLengthVal !== undefined ? maxLength : '' : '') + required + type + fSlash + '>';
+              serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
               if (multipleField) {
                 c = 1;
                 $('.sortable-options li', $field).each(function () {

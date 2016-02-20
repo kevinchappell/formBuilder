@@ -158,3 +158,44 @@
     display: block;
   }
 }
+
+.stage-wrap {
+  position: relative;
+  float: left;
+  width: 62%;
+  margin-right: 2%;
+
+  .action-links {
+    width: calc( 100% - 141px);
+    display: none;
+    float: right;
+    overflow: hidden;
+    text-align: right;
+  }
+
+  &.empty {
+    &:after {
+      content: attr(data-content);
+      position: absolute;
+      text-align: center;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      margin-top: -1em;
+    }
+  }
+}
+
+.stage-wrap .action-links .active {
+  font-weight: 700;
+  color: $black;
+}
+
+.frm-fld {
+  clear: left;
+  padding: 5px 0;
+
+  select.form-control {
+    width: 70%;
+  }
+}
