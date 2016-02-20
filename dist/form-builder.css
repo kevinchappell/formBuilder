@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.7
+Version: 1.6.8
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 * {
@@ -352,6 +352,10 @@ textarea.form-control {
 
 .frmb .prev-holder {
   display: block; }
+  .frmb .prev-holder input[type="color"] {
+    width: 60px;
+    padding: 2px;
+    display: inline-block; }
 
 .frmb .required_asterisk {
   display: none; }

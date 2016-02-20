@@ -137,6 +137,12 @@
 
   .prev-holder {
     display: block;
+
+    input[type="color"] {
+      width: 60px;
+      padding: 2px;
+      display: inline-block;
+    }
   }
 
   .required_asterisk {

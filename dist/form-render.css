@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.7
+Version: 1.6.8
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 * {
@@ -303,3 +303,8 @@ textarea.form-control {
   line-height: 16px;
   margin: 0 5px;
   font-size: 12px; }
+
+.form-control[type="color"] {
+  width: 60px;
+  padding: 2px;
+  display: inline-block; }

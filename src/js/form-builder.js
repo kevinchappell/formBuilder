@@ -80,7 +80,17 @@
         save: 'Save Template',
         selectOptions: 'Select Items',
         select: 'Select',
+        selectColor: 'Select Color',
         selectionsMessage: 'Allow Multiple Selections',
+        subtype: 'Subtype',
+        subtypes: {
+          text: [
+            'text',
+            'password',
+            'email',
+            'color'
+          ]
+        },
         text: 'Text Field',
         textArea: 'Text Area',
         toggle: 'Toggle',
@@ -173,17 +183,25 @@
     // updatePreview will generate the preview for radio and checkbox groups
     _helpers.updatePreview = function(field) {
       var fieldClass = field.attr('class'),
+        fieldType,
         $prevHolder = $('.prev-holder', field);
 
       if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
         return;
       }
 
+      let subtype = $('.fld-subtype', field).val();
       fieldClass = fieldClass.replace(' form-field', '');
+
+      if (subtype) {
+        fieldType = subtype;
+      } else {
+        fieldType = fieldClass;
+      }
 
       var preview,
         previewData = {
-          type: fieldClass,
+          type: fieldType,
           label: $('.fld-label', field).val()
         };
 
@@ -211,7 +229,6 @@
       $('input[toggle]', $prevHolder).kcToggle();
 
     };
-
 
     // update preview to label
     _helpers.updateMultipleSelect = function() {
@@ -449,7 +466,7 @@
       },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
-      cancel: 'input, .disabled, .sortable-options, .add, .btn, .no-drag',
+      cancel: 'input, select, .disabled, .sortable-options, .add, .btn, .no-drag',
       // items: 'li:not(.no-fields)',
       receive: function(event, ui) {
         // if (doCancel) {
@@ -726,6 +743,8 @@
       advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
       advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description" id="description-' + lastID + '" /></div>';
 
+      advFields += getSubType(values.type);
+
       advFields += '<div class="frm-fld name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
       advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name" id="title-' + lastID + '" /></div>';
 
@@ -748,6 +767,23 @@
       }
 
       return advFields;
+    };
+
+    var getSubType = function(type) {
+      let subTypes = opts.messages.subtypes,
+        subType = '';
+
+      if (subTypes[type]) {
+        let subTypeLabel = `<label>${opts.messages.subtype} <span class="required">*</span></label>`;
+        subType += `<select name="subtype" class="fld-subtype" id="subtype-${lastID}">`;
+        subTypes[type].forEach(function(element, index) {
+          subType += `<option value="${element}">${element}</option>`;
+        });
+        subType += `</select>`;
+        subType = `<div class="frm-fld subtype-wrap">${subTypeLabel} ${subType}</div>`;
+      }
+
+      return subType;
     };
 
 
@@ -833,6 +869,9 @@
         case 'email':
         case 'date':
           preview = `<input type="${attrs.type}" placeholder="" class="form-control">`;
+          break;
+        case 'color':
+          preview = `<input type="${attrs.type}" placeholder="" class="form-control"> ${opts.messages.selectColor}`;
           break;
         case 'hidden':
         case 'checkbox':
@@ -1178,6 +1217,7 @@
 })(jQuery);
 
 // toXML is a jQuery plugin that turns our form editor into XML
+// @todo this is a total mess that has to be refactored
 (function($) {
   'use strict';
   $.fn.toXML = function(options) {
@@ -1188,6 +1228,11 @@
     var opts = $.extend(defaults, options);
 
     var serialStr = '';
+
+    var getType = function($field){
+      let type = $('.fld-subtype', $field).val() || $field.attr('class').replace(' form-field', '');
+      return type;
+    };
 
     // Begin the core plugin
     this.each(function() {
@@ -1202,10 +1247,11 @@
           var $field = $(this);
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
+              console.log($field);
               var required = $('input.required', $field).is(':checked') ? 'required="true" ' : 'required="false" ',
                 multipleChecked = $('input[name="multiple"]', $field).is(':checked'),
                 multiple = multipleChecked ? 'style="multiple" ' : '',
-                t = $field.attr(opts.attributes[att]).replace(' form-field', ''), // field type
+                t = getType($field), // field type
                 multipleField = t.match(/(select|checkbox-group|radio-group)/),
                 type = 'type="' + t + '" ',
                 fName = 'name="' + $('input.fld-name', $field).val() + '" ',
