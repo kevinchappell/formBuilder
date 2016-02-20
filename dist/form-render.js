@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.7
+Version: 1.6.8
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -57,7 +57,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     var $template = $(this),
         defaults = {
       destroyTemplate: true, // @todo
-      container: false
+      container: false,
+      label: {
+        selectColor: 'Select Color'
+      }
     },
         _helpers = {};
 
@@ -169,6 +172,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'date':
         case 'autocomplete':
           fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + '>';
+          break;
+        case 'color':
+          fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + '> ' + opts.label.selectColor;
           break;
         case 'checkbox':
           fieldMarkup = '<input ' + fieldAttrsString + '> ' + fieldLabel;

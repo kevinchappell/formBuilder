@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.6.7
+Version: 1.6.8
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -132,7 +132,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         save: 'Save Template',
         selectOptions: 'Select Items',
         select: 'Select',
+        selectColor: 'Select Color',
         selectionsMessage: 'Allow Multiple Selections',
+        subtype: 'Subtype',
+        subtypes: {
+          text: ['text', 'password', 'email', 'color']
+        },
         text: 'Text Field',
         textArea: 'Text Area',
         toggle: 'Toggle',
@@ -224,17 +229,25 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     // updatePreview will generate the preview for radio and checkbox groups
     _helpers.updatePreview = function (field) {
       var fieldClass = field.attr('class'),
+          fieldType,
           $prevHolder = $('.prev-holder', field);
 
       if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
         return;
       }
 
+      var subtype = $('.fld-subtype', field).val();
       fieldClass = fieldClass.replace(' form-field', '');
+
+      if (subtype) {
+        fieldType = subtype;
+      } else {
+        fieldType = fieldClass;
+      }
 
       var preview,
           previewData = {
-        type: fieldClass,
+        type: fieldType,
         label: $('.fld-label', field).val()
       };
 
@@ -498,7 +511,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
-      cancel: 'input, .disabled, .sortable-options, .add, .btn, .no-drag',
+      cancel: 'input, select, .disabled, .sortable-options, .add, .btn, .no-drag',
       // items: 'li:not(.no-fields)',
       receive: function receive(event, ui) {
         // if (doCancel) {
@@ -773,6 +786,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
       advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description" id="description-' + lastID + '" /></div>';
 
+      advFields += getSubType(values.type);
+
       advFields += '<div class="frm-fld name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
       advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name" id="title-' + lastID + '" /></div>';
 
@@ -795,6 +810,23 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
 
       return advFields;
+    };
+
+    var getSubType = function getSubType(type) {
+      var subTypes = opts.messages.subtypes,
+          subType = '';
+
+      if (subTypes[type]) {
+        var subTypeLabel = '<label>' + opts.messages.subtype + ' <span class="required">*</span></label>';
+        subType += '<select name="subtype" class="fld-subtype" id="subtype-' + lastID + '">';
+        subTypes[type].forEach(function (element, index) {
+          subType += '<option value="' + element + '">' + element + '</option>';
+        });
+        subType += '</select>';
+        subType = '<div class="frm-fld subtype-wrap">' + subTypeLabel + ' ' + subType + '</div>';
+      }
+
+      return subType;
     };
 
     // Append the new field to the editor
@@ -879,6 +911,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'email':
         case 'date':
           preview = '<input type="' + attrs.type + '" placeholder="" class="form-control">';
+          break;
+        case 'color':
+          preview = '<input type="' + attrs.type + '" placeholder="" class="form-control"> ' + opts.messages.selectColor;
           break;
         case 'hidden':
         case 'checkbox':
@@ -1220,6 +1255,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 })(jQuery);
 
 // toXML is a jQuery plugin that turns our form editor into XML
+// @todo this is a total mess that has to be refactored
 (function ($) {
   'use strict';
   $.fn.toXML = function (options) {
@@ -1230,6 +1266,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     var opts = $.extend(defaults, options);
 
     var serialStr = '';
+
+    var getType = function getType($field) {
+      var type = $('.fld-subtype', $field).val() || $field.attr('class').replace(' form-field', '');
+      return type;
+    };
 
     // Begin the core plugin
     this.each(function () {
@@ -1244,10 +1285,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           var $field = $(this);
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
+              console.log($field);
               var required = $('input.required', $field).is(':checked') ? 'required="true" ' : 'required="false" ',
                   multipleChecked = $('input[name="multiple"]', $field).is(':checked'),
                   multiple = multipleChecked ? 'style="multiple" ' : '',
-                  t = $field.attr(opts.attributes[att]).replace(' form-field', ''),
+                  t = getType($field),
                   // field type
               multipleField = t.match(/(select|checkbox-group|radio-group)/),
                   type = 'type="' + t + '" ',

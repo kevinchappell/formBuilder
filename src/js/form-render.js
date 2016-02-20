@@ -5,7 +5,10 @@
     var $template = $(this),
       defaults = {
         destroyTemplate: true, // @todo
-        container: false
+        container: false,
+        label:{
+          selectColor: 'Select Color'
+        }
       },
       _helpers = {};
 
@@ -112,6 +115,9 @@
         case 'date':
         case 'autocomplete':
           fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}>`;
+          break;
+        case 'color':
+          fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}> ${opts.label.selectColor}`;
           break;
         case 'checkbox':
           fieldMarkup = `<input ${fieldAttrsString}> ${fieldLabel}`;

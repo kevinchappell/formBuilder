@@ -51,3 +51,11 @@
   margin: 0 5px;
   font-size: 12px;
 }
+
+.form-control {
+  &[type="color"] {
+    width: 60px;
+    padding: 2px;
+    display: inline-block;
+  }
+}
