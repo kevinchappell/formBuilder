@@ -706,7 +706,7 @@ ol.sortable-options li {
   box-shadow: 2px 2px 6px 0 #666;
   border: 1px solid #fff; }
 
-.frmb li:hover .del-button, .frmb li:hover .toggle-form {
+.frmb li:hover .del-button, .frmb li:hover .toggle-form, .fb-mobile .frmb li .del-button, .fb-mobile .frmb li .toggle-form {
   opacity: 1; }
 
 .fresh .frmb .legend .element-info {

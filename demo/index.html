@@ -4,21 +4,57 @@
 <head>
   <meta charset='utf-8'>
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
   <meta name="description" content="jQuery formBuilder: A jQuery plugin for drag and drop form creation">
+  <meta name="theme-color" content="#232323">
   <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css">
   <link rel="stylesheet" type="text/css" media="screen" href="assets/demo.css">
+  <link rel="apple-touch-icon" sizes="57x57" href="assets/images/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="assets/images/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="assets/images/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/images/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="assets/images/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/images/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="assets/images/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/images/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/images/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+  <link rel="manifest" href="/assets/manifest.json">
+  <meta name="msapplication-TileColor" content="#232323">
+  <meta name="msapplication-TileImage" content="assets/images/ms-icon-144x144.png">
   <!-- Only include on form edit page -->
   <link rel="stylesheet" type="text/css" media="screen" href="assets/form-builder.min.css">
   <!-- Only include on form render page -->
   <link rel="stylesheet" type="text/css" media="screen" href="assets/form-render.min.css">
   <title>jQuery formBuilder | Drag &amp; Drop Form Creation</title>
+  <script type="text/javascript">
+  var switchTo5x = true;
+  </script>
+  <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+  <script type="text/javascript">
+  stLight.options({
+    publisher: "ee8fc1cb-2a3e-4afc-9a71-a24d14fb9f86",
+    doNotHash: false,
+    doNotCopy: false,
+    hashAddressBar: false
+  });
+  </script>
 </head>
 
 <body>
   <div class="demo-wrap">
     <div id="header_wrap" class="outer">
       <header class="inner">
+      <div class="social">
+          <span class='st_facebook' displayText='Facebook'></span>
+          <span class='st_twitter' displayText='Tweet'></span>
+          <span class='st_linkedin' displayText='LinkedIn'></span>
+          <span class='st_pinterest' displayText='Pinterest'></span>
+          <span class='st_email' displayText='Email'></span>
+        </div>
         <a id="forkme_banner" href="https://github.com/kevinchappell/formBuilder">View on Github</a>
         <h1 id="project_title">jQuery formBuilder</h1>
         <h2 id="project_tagline">A jQuery plugin for drag and drop form creation</h2>
@@ -87,7 +123,8 @@ $(template).formRender(formRenderOpts);
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <div class="donate-plea">
-          <p>Donations directly fund this project. <br> If this plugin helped you in your project please consider a donation.</p>
+          <p>Hundreds of hours went into making formBuilder what it is today.
+            <br> If this plugin helped you or your project please consider making a donation.</p>
           <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
             <input type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="hosted_button_id" value="NCJUSN7FYH68A">
@@ -96,14 +133,16 @@ $(template).formRender(formRenderOpts);
           </form>
         </div>
         <div class="copyright">
-        <p>jQuery formBuilder maintained by <a href="https://github.com/kevinchappell">kevinchappell</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+          <p>jQuery formBuilder maintained by <a href="https://github.com/kevinchappell">kevinchappell</a></p>
+          <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
         </div>
       </footer>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
   <!-- Only include on form edit page -->
   <script src="assets/form-builder.min.js"></script>
   <!-- Only include on form render page -->
@@ -123,8 +162,7 @@ $(template).formRender(formRenderOpts);
       });
     });
   });
-  </script>
-  <script>
+
   ((window.gitter = {}).chat = {}).options = {
     room: 'kevinchappell/formBuilder'
   };
