@@ -529,7 +529,7 @@
 
     var $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
-      'class': 'form-wrap'
+      'class': 'form-wrap form-builder'
     });
 
     elem.before($stageWrap).appendTo($stageWrap);
@@ -1206,12 +1206,19 @@
   $.fn.formBuilder = function(options) {
     var form = this;
     return form.each(function() {
-      var element = $(this);
+      var element = $(this),
+        formBuilder;
       if (element.data('formBuilder')) {
-        return;
+        var existingFormBuilder = element.parents('.form-builder:eq(0)');
+        var newElement = element.clone();
+        existingFormBuilder.before(newElement);
+        existingFormBuilder.remove();
+        formBuilder = new FormBuilder(newElement, options);
+        newElement.data('formBuilder', formBuilder);
+      } else {
+        formBuilder = new FormBuilder(form, options);
+        element.data('formBuilder', formBuilder);
       }
-      var formBuilder = new FormBuilder(this, options);
-      element.data('formBuilder', formBuilder);
     });
   };
 })(jQuery);
@@ -1229,7 +1236,7 @@
 
     var serialStr = '';
 
-    var getType = function($field){
+    var getType = function($field) {
       let type = $('.fld-subtype', $field).val() || $field.attr('class').replace(' form-field', '');
       return type;
     };
@@ -1247,7 +1254,6 @@
           var $field = $(this);
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
-              console.log($field);
               var required = $('input.required', $field).is(':checked') ? 'required="true" ' : 'required="false" ',
                 multipleChecked = $('input[name="multiple"]', $field).is(':checked'),
                 multiple = multipleChecked ? 'style="multiple" ' : '',
