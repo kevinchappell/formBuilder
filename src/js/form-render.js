@@ -48,9 +48,7 @@
         fieldAttrs.class = 'form-control';
       }
 
-      if (fieldAttrs.required === 'false') {
-        delete fieldAttrs.required;
-      } else {
+      if (fieldAttrs.required) {
         fieldAttrs.required = null;
         fieldAttrs['aria-required'] = 'true';
         fieldRequired = `<span class="required">*</span>`;

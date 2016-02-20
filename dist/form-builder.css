@@ -367,6 +367,36 @@ textarea.form-control {
 .frmb .disabled .field-label {
   display: block; }
 
+.stage-wrap {
+  position: relative;
+  float: left;
+  width: 62%;
+  margin-right: 2%; }
+  .stage-wrap .action-links {
+    width: calc( 100% - 141px);
+    display: none;
+    float: right;
+    overflow: hidden;
+    text-align: right; }
+  .stage-wrap.empty:after {
+    content: attr(data-content);
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    margin-top: -1em; }
+
+.stage-wrap .action-links .active {
+  font-weight: 700;
+  color: #000; }
+
+.frm-fld {
+  clear: left;
+  padding: 5px 0; }
+  .frm-fld select.form-control {
+    width: 70%; }
+
 .kc-toggle {
   position: relative;
   margin: 4px 0 0 2px;
@@ -470,29 +500,6 @@ textarea.idea-template {
 .cb-wrap {
   float: right;
   width: 36%; }
-
-.stage-wrap {
-  position: relative;
-  float: left;
-  width: 62%;
-  margin-right: 2%; }
-  .stage-wrap .action-links {
-    width: calc( 100% - 141px);
-    display: none;
-    float: right;
-    overflow: hidden;
-    text-align: right; }
-  .stage-wrap.empty:after {
-    content: attr(data-content);
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    width: 100%;
-    margin-top: -1em; }
-
-.stage-wrap .action-links .active {
-  font-weight: 700;
-  color: #000; }
 
 .action-links .action-links-inner {
   overflow: hidden;
@@ -626,10 +633,6 @@ ol.sortable-options li {
 
 .allow-select .form-elements .allow-multi, .allow-select .form-elements .select-option, .edit-names .form-elements .name-wrap {
   display: block !important; }
-
-.frm-fld {
-  clear: left;
-  padding: 5px 0; }
 
 .frm-fld .available-roles {
   display: none;
