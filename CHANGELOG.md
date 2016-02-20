@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.7.2 - Bugfix/Feature: Added placeholder attribute for `text` and `textarea` fields. See: [#62](https://github.com/kevinchappell/formBuilder/pull/63)
 - v1.7.1 - Bugfix/Feature: Added reinitialization to formBuilder. See: [#62](https://github.com/kevinchappell/formBuilder/pull/62)
 - v1.7.0 - Feature: Added sub-types to the `text` input for `password`, `color`, and `email` html5 inputs.
 - v1.6.8 - Bugfix: Description and required not rendered in formRender
