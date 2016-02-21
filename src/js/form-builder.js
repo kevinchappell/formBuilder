@@ -476,6 +476,7 @@
       cursor: 'move',
       opacity: 0.9,
       beforeStop: function(event, ui) {
+        event = event;
         var lastIndex = $('> li', $sortableFields).length - 1,
           curIndex = ui.placeholder.index();
         if (opts.disableFields.before) {
@@ -489,12 +490,6 @@
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       cancel: 'input, select, .disabled, .frm-fld, .btn',
-      // items: 'li:not(.no-fields)',
-      receive: function(event, ui) {
-        // if (doCancel) {
-        //   $('li:nth-child(' + curIndex + ')', $(this)).remove();
-        // }
-      },
       placeholder: 'frmb-placeholder'
     });
 
@@ -508,15 +503,8 @@
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       revert: 150,
-      change: function(event, ui) {
-        //fix the logic on this to only hide placeholder for disabledFields.before and after
-        // if (ui.placeholder.index() === 0 || ui.placeholder.index() === $('> li', $sortableFields).last().index()) {
-        //   $(ui.placeholder).hide();
-        // } else {
-        //   $(ui.placeholder).show();
-        // }
-      },
       remove: function(event, ui) {
+        event = event;
         if (startIndex === 0) {
           cbUL.prepend(ui.item);
         } else {
@@ -524,12 +512,13 @@
         }
       },
       beforeStop: function(event, ui) {
+        event = event;
         if (ui.placeholder.parent().hasClass('frmb-control')) {
           doCancel = true;
         }
       },
       update: function(event, ui) {
-        // _helpers.stopMoving;
+        event = event;
         elem.stopIndex = ($('li', $sortableFields).index(ui.item) === 0 ? '0' : $('li', $sortableFields).index(ui.item));
         if ($('li', $sortableFields).index(ui.item) < 0) {
           $(this).sortable('cancel');
@@ -538,6 +527,7 @@
         }
       },
       receive: function(event, ui) {
+        event = event;
         if (ui.sender.hasClass('frmb') || ui.sender.hasClass('frmb-control')) {
           $(ui.sender).sortable('cancel');
         }
@@ -555,9 +545,6 @@
     });
 
     elem.before($stageWrap).appendTo($stageWrap);
-
-    // Replace the textarea with sortable list.
-    //elem.before($sortableFields).parent().prepend(frmbHeader).addClass('frmb-wrap').append(actionLinks, viewXML, saveAll);
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
@@ -643,7 +630,7 @@
         }
 
         values.values = [];
-        $field.children().each(function(i) {
+        $field.children().each(function() {
           let value = {
             label: $(this).text(),
             value: $(this).attr('value'),
@@ -751,7 +738,7 @@
       var fieldLabel = $('<div>', {
         'class': 'frm-fld label-wrap'
       });
-      $('<label/>').html(opts.messages.label + ' *').appendTo(fieldLabel);
+      $('<label/>').text(opts.messages.label).appendTo(fieldLabel);
       $('<input>', {
         type: 'text',
         name: 'label',
@@ -763,11 +750,10 @@
       var fieldDesc = $('<div>', {
         'class': 'frm-fld description-wrap'
       });
-      $('<label/>').html(opts.messages.description + ' *').appendTo(fieldDesc);
+      $('<label/>').text(opts.messages.description).appendTo(fieldDesc);
 
-
-      advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
-      advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description form-control" id="description-' + lastID + '" /></div>';
+      advFields += `<div class="frm-fld description-wrap"><label>${opts.messages.description}</label>`;
+      advFields += `<input type="text" name="description" value="${values.description}" class="fld-description form-control" id="description-${lastID}" /></div>`;
 
       advFields += getSubTypeField(values.type);
 
@@ -797,11 +783,6 @@
       return advFields;
     };
 
-    var getSubType = function(type) {
-      let subTypes = opts.messages.subtypes;
-      return subTypes[type] || type;
-    };
-
     var getSubTypeField = function(type) {
       let subTypes = opts.messages.subtypes,
         subType = '';
@@ -809,7 +790,7 @@
       if (subTypes[type]) {
         let subTypeLabel = `<label>${opts.messages.subtype}</label>`;
         subType += `<select name="subtype" class="fld-subtype form-control" id="subtype-${lastID}">`;
-        subTypes[type].forEach(function(element, index) {
+        subTypes[type].forEach(function(element) {
           let selected = type === element ? 'selected' : '';
           subType += `<option value="${element}" ${selected}>${element}</option>`;
         });
@@ -896,7 +877,7 @@
           break;
         case 'select':
           let options,
-          multiple = attrs.multiple ? 'multiple' : '';
+            multiple = attrs.multiple ? 'multiple' : '';
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
             let selected = attrs.values[i].selected ? 'selected' : '';
@@ -937,7 +918,7 @@
     };
 
     // Select field html, since there may be multiple
-    var selectFieldOptions = function(values, name, selected = false, multipleSelect) {
+    var selectFieldOptions = function(values, name, selected, multipleSelect) {
       var selectedType = (multipleSelect ? 'checkbox' : 'radio');
       if (typeof values !== 'object') {
         values = {
@@ -1134,17 +1115,23 @@
       _helpers.disabledTT($(this));
     });
 
-     // Attach a callback to add new options
-    $sortableFields.delegate('.add_opt', 'click', function (e) {
+    // Attach a callback to add new options
+    $sortableFields.on('click', '.add_opt', function(e) {
       e.preventDefault();
-      var multiple = $(this).parents('.fields').first().find('input[name="multiple"]')[0];
-      if(multiple != undefined){
-      var isMultiple = $multiple.checked;
-          }else{
-            var isMultiple = false;
-          }
-         var name = $(this).parents('.fields').find('.select-option:eq(0)').attr('name');
-      $(this).parents('.fields').first().find('.sortable-options').append(selectFieldOptions(false, name, false, isMultiple));
+      var $optionWrap = $(this).parents('.fields:eq(0)'),
+        $multiple = $('[name="multiple"]', $optionWrap),
+        $firstOption = $('.select-option:eq(0)', $optionWrap),
+        name = $firstOption.attr('name'),
+        isMultiple = false;
+
+
+      if ($multiple.length) {
+        isMultiple = $multiple.prop('checked');
+      } else {
+        isMultiple = ($firstOption.attr('type') === 'checkbox');
+      }
+
+      $('.sortable-options', $optionWrap).append(selectFieldOptions(false, name, false, isMultiple));
       _helpers.updateMultipleSelect();
     });
 
@@ -1297,99 +1284,5 @@
         element.data('formBuilder', formBuilder);
       }
     });
-  };
-})(jQuery);
-
-// toXML is a jQuery plugin that turns our form editor into XML
-// @todo this is a total mess that has to be refactored
-(function($) {
-  'use strict';
-  $.fn.toXML = function(options) {
-    var defaults = {
-      prepend: '',
-      attributes: ['class']
-    };
-    var opts = $.extend(defaults, options);
-
-    var serialStr = '',
-      _helpers = {};
-
-    _helpers.getType = function($field) {
-      let type = $('.fld-subtype', $field).val() || $field.attr('class').replace(' form-field', '');
-      return type;
-    };
-
-    _helpers.hyphenCase = (str) => {
-      return str.replace(/([A-Z])/g, function($1) {
-        return '-' + $1.toLowerCase();
-      });
-    };
-
-    _helpers.attrString = function(attrs) {
-      var attributes = [];
-      for (var attr in attrs) {
-        if (attrs.hasOwnProperty(attr) && attrs[attr]) {
-          let attrName = _helpers.hyphenCase(attr),
-            attrString = `${attrName}="${attrs[attr]}"`;
-          attributes.push(attrString);
-        }
-      }
-      return attributes.join(' ');
-    };
-
-    // Begin the core plugin
-    this.each(function() {
-      var liCount = 0;
-      var c = 1;
-
-      if ($(this).children().length >= 1) {
-        serialStr += '<form-template>\n\t<fields>';
-
-        // build new xml
-        $(this).children().each(function() {
-          var $field = $(this);
-          if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
-            for (var att = 0; att < opts.attributes.length; att++) {
-              var roleVals = $.map($('input.roles-field:checked', $field), function(n) {
-                return n.value;
-              }).join(',');
-              var xmlAttrs = {
-                  required: $('input.required', $field).is(':checked'),
-                  multiple: $('input[name="multiple"]', $field).is(':checked'),
-                  type: _helpers.getType($field),
-                  name: $('input.fld-name', $field).val(),
-                  placeholder: $('input.fld-placeholder', $field).val(),
-                  label: $('input.fld-label', $field).val(),
-                  description: $('input.fld-description', $field).val(),
-                  maxLength: $('input.fld-max-length', $field).val(),
-                  role: roleVals,
-                  toggle: $('.checkbox-toggle', $field).is(':checked')
-                },
-                multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
-                attrsString = _helpers.attrString(xmlAttrs),
-                fSlash = (!multipleField ? '/' : '');
-
-              serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
-              if (multipleField) {
-                c = 1;
-                $('.sortable-options li', $field).each(function() {
-                  let $option = $(this),
-                    optionValue = 'value="' + $('.option-value', $option).val() + '"',
-                    optionLabel = $('.option-label', $option).val(),
-                    selected = $('.select-option', $option).is(':checked') ? ' selected="true"' : '';
-                  serialStr += '\n\t\t\t<option' + selected + ' ' + optionValue + '>' + optionLabel + '</option>';
-                  c++;
-                });
-                serialStr += '\n\t\t</field>';
-              }
-            }
-          }
-          liCount++;
-        });
-        serialStr += '\n\t</fields>\n</form-template>';
-      } // if "$(this).children().length >= 1"
-
-    });
-    return (serialStr);
   };
 })(jQuery);

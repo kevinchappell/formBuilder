@@ -45,7 +45,7 @@
         fieldOptions = $('option', field);
       fieldAttrs.id = fieldAttrs.name;
       if (fieldAttrs.type !== 'checkbox') {
-        fieldAttrs.class = 'form-control';
+        fieldAttrs.className = 'form-control';
       }
 
       if (fieldAttrs.required) {
@@ -78,6 +78,7 @@
 
           if (fieldOptions.length) {
             fieldOptions.each(function(index, el) {
+              index = index;
               let optionAttrs = _helpers.parseAttrs(el.attributes),
                 optionAttrsString = _helpers.attrString(optionAttrs),
                 optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
@@ -91,7 +92,7 @@
         case 'radio-group':
           fieldAttrs.type = fieldAttrs.type.replace('-group', '');
 
-          delete fieldAttrs.class;
+          delete fieldAttrs.className;
 
           if (fieldOptions.length) {
             let optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name;
@@ -141,7 +142,7 @@
 
       if (fieldAttrs.type !== 'hidden') {
         fieldMarkup = _helpers.markup('div', {
-          class: 'form-group field-' + fieldAttrs.id
+          className: 'form-group field-' + fieldAttrs.id
         }, fieldMarkup);
       }
 
@@ -150,20 +151,36 @@
 
     _helpers.attrString = function(attrs) {
       let attributes = [];
+
       for (var attr in attrs) {
         if (attrs.hasOwnProperty(attr)) {
-          let attrVal = attrs[attr] ? '="' + attrs[attr] + '"' : '';
-          attributes.push(attr + attrVal);
+          attr = _helpers.safeAttr(attr, attrs[attr]);
+          attributes.push(attr.name + attr.value);
         }
       }
       return attributes.join(' ');
+    };
+
+    _helpers.safeAttr = function(name, value) {
+      let safeAttr = {
+        className: 'class'
+      };
+
+      name = safeAttr[name] || name;
+      value = window.JSON.stringify(value);
+      value = value ? `=${value}` : '';
+
+      return {
+        name,
+        value
+      };
     };
 
     _helpers.parseAttrs = function(attrNodes) {
       var fieldAttrs = {};
       for (var attr in attrNodes) {
         if (attrNodes.hasOwnProperty(attr)) {
-          fieldAttrs[attrNodes[attr]['nodeName']] = attrNodes[attr]['nodeValue'];
+          fieldAttrs[attrNodes[attr].nodeName] = attrNodes[attr].nodeValue;
         }
       }
       return fieldAttrs;
@@ -174,8 +191,9 @@
       var rendered = [];
 
       var formData = $.parseXML($template.val()),
-        fields = $('field', formData),
-        settings = $('settings', formData); // @todo
+        fields = $('field', formData);
+      // @todo - form configuration settings (control position, creatorId, theme etc)
+      // settings = $('settings', formData);
 
       if (!formData) {
         alert('No formData. Add some fields and try again');
