@@ -58,4 +58,8 @@
     padding: 2px;
     display: inline-block;
   }
+
+  &[multiple] {
+    height: auto;
+  }
 }

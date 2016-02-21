@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.7.3
+Version: 1.7.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -278,6 +278,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       if (fieldClass.match(/(select|checkbox-group|radio-group)/)) {
         previewData.values = [];
+        previewData.multiple = $('[name="multiple"]', field).is(':checked');
 
         $('.sortable-options li', field).each(function () {
           var option = {};
@@ -532,7 +533,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
-      cancel: 'input, select, .disabled, .frm-fld, .btn, .no-drag',
+      cancel: 'input, select, .disabled, .frm-fld, .btn',
       // items: 'li:not(.no-fields)',
       receive: function receive(event, ui) {
         // if (doCancel) {
@@ -668,7 +669,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       var fieldAttrs = $field.data('attrs') || {},
           fType = fieldAttrs.type || $field.attr('type'),
-          isMultiple = fType.match(/(checkbox-group|radio-group)/),
+          isMultiple = fType.match(/(select|checkbox-group|radio-group)/),
           values = {};
 
       values.label = _helpers.htmlEncode($field.attr('label'));
@@ -677,17 +678,21 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       values.required = $field.attr('required');
       values.maxLength = $field.attr('max-length');
       values.toggle = $field.attr('toggle');
+      values.multiple = $field.attr('multiple');
       values.type = fType;
       values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
 
       if (isMultiple) {
-        values.multiple = true;
+        if (values.type === 'checkbox-group') {
+          values.multiple = true;
+        }
+
         values.values = [];
         $field.children().each(function (i) {
           var value = {
             label: $(this).text(),
             value: $(this).attr('value'),
-            selected: $field.attr('default') === i ? true : false
+            selected: Boolean($(this).attr('selected'))
           };
           values.values.push(value);
         });
@@ -713,28 +718,29 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       if (!values.values || !values.values.length) {
         values.values = [{
-          selected: 'false',
+          selected: true,
           label: 'Option 1',
           value: 'option-1'
         }, {
-          selected: 'false',
+          selected: false,
           label: 'Option 2',
           value: 'option-2'
         }];
       }
 
       var field = '',
-          name = _helpers.safename(values.name),
-          multiDisplay = values.type === 'checkbox-group' ? 'none' : 'none';
+          name = _helpers.safename(values.name);
 
       field += advFields(values);
       field += '<div class="false-label">' + opts.messages.selectOptions + '</div>';
       field += '<div class="fields">';
 
-      field += '<div class="allow-multi" style="display:' + multiDisplay + '">';
-      field += '<input type="checkbox" id="multiple_' + lastID + '" name="multiple"' + (values.multiple ? 'checked="checked"' : '') + '>';
-      field += '<label class="multiple" for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
-      field += '</div>';
+      if (values.type === 'select') {
+        field += '<div class="allow-multi">';
+        field += '<input type="checkbox" id="multiple_' + lastID + '" name="multiple"' + (values.multiple ? 'checked="checked"' : '') + '>';
+        field += '<label class="multiple" for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
+        field += '</div>';
+      }
       field += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
@@ -755,10 +761,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       // TODO: refactor to move functions into this object
       var appendFieldType = {
-        // 'text': appendTextInput(values),
-        // 'checkbox': appendCheckbox(values),
-        // 'select': appendSelectList(values),
-        // 'textarea': appendTextarea(values),
         '2': appendInput,
         'date': appendInput,
         'autocomplete': appendInput,
@@ -936,19 +938,22 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           preview = '<textarea class="form-control"></textarea>';
           break;
         case 'select':
-          var options;
+          var options = undefined,
+              multiple = attrs.multiple ? 'multiple' : '';
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
-            options += '<option value="' + attrs.values[i].value + '">' + attrs.values[i].label + '</option>';
+            var selected = attrs.values[i].selected ? 'selected' : '';
+            options += '<option value="' + attrs.values[i].value + '" ' + selected + '>' + attrs.values[i].label + '</option>';
           }
-          preview = '<' + attrs.type + ' class="no-drag form-control">' + options + '</' + attrs.type + '>';
+          preview = '<' + attrs.type + ' class="form-control" ' + multiple + '>' + options + '</' + attrs.type + '>';
           break;
         case 'checkbox-group':
         case 'radio-group':
           var type = attrs.type.replace('-group', '');
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
-            preview += '<div><input type="' + type + '" id="' + type + '-' + epoch + '-' + i + '" value="' + attrs.values[i].value + '" /><label for="' + type + '-' + epoch + '-' + i + '">' + attrs.values[i].label + '</label></div>';
+            var checked = attrs.values[i].selected ? 'checked' : '';
+            preview += '<div><input type="' + type + '" id="' + type + '-' + epoch + '-' + i + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + type + '-' + epoch + '-' + i + '">' + attrs.values[i].label + '</label></div>';
           }
           break;
         case 'text':
@@ -976,17 +981,22 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // Select field html, since there may be multiple
     var selectFieldOptions = function selectFieldOptions(values, name, selected, multipleSelect) {
-      var selectedType = multipleSelect ? 'checkbox' : 'radio';
+      if (selected === undefined) selected = false;
 
+      var selectedType = multipleSelect ? 'checkbox' : 'radio';
       if (typeof values !== 'object') {
         values = {
           label: '',
-          value: ''
+          value: '',
+          selected: false
         };
       } else {
         values.label = values.label || '';
         values.value = values.value || '';
+        values.selected = values.selected || false;
       }
+
+      selected = values.selected ? 'checked' : '';
 
       field = '<li>';
       field += '<input type="' + selectedType + '" ' + selected + ' class="select-option" name="' + name + '" />';
