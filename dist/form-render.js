@@ -1,6 +1,6 @@
 /*
 formBuilder - git@github.com:kevinchappell/formBuilder.git
-Version: 1.7.3
+Version: 1.7.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -145,17 +145,26 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'checkbox-group':
         case 'radio-group':
           fieldAttrs.type = fieldAttrs.type.replace('-group', '');
+
           delete fieldAttrs['class'];
 
           if (fieldOptions.length) {
             (function () {
-              var optionName = fieldAttrs.name + '[]';
+              var optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name;
               fieldOptions.each(function (index, el) {
-                var optionAttrs = $.extend(fieldAttrs, _helpers.parseAttrs(el.attributes));
+                var optionAttrs = $.extend({}, fieldAttrs, _helpers.parseAttrs(el.attributes)),
+                    optionAttrsString = undefined,
+                    optionText = undefined;
+
+                if (optionAttrs.selected) {
+                  delete optionAttrs.selected;
+                  optionAttrs.checked = null;
+                }
+
                 optionAttrs.name = optionName;
                 optionAttrs.id = fieldAttrs.id + '-' + index;
-                var optionAttrsString = _helpers.attrString(optionAttrs),
-                    optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
+                optionAttrsString = _helpers.attrString(optionAttrs);
+                optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
 
                 optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionText + '</label><br>';
               });

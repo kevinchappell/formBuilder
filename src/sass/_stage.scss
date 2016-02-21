@@ -143,6 +143,10 @@
       padding: 2px;
       display: inline-block;
     }
+
+    select[multiple] {
+      height: auto;
+    }
   }
 
   .required_asterisk {
