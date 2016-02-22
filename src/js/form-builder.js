@@ -1134,11 +1134,16 @@
       _helpers.disabledTT($(this));
     });
 
-    // Attach a callback to add new options
-    $sortableFields.delegate('.add_opt', 'click', function(e) {
+     // Attach a callback to add new options
+    $sortableFields.delegate('.add_opt', 'click', function (e) {
       e.preventDefault();
-      var isMultiple = $(this).parents('.fields').first().find('input[name="multiple"]')[0].checked,
-        name = $(this).parents('.fields').find('.select-option:eq(0)').attr('name');
+      var multiple = $(this).parents('.fields').first().find('input[name="multiple"]')[0];
+      if(multiple != undefined){
+      var isMultiple = $multiple.checked;
+          }else{
+            var isMultiple = false;
+          }
+         var name = $(this).parents('.fields').find('.select-option:eq(0)').attr('name');
       $(this).parents('.fields').first().find('.sortable-options').append(selectFieldOptions(false, name, false, isMultiple));
       _helpers.updateMultipleSelect();
     });
