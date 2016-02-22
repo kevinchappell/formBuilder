@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.3.0
+Version: 1.7.5
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -269,7 +269,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var preview,
           previewData = {
         type: fieldType,
-        label: $('.fld-label', field).val()
+        label: $('.fld-label', field).val(),
+        placeholder: $('.fld-placeholder', field).val() || ''
       };
 
       if (fieldClass === 'checkbox') {
@@ -914,10 +915,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           preview = '',
           epoch = new Date().getTime();
       var toggle = attrs.toggle ? 'toggle' : '';
+
       switch (attrs.type) {
         case 'textarea':
         case 'rich-text':
-          preview = '<textarea class="form-control"></textarea>';
+          preview = '<textarea class="form-control" placeholder="' + attrs.placeholder + '"></textarea>';
           break;
         case 'select':
           var options = undefined,
@@ -942,7 +944,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'password':
         case 'email':
         case 'date':
-          preview = '<input type="' + attrs.type + '" placeholder="" class="form-control">';
+          preview = '<input type="' + attrs.type + '" placeholder="' + attrs.placeholder + '" class="form-control">';
           break;
         case 'color':
           preview = '<input type="' + attrs.type + '" placeholder="" class="form-control"> ' + opts.messages.selectColor;

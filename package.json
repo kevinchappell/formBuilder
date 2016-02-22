@@ -1,7 +1,9 @@
 {
   "name": "formBuilder",
-  "version": "1.3.0",
-  "main": "dist/formBuilder.js",
+  "version": "1.7.5",
+  "main": [
+    "dist/*"
+  ],
   "homepage": "http://kevinchappell.github.io/formBuilder/",
   "repository": "kevinchappell/formBuilder",
   "authors": [

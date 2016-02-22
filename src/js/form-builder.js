@@ -223,7 +223,8 @@
       var preview,
         previewData = {
           type: fieldType,
-          label: $('.fld-label', field).val()
+          label: $('.fld-label', field).val(),
+          placeholder: $('.fld-placeholder', field).val() || ''
         };
 
       if (fieldClass === 'checkbox') {
@@ -870,10 +871,11 @@
         preview = '',
         epoch = new Date().getTime();
       let toggle = attrs.toggle ? 'toggle' : '';
+
       switch (attrs.type) {
         case 'textarea':
         case 'rich-text':
-          preview = `<textarea class="form-control"></textarea>`;
+          preview = `<textarea class="form-control" placeholder="${attrs.placeholder}"></textarea>`;
           break;
         case 'select':
           let options,
@@ -898,7 +900,7 @@
         case 'password':
         case 'email':
         case 'date':
-          preview = `<input type="${attrs.type}" placeholder="" class="form-control">`;
+          preview = `<input type="${attrs.type}" placeholder="${attrs.placeholder}" class="form-control">`;
           break;
         case 'color':
           preview = `<input type="${attrs.type}" placeholder="" class="form-control"> ${opts.messages.selectColor}`;
@@ -1123,7 +1125,6 @@
         $firstOption = $('.select-option:eq(0)', $optionWrap),
         name = $firstOption.attr('name'),
         isMultiple = false;
-
 
       if ($multiple.length) {
         isMultiple = $multiple.prop('checked');

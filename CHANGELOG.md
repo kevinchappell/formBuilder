@@ -1,5 +1,8 @@
 # Changelog
 
+- v1.7.5
+  - Bugfix: Multiple selection bug for checkbox group and radio group fields. [#66](https://github.com/kevinchappell/formBuilder/pull/66)
+  - Chore: Refactor build process, Add linter and code style settings, formRender santized attributes [#67](https://github.com/kevinchappell/formBuilder/pull/67)
 - v1.7.4 - Feature: Multiple selection. See: [#65](https://github.com/kevinchappell/formBuilder/pull/65)
 - v1.7.3 - Feature: Mobile support for touch based drag and drop. See: [#64](https://github.com/kevinchappell/formBuilder/pull/64)
 - v1.7.2 - Bugfix/Feature: Added placeholder attribute for `text` and `textarea` fields. See: [#63](https://github.com/kevinchappell/formBuilder/pull/63)
