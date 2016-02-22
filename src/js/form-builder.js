@@ -58,7 +58,7 @@
         labelEmpty: 'Field Label cannot be empty',
         limitRole: 'Limit access to one or more of the following roles:',
         mandatory: 'Mandatory',
-        maxLength: 'Max Length',
+        maxlength: 'Max Length',
         minOptionMessage: 'This field requires a minimum of 2 options',
         name: 'Name',
         no: 'No',
@@ -74,7 +74,7 @@
           text: '',
           textarea: '',
           email: 'Enter you email',
-          password: 'ENter your password'
+          password: 'Enter your password'
         },
         preview: 'Preview',
         radioGroup: 'Radio Group',
@@ -107,6 +107,7 @@
       }
     };
 
+    // @todo function to set parent types for subtypes
     defaults.messages.subtypes.password = defaults.messages.subtypes.text;
     defaults.messages.subtypes.email = defaults.messages.subtypes.text;
     defaults.messages.subtypes.color = defaults.messages.subtypes.text;
@@ -226,6 +227,11 @@
           label: $('.fld-label', field).val(),
           placeholder: $('.fld-placeholder', field).val() || ''
         };
+
+      let maxlength = $('.fld-maxlength', field);
+      if (maxlength) {
+        previewData.maxlength = maxlength.val();
+      }
 
       if (fieldClass === 'checkbox') {
         previewData.toggle = $('.checkbox-toggle', field).is(':checked');
@@ -619,7 +625,7 @@
       values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
       values.role = $field.attr('role');
       values.required = $field.attr('required');
-      values.maxLength = $field.attr('max-length');
+      values.maxlength = $field.attr('maxlength');
       values.toggle = $field.attr('toggle');
       values.multiple = $field.attr('multiple');
       values.type = fType;
@@ -765,7 +771,7 @@
 
       advFields += '<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>';
 
-      advFields += '<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles_label">' + opts.messages.limitRole + '</label>';
+      advFields += '<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>';
       advFields += '<div class="frm-fld available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>';
 
       for (key in opts.roles) {
@@ -777,8 +783,8 @@
 
       // if field type is not checkbox, checkbox/radio group or select list, add max length
       if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden']) < 0) {
-        advFields += '<div class="frm-fld"><label class="max-length-label">' + opts.messages.maxLength + '</label>';
-        advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length form-control" id="max-length-' + lastID + '" /></div>';
+        advFields += '<div class="frm-fld"><label class="maxlength-label">' + opts.messages.maxlength + '</label>';
+        advFields += '<input type="text" name="maxlength" maxlength="4" value="' + (values.maxlength !== undefined ? values.maxlength : '') + '" class="fld-maxlength form-control" id="maxlength-' + lastID + '" /></div>';
       }
 
       return advFields;
@@ -836,7 +842,7 @@
       li += '<div class="form-elements">';
       li += '<div class="frm-fld">';
       li += '<label>&nbsp;</label>';
-      li += '<input class="required" type="checkbox" value="1" name="required-' + lastID + '" id="required-' + lastID + '"' + (required === 'true' ? ' checked="checked"' : '') + ' /><label class="required_label" for="required-' + lastID + '">' + opts.messages.required + '</label>';
+      li += '<input class="required" type="checkbox" value="1" name="required-' + lastID + '" id="required-' + lastID + '"' + (required === 'true' ? ' checked="checked"' : '') + ' /><label class="required-label" for="required-' + lastID + '">' + opts.messages.required + '</label>';
       if (values.type === 'checkbox') {
         li += '<div class="frm-fld">';
         li += '<label>&nbsp;</label>';
@@ -1032,7 +1038,7 @@
       }
     });
 
-    $sortableFields.delegate('input.fld-max-length', 'keyup', function() {
+    $sortableFields.delegate('input.fld-maxlength', 'keyup', function() {
       $(this).val(_helpers.forceNumber($(this).val()));
     });
 

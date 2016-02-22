@@ -68,7 +68,7 @@
                   placeholder: $('input.fld-placeholder', $field).val(),
                   label: $('input.fld-label', $field).val(),
                   description: $('input.fld-description', $field).val(),
-                  maxLength: $('input.fld-max-length', $field).val(),
+                  maxlength: $('input.fld-maxlength', $field).val(),
                   role: roleVals,
                   toggle: $('.checkbox-toggle', $field).is(':checked')
                 },

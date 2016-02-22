@@ -71,7 +71,8 @@
         <p>To start building forms with this plugin simply call <code>formBuilder()</code> on the textarea you would like to make your editor. FormBuilder takes a number of options and is translatable through these options.</p>
         <pre><code>jQuery(document).ready(function($) {
   'use strict';
-  $(document.getElementById('form-builder-template')).formBuilder();
+  var template = document.getElementById('form-builder-template');
+  $(template).formBuilder();
 });
 </code></pre>
         <div class="build-form">
