@@ -82,7 +82,6 @@
               let optionAttrs = _helpers.parseAttrs(el.attributes),
                 optionAttrsString = _helpers.attrString(optionAttrs),
                 optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
-
               optionsMarkup += `<option ${optionAttrsString}>${optionText}</option>`;
             });
           }
@@ -109,7 +108,7 @@
               optionAttrs.name = optionName;
               optionAttrs.id = fieldAttrs.id + '-' + index;
               optionAttrsString = _helpers.attrString(optionAttrs);
-              optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
+              optionText = el.innerHTML || el.innerContent || el.innerText || el.value || '';
 
               optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionText}</label><br>`;
             });

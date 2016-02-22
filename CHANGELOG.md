@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.7.6 - Bugfix: radio and checkbox group options without values cause formRender error.
 - v1.7.5
   - Bugfix: Multiple selection bug for checkbox group and radio group fields. [#66](https://github.com/kevinchappell/formBuilder/pull/66)
   - Chore: Refactor build process, Add linter and code style settings, formRender santized attributes [#67](https://github.com/kevinchappell/formBuilder/pull/67)
