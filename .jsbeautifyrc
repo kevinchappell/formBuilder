@@ -1,0 +1,21 @@
+{
+  "html": {
+    "indent_size": 2,
+    "indent_char": " "
+  },
+  "css": {
+    "indent_size": 2,
+    "indent_char": " ",
+    "indent_with_tabs": true,
+    "newline-between-rules": true,
+    "selector_separator_newline": true,
+    "allowed_file_extensions": ["css", "scss", "sass", "less"]
+  },
+  "js": {
+    "indent_size": 2,
+    "indent_char": " ",
+    "jslint_happy": false,
+    "indent_with_tabs": false,
+    "space_after_anon_function": false
+  }
+}
