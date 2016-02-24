@@ -1,0 +1,14 @@
+
+.icon-autocomplete:before { content: '\e800'; } /* '' */
+.icon-calendar:before { content: '\e801'; } /* '' */
+.icon-checkbox:before { content: '\e802'; } /* '' */
+.icon-checkbox-group:before { content: '\e803'; } /* '' */
+.icon-radio-group:before { content: '\e804'; } /* '' */
+.icon-rich-text:before { content: '\e805'; } /* '' */
+.icon-select:before { content: '\e806'; } /* '' */
+.icon-text-area:before { content: '\e807'; } /* '' */
+.icon-text-input:before { content: '\e808'; } /* '' */
+.icon-pencil:before { content: '\e809'; } /* '' */
+.icon-attach:before { content: '\e80a'; } /* '' */
+.icon-hidden-input:before { content: '\e80b'; } /* '' */
+.icon-resize-vertical:before { content: '\e80c'; } /* '' */
