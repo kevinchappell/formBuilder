@@ -1,5 +1,9 @@
 # Changelog
 
+- v1.7.7
+  - Bugfix: Close button doesn't close #71
+  - Bugfix: max-length attribute should be maxlength #70
+  - Chore: Add gulp plumber to build process to catch errors instead of fail build.
 - v1.7.6 - Bugfix: radio and checkbox group options without values cause formRender error.
 - v1.7.5
   - Bugfix: Multiple selection bug for checkbox group and radio group fields. [#66](https://github.com/kevinchappell/formBuilder/pull/66)

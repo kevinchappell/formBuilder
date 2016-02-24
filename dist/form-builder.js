@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.7.6
+Version: 1.7.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -163,6 +163,53 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         doCancel = false,
         _helpers = {};
 
+    /**
+     * Convert an attrs object into a string
+     * @param  {object} attrs object of attributes for markup
+     * @return {string}
+     */
+    _helpers.attrString = function (attrs) {
+      var attributes = [];
+
+      for (var attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          attr = _helpers.safeAttr(attr, attrs[attr]);
+          attributes.push(attr.name + attr.value);
+        }
+      }
+      return attributes.join(' ');
+    };
+
+    /**
+     * Convert camelCase into lowercase-hyphen
+     * @param  {string} str
+     * @return {string}
+     */
+    _helpers.hyphenCase = function (str) {
+      return str.replace(/([A-Z])/g, function ($1) {
+        return '-' + $1.toLowerCase();
+      });
+    };
+
+    _helpers.safeAttr = function (name, value) {
+      var safeAttr = {
+        className: 'class'
+      };
+
+      name = safeAttr[name] || _helpers.hyphenCase(name);
+      value = window.JSON.stringify(value);
+      value = value ? '=' + value : '';
+
+      return {
+        name: name,
+        value: value
+      };
+    };
+
+    /**
+     * Add a mobile class
+     * @return {string}
+     */
     _helpers.mobileClass = function () {
       var mobileClass = '';
       (function (a) {
@@ -270,13 +317,17 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var preview,
           previewData = {
         type: fieldType,
-        label: $('.fld-label', field).val(),
-        placeholder: $('.fld-placeholder', field).val() || ''
+        label: $('.fld-label', field).val()
       };
 
       var maxlength = $('.fld-maxlength', field);
       if (maxlength) {
         previewData.maxlength = maxlength.val();
+      }
+
+      var placeholder = $('.fld-placeholder', field).val();
+      if (placeholder) {
+        previewData.placeholder = placeholder;
       }
 
       if (fieldClass === 'checkbox') {
@@ -740,7 +791,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close_field">' + opts.messages.close + '</a></div>';
+      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
@@ -922,10 +973,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           epoch = new Date().getTime();
       var toggle = attrs.toggle ? 'toggle' : '';
 
+      attrs.className = attrs.className ? attrs.className + ' form-control' : 'form-control';
+      var attrsString = _helpers.attrString(attrs);
+
       switch (attrs.type) {
         case 'textarea':
         case 'rich-text':
-          preview = '<textarea class="form-control" placeholder="' + attrs.placeholder + '"></textarea>';
+          preview = '<textarea ' + attrsString + '></textarea>';
           break;
         case 'select':
           var options = undefined,
@@ -950,17 +1004,17 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'password':
         case 'email':
         case 'date':
-          preview = '<input type="' + attrs.type + '" placeholder="' + attrs.placeholder + '" class="form-control">';
+          preview = '<input ' + attrsString + '>';
           break;
         case 'color':
-          preview = '<input type="' + attrs.type + '" placeholder="" class="form-control"> ' + opts.messages.selectColor;
+          preview = '<input type="' + attrs.type + '" class="form-control"> ' + opts.messages.selectColor;
           break;
         case 'hidden':
         case 'checkbox':
-          preview = '<input type="' + attrs.type + '" ' + toggle + ' placeholder="">';
+          preview = '<input type="' + attrs.type + '" ' + toggle + ' >';
           break;
         case 'autocomplete':
-          preview = '<input class="ui-autocomplete-input form-control" autocomplete="on" placeholder="">';
+          preview = '<input class="ui-autocomplete-input form-control" autocomplete="on">';
           break;
         default:
           preview = '<' + attrs.type + '></' + attrs.type + '>';
@@ -1027,20 +1081,27 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // toggle fields
-    $sortableFields.on('mousedown touchstart', '.toggle-form', function (e) {
+    $sortableFields.on('click touchstart', '.toggle-form', function (e) {
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
         var targetID = $(this).attr('id');
-        $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
-        $(document.getElementById(targetID + '-fld')).slideToggle(250, function () {
-          _helpers.save();
-        });
+        _helpers.toggleEdit(targetID + '-item');
         e.handled = true;
       } else {
         return false;
       }
     });
+
+    _helpers.toggleEdit = function (fieldId) {
+      var field = document.getElementById(fieldId),
+          toggleBtn = $('.toggle-form', field),
+          editMode = $('.frm-holder', field);
+      toggleBtn.toggleClass('open').parent().next('.prev-holder').slideToggle(250);
+      editMode.slideToggle(250, function () {
+        _helpers.save();
+      });
+    };
 
     // update preview to label
     $sortableFields.on('keyup change', 'input[name="label"]', function () {
@@ -1087,7 +1148,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // Delete field
-    $sortableFields.delegate('.delete-confirm', 'click', function (e) {
+    $sortableFields.on('click touchstart', '.delete-confirm', function (e) {
       e.preventDefault();
 
       // lets see if the user really wants to remove this field... FOREVER
@@ -1186,9 +1247,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // Attach a callback to close link
-    $sortableFields.delegate('.close_field', 'click', function (e) {
-      e.preventDefault();
-      $(this).parents('li.form-field').find('.toggle-form').trigger('click');
+    $sortableFields.on('click touchstart', '.close-field', function () {
+      var fieldId = $(this).parents('li.form-field:eq(0)').attr('id');
+      _helpers.toggleEdit(fieldId);
     });
 
     // Attach a callback to add new radio fields
