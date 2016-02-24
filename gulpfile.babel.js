@@ -124,6 +124,7 @@ gulp.task('js', function() {
   return jsFiles.forEach(function(jsFileGlob, key) {
     // Demo scripts
     gulp.src(jsFileGlob)
+      .pipe(plugins.plumber({errorHandler: false}))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.js'))
       .pipe(banner())
@@ -131,6 +132,7 @@ gulp.task('js', function() {
 
     // Demo scripts minified
     gulp.src(jsFileGlob)
+      .pipe(plugins.plumber({errorHandler: false}))
       .pipe(plugins.sourcemaps.init())
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))

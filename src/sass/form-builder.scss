@@ -31,7 +31,8 @@ textarea.idea-template {
   clear: both;
 }
 
-.cb-wrap, .stage-wrap {
+.cb-wrap,
+.stage-wrap {
   vertical-align: top;
 }
 
@@ -70,7 +71,9 @@ textarea.idea-template {
   color: $grey;
 }
 
-.action-links a.clear-all:hover, .del-button:hover, ul.frmb span.required {
+.action-links a.clear-all:hover,
+.del-button:hover,
+ul.frmb span.required {
   color: $error;
 }
 
@@ -94,7 +97,8 @@ textarea.idea-template {
   padding: 10px 5px;
 }
 
-.form-elements .false-label, .form-elements .fields {
+.form-elements .false-label,
+.form-elements .fields {
   margin-top: 10px;
 }
 
@@ -114,7 +118,8 @@ textarea.idea-template {
   border-radius: 0 3px 3px 0;
 }
 
-.form-elements .sortable-options li:nth-child(1) .remove, .form-elements .sortable-options li:nth-child(2) .remove {
+.form-elements .sortable-options li:nth-child(1) .remove,
+.form-elements .sortable-options li:nth-child(2) .remove {
   display: none;
 }
 
@@ -131,7 +136,8 @@ ol.sortable-options li {
   position: relative;
 }
 
-.form-elements .fields input[type=checkbox], .form-elements .fields input[type=radio] {
+.form-elements .fields input[type=checkbox],
+.form-elements .fields input[type=radio] {
   float: left;
   margin-right: 5px;
 }
@@ -155,7 +161,7 @@ ol.sortable-options li {
   border: 1px solid $error;
 }
 
-.form-elements input[type=text].fld-max-length {
+.form-elements input[type=text].fld-maxlength {
   width: 10%;
 }
 
@@ -164,7 +170,8 @@ ol.sortable-options li {
   border: 1px solid #afafab;
 }
 
-.form-elements .false-label, .form-elements label {
+.form-elements .false-label,
+.form-elements label {
   width: 18%;
   float: left;
   margin-left: 5px;
@@ -176,24 +183,26 @@ ol.sortable-options li {
 }
 
 .form-elements {
-  label.multiple,
-  label.required_label,
-  label.toggle-label,
-  label.roles_label {
-    float: none;
-    display: inline;
-    font-weight: 400;
-    width: auto;
+  label {
+    &.multiple,
+    &.required-label,
+    &.toggle-label,
+    &.roles-label {
+      display: inline;
+      float: none;
+      font-weight: 400;
+      width: auto;
+    }
   }
 }
 
 .form-elements label em {
   display: block;
   font-weight: 400;
-  font-size: 0.75em;
+  font-size: .75em;
 }
 
-.form-elements label.max-length-label {
+.form-elements label.maxlength-label {
   line-height: 1em;
 }
 
@@ -201,11 +210,15 @@ ol.sortable-options li {
   margin-top: 10px;
 }
 
-.form-elements .allow-multi, .form-elements .name-wrap, .form-elements .select-option {
+.form-elements .allow-multi,
+.form-elements .name-wrap,
+.form-elements .select-option {
   // display: none;
 }
 
-.allow-select .form-elements .allow-multi, .allow-select .form-elements .select-option, .edit-names .form-elements .name-wrap {
+.allow-select .form-elements .allow-multi,
+.allow-select .form-elements .select-option,
+.edit-names .form-elements .name-wrap {
   display: block !important;
 }
 
@@ -231,11 +244,15 @@ ol.sortable-options li {
   top: auto;
 }
 
-.form-elements, .frm-fld, .multi-row span, textarea {
+.form-elements,
+.frm-fld,
+.multi-row span,
+textarea {
   display: block;
 }
 
-.form-elements:after, .frm-fld:after {
+.form-elements:after,
+.frm-fld:after {
   content: ".";
   display: block;
   height: 0;
@@ -243,11 +260,15 @@ ol.sortable-options li {
   visibility: hidden;
 }
 
-.form-elements .fields div:hover, .frmb .legend, .frmb .prev-holder, .frmb .prev-holder * {
+.form-elements .fields div:hover,
+.frmb .legend,
+.frmb .prev-holder,
+.frmb .prev-holder * {
   cursor: move;
 }
 
-.prev-holder input[type=checkbox], .prev-holder input[type=radio] {
+.prev-holder input[type=checkbox],
+.prev-holder input[type=radio] {
   margin-right: 5px;
 }
 
@@ -264,7 +285,8 @@ ol.sortable-options li {
   font-size: 12px;
 }
 
-.frmb-tt:after, .frmb-tt:before {
+.frmb-tt:after,
+.frmb-tt:before {
   content: '';
   position: absolute;
   border-style: solid;
@@ -288,15 +310,20 @@ ol.sortable-options li {
   color: $white;
 }
 
-.frmb li.moving, .frmb li.ui-sortable-helper, .frmb-control li.moving, .frmb-control li.ui-sortable-helper {
+.frmb li.moving,
+.frmb li.ui-sortable-helper,
+.frmb-control li.moving,
+.frmb-control li.ui-sortable-helper {
   transition: box-shadow 250ms ease-in-out;
   box-shadow: 2px 2px 6px 0 $grey;
   border: 1px solid $white;
 }
 
 .frmb li {
-  &:hover, .fb-mobile & {
-    .del-button, .toggle-form {
+  &:hover,
+  .fb-mobile & {
+    .del-button,
+    .toggle-form {
       opacity: 1;
     }
   }
@@ -332,7 +359,8 @@ ol.sortable-options li {
   }
 }
 
-.frmb-control, table.form ul.frmb-control {
+.frmb-control,
+table.form ul.frmb-control {
   margin: 0;
   padding: 0;
   min-width: 208px;
@@ -349,7 +377,8 @@ ol.sortable-options li {
   margin-top: 0;
 }
 
-.action-links a.export-xml:hover, .toggle-form.closed:hover {
+.action-links a.export-xml:hover,
+.toggle-form.closed:hover {
   color: #6fc245;
 }
 
@@ -471,6 +500,7 @@ ul.frmb {
 }
 
 /*   ------------   TOOLTIP   ------------   */
+
 *[tooltip] {
   position: relative;
 }

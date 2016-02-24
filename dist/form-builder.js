@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.7.6
+Version: 1.7.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -110,7 +110,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         labelEmpty: 'Field Label cannot be empty',
         limitRole: 'Limit access to one or more of the following roles:',
         mandatory: 'Mandatory',
-        maxLength: 'Max Length',
+        maxlength: 'Max Length',
         minOptionMessage: 'This field requires a minimum of 2 options',
         name: 'Name',
         no: 'No',
@@ -126,7 +126,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           text: '',
           textarea: '',
           email: 'Enter you email',
-          password: 'ENter your password'
+          password: 'Enter your password'
         },
         preview: 'Preview',
         radioGroup: 'Radio Group',
@@ -154,6 +154,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
     };
 
+    // @todo function to set parent types for subtypes
     defaults.messages.subtypes.password = defaults.messages.subtypes.text;
     defaults.messages.subtypes.email = defaults.messages.subtypes.text;
     defaults.messages.subtypes.color = defaults.messages.subtypes.text;
@@ -162,6 +163,53 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         doCancel = false,
         _helpers = {};
 
+    /**
+     * Convert an attrs object into a string
+     * @param  {object} attrs object of attributes for markup
+     * @return {string}
+     */
+    _helpers.attrString = function (attrs) {
+      var attributes = [];
+
+      for (var attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          attr = _helpers.safeAttr(attr, attrs[attr]);
+          attributes.push(attr.name + attr.value);
+        }
+      }
+      return attributes.join(' ');
+    };
+
+    /**
+     * Convert camelCase into lowercase-hyphen
+     * @param  {string} str
+     * @return {string}
+     */
+    _helpers.hyphenCase = function (str) {
+      return str.replace(/([A-Z])/g, function ($1) {
+        return '-' + $1.toLowerCase();
+      });
+    };
+
+    _helpers.safeAttr = function (name, value) {
+      var safeAttr = {
+        className: 'class'
+      };
+
+      name = safeAttr[name] || _helpers.hyphenCase(name);
+      value = window.JSON.stringify(value);
+      value = value ? '=' + value : '';
+
+      return {
+        name: name,
+        value: value
+      };
+    };
+
+    /**
+     * Add a mobile class
+     * @return {string}
+     */
     _helpers.mobileClass = function () {
       var mobileClass = '';
       (function (a) {
@@ -269,9 +317,18 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       var preview,
           previewData = {
         type: fieldType,
-        label: $('.fld-label', field).val(),
-        placeholder: $('.fld-placeholder', field).val() || ''
+        label: $('.fld-label', field).val()
       };
+
+      var maxlength = $('.fld-maxlength', field);
+      if (maxlength) {
+        previewData.maxlength = maxlength.val();
+      }
+
+      var placeholder = $('.fld-placeholder', field).val();
+      if (placeholder) {
+        previewData.placeholder = placeholder;
+      }
 
       if (fieldClass === 'checkbox') {
         previewData.toggle = $('.checkbox-toggle', field).is(':checked');
@@ -664,7 +721,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
       values.role = $field.attr('role');
       values.required = $field.attr('required');
-      values.maxLength = $field.attr('max-length');
+      values.maxlength = $field.attr('maxlength');
       values.toggle = $field.attr('toggle');
       values.multiple = $field.attr('multiple');
       values.type = fType;
@@ -734,7 +791,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close_field">' + opts.messages.close + '</a></div>';
+      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
@@ -809,7 +866,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       advFields += '<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>';
 
-      advFields += '<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles_label">' + opts.messages.limitRole + '</label>';
+      advFields += '<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>';
       advFields += '<div class="frm-fld available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>';
 
       for (key in opts.roles) {
@@ -821,8 +878,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       // if field type is not checkbox, checkbox/radio group or select list, add max length
       if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden']) < 0) {
-        advFields += '<div class="frm-fld"><label class="max-length-label">' + opts.messages.maxLength + '</label>';
-        advFields += '<input type="text" name="max-length" max-length="4" value="' + (values.maxLength !== undefined ? values.maxLength : '') + '" class="fld-max-length form-control" id="max-length-' + lastID + '" /></div>';
+        advFields += '<div class="frm-fld"><label class="maxlength-label">' + opts.messages.maxlength + '</label>';
+        advFields += '<input type="text" name="maxlength" maxlength="4" value="' + (values.maxlength !== undefined ? values.maxlength : '') + '" class="fld-maxlength form-control" id="maxlength-' + lastID + '" /></div>';
       }
 
       return advFields;
@@ -880,7 +937,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       li += '<div class="form-elements">';
       li += '<div class="frm-fld">';
       li += '<label>&nbsp;</label>';
-      li += '<input class="required" type="checkbox" value="1" name="required-' + lastID + '" id="required-' + lastID + '"' + (required === 'true' ? ' checked="checked"' : '') + ' /><label class="required_label" for="required-' + lastID + '">' + opts.messages.required + '</label>';
+      li += '<input class="required" type="checkbox" value="1" name="required-' + lastID + '" id="required-' + lastID + '"' + (required === 'true' ? ' checked="checked"' : '') + ' /><label class="required-label" for="required-' + lastID + '">' + opts.messages.required + '</label>';
       if (values.type === 'checkbox') {
         li += '<div class="frm-fld">';
         li += '<label>&nbsp;</label>';
@@ -916,10 +973,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           epoch = new Date().getTime();
       var toggle = attrs.toggle ? 'toggle' : '';
 
+      attrs.className = attrs.className ? attrs.className + ' form-control' : 'form-control';
+      var attrsString = _helpers.attrString(attrs);
+
       switch (attrs.type) {
         case 'textarea':
         case 'rich-text':
-          preview = '<textarea class="form-control" placeholder="' + attrs.placeholder + '"></textarea>';
+          preview = '<textarea ' + attrsString + '></textarea>';
           break;
         case 'select':
           var options = undefined,
@@ -944,17 +1004,17 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'password':
         case 'email':
         case 'date':
-          preview = '<input type="' + attrs.type + '" placeholder="' + attrs.placeholder + '" class="form-control">';
+          preview = '<input ' + attrsString + '>';
           break;
         case 'color':
-          preview = '<input type="' + attrs.type + '" placeholder="" class="form-control"> ' + opts.messages.selectColor;
+          preview = '<input type="' + attrs.type + '" class="form-control"> ' + opts.messages.selectColor;
           break;
         case 'hidden':
         case 'checkbox':
-          preview = '<input type="' + attrs.type + '" ' + toggle + ' placeholder="">';
+          preview = '<input type="' + attrs.type + '" ' + toggle + ' >';
           break;
         case 'autocomplete':
-          preview = '<input class="ui-autocomplete-input form-control" autocomplete="on" placeholder="">';
+          preview = '<input class="ui-autocomplete-input form-control" autocomplete="on">';
           break;
         default:
           preview = '<' + attrs.type + '></' + attrs.type + '>';
@@ -1021,20 +1081,27 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // toggle fields
-    $sortableFields.on('mousedown touchstart', '.toggle-form', function (e) {
+    $sortableFields.on('click touchstart', '.toggle-form', function (e) {
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
         var targetID = $(this).attr('id');
-        $(this).toggleClass('open').parent().next('.prev-holder').slideToggle(250);
-        $(document.getElementById(targetID + '-fld')).slideToggle(250, function () {
-          _helpers.save();
-        });
+        _helpers.toggleEdit(targetID + '-item');
         e.handled = true;
       } else {
         return false;
       }
     });
+
+    _helpers.toggleEdit = function (fieldId) {
+      var field = document.getElementById(fieldId),
+          toggleBtn = $('.toggle-form', field),
+          editMode = $('.frm-holder', field);
+      toggleBtn.toggleClass('open').parent().next('.prev-holder').slideToggle(250);
+      editMode.slideToggle(250, function () {
+        _helpers.save();
+      });
+    };
 
     // update preview to label
     $sortableFields.on('keyup change', 'input[name="label"]', function () {
@@ -1076,12 +1143,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
     });
 
-    $sortableFields.delegate('input.fld-max-length', 'keyup', function () {
+    $sortableFields.delegate('input.fld-maxlength', 'keyup', function () {
       $(this).val(_helpers.forceNumber($(this).val()));
     });
 
     // Delete field
-    $sortableFields.delegate('.delete-confirm', 'click', function (e) {
+    $sortableFields.on('click touchstart', '.delete-confirm', function (e) {
       e.preventDefault();
 
       // lets see if the user really wants to remove this field... FOREVER
@@ -1180,9 +1247,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // Attach a callback to close link
-    $sortableFields.delegate('.close_field', 'click', function (e) {
-      e.preventDefault();
-      $(this).parents('li.form-field').find('.toggle-form').trigger('click');
+    $sortableFields.on('click touchstart', '.close-field', function () {
+      var fieldId = $(this).parents('li.form-field:eq(0)').attr('id');
+      _helpers.toggleEdit(fieldId);
     });
 
     // Attach a callback to add new radio fields
@@ -1399,7 +1466,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
                 placeholder: $('input.fld-placeholder', $field).val(),
                 label: $('input.fld-label', $field).val(),
                 description: $('input.fld-description', $field).val(),
-                maxLength: $('input.fld-max-length', $field).val(),
+                maxlength: $('input.fld-maxlength', $field).val(),
                 role: roleVals,
                 toggle: $('.checkbox-toggle', $field).is(':checked')
               },
