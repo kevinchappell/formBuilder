@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.7.8 - Add fontello fonts with config and Makefile for editing icons.
 - v1.7.7
   - Bugfix: Close button doesn't close #71
   - Bugfix: max-length attribute should be maxlength #70
