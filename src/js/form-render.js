@@ -7,7 +7,21 @@
         destroyTemplate: true, // @todo
         container: false,
         label: {
-          selectColor: 'Select Color'
+          selectColor: 'Select Color',
+          noFormData: 'No form data.',
+          formRendered: 'Form Rendered'
+        },
+        render: true,
+        notify: {
+          error: function(message) {
+            return console.error(message);
+          },
+          success: function(message) {
+            return console.log(message);
+          },
+          warning: function(message) {
+            return console.warn(message);
+          }
         }
       },
       _helpers = {};
@@ -195,8 +209,10 @@
       // settings = $('settings', formData);
 
       if (!formData) {
-        alert('No formData. Add some fields and try again');
+        opts.notify.error(opts.label.noFormData);
         return false;
+      } else {
+        opts.notify.success(opts.label.formRendered);
       }
 
       // generate field markup if we have fields
@@ -207,12 +223,17 @@
         });
       }
 
+      // sets the markup as data to be used by other modules
+      $template.data('formHtml', rendered);
+
       var output = rendered.join('');
 
-      if (opts.container && opts.container.length) {
-        opts.container.html(output);
-      } else {
-        $template.replaceWith(output);
+      if (opts.render) {
+        if (opts.container && opts.container.length) {
+          opts.container.html(output);
+        } else {
+          $template.replaceWith(output);
+        }
       }
 
     });
