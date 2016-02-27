@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.7.8
+Version: 1.7.9
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -59,7 +59,21 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       destroyTemplate: true, // @todo
       container: false,
       label: {
-        selectColor: 'Select Color'
+        selectColor: 'Select Color',
+        noFormData: 'No form data.',
+        formRendered: 'Form Rendered'
+      },
+      render: true,
+      notify: {
+        error: function error(message) {
+          return console.error(message);
+        },
+        success: function success(message) {
+          return console.log(message);
+        },
+        warning: function warning(message) {
+          return console.warn(message);
+        }
       }
     },
         _helpers = {};
@@ -252,8 +266,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       // settings = $('settings', formData);
 
       if (!formData) {
-        alert('No formData. Add some fields and try again');
+        opts.notify.error(opts.label.noFormData);
         return false;
+      } else {
+        opts.notify.success(opts.label.formRendered);
       }
 
       // generate field markup if we have fields
@@ -264,12 +280,17 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         });
       }
 
+      // sets the markup as data to be used by other modules
+      $template.data('formHtml', rendered);
+
       var output = rendered.join('');
 
-      if (opts.container && opts.container.length) {
-        opts.container.html(output);
-      } else {
-        $template.replaceWith(output);
+      if (opts.render) {
+        if (opts.container && opts.container.length) {
+          opts.container.html(output);
+        } else {
+          $template.replaceWith(output);
+        }
       }
     });
   };

@@ -1,5 +1,10 @@
 # Changelog
 
+- v1.7.9 - 
+  - Add options to formRender
+    + `render` : defaults to `true`, will not render the html fields if set false.
+    + `notify` : Allows you to define your own handler for notifications. defaults to console.log, console.warn and console.error.
+  - Set form field data to template element to be used by other modules.
 - v1.7.8 - Add fontello fonts with config and Makefile for editing icons.
 - v1.7.7
   - Bugfix: Close button doesn't close #71
