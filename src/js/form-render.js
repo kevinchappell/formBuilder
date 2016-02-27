@@ -180,7 +180,7 @@
       };
 
       name = safeAttr[name] || name;
-      value = window.JSON.stringify(value);
+      value = value ? window.JSON.stringify(value) : false;
       value = value ? `=${value}` : '';
 
       return {

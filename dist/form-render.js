@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.7.9
+Version: 1.7.10
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -237,7 +237,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       };
 
       name = safeAttr[name] || name;
-      value = window.JSON.stringify(value);
+      value = value ? window.JSON.stringify(value) : false;
       value = value ? '=' + value : '';
 
       return {
