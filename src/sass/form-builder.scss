@@ -1,5 +1,5 @@
-@import "bs";
 @import "variables";
+@import "bs";
 @import "font";
 @import "stage";
 @import "kc-toggle";
@@ -348,6 +348,7 @@ textarea {
 
   &:before {
     margin-right: 10px;
+    font-size: 16px;
   }
 
   &:hover {

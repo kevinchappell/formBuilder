@@ -5,51 +5,71 @@ import gulpPlugins from 'gulp-load-plugins';
 import bsync from 'browser-sync';
 import pkg from './package.json';
 
-var plugins = gulpPlugins(),
-banner = () => {
-  let buildDate = new Date();
-  let bannerTemplate = [
-    '/*',
-    '<%= pkg.name %> - <%= pkg.homepage %>',
-    'Version: <%= pkg.version %>',
-    'Author: <%= pkg.authors[0] %>',
-    '*/',
-    ''
-  ].join('\n');
-  return plugins.header(bannerTemplate, {
-    pkg: pkg,
-    now: buildDate
-  });
-},
-rename = (fileName) => {
-  return String(fileName).replace(/([A-Z])/g, function($1) {
-    return '-' + $1.toLowerCase();
-  });
-};
 
-const files = {
-  test: [
-    'test/**/*.spec.js'
-  ],
-  formBuilder: {
-    js: [
-      'src/js/kc-toggle.js',
-      'src/js/form-builder.js',
-      'src/js/to-xml.js'
-    ],
-    sass: ['src/sass/form-builder.scss']
+const files = pkg.config.files;
+
+var plugins = gulpPlugins(),
+  exec = require("child_process").exec,
+  platform = process.platform,
+  banner = () => {
+    let buildDate = new Date();
+    let bannerTemplate = [
+      '/*',
+      '<%= pkg.name %> - <%= pkg.homepage %>',
+      'Version: <%= pkg.version %>',
+      'Author: <%= pkg.authors[0] %>',
+      '*/',
+      ''
+    ].join('\n');
+    return plugins.header(bannerTemplate, {
+      pkg: pkg,
+      now: buildDate
+    });
   },
-  formRender: {
-    js: [
-      'src/js/kc-toggle.js',
-      'src/js/form-render.js'
-    ],
-    sass: ['src/sass/form-render.scss']
+  rename = (fileName) => {
+    return String(fileName).replace(/([A-Z])/g, function($1) {
+      return '-' + $1.toLowerCase();
+    });
   },
-  demoSass: [
-    'demo/assets/sass/demo.scss'
-  ]
-};
+  fontEdit = () => {
+    let openFont = {
+      linux: `/opt/google/chrome/google-chrome --enable-plugins ${pkg.config.fontServer}/$(cat .fontello)`,
+      darwin: `open -a "Google Chrome" ${pkg.config.fontServer}/$(cat .fontello)`,
+      win32: `start chrome "${pkg.config.fontServer}/$(cat .fontello)"`
+    };
+
+    if (!openFont[platform]) {
+      return false;
+    }
+
+    let getFontToken = `curl --silent --show-error --fail --output .fontello --form "config=@${files.formBuilder.fonts}/config.json" ${pkg.config.fontServer} \n`;
+
+    return exec(getFontToken + openFont[platform], function(err, stdout, stderr) {
+      console.log(stdout);
+      if (stderr) {
+        console.error(err, stderr);
+      }
+    });
+  },
+  fontSave = () => {
+
+    var testScript = [
+      'if test ! $(which unzip); then echo "Unzip is installed"; exit 128; fi',
+      'rm -rf .fontello.src .fontello.zip',
+      `curl --silent --show-error --fail --output .fontello.zip ${pkg.config.fontServer}/$(cat .fontello)/get`,
+      'unzip .fontello.zip -d .fontello.src',
+      `rm -rf ${files.formBuilder.fonts}`,
+      `mv $(find ./.fontello.src -maxdepth 1 -name 'fontello-*') ${files.formBuilder.fonts}`,
+      'rm -rf .fontello.src .fontello.zip'
+    ];
+
+    exec(testScript.join(' \n '), function(err, stdout, stderr) {
+      console.log(stdout);
+      if (stderr) {
+        console.error(err, stderr);
+      }
+    });
+  };
 
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'js']);
@@ -86,8 +106,11 @@ gulp.task('css', function() {
   });
 });
 
-gulp.task('font', function() {
-  return gulp.src(['src/fonts/fontello/css/fontello.css'])
+// Font editing tasks
+gulp.task('font-edit', fontEdit);
+gulp.task('font-save', fontSave);
+gulp.task('font-build', function() {
+  return gulp.src([`${files.formBuilder.fonts}/css/form-builder.css`])
     .pipe(plugins.base64())
     .pipe(plugins.concat('_font.scss'))
     .pipe(gulp.dest('src/sass/'));
@@ -124,7 +147,7 @@ gulp.task('js', function() {
   return jsFiles.forEach(function(jsFileGlob, key) {
     // Demo scripts
     gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({errorHandler: false}))
+      .pipe(plugins.plumber({ errorHandler: false }))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.js'))
       .pipe(banner())
@@ -132,7 +155,7 @@ gulp.task('js', function() {
 
     // Demo scripts minified
     gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({errorHandler: false}))
+      .pipe(plugins.plumber({ errorHandler: false }))
       .pipe(plugins.sourcemaps.init())
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))

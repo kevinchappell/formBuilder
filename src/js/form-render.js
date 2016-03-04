@@ -75,6 +75,8 @@
         fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label} ${fieldRequired} ${fieldDesc}</label>`;
       }
 
+      var fieldLabelVal = fieldAttrs.label;
+
       delete fieldAttrs.label;
       delete fieldAttrs.description;
 
@@ -139,6 +141,9 @@
           break;
         case 'color':
           fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}> ${opts.label.selectColor}`;
+          break;
+        case 'button':
+          fieldMarkup = `<button ${fieldAttrsString}>${fieldLabelVal}</button>`;
           break;
         case 'checkbox':
           fieldMarkup = `<input ${fieldAttrsString}> ${fieldLabel}`;

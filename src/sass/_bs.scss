@@ -54,6 +54,7 @@ textarea {
 }
 
 .btn {
+  color: #fff;
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -78,6 +79,33 @@ textarea {
     color: #333;
     background-color: #fff;
     border-color: #ccc;
+  }
+
+  &.btn-lg {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+  }
+
+  &.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+  }
+
+  &.btn-xs {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+  }
+
+  &.active,
+  &.btn-active,
+  &:active {
+    background-image: none;
   }
 }
 
@@ -111,27 +139,61 @@ textarea {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #337ab7;
-  border-color: #2e6da4;
+  background-color: $primary;
+  border-color: darken($primary, 4.85%);
+
+  &:hover,
+  &:active,
+  &.active,
+  &.btn-active {
+    background-color: darken($primary, 9.7%);
+    border-color: #204d74;
+  }
 }
 
 .btn-danger {
-  color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
+
+  &:hover {
+    background-color: #c9302c;
+    border-color: #ac2925;
+  }
 }
 
 .btn-default {
-  color: #333;
   background-color: #fff;
   border-color: #ccc;
 }
 
-.btn-primary:hover {
-  color: #fff;
-  background-color: #286090;
-  border-color: #204d74;
+.btn-success {
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+
+  &:hover {
+    background-color: #449d44;
+    border-color: #398439;
+  }
+}
+
+.btn-info {
+  background-color: #5bc0de;
+  border-color: #46b8da;
+
+  &:hover {
+    background-color: #31b0d5;
+    border-color: #269abc;
+  }
+}
+
+.btn-warning {
+  background-color: #f0ad4e;
+  border-color: #eea236;
+
+  &:hover {
+    background-color: #ec971f;
+    border-color: #d58512;
+  }
 }
 
 .input-group .form-control:last-child,
