@@ -1,7 +1,8 @@
 # Changelog
 
+- v1.8.0 - Feature: Button element [#79](https://github.com/kevinchappell/formBuilder/pull/79)
 - v1.7.10 - Bugfix: stringify bug causing `null` to be 'null'
-- v1.7.9 - 
+- v1.7.9 -
   - Add options to formRender
     + `render` : defaults to `true`, will not render the html fields if set false.
     + `notify` : Allows you to define your own handler for notifications. defaults to console.log, console.warn and console.error.
