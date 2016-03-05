@@ -13,8 +13,13 @@
       _helpers = {};
 
     _helpers.getType = function($field) {
-      let type = $('.fld-subtype', $field).val() || $field.attr('class').replace(' form-field', '');
+      let type = $('.fld-subtype', $field).val() || $field.attr('class').replace('-field form-field', '');
       return type;
+    };
+
+    _helpers.getClassName = function($field) {
+      let className = $('.fld-class', $field).val() || $field.data('fieldData').className || '';
+      return className;
     };
 
     _helpers.hyphenCase = (str) => {
@@ -27,8 +32,7 @@
       var attributes = [];
       for (var attr in attrs) {
         if (attrs.hasOwnProperty(attr) && attrs[attr]) {
-          let attrName = _helpers.hyphenCase(attr),
-            attrString = `${attrName}="${attrs[attr]}"`;
+          let attrString = `${attr}="${attrs[attr]}"`;
           attributes.push(attrString);
         }
       }
@@ -61,16 +65,17 @@
                 return n.value;
               }).join(',');
               var xmlAttrs = {
-                  required: $('input.required', $field).is(':checked'),
+                  className: _helpers.getClassName($field),
+                  description: $('input.fld-description', $field).val(),
+                  label: $('input.fld-label', $field).val(),
+                  maxlength: $('input.fld-maxlength', $field).val(),
                   multiple: $('input[name="multiple"]', $field).is(':checked'),
-                  type: _helpers.getType($field),
                   name: $('input.fld-name', $field).val(),
                   placeholder: $('input.fld-placeholder', $field).val(),
-                  label: $('input.fld-label', $field).val(),
-                  description: $('input.fld-description', $field).val(),
-                  maxlength: $('input.fld-maxlength', $field).val(),
+                  required: $('input.required', $field).is(':checked'),
                   role: roleVals,
-                  toggle: $('.checkbox-toggle', $field).is(':checked')
+                  toggle: $('.checkbox-toggle', $field).is(':checked'),
+                  type: _helpers.getType($field)
                 },
                 multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
                 attrsString = _helpers.attrString(xmlAttrs),

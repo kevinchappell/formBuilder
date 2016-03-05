@@ -1,5 +1,5 @@
-@import "bs";
 @import "variables";
+@import "bs";
 @import "font";
 @import "stage";
 @import "kc-toggle";
@@ -348,6 +348,7 @@ textarea {
 
   &:before {
     margin-right: 10px;
+    font-size: 16px;
   }
 
   &:hover {
@@ -398,14 +399,6 @@ a.btn.toggle-form {
   &:before {
     margin: 0;
   }
-}
-
-ul.frmb {
-  list-style-type: none;
-  min-height: 200px;
-  border: 1px solid #efefef;
-  margin: 0 0 5px;
-  padding: 5px 5px 0;
 }
 
 .formb-field-vars .copy-var {
@@ -497,6 +490,12 @@ ul.frmb {
 .required-asterisk {
   display: none;
   color: $error;
+}
+
+.ui-button {
+  .ui-button-text {
+    line-height: 0;
+  }
 }
 
 /*   ------------   TOOLTIP   ------------   */

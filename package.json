@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "1.7.10",
+  "version": "1.8.0",
   "main": [
     "dist/*"
   ],
@@ -22,6 +22,33 @@
     "node_modules",
     "test"
   ],
+  "config": {
+    "files": {
+      "test": [
+        "test/**/*.spec.js"
+      ],
+      "formBuilder": {
+        "js": [
+          "src/js/kc-toggle.js",
+          "src/js/form-builder.js",
+          "src/js/to-xml.js"
+        ],
+        "fonts": "src/fonts/fontello",
+        "sass": ["src/sass/form-builder.scss"]
+      },
+      "formRender": {
+        "js": [
+          "src/js/kc-toggle.js",
+          "src/js/form-render.js"
+        ],
+        "sass": ["src/sass/form-render.scss"]
+      },
+      "demoSass": [
+        "demo/assets/sass/demo.scss"
+      ]
+    },
+    "fontServer": "http://fontello.com"
+    },
   "scripts": {
     "prestart": "npm update",
     "test": "gulp test"

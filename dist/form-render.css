@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.7.10
+Version: 1.8.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 * {
@@ -46,6 +46,7 @@ textarea {
     float: left; }
 
 .btn {
+  color: #fff;
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -69,6 +70,23 @@ textarea {
     color: #333;
     background-color: #fff;
     border-color: #ccc; }
+  .btn.btn-lg {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 6px; }
+  .btn.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px; }
+  .btn.btn-xs {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px; }
+  .btn.active, .btn.btn-active, .btn:active {
+    background-image: none; }
 
 .btn-group .btn + .btn,
 .btn-group .btn + .btn-group,
@@ -96,24 +114,43 @@ textarea {
   z-index: 2; }
 
 .btn-primary {
-  color: #fff;
   background-color: #337ab7;
   border-color: #2e6da4; }
+  .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.btn-active {
+    background-color: #286090;
+    border-color: #204d74; }
 
 .btn-danger {
-  color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a; }
+  .btn-danger:hover {
+    background-color: #c9302c;
+    border-color: #ac2925; }
 
 .btn-default {
-  color: #333;
   background-color: #fff;
   border-color: #ccc; }
 
-.btn-primary:hover {
-  color: #fff;
-  background-color: #286090;
-  border-color: #204d74; }
+.btn-success {
+  background-color: #5cb85c;
+  border-color: #4cae4c; }
+  .btn-success:hover {
+    background-color: #449d44;
+    border-color: #398439; }
+
+.btn-info {
+  background-color: #5bc0de;
+  border-color: #46b8da; }
+  .btn-info:hover {
+    background-color: #31b0d5;
+    border-color: #269abc; }
+
+.btn-warning {
+  background-color: #f0ad4e;
+  border-color: #eea236; }
+  .btn-warning:hover {
+    background-color: #ec971f;
+    border-color: #d58512; }
 
 .input-group .form-control:last-child,
 .input-group-addon:last-child,
