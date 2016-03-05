@@ -322,108 +322,108 @@ textarea.form-control {
   content: '\e80d'; }
 
 /* '' */
-.frmb li {
-  position: relative;
-  padding: 6px;
-  clear: both;
-  margin-left: 0;
-  margin-bottom: 5px;
-  background-color: #fff;
-  border-radius: 5px;
-  border: 1px solid #fff;
-  -webkit-transition: border 250ms ease-in-out;
-          transition: border 250ms ease-in-out; }
-  .frmb li:hover {
-    border: 1px solid #b3b3b3; }
-    .frmb li:hover li :hover {
-      background: #fefefe; }
-  .frmb li.no-fields label {
-    font-weight: 400; }
-  .frmb li.frmb-placeholder, .frmb li.ui-state-highlight {
-    height: 5px;
-    background: -webkit-radial-gradient(center, ellipse, #545454 0%, transparent 75%);
-    background: radial-gradient(ellipse at center, #545454 0%, transparent 75%);
-    border: 0 none;
-    -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    visibility: visible; }
-  .frmb li.disabled [type=checkbox] {
-    float: left;
-    margin-right: 10px; }
-  .frmb li.disabled label {
-    font-size: 12px;
-    font-weight: 400;
-    color: #666; }
-  .frmb li.disabled .prev-holder {
-    cursor: default;
-    line-height: 28px;
-    padding-left: 5px; }
-  .frmb li a.remove {
-    opacity: 1; }
-  .frmb li.cta {
-    font-size: 30px;
-    padding: 20% 0;
-    text-align: center; }
-
-.frmb a.btn {
-  border: 1px solid #fff;
-  color: #000;
-  text-decoration: none; }
-
-.frmb a.del-button, .frmb a.remove {
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  display: inline-block;
-  opacity: 0;
-  border-radius: 0 5px 0 0;
-  border-color: #b3b3b3; }
-
-.frmb a.del-button:hover, .frmb a.remove:hover {
-  border-color: #c66865;
-  color: #c66865; }
-
-.frmb li.delete:hover, .frmb li:hover li.delete:hover {
-  background-color: #fdd; }
-
-.frmb.disabled {
-  padding: 0 5px; }
-  .frmb.disabled :hover {
-    border-color: transparent; }
-  .frmb.disabled .form-element {
-    float: none;
-    margin-bottom: 10px;
-    overflow: visible;
-    padding: 5px 0;
-    position: relative; }
-  .frmb.disabled .tooltip-element {
-    display: inline;
-    visibility: visible; }
-
-.frmb .frm-holder {
-  display: none; }
-
-.frmb .tooltip {
-  left: 20px; }
-
-.frmb .prev-holder {
-  display: block; }
-  .frmb .prev-holder input[type="color"] {
-    width: 60px;
-    padding: 2px;
-    display: inline-block; }
-  .frmb .prev-holder select[multiple] {
-    height: auto; }
-
-.frmb .required_asterisk {
-  display: none; }
-
-.frmb .field-label, .frmb .legend {
-  color: #666;
-  margin-bottom: 5px; }
-
-.frmb .disabled .field-label {
-  display: block; }
+.frmb {
+  list-style-type: none;
+  min-height: 200px;
+  margin: 0 0 5px;
+  padding: 5px 5px 0; }
+  .empty .frmb {
+    border: 3px dashed #e6e6e6; }
+  .frmb li {
+    position: relative;
+    padding: 6px;
+    clear: both;
+    margin-left: 0;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    -webkit-transition: border 250ms ease-in-out;
+            transition: border 250ms ease-in-out; }
+    .frmb li:hover {
+      border: 1px solid #b3b3b3; }
+      .frmb li:hover li :hover {
+        background: #fefefe; }
+    .frmb li.no-fields label {
+      font-weight: 400; }
+    .frmb li.frmb-placeholder, .frmb li.ui-state-highlight {
+      height: 5px;
+      background: -webkit-radial-gradient(center, ellipse, #545454 0%, transparent 75%);
+      background: radial-gradient(ellipse at center, #545454 0%, transparent 75%);
+      border: 0 none;
+      -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+              clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      visibility: visible; }
+    .frmb li.disabled [type=checkbox] {
+      float: left;
+      margin-right: 10px; }
+    .frmb li.disabled label {
+      font-size: 12px;
+      font-weight: 400;
+      color: #666; }
+    .frmb li.disabled .prev-holder {
+      cursor: default;
+      line-height: 28px;
+      padding-left: 5px; }
+    .frmb li a.remove {
+      opacity: 1; }
+    .frmb li.cta {
+      font-size: 30px;
+      padding: 20% 0;
+      text-align: center; }
+  .frmb a.btn {
+    border: 1px solid #fff;
+    color: #000;
+    text-decoration: none; }
+  .frmb a.del-button, .frmb a.remove {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    display: inline-block;
+    opacity: 0;
+    border-radius: 0 5px 0 0;
+    border-color: #b3b3b3; }
+  .frmb a.del-button:hover, .frmb a.remove:hover {
+    border-color: #c66865;
+    color: #c66865; }
+  .frmb li.delete:hover, .frmb li:hover li.delete:hover {
+    background-color: #fdd; }
+  .frmb.disabled {
+    padding: 0 5px; }
+    .frmb.disabled :hover {
+      border-color: transparent; }
+    .frmb.disabled .form-element {
+      float: none;
+      margin-bottom: 10px;
+      overflow: visible;
+      padding: 5px 0;
+      position: relative; }
+    .frmb.disabled .tooltip-element {
+      display: inline;
+      visibility: visible; }
+  .frmb .frm-holder {
+    display: none; }
+  .frmb .tooltip {
+    left: 20px; }
+  .frmb .prev-holder {
+    display: block; }
+    .frmb .prev-holder input[type="color"] {
+      width: 60px;
+      padding: 2px;
+      display: inline-block; }
+    .frmb .prev-holder select[multiple] {
+      height: auto; }
+    .frmb .prev-holder label {
+      font-weight: normal; }
+  .frmb .required_asterisk {
+    display: none; }
+  .frmb .field-label, .frmb .legend {
+    color: #666;
+    margin-bottom: 5px; }
+  .frmb .disabled .field-label {
+    display: block; }
+  .frmb .button-field .field-label {
+    display: none; }
 
 .stage-wrap {
   position: relative;
@@ -840,13 +840,6 @@ a.btn.toggle-form {
   a.btn.toggle-form:before {
     margin: 0; }
 
-ul.frmb {
-  list-style-type: none;
-  min-height: 200px;
-  border: 1px solid #efefef;
-  margin: 0 0 5px;
-  padding: 5px 5px 0; }
-
 .formb-field-vars .copy-var {
   display: inline-block;
   width: 24px;
@@ -918,6 +911,9 @@ ul.frmb {
 .required-asterisk {
   display: none;
   color: #C10000; }
+
+.ui-button .ui-button-text {
+  line-height: 0; }
 
 /*   ------------   TOOLTIP   ------------   */
 *[tooltip] {

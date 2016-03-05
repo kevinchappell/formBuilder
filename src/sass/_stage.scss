@@ -1,4 +1,13 @@
 .frmb {
+  list-style-type: none;
+  min-height: 200px;
+  margin: 0 0 5px;
+  padding: 5px 5px 0;
+
+  .empty & {
+    border: 3px dashed lighten($grey, 50%);
+  }
+
   li {
     position: relative;
     padding: 6px;
@@ -129,6 +138,10 @@
     select[multiple] {
       height: auto;
     }
+
+    label {
+      font-weight: normal;
+    }
   }
 
   .required_asterisk {
@@ -142,6 +155,12 @@
 
   .disabled .field-label {
     display: block;
+  }
+
+  .button-field {
+    .field-label {
+      display: none;
+    }
   }
 }
 

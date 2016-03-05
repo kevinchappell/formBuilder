@@ -401,14 +401,6 @@ a.btn.toggle-form {
   }
 }
 
-ul.frmb {
-  list-style-type: none;
-  min-height: 200px;
-  border: 1px solid #efefef;
-  margin: 0 0 5px;
-  padding: 5px 5px 0;
-}
-
 .formb-field-vars .copy-var {
   display: inline-block;
   width: 24px;
@@ -498,6 +490,12 @@ ul.frmb {
 .required-asterisk {
   display: none;
   color: $error;
+}
+
+.ui-button {
+  .ui-button-text {
+    line-height: 0;
+  }
 }
 
 /*   ------------   TOOLTIP   ------------   */

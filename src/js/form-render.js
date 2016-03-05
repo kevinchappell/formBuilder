@@ -58,9 +58,6 @@
         fieldRequired = '',
         fieldOptions = $('option', field);
       fieldAttrs.id = fieldAttrs.name;
-      if (fieldAttrs.type !== 'checkbox') {
-        fieldAttrs.className = 'form-control';
-      }
 
       if (fieldAttrs.required) {
         fieldAttrs.required = null;
@@ -143,6 +140,7 @@
           fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}> ${opts.label.selectColor}`;
           break;
         case 'button':
+        case 'submit':
           fieldMarkup = `<button ${fieldAttrsString}>${fieldLabelVal}</button>`;
           break;
         case 'checkbox':

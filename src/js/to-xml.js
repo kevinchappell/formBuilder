@@ -18,7 +18,7 @@
     };
 
     _helpers.getClassName = function($field) {
-      let className = $('.fld-class', $field).val() || 'form-control';
+      let className = $('.fld-class', $field).val() || $field.data('fieldData').className || '';
       return className;
     };
 

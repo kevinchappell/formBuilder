@@ -182,11 +182,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     var startIndex,
         doCancel = false,
-        _helpers = {},
-        formData = {
-      fields: {},
-      settings: {}
-    };
+        _helpers = {};
 
     /**
      * Convert an attrs object into a string
@@ -322,13 +318,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // updatePreview will generate the preview for radio and checkbox groups
     _helpers.updatePreview = function (field) {
-      var fieldClass = field.attr('class'),
-          fieldType,
-          $prevHolder = $('.prev-holder', field);
+      var fieldClass = field.attr('class');
 
       if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
         return;
       }
+
+      var fieldType,
+          $prevHolder = $('.prev-holder', field);
 
       var subtype = $('.fld-subtype', field).val();
       fieldClass = fieldClass.replace('-field form-field', '');
@@ -378,6 +375,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         });
       }
 
+      previewData.className = _helpers.className(previewData.type, previewData.className, previewData.style);
+
+      field.data('fieldData', previewData);
       preview = fieldPreview(previewData);
 
       $prevHolder.html(preview);
@@ -464,7 +464,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       var classes = [];
       var types = {
-        button: 'btn'
+        button: 'btn',
+        submit: 'btn'
       };
 
       var primaryType = types[type];
@@ -483,6 +484,24 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       }
 
       return classes.join(' ');
+    };
+
+    /**
+     * Generate markup wrapper where needed
+     * @param  {string} tag
+     * @param  {object} attrs
+     * @param  {string} content we wrap this
+     * @return {string}
+     */
+    _helpers.markup = function (tag) {
+      var attrs = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var content = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+
+      attrs = _helpers.attrString(attrs);
+      content = Array.isArray(content) ? content.join('') : content;
+      var inlineElems = ['input'],
+          template = inlineElems.indexOf(tag) === -1 ? '<' + tag + ' ' + attrs + '>' + content + '</' + tag + '>' : '<' + tag + ' ' + attrs + '/>';
+      return template;
     };
 
     var opts = $.extend(true, defaults, options),
@@ -718,7 +737,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       'class': 'cb-wrap'
     }).append(cbHeader, cbUL);
 
-    $stageWrap.append($sortableFields, cbWrap, actionLinks, viewXML, saveAll);
+    $stageWrap.append($sortableFields, cbWrap, actionLinks, viewXML);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
@@ -917,13 +936,20 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       values.size = values.size || 'm';
       values.style = values.style || 'default';
 
-      var fieldDesc = $('<div>', {
-        'class': 'frm-fld description-wrap'
-      });
-      $('<label/>').text(opts.messages.description).appendTo(fieldDesc);
-
-      advFields += '<div class="frm-fld description-wrap"><label>' + opts.messages.description + '</label>';
-      advFields += '<input type="text" name="description" value="' + values.description + '" class="fld-description form-control" id="description-' + lastID + '" /></div>';
+      if (values.type !== 'button') {
+        var fieldDescLabel = _helpers.markup('label', {}, opts.messages.description),
+            fieldDescInput = _helpers.markup('input', {
+          type: 'text',
+          'className': 'fld-description form-control',
+          name: 'description',
+          id: 'description-' + lastID,
+          value: values.description
+        }, opts.messages.description),
+            fieldDesc = _helpers.markup('div', {
+          'class': 'frm-fld description-wrap'
+        }, [fieldDescLabel, fieldDescInput]);
+        advFields += fieldDesc;
+      }
 
       advFields += subTypeField(values.type);
 
@@ -1007,8 +1033,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
       if (styles) {
         var styleLabel = '<label>' + opts.messages.style + '</label>';
-        styleField += '<div class="btn-group button-style-group" role="group">';
         styleField += '<input value="' + style + '" name="style" type="hidden" class="btn-style">';
+        styleField += '<div class="btn-group" role="group">';
 
         Object.keys(opts.messages.styles[tags[type]]).forEach(function (element) {
           var active = style === element ? 'active' : '';
@@ -1038,42 +1064,48 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     // Append the new field to the editor
     var appendFieldLi = function appendFieldLi(title, field, values) {
-      var label = $(field).find('input[name="label"]').val() !== '' ? $(field).find('input[name="label"]').val() : title;
+      var labelVal = $(field).find('input[name="label"]').val(),
+          label = labelVal ? labelVal : title;
 
-      var li = '',
-          delBtn = '<a id="del_' + lastID + '" class="del-button btn delete-confirm" href="javascript: void(0);" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>',
+      var delBtn = '<a id="del_' + lastID + '" class="del-button btn delete-confirm" href="javascript: void(0);" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>',
           toggleBtn = '<a id="frm-' + lastID + '" class="toggle-form btn icon-pencil" href="javascript: void(0);" title="' + opts.messages.hide + '"></a> ',
           required = values.required,
           toggle = values.toggle || undefined,
           tooltip = values.description !== '' ? '<span class="tooltip-element" tooltip="' + values.description + '">?</span>' : '';
 
-      li += '<li id="frm-' + lastID + '-item" class="' + values.type + '-field form-field">';
-      li += '<div class="legend">';
-      li += delBtn;
-      li += '<span id="txt-title-' + lastID + '" class="field-label">' + label + '</span>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>' + toggleBtn;
-      li += '</div>';
-      li += '<div class="prev-holder">' + fieldPreview(values) + '</div>';
-      li += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
-      li += '<div class="form-elements">';
-      li += '<div class="frm-fld">';
-      li += '<label>&nbsp;</label>';
-      li += '<input class="required" type="checkbox" value="1" name="required-' + lastID + '" id="required-' + lastID + '"' + (required === 'true' ? ' checked="checked"' : '') + ' /><label class="required-label" for="required-' + lastID + '">' + opts.messages.required + '</label>';
+      var liContents = '<div class="legend">';
+      liContents += delBtn;
+      liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>' + toggleBtn;
+      liContents += '</div>';
+      liContents += '<div class="prev-holder">' + fieldPreview(values) + '</div>';
+      liContents += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
+      liContents += '<div class="form-elements">';
+      liContents += '<div class="frm-fld">';
+      liContents += '<label>&nbsp;</label>';
+      liContents += '<input class="required" type="checkbox" value="1" name="required-' + lastID + '" id="required-' + lastID + '"' + (required === 'true' ? ' checked="checked"' : '') + ' /><label class="required-label" for="required-' + lastID + '">' + opts.messages.required + '</label>';
       if (values.type === 'checkbox') {
-        li += '<div class="frm-fld">';
-        li += '<label>&nbsp;</label>';
-        li += '<input class="checkbox-toggle" type="checkbox" value="1" name="toggle-' + lastID + '" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked="checked"' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
-        li += '</div>';
+        liContents += '<div class="frm-fld">';
+        liContents += '<label>&nbsp;</label>';
+        liContents += '<input class="checkbox-toggle" type="checkbox" value="1" name="toggle-' + lastID + '" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked="checked"' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
+        liContents += '</div>';
       }
-      li += '</div>';
-      li += field;
-      li += '</div>';
-      li += '</div>';
-      li += '</li>';
+      liContents += '</div>';
+      liContents += field;
+      liContents += '</div>';
+      liContents += '</div>';
+
+      var li = _helpers.markup('li', {
+        'class': values.type + '-field form-field',
+        id: 'frm-' + lastID + '-item'
+      }, liContents),
+          $li = $(li);
+
+      $li.data('fieldData', { attrs: values });
 
       if (elem.stopIndex) {
-        $('li', $sortableFields).eq(elem.stopIndex).after(li);
+        $('li', $sortableFields).eq(elem.stopIndex).after($li);
       } else {
-        $sortableFields.append(li);
+        $sortableFields.append($li);
       }
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
@@ -1093,7 +1125,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           epoch = new Date().getTime();
       var toggle = attrs.toggle ? 'toggle' : '';
 
-      attrs.className = _helpers.className(attrs.type, attrs.className, attrs.style);
       var attrsString = _helpers.attrString(attrs);
 
       switch (attrs.type) {
@@ -1325,9 +1356,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
 
     // Attach a callback to toggle required asterisk
-    $sortableFields.on('click', '.button-style-group button', function () {
-      var styleVal = $(this).val();
-      $(this).siblings('.btn-style:eq(0)').val(styleVal);
+    $sortableFields.on('click', '.style-wrap button', function () {
+      var styleVal = $(this).val(),
+          $parent = $(this).parent();
+      $parent.siblings('.btn-style').val(styleVal);
       $(this).siblings('.btn').removeClass('active');
       $(this).addClass('active');
     });
@@ -1507,6 +1539,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     elem.parent().find('p[id*="ideaTemplate"]').remove();
     elem.wrap('<div class="template-textarea-wrap"/>');
     elem.getTemplate();
+    $sortableFields.css('min-height', cbUL.height());
   };
 
   $.fn.formBuilder = function (options) {
@@ -1549,7 +1582,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     };
 
     _helpers.getClassName = function ($field) {
-      var className = $('.fld-class', $field).val() || 'form-control';
+      var className = $('.fld-class', $field).val() || $field.data('fieldData').className || '';
       return className;
     };
 
