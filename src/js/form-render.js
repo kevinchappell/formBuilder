@@ -131,6 +131,7 @@
         case 'text':
         case 'password':
         case 'email':
+        case 'file':
         case 'hidden':
         case 'date':
         case 'autocomplete':
