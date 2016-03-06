@@ -322,6 +322,9 @@ textarea.form-control {
   content: '\e80d'; }
 
 /* '' */
+/*
+  Mixins
+*/
 .frmb {
   list-style-type: none;
   min-height: 200px;

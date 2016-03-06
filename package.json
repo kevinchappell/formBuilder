@@ -11,6 +11,7 @@
   ],
   "description": "A jQuery plugin for drag and drop form building",
   "keywords": [
+    "jquery-plugin",
     "forms",
     "drag and drop",
     "form builder",
