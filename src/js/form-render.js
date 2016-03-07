@@ -1,11 +1,13 @@
 // render the formBuilder XML into html
 (function($) {
   'use strict';
-  $.fn.formRender = function(options) {
+  var FormRender = function(options) {
     var $template = $(this),
       defaults = {
         destroyTemplate: true, // @todo
         container: false,
+        dataType: 'xml',
+        formData: false,
         label: {
           selectColor: 'Select Color',
           noFormData: 'No form data.',
@@ -204,7 +206,7 @@
     };
 
     // Begin the core plugin
-    this.each(function() {
+    var render = (function() {
       var rendered = [];
 
       var formData = $.parseXML($template.val()),
@@ -240,6 +242,15 @@
         }
       }
 
+    })();
+
+
+  };
+
+  $.fn.formRender = function(options) {
+    this.each(function() {
+
     });
   };
+
 })(jQuery);

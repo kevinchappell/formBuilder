@@ -53,11 +53,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
 (function ($) {
   'use strict';
-  $.fn.formRender = function (options) {
+  var FormRender = function FormRender(options) {
     var $template = $(this),
         defaults = {
       destroyTemplate: true, // @todo
       container: false,
+      dataType: 'xml',
+      formData: false,
       label: {
         selectColor: 'Select Color',
         noFormData: 'No form data.',
@@ -261,7 +263,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     };
 
     // Begin the core plugin
-    this.each(function () {
+    var render = (function () {
       var rendered = [];
 
       var formData = $.parseXML($template.val()),
@@ -296,6 +298,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           $template.replaceWith(output);
         }
       }
-    });
+    })();
+  };
+
+  $.fn.formRender = function (options) {
+    this.each(function () {});
   };
 })(jQuery);
