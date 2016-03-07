@@ -1,6 +1,6 @@
 {
 	"name": "formBuilder",
-	"version": "1.8.0",
+	"version": "1.8.1",
 	"main": [
 		"dist/*"
 	],
@@ -9,6 +9,7 @@
 		"Kevin Chappell <kevin.b.chappell@gmail.com>"
 	],
 	"keywords": [
+	  "jquery-plugin",
 		"forms",
 		"drag and drop",
 		"form builder"

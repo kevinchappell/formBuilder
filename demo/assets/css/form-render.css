@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.8.0
+Version: 1.8.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 * {
@@ -220,6 +220,12 @@ textarea.form-control {
 .btn,
 .form-control {
   background-image: none; }
+
+.pull-right {
+  float: right; }
+
+.pull-left {
+  float: left; }
 
 .kc-toggle {
   position: relative;

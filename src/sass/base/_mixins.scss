@@ -1,0 +1,77 @@
+/*
+  Mixins
+*/
+
+@mixin breakpoint($point) {
+  @if $point == phone-sm {
+    /* smartphones, portrait iPhone, small portrait Android */
+    @media (max-width: 320px) {
+      @content;
+    }
+  }
+
+  @else if $point == phone-lrg {
+    /* smartphones, Android phones, landscape iPhone */
+    @media (max-width: 481px) {
+      @content;
+    }
+  }
+
+  @else if $point == tablet-sm {
+    /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), smaller landscape Android */
+    @media (max-width: 641px) {
+      @content;
+    }
+  }
+
+  @else if $point == tablet-md {
+    /* tablet, landscape iPad, lo-res laptops ands desktops */
+    @media (max-width: 961px) {
+      @content;
+    }
+  }
+
+  @else if $point == tablet-lrg {
+    /* big landscape tablets, laptops, and desktops */
+    @media (max-width: 1025px) {
+      @content;
+    }
+  }
+
+  @else if $point == tablet-lrg {
+    /* hi-res laptops and desktops */
+    @media (max-width: 1281px) {
+      @content;
+    }
+  }
+
+  @else {
+    @media (max-width: $point) {
+      @content;
+    }
+  }
+}
+
+@mixin custom-scroll($trackColor, $thumbColor) {
+  /* Let's get this party started */
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background-color: $trackColor;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $thumbColor;
+  }
+
+  &::-webkit-scrollbar-thumb:window-inactive {
+    background: $thumbColor;
+  }
+
+  overflow: auto;
+}

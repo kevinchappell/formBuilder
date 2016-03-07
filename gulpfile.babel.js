@@ -5,12 +5,19 @@ import gulpPlugins from 'gulp-load-plugins';
 import bsync from 'browser-sync';
 import pkg from './package.json';
 
-
 const files = pkg.config.files;
 
+// Rather than manually defined each gulp plugin we need, gulpPlugins defines them for us.
 var plugins = gulpPlugins(),
-  exec = require("child_process").exec,
+  // for executing commands in the command line
+  exec = require('child_process').exec,
   platform = process.platform,
+
+  /**
+   * Reusabled banner function for generated files.
+   *
+   * @return {stream} modified file back to the stream.
+   */
   banner = () => {
     let buildDate = new Date();
     let bannerTemplate = [
@@ -21,16 +28,31 @@ var plugins = gulpPlugins(),
       '*/',
       ''
     ].join('\n');
+
     return plugins.header(bannerTemplate, {
       pkg: pkg,
       now: buildDate
     });
   },
+
+  /**
+   * camelCase to hyphen-case renaming utility.
+   * Used when iterating though an object where the keys are used as filenames.
+   *
+   * @param  {string} fileName
+   * @return {string} file-name
+   */
   rename = (fileName) => {
     return String(fileName).replace(/([A-Z])/g, function($1) {
       return '-' + $1.toLowerCase();
     });
   },
+
+  /**
+   * Opens the font-server defined in package.json
+   *
+   * @return {void} logs to terminal.
+   */
   fontEdit = () => {
     let openFont = {
       linux: `/opt/google/chrome/google-chrome --enable-plugins ${pkg.config.fontServer}/$(cat .fontello)`,
@@ -42,6 +64,8 @@ var plugins = gulpPlugins(),
       return false;
     }
 
+    // Connects to font server to get a fresh token for our editing session.
+    // sends current config in the process.
     let getFontToken = `curl --silent --show-error --fail --output .fontello --form "config=@${files.formBuilder.fonts}/config.json" ${pkg.config.fontServer} \n`;
 
     return exec(getFontToken + openFont[platform], function(err, stdout, stderr) {
@@ -51,9 +75,14 @@ var plugins = gulpPlugins(),
       }
     });
   },
-  fontSave = () => {
 
-    var testScript = [
+  /**
+   * Downloads and unpacks our updated font from the fontServer
+   *
+   * @return {void} logs operations to terminal.
+   */
+  fontSave = () => {
+    var script = [
       'if test ! $(which unzip); then echo "Unzip is installed"; exit 128; fi',
       'rm -rf .fontello.src .fontello.zip',
       `curl --silent --show-error --fail --output .fontello.zip ${pkg.config.fontServer}/$(cat .fontello)/get`,
@@ -63,14 +92,19 @@ var plugins = gulpPlugins(),
       'rm -rf .fontello.src .fontello.zip'
     ];
 
-    exec(testScript.join(' \n '), function(err, stdout, stderr) {
+    exec(script.join(' \n '), function(err, stdout, stderr) {
       console.log(stdout);
+      return gulp.src([`${files.formBuilder.fonts}/css/form-builder-font.css`])
+        .pipe(plugins.base64())
+        .pipe(plugins.concat('_font.scss'))
+        .pipe(gulp.dest('src/sass/base/'));
       if (stderr) {
         console.error(err, stderr);
       }
     });
   };
 
+// Our watch task to monitor files for changes and run tasks when that change happens.
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'js']);
   gulp.watch('demo/index.html', bsync.reload);
@@ -78,6 +112,7 @@ gulp.task('watch', function() {
   gulp.watch(files.demoSass, ['demoCss']);
 });
 
+// Compile the Sass to plain ol' css.
 gulp.task('css', function() {
 
   let sassFiles = new Map();
@@ -109,13 +144,8 @@ gulp.task('css', function() {
 // Font editing tasks
 gulp.task('font-edit', fontEdit);
 gulp.task('font-save', fontSave);
-gulp.task('font-build', function() {
-  return gulp.src([`${files.formBuilder.fonts}/css/form-builder.css`])
-    .pipe(plugins.base64())
-    .pipe(plugins.concat('_font.scss'))
-    .pipe(gulp.dest('src/sass/'));
-});
 
+// Demo specific css
 gulp.task('demoCss', function() {
   return gulp.src(files.demoSass)
     .pipe(plugins.sass())
@@ -138,6 +168,7 @@ gulp.task('lint', function() {
     .pipe(plugins.jshint.reporter('jshint-stylish'));
 });
 
+// Compile the JS
 gulp.task('js', function() {
 
   let jsFiles = new Map();
@@ -181,33 +212,13 @@ gulp.task('js', function() {
   });
 });
 
+// BrowserSync server for local editing.
 gulp.task('serve', function() {
   bsync.init({
     server: {
       baseDir: './demo'
     }
   });
-});
-
-var increment = (importance) => {
-  return gulp.src(['./package.json', './bower.json'])
-    .pipe(plugins.bump({
-      type: importance
-    }))
-    .pipe(gulp.dest('./'))
-    .pipe(plugins.git.commit('bumps package version'))
-    .pipe(plugins.filter('package.json'))
-    .pipe(plugins.tagVersion());
-};
-
-gulp.task('patch', () => {
-  return increment('patch');
-});
-gulp.task('feature', () => {
-  return increment('minor');
-});
-gulp.task('release', () => {
-  return increment('major');
 });
 
 // Deploy the demo
@@ -218,7 +229,7 @@ gulp.task('deploy', () => {
 
   plugins.git.exec(gitArgs, function(err) {
     if (err) {
-      console.error('There was an error deploying the Demo to gh-pages\n', err);
+      console.error('There was an error deploying the Demo to gh-pages.\n', err);
       throw err;
     } else {
       console.log('Demo was successfully deployed!\n');
@@ -226,6 +237,8 @@ gulp.task('deploy', () => {
   });
 });
 
-gulp.task('build', ['js', 'css']);
-gulp.task('default', ['build', 'watch']);
-gulp.task('demo', ['build', 'demoCss', 'watch', 'serve']);
+// Do a build after version bump to update all files.
+gulp.task('build', ['js', 'css', 'demoCss']);
+
+// Pretty self-explanatory
+gulp.task('default', ['build', 'watch', 'serve']);

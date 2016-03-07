@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.8.0
+Version: 1.8.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -104,6 +104,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         editXML: 'Edit XML',
         fieldVars: 'Field Variables',
         fieldRemoveWarning: 'Are you sure you want to remove this field?',
+        fileUpload: 'File Upload',
         getStarted: 'Drag a field from the right to this area',
         hide: 'Edit',
         hidden: 'Hidden Input',
@@ -549,6 +550,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         name: 'hidden-input'
       }
     }, {
+      label: opts.messages.fileUpload,
+      attrs: {
+        type: 'file',
+        className: 'file-input',
+        name: 'file-input'
+      }
+    }, {
       label: opts.messages.dateField,
       attrs: {
         type: 'date',
@@ -621,11 +629,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       href: '#',
       'class': 'allow-select'
     }).prop('checked', 'checked'),
-        editXML = $('<a/>', {
+        editXML = $('<button/>', {
       id: frmbID + '-edit-xml',
       text: opts.messages.editXML,
       href: '#',
-      'class': 'edit-xml'
+      'class': 'edit-xml btn btn-default'
     }),
         editNames = $('<a/>', {
       id: frmbID + '-edit-names',
@@ -648,7 +656,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         actionLinksInner = $('<div/>', {
       id: frmbID + '-action-links-inner',
       'class': 'action-links-inner'
-    }).append(editXML, ' | ', editNames, ' | ', allowSelect, ' | ', clearAll, ' |&nbsp;'),
+    }).append(saveAll, editXML, ' | ', editNames, ' | ', allowSelect, ' | ', clearAll, ' |&nbsp;'),
         devMode = $('<span/>', {
       'class': 'dev-mode-link'
     }).html(opts.messages.devMode + ' ' + opts.messages.off),
@@ -737,7 +745,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       'class': 'cb-wrap'
     }).append(cbHeader, cbUL);
 
-    $stageWrap.append($sortableFields, cbWrap, actionLinks, viewXML);
+    $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
@@ -883,31 +891,21 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
     var appendNewField = function appendNewField(values) {
 
-      if (values === undefined) {
-        values = '';
-      }
-
       // TODO: refactor to move functions into this object
       var appendFieldType = {
-        '2': appendInput,
-        'date': appendInput,
-        'autocomplete': appendInput,
-        'checkbox': appendInput,
         'select': appendSelectList,
         'rich-text': appendTextarea,
         'textarea': appendTextarea,
         'radio-group': appendSelectList,
-        'checkbox-group': appendSelectList,
-        'text': appendInput,
-        'button': appendInput,
-        'password': appendInput,
-        'email': appendInput,
-        'color': appendInput,
-        'hidden': appendInput
+        'checkbox-group': appendSelectList
       };
 
-      if (typeof appendFieldType[values.type] === 'function') {
+      values = values || '';
+
+      if (appendFieldType[values.type]) {
         appendFieldType[values.type](values);
+      } else {
+        appendInput(values);
       }
     };
 
@@ -1159,6 +1157,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'password':
         case 'email':
         case 'date':
+        case 'file':
           preview = '<input ' + attrsString + '>';
           break;
         case 'color':

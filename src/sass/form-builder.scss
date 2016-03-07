@@ -1,6 +1,8 @@
-@import "variables";
-@import "bs";
-@import "font";
+@import "base/variables";
+@import "base/bs";
+@import "base/font";
+@import "base/mixins";
+@import "controls";
 @import "stage";
 @import "kc-toggle";
 
@@ -36,11 +38,6 @@ textarea.idea-template {
   vertical-align: top;
 }
 
-.cb-wrap {
-  float: right;
-  width: 36%;
-}
-
 .action-links .action-links-inner {
   overflow: hidden;
   width: 0;
@@ -53,17 +50,6 @@ textarea.idea-template {
   color: $grey;
   cursor: pointer;
   padding-right: 2px;
-}
-
-.cb-wrap {
-  h4 {
-    margin-top: 0;
-    color: $grey;
-  }
-
-  .save:hover {
-    color: $success;
-  }
 }
 
 .stage-wrap h4 {
@@ -334,37 +320,6 @@ textarea {
   visibility: visible;
   line-height: 12px;
   margin-left: 6px;
-}
-
-.frmb-control li {
-  cursor: move;
-  list-style: none;
-  border-radius: 2px;
-  margin: 0 0 5px;
-  padding: 10px;
-  text-align: left;
-  background: $white;
-  border: 1px solid $white;
-
-  &:before {
-    margin-right: 10px;
-    font-size: 16px;
-  }
-
-  &:hover {
-    border: 1px solid $grey-light;
-  }
-
-  &.ui-state-highlight {
-    background-image: none;
-  }
-}
-
-.frmb-control,
-table.form ul.frmb-control {
-  margin: 0;
-  padding: 0;
-  min-width: 208px;
 }
 
 .frmb-xml pre.ui-dialog-content {

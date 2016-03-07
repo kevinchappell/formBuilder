@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.8.0
+Version: 1.8.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -188,6 +188,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         case 'text':
         case 'password':
         case 'email':
+        case 'file':
         case 'hidden':
         case 'date':
         case 'autocomplete':

@@ -1,0 +1,42 @@
+.cb-wrap {
+  float: right;
+  width: 26%;
+
+  h4 {
+    margin-top: 0;
+    color: $grey;
+  }
+
+  .save:hover {
+    color: $success;
+  }
+}
+
+.frmb-control li {
+  cursor: move;
+  list-style: none;
+  border-radius: 2px;
+  margin: 0 0 5px;
+  padding: 10px;
+  text-align: left;
+  background: $white;
+  border: 1px solid $white;
+
+  &:before {
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  &:hover {
+    border: 1px solid $grey-light;
+  }
+
+  &.ui-state-highlight {
+    background-image: none;
+  }
+}
+
+.frmb-control {
+  margin: 0;
+  padding: 0;
+}
