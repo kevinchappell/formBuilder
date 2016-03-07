@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.8.1 - Feature: File upload element [#80](https://github.com/kevinchappell/formBuilder/pull/80)
 - v1.8.0 - Feature: Button element [#79](https://github.com/kevinchappell/formBuilder/pull/79)
 - v1.7.10 - Bugfix: stringify bug causing `null` to be 'null'
 - v1.7.9 -
