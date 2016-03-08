@@ -91,8 +91,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
     if (_helpers.doCancel) {
       $(ui.sender).sortable('cancel');
       $(this).sortable('cancel');
-    } else {
-      _helpers.save();
     }
   };
 
@@ -138,14 +136,67 @@ var formBuilderHelpers = function(opts, formBuilder) {
     tooltip.hide();
   };
 
+  _helpers.xmlSave = function(form) {
+    let formDataNew = $(form).toXML();
+    if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
+      return false;
+    }
+    formBuilder.formData = formDataNew;
+  };
+
+  _helpers.jsonSave = function() {
+    opts.notify.warning('json data not available yet');
+  };
+
   // saves the field data to our canvas (elem)
   _helpers.save = function() {
-    var $form = $(document.getElementById(opts.formID));
-    formBuilder.formData = $form.toXML();
-    $form.children('li').each(function() {
+    var element = _helpers.getElement();
+    var form = document.getElementById(opts.formID);
+
+    let doSave = {
+      xml: _helpers.xmlSave,
+      json: _helpers.jsonSave
+    };
+
+    $('li.form-field:not(.disabled)', form).each(function() {
       _helpers.updatePreview($(this));
     });
-    $form.trigger('change');
+
+    doSave[opts.dataType](form);
+
+    if (element) {
+      element.value = formBuilder.formData;
+      if (window.jQuery) {
+        $(element).trigger('change');
+      } else {
+        element.onchange();
+      }
+    }
+  };
+
+  _helpers.getElement = function() {
+    let element = false;
+    if (formBuilder.element) {
+      element = formBuilder.element;
+
+      if (!element.id) {
+        _helpers.makeId(element);
+      }
+
+      if (!element.onchange) {
+        element.onchange = function() {
+          opts.notify.success(opts.messages.formUpdated);
+        };
+      }
+    }
+
+    return element;
+  };
+
+  _helpers.makeId = function(element = false) {
+    let epoch = new Date().getTime();
+
+    return `${element.tagName}-${epoch}`;
   };
 
   // updatePreview will generate the preview for radio and checkbox groups
@@ -397,7 +448,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
    * @param  {string} content we wrap this
    * @return {string}
    */
-  _helpers.markup = function(tag, attrs = {}, content = '') {
+  _helpers.markup = function(tag, content = '', attrs = {}) {
     attrs = _helpers.attrString(attrs);
     content = Array.isArray(content) ? content.join('') : content;
     let inlineElems = ['input', 'hr', 'br'],

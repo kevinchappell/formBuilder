@@ -2,10 +2,11 @@
   list-style-type: none;
   min-height: 200px;
   margin: 0 0 5px;
-  padding: 5px 5px 0;
+  padding: 0 5px;
 
   .empty & {
     border: 3px dashed lighten($grey, 50%);
+    margin-right: 5px;
   }
 
   li {
@@ -167,8 +168,12 @@
 .stage-wrap {
   position: relative;
   float: left;
-  width: 72%;
-  margin-right: 2%;
+  width: 74%;
+
+  @include breakpoint("phone-lrg") {
+    width: calc(100% - 64px);
+  }
+
 
   .action-links {
     width: calc( 100% - 141px);

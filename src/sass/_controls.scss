@@ -10,6 +10,14 @@
   .save:hover {
     color: $success;
   }
+
+  @include breakpoint("phone-lrg") {
+    width: 64px;
+
+    h4 {
+      display: none;
+    }
+  }
 }
 
 .frmb-control li {
@@ -21,6 +29,10 @@
   text-align: left;
   background: $white;
   border: 1px solid $white;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   &:before {
     margin-right: 10px;
@@ -33,6 +45,16 @@
 
   &.ui-state-highlight {
     background-image: none;
+  }
+
+  @include breakpoint("phone-lrg") {
+    &:before {
+      font-size: 30px;
+    }
+
+    span {
+      display: none;
+    }
   }
 }
 

@@ -337,12 +337,18 @@ textarea.form-control {
 */
 .cb-wrap {
   float: right;
-  width: 26%; }
+  width: 26%;
+  /* smartphones, Android phones, landscape iPhone */ }
   .cb-wrap h4 {
     margin-top: 0;
     color: #666; }
   .cb-wrap .save:hover {
     color: #08fe00; }
+  @media (max-width: 481px) {
+    .cb-wrap {
+      width: 64px; }
+      .cb-wrap h4 {
+        display: none; } }
 
 .frmb-control li {
   cursor: move;
@@ -352,7 +358,12 @@ textarea.form-control {
   padding: 10px;
   text-align: left;
   background: #fff;
-  border: 1px solid #fff; }
+  border: 1px solid #fff;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* smartphones, Android phones, landscape iPhone */ }
   .frmb-control li:before {
     margin-right: 10px;
     font-size: 16px; }
@@ -360,6 +371,11 @@ textarea.form-control {
     border: 1px solid #ccc; }
   .frmb-control li.ui-state-highlight {
     background-image: none; }
+  @media (max-width: 481px) {
+    .frmb-control li:before {
+      font-size: 30px; }
+    .frmb-control li span {
+      display: none; } }
 
 .frmb-control {
   margin: 0;
@@ -369,9 +385,10 @@ textarea.form-control {
   list-style-type: none;
   min-height: 200px;
   margin: 0 0 5px;
-  padding: 5px 5px 0; }
+  padding: 0 5px; }
   .empty .frmb {
-    border: 3px dashed #e6e6e6; }
+    border: 3px dashed #e6e6e6;
+    margin-right: 5px; }
   .frmb li {
     position: relative;
     padding: 6px;
@@ -471,8 +488,11 @@ textarea.form-control {
 .stage-wrap {
   position: relative;
   float: left;
-  width: 72%;
-  margin-right: 2%; }
+  width: 74%;
+  /* smartphones, Android phones, landscape iPhone */ }
+  @media (max-width: 481px) {
+    .stage-wrap {
+      width: calc(100% - 64px); } }
   .stage-wrap .action-links {
     width: calc( 100% - 141px);
     display: none;

@@ -1,7 +1,8 @@
 (function($) {
   'use strict';
-  var FormBuilder = function(element, options) {
+  var FormBuilder = function(options, element) {
     var formBuilder = this;
+    formBuilder.element = element;
 
     var defaults = {
       dataType: 'xml',
@@ -55,6 +56,7 @@
         fieldVars: 'Field Variables',
         fieldRemoveWarning: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
+        formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
         hide: 'Edit',
         hidden: 'Hidden Input',
@@ -130,6 +132,17 @@
         warning: 'Warning!',
         viewXML: 'View XML',
         yes: 'Yes'
+      },
+      notify: {
+        error: function(message) {
+          return console.error(message);
+        },
+        success: function(message) {
+          return console.log(message);
+        },
+        warning: function(message) {
+          return console.warn(message);
+        }
       }
     };
 
@@ -171,8 +184,8 @@
       label: opts.messages.textArea,
       attrs: {
         type: 'textarea',
-        className: 'rich-text',
-        name: 'rich-text'
+        className: 'text-area',
+        name: 'textarea'
       }
     }, {
       label: opts.messages.radioGroup,
@@ -246,21 +259,22 @@
         'name': frmbFields[i].className,
         'label': frmbFields[i].label
       });
+
       for (var attr in frmbFields[i]) {
         if (frmbFields[i].hasOwnProperty(attr)) {
           $field.data(attr, frmbFields[i][attr]);
         }
       }
-      $field.html(frmbFields[i].label).appendTo(cbUL);
+
+      let typeLabel = _helpers.markup('span', frmbFields[i].label);
+      $field.html(typeLabel).appendTo(cbUL);
     }
 
     // Build our headers and action links
-    var cbHeader = $('<h4/>').html(opts.messages.editorTitle),
-      viewXML = $('<a/>', {
+    var viewXML = _helpers.markup('a', opts.messages.viewXML, {
         id: frmbID + '-export-xml',
-        text: opts.messages.viewXML,
         href: '#',
-        'class': 'view-xml'
+        className: 'view-xml'
       }),
       allowSelect = $('<a/>', {
         id: frmbID + '-allow-select',
@@ -320,6 +334,7 @@
           _helpers.doCancel = false;
         }
       },
+      receive: _helpers.save,
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       cancel: 'input, select, .disabled, .frm-fld, .btn',
@@ -382,24 +397,14 @@
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap'
-    }).append(cbHeader, cbUL);
+    }).append(cbUL);
 
     $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks, saveAll);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
-    var doSave = function() {
-      if ($(this).parents('li.disabled').length === 0) {
-        if ($(this).name === 'label' && $(this).val() === '') {
-          return alert('Error: ' + opts.messages.labelEmpty);
-        }
-        _helpers.save();
-      }
-    };
-
     // Not pretty but we need to save a lot so users don't have to keep clicking a save button
-    $('input, select', $sortableFields).on('change', doSave);
-    $('input, select', $sortableFields).on('blur', doSave);
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.save);
 
     // Parse saved XML template data
     elem.getTemplate = function() {
@@ -444,7 +449,6 @@
 
       var fieldAttrs = $field.data('attrs') || {},
         fType = fieldAttrs.type || $field.attr('type'),
-        isMultiple = fType.match(/(select|checkbox-group|radio-group)/),
         values = {};
 
       values.label = _helpers.htmlEncode($field.attr('label'));
@@ -453,25 +457,9 @@
       values.required = $field.attr('required');
       values.maxlength = $field.attr('maxlength');
       values.toggle = $field.attr('toggle');
-      values.multiple = $field.attr('multiple');
+      values.multiple = fType.match(/(checkbox-group)/);
       values.type = fType;
       values.description = ($field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '');
-
-      if (isMultiple) {
-        if (values.type === 'checkbox-group') {
-          values.multiple = true;
-        }
-
-        values.values = [];
-        $field.children().each(function() {
-          let value = {
-            label: $(this).text(),
-            value: $(this).attr('value'),
-            selected: Boolean($(this).attr('selected'))
-          };
-          values.values.push(value);
-        });
-      }
 
       appendNewField(values);
       $stageWrap.removeClass('empty');
@@ -490,6 +478,7 @@
 
     // add select dropdown
     var appendSelectList = function(values) {
+      console.log(values);
 
       if (!values.values || !values.values.length) {
         values.values = [{
@@ -575,17 +564,17 @@
       values.style = values.style || 'default';
 
       if (values.type !== 'button') {
-        let fieldDescLabel = _helpers.markup('label', {}, opts.messages.description),
-          fieldDescInput = _helpers.markup('input', {
+        let fieldDescLabel = _helpers.markup('label', opts.messages.description),
+          fieldDescInput = _helpers.markup('input', opts.messages.description, {
             type: 'text',
             'className': 'fld-description form-control',
             name: 'description',
             id: 'description-' + lastID,
             value: values.description
-          }, opts.messages.description),
-          fieldDesc = _helpers.markup('div', {
+          }),
+          fieldDesc = _helpers.markup('div', [fieldDescLabel, fieldDescInput], {
             'class': 'frm-fld description-wrap'
-          }, [fieldDescLabel, fieldDescInput]);
+          });
         advFields += fieldDesc;
       }
 
@@ -732,10 +721,10 @@
       liContents += '</div>';
       liContents += '</div>';
 
-      let li = _helpers.markup('li', {
+      let li = _helpers.markup('li', liContents, {
           'class': values.type + '-field form-field',
           id: 'frm-' + lastID + '-item'
-        }, liContents),
+        }),
         $li = $(li);
 
       $li.data('fieldData', { attrs: values });
@@ -749,7 +738,6 @@
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
       lastID++;
-      _helpers.save();
     };
 
     // Select field html, since there may be multiple
@@ -827,9 +815,7 @@
         toggleBtn = $('.toggle-form', field),
         editMode = $('.frm-holder', field);
       toggleBtn.toggleClass('open').parent().next('.prev-holder').slideToggle(250);
-      editMode.slideToggle(250, function() {
-        _helpers.save();
-      });
+      editMode.slideToggle(250);
     };
 
     // update preview to label
@@ -933,10 +919,12 @@
     // Attach a callback to toggle required asterisk
     $sortableFields.on('click', '.style-wrap button', function() {
       let styleVal = $(this).val(),
-        $parent = $(this).parent();
-      $parent.siblings('.btn-style').val(styleVal);
+        $parent = $(this).parent(),
+        $btnStyle = $parent.prev('.btn-style');
+      $btnStyle.val(styleVal);
       $(this).siblings('.btn').removeClass('active');
       $(this).addClass('active');
+      $btnStyle.trigger('change');
     });
 
     // Attach a callback to toggle required asterisk
@@ -1040,13 +1028,9 @@
 
     // Save Idea Template
     $(document.getElementById(frmbID + '-save')).click(function(e) {
-      if ($(this).find('.ldkInlineEdit').length === 0) {
-        e.preventDefault();
-        if (!$stageWrap.hasClass('edit-xml')) {
-          _helpers.save();
-        }
-        _helpers.validateForm(e);
-      }
+      e.preventDefault();
+      _helpers.save();
+      _helpers.validateForm(e);
     });
 
 
@@ -1121,18 +1105,18 @@
   $.fn.formBuilder = function(options) {
     var form = this;
     return form.each(function() {
-      var element = $(this),
+      var element = this,
         formBuilder;
-      if (element.data('formBuilder')) {
-        var existingFormBuilder = element.parents('.form-builder:eq(0)');
-        var newElement = element.clone();
+      if ($(element).data('formBuilder')) {
+        var existingFormBuilder = $(element).parents('.form-builder:eq(0)');
+        var newElement = $(element).clone();
         existingFormBuilder.before(newElement);
         existingFormBuilder.remove();
-        formBuilder = new FormBuilder(newElement, options);
+        formBuilder = new FormBuilder(options, newElement[0]);
         newElement.data('formBuilder', formBuilder);
       } else {
-        formBuilder = new FormBuilder(form, options);
-        element.data('formBuilder', formBuilder);
+        formBuilder = new FormBuilder(options, element);
+        $(element).data('formBuilder', formBuilder);
       }
     });
   };

@@ -98,8 +98,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     if (_helpers.doCancel) {
       $(ui.sender).sortable('cancel');
       $(this).sortable('cancel');
-    } else {
-      _helpers.save();
     }
   };
 
@@ -144,14 +142,69 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     tooltip.hide();
   };
 
+  _helpers.xmlSave = function (form) {
+    var formDataNew = $(form).toXML();
+    if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
+      return false;
+    }
+    formBuilder.formData = formDataNew;
+  };
+
+  _helpers.jsonSave = function () {
+    opts.notify.warning('json data not available yet');
+  };
+
   // saves the field data to our canvas (elem)
   _helpers.save = function () {
-    var $form = $(document.getElementById(opts.formID));
-    formBuilder.formData = $form.toXML();
-    $form.children('li').each(function () {
+    var element = _helpers.getElement();
+    var form = document.getElementById(opts.formID);
+
+    var doSave = {
+      xml: _helpers.xmlSave,
+      json: _helpers.jsonSave
+    };
+
+    $('li.form-field:not(.disabled)', form).each(function () {
       _helpers.updatePreview($(this));
     });
-    $form.trigger('change');
+
+    doSave[opts.dataType](form);
+
+    if (element) {
+      element.value = formBuilder.formData;
+      if (window.jQuery) {
+        $(element).trigger('change');
+      } else {
+        element.onchange();
+      }
+    }
+  };
+
+  _helpers.getElement = function () {
+    var element = false;
+    if (formBuilder.element) {
+      element = formBuilder.element;
+
+      if (!element.id) {
+        _helpers.makeId(element);
+      }
+
+      if (!element.onchange) {
+        element.onchange = function () {
+          opts.notify.success(opts.messages.formUpdated);
+        };
+      }
+    }
+
+    return element;
+  };
+
+  _helpers.makeId = function () {
+    var element = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+    var epoch = new Date().getTime();
+
+    return element.tagName + '-' + epoch;
   };
 
   // updatePreview will generate the preview for radio and checkbox groups
@@ -404,8 +457,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
    * @return {string}
    */
   _helpers.markup = function (tag) {
-    var attrs = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-    var content = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+    var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+    var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
     attrs = _helpers.attrString(attrs);
     content = Array.isArray(content) ? content.join('') : content;
@@ -465,8 +518,9 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
 (function ($) {
   'use strict';
-  var FormBuilder = function FormBuilder(element, options) {
+  var FormBuilder = function FormBuilder(options, element) {
     var formBuilder = this;
+    formBuilder.element = element;
 
     var defaults = {
       dataType: 'xml',
@@ -520,6 +574,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         fieldVars: 'Field Variables',
         fieldRemoveWarning: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
+        formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
         hide: 'Edit',
         hidden: 'Hidden Input',
@@ -587,6 +642,17 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         warning: 'Warning!',
         viewXML: 'View XML',
         yes: 'Yes'
+      },
+      notify: {
+        error: function error(message) {
+          return console.error(message);
+        },
+        success: function success(message) {
+          return console.log(message);
+        },
+        warning: function warning(message) {
+          return console.warn(message);
+        }
       }
     };
 
@@ -628,8 +694,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       label: opts.messages.textArea,
       attrs: {
         type: 'textarea',
-        className: 'rich-text',
-        name: 'rich-text'
+        className: 'text-area',
+        name: 'textarea'
       }
     }, {
       label: opts.messages.radioGroup,
@@ -703,21 +769,22 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         'name': frmbFields[i].className,
         'label': frmbFields[i].label
       });
+
       for (var attr in frmbFields[i]) {
         if (frmbFields[i].hasOwnProperty(attr)) {
           $field.data(attr, frmbFields[i][attr]);
         }
       }
-      $field.html(frmbFields[i].label).appendTo(cbUL);
+
+      var typeLabel = _helpers.markup('span', frmbFields[i].label);
+      $field.html(typeLabel).appendTo(cbUL);
     }
 
     // Build our headers and action links
-    var cbHeader = $('<h4/>').html(opts.messages.editorTitle),
-        viewXML = $('<a/>', {
+    var viewXML = _helpers.markup('a', opts.messages.viewXML, {
       id: frmbID + '-export-xml',
-      text: opts.messages.viewXML,
       href: '#',
-      'class': 'view-xml'
+      className: 'view-xml'
     }),
         allowSelect = $('<a/>', {
       id: frmbID + '-allow-select',
@@ -777,6 +844,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
           _helpers.doCancel = false;
         }
       },
+      receive: _helpers.save,
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       cancel: 'input, select, .disabled, .frm-fld, .btn',
@@ -839,24 +907,14 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap'
-    }).append(cbHeader, cbUL);
+    }).append(cbUL);
 
     $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
-    var doSave = function doSave() {
-      if ($(this).parents('li.disabled').length === 0) {
-        if ($(this).name === 'label' && $(this).val() === '') {
-          return alert('Error: ' + opts.messages.labelEmpty);
-        }
-        _helpers.save();
-      }
-    };
-
     // Not pretty but we need to save a lot so users don't have to keep clicking a save button
-    $('input, select', $sortableFields).on('change', doSave);
-    $('input, select', $sortableFields).on('blur', doSave);
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.save);
 
     // Parse saved XML template data
     elem.getTemplate = function () {
@@ -901,7 +959,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
       var fieldAttrs = $field.data('attrs') || {},
           fType = fieldAttrs.type || $field.attr('type'),
-          isMultiple = fType.match(/(select|checkbox-group|radio-group)/),
           values = {};
 
       values.label = _helpers.htmlEncode($field.attr('label'));
@@ -910,25 +967,9 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       values.required = $field.attr('required');
       values.maxlength = $field.attr('maxlength');
       values.toggle = $field.attr('toggle');
-      values.multiple = $field.attr('multiple');
+      values.multiple = fType.match(/(checkbox-group)/);
       values.type = fType;
       values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
-
-      if (isMultiple) {
-        if (values.type === 'checkbox-group') {
-          values.multiple = true;
-        }
-
-        values.values = [];
-        $field.children().each(function () {
-          var value = {
-            label: $(this).text(),
-            value: $(this).attr('value'),
-            selected: Boolean($(this).attr('selected'))
-          };
-          values.values.push(value);
-        });
-      }
 
       appendNewField(values);
       $stageWrap.removeClass('empty');
@@ -947,6 +988,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
     // add select dropdown
     var appendSelectList = function appendSelectList(values) {
+      console.log(values);
 
       if (!values.values || !values.values.length) {
         values.values = [{
@@ -1031,17 +1073,17 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       values.style = values.style || 'default';
 
       if (values.type !== 'button') {
-        var fieldDescLabel = _helpers.markup('label', {}, opts.messages.description),
-            fieldDescInput = _helpers.markup('input', {
+        var fieldDescLabel = _helpers.markup('label', opts.messages.description),
+            fieldDescInput = _helpers.markup('input', opts.messages.description, {
           type: 'text',
           'className': 'fld-description form-control',
           name: 'description',
           id: 'description-' + lastID,
           value: values.description
-        }, opts.messages.description),
-            fieldDesc = _helpers.markup('div', {
+        }),
+            fieldDesc = _helpers.markup('div', [fieldDescLabel, fieldDescInput], {
           'class': 'frm-fld description-wrap'
-        }, [fieldDescLabel, fieldDescInput]);
+        });
         advFields += fieldDesc;
       }
 
@@ -1188,10 +1230,10 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       liContents += '</div>';
       liContents += '</div>';
 
-      var li = _helpers.markup('li', {
+      var li = _helpers.markup('li', liContents, {
         'class': values.type + '-field form-field',
         id: 'frm-' + lastID + '-item'
-      }, liContents),
+      }),
           $li = $(li);
 
       $li.data('fieldData', { attrs: values });
@@ -1205,7 +1247,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
       lastID++;
-      _helpers.save();
     };
 
     // Select field html, since there may be multiple
@@ -1283,9 +1324,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
           toggleBtn = $('.toggle-form', field),
           editMode = $('.frm-holder', field);
       toggleBtn.toggleClass('open').parent().next('.prev-holder').slideToggle(250);
-      editMode.slideToggle(250, function () {
-        _helpers.save();
-      });
+      editMode.slideToggle(250);
     };
 
     // update preview to label
@@ -1388,10 +1427,12 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     // Attach a callback to toggle required asterisk
     $sortableFields.on('click', '.style-wrap button', function () {
       var styleVal = $(this).val(),
-          $parent = $(this).parent();
-      $parent.siblings('.btn-style').val(styleVal);
+          $parent = $(this).parent(),
+          $btnStyle = $parent.prev('.btn-style');
+      $btnStyle.val(styleVal);
       $(this).siblings('.btn').removeClass('active');
       $(this).addClass('active');
+      $btnStyle.trigger('change');
     });
 
     // Attach a callback to toggle required asterisk
@@ -1495,13 +1536,9 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
     // Save Idea Template
     $(document.getElementById(frmbID + '-save')).click(function (e) {
-      if ($(this).find('.ldkInlineEdit').length === 0) {
-        e.preventDefault();
-        if (!$stageWrap.hasClass('edit-xml')) {
-          _helpers.save();
-        }
-        _helpers.validateForm(e);
-      }
+      e.preventDefault();
+      _helpers.save();
+      _helpers.validateForm(e);
     });
 
     var triggerDevMode = false,
@@ -1575,18 +1612,18 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   $.fn.formBuilder = function (options) {
     var form = this;
     return form.each(function () {
-      var element = $(this),
+      var element = this,
           formBuilder;
-      if (element.data('formBuilder')) {
-        var existingFormBuilder = element.parents('.form-builder:eq(0)');
-        var newElement = element.clone();
+      if ($(element).data('formBuilder')) {
+        var existingFormBuilder = $(element).parents('.form-builder:eq(0)');
+        var newElement = $(element).clone();
         existingFormBuilder.before(newElement);
         existingFormBuilder.remove();
-        formBuilder = new FormBuilder(newElement, options);
+        formBuilder = new FormBuilder(options, newElement[0]);
         newElement.data('formBuilder', formBuilder);
       } else {
-        formBuilder = new FormBuilder(form, options);
-        element.data('formBuilder', formBuilder);
+        formBuilder = new FormBuilder(options, element);
+        $(element).data('formBuilder', formBuilder);
       }
     });
   };

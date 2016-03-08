@@ -17,10 +17,10 @@ Navigate to the directory you'll be working from and run:
 git clone https://github.com/kevinchappell/formBuilder.git form-builder
 cd form-builder
 npm install
-gulp demo
+gulp
 ```
 
-The above code will clone the repo, install the required `node_modules` and run the `gulp demo` task. You should now have a locally running version of the demo page.
+The above code will clone the repo, install the required `node_modules` and run the default `gulp` task. You should now have a locally running version of the demo page.
 
 ## Building
 
