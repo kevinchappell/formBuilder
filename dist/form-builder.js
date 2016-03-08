@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.8.1
+Version: 1.8.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1146,11 +1146,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           break;
         case 'checkbox-group':
         case 'radio-group':
-          var type = attrs.type.replace('-group', '');
+          var type = attrs.type.replace('-group', ''),
+              optionName = type + '-' + epoch;
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
             var checked = attrs.values[i].selected ? 'checked' : '';
-            preview += '<div><input type="' + type + '" id="' + type + '-' + epoch + '-' + i + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + type + '-' + epoch + '-' + i + '">' + attrs.values[i].label + '</label></div>';
+            var optionId = type + '-' + epoch + '-' + i;
+            preview += '<div><input type="' + type + '" name="' + optionName + '" id="' + optionId + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + optionId + '">' + attrs.values[i].label + '</label></div>';
           }
           break;
         case 'text':
