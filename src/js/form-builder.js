@@ -1100,11 +1100,13 @@
           break;
         case 'checkbox-group':
         case 'radio-group':
-          let type = attrs.type.replace('-group', '');
+          let type = attrs.type.replace('-group', ''),
+          optionName = type+'-'+epoch;
           attrs.values.reverse();
           for (i = attrs.values.length - 1; i >= 0; i--) {
             let checked = attrs.values[i].selected ? 'checked' : '';
-            preview += `<div><input type="${type}" id="${type}-${epoch}-${i}" value="${attrs.values[i].value}" ${checked}/><label for="${type}-${epoch}-${i}">${attrs.values[i].label}</label></div>`;
+            let optionId = `${type}-${epoch}-${i}`;
+            preview += `<div><input type="${type}" name="${optionName}" id="${optionId}" value="${attrs.values[i].value}" ${checked}/><label for="${optionId}">${attrs.values[i].label}</label></div>`;
           }
           break;
         case 'text':
