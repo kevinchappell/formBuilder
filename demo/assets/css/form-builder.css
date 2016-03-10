@@ -353,8 +353,7 @@ textarea.form-control {
 .frmb-control li {
   cursor: move;
   list-style: none;
-  border-radius: 2px;
-  margin: 0 0 5px;
+  margin: 0 0 3px;
   padding: 10px;
   text-align: left;
   background: #fff;
@@ -364,6 +363,10 @@ textarea.form-control {
   -ms-user-select: none;
   user-select: none;
   /* smartphones, Android phones, landscape iPhone */ }
+  .frmb-control li:first-child {
+    border-radius: 5px 5px 0 0; }
+  .frmb-control li:last-child {
+    border-radius: 0 0 5px 5px; }
   .frmb-control li:before {
     margin-right: 10px;
     font-size: 16px; }
@@ -384,8 +387,8 @@ textarea.form-control {
 .frmb {
   list-style-type: none;
   min-height: 200px;
-  margin: 0 0 5px;
-  padding: 0 5px; }
+  margin: 0 6px 0 0;
+  padding: 0; }
   .empty .frmb {
     border: 3px dashed #e6e6e6;
     margin-right: 5px; }
@@ -394,12 +397,15 @@ textarea.form-control {
     padding: 6px;
     clear: both;
     margin-left: 0;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     background-color: #fff;
-    border-radius: 5px;
     border: 1px solid #fff;
     -webkit-transition: border 250ms ease-in-out;
             transition: border 250ms ease-in-out; }
+    .frmb li:first-child {
+      border-radius: 5px 5px 0 0; }
+    .frmb li:last-child {
+      border-radius: 0 0 5px 5px; }
     .frmb li:hover {
       border: 1px solid #b3b3b3; }
       .frmb li:hover li :hover {
@@ -417,6 +423,8 @@ textarea.form-control {
     .frmb li.disabled [type=checkbox] {
       float: left;
       margin-right: 10px; }
+    .frmb li.disabled h2 {
+      border-bottom: 0 none; }
     .frmb li.disabled label {
       font-size: 12px;
       font-weight: 400;
@@ -425,17 +433,16 @@ textarea.form-control {
       cursor: default;
       line-height: 28px;
       padding-left: 5px; }
-    .frmb li a.remove {
-      opacity: 1; }
     .frmb li.cta {
-      font-size: 30px;
       padding: 20% 0;
+      font-size: 30px;
       text-align: center; }
   .frmb a.btn {
     border: 1px solid #fff;
     color: #000;
     text-decoration: none; }
-  .frmb a.del-button, .frmb a.remove {
+  .frmb a.del-button,
+  .frmb a.remove {
     position: absolute;
     top: -1px;
     right: -1px;
@@ -443,10 +450,12 @@ textarea.form-control {
     opacity: 0;
     border-radius: 0 5px 0 0;
     border-color: #b3b3b3; }
-  .frmb a.del-button:hover, .frmb a.remove:hover {
+  .frmb a.del-button:hover,
+  .frmb a.remove:hover {
     border-color: #c66865;
     color: #c66865; }
-  .frmb li.delete:hover, .frmb li:hover li.delete:hover {
+  .frmb li.delete:hover,
+  .frmb li:hover li.delete:hover {
     background-color: #fdd; }
   .frmb.disabled {
     padding: 0 5px; }
@@ -477,7 +486,8 @@ textarea.form-control {
       font-weight: normal; }
   .frmb .required_asterisk {
     display: none; }
-  .frmb .field-label, .frmb .legend {
+  .frmb .field-label,
+  .frmb .legend {
     color: #666;
     margin-bottom: 5px; }
   .frmb .disabled .field-label {
@@ -798,32 +808,29 @@ textarea {
   background-color: #666;
   border-radius: 5px;
   padding: 5px;
-  color: gray;
+  color: #fff;
   z-index: 20;
   text-align: left;
-  font-size: 12px; }
-
-.frmb-tt:after,
-.frmb-tt:before {
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 10px 10px 0;
-  border-color: #666 transparent;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-left: -10px;
-  bottom: -10px;
-  left: 20px; }
-
-.frmb-tt:before {
-  border-color: #262626 transparent;
-  bottom: -11px; }
-
-.frmb-tt a {
-  text-decoration: underline;
-  color: #fff; }
+  font-size: 12px;
+  pointer-events: none; }
+  .frmb-tt:before {
+    border-color: #262626 transparent;
+    bottom: -11px; }
+  .frmb-tt:before, .frmb-tt:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: #666 transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    margin-left: -10px;
+    bottom: -10px;
+    left: 20px; }
+  .frmb-tt a {
+    text-decoration: underline;
+    color: #fff; }
 
 .frmb li.moving,
 .frmb li.ui-sortable-helper,

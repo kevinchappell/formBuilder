@@ -32,9 +32,11 @@ var formBuilderHelpers = function(opts, formBuilder) {
    * @return {string}
    */
   _helpers.hyphenCase = (str) => {
-    return str.replace(/([A-Z])/g, function($1) {
+    str = str.replace(/([A-Z])/g, function($1) {
       return '-' + $1.toLowerCase();
     });
+
+    return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
   _helpers.safeAttr = function(name, value) {
@@ -92,6 +94,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
       $(ui.sender).sortable('cancel');
       $(this).sortable('cancel');
     }
+    _helpers.save();
   };
 
   /**
@@ -305,11 +308,13 @@ var formBuilderHelpers = function(opts, formBuilder) {
         break;
       case 'checkbox-group':
       case 'radio-group':
-        let type = attrs.type.replace('-group', '');
+        let type = attrs.type.replace('-group', ''),
+          optionName = type + '-' + epoch;
         attrs.values.reverse();
         for (i = attrs.values.length - 1; i >= 0; i--) {
           let checked = attrs.values[i].selected ? 'checked' : '';
-          preview += `<div><input type="${type}" id="${type}-${epoch}-${i}" value="${attrs.values[i].value}" ${checked}/><label for="${type}-${epoch}-${i}">${attrs.values[i].label}</label></div>`;
+          let optionId = `${type}-${epoch}-${i}`;
+          preview += `<div><input type="${type}" name="${optionName}" id="${optionId}" value="${attrs.values[i].value}" ${checked}/><label for="${optionId}">${attrs.values[i].label}</label></div>`;
         }
         break;
       case 'text':
@@ -350,6 +355,18 @@ var formBuilderHelpers = function(opts, formBuilder) {
         });
       }
     });
+  };
+
+  _helpers.debounce = function(fn, delay = 1000) {
+    var timer = null;
+    return function() {
+      var context = this,
+        args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        fn.apply(context, args);
+      }, delay);
+    };
   };
 
   _helpers.htmlEncode = function(value) {
@@ -394,25 +411,21 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
   /**
    * Display a custom tooltip for disabled fields.
-   * @param  {object} field [description]
-   * @return {void}
+   *
+   * @param  {object} field
    */
-  _helpers.disabledTT = function(field) {
-    var title = field.attr('data-tooltip');
-    if (title) {
-      field.removeAttr('title').data('tip_text', title);
-      var tt = $('<p/>', {
-        'class': 'frmb-tt'
-      }).html(title);
-      field.append(tt);
-      tt.css({
-        top: -tt.outerHeight(),
-        left: -15
-      });
-      field.mouseleave(function() {
-        $(this).attr('data-tooltip', field.data('tip_text'));
-        $('.frmb-tt').remove();
-      });
+  _helpers.disabledTT = {
+    className: 'frmb-tt',
+    add: function(field) {
+      let title = opts.messages.fieldNonEditable;
+
+      if (title) {
+        var tt = _helpers.markup('p', title, { className: _helpers.disabledTT.className });
+        field.append(tt);
+      }
+    },
+    remove: function(field) {
+      $('.frmb-tt', field).remove();
     }
   };
 
@@ -443,9 +456,10 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
   /**
    * Generate markup wrapper where needed
+   *
    * @param  {string} tag
+   * @param  {string} content
    * @param  {object} attrs
-   * @param  {string} content we wrap this
    * @return {string}
    */
   _helpers.markup = function(tag, content = '', attrs = {}) {

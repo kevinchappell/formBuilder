@@ -23,8 +23,7 @@
 .frmb-control li {
   cursor: move;
   list-style: none;
-  border-radius: 2px;
-  margin: 0 0 5px;
+  margin: 0 0 3px;
   padding: 10px;
   text-align: left;
   background: $white;
@@ -33,6 +32,14 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
+  &:first-child {
+    border-radius: 5px 5px 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 5px 5px;
+  }
 
   &:before {
     margin-right: 10px;

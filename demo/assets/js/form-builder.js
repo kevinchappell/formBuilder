@@ -39,9 +39,11 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
    * @return {string}
    */
   _helpers.hyphenCase = function (str) {
-    return str.replace(/([A-Z])/g, function ($1) {
+    str = str.replace(/([A-Z])/g, function ($1) {
       return '-' + $1.toLowerCase();
     });
+
+    return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
   _helpers.safeAttr = function (name, value) {
@@ -99,6 +101,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       $(ui.sender).sortable('cancel');
       $(this).sortable('cancel');
     }
+    _helpers.save();
   };
 
   /**
@@ -310,11 +313,13 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         break;
       case 'checkbox-group':
       case 'radio-group':
-        var type = attrs.type.replace('-group', '');
+        var type = attrs.type.replace('-group', ''),
+            optionName = type + '-' + epoch;
         attrs.values.reverse();
         for (i = attrs.values.length - 1; i >= 0; i--) {
           var checked = attrs.values[i].selected ? 'checked' : '';
-          preview += '<div><input type="' + type + '" id="' + type + '-' + epoch + '-' + i + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + type + '-' + epoch + '-' + i + '">' + attrs.values[i].label + '</label></div>';
+          var optionId = type + '-' + epoch + '-' + i;
+          preview += '<div><input type="' + type + '" name="' + optionName + '" id="' + optionId + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + optionId + '">' + attrs.values[i].label + '</label></div>';
         }
         break;
       case 'text':
@@ -355,6 +360,20 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         });
       }
     });
+  };
+
+  _helpers.debounce = function (fn) {
+    var delay = arguments.length <= 1 || arguments[1] === undefined ? 1000 : arguments[1];
+
+    var timer = null;
+    return function () {
+      var context = this,
+          args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        fn.apply(context, args);
+      }, delay);
+    };
   };
 
   _helpers.htmlEncode = function (value) {
@@ -399,25 +418,21 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
   /**
    * Display a custom tooltip for disabled fields.
-   * @param  {object} field [description]
-   * @return {void}
+   *
+   * @param  {object} field
    */
-  _helpers.disabledTT = function (field) {
-    var title = field.attr('data-tooltip');
-    if (title) {
-      field.removeAttr('title').data('tip_text', title);
-      var tt = $('<p/>', {
-        'class': 'frmb-tt'
-      }).html(title);
-      field.append(tt);
-      tt.css({
-        top: -tt.outerHeight(),
-        left: -15
-      });
-      field.mouseleave(function () {
-        $(this).attr('data-tooltip', field.data('tip_text'));
-        $('.frmb-tt').remove();
-      });
+  _helpers.disabledTT = {
+    className: 'frmb-tt',
+    add: function add(field) {
+      var title = opts.messages.fieldNonEditable;
+
+      if (title) {
+        var tt = _helpers.markup('p', title, { className: _helpers.disabledTT.className });
+        field.append(tt);
+      }
+    },
+    remove: function remove(field) {
+      $('.frmb-tt', field).remove();
     }
   };
 
@@ -451,9 +466,10 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
   /**
    * Generate markup wrapper where needed
+   *
    * @param  {string} tag
+   * @param  {string} content
    * @param  {object} attrs
-   * @param  {string} content we wrap this
    * @return {string}
    */
   _helpers.markup = function (tag) {
@@ -530,6 +546,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         // before: '<h2>Header</h2>',
         // after: '<h3>Footer</h3>'
       },
+      append: false,
+      prepend: false,
       // array of objects with fields values
       // ex:
       // defaultFields: [{
@@ -567,11 +585,11 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         description: 'Help Text',
         descriptionField: 'Description',
         devMode: 'Developer Mode',
-        disableFields: 'These fields cannot be moved.',
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
         fieldVars: 'Field Variables',
+        fieldNonEditable: 'This field cannot be edited.',
         fieldRemoveWarning: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
@@ -588,6 +606,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         no: 'No',
         off: 'Off',
         on: 'On',
+        option: 'Option',
         optional: 'optional',
         optionLabelPlaceholder: 'Label',
         optionValuePlaceholder: 'Value',
@@ -836,15 +855,26 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         event = event;
         var lastIndex = $('> li', $sortableFields).length - 1,
             curIndex = ui.placeholder.index();
-        if (opts.disableFields.before) {
+        if (opts.prepend) {
           _helpers.doCancel = curIndex <= 1;
-        } else if (opts.disableFields.after) {
+        } else if (opts.after) {
           _helpers.doCancel = curIndex === lastIndex;
         } else {
           _helpers.doCancel = false;
         }
       },
-      receive: _helpers.save,
+      // receive: function(event, ui) {
+      //   var lastIndex = $('> li', $sortableFields).length - 1,
+      //     curIndex = $sortableFields.index(ui.placeholder);
+      //   if (opts.prepend) {
+      //     _helpers.doCancel = (curIndex <= 1);
+      //   } else if (opts.after) {
+      //     _helpers.doCancel = (curIndex === lastIndex);
+      //   } else {
+      //     _helpers.doCancel = false;
+      //   }
+      //   console.log(curIndex, event, ui);
+      // },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       cancel: 'input, select, .disabled, .frm-fld, .btn',
@@ -861,19 +891,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       revert: 150,
-      remove: function remove(event, ui) {
-        event = event;
-        if (_helpers.startIndex === 0) {
-          cbUL.prepend(ui.item);
-        } else {
-          $('li:nth-child(' + _helpers.startIndex + ')', cbUL).after(ui.item);
-        }
-      },
-      beforeStop: function beforeStop(event, ui) {
-        event = event;
-        if (ui.placeholder.parent().hasClass('frmb-control')) {
-          _helpers.doCancel = true;
-        }
+      over: function over() {
+        _helpers.doCancel = true;
       },
       update: function update(event, ui) {
         event = event;
@@ -882,12 +901,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
           $(this).sortable('cancel');
         } else {
           prepFieldVars($(ui.item[0]), true);
-        }
-      },
-      receive: function receive(event, ui) {
-        event = event;
-        if (ui.sender.hasClass('frmb') || ui.sender.hasClass('frmb-control')) {
-          $(ui.sender).sortable('cancel');
         }
       }
     });
@@ -914,7 +927,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     $formWrap.append($stageWrap, cbWrap);
 
     // Not pretty but we need to save a lot so users don't have to keep clicking a save button
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.save);
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.debounce(_helpers.save));
 
     // Parse saved XML template data
     elem.getTemplate = function () {
@@ -932,21 +945,25 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
             appendNewField(opts.defaultFields[i]);
           }
+          $stageWrap.removeClass('empty');
         } else {
           $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
-        disabledBeforeAfter();
+        nonEditableFields();
       }
     };
 
-    var disabledBeforeAfter = function disabledBeforeAfter() {
-      var li = '<li class="disabled __POSITION__">__CONTENT__</li>';
-      if (opts.disableFields.before && !$('.disabled.before', $sortableFields).length) {
-        $sortableFields.prepend(li.replace('__POSITION__', 'before').replace('__CONTENT__', opts.disableFields.before));
+    var nonEditableFields = function nonEditableFields() {
+      if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
+        var prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
+        $sortableFields.prepend(prependedField);
       }
-      if (opts.disableFields.after && !$('.disabled.after', $sortableFields).length) {
-        $sortableFields.append(li.replace('__POSITION__', 'after').replace('__CONTENT__', opts.disableFields.after));
+
+      if (opts.append && !$('.disabled.append', $sortableFields).length) {
+        var appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
+        $sortableFields.append(appendedField);
       }
+      $stageWrap.removeClass('empty');
     };
 
     var nameAttr = function nameAttr(field) {
@@ -973,7 +990,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
       appendNewField(values);
       $stageWrap.removeClass('empty');
-      disabledBeforeAfter();
+      nonEditableFields();
     };
 
     // multi-line textarea
@@ -988,18 +1005,19 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
     // add select dropdown
     var appendSelectList = function appendSelectList(values) {
-      console.log(values);
-
       if (!values.values || !values.values.length) {
         values.values = [{
-          selected: true,
-          label: 'Option 1',
-          value: 'option-1'
+          selected: true
         }, {
-          selected: false,
-          label: 'Option 2',
-          value: 'option-2'
+          selected: false
         }];
+
+        values.values = values.values.map(function (elem, index) {
+          elem.label = opts.messages.option + ' ' + (index + 1);
+          elem.value = _helpers.hyphenCase(elem.label);
+
+          return elem;
+        });
       }
 
       var field = '',
@@ -1020,7 +1038,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
+      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add-opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
@@ -1459,12 +1477,25 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     });
 
     // callback to call disabled tooltips
-    $sortableFields.on('mouseenter', 'li.disabled .form-element', function () {
-      _helpers.disabledTT($(this));
+    $sortableFields.on('mousemove', 'li.disabled', function (e) {
+      $('.frmb-tt', this).css({
+        left: e.offsetX - 15,
+        top: e.offsetY - 20
+      });
+    });
+
+    // callback to call disabled tooltips
+    $sortableFields.on('mouseenter', 'li.disabled', function () {
+      _helpers.disabledTT.add($(this));
+    });
+
+    // callback to call disabled tooltips
+    $sortableFields.on('mouseleave', 'li.disabled', function () {
+      _helpers.disabledTT.remove($(this));
     });
 
     // Attach a callback to add new options
-    $sortableFields.on('click', '.add_opt', function (e) {
+    $sortableFields.on('click', '.add-opt', function (e) {
       e.preventDefault();
       var $optionWrap = $(this).parents('.fields:eq(0)'),
           $multiple = $('[name="multiple"]', $optionWrap),
@@ -1529,8 +1560,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         };
 
         appendNewField(values);
-        $sortableFields.prepend(opts.disableFields.before);
-        $sortableFields.append(opts.disableFields.after);
       }
     });
 
@@ -1690,6 +1719,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         // build new xml
         $(this).children().each(function () {
           var $field = $(this);
+
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
               var roleVals = $.map($('input.roles-field:checked', $field), function (n) {

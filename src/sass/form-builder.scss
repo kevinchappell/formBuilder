@@ -265,35 +265,36 @@ textarea {
   background-color: $grey;
   border-radius: 5px;
   padding: 5px;
-  color: lighten($grey, 10%);
+  color: $white;
   z-index: 20;
   text-align: left;
   font-size: 12px;
-}
+  pointer-events: none;
 
-.frmb-tt:after,
-.frmb-tt:before {
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 10px 10px 0;
-  border-color: #666 transparent;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-left: -10px;
-  bottom: -10px;
-  left: 20px;
-}
+  &:before {
+    border-color: darken($grey, 25%) transparent;
+    bottom: -11px;
+  }
 
-.frmb-tt:before {
-  border-color: darken($grey, 25%) transparent;
-  bottom: -11px;
-}
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: #666 transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    margin-left: -10px;
+    bottom: -10px;
+    left: 20px;
+  }
 
-.frmb-tt a {
-  text-decoration: underline;
-  color: $white;
+  a {
+    text-decoration: underline;
+    color: $white;
+  }
 }
 
 .frmb li.moving,

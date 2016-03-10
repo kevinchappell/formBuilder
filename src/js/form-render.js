@@ -31,20 +31,25 @@ var FormRender = function(options, element) {
   var opts = $.extend(defaults, options);
 
 
+  /**
+   * Require the html element if it has been lost
+   *
+   * @return {object} javascript object for html element
+   */
   _helpers.getElement = function() {
     if (!element.id) {
       element.id = _helpers.makeId(element);
     }
 
-    if (!element.onchange) {
-      element.onchange = function() {
-        opts.notify.success(opts.messages.formUpdated);
-      };
-    }
-
-    return element;
+    return document.getElementById(element.id);
   };
 
+  /**
+   * Make an ID for this element using current date and tag
+   *
+   * @param  {Boolean} element
+   * @return {String}          new id for element
+   */
   _helpers.makeId = function(element = false) {
     let epoch = new Date().getTime();
 

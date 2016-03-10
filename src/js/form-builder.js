@@ -12,6 +12,8 @@
         // before: '<h2>Header</h2>',
         // after: '<h3>Footer</h3>'
       },
+      append: false,
+      prepend: false,
       // array of objects with fields values
       // ex:
       // defaultFields: [{
@@ -49,11 +51,11 @@
         description: 'Help Text',
         descriptionField: 'Description',
         devMode: 'Developer Mode',
-        disableFields: 'These fields cannot be moved.',
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
         fieldVars: 'Field Variables',
+        fieldNonEditable: 'This field cannot be edited.',
         fieldRemoveWarning: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
@@ -70,6 +72,7 @@
         no: 'No',
         off: 'Off',
         on: 'On',
+        option: 'Option',
         optional: 'optional',
         optionLabelPlaceholder: 'Label',
         optionValuePlaceholder: 'Value',
@@ -326,15 +329,26 @@
         event = event;
         var lastIndex = $('> li', $sortableFields).length - 1,
           curIndex = ui.placeholder.index();
-        if (opts.disableFields.before) {
+        if (opts.prepend) {
           _helpers.doCancel = (curIndex <= 1);
-        } else if (opts.disableFields.after) {
+        } else if (opts.after) {
           _helpers.doCancel = (curIndex === lastIndex);
         } else {
           _helpers.doCancel = false;
         }
       },
-      receive: _helpers.save,
+      // receive: function(event, ui) {
+      //   var lastIndex = $('> li', $sortableFields).length - 1,
+      //     curIndex = $sortableFields.index(ui.placeholder);
+      //   if (opts.prepend) {
+      //     _helpers.doCancel = (curIndex <= 1);
+      //   } else if (opts.after) {
+      //     _helpers.doCancel = (curIndex === lastIndex);
+      //   } else {
+      //     _helpers.doCancel = false;
+      //   }
+      //   console.log(curIndex, event, ui);
+      // },
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       cancel: 'input, select, .disabled, .frm-fld, .btn',
@@ -351,19 +365,8 @@
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       revert: 150,
-      remove: function(event, ui) {
-        event = event;
-        if (_helpers.startIndex === 0) {
-          cbUL.prepend(ui.item);
-        } else {
-          $('li:nth-child(' + _helpers.startIndex + ')', cbUL).after(ui.item);
-        }
-      },
-      beforeStop: function(event, ui) {
-        event = event;
-        if (ui.placeholder.parent().hasClass('frmb-control')) {
-          _helpers.doCancel = true;
-        }
+      over: function() {
+        _helpers.doCancel = true;
       },
       update: function(event, ui) {
         event = event;
@@ -372,12 +375,6 @@
           $(this).sortable('cancel');
         } else {
           prepFieldVars($(ui.item[0]), true);
-        }
-      },
-      receive: function(event, ui) {
-        event = event;
-        if (ui.sender.hasClass('frmb') || ui.sender.hasClass('frmb-control')) {
-          $(ui.sender).sortable('cancel');
         }
       }
     });
@@ -404,7 +401,7 @@
     $formWrap.append($stageWrap, cbWrap);
 
     // Not pretty but we need to save a lot so users don't have to keep clicking a save button
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.save);
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.debounce(_helpers.save));
 
     // Parse saved XML template data
     elem.getTemplate = function() {
@@ -422,21 +419,25 @@
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
             appendNewField(opts.defaultFields[i]);
           }
+          $stageWrap.removeClass('empty');
         } else {
           $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
-        disabledBeforeAfter();
+        nonEditableFields();
       }
     };
 
-    var disabledBeforeAfter = function() {
-      var li = '<li class="disabled __POSITION__">__CONTENT__</li>';
-      if (opts.disableFields.before && !$('.disabled.before', $sortableFields).length) {
-        $sortableFields.prepend(li.replace('__POSITION__', 'before').replace('__CONTENT__', opts.disableFields.before));
+    var nonEditableFields = function() {
+      if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
+        let prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
+        $sortableFields.prepend(prependedField);
       }
-      if (opts.disableFields.after && !$('.disabled.after', $sortableFields).length) {
-        $sortableFields.append(li.replace('__POSITION__', 'after').replace('__CONTENT__', opts.disableFields.after));
+
+      if (opts.append && !$('.disabled.append', $sortableFields).length) {
+        let appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
+        $sortableFields.append(appendedField);
       }
+      $stageWrap.removeClass('empty');
     };
 
     var nameAttr = function(field) {
@@ -463,7 +464,7 @@
 
       appendNewField(values);
       $stageWrap.removeClass('empty');
-      disabledBeforeAfter();
+      nonEditableFields();
     };
 
     // multi-line textarea
@@ -478,18 +479,19 @@
 
     // add select dropdown
     var appendSelectList = function(values) {
-      console.log(values);
-
       if (!values.values || !values.values.length) {
         values.values = [{
-          selected: true,
-          label: 'Option 1',
-          value: 'option-1'
+          selected: true
         }, {
-          selected: false,
-          label: 'Option 2',
-          value: 'option-2'
+          selected: false
         }];
+
+        values.values = values.values.map(function(elem, index) {
+          elem.label = `${opts.messages.option} ${index + 1}`;
+          elem.value = _helpers.hyphenCase(elem.label);
+
+          return elem;
+        });
       }
 
       var field = '',
@@ -510,7 +512,7 @@
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add_opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
+      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add-opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
@@ -951,12 +953,25 @@
     });
 
     // callback to call disabled tooltips
-    $sortableFields.on('mouseenter', 'li.disabled .form-element', function() {
-      _helpers.disabledTT($(this));
+    $sortableFields.on('mousemove', 'li.disabled', function(e) {
+      $('.frmb-tt', this).css({
+        left: e.offsetX - 15,
+        top: e.offsetY - 20
+      });
+    });
+
+    // callback to call disabled tooltips
+    $sortableFields.on('mouseenter', 'li.disabled', function() {
+      _helpers.disabledTT.add($(this));
+    });
+
+    // callback to call disabled tooltips
+    $sortableFields.on('mouseleave', 'li.disabled', function() {
+      _helpers.disabledTT.remove($(this));
     });
 
     // Attach a callback to add new options
-    $sortableFields.on('click', '.add_opt', function(e) {
+    $sortableFields.on('click', '.add-opt', function(e) {
       e.preventDefault();
       var $optionWrap = $(this).parents('.fields:eq(0)'),
         $multiple = $('[name="multiple"]', $optionWrap),
@@ -1021,8 +1036,6 @@
         };
 
         appendNewField(values);
-        $sortableFields.prepend(opts.disableFields.before);
-        $sortableFields.append(opts.disableFields.after);
       }
     });
 

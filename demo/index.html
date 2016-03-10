@@ -71,7 +71,7 @@
           </form>
           <br style="clear:both">
         </div>
-        <div class="render-form">
+        <div class="render-form clearfix">
           <h2>Render The Form</h2>
           <form id="rendered-form">
             <p class="cta">Add some fields to the formBuilder above and render them here.</p>
@@ -91,28 +91,13 @@ $(template).formRender(formRenderOpts);
             <button id="render-form-button" class="btn btn-primary">Render form</button>
           </div>
         </div>
-        <br style="clear:both">
-        <h2><a id="note" class="anchor" href="#note" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thank you</h2>
-        <p>If you found this plugin useful or even mildly interesting why not tweet about it? <a href="https://twitter.com/share" class="twitter-share-button" data-via="kevinchappell" data-hashtags="formBuilder">Tweet</a>
-          <script>
-          ! function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0],
-              p = /^http:/.test(d.location) ? 'http' : 'https';
-            if (!d.getElementById(id)) {
-              js = d.createElement(s);
-              js.id = id;
-              js.src = p + '://platform.twitter.com/widgets.js';
-              fjs.parentNode.insertBefore(js, fjs);
-            }
-          }(document, 'script', 'twitter-wjs');
-          </script>
-        </p>
       </section>
     </div>
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner clearfix">
         <div class="donate-plea">
+          <h3>Thank you</h3>
           <p>Hundreds of hours went into making formBuilder what it is today.
             <br> If this plugin helped you or your project please consider making a donation.</p>
           <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -142,7 +127,12 @@ $(template).formRender(formRenderOpts);
     var template = document.getElementsByTagName('textarea'),
       formContainer = document.getElementById('rendered-form'),
       renderBtn = document.getElementById('render-form-button');
-    $(template).formBuilder();
+
+      var options = {
+          prepend: '<h1>Header</h1>',
+          append: '<h2>Footer</h2>'
+      };
+    $(template).formBuilder(options);
 
     $(renderBtn).click(function(e) {
       e.preventDefault();

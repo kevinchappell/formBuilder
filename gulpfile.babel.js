@@ -109,7 +109,7 @@ gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'js']);
   gulp.watch('demo/index.html', bsync.reload);
   gulp.watch('src/sass/*.scss', ['css']);
-  gulp.watch(files.demoSass, ['demoCss']);
+  gulp.watch('demo/assets/sass/*.scss', ['demoCss']);
 });
 
 // Compile the Sass to plain ol' css.

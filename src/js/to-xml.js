@@ -56,9 +56,11 @@
       if ($(this).children().length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
 
+
         // build new xml
         $(this).children().each(function() {
           var $field = $(this);
+
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
               var roleVals = $.map($('input.roles-field:checked', $field), function(n) {
