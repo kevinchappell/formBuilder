@@ -46,7 +46,7 @@
         let $option = $(this),
           optionValue = 'value="' + $('.option-value', $option).val() + '"',
           optionLabel = $('.option-label', $option).val(),
-          selected = $('.select-option', $option).is(':checked') ? ' selected="true"' : '';
+          selected = $('.option-selected', $option).is(':checked') ? ' selected="true"' : '';
         options.push('\n\t\t\t<option' + selected + ' ' + optionValue + '>' + optionLabel + '</option>');
       });
       return options.join('');

@@ -416,11 +416,13 @@ textarea.form-control {
     -webkit-transition: border 250ms ease-in-out;
             transition: border 250ms ease-in-out; }
     .frmb li:first-child {
-      border-radius: 5px 5px 0 0; }
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px; }
       .frmb li:first-child .del-button {
         border-radius: 0 5px 0 0; }
     .frmb li:last-child {
-      border-radius: 0 0 5px 5px; }
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px; }
     .frmb li:hover {
       box-shadow: 0 0 1px #000; }
       .frmb li:hover li :hover {
@@ -459,10 +461,6 @@ textarea.form-control {
       padding: 20% 0;
       font-size: 30px;
       text-align: center; }
-  .frmb .btn {
-    color: #000;
-    text-decoration: none;
-    border-radius: 0; }
   .frmb a.del-button {
     position: absolute;
     top: 0;
@@ -579,6 +577,20 @@ ol.sortable-options {
         background-color: #C10000;
         text-decoration: none;
         color: #fff; }
+  ol.sortable-options input[type=checkbox],
+  ol.sortable-options input[type=radio] {
+    margin-right: 5px; }
+
+.form-elements .fields .add-area .add {
+  clear: both; }
+
+.form-elements .fields {
+  width: 70%;
+  float: left; }
+
+.form-elements .fields div {
+  clear: both;
+  position: relative; }
 
 .kc-toggle {
   position: relative;
@@ -724,22 +736,6 @@ ul.frmb span.required {
 .form-elements .fields {
   margin-top: 10px; }
 
-.form-elements .fields {
-  width: 70%;
-  float: left; }
-
-.form-elements .fields .add-area .add {
-  clear: both; }
-
-.form-elements .fields div {
-  clear: both;
-  position: relative; }
-
-.form-elements .fields input[type=checkbox],
-.form-elements .fields input[type=radio] {
-  float: left;
-  margin-right: 5px; }
-
 .form-elements .fields input[type=text] {
   width: 39%;
   margin-right: 2%; }
@@ -792,7 +788,7 @@ ul.frmb span.required {
   margin-top: 10px; }
 
 .allow-select .form-elements .allow-multi,
-.allow-select .form-elements .select-option,
+.allow-select .form-elements .option-selected,
 .edit-names .form-elements .name-wrap {
   display: block !important; }
 

@@ -103,7 +103,8 @@ var FormRender = function(options, element) {
       if (fieldDesc) {
         fieldDesc = `<span class="tooltip-element" tooltip="${fieldDesc}">?</span>`;
       }
-      fieldLabel = `<label for="${fieldAttrs.id}">${fieldAttrs.label} ${fieldRequired} ${fieldDesc}</label>`;
+      let fieldLabelText = fieldAttrs.label || '';
+      fieldLabel = `<label for="${fieldAttrs.id}">${fieldLabelText} ${fieldRequired} ${fieldDesc}</label>`;
     }
 
     var fieldLabelVal = fieldAttrs.label;
@@ -281,9 +282,8 @@ var FormRender = function(options, element) {
 
   $.fn.formRender = function(options) {
     this.each(function() {
-      let element = this,
-        formRender = new FormRender(options, element);
-      $(element).data('formRender', formRender);
+      let formRender = new FormRender(options, this);
+      return formRender;
     });
   };
 

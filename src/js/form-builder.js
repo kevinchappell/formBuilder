@@ -80,6 +80,8 @@
         paragraph: 'Paragraph',
         placeholder: 'Placeholder',
         placeholders: {
+          value: 'Value',
+          label: 'Label',
           text: '',
           textarea: '',
           email: 'Enter you email',
@@ -164,8 +166,7 @@
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     var _helpers = formBuilderHelpers(opts, formBuilder);
 
-    var field = '',
-      lastID = 1,
+    var lastID = 1,
       boxID = frmbID + '-control-box';
 
     // create array of field objects to cycle through
@@ -497,7 +498,7 @@
         field += selectFieldOptions(values.values[i], name, values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="field_actions"><a href="javascript: void(0);" class="add add-opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
+      field += '<div class="option-actions"><a href="javascript: void(0);" class="add add-opt"><strong>' + opts.messages.add + '</strong></a> | <a href="javascript: void(0);" class="close-field">' + opts.messages.close + '</a></div>';
       field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
@@ -532,20 +533,22 @@
      */
     var advFields = function(values) {
 
-      var advFields = '',
+      var advFields = [],
         key,
         roles = values.role !== undefined ? values.role.split(',') : [];
-      var fieldLabel = $('<div>', {
-        'class': 'frm-fld label-wrap'
-      });
-      $('<label/>').text(opts.messages.label).appendTo(fieldLabel);
-      $('<input>', {
+
+      var fieldLabelLabel = _helpers.markup('label', opts.messages.label);
+      var fieldLabelInput = _helpers.markup('input', null, {
         type: 'text',
         name: 'label',
         value: values.label,
-        'class': 'fld-label form-control'
-      }).appendTo(fieldLabel);
-      advFields += fieldLabel[0].outerHTML;
+        className: 'fld-label form-control'
+      });
+      var fieldLabel = _helpers.markup('div', [fieldLabelLabel, fieldLabelInput], {
+        className: 'frm-fld label-wrap'
+      });
+
+      advFields.push(fieldLabel.outerHTML);
 
       values.size = values.size || 'm';
       values.style = values.style || 'default';
@@ -554,7 +557,7 @@
         let fieldDescLabel = _helpers.markup('label', opts.messages.description),
           fieldDescInput = _helpers.markup('input', opts.messages.description, {
             type: 'text',
-            'className': 'fld-description form-control',
+            className: 'fld-description form-control',
             name: 'description',
             id: 'description-' + lastID,
             value: values.description
@@ -562,39 +565,39 @@
           fieldDesc = _helpers.markup('div', [fieldDescLabel, fieldDescInput], {
             'class': 'frm-fld description-wrap'
           });
-        advFields += fieldDesc;
+        advFields.push(fieldDesc.outerHTML);
       }
 
-      advFields += subTypeField(values.type);
+      advFields.push(subTypeField(values.type));
 
-      advFields += sizeField(values.size, values.type);
+      advFields.push(sizeField(values.size, values.type));
 
-      advFields += btnStyles(values.style, values.type);
+      advFields.push(btnStyles(values.style, values.type));
 
-      advFields += placeHolderField(values.type);
+      advFields.push(placeHolderField(values.type));
 
-      advFields += '<div class="frm-fld name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>';
-      advFields += '<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>';
+      advFields.push('<div class="frm-fld name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>');
+      advFields.push('<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>');
 
-      advFields += '<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>';
+      advFields.push('<div class="frm-fld access-wrap"><label>' + opts.messages.roles + '</label>');
 
-      advFields += '<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>';
-      advFields += '<div class="frm-fld available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>';
+      advFields.push('<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
+      advFields.push('<div class="frm-fld available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>');
 
       for (key in opts.roles) {
         if ($.inArray(key, ['date', '4']) === -1) {
-          advFields += '<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + ($.inArray(key, roles) !== -1 ? 'checked' : '') + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>';
+          advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + ($.inArray(key, roles) !== -1 ? 'checked' : '') + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
         }
       }
-      advFields += '</div></div>';
+      advFields.push('</div></div>');
 
       // if field type is not checkbox, checkbox/radio group or select list, add max length
       if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden', 'button']) < 0) {
-        advFields += '<div class="frm-fld"><label class="maxlength-label">' + opts.messages.maxlength + '</label>';
-        advFields += '<input type="text" name="maxlength" maxlength="4" value="' + (values.maxlength !== undefined ? values.maxlength : '') + '" class="fld-maxlength form-control" id="maxlength-' + lastID + '" /></div>';
+        advFields.push('<div class="frm-fld"><label class="maxlength-label">' + opts.messages.maxlength + '</label>');
+        advFields.push('<input type="text" name="maxlength" maxlength="4" value="' + (values.maxlength !== undefined ? values.maxlength : '') + '" class="fld-maxlength form-control" id="maxlength-' + lastID + '" /></div>');
       }
 
-      return advFields;
+      return advFields.join('');
     };
 
     var subTypeField = function(type) {
@@ -724,29 +727,44 @@
 
     // Select field html, since there may be multiple
     var selectFieldOptions = function(values, name, selected, multipleSelect) {
-      var selectedType = (multipleSelect ? 'checkbox' : 'radio');
-      if (typeof values !== 'object') {
-        values = {
-          label: '',
-          value: '',
-          selected: false
-        };
-      } else {
-        values.label = values.label || '';
-        values.value = values.value || '';
-        values.selected = values.selected || false;
+      var optionInputType = {
+        selected: (multipleSelect ? 'checkbox' : 'radio')
+      };
+
+      let defaultOptionData = {
+        selected: selected,
+        label: '',
+        value: ''
+      };
+
+      let optionData = Object.assign(defaultOptionData, values),
+        optionInputs = [];
+
+      for (var prop in optionData) {
+        if (optionData.hasOwnProperty(prop)) {
+          let attrs = {
+            type: optionInputType[prop] || 'text',
+            'class': 'option-' + prop,
+            placeholder: opts.messages.placeholders[prop],
+            value: optionData[prop]
+          };
+          let option = _helpers.markup('input', null, attrs);
+          if (prop === 'selected') {
+            option.checked = optionData.selected;
+          }
+          optionInputs.push(option);
+
+          let removeAttrs = {
+            className: 'remove btn',
+            title: opts.messages.removeMessage
+          };
+          optionInputs.push(_helpers.markup('a', opts.messages.remove, removeAttrs));
+        }
       }
 
-      selected = values.selected ? 'checked' : '';
+      let field = _helpers.markup('li', optionInputs);
 
-      field = '<li>';
-      field += '<input type="' + selectedType + '" ' + selected + ' class="select-option" name="' + name + '" />';
-      field += '<input type="text" class="option-label" placeholder="' + opts.messages.optionLabelPlaceholder + '" value="' + values.label + '" />';
-      field += '<input type="text" class="option-value" placeholder="' + opts.messages.optionValuePlaceholder + '" value="' + values.value + '" />';
-      field += '<a href="javascript: void(0);" class="remove btn" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>';
-      field += '</li>';
-
-      return field;
+      return field.outerHTML;
     };
 
     // ---------------------- UTILITIES ---------------------- //
@@ -926,36 +944,12 @@
       });
     });
 
-    // Attach a callback to add new checkboxes
-    $sortableFields.on('click', '.add_ck', function() {
-      $(this).parent().before(selectFieldOptions());
-      return false;
-    });
-
-    // callback to call disabled tooltips
-    $sortableFields.on('mousemove', 'li.disabled', function(e) {
-      $('.frmb-tt', this).css({
-        left: e.offsetX - 15,
-        top: e.offsetY - 20
-      });
-    });
-
-    // callback to call disabled tooltips
-    $sortableFields.on('mouseenter', 'li.disabled', function() {
-      _helpers.disabledTT.add($(this));
-    });
-
-    // callback to call disabled tooltips
-    $sortableFields.on('mouseleave', 'li.disabled', function() {
-      _helpers.disabledTT.remove($(this));
-    });
-
     // Attach a callback to add new options
     $sortableFields.on('click', '.add-opt', function(e) {
       e.preventDefault();
       var $optionWrap = $(this).parents('.fields:eq(0)'),
         $multiple = $('[name="multiple"]', $optionWrap),
-        $firstOption = $('.select-option:eq(0)', $optionWrap),
+        $firstOption = $('.option-selected:eq(0)', $optionWrap),
         name = $firstOption.attr('name'),
         isMultiple = false;
 
@@ -1075,7 +1069,7 @@
     $(document.getElementById(frmbID + '-allow-select')).click(function(e) {
       e.preventDefault();
       $(this).toggleClass('active');
-      $('.allow-multi, .select-option', $sortableFields).slideToggle(250, function() {
+      $('.allow-multi, .option-selected', $sortableFields).slideToggle(250, function() {
         $stageWrap.toggleClass('allow-select');
       });
     });

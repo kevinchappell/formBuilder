@@ -39,12 +39,16 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
-  _helpers.safeAttr = function(name, value) {
+  _helpers.safeAttrName = function(name){
     let safeAttr = {
       className: 'class'
     };
 
-    name = safeAttr[name] || _helpers.hyphenCase(name);
+    return safeAttr[name] || _helpers.hyphenCase(name);
+  };
+
+  _helpers.safeAttr = function(name, value) {
+    name = _helpers.safeAttrName(name);
     value = window.JSON.stringify(value);
     value = value ? `=${value}` : '';
 
@@ -282,10 +286,9 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
       $('.sortable-options li', field).each(function() {
         let option = {};
-        option.selected = $('.select-option', $(this)).is(':checked');
-        option.value = $('.option-value', $(this)).val();
-        option.label = $('.option-label', $(this)).val();
-
+        option.selected = $('.option-selected', this).is(':checked');
+        option.value = $('.option-value', this).val();
+        option.label = $('.option-label', this).val();
         previewData.values.push(option);
       });
     }
@@ -490,12 +493,52 @@ var formBuilderHelpers = function(opts, formBuilder) {
    * @param  {object} attrs
    * @return {string}
    */
+  // _helpers.markup = function(tag, content = '', attrs = {}) {
+  //   attrs = _helpers.attrString(attrs);
+  //   content = Array.isArray(content) ? content.join('') : content;
+  //   let inlineElems = ['input', 'hr', 'br'],
+  //     template = inlineElems.indexOf(tag) === -1 ? `<${tag} ${attrs}>${content}</${tag}>` : `<${tag} ${attrs}/>`;
+  //   return template;
+  // };
+
+
   _helpers.markup = function(tag, content = '', attrs = {}) {
-    attrs = _helpers.attrString(attrs);
-    content = Array.isArray(content) ? content.join('') : content;
-    let inlineElems = ['input', 'hr', 'br'],
-      template = inlineElems.indexOf(tag) === -1 ? `<${tag} ${attrs}>${content}</${tag}>` : `<${tag} ${attrs}/>`;
-    return template;
+    let contentType,
+      field = document.createElement(tag),
+      getContentType = function(content) {
+        return Array.isArray(content) ? 'array' : typeof content;
+      },
+      appendContent = {
+        string: function(content) {
+          field.innerHTML = content;
+        },
+        object: function(content) {
+          return field.appendChild(content);
+        },
+        array: function(content) {
+          content.reverse();
+          for (var i = content.length - 1; i >= 0; i--) {
+            contentType = getContentType(content[i]);
+            appendContent[contentType](content[i]);
+              // field.appendChild(content[i]);
+          }
+        }
+      };
+
+    for (var attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        let name = _helpers.safeAttrName(attr);
+        field.setAttribute(name, attrs[attr]);
+      }
+    }
+
+    contentType = getContentType(content);
+
+    if (content) {
+      appendContent[contentType].call(this, content);
+    }
+
+    return field;
   };
 
   return _helpers;

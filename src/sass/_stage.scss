@@ -21,7 +21,8 @@
     transition: border 250ms ease-in-out;
 
     &:first-child {
-      border-radius: 5px 5px 0 0;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
 
       .del-button {
         border-radius: 0 5px 0 0;
@@ -29,7 +30,11 @@
     }
 
     &:last-child {
-      border-radius: 0 0 5px 5px;
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+
+      // border-radius: 0 0 5px 5px;
+
     }
 
     &:hover {
@@ -96,11 +101,11 @@
     }
   }
 
-  .btn {
-    color: $black;
-    text-decoration: none;
-    border-radius: 0;
-  }
+  // .btn {
+  //   color: $black;
+  //   text-decoration: none;
+  //   border-radius: 0;
+  // }
 
   a.del-button {
     position: absolute;
@@ -276,4 +281,23 @@ ol.sortable-options {
       }
     }
   }
+
+  input[type=checkbox],
+  input[type=radio] {
+    margin-right: 5px;
+  }
+}
+
+.form-elements .fields .add-area .add {
+  clear: both;
+}
+
+.form-elements .fields {
+  width: 70%;
+  float: left;
+}
+
+.form-elements .fields div {
+  clear: both;
+  position: relative;
 }

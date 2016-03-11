@@ -159,7 +159,8 @@ var FormRender = function FormRender(options, element) {
       if (fieldDesc) {
         fieldDesc = '<span class="tooltip-element" tooltip="' + fieldDesc + '">?</span>';
       }
-      fieldLabel = '<label for="' + fieldAttrs.id + '">' + fieldAttrs.label + ' ' + fieldRequired + ' ' + fieldDesc + '</label>';
+      var fieldLabelText = fieldAttrs.label || '';
+      fieldLabel = '<label for="' + fieldAttrs.id + '">' + fieldLabelText + ' ' + fieldRequired + ' ' + fieldDesc + '</label>';
     }
 
     var fieldLabelVal = fieldAttrs.label;
@@ -338,9 +339,8 @@ var FormRender = function FormRender(options, element) {
 
   $.fn.formRender = function (options) {
     this.each(function () {
-      var element = this,
-          formRender = new FormRender(options, element);
-      $(element).data('formRender', formRender);
+      var formRender = new FormRender(options, this);
+      return formRender;
     });
   };
 })(jQuery);
