@@ -27,7 +27,6 @@
   padding: 10px;
   text-align: left;
   background: $white;
-  border: 1px solid $white;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -47,11 +46,26 @@
   }
 
   &:hover {
-    border: 1px solid $grey-light;
+    background-color: darken($white, 5%);
   }
 
   &.ui-state-highlight {
-    background-image: none;
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border: 0 none;
+  }
+
+  &.ui-sortable-helper {
+    border-radius: 5px;
+    transition: box-shadow 250ms ease-in-out;
+    box-shadow: 2px 2px 6px 0 $grey;
+    border: 1px solid $white;
+  }
+
+  &.moving {
+    opacity: 0.6;
   }
 
   @include breakpoint("phone-lrg") {

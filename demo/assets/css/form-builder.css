@@ -357,7 +357,6 @@ textarea.form-control {
   padding: 10px;
   text-align: left;
   background: #fff;
-  border: 1px solid #fff;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -371,9 +370,21 @@ textarea.form-control {
     margin-right: 10px;
     font-size: 16px; }
   .frmb-control li:hover {
-    border: 1px solid #ccc; }
+    background-color: #f2f2f2; }
   .frmb-control li.ui-state-highlight {
-    background-image: none; }
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border: 0 none; }
+  .frmb-control li.ui-sortable-helper {
+    border-radius: 5px;
+    -webkit-transition: box-shadow 250ms ease-in-out;
+            transition: box-shadow 250ms ease-in-out;
+    box-shadow: 2px 2px 6px 0 #666;
+    border: 1px solid #fff; }
+  .frmb-control li.moving {
+    opacity: 0.6; }
   @media (max-width: 481px) {
     .frmb-control li:before {
       font-size: 30px; }
@@ -388,10 +399,13 @@ textarea.form-control {
   list-style-type: none;
   min-height: 200px;
   margin: 0 6px 0 0;
-  padding: 0; }
+  padding: 0;
+  -webkit-transition: background-color 500ms ease-in-out;
+          transition: background-color 500ms ease-in-out; }
   .empty .frmb {
-    border: 3px dashed #e6e6e6;
-    margin-right: 5px; }
+    border: 3px dashed #fff;
+    margin-right: 5px;
+    background-color: rgba(255, 255, 255, 0.5); }
   .frmb li {
     position: relative;
     padding: 6px;
@@ -399,19 +413,22 @@ textarea.form-control {
     margin-left: 0;
     margin-bottom: 3px;
     background-color: #fff;
-    border: 1px solid #fff;
     -webkit-transition: border 250ms ease-in-out;
             transition: border 250ms ease-in-out; }
     .frmb li:first-child {
       border-radius: 5px 5px 0 0; }
+      .frmb li:first-child .del-button {
+        border-radius: 0 5px 0 0; }
     .frmb li:last-child {
       border-radius: 0 0 5px 5px; }
     .frmb li:hover {
-      border: 1px solid #b3b3b3; }
+      box-shadow: 0 0 1px #000; }
       .frmb li:hover li :hover {
         background: #fefefe; }
     .frmb li.no-fields label {
       font-weight: 400; }
+    .frmb li.ui-sortable-helper {
+      border-radius: 5px; }
     .frmb li.frmb-placeholder, .frmb li.ui-state-highlight {
       height: 5px;
       background: -webkit-radial-gradient(center, ellipse, #545454 0%, transparent 75%);
@@ -420,6 +437,11 @@ textarea.form-control {
       -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
               clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       visibility: visible; }
+    .frmb li.moving, .frmb li.ui-sortable-helper {
+      -webkit-transition: box-shadow 250ms ease-in-out;
+              transition: box-shadow 250ms ease-in-out;
+      box-shadow: 2px 2px 6px 0 #666;
+      border: 1px solid #fff; }
     .frmb li.disabled [type=checkbox] {
       float: left;
       margin-right: 10px; }
@@ -437,23 +459,22 @@ textarea.form-control {
       padding: 20% 0;
       font-size: 30px;
       text-align: center; }
-  .frmb a.btn {
-    border: 1px solid #fff;
+  .frmb .btn {
     color: #000;
-    text-decoration: none; }
-  .frmb a.del-button,
-  .frmb a.remove {
+    text-decoration: none;
+    border-radius: 0; }
+  .frmb a.del-button {
     position: absolute;
-    top: -1px;
-    right: -1px;
+    top: 0;
+    right: 0;
     display: inline-block;
     opacity: 0;
-    border-radius: 0 5px 0 0;
-    border-color: #b3b3b3; }
-  .frmb a.del-button:hover,
-  .frmb a.remove:hover {
-    border-color: #c66865;
-    color: #c66865; }
+    border-color: #b3b3b3;
+    border-width: 0 0 1px 1px; }
+    .frmb a.del-button:hover {
+      background-color: #c66865;
+      border-width: 0 0 1px 1px;
+      color: #fff; }
   .frmb li.delete:hover,
   .frmb li:hover li.delete:hover {
     background-color: #fdd; }
@@ -527,6 +548,37 @@ textarea.form-control {
   clear: left; }
   .frm-fld select.form-control {
     width: 70%; }
+
+ol.sortable-options {
+  margin: 0 0 0 20px;
+  background: #b3b3b3;
+  margin-bottom: 0;
+  padding: 1px;
+  border-radius: 5px; }
+  ol.sortable-options li {
+    margin-bottom: 1px;
+    cursor: move; }
+    ol.sortable-options li:last-child {
+      margin-bottom: 0; }
+    ol.sortable-options li:nth-child(1) .remove,
+    ol.sortable-options li:nth-child(2) .remove {
+      display: none; }
+    ol.sortable-options li .remove {
+      position: absolute;
+      opacity: 1;
+      right: 14px;
+      height: 17px;
+      width: 17px;
+      line-height: 17px;
+      text-align: center;
+      top: 14px;
+      font-size: 18px;
+      padding: 0;
+      color: #C10000; }
+      ol.sortable-options li .remove:hover {
+        background-color: #C10000;
+        text-decoration: none;
+        color: #fff; }
 
 .kc-toggle {
   position: relative;
@@ -679,22 +731,6 @@ ul.frmb span.required {
 .form-elements .fields .add-area .add {
   clear: both; }
 
-.form-elements .fields .remove {
-  right: 9px;
-  top: 9px;
-  padding: .2em .6em;
-  border-radius: 0 3px 3px 0; }
-
-.form-elements .sortable-options li:nth-child(1) .remove,
-.form-elements .sortable-options li:nth-child(2) .remove {
-  display: none; }
-
-ol.sortable-options {
-  margin-top: 0; }
-
-ol.sortable-options li {
-  cursor: move; }
-
 .form-elements .fields div {
   clear: both;
   position: relative; }
@@ -832,15 +868,6 @@ textarea {
     text-decoration: underline;
     color: #fff; }
 
-.frmb li.moving,
-.frmb li.ui-sortable-helper,
-.frmb-control li.moving,
-.frmb-control li.ui-sortable-helper {
-  -webkit-transition: box-shadow 250ms ease-in-out;
-          transition: box-shadow 250ms ease-in-out;
-  box-shadow: 2px 2px 6px 0 #666;
-  border: 1px solid #fff; }
-
 .frmb li:hover .del-button,
 .frmb li:hover .toggle-form,
 .fb-mobile .frmb li .del-button,
@@ -868,7 +895,6 @@ textarea {
   color: #6fc245; }
 
 a.btn.toggle-form {
-  border-radius: 2px;
   margin-left: 5px;
   opacity: 0; }
   a.btn.toggle-form:hover {
@@ -882,12 +908,6 @@ a.btn.toggle-form {
   height: 24px;
   background: #999;
   text-indent: -9999px; }
-
-.formb-field-vars .clipboard {
-  background: url("img/clipboard-sprite.png") 50% 0 no-repeat; }
-
-.formb-field-vars .clipboard.copied {
-  background: url("img/clipboard-sprite.png") 50% -27px no-repeat; }
 
 .ite-warning {
   box-shadow: 1px 1px 4px 0 rgba(50, 50, 50, 0.5);

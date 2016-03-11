@@ -3,10 +3,12 @@
   min-height: 200px;
   margin: 0 6px 0 0;
   padding: 0;
+  transition: background-color 500ms ease-in-out;
 
   .empty & {
-    border: 3px dashed lighten($grey, 50%);
+    border: 3px dashed $white;
     margin-right: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
   }
 
   li {
@@ -16,11 +18,14 @@
     margin-left: 0;
     margin-bottom: 3px;
     background-color: $white;
-    border: 1px solid $white;
     transition: border 250ms ease-in-out;
 
     &:first-child {
       border-radius: 5px 5px 0 0;
+
+      .del-button {
+        border-radius: 0 5px 0 0;
+      }
     }
 
     &:last-child {
@@ -28,7 +33,7 @@
     }
 
     &:hover {
-      border: 1px solid $grey-light-30;
+      box-shadow: 0 0 1px $black;
 
       li {
         :hover {
@@ -41,6 +46,10 @@
       font-weight: 400;
     }
 
+    &.ui-sortable-helper {
+      border-radius: 5px;
+    }
+
     &.frmb-placeholder,
     &.ui-state-highlight {
       height: 5px;
@@ -48,6 +57,13 @@
       border: 0 none;
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       visibility: visible;
+    }
+
+    &.moving,
+    &.ui-sortable-helper {
+      transition: box-shadow 250ms ease-in-out;
+      box-shadow: 2px 2px 6px 0 $grey;
+      border: 1px solid $white;
     }
 
     &.disabled {
@@ -80,27 +96,26 @@
     }
   }
 
-  a.btn {
-    border: 1px solid $white;
+  .btn {
     color: $black;
     text-decoration: none;
+    border-radius: 0;
   }
 
-  a.del-button,
-  a.remove {
+  a.del-button {
     position: absolute;
-    top: -1px;
-    right: -1px;
+    top: 0;
+    right: 0;
     display: inline-block;
     opacity: 0;
-    border-radius: 0 5px 0 0;
     border-color: $grey-light-30;
-  }
+    border-width: 0 0 1px 1px;
 
-  a.del-button:hover,
-  a.remove:hover {
-    border-color: $remove;
-    color: $remove;
+    &:hover {
+      background-color: $remove;
+      border-width: 0 0 1px 1px;
+      color: $white;
+    }
   }
 
   li.delete:hover,
@@ -218,5 +233,47 @@
 
   select.form-control {
     width: 70%;
+  }
+}
+
+ol.sortable-options {
+  margin: 0 0 0 20px;
+  background: $grey-light-30;
+  margin-bottom: 0;
+  padding: 1px;
+  border-radius: 5px;
+
+  li {
+    margin-bottom: 1px;
+    cursor: move;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:nth-child(1) .remove,
+    &:nth-child(2) .remove {
+      display: none;
+    }
+
+    .remove {
+      position: absolute;
+      opacity: 1;
+      right: 14px;
+      height: 17px;
+      width: 17px;
+      line-height: 17px;
+      text-align: center;
+      top: 14px;
+      font-size: 18px;
+      padding: 0;
+      color: $error;
+
+      &:hover {
+        background-color: $error;
+        text-decoration: none;
+        color: $white;
+      }
+    }
   }
 }

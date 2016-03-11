@@ -18,7 +18,8 @@
     };
 
     _helpers.getClassName = function($field) {
-      let className = $('.fld-class', $field).val() || $field.data('fieldData').className || '';
+      let fieldData = $field.data('fieldData') || {},
+        className = $('.fld-class', $field).val() || fieldData.className || '';
       return className;
     };
 

@@ -128,11 +128,7 @@ $(template).formRender(formRenderOpts);
       formContainer = document.getElementById('rendered-form'),
       renderBtn = document.getElementById('render-form-button');
 
-      var options = {
-          prepend: '<h1>Header</h1>',
-          append: '<h2>Footer</h2>'
-      };
-    $(template).formBuilder(options);
+    $(template).formBuilder();
 
     $(renderBtn).click(function(e) {
       e.preventDefault();

@@ -84,7 +84,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
    */
   _helpers.startMoving = function (event, ui) {
     event = event;
-    ui.item.addClass('moving');
+    ui.item.show().addClass('moving');
     _helpers.startIndex = $('li', this).index(ui.item);
   };
 
@@ -102,10 +102,37 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       $(this).sortable('cancel');
     }
     _helpers.save();
+    _helpers.doCancel = false;
+  };
+
+  _helpers.beforeStop = function (event, ui) {
+    event = event;
+
+    var form = document.getElementById(opts.formID),
+        lastIndex = form.children.length - 1,
+        cancelArray = [];
+    _helpers.stopIndex = ui.placeholder.index() - 1;
+
+    if (ui.item.parent().hasClass('frmb-control')) {
+      cancelArray.push(true);
+    }
+
+    if (opts.prepend) {
+      cancelArray.push(_helpers.stopIndex === 0);
+    }
+
+    if (opts.append) {
+      cancelArray.push(_helpers.stopIndex + 1 === lastIndex);
+    }
+
+    _helpers.doCancel = cancelArray.some(function (elem) {
+      return elem === true;
+    });
   };
 
   /**
    * Make strings safe to be used as classes
+   *
    * @param  {string} str string to be converted
    * @return {string}     converter string
    */
@@ -628,7 +655,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         richText: 'Rich Text Editor',
         roles: 'Access',
         save: 'Save Template',
-        selectOptions: 'Select Items',
+        selectOptions: 'Options',
         select: 'Select',
         selectColor: 'Select Color',
         selectionsMessage: 'Allow Multiple Selections',
@@ -775,7 +802,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     }];
 
     // Create draggable fields for formBuilder
-    var cbUL = $('<ul/>', {
+    var $cbUL = $('<ul/>', {
       id: boxID,
       'class': 'frmb-control'
     });
@@ -796,7 +823,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       }
 
       var typeLabel = _helpers.markup('span', frmbFields[i].label);
-      $field.html(typeLabel).appendTo(cbUL);
+      $field.html(typeLabel).appendTo($cbUL);
     }
 
     // Build our headers and action links
@@ -851,30 +878,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     $sortableFields.sortable({
       cursor: 'move',
       opacity: 0.9,
-      beforeStop: function beforeStop(event, ui) {
-        event = event;
-        var lastIndex = $('> li', $sortableFields).length - 1,
-            curIndex = ui.placeholder.index();
-        if (opts.prepend) {
-          _helpers.doCancel = curIndex <= 1;
-        } else if (opts.after) {
-          _helpers.doCancel = curIndex === lastIndex;
-        } else {
-          _helpers.doCancel = false;
-        }
-      },
-      // receive: function(event, ui) {
-      //   var lastIndex = $('> li', $sortableFields).length - 1,
-      //     curIndex = $sortableFields.index(ui.placeholder);
-      //   if (opts.prepend) {
-      //     _helpers.doCancel = (curIndex <= 1);
-      //   } else if (opts.after) {
-      //     _helpers.doCancel = (curIndex === lastIndex);
-      //   } else {
-      //     _helpers.doCancel = false;
-      //   }
-      //   console.log(curIndex, event, ui);
-      // },
+      revert: 150,
+      beforeStop: _helpers.beforeStop,
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       cancel: 'input, select, .disabled, .frm-fld, .btn',
@@ -882,7 +887,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     });
 
     // ControlBox with different fields
-    cbUL.sortable({
+    $cbUL.sortable({
       helper: 'clone',
       opacity: 0.9,
       connectWith: $sortableFields,
@@ -891,17 +896,14 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
       revert: 150,
-      over: function over() {
-        _helpers.doCancel = true;
-      },
+      beforeStop: _helpers.beforeStop,
       update: function update(event, ui) {
-        event = event;
-        elem.stopIndex = $('li', $sortableFields).index(ui.item) === 0 ? '0' : $('li', $sortableFields).index(ui.item);
-        if ($('li', $sortableFields).index(ui.item) < 0) {
-          $(this).sortable('cancel');
-        } else {
-          prepFieldVars($(ui.item[0]), true);
+        if (_helpers.doCancel) {
+          return false;
         }
+        event = event;
+        prepFieldVars(ui.item, true);
+        _helpers.doCancel = true;
       }
     });
 
@@ -920,7 +922,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap'
-    }).append(cbUL);
+    }).append($cbUL);
 
     $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks);
     $stageWrap.before($formWrap);
@@ -946,7 +948,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
             appendNewField(opts.defaultFields[i]);
           }
           $stageWrap.removeClass('empty');
-        } else {
+        } else if (!opts.prepend && !opts.append) {
           $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
         nonEditableFields();
@@ -954,16 +956,25 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     };
 
     var nonEditableFields = function nonEditableFields() {
+      var cancelArray = [];
+
       if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
         var prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
+        cancelArray.push(true);
         $sortableFields.prepend(prependedField);
       }
 
       if (opts.append && !$('.disabled.append', $sortableFields).length) {
         var appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
+        cancelArray.push(true);
         $sortableFields.append(appendedField);
       }
-      $stageWrap.removeClass('empty');
+
+      if (cancelArray.some(function (elem) {
+        return elem === true;
+      })) {
+        $stageWrap.removeClass('empty');
+      }
     };
 
     var nameAttr = function nameAttr(field) {
@@ -971,8 +982,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       return field.data('attrs').name + '-' + epoch;
     };
 
-    var prepFieldVars = function prepFieldVars($field, isNew) {
-      isNew = isNew || false;
+    var prepFieldVars = function prepFieldVars($field) {
+      var isNew = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
       var fieldAttrs = $field.data('attrs') || {},
           fType = fieldAttrs.type || $field.attr('type'),
@@ -1003,7 +1014,11 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       appendFieldLi(opts.messages[type], advFields(values), values);
     };
 
-    // add select dropdown
+    /**
+     * Add data for field with options [select, checkbox-group, radio-group]
+     *
+     * @param  {object} values
+     */
     var appendSelectList = function appendSelectList(values) {
       if (!values.values || !values.values.length) {
         values.values = [{
@@ -1255,12 +1270,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
           $li = $(li);
 
       $li.data('fieldData', { attrs: values });
-
-      if (elem.stopIndex) {
-        $('li', $sortableFields).eq(elem.stopIndex).after($li);
-      } else {
-        $sortableFields.append($li);
-      }
+      $('> li:eq(' + _helpers.stopIndex + ')', $sortableFields).after($li);
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
@@ -1437,8 +1447,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         });
       }
 
-      if ($('.form-field', $sortableFields).length === 1) {
-        $stageWrap.addClass('empty');
+      if ($('> li', $sortableFields).length === 1) {
+        $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
       }
     });
 
@@ -1635,7 +1645,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     elem.parent().find('p[id*="ideaTemplate"]').remove();
     elem.wrap('<div class="template-textarea-wrap"/>');
     elem.getTemplate();
-    $sortableFields.css('min-height', cbUL.height());
+    $sortableFields.css('min-height', $cbUL.height());
   };
 
   $.fn.formBuilder = function (options) {
@@ -1678,7 +1688,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     };
 
     _helpers.getClassName = function ($field) {
-      var className = $('.fld-class', $field).val() || $field.data('fieldData').className || '';
+      var fieldData = $field.data('fieldData') || {},
+          className = $('.fld-class', $field).val() || fieldData.className || '';
       return className;
     };
 

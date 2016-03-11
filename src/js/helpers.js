@@ -77,7 +77,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
    */
   _helpers.startMoving = function(event, ui) {
     event = event;
-    ui.item.addClass('moving');
+    ui.item.show().addClass('moving');
     _helpers.startIndex = $('li', this).index(ui.item);
   };
 
@@ -95,17 +95,45 @@ var formBuilderHelpers = function(opts, formBuilder) {
       $(this).sortable('cancel');
     }
     _helpers.save();
+    _helpers.doCancel = false;
+  };
+
+  /**
+   * jQuery UI sortable beforeStop callback used for both lists.
+   * Logic for canceling the sort or drop.
+   */
+  _helpers.beforeStop = function(event, ui) {
+    event = event;
+
+    var form = document.getElementById(opts.formID),
+      lastIndex = form.children.length - 1,
+      cancelArray = [];
+    _helpers.stopIndex = ui.placeholder.index() - 1;
+
+    if (ui.item.parent().hasClass('frmb-control')) {
+      cancelArray.push(true);
+    }
+
+    if (opts.prepend) {
+      cancelArray.push(_helpers.stopIndex === 0);
+    }
+
+    if (opts.append) {
+      cancelArray.push((_helpers.stopIndex + 1) === lastIndex);
+    }
+
+    _helpers.doCancel = cancelArray.some(elem => elem === true);
   };
 
   /**
    * Make strings safe to be used as classes
+   *
    * @param  {string} str string to be converted
    * @return {string}     converter string
    */
   _helpers.safename = function(str) {
     return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\-]/g, '').toLowerCase();
   };
-
 
   /**
    * Strips non-numbers from a number only input
