@@ -39,6 +39,7 @@
         "spyOn"      : false,
         "$"          : false,
         "_"          : false,
-        "formBuilderHelpers": false
+        "formBuilderHelpers": false,
+        "formBuilderEvents": false
     }
 }

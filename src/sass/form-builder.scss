@@ -76,29 +76,28 @@ ul.frmb span.required {
 }
 
 .form-elements {
+  padding: 10px 5px;
   background: #f7f7f7;
-  box-shadow: inset 0 0 2px 0 #999;
   border-radius: 3px;
   margin: 5px 0 0;
-  padding: 10px 5px;
-}
 
-.form-elements .false-label,
-.form-elements .fields {
-  margin-top: 10px;
-}
-
-.form-elements .fields input[type=text] {
-  width: 39%;
-  margin-right: 2%;
+  /* box-shadow: 0 2px 5px #ccc inset; */
+  border: 1px solid #d7d7d7;
 }
 
 .form-elements input[type=text] {
-  width: 70%;
+  width: 81.33333333%;
   transition: background 250ms ease-in-out;
-  padding: 5px;
+  margin-left: 2%;
+  padding: 6px 12px;
   border: 1px solid #AFAFAB;
   background-color: $white;
+  float: left;
+
+  .col-md-6 &,
+  .col-md-8 & {
+    width: 100%;
+  }
 }
 
 .form-elements input[type=text].error {
@@ -118,14 +117,20 @@ ul.frmb span.required {
 
 .form-elements .false-label,
 .form-elements label {
-  width: 18%;
-  float: left;
-  margin-left: 5px;
-  padding-right: 5%;
-  font-weight: 700;
-  clear: left;
+  width: 16.66666667%;
+  padding-top: 7px;
+  margin-bottom: 0;
   text-align: right;
-  line-height: 32px;
+  font-weight: 700;
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .col-md-6 &,
+  .col-md-8 & {
+    display: block;
+  }
 }
 
 .form-elements {
@@ -134,10 +139,11 @@ ul.frmb span.required {
     &.required-label,
     &.toggle-label,
     &.roles-label {
-      display: inline;
+      text-align: left;
       float: none;
+      margin-bottom: -3px;
       font-weight: 400;
-      width: auto;
+      width: calc(81.3333% - 23px);
     }
   }
 }
@@ -168,7 +174,7 @@ ul.frmb span.required {
   display: block !important;
 }
 
-.frm-fld .available-roles {
+.form-group .available-roles {
   display: none;
   padding: 5px 10px;
   margin: 5px 0 10px 133px;
@@ -191,14 +197,14 @@ ul.frmb span.required {
 }
 
 .form-elements,
-.frm-fld,
+.form-group,
 .multi-row span,
 textarea {
   display: block;
 }
 
 .form-elements:after,
-.frm-fld:after {
+.form-group:after {
   content: ".";
   display: block;
   height: 0;
@@ -206,7 +212,7 @@ textarea {
   visibility: hidden;
 }
 
-.form-elements .fields div:hover,
+.form-elements .field-options div:hover,
 .frmb .legend,
 .frmb .prev-holder,
 .frmb .prev-holder * {

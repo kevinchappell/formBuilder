@@ -6,9 +6,9 @@
   transition: background-color 500ms ease-in-out;
 
   .empty & {
-    border: 3px dashed $white;
+    border: 3px dashed $grey-light;
     margin-right: 5px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.25);
   }
 
   li {
@@ -18,7 +18,7 @@
     margin-left: 0;
     margin-bottom: 3px;
     background-color: $white;
-    transition: border 250ms ease-in-out;
+    transition: background-color 250ms ease-in-out;
 
     &:first-child {
       border-top-right-radius: 5px;
@@ -94,10 +94,25 @@
       }
     }
 
-    &.cta {
-      padding: 20% 0;
-      font-size: 30px;
-      text-align: center;
+    .close-field {
+      position: absolute;
+      color: $grey;
+      left: 50%;
+      bottom: 6px;
+      background: #fff;
+      border-top: 1px solid #d7d7d7;
+      border-left: 1px solid #d7d7d7;
+      border-right: 1px solid #D7D7D7;
+      transform: translateX(-50%);
+      padding: 0 5px;
+      border-top-right-radius: 3px;
+      border-top-left-radius: 3px;
+      cursor: pointer;
+      transition: background-color 250ms ease-in-out;
+
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 
@@ -107,14 +122,21 @@
   //   border-radius: 0;
   // }
 
-  a.del-button {
+  .del-button {
+    display: inline-block;
     position: absolute;
+    width: 32px;
+    height: 32px;
+    padding: 0;
     top: 0;
     right: 0;
-    display: inline-block;
     opacity: 0;
     border-color: $grey-light-30;
     border-width: 0 0 1px 1px;
+    border-radius: 0;
+    color: $grey-light-30;
+    line-height: 32px;
+    font-size: 16px;
 
     &:hover {
       background-color: $remove;
@@ -126,6 +148,10 @@
   li.delete:hover,
   li:hover li.delete:hover {
     background-color: #fdd;
+
+    .close-field {
+      background-color: #fdd;
+    }
   }
 
   &.disabled {
@@ -175,7 +201,7 @@
     }
   }
 
-  .required_asterisk {
+  .required-asterisk {
     display: none;
   }
 
@@ -232,29 +258,37 @@
   color: $black;
 }
 
-.frm-fld {
-  padding: 5px 0;
+.form-group {
+  width: 100%;
   clear: left;
+  float: none;
 
   select.form-control {
     width: 70%;
   }
+
+  input[type=checkbox] {
+    margin: 12px 5px 0 2%;
+  }
+}
+
+.option-actions {
+  text-align: right;
 }
 
 ol.sortable-options {
-  margin: 0 0 0 20px;
+  margin: 0 0 0 2%;
   background: $grey-light-30;
   margin-bottom: 0;
-  padding: 1px;
   border-radius: 5px;
+  list-style: none;
+  width: 81.33333333%;
+  display: inline-block;
+  padding: 0;
 
   li {
-    margin-bottom: 1px;
     cursor: move;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin: 1px;
 
     &:nth-child(1) .remove,
     &:nth-child(2) .remove {
@@ -284,20 +318,27 @@ ol.sortable-options {
 
   input[type=checkbox],
   input[type=radio] {
-    margin-right: 5px;
+    margin: 0;
+    width: 7%;
+  }
+
+  input[type=text] {
+    width: calc(44.5% - 17px);
+    margin: 0 1%;
+    float: none;
   }
 }
 
-.form-elements .fields .add-area .add {
+.form-elements .field-options .add-area .add {
   clear: both;
 }
 
-.form-elements .fields {
-  width: 70%;
-  float: left;
+.form-elements .field-options {
+  // width: 70%;
+  // float: left;
 }
 
-.form-elements .fields div {
+.form-elements .field-options div {
   clear: both;
   position: relative;
 }

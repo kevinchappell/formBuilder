@@ -67,7 +67,11 @@
         <div class="build-form">
           <h2>Build The Form</h2>
           <form action="">
-            <textarea></textarea>
+            <textarea id="fb-template"><form-template>
+  <fields>
+    <field label="Checkbox" name="checkbox-1457758930939" required="true" type="checkbox"/>
+  </fields>
+</form-template></textarea>
           </form>
           <br style="clear:both">
         </div>
@@ -124,7 +128,7 @@ $(template).formRender(formRenderOpts);
   <script>
   jQuery(document).ready(function($) {
     'use strict';
-    var template = document.getElementsByTagName('textarea'),
+    var template = document.getElementById('fb-template'),
       formContainer = document.getElementById('rendered-form'),
       renderBtn = document.getElementById('render-form-button');
 

@@ -5,7 +5,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
     doCancel: false
   };
 
-  formBuilder.formData = '';
+  formBuilder.events = formBuilderEvents(opts, _helpers);
 
   /**
    * Convert an attrs object into a string
@@ -39,7 +39,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
-  _helpers.safeAttrName = function(name){
+  _helpers.safeAttrName = function(name) {
     let safeAttr = {
       className: 'class'
     };
@@ -112,7 +112,10 @@ var formBuilderHelpers = function(opts, formBuilder) {
     var form = document.getElementById(opts.formID),
       lastIndex = form.children.length - 1,
       cancelArray = [];
-    _helpers.stopIndex = ui.placeholder.index() - 1;
+    _helpers.stopIndex = formBuilder.stopIndex = ui.placeholder.index() - 1;
+
+    form.dispatchEvent(formBuilder.events.beforeFieldAdd);
+    // jQuery(document).trigger('beforeFieldAdd', [lastIndex]);
 
     if (ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
@@ -375,7 +378,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
   // update preview to label
   _helpers.updateMultipleSelect = function() {
     $(document.getElementById(opts.formID)).on('change', 'input[name="multiple"]', function() {
-      var options = $(this).parents('.fields:eq(0)').find('.sortable-options input.select-option');
+      var options = $(this).parents('.fields:eq(0)').find('.sortable-options input.option-selected');
       if (this.checked) {
         options.each(function() {
           $(this).prop('type', 'checkbox');
@@ -520,7 +523,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
           for (var i = content.length - 1; i >= 0; i--) {
             contentType = getContentType(content[i]);
             appendContent[contentType](content[i]);
-              // field.appendChild(content[i]);
           }
         }
       };
