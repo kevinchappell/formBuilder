@@ -28,8 +28,10 @@
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;
 
-      .del-button {
-        border-radius: 0 5px 0 0;
+      .field-actions {
+        .btn:last-child {
+          border-radius: 0 5px 0 0;
+        }
       }
     }
 
@@ -218,6 +220,12 @@
     top: 0;
     right: 0;
 
+    a {
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
     .btn {
       display: inline-block;
       width: 32px;
@@ -230,6 +238,10 @@
       line-height: 32px;
       font-size: 16px;
       border-width: 0 0 1px 1px;
+
+      &:first-child {
+        border-bottom-left-radius: 5px;
+      }
     }
 
     .toggle-form {
@@ -366,7 +378,7 @@ ol.sortable-options {
   padding: 10px 5px;
   background: #f7f7f7;
   border-radius: 3px;
-  margin: 5px 0 0;
+  margin: 7px 0 0;
 
   /* box-shadow: 0 2px 5px #ccc inset; */
   border: 1px solid #d7d7d7;

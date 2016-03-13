@@ -45,6 +45,31 @@ textarea {
   .btn-group > .btn {
     position: relative;
     float: left; }
+  .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0; }
+  .btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+    border-radius: 0; }
+  .btn-group .btn + .btn,
+  .btn-group .btn + .btn-group,
+  .btn-group .btn-group + .btn,
+  .btn-group .btn-group + .btn-group {
+    margin-left: -1px; }
+  .btn-group > .btn:last-child:not(:first-child),
+  .btn-group > .dropdown-toggle:not(:first-child),
+  .btn-group .input-group .form-control:last-child,
+  .btn-group .input-group-addon:last-child,
+  .btn-group .input-group-btn:first-child > .btn-group:not(:first-child) > .btn,
+  .btn-group .input-group-btn:first-child > .btn:not(:first-child),
+  .btn-group .input-group-btn:last-child > .btn,
+  .btn-group .input-group-btn:last-child > .btn-group > .btn, .btn-group .input-group-btn:last-child > .dropdown-toggle {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0; }
+  .btn-group > .btn.active,
+  .btn-group > .btn:active,
+  .btn-group > .btn:focus,
+  .btn-group > .btn:hover {
+    z-index: 2; }
 
 .btn {
   color: #fff;
@@ -89,31 +114,6 @@ textarea {
   .btn.active, .btn.btn-active, .btn:active {
     background-image: none; }
 
-.btn-group .btn + .btn,
-.btn-group .btn + .btn-group,
-.btn-group .btn-group + .btn,
-.btn-group .btn-group + .btn-group {
-  margin-left: -1px; }
-
-.btn-group > .btn:last-child:not(:first-child),
-.btn-group > .dropdown-toggle:not(:first-child) {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0; }
-
-.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0; }
-
-.btn-group-vertical > .btn.active,
-.btn-group-vertical > .btn:active,
-.btn-group-vertical > .btn:focus,
-.btn-group-vertical > .btn:hover,
-.btn-group > .btn.active,
-.btn-group > .btn:active,
-.btn-group > .btn:focus,
-.btn-group > .btn:hover {
-  z-index: 2; }
-
 .btn-primary {
   background-color: #337ab7;
   border-color: #2e6da4; }
@@ -124,7 +124,7 @@ textarea {
 .btn-danger {
   background-color: #d9534f;
   border-color: #d43f3a; }
-  .btn-danger:hover {
+  .btn-danger:hover, .form-actions .clear-all:hover {
     background-color: #c9302c;
     border-color: #ac2925; }
 
@@ -414,6 +414,11 @@ textarea.form-control {
   margin: 0;
   padding: 0; }
 
+.form-actions {
+  float: right; }
+  .form-actions .clear-all:hover {
+    color: #fff; }
+
 .frmb {
   list-style-type: none;
   min-height: 200px;
@@ -439,7 +444,7 @@ textarea.form-control {
     .frmb li:first-child {
       border-top-right-radius: 5px;
       border-top-left-radius: 5px; }
-      .frmb li:first-child .del-button {
+      .frmb li:first-child .field-actions .btn:last-child {
         border-radius: 0 5px 0 0; }
     .frmb li:last-child {
       border-bottom-right-radius: 5px;
@@ -554,6 +559,8 @@ textarea.form-control {
     position: absolute;
     top: 0;
     right: 0; }
+    .frmb .field-actions a:hover {
+      text-decoration: none; }
     .frmb .field-actions .btn {
       display: inline-block;
       width: 32px;
@@ -566,6 +573,8 @@ textarea.form-control {
       line-height: 32px;
       font-size: 16px;
       border-width: 0 0 1px 1px; }
+      .frmb .field-actions .btn:first-child {
+        border-bottom-left-radius: 5px; }
     .frmb .field-actions .toggle-form {
       font-size: .85em;
       background-color: rgba(255, 255, 255, 0.75); }
@@ -663,7 +672,7 @@ ol.sortable-options {
   padding: 10px 5px;
   background: #f7f7f7;
   border-radius: 3px;
-  margin: 5px 0 0;
+  margin: 7px 0 0;
   /* box-shadow: 0 2px 5px #ccc inset; */
   border: 1px solid #d7d7d7; }
 
@@ -864,12 +873,6 @@ ul.frmb span.required {
 .action-links a {
   color: #666; }
 
-.view-xml {
-  float: right; }
-
-.action-links a.view-xml:hover {
-  color: #000; }
-
 .form-elements input[type=text].error {
   border-radius: 0;
   border: 1px solid #C10000; }
@@ -1069,22 +1072,54 @@ a.btn.toggle-form {
   background: 0 0;
   padding: 2px 5px; }
 
-.fb-button {
-  padding: 5px 10px;
-  background: #00A261;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer; }
-  .fb-button:hover {
-    text-decoration: none; }
-
-.save-btn-wrap {
-  float: left;
-  width: auto; }
-
 .required-asterisk {
   display: none;
   color: #C10000; }
 
 .ui-button .ui-button-text {
   line-height: 0; }
+
+.form-builder-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 10; }
+  .form-builder-overlay.visible {
+    display: block; }
+
+.form-builder-confirm {
+  position: absolute;
+  border-radius: 5px;
+  background: #fff;
+  z-index: 20;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  padding: 10px; }
+  .form-builder-confirm.positioned {
+    -webkit-transform: translate(-50%, -100%);
+            transform: translate(-50%, -100%); }
+    .form-builder-confirm.positioned .button-wrap:before {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 10px solid #fff;
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      -webkit-transform: translate(-50%, 10px);
+              transform: translate(-50%, 10px); }
+  .form-builder-confirm .button-wrap {
+    position: relative;
+    margin-top: 10px;
+    text-align: right;
+    clear: both; }
+    .form-builder-confirm .button-wrap .btn {
+      margin-left: 10px; }

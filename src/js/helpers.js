@@ -2,8 +2,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
   'use strict';
 
   var _helpers = {
-    doCancel: false,
-    stopIndex: 0
+    doCancel: false
   };
 
   formBuilder.events = formBuilderEvents(opts, _helpers);
@@ -195,10 +194,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
       xml: _helpers.xmlSave,
       json: _helpers.jsonSave
     };
-
-    $('li.form-field:not(.disabled)', form).each(function() {
-      _helpers.updatePreview($(this));
-    });
 
     doSave[opts.dataType](form);
 
@@ -504,7 +499,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
   //   return template;
   // };
 
-
   _helpers.markup = function(tag, content = '', attrs = {}) {
     let contentType,
       field = document.createElement(tag),
@@ -519,8 +513,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
           return field.appendChild(content);
         },
         array: function(content) {
-          content.reverse();
-          for (var i = content.length - 1; i >= 0; i--) {
+          for (var i = 0; i < content.length; i++) {
             contentType = getContentType(content[i]);
             appendContent[contentType](content[i]);
           }
@@ -541,6 +534,47 @@ var formBuilderHelpers = function(opts, formBuilder) {
     }
 
     return field;
+  };
+
+  _helpers.closeConfirm = function(overlay, dialog) {
+    overlay = overlay || document.getElementsByClassName('form-builder-overlay')[0];
+    dialog = dialog || document.getElementsByClassName('form-builder-confirm')[0];
+    overlay.classList.remove('visible');
+    dialog.remove();
+  };
+
+  _helpers.confirm = function(message, yesAction, coords = false, className = '') {
+    var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
+      no = _helpers.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
+
+    no.onclick = function() {
+      _helpers.closeConfirm();
+    };
+
+    yes.onclick = function() {
+      yesAction();
+      _helpers.closeConfirm();
+    };
+
+    var btnWrap = _helpers.markup('div', [no, yes], { className: 'button-wrap' });
+
+    className = 'form-builder-confirm ' + className;
+
+    var miniModal = _helpers.markup('div', [message, btnWrap], { className: className });
+    if (!coords) {
+      coords = {
+        pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2
+      };
+      miniModal.style.position = 'fixed';
+    } else {
+      miniModal.classList.add('positioned');
+    }
+
+    miniModal.style.left = coords.pageX + 'px';
+    miniModal.style.top = coords.pageY + 'px';
+
+    document.body.appendChild(miniModal);
   };
 
   return _helpers;

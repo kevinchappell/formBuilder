@@ -9,8 +9,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   'use strict';
 
   var _helpers = {
-    doCancel: false,
-    stopIndex: 0
+    doCancel: false
   };
 
   formBuilder.events = formBuilderEvents(opts, _helpers);
@@ -204,10 +203,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       xml: _helpers.xmlSave,
       json: _helpers.jsonSave
     };
-
-    $('li.form-field:not(.disabled)', form).each(function () {
-      _helpers.updatePreview($(this));
-    });
 
     doSave[opts.dataType](form);
 
@@ -534,8 +529,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         return field.appendChild(content);
       },
       array: function array(content) {
-        content.reverse();
-        for (var i = content.length - 1; i >= 0; i--) {
+        for (var i = 0; i < content.length; i++) {
           contentType = getContentType(content[i]);
           appendContent[contentType](content[i]);
         }
@@ -556,6 +550,50 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     }
 
     return field;
+  };
+
+  _helpers.closeConfirm = function (overlay, dialog) {
+    overlay = overlay || document.getElementsByClassName('form-builder-overlay')[0];
+    dialog = dialog || document.getElementsByClassName('form-builder-confirm')[0];
+    overlay.classList.remove('visible');
+    dialog.remove();
+  };
+
+  _helpers.confirm = function (message, yesAction) {
+    var coords = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var className = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
+
+    var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
+        no = _helpers.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
+
+    no.onclick = function () {
+      _helpers.closeConfirm();
+    };
+
+    yes.onclick = function () {
+      yesAction();
+      _helpers.closeConfirm();
+    };
+
+    var btnWrap = _helpers.markup('div', [no, yes], { className: 'button-wrap' });
+
+    className = 'form-builder-confirm ' + className;
+
+    var miniModal = _helpers.markup('div', [message, btnWrap], { className: className });
+    if (!coords) {
+      coords = {
+        pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2
+      };
+      miniModal.style.position = 'fixed';
+    } else {
+      miniModal.classList.add('positioned');
+    }
+
+    miniModal.style.left = coords.pageX + 'px';
+    miniModal.style.top = coords.pageY + 'px';
+
+    document.body.appendChild(miniModal);
   };
 
   return _helpers;
@@ -671,7 +709,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         checkbox: 'Checkbox',
         checkboxes: 'Checkboxes',
         clearAllMessage: 'Are you sure you want to remove all items?',
-        clearAll: 'Clear All',
+        clearAll: 'Clear',
         close: 'Close',
         copy: 'Copy To Clipboard',
         dateField: 'Date Field',
@@ -722,7 +760,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         required: 'Required',
         richText: 'Rich Text Editor',
         roles: 'Access',
-        save: 'Save Template',
+        save: 'Save',
         selectOptions: 'Options',
         select: 'Select',
         selectColor: 'Select Color',
@@ -754,7 +792,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         textArea: 'Text Area',
         toggle: 'Toggle',
         warning: 'Warning!',
-        viewXML: 'View XML',
+        viewXML: '&lt;/&gt;',
         yes: 'Yes'
       },
       notify: {
@@ -897,10 +935,13 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     }
 
     // Build our headers and action links
-    var viewXML = _helpers.markup('a', opts.messages.viewXML, {
+    var viewXML = _helpers.markup('button', opts.messages.viewXML, {
       id: frmbID + '-export-xml',
-      href: '#',
-      className: 'view-xml'
+      type: 'button',
+      className: 'view-xml btn btn-default'
+    }),
+        overlay = _helpers.markup('div', null, {
+      className: 'form-builder-overlay'
     }),
         allowSelect = $('<a/>', {
       id: frmbID + '-allow-select',
@@ -920,22 +961,23 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       href: '#',
       'class': 'edit-names'
     }),
-        clearAll = $('<a/>', {
+        clearAll = _helpers.markup('button', opts.messages.clearAll, {
       id: frmbID + '-clear-all',
-      text: opts.messages.clearAll,
-      href: '#',
-      'class': 'clear-all'
+      type: 'button',
+      className: 'clear-all btn btn-default'
     }),
-        saveAll = $('<div/>', {
+        saveAll = _helpers.markup('button', opts.messages.save, {
+      className: 'btn btn-primary fb-save',
       id: frmbID + '-save',
-      href: '#',
-      'class': 'save-btn-wrap',
-      title: opts.messages.save
-    }).html('<a class="save fb-button primary"><span>' + opts.messages.save + '</span></a>'),
+      type: 'button'
+    }),
+        formActions = _helpers.markup('div', [clearAll, viewXML, saveAll], {
+      className: 'form-actions btn-group'
+    }).outerHTML,
         actionLinksInner = $('<div/>', {
       id: frmbID + '-action-links-inner',
       'class': 'action-links-inner'
-    }).append(saveAll, editXML, ' | ', editNames, ' | ', allowSelect, ' | ', clearAll, ' |&nbsp;'),
+    }).append(saveAll, editXML, ' | ', editNames, ' | ', allowSelect, ' | '),
         devMode = $('<span/>', {
       'class': 'dev-mode-link'
     }).html(opts.messages.devMode + ' ' + opts.messages.off),
@@ -943,6 +985,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       id: frmbID + '-action-links',
       'class': 'action-links'
     }).append(actionLinksInner, devMode);
+
+    // Add our overlay to the body
+    document.body.appendChild(overlay);
 
     // Sortable fields
     $sortableFields.sortable({
@@ -992,14 +1037,18 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap'
-    }).append($cbUL);
+    }).append($cbUL[0], formActions);
 
-    $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks);
+    $stageWrap.append($sortableFields, cbWrap, actionLinks);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
-    // Not pretty but we need to save a lot so users don't have to keep clicking a save button
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', _helpers.debounce(_helpers.save));
+    // Save field on change
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', function () {
+      var $field = $(this).parents('.form-field:eq(0)');
+      _helpers.debounce(_helpers.save);
+      _helpers.debounce(_helpers.updatePreview($field));
+    });
 
     // Parse saved XML template data
     var getXML = function getXML() {
@@ -1021,8 +1070,13 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         } else if (!opts.prepend && !opts.append) {
           $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
-        nonEditableFields();
       }
+
+      $('li.form-field:not(.disabled)', $sortableFields).each(function () {
+        _helpers.updatePreview($(this));
+      });
+
+      nonEditableFields();
     };
 
     var loadData = function loadData() {
@@ -1083,7 +1137,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
       appendNewField(values);
       $stageWrap.removeClass('empty');
-      nonEditableFields();
     };
 
     // multi-line textarea
@@ -1343,7 +1396,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       var liContents = fieldActions;
 
       liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>';
-      liContents += _helpers.markup('div', _helpers.fieldPreview(values), { className: 'prev-holder' }).outerHTML;
+      liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
       liContents += '<div class="form-elements">';
       liContents += '<div class="form-group">';
@@ -1384,10 +1437,10 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
       $li.data('fieldData', { attrs: values });
 
-      if (_helpers.stopIndex !== 0) {
+      if (typeof _helpers.stopIndex !== 'undefined') {
         $('> li', $sortableFields).eq(_helpers.stopIndex).after($li);
       } else {
-        $sortableFields.prepend($li);
+        $sortableFields.append($li);
       }
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
@@ -1646,8 +1699,11 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       $(this).parents('li:eq(0)').toggleClass('delete');
     });
 
+    var xmlButton = $(document.getElementById(frmbID + '-export-xml'));
+    var clearButton = $(document.getElementById(frmbID + '-clear-all'));
+
     // View XML
-    $(document.getElementById(frmbID + '-export-xml')).click(function (e) {
+    xmlButton.click(function (e) {
       e.preventDefault();
       var xml = elem.val(),
           $pre = $('<pre />').text(xml);
@@ -1662,22 +1718,37 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       });
     });
 
-    // Clear all fields in form editor
-    $(document.getElementById(frmbID + '-clear-all')).click(function (e) {
-      e.preventDefault();
-      if (window.confirm(opts.messages.clearAllMessage)) {
-        $sortableFields.empty();
-        elem.val('');
-        _helpers.save();
-        var values = {
-          label: [opts.messages.descriptionField],
-          name: ['content'],
-          required: 'true',
-          description: opts.messages.mandatory
-        };
+    overlay.onclick = function () {
+      _helpers.closeConfirm(overlay);
+    };
 
-        appendNewField(values);
-      }
+    // Clear all fields in form editor
+    clearButton.click(function (e) {
+      var buttonPosition = this.getBoundingClientRect(),
+          bodyRect = document.body.getBoundingClientRect();
+      var coords = {
+        pageX: buttonPosition.left + buttonPosition.width / 2,
+        pageY: buttonPosition.top - bodyRect.top - 12
+      };
+
+      overlay.classList.add('visible');
+      _helpers.confirm('Are you sure you want to clear all fields?', function () {
+        console.log('fields cleared');
+      }, { pageX: coords.pageX, pageY: coords.pageY });
+      e.preventDefault();
+      // if (window.confirm(opts.messages.clearAllMessage)) {
+      //   $sortableFields.empty();
+      //   elem.val('');
+      //   _helpers.save();
+      //   var values = {
+      //     label: [opts.messages.descriptionField],
+      //     name: ['content'],
+      //     required: 'true',
+      //     description: opts.messages.mandatory
+      //   };
+
+      //   appendNewField(values);
+      // }
     });
 
     // Save Idea Template
@@ -1691,7 +1762,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         keys = [],
         devCode = '68,69,86';
     // Super secret Developer Tools
-    $('.save.fb-button').mouseover(function () {
+    $('.fb-save').mouseover(function () {
       triggerDevMode = true;
     }).mouseout(function () {
       triggerDevMode = false;
