@@ -9,7 +9,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   'use strict';
 
   var _helpers = {
-    doCancel: false
+    doCancel: false,
+    stopIndex: 0
   };
 
   formBuilder.events = formBuilderEvents(opts, _helpers);
@@ -119,10 +120,9 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     var form = document.getElementById(opts.formID),
         lastIndex = form.children.length - 1,
         cancelArray = [];
-    _helpers.stopIndex = formBuilder.stopIndex = ui.placeholder.index() - 1;
+    _helpers.stopIndex = ui.placeholder.index() - 1;
 
     form.dispatchEvent(formBuilder.events.beforeFieldAdd);
-    // jQuery(document).trigger('beforeFieldAdd', [lastIndex]);
 
     if (ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
@@ -386,7 +386,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   // update preview to label
   _helpers.updateMultipleSelect = function () {
     $(document.getElementById(opts.formID)).on('change', 'input[name="multiple"]', function () {
-      var options = $(this).parents('.fields:eq(0)').find('.sortable-options input.option-selected');
+      var options = $(this).parents('.field-options:eq(0)').find('.sortable-options input.option-selected');
       if (this.checked) {
         options.each(function () {
           $(this).prop('type', 'checkbox');
@@ -400,7 +400,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   };
 
   _helpers.debounce = function (fn) {
-    var delay = arguments.length <= 1 || arguments[1] === undefined ? 1000 : arguments[1];
+    var delay = arguments.length <= 1 || arguments[1] === undefined ? 500 : arguments[1];
 
     var timer = null;
     return function () {
@@ -1099,6 +1099,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     /**
      * Add data for field with options [select, checkbox-group, radio-group]
      *
+     * @todo   refactor this nasty crap, its actually painful to look at
      * @param  {object} values
      */
     var appendSelectList = function appendSelectList(values) {
@@ -1122,7 +1123,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       field += advFields(values);
       field += '<div class="form-group field-options">';
       field += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
-
+      field += '<div class="sortable-options-wrap">';
       if (values.type === 'select') {
         field += '<div class="allow-multi">';
         field += '<input type="checkbox" id="multiple_' + lastID + '" name="multiple"' + (values.multiple ? 'checked="checked"' : '') + '>';
@@ -1131,12 +1132,13 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
       field += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-        field += selectFieldOptions(values.values[i], values.values[i].selected, values.multiple);
+        field += selectFieldOptions(values.name, values.values[i], values.values[i].selected, values.multiple);
       }
       field += '</ol>';
-      field += '<div class="option-actions"><a href="javascript: void(0);" class="add add-opt">' + opts.messages.addOption + '</a></div>';
+      var addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' });
+      field += _helpers.markup('div', addOption, { className: 'option-actions' }).outerHTML;
       field += '</div>';
-      field += _helpers.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
+      field += '</div>';
       appendFieldLi(opts.messages.select, field, values);
 
       $('.sortable-options').sortable(); // making the dynamically added option fields sortable.
@@ -1206,7 +1208,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
       advFields.push(subTypeField(values.type));
 
-      advFields.push(sizeField(values.size, values.type));
+      // Not ready
+      // advFields.push(sizeField(values.size, values.type));
 
       advFields.push(btnStyles(values.style, values.type));
 
@@ -1320,17 +1323,27 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       var labelVal = $(field).find('input[name="label"]').val(),
           label = labelVal ? labelVal : title;
 
-      var delBtn = '<a id="del_' + lastID + '" class="del-button btn delete-confirm" href="javascript: void(0);" title="' + opts.messages.removeMessage + '">' + opts.messages.remove + '</a>',
-          toggleBtn = '<a id="frm-' + lastID + '" class="toggle-form btn icon-pencil" href="javascript: void(0);" title="' + opts.messages.hide + '"></a> ',
+      var delBtn = _helpers.markup('a', opts.messages.remove, {
+        id: 'del_' + lastID,
+        className: 'del-button btn delete-confirm',
+        title: opts.messages.removeMessage
+      }),
+          toggleBtn = _helpers.markup('a', null, {
+        id: 'frm-' + lastID,
+        className: 'toggle-form btn icon-pencil',
+        title: opts.messages.hide
+      }),
+          fieldActions = _helpers.markup('div', [toggleBtn, delBtn], {
+        className: 'field-actions'
+      }).outerHTML,
           required = values.required,
           toggle = values.toggle || undefined,
           tooltip = values.description !== '' ? '<span class="tooltip-element" tooltip="' + values.description + '">?</span>' : '';
 
-      var liContents = '<div class="legend">';
-      liContents += delBtn;
-      liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>' + toggleBtn;
-      liContents += '</div>';
-      liContents += '<div class="prev-holder">' + _helpers.fieldPreview(values) + '</div>';
+      var liContents = fieldActions;
+
+      liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>';
+      liContents += _helpers.markup('div', _helpers.fieldPreview(values), { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
       liContents += '<div class="form-elements">';
       liContents += '<div class="form-group">';
@@ -1357,8 +1370,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         liContents += '<input class="checkbox-toggle" type="checkbox" value="1" name="toggle-' + lastID + '" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
         liContents += '</div>';
       }
-      // liContents += '</div>';
       liContents += field;
+      liContents += _helpers.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
+
       liContents += '</div>';
       liContents += '</div>';
 
@@ -1370,10 +1384,10 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
       $li.data('fieldData', { attrs: values });
 
-      if (elem.stopIndex) {
-        $('li', $sortableFields).eq(_helpers.stopIndex).after($li);
+      if (_helpers.stopIndex !== 0) {
+        $('> li', $sortableFields).eq(_helpers.stopIndex).after($li);
       } else {
-        $sortableFields.append($li);
+        $sortableFields.prepend($li);
       }
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
@@ -1382,7 +1396,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     };
 
     // Select field html, since there may be multiple
-    var selectFieldOptions = function selectFieldOptions(values, selected, multipleSelect) {
+    var selectFieldOptions = function selectFieldOptions(name, values, selected, multipleSelect) {
       var optionInputType = {
         selected: multipleSelect ? 'checkbox' : 'radio'
       };
@@ -1402,21 +1416,22 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
             type: optionInputType[prop] || 'text',
             'class': 'option-' + prop,
             placeholder: opts.messages.placeholders[prop],
-            value: optionData[prop]
+            value: optionData[prop],
+            name: name
           };
           var option = _helpers.markup('input', null, attrs);
           if (prop === 'selected') {
             option.checked = optionData.selected;
           }
           optionInputs.push(option);
-
-          var removeAttrs = {
-            className: 'remove btn',
-            title: opts.messages.removeMessage
-          };
-          optionInputs.push(_helpers.markup('a', opts.messages.remove, removeAttrs));
         }
       }
+
+      var removeAttrs = {
+        className: 'remove btn',
+        title: opts.messages.removeMessage
+      };
+      optionInputs.push(_helpers.markup('a', opts.messages.remove, removeAttrs));
 
       var field = _helpers.markup('li', optionInputs);
 
@@ -1470,7 +1485,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       var field = document.getElementById(fieldId),
           toggleBtn = $('.toggle-form', field),
           editMode = $('.frm-holder', field);
-      toggleBtn.toggleClass('open').parent().next('.prev-holder').slideToggle(250);
+      toggleBtn.toggleClass('open');
+      $('.prev-holder', field).slideToggle(250);
       editMode.slideToggle(250);
     };
 
@@ -1485,16 +1501,17 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     });
 
     // update preview for description
-    $sortableFields.delegate('input[name="description"]', 'keyup', function () {
-      var closestToolTip = $('.tooltip-element', $(this).closest('li'));
-      if ($(this).val() !== '') {
+    $sortableFields.on('keyup', 'input[name="description"]', function () {
+      var $field = $(this).parents('.form-field:eq(0)');
+      var closestToolTip = $('.tooltip-element', $field);
+      var ttVal = $(this).val();
+      if (ttVal !== '') {
         if (!closestToolTip.length) {
-          var tt = '<span class="tooltip-element" tooltip="' + $(this).val() + '">?</span>';
-          $('.toggle-form', $(this).closest('li')).before(tt);
-          // _helpers.initTooltip(tt);
+          var tt = '<span class="tooltip-element" tooltip="' + ttVal + '">?</span>';
+          $('.field-label', $field).after(tt);
         } else {
-            closestToolTip.attr('tooltip', $(this).val()).css('display', 'inline-block');
-          }
+          closestToolTip.attr('tooltip', ttVal).css('display', 'inline-block');
+        }
       } else {
         if (closestToolTip.length) {
           closestToolTip.css('display', 'none');
@@ -1613,7 +1630,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         isMultiple = $firstOption.attr('type') === 'checkbox';
       }
 
-      $('.sortable-options', $optionWrap).append(selectFieldOptions(false, false, isMultiple));
+      var name = $firstOption.attr('name');
+
+      $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, false, isMultiple));
       _helpers.updateMultipleSelect();
     });
 

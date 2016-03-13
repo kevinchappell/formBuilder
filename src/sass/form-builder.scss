@@ -2,6 +2,7 @@
 @import "base/bs";
 @import "base/font";
 @import "base/mixins";
+@import "base/animation";
 @import "controls";
 @import "stage";
 @import "kc-toggle";
@@ -75,31 +76,6 @@ ul.frmb span.required {
   color: $black;
 }
 
-.form-elements {
-  padding: 10px 5px;
-  background: #f7f7f7;
-  border-radius: 3px;
-  margin: 5px 0 0;
-
-  /* box-shadow: 0 2px 5px #ccc inset; */
-  border: 1px solid #d7d7d7;
-}
-
-.form-elements input[type=text] {
-  width: 81.33333333%;
-  transition: background 250ms ease-in-out;
-  margin-left: 2%;
-  padding: 6px 12px;
-  border: 1px solid #AFAFAB;
-  background-color: $white;
-  float: left;
-
-  .col-md-6 &,
-  .col-md-8 & {
-    width: 100%;
-  }
-}
-
 .form-elements input[type=text].error {
   -webkit-border-radius: 0;
   border-radius: 0;
@@ -156,22 +132,6 @@ ul.frmb span.required {
 
 .form-elements label.maxlength-label {
   line-height: 1em;
-}
-
-.form-elements .allow-multi input {
-  margin-top: 10px;
-}
-
-.form-elements .allow-multi,
-.form-elements .name-wrap,
-.form-elements .option-selected {
-  // display: none;
-}
-
-.allow-select .form-elements .allow-multi,
-.allow-select .form-elements .option-selected,
-.edit-names .form-elements .name-wrap {
-  display: block !important;
 }
 
 .form-group .available-roles {
@@ -400,51 +360,4 @@ a.btn.toggle-form {
   .ui-button-text {
     line-height: 0;
   }
-}
-
-/*   ------------   TOOLTIP   ------------   */
-
-*[tooltip] {
-  position: relative;
-}
-
-*[tooltip]:hover:after {
-  background: darken($grey, 25%);
-  background: rgba(0, 0, 0, 0.9);
-  border-radius: 5px 5px 5px 0;
-  bottom: 23px;
-  color: $white;
-  content: attr(tooltip);
-  padding: 10px 5px;
-  position: absolute;
-  z-index: 98;
-  left: 2px;
-  width: 230px;
-  text-shadow: none;
-  font-size: 12px;
-  line-height: 1.5em;
-}
-
-*[tooltip]:hover:before {
-  border: solid;
-  border-color: #222 transparent;
-  border-width: 6px 6px 0 6px;
-  bottom: 17px;
-  content: "";
-  left: 2px;
-  position: absolute;
-  z-index: 99;
-}
-
-.tooltip-element {
-  color: $white;
-  background: $black;
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  display: inline-block;
-  text-align: center;
-  line-height: 16px;
-  margin: 0 5px;
-  font-size: 12px;
 }

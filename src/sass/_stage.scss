@@ -20,6 +20,10 @@
     background-color: $white;
     transition: background-color 250ms ease-in-out;
 
+    &.hidden-field {
+      background-color: rgba(255, 255, 255, 0.6);
+    }
+
     &:first-child {
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;
@@ -51,24 +55,35 @@
       font-weight: 400;
     }
 
-    &.ui-sortable-helper {
-      border-radius: 5px;
+    @keyframes PLACEHOLDER {
+      0% {
+        height: 0;
+      }
+
+      100% {
+        height: 15px;
+      }
     }
 
     &.frmb-placeholder,
     &.ui-state-highlight {
-      height: 5px;
+      height: 0;
+      padding: 0;
       background: radial-gradient(ellipse at center, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
       border: 0 none;
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       visibility: visible;
+      overflow: hidden;
+      margin-bottom: 3px;
+      animation: PLACEHOLDER 250ms forwards;
     }
 
     &.moving,
     &.ui-sortable-helper {
-      transition: box-shadow 250ms ease-in-out;
+      transition: box-shadow 500ms ease-in-out;
       box-shadow: 2px 2px 6px 0 $grey;
       border: 1px solid $white;
+      border-radius: 5px;
     }
 
     &.disabled {
@@ -122,29 +137,6 @@
   //   border-radius: 0;
   // }
 
-  .del-button {
-    display: inline-block;
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    top: 0;
-    right: 0;
-    opacity: 0;
-    border-color: $grey-light-30;
-    border-width: 0 0 1px 1px;
-    border-radius: 0;
-    color: $grey-light-30;
-    line-height: 32px;
-    font-size: 16px;
-
-    &:hover {
-      background-color: $remove;
-      border-width: 0 0 1px 1px;
-      color: $white;
-    }
-  }
-
   li.delete:hover,
   li:hover li.delete:hover {
     background-color: #fdd;
@@ -168,11 +160,6 @@
       padding: 5px 0;
       position: relative;
     }
-
-    .tooltip-element {
-      display: inline;
-      visibility: visible;
-    }
   }
 
   .frm-holder {
@@ -185,11 +172,16 @@
 
   .prev-holder {
     display: block;
+    margin-top: 8px;
 
     input[type="color"] {
       width: 60px;
       padding: 2px;
       display: inline-block;
+    }
+
+    input[type="date"] {
+      width: auto;
     }
 
     select[multiple] {
@@ -218,6 +210,42 @@
   .button-field {
     .field-label {
       display: none;
+    }
+  }
+
+  .field-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    .btn {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      opacity: 0;
+      border-radius: 0;
+      border-color: $grey-light-30;
+      color: $grey-light-30;
+      line-height: 32px;
+      font-size: 16px;
+      border-width: 0 0 1px 1px;
+    }
+
+    .toggle-form {
+      font-size: .85em;
+      background-color: rgba(255, 255, 255, 0.75);
+
+      &:hover {
+        color: $black;
+      }
+    }
+
+    .del-button {
+      &:hover {
+        background-color: $remove;
+        color: $white;
+      }
     }
   }
 }
@@ -263,10 +291,6 @@
   clear: left;
   float: none;
 
-  select.form-control {
-    width: 70%;
-  }
-
   input[type=checkbox] {
     margin: 12px 5px 0 2%;
   }
@@ -276,14 +300,19 @@
   text-align: right;
 }
 
+.sortable-options-wrap {
+  width: 81.33333333%;
+  display: inline-block;
+}
+
 ol.sortable-options {
-  margin: 0 0 0 2%;
+  display: inline-block;
+  width: 100%;
+  margin-left: 2%;
   background: $grey-light-30;
   margin-bottom: 0;
   border-radius: 5px;
   list-style: none;
-  width: 81.33333333%;
-  display: inline-block;
   padding: 0;
 
   li {
@@ -333,12 +362,90 @@ ol.sortable-options {
   clear: both;
 }
 
-.form-elements .field-options {
-  // width: 70%;
-  // float: left;
+.form-elements {
+  padding: 10px 5px;
+  background: #f7f7f7;
+  border-radius: 3px;
+  margin: 5px 0 0;
+
+  /* box-shadow: 0 2px 5px #ccc inset; */
+  border: 1px solid #d7d7d7;
 }
 
-.form-elements .field-options div {
-  clear: both;
+.form-elements {
+  input[type=text],
+  select {
+    width: 81.33333333%;
+    transition: background 250ms ease-in-out;
+    margin-left: 2%;
+    padding: 6px 12px;
+    border: 1px solid #AFAFAB;
+    background-color: $white;
+    float: left;
+
+    .col-md-6 &,
+    .col-md-8 & {
+      width: 100%;
+    }
+  }
+
+  .btn-group {
+    margin-left: 2%;
+  }
+
+  .button-field & {
+    margin-top: 32px;
+  }
+}
+
+/*   ------------   TOOLTIP   ------------   */
+
+*[tooltip] {
   position: relative;
+}
+
+*[tooltip]:hover:after {
+  background: darken($grey, 25%);
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px 5px 5px 0;
+  bottom: 23px;
+  color: $white;
+  content: attr(tooltip);
+  padding: 10px 5px;
+  position: absolute;
+  z-index: 98;
+  left: 2px;
+  width: 230px;
+  text-shadow: none;
+  font-size: 12px;
+  line-height: 1.5em;
+  cursor: default;
+}
+
+*[tooltip]:hover:before {
+  border: solid;
+  border-color: #222 transparent;
+  border-width: 6px 6px 0 6px;
+  bottom: 17px;
+  content: "";
+  left: 2px;
+  position: absolute;
+  z-index: 99;
+  cursor: default;
+}
+
+.tooltip-element {
+  display: inline;
+  visibility: visible;
+  color: $white;
+  background: $black;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  line-height: 16px;
+  margin: 0 5px;
+  font-size: 12px;
+  cursor: default;
 }

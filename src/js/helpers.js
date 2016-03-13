@@ -2,7 +2,8 @@ var formBuilderHelpers = function(opts, formBuilder) {
   'use strict';
 
   var _helpers = {
-    doCancel: false
+    doCancel: false,
+    stopIndex: 0
   };
 
   formBuilder.events = formBuilderEvents(opts, _helpers);
@@ -112,10 +113,9 @@ var formBuilderHelpers = function(opts, formBuilder) {
     var form = document.getElementById(opts.formID),
       lastIndex = form.children.length - 1,
       cancelArray = [];
-    _helpers.stopIndex = formBuilder.stopIndex = ui.placeholder.index() - 1;
+    _helpers.stopIndex = ui.placeholder.index() - 1;
 
     form.dispatchEvent(formBuilder.events.beforeFieldAdd);
-    // jQuery(document).trigger('beforeFieldAdd', [lastIndex]);
 
     if (ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
@@ -378,7 +378,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
   // update preview to label
   _helpers.updateMultipleSelect = function() {
     $(document.getElementById(opts.formID)).on('change', 'input[name="multiple"]', function() {
-      var options = $(this).parents('.fields:eq(0)').find('.sortable-options input.option-selected');
+      var options = $(this).parents('.field-options:eq(0)').find('.sortable-options input.option-selected');
       if (this.checked) {
         options.each(function() {
           $(this).prop('type', 'checkbox');
@@ -391,7 +391,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
     });
   };
 
-  _helpers.debounce = function(fn, delay = 1000) {
+  _helpers.debounce = function(fn, delay = 500) {
     var timer = null;
     return function() {
       var context = this,
