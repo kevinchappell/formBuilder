@@ -1113,6 +1113,24 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
     };
 
+    // callback to call disabled tooltips
+    $sortableFields.on('mousemove', 'li.disabled', function (e) {
+      $('.frmb-tt', this).css({
+        left: e.offsetX - 15,
+        top: e.offsetY - 20
+      });
+    });
+
+    // callback to call disabled tooltips
+    $sortableFields.on('mouseenter', 'li.disabled', function () {
+      _helpers.disabledTT.add($(this));
+    });
+
+    // callback to call disabled tooltips
+    $sortableFields.on('mouseleave', 'li.disabled', function () {
+      _helpers.disabledTT.remove($(this));
+    });
+
     var nameAttr = function nameAttr(field) {
       var epoch = new Date().getTime();
       return field.data('attrs').name + '-' + epoch;
