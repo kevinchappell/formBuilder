@@ -67,11 +67,7 @@
         <div class="build-form">
           <h2>Build The Form</h2>
           <form action="">
-            <textarea id="fb-template"><form-template>
-  <fields>
-    <field className="form-control" label="Text Field" name="text-input-1457971592169" type="text"/>
-  </fields>
-</form-template></textarea>
+            <textarea id="fb-template"></textarea>
           </form>
           <br style="clear:both">
         </div>
@@ -132,11 +128,9 @@ $(template).formRender(formRenderOpts);
       formContainer = document.getElementById('rendered-form'),
       renderBtn = document.getElementById('render-form-button');
 
-var options = {
-  prepend: '<h1>HEDARERE</h1>',
-  append: '<h1>FOOOOTER</h1>',
-  fieldRemoveWarn: true
-};
+    var options = {
+      fieldRemoveWarn: true
+    };
     $(template).formBuilder(options);
 
     $(renderBtn).click(function(e) {

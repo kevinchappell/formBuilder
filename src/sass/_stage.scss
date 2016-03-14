@@ -144,6 +144,7 @@
   //   border-radius: 0;
   // }
 
+  li.deleting,
   li.delete:hover,
   li:hover li.delete:hover {
     background-color: #fdd;
@@ -151,6 +152,11 @@
     .close-field {
       background-color: #fdd;
     }
+  }
+
+  li.deleting {
+    z-index: 20;
+    pointer-events: none;
   }
 
   &.disabled {

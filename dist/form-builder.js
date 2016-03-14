@@ -245,6 +245,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
   // updatePreview will generate the preview for radio and checkbox groups
   _helpers.updatePreview = function (field) {
+    var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
 
     if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
@@ -274,6 +275,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       previewData.maxlength = maxlength.val();
     }
 
+    previewData.className = $('.fld-className', field).val() || fieldData.className || '';
+
     var placeholder = $('.fld-placeholder', field).val();
     if (placeholder) {
       previewData.placeholder = placeholder;
@@ -301,7 +304,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       });
     }
 
-    previewData.className = _helpers.className(previewData.type, previewData.className, previewData.style);
+    previewData.className = _helpers.classNames(field, previewData);
 
     field.data('fieldData', previewData);
     preview = _helpers.fieldPreview(previewData);
@@ -334,14 +337,17 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         preview = '<button ' + attrsString + '>' + attrs.label + '</button>';
         break;
       case 'select':
-        var options = undefined,
+        var options = '',
             multiple = attrs.multiple ? 'multiple' : '';
         attrs.values.reverse();
+        if (attrs.placeholder) {
+          options += '<option disabled selected>' + attrs.placeholder + '</option>';
+        }
         for (i = attrs.values.length - 1; i >= 0; i--) {
-          var selected = attrs.values[i].selected ? 'selected' : '';
+          var selected = attrs.values[i].selected && !attrs.placeholder ? 'selected' : '';
           options += '<option value="' + attrs.values[i].value + '" ' + selected + '>' + attrs.values[i].label + '</option>';
         }
-        preview = '<' + attrs.type + ' class="form-control" ' + multiple + '>' + options + '</' + attrs.type + '>';
+        preview = '<' + attrs.type + ' class="' + attrs.className + '" ' + multiple + '>' + options + '</' + attrs.type + '>';
         break;
       case 'checkbox-group':
       case 'radio-group':
@@ -351,7 +357,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         for (i = attrs.values.length - 1; i >= 0; i--) {
           var checked = attrs.values[i].selected ? 'checked' : '';
           var optionId = type + '-' + epoch + '-' + i;
-          preview += '<div><input type="' + type + '" name="' + optionName + '" id="' + optionId + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + optionId + '">' + attrs.values[i].label + '</label></div>';
+          preview += '<div><input type="' + type + '" class="' + attrs.className + '" name="' + optionName + '" id="' + optionId + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + optionId + '">' + attrs.values[i].label + '</label></div>';
         }
         break;
       case 'text':
@@ -362,14 +368,14 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         preview = '<input ' + attrsString + '>';
         break;
       case 'color':
-        preview = '<input type="' + attrs.type + '" class="form-control"> ' + opts.messages.selectColor;
+        preview = '<input type="' + attrs.type + '" class="' + attrs.className + '"> ' + opts.messages.selectColor;
         break;
       case 'hidden':
       case 'checkbox':
         preview = '<input type="' + attrs.type + '" ' + toggle + ' >';
         break;
       case 'autocomplete':
-        preview = '<input class="ui-autocomplete-input form-control" autocomplete="on">';
+        preview = '<input class="ui-autocomplete-input ' + attrs.className + '" autocomplete="on">';
         break;
       default:
         preview = '<' + attrs.type + '></' + attrs.type + '>';
@@ -394,17 +400,26 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     });
   };
 
-  _helpers.debounce = function (fn) {
-    var delay = arguments.length <= 1 || arguments[1] === undefined ? 500 : arguments[1];
+  _helpers.debounce = function (func) {
+    var wait = arguments.length <= 1 || arguments[1] === undefined ? 250 : arguments[1];
+    var immediate = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
-    var timer = null;
+    var timeout;
     return function () {
       var context = this,
           args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        fn.apply(context, args);
-      }, delay);
+      var later = function later() {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) {
+        func.apply(context, args);
+      }
     };
   };
 
@@ -468,15 +483,17 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     }
   };
 
-  _helpers.className = function (type) {
-    var className = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-    var style = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-
+  _helpers.classNames = function (field, previewData) {
+    var noFormControl = ['checkbox', 'checkbox-group', 'radio-group', 'button'];
+    var type = previewData.type;
+    var style = previewData.style;
     var classes = [];
     var types = {
       button: 'btn',
       submit: 'btn'
     };
+
+    var className = field[0].querySelector('.fld-className').value;
 
     var primaryType = types[type];
 
@@ -489,7 +506,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       if (style) {
         classes.push(primaryType + '-' + style);
       }
-    } else if ('checkbox' !== type) {
+    } else if (noFormControl.indexOf(type) === -1) {
       classes.push('form-control');
     }
 
@@ -536,14 +553,26 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     return field;
   };
 
+  /**
+   * Closes and open dialog
+   *
+   * @param  {Object} overlay Existing overlay if there is one
+   * @param  {Object} dialog  Existing dialog
+   * @return {Event}          Triggers modalClosed event
+   */
   _helpers.closeConfirm = function (overlay, dialog) {
     overlay = overlay || document.getElementsByClassName('form-builder-overlay')[0];
     dialog = dialog || document.getElementsByClassName('form-builder-dialog')[0];
     overlay.classList.remove('visible');
     dialog.remove();
+    overlay.remove();
+    document.dispatchEvent(formBuilder.events.modalClosed);
   };
 
-  // Add our overlay to the body
+  /**
+   * Adds overlay to the page. Used for modals.
+   * @return {Object}
+   */
   _helpers.showOverlay = function () {
     var overlay = _helpers.markup('div', null, {
       className: 'form-builder-overlay'
@@ -558,6 +587,15 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     return overlay;
   };
 
+  /**
+   * Custom confirmation dialog
+   *
+   * @param  {Object}  message   Content to be displayed in the dialog
+   * @param  {Func}  yesAction callback to fire if they confirm
+   * @param  {Boolean} coords    location to put the dialog
+   * @param  {String}  className Custom class to be added to the dialog
+   * @return {Object}            Reference to the modal
+   */
   _helpers.confirm = function (message, yesAction) {
     var coords = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
     var className = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
@@ -637,6 +675,9 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     return miniModal;
   };
 
+  /**
+   * Removes all fields from the form
+   */
   _helpers.removeAllfields = function () {
     var form = document.getElementById(opts.formID);
     var fields = form.querySelectorAll('li.form-field');
@@ -692,6 +733,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
   events.loaded = new Event('loaded');
 
   events.viewData = new Event('viewData');
+  events.userDeclined = new Event('userDeclined');
+  events.modalClosed = new Event('modalClosed');
 
   return events;
 };
@@ -772,6 +815,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       //   type: 'text'
       // }],
       defaultFields: [],
+      fieldRemoveWarn: false,
       roles: {
         1: 'Administrator'
       },
@@ -801,7 +845,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
-        fieldRemoveWarn: 'Are you sure you want to remove this field?',
+        fieldRemoveWarning: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
@@ -1121,12 +1165,14 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
-    // Save field on change
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', function () {
+    var saveAndUpdate = _helpers.debounce(function () {
       var $field = $(this).parents('.form-field:eq(0)');
-      _helpers.debounce(_helpers.save);
-      _helpers.debounce(_helpers.updatePreview($field));
+      _helpers.updatePreview($field);
+      _helpers.save();
     });
+
+    // Save field on change
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', saveAndUpdate);
 
     // Parse saved XML template data
     var getXML = function getXML() {
@@ -1363,9 +1409,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       advFields.push(btnStyles(values.style, values.type));
 
       // Placeholder
-      advFields.push(textAttribute(values.type, 'placeholder'));
+      advFields.push(textAttribute('placeholder', values.type));
       // Class
-      advFields.push(textAttribute(values.type, 'className'));
+      advFields.push(textAttribute('className'));
 
       advFields.push('<div class="form-group name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>');
       advFields.push('<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>');
@@ -1457,12 +1503,24 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       return styleField;
     };
 
-    var textAttribute = function textAttribute(type, attribute) {
+    var textAttribute = function textAttribute(attribute) {
+      var type = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+
+      var placeholderFields = ['text', 'textarea', 'select'];
       var placeholders = opts.messages.placeholders,
           placeholder = placeholders[attribute] || '',
-          attributefield = '';
+          attributefield = '',
+          noMakeAttr = [];
 
-      if (typeof placeholders[type] !== 'undefined') {
+      if (attribute === 'placeholder' && placeholderFields.indexOf(type) === -1) {
+        noMakeAttr.push(true);
+      }
+
+      var dontMake = noMakeAttr.some(function (elem) {
+        return elem === true;
+      });
+
+      if (!dontMake) {
         var attributeLabel = '<label>' + opts.messages[attribute] + '</label>';
         attributefield += '<input type="text" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
         attributefield = '<div class="form-group ' + attribute + '-wrap">' + attributeLabel + ' ' + attributefield + '</div>';
@@ -1597,15 +1655,17 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
     // delete options
     $sortableFields.on('click touchstart', '.remove', function (e) {
+      var $field = $(this).parents('.form-field:eq(0)');
       e.preventDefault();
       var optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
       if (optionsCount <= 2) {
-        alert('Error: ' + opts.messages.minOptionMessage);
+        opts.notify.error('Error: ' + opts.messages.minOptionMessage);
       } else {
         $(this).parent('li').slideUp('250', function () {
           $(this).remove();
         });
       }
+      saveAndUpdate.call($field);
     });
 
     // touch focus
@@ -1694,48 +1754,36 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     $sortableFields.on('click touchstart', '.delete-confirm', function (e) {
       e.preventDefault();
 
-      // lets see if the user really wants to remove this field... FOREVER
-      var fieldWarnH3 = $('<h3/>').html('<span></span>' + opts.messages.warning),
-          deleteID = $(this).attr('id').replace(/del_/, ''),
-          delBtn = $(this),
-          $field = $(document.getElementById('frm-' + deleteID + '-item')),
-          toolTipPageX = delBtn.offset().left - $(window).scrollLeft(),
-          toolTipPageY = delBtn.offset().top - $(window).scrollTop();
+      var buttonPosition = this.getBoundingClientRect(),
+          bodyRect = document.body.getBoundingClientRect(),
+          coords = {
+        pageX: buttonPosition.left + buttonPosition.width / 2,
+        pageY: buttonPosition.top - bodyRect.top - 12
+      };
 
-      if (opts.fieldDeleteWarning) {
-        jQuery('<div />').append(fieldWarnH3, opts.messages.fieldRemoveWarning).dialog({
-          modal: true,
-          resizable: false,
-          width: 300,
-          dialogClass: 'ite-warning',
-          open: function open() {
-            $('.ui-widget-overlay').css({
-              'opacity': 0.0
-            });
-          },
-          position: [toolTipPageX - 282, toolTipPageY - 178],
-          buttons: [{
-            text: opts.messages.yes,
-            click: function click() {
-              $field.slideUp(250, function () {
-                $(this).remove();
-                _helpers.save();
-              });
-              $(this).dialog('close');
-            }
-          }, {
-            text: opts.messages.no,
-            'class': 'cancel',
-            click: function click() {
-              $(this).dialog('close');
-            }
-          }]
-        });
-      } else {
+      var deleteID = $(this).attr('id').replace(/del_/, ''),
+          $field = $(document.getElementById('frm-' + deleteID + '-item'));
+
+      var removeField = function removeField() {
         $field.slideUp(250, function () {
-          $(this).remove();
+          $field.removeClass('deleting');
+          $field.remove();
           _helpers.save();
         });
+      };
+
+      document.addEventListener('modalClosed', function () {
+        $field.removeClass('deleting');
+      }, false);
+
+      // Check if user is sure they want to remove the field
+      if (opts.fieldRemoveWarn) {
+        var warnH3 = _helpers.markup('h3', opts.messages.warning),
+            warnMessage = _helpers.markup('p', opts.messages.fieldRemoveWarning);
+        _helpers.confirm([warnH3, warnMessage], removeField, coords);
+        $field.addClass('deleting');
+      } else {
+        removeField($field);
       }
 
       if ($('> li', $sortableFields).length === 1) {
@@ -1743,7 +1791,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
     });
 
-    // Attach a callback to toggle required asterisk
+    // Update button style selection
     $sortableFields.on('click', '.style-wrap button', function () {
       var styleVal = $(this).val(),
           $parent = $(this).parent(),
@@ -1751,7 +1799,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       $btnStyle.val(styleVal);
       $(this).siblings('.btn').removeClass('active');
       $(this).addClass('active');
-      $btnStyle.trigger('change');
+      saveAndUpdate.call($parent);
     });
 
     // Attach a callback to toggle required asterisk
@@ -1813,7 +1861,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
     // Clear all fields in form editor
     var clearButton = $(document.getElementById(frmbID + '-clear-all'));
-    clearButton.click(function (e) {
+    clearButton.click(function () {
       var fields = $('li.form-field');
       var buttonPosition = this.getBoundingClientRect(),
           bodyRect = document.body.getBoundingClientRect(),
@@ -1826,7 +1874,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         _helpers.confirm('Are you sure you want to clear all fields?', function () {
           _helpers.removeAllfields();
           opts.notify.success(opts.messages.allFieldsRemoved);
-        }, { pageX: coords.pageX, pageY: coords.pageY });
+          _helpers.save();
+        }, coords);
       } else {
         _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
       }
@@ -1951,12 +2000,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       return type;
     };
 
-    _helpers.getClassName = function ($field) {
-      var fieldData = $field.data('fieldData') || {},
-          className = $('.fld-class', $field).val() || fieldData.className || '';
-      return className;
-    };
-
     _helpers.hyphenCase = function (str) {
       return str.replace(/([A-Z])/g, function ($1) {
         return '-' + $1.toLowerCase();
@@ -1994,6 +2037,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         // build new xml
         $(this).children().each(function () {
           var $field = $(this);
+          var fieldData = $field.data('fieldData');
 
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
@@ -2002,7 +2046,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
               }).join(',');
 
               var xmlAttrs = {
-                className: _helpers.getClassName($field),
+                className: fieldData.className,
                 description: $('input.fld-description', $field).val(),
                 label: $('input.fld-label', $field).val(),
                 maxlength: $('input.fld-maxlength', $field).val(),

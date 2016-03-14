@@ -234,6 +234,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
   // updatePreview will generate the preview for radio and checkbox groups
   _helpers.updatePreview = function(field) {
+    var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
 
     if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
@@ -242,7 +243,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
     var fieldType,
       $prevHolder = $('.prev-holder', field);
-
 
     let subtype = $('.fld-subtype', field).val();
     fieldClass = fieldClass.replace('-field form-field', '');
@@ -263,6 +263,8 @@ var formBuilderHelpers = function(opts, formBuilder) {
     if (maxlength) {
       previewData.maxlength = maxlength.val();
     }
+
+    previewData.className = $('.fld-className', field).val() || fieldData.className || '';
 
     let placeholder = $('.fld-placeholder', field).val();
     if (placeholder) {
@@ -291,7 +293,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
       });
     }
 
-    previewData.className = _helpers.className(previewData.type, previewData.className, previewData.style);
+    previewData.className = _helpers.classNames(field, previewData);
 
     field.data('fieldData', previewData);
     preview = _helpers.fieldPreview(previewData);
@@ -326,14 +328,17 @@ var formBuilderHelpers = function(opts, formBuilder) {
         preview = `<button ${attrsString}>${attrs.label}</button>`;
         break;
       case 'select':
-        let options,
+        let options = '',
           multiple = attrs.multiple ? 'multiple' : '';
         attrs.values.reverse();
+        if (attrs.placeholder) {
+          options += `<option disabled selected>${attrs.placeholder}</option>`;
+        }
         for (i = attrs.values.length - 1; i >= 0; i--) {
-          let selected = attrs.values[i].selected ? 'selected' : '';
+          let selected = (attrs.values[i].selected && !attrs.placeholder) ? 'selected' : '';
           options += `<option value="${attrs.values[i].value}" ${selected}>${attrs.values[i].label}</option>`;
         }
-        preview = `<${attrs.type} class="form-control" ${multiple}>${options}</${attrs.type}>`;
+        preview = `<${attrs.type} class="${attrs.className}" ${multiple}>${options}</${attrs.type}>`;
         break;
       case 'checkbox-group':
       case 'radio-group':
@@ -343,7 +348,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
         for (i = attrs.values.length - 1; i >= 0; i--) {
           let checked = attrs.values[i].selected ? 'checked' : '';
           let optionId = `${type}-${epoch}-${i}`;
-          preview += `<div><input type="${type}" name="${optionName}" id="${optionId}" value="${attrs.values[i].value}" ${checked}/><label for="${optionId}">${attrs.values[i].label}</label></div>`;
+          preview += `<div><input type="${type}" class="${attrs.className}" name="${optionName}" id="${optionId}" value="${attrs.values[i].value}" ${checked}/><label for="${optionId}">${attrs.values[i].label}</label></div>`;
         }
         break;
       case 'text':
@@ -354,14 +359,14 @@ var formBuilderHelpers = function(opts, formBuilder) {
         preview = `<input ${attrsString}>`;
         break;
       case 'color':
-        preview = `<input type="${attrs.type}" class="form-control"> ${opts.messages.selectColor}`;
+        preview = `<input type="${attrs.type}" class="${attrs.className}"> ${opts.messages.selectColor}`;
         break;
       case 'hidden':
       case 'checkbox':
         preview = `<input type="${attrs.type}" ${toggle} >`;
         break;
       case 'autocomplete':
-        preview = `<input class="ui-autocomplete-input form-control" autocomplete="on">`;
+        preview = `<input class="ui-autocomplete-input ${attrs.className}" autocomplete="on">`;
         break;
       default:
         preview = `<${attrs.type}></${attrs.type}>`;
@@ -386,15 +391,23 @@ var formBuilderHelpers = function(opts, formBuilder) {
     });
   };
 
-  _helpers.debounce = function(fn, delay = 500) {
-    var timer = null;
+  _helpers.debounce = function(func, wait = 250, immediate = false) {
+    var timeout;
     return function() {
       var context = this,
         args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(function() {
-        fn.apply(context, args);
-      }, delay);
+      var later = function() {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) {
+        func.apply(context, args);
+      }
     };
   };
 
@@ -458,12 +471,22 @@ var formBuilderHelpers = function(opts, formBuilder) {
     }
   };
 
-  _helpers.className = function(type, className = false, style = false) {
+  _helpers.classNames = function(field, previewData) {
+    let noFormControl = [
+      'checkbox',
+      'checkbox-group',
+      'radio-group',
+      'button'
+    ];
+    let type = previewData.type;
+    let style = previewData.style;
     let classes = [];
     let types = {
       button: 'btn',
       submit: 'btn'
     };
+
+    let className = field[0].querySelector('.fld-className').value;
 
     let primaryType = types[type];
 
@@ -476,7 +499,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
       if (style) {
         classes.push(primaryType + '-' + style);
       }
-    } else if ('checkbox' !== type) {
+    } else if (noFormControl.indexOf(type) === -1) {
       classes.push('form-control');
     }
 
@@ -520,14 +543,26 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return field;
   };
 
+  /**
+   * Closes and open dialog
+   *
+   * @param  {Object} overlay Existing overlay if there is one
+   * @param  {Object} dialog  Existing dialog
+   * @return {Event}          Triggers modalClosed event
+   */
   _helpers.closeConfirm = function(overlay, dialog) {
     overlay = overlay || document.getElementsByClassName('form-builder-overlay')[0];
     dialog = dialog || document.getElementsByClassName('form-builder-dialog')[0];
     overlay.classList.remove('visible');
     dialog.remove();
+    overlay.remove();
+    document.dispatchEvent(formBuilder.events.modalClosed);
   };
 
-  // Add our overlay to the body
+  /**
+   * Adds overlay to the page. Used for modals.
+   * @return {Object}
+   */
   _helpers.showOverlay = function() {
     var overlay = _helpers.markup('div', null, {
       className: 'form-builder-overlay'
@@ -542,6 +577,15 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return overlay;
   };
 
+  /**
+   * Custom confirmation dialog
+   *
+   * @param  {Object}  message   Content to be displayed in the dialog
+   * @param  {Func}  yesAction callback to fire if they confirm
+   * @param  {Boolean} coords    location to put the dialog
+   * @param  {String}  className Custom class to be added to the dialog
+   * @return {Object}            Reference to the modal
+   */
   _helpers.confirm = function(message, yesAction, coords = false, className = '') {
     var overlay = _helpers.showOverlay();
     var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
@@ -615,6 +659,9 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return miniModal;
   };
 
+  /**
+   * Removes all fields from the form
+   */
   _helpers.removeAllfields = function() {
     var form = document.getElementById(opts.formID);
     var fields = form.querySelectorAll('li.form-field');

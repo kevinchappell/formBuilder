@@ -17,12 +17,6 @@
       return type;
     };
 
-    _helpers.getClassName = function($field) {
-      let fieldData = $field.data('fieldData') || {},
-        className = $('.fld-class', $field).val() || fieldData.className || '';
-      return className;
-    };
-
     _helpers.hyphenCase = (str) => {
       return str.replace(/([A-Z])/g, function($1) {
         return '-' + $1.toLowerCase();
@@ -61,6 +55,7 @@
         // build new xml
         $(this).children().each(function() {
           var $field = $(this);
+          var fieldData = $field.data('fieldData');
 
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
@@ -69,7 +64,7 @@
               }).join(',');
 
               var xmlAttrs = {
-                  className: _helpers.getClassName($field),
+                  className: fieldData.className,
                   description: $('input.fld-description', $field).val(),
                   label: $('input.fld-label', $field).val(),
                   maxlength: $('input.fld-maxlength', $field).val(),

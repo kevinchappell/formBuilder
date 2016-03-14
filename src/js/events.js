@@ -16,6 +16,8 @@ var formBuilderEvents = function(opts, _helpers) {
   events.loaded = new Event('loaded');
 
   events.viewData = new Event('viewData');
+  events.userDeclined = new Event('userDeclined');
+  events.modalClosed = new Event('modalClosed');
 
   return events;
 };

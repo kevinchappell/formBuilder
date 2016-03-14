@@ -28,6 +28,7 @@
       //   type: 'text'
       // }],
       defaultFields: [],
+      fieldRemoveWarn: false,
       roles: {
         1: 'Administrator'
       },
@@ -57,7 +58,7 @@
         fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
-        fieldRemoveWarn: 'Are you sure you want to remove this field?',
+        fieldRemoveWarning: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
@@ -385,12 +386,14 @@
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
-    // Save field on change
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', function() {
+    var saveAndUpdate = _helpers.debounce(function() {
       let $field = $(this).parents('.form-field:eq(0)');
-      _helpers.debounce(_helpers.save);
-      _helpers.debounce(_helpers.updatePreview($field));
+      _helpers.updatePreview($field);
+      _helpers.save();
     });
+
+    // Save field on change
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', saveAndUpdate);
 
     // Parse saved XML template data
     var getXML = function() {
@@ -625,9 +628,9 @@
       advFields.push(btnStyles(values.style, values.type));
 
       // Placeholder
-      advFields.push(textAttribute(values.type, 'placeholder'));
+      advFields.push(textAttribute('placeholder', values.type));
       // Class
-      advFields.push(textAttribute(values.type, 'className'));
+      advFields.push(textAttribute('className'));
 
       advFields.push('<div class="form-group name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>');
       advFields.push('<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>');
@@ -719,12 +722,24 @@
       return styleField;
     };
 
-    var textAttribute = function(type, attribute) {
+    var textAttribute = function(attribute, type = '') {
+      var placeholderFields = [
+        'text',
+        'textarea',
+        'select'
+      ];
       let placeholders = opts.messages.placeholders,
         placeholder = placeholders[attribute] || '',
-        attributefield = '';
+        attributefield = '',
+        noMakeAttr = [];
 
-      if (typeof placeholders[type] !== 'undefined') {
+      if (attribute === 'placeholder' && placeholderFields.indexOf(type) === -1) {
+        noMakeAttr.push(true);
+      }
+
+      let dontMake = noMakeAttr.some(elem => elem === true);
+
+      if (!dontMake) {
         let attributeLabel = `<label>${opts.messages[attribute]}</label>`;
         attributefield += `<input type="text" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
         attributefield = `<div class="form-group ${attribute}-wrap">${attributeLabel} ${attributefield}</div>`;
@@ -859,15 +874,17 @@
 
     // delete options
     $sortableFields.on('click touchstart', '.remove', function(e) {
+      var $field = $(this).parents('.form-field:eq(0)');
       e.preventDefault();
       var optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
       if (optionsCount <= 2) {
-        alert('Error: ' + opts.messages.minOptionMessage);
+        opts.notify.error('Error: ' + opts.messages.minOptionMessage);
       } else {
         $(this).parent('li').slideUp('250', function() {
           $(this).remove();
         });
       }
+      saveAndUpdate.call($field);
     });
 
     // touch focus
@@ -956,48 +973,36 @@
     $sortableFields.on('click touchstart', '.delete-confirm', function(e) {
       e.preventDefault();
 
-      // lets see if the user really wants to remove this field... FOREVER
-      var fieldWarnH3 = $('<h3/>').html('<span></span>' + opts.messages.warning),
-        deleteID = $(this).attr('id').replace(/del_/, ''),
-        delBtn = $(this),
-        $field = $(document.getElementById('frm-' + deleteID + '-item')),
-        toolTipPageX = delBtn.offset().left - $(window).scrollLeft(),
-        toolTipPageY = delBtn.offset().top - $(window).scrollTop();
+      let buttonPosition = this.getBoundingClientRect(),
+        bodyRect = document.body.getBoundingClientRect(),
+        coords = {
+          pageX: buttonPosition.left + (buttonPosition.width / 2),
+          pageY: (buttonPosition.top - bodyRect.top) - 12
+        };
 
-      if (opts.fieldDeleteWarning) {
-        jQuery('<div />').append(fieldWarnH3, opts.messages.fieldRemoveWarning).dialog({
-          modal: true,
-          resizable: false,
-          width: 300,
-          dialogClass: 'ite-warning',
-          open: function() {
-            $('.ui-widget-overlay').css({
-              'opacity': 0.0
-            });
-          },
-          position: [toolTipPageX - 282, toolTipPageY - 178],
-          buttons: [{
-            text: opts.messages.yes,
-            click: function() {
-              $field.slideUp(250, function() {
-                $(this).remove();
-                _helpers.save();
-              });
-              $(this).dialog('close');
-            }
-          }, {
-            text: opts.messages.no,
-            'class': 'cancel',
-            click: function() {
-              $(this).dialog('close');
-            }
-          }]
-        });
-      } else {
+      var deleteID = $(this).attr('id').replace(/del_/, ''),
+        $field = $(document.getElementById('frm-' + deleteID + '-item'));
+
+      let removeField = () => {
         $field.slideUp(250, function() {
-          $(this).remove();
+          $field.removeClass('deleting');
+          $field.remove();
           _helpers.save();
         });
+      };
+
+      document.addEventListener('modalClosed', function() {
+        $field.removeClass('deleting');
+      }, false);
+
+      // Check if user is sure they want to remove the field
+      if (opts.fieldRemoveWarn) {
+        let warnH3 = _helpers.markup('h3', opts.messages.warning),
+          warnMessage = _helpers.markup('p', opts.messages.fieldRemoveWarning);
+        _helpers.confirm([warnH3, warnMessage], removeField, coords);
+        $field.addClass('deleting');
+      } else {
+        removeField($field);
       }
 
       if ($('> li', $sortableFields).length === 1) {
@@ -1006,7 +1011,7 @@
 
     });
 
-    // Attach a callback to toggle required asterisk
+    // Update button style selection
     $sortableFields.on('click', '.style-wrap button', function() {
       let styleVal = $(this).val(),
         $parent = $(this).parent(),
@@ -1014,7 +1019,7 @@
       $btnStyle.val(styleVal);
       $(this).siblings('.btn').removeClass('active');
       $(this).addClass('active');
-      $btnStyle.trigger('change');
+      saveAndUpdate.call($parent);
     });
 
     // Attach a callback to toggle required asterisk
@@ -1069,14 +1074,14 @@
     xmlButton.click(function(e) {
       e.preventDefault();
       var xml = _helpers.htmlEncode(elem.val()),
-        code = _helpers.markup('code', xml, {className: 'xml'}),
+        code = _helpers.markup('code', xml, { className: 'xml' }),
         pre = _helpers.markup('pre', code);
       _helpers.dialog(pre, null, 'data-dialog');
     });
 
     // Clear all fields in form editor
     var clearButton = $(document.getElementById(frmbID + '-clear-all'));
-    clearButton.click(function(e) {
+    clearButton.click(function() {
       let fields = $('li.form-field');
       let buttonPosition = this.getBoundingClientRect(),
         bodyRect = document.body.getBoundingClientRect(),
@@ -1089,7 +1094,8 @@
         _helpers.confirm('Are you sure you want to clear all fields?', function() {
           _helpers.removeAllfields();
           opts.notify.success(opts.messages.allFieldsRemoved);
-        }, { pageX: coords.pageX, pageY: coords.pageY });
+          _helpers.save();
+        }, coords);
       } else {
         _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
       }

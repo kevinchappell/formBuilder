@@ -363,6 +363,10 @@ a.btn.toggle-form {
   padding: 10px;
   box-shadow: 0 3px 10px $black;
 
+  h3 {
+    margin-top: 0;
+  }
+
   &.data-dialog {
     width: 65%;
     background-color: #23241f;
@@ -372,6 +376,7 @@ a.btn.toggle-form {
       border: 0 none;
       box-shadow: none;
       margin: 0;
+      color: darken($white, 5%);
     }
   }
 

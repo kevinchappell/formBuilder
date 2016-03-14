@@ -522,12 +522,17 @@ textarea.form-control {
               transition: background-color 250ms ease-in-out; }
       .frmb li .close-field:hover {
         text-decoration: none; }
+  .frmb li.deleting,
   .frmb li.delete:hover,
   .frmb li:hover li.delete:hover {
     background-color: #fdd; }
+    .frmb li.deleting .close-field,
     .frmb li.delete:hover .close-field,
     .frmb li:hover li.delete:hover .close-field {
       background-color: #fdd; }
+  .frmb li.deleting {
+    z-index: 20;
+    pointer-events: none; }
   .frmb.disabled {
     padding: 0 5px; }
     .frmb.disabled :hover {
@@ -1112,6 +1117,8 @@ a.btn.toggle-form {
   left: 0;
   padding: 10px;
   box-shadow: 0 3px 10px #000; }
+  .form-builder-dialog h3 {
+    margin-top: 0; }
   .form-builder-dialog.data-dialog {
     width: 65%;
     background-color: #23241f; }
@@ -1119,7 +1126,8 @@ a.btn.toggle-form {
       background: none;
       border: 0 none;
       box-shadow: none;
-      margin: 0; }
+      margin: 0;
+      color: #f2f2f2; }
   .form-builder-dialog.positioned {
     -webkit-transform: translate(-50%, -100%);
             transform: translate(-50%, -100%); }
