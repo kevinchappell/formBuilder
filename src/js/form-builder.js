@@ -698,7 +698,7 @@
       'class': 'cb-wrap'
     }).append(cbHeader, cbUL);
 
-    $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks);
+    $stageWrap.append($sortableFields, cbWrap, viewXML, actionLinks, saveAll);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
