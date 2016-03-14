@@ -31,10 +31,10 @@
       roles: {
         1: 'Administrator'
       },
-      showWarning: false,
       serializePrefix: 'frmb',
       messages: {
         addOption: 'Add Option',
+        allFieldsRemoved: 'All fields were removed.',
         allowSelect: 'Allow Select',
         autocomplete: 'Autocomplete',
         button: 'Button',
@@ -42,6 +42,7 @@
         checkboxGroup: 'Checkbox Group',
         checkbox: 'Checkbox',
         checkboxes: 'Checkboxes',
+        className: 'Class',
         clearAllMessage: 'Are you sure you want to remove all items?',
         clearAll: 'Clear',
         close: 'Close',
@@ -53,9 +54,10 @@
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
+        fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
-        fieldRemoveWarning: 'Are you sure you want to remove this field?',
+        fieldRemoveWarn: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
@@ -84,6 +86,8 @@
           text: '',
           textarea: '',
           email: 'Enter you email',
+          placeholder: '',
+          className: 'space separated classes',
           password: 'Enter your password'
         },
         preview: 'Preview',
@@ -276,14 +280,13 @@
       $field.html(typeLabel).appendTo($cbUL);
     }
 
+    let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
+
     // Build our headers and action links
-    var viewXML = _helpers.markup('button', opts.messages.viewXML, {
-        id: frmbID + '-export-xml',
+    var viewData = _helpers.markup('button', viewDataText, {
+        id: frmbID + '-view-data',
         type: 'button',
-        className: 'view-xml btn btn-default'
-      }),
-      overlay = _helpers.markup('div', null, {
-        className: 'form-builder-overlay'
+        className: 'view-data btn btn-default'
       }),
       allowSelect = $('<a/>', {
         id: frmbID + '-allow-select',
@@ -313,7 +316,7 @@
         id: frmbID + '-save',
         type: 'button'
       }),
-      formActions = _helpers.markup('div', [clearAll, viewXML, saveAll], {
+      formActions = _helpers.markup('div', [clearAll, viewData, saveAll], {
         className: 'form-actions btn-group'
       }).outerHTML,
       actionLinksInner = $('<div/>', {
@@ -327,9 +330,6 @@
         id: frmbID + '-action-links',
         'class': 'action-links'
       }).append(actionLinksInner, devMode);
-
-    // Add our overlay to the body
-    document.body.appendChild(overlay);
 
     // Sortable fields
     $sortableFields.sortable({
@@ -432,7 +432,6 @@
       };
 
       doLoadData[opts.dataType]();
-
     };
 
     var nonEditableFields = function() {
@@ -458,8 +457,8 @@
     // callback to call disabled tooltips
     $sortableFields.on('mousemove', 'li.disabled', function(e) {
       $('.frmb-tt', this).css({
-        left: e.offsetX - 15,
-        top: e.offsetY - 20
+        left: e.offsetX - 16,
+        top: e.offsetY - 34
       });
     });
 
@@ -625,7 +624,10 @@
 
       advFields.push(btnStyles(values.style, values.type));
 
-      advFields.push(placeHolderField(values.type));
+      // Placeholder
+      advFields.push(textAttribute(values.type, 'placeholder'));
+      // Class
+      advFields.push(textAttribute(values.type, 'className'));
 
       advFields.push('<div class="form-group name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>');
       advFields.push('<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>');
@@ -717,17 +719,18 @@
       return styleField;
     };
 
-    var placeHolderField = function(type) {
+    var textAttribute = function(type, attribute) {
       let placeholders = opts.messages.placeholders,
-        placeholder = '';
+        placeholder = placeholders[attribute] || '',
+        attributefield = '';
 
       if (typeof placeholders[type] !== 'undefined') {
-        let placeholderLabel = `<label>${opts.messages.placeholder}</label>`;
-        placeholder += `<input type="text" name="placeholder" placeholder="${placeholders[type]}" class="fld-placeholder form-control" id="placeholder-${lastID}">`;
-        placeholder = `<div class="form-group placeholder-wrap">${placeholderLabel} ${placeholder}</div>`;
+        let attributeLabel = `<label>${opts.messages[attribute]}</label>`;
+        attributefield += `<input type="text" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
+        attributefield = `<div class="form-group ${attribute}-wrap">${attributeLabel} ${attributefield}</div>`;
       }
 
-      return placeholder;
+      return attributefield;
     };
 
     // Append the new field to the editor
@@ -801,6 +804,8 @@
       } else {
         $sortableFields.append($li);
       }
+
+      _helpers.updatePreview($li);
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
@@ -959,7 +964,7 @@
         toolTipPageX = delBtn.offset().left - $(window).scrollLeft(),
         toolTipPageY = delBtn.offset().top - $(window).scrollTop();
 
-      if (opts.showWarning) {
+      if (opts.fieldDeleteWarning) {
         jQuery('<div />').append(fieldWarnH3, opts.messages.fieldRemoveWarning).dialog({
           modal: true,
           resizable: false,
@@ -1059,56 +1064,35 @@
       $(this).parents('li:eq(0)').toggleClass('delete');
     });
 
-    var xmlButton = $(document.getElementById(frmbID + '-export-xml'));
-    var clearButton = $(document.getElementById(frmbID + '-clear-all'));
-
     // View XML
+    var xmlButton = $(document.getElementById(frmbID + '-view-data'));
     xmlButton.click(function(e) {
       e.preventDefault();
-      var xml = elem.val(),
-        $pre = $('<pre />').text(xml);
-      $pre.dialog({
-        resizable: false,
-        modal: true,
-        width: 720,
-        dialogClass: 'frmb-xml',
-        overlay: {
-          color: '#333333'
-        }
-      });
+      var xml = _helpers.htmlEncode(elem.val()),
+        code = _helpers.markup('code', xml, {className: 'xml'}),
+        pre = _helpers.markup('pre', code);
+      _helpers.dialog(pre, null, 'data-dialog');
     });
 
-    overlay.onclick = function() {
-      _helpers.closeConfirm(overlay);
-    };
-
     // Clear all fields in form editor
+    var clearButton = $(document.getElementById(frmbID + '-clear-all'));
     clearButton.click(function(e) {
+      let fields = $('li.form-field');
       let buttonPosition = this.getBoundingClientRect(),
-        bodyRect = document.body.getBoundingClientRect()
-      var coords = {
-        pageX: buttonPosition.left + (buttonPosition.width / 2),
-        pageY: (buttonPosition.top - bodyRect.top) - 12
-      };
+        bodyRect = document.body.getBoundingClientRect(),
+        coords = {
+          pageX: buttonPosition.left + (buttonPosition.width / 2),
+          pageY: (buttonPosition.top - bodyRect.top) - 12
+        };
 
-      overlay.classList.add('visible');
-      _helpers.confirm('Are you sure you want to clear all fields?', function() {
-        console.log('fields cleared');
-      }, { pageX: coords.pageX, pageY: coords.pageY });
-      e.preventDefault();
-      // if (window.confirm(opts.messages.clearAllMessage)) {
-      //   $sortableFields.empty();
-      //   elem.val('');
-      //   _helpers.save();
-      //   var values = {
-      //     label: [opts.messages.descriptionField],
-      //     name: ['content'],
-      //     required: 'true',
-      //     description: opts.messages.mandatory
-      //   };
-
-      //   appendNewField(values);
-      // }
+      if (fields.length) {
+        _helpers.confirm('Are you sure you want to clear all fields?', function() {
+          _helpers.removeAllfields();
+          opts.notify.success(opts.messages.allFieldsRemoved);
+        }, { pageX: coords.pageX, pageY: coords.pageY });
+      } else {
+        _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
+      }
     });
 
     // Save Idea Template
@@ -1131,7 +1115,7 @@
       keys.push(e.keyCode);
       if (keys.toString().indexOf(devCode) >= 0) {
         $('.action-links').toggle();
-        $('.view-xml').toggle();
+        $('.view-data').toggle();
         keys = [];
       }
     });
@@ -1149,7 +1133,7 @@
         dml.html(opts.messages.devMode + ' ' + opts.messages.off).css('color', '#666666');
         triggerDevMode = false;
         $('.action-links').toggle();
-        $('.view-xml').toggle();
+        $('.view-data').toggle();
       }
     });
 

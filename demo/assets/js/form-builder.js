@@ -496,22 +496,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     return classes.join(' ');
   };
 
-  /**
-   * Generate markup wrapper where needed
-   *
-   * @param  {string} tag
-   * @param  {string} content
-   * @param  {object} attrs
-   * @return {string}
-   */
-  // _helpers.markup = function(tag, content = '', attrs = {}) {
-  //   attrs = _helpers.attrString(attrs);
-  //   content = Array.isArray(content) ? content.join('') : content;
-  //   let inlineElems = ['input', 'hr', 'br'],
-  //     template = inlineElems.indexOf(tag) === -1 ? `<${tag} ${attrs}>${content}</${tag}>` : `<${tag} ${attrs}/>`;
-  //   return template;
-  // };
-
   _helpers.markup = function (tag) {
     var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
     var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -554,30 +538,46 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
   _helpers.closeConfirm = function (overlay, dialog) {
     overlay = overlay || document.getElementsByClassName('form-builder-overlay')[0];
-    dialog = dialog || document.getElementsByClassName('form-builder-confirm')[0];
+    dialog = dialog || document.getElementsByClassName('form-builder-dialog')[0];
     overlay.classList.remove('visible');
     dialog.remove();
+  };
+
+  // Add our overlay to the body
+  _helpers.showOverlay = function () {
+    var overlay = _helpers.markup('div', null, {
+      className: 'form-builder-overlay'
+    });
+    document.body.appendChild(overlay);
+    overlay.classList.add('visible');
+
+    overlay.onclick = function () {
+      _helpers.closeConfirm(overlay);
+    };
+
+    return overlay;
   };
 
   _helpers.confirm = function (message, yesAction) {
     var coords = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
     var className = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
 
+    var overlay = _helpers.showOverlay();
     var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
         no = _helpers.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
 
     no.onclick = function () {
-      _helpers.closeConfirm();
+      _helpers.closeConfirm(overlay);
     };
 
     yes.onclick = function () {
       yesAction();
-      _helpers.closeConfirm();
+      _helpers.closeConfirm(overlay);
     };
 
     var btnWrap = _helpers.markup('div', [no, yes], { className: 'button-wrap' });
 
-    className = 'form-builder-confirm ' + className;
+    className = 'form-builder-dialog ' + className;
 
     var miniModal = _helpers.markup('div', [message, btnWrap], { className: className });
     if (!coords) {
@@ -594,6 +594,82 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     miniModal.style.top = coords.pageY + 'px';
 
     document.body.appendChild(miniModal);
+
+    yes.focus();
+    return miniModal;
+  };
+
+  /**
+   * Popup dialog the does not require confirmation.
+   * @param  {String|DOM|Array}  content
+   * @param  {Boolean} coords    false if no coords are provided. Without coordinates
+   *                             the popup will appear center screen.
+   * @param  {String}  className classname to be added to the dialog
+   * @return {Object}            dom
+   */
+  _helpers.dialog = function (content) {
+    var coords = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var className = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+
+    _helpers.showOverlay();
+
+    className = 'form-builder-dialog ' + className;
+
+    var miniModal = _helpers.markup('div', content, { className: className });
+    if (!coords) {
+      coords = {
+        pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2
+      };
+      miniModal.style.position = 'fixed';
+    } else {
+      miniModal.classList.add('positioned');
+    }
+
+    miniModal.style.left = coords.pageX + 'px';
+    miniModal.style.top = coords.pageY + 'px';
+
+    document.body.appendChild(miniModal);
+
+    if (className.indexOf('data-dialog') !== -1) {
+      document.dispatchEvent(formBuilder.events.viewData);
+    }
+    return miniModal;
+  };
+
+  _helpers.removeAllfields = function () {
+    var form = document.getElementById(opts.formID);
+    var fields = form.querySelectorAll('li.form-field');
+    var $fields = $(fields);
+    var markEmptyArray = [];
+
+    if (opts.prepend) {
+      markEmptyArray.push(true);
+    }
+
+    if (opts.append) {
+      markEmptyArray.push(true);
+    }
+
+    if (!markEmptyArray.some(function (elem) {
+      return elem === true;
+    })) {
+      form.parentElement.classList.add('empty');
+    }
+
+    form.classList.add('removing');
+
+    var outerHeight = 0;
+    $fields.each(function () {
+      outerHeight += $(this).outerHeight() + 3;
+    });
+
+    fields[0].style.marginTop = -outerHeight + 'px';
+
+    setTimeout(function () {
+      $fields.remove();
+      document.getElementById(opts.formID).classList.remove('removing');
+    }, 500);
   };
 
   return _helpers;
@@ -614,6 +690,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
   });
 
   events.loaded = new Event('loaded');
+
+  events.viewData = new Event('viewData');
 
   return events;
 };
@@ -697,10 +775,10 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       roles: {
         1: 'Administrator'
       },
-      showWarning: false,
       serializePrefix: 'frmb',
       messages: {
         addOption: 'Add Option',
+        allFieldsRemoved: 'All fields were removed.',
         allowSelect: 'Allow Select',
         autocomplete: 'Autocomplete',
         button: 'Button',
@@ -708,6 +786,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         checkboxGroup: 'Checkbox Group',
         checkbox: 'Checkbox',
         checkboxes: 'Checkboxes',
+        className: 'Class',
         clearAllMessage: 'Are you sure you want to remove all items?',
         clearAll: 'Clear',
         close: 'Close',
@@ -719,9 +798,10 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
+        fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
-        fieldRemoveWarning: 'Are you sure you want to remove this field?',
+        fieldRemoveWarn: 'Are you sure you want to remove this field?',
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
@@ -750,6 +830,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
           text: '',
           textarea: '',
           email: 'Enter you email',
+          placeholder: '',
+          className: 'space separated classes',
           password: 'Enter your password'
         },
         preview: 'Preview',
@@ -934,14 +1016,13 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       $field.html(typeLabel).appendTo($cbUL);
     }
 
+    var viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
+
     // Build our headers and action links
-    var viewXML = _helpers.markup('button', opts.messages.viewXML, {
-      id: frmbID + '-export-xml',
+    var viewData = _helpers.markup('button', viewDataText, {
+      id: frmbID + '-view-data',
       type: 'button',
-      className: 'view-xml btn btn-default'
-    }),
-        overlay = _helpers.markup('div', null, {
-      className: 'form-builder-overlay'
+      className: 'view-data btn btn-default'
     }),
         allowSelect = $('<a/>', {
       id: frmbID + '-allow-select',
@@ -971,7 +1052,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       id: frmbID + '-save',
       type: 'button'
     }),
-        formActions = _helpers.markup('div', [clearAll, viewXML, saveAll], {
+        formActions = _helpers.markup('div', [clearAll, viewData, saveAll], {
       className: 'form-actions btn-group'
     }).outerHTML,
         actionLinksInner = $('<div/>', {
@@ -985,9 +1066,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       id: frmbID + '-action-links',
       'class': 'action-links'
     }).append(actionLinksInner, devMode);
-
-    // Add our overlay to the body
-    document.body.appendChild(overlay);
 
     // Sortable fields
     $sortableFields.sortable({
@@ -1116,8 +1194,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     // callback to call disabled tooltips
     $sortableFields.on('mousemove', 'li.disabled', function (e) {
       $('.frmb-tt', this).css({
-        left: e.offsetX - 15,
-        top: e.offsetY - 20
+        left: e.offsetX - 16,
+        top: e.offsetY - 34
       });
     });
 
@@ -1284,7 +1362,10 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
       advFields.push(btnStyles(values.style, values.type));
 
-      advFields.push(placeHolderField(values.type));
+      // Placeholder
+      advFields.push(textAttribute(values.type, 'placeholder'));
+      // Class
+      advFields.push(textAttribute(values.type, 'className'));
 
       advFields.push('<div class="form-group name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>');
       advFields.push('<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>');
@@ -1376,17 +1457,18 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       return styleField;
     };
 
-    var placeHolderField = function placeHolderField(type) {
+    var textAttribute = function textAttribute(type, attribute) {
       var placeholders = opts.messages.placeholders,
-          placeholder = '';
+          placeholder = placeholders[attribute] || '',
+          attributefield = '';
 
       if (typeof placeholders[type] !== 'undefined') {
-        var placeholderLabel = '<label>' + opts.messages.placeholder + '</label>';
-        placeholder += '<input type="text" name="placeholder" placeholder="' + placeholders[type] + '" class="fld-placeholder form-control" id="placeholder-' + lastID + '">';
-        placeholder = '<div class="form-group placeholder-wrap">' + placeholderLabel + ' ' + placeholder + '</div>';
+        var attributeLabel = '<label>' + opts.messages[attribute] + '</label>';
+        attributefield += '<input type="text" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
+        attributefield = '<div class="form-group ' + attribute + '-wrap">' + attributeLabel + ' ' + attributefield + '</div>';
       }
 
-      return placeholder;
+      return attributefield;
     };
 
     // Append the new field to the editor
@@ -1460,6 +1542,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       } else {
         $sortableFields.append($li);
       }
+
+      _helpers.updatePreview($li);
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
@@ -1618,7 +1702,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
           toolTipPageX = delBtn.offset().left - $(window).scrollLeft(),
           toolTipPageY = delBtn.offset().top - $(window).scrollTop();
 
-      if (opts.showWarning) {
+      if (opts.fieldDeleteWarning) {
         jQuery('<div />').append(fieldWarnH3, opts.messages.fieldRemoveWarning).dialog({
           modal: true,
           resizable: false,
@@ -1717,56 +1801,35 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       $(this).parents('li:eq(0)').toggleClass('delete');
     });
 
-    var xmlButton = $(document.getElementById(frmbID + '-export-xml'));
-    var clearButton = $(document.getElementById(frmbID + '-clear-all'));
-
     // View XML
+    var xmlButton = $(document.getElementById(frmbID + '-view-data'));
     xmlButton.click(function (e) {
       e.preventDefault();
-      var xml = elem.val(),
-          $pre = $('<pre />').text(xml);
-      $pre.dialog({
-        resizable: false,
-        modal: true,
-        width: 720,
-        dialogClass: 'frmb-xml',
-        overlay: {
-          color: '#333333'
-        }
-      });
+      var xml = _helpers.htmlEncode(elem.val()),
+          code = _helpers.markup('code', xml, { className: 'xml' }),
+          pre = _helpers.markup('pre', code);
+      _helpers.dialog(pre, null, 'data-dialog');
     });
 
-    overlay.onclick = function () {
-      _helpers.closeConfirm(overlay);
-    };
-
     // Clear all fields in form editor
+    var clearButton = $(document.getElementById(frmbID + '-clear-all'));
     clearButton.click(function (e) {
+      var fields = $('li.form-field');
       var buttonPosition = this.getBoundingClientRect(),
-          bodyRect = document.body.getBoundingClientRect();
-      var coords = {
+          bodyRect = document.body.getBoundingClientRect(),
+          coords = {
         pageX: buttonPosition.left + buttonPosition.width / 2,
         pageY: buttonPosition.top - bodyRect.top - 12
       };
 
-      overlay.classList.add('visible');
-      _helpers.confirm('Are you sure you want to clear all fields?', function () {
-        console.log('fields cleared');
-      }, { pageX: coords.pageX, pageY: coords.pageY });
-      e.preventDefault();
-      // if (window.confirm(opts.messages.clearAllMessage)) {
-      //   $sortableFields.empty();
-      //   elem.val('');
-      //   _helpers.save();
-      //   var values = {
-      //     label: [opts.messages.descriptionField],
-      //     name: ['content'],
-      //     required: 'true',
-      //     description: opts.messages.mandatory
-      //   };
-
-      //   appendNewField(values);
-      // }
+      if (fields.length) {
+        _helpers.confirm('Are you sure you want to clear all fields?', function () {
+          _helpers.removeAllfields();
+          opts.notify.success(opts.messages.allFieldsRemoved);
+        }, { pageX: coords.pageX, pageY: coords.pageY });
+      } else {
+        _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
+      }
     });
 
     // Save Idea Template
@@ -1789,7 +1852,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       keys.push(e.keyCode);
       if (keys.toString().indexOf(devCode) >= 0) {
         $('.action-links').toggle();
-        $('.view-xml').toggle();
+        $('.view-data').toggle();
         keys = [];
       }
     });
@@ -1807,7 +1870,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         dml.html(opts.messages.devMode + ' ' + opts.messages.off).css('color', '#666666');
         triggerDevMode = false;
         $('.action-links').toggle();
-        $('.view-xml').toggle();
+        $('.view-data').toggle();
       }
     });
 
@@ -1937,6 +2000,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
               var roleVals = $.map($('input.roles-field:checked', $field), function (n) {
                 return n.value;
               }).join(',');
+
               var xmlAttrs = {
                 className: _helpers.getClassName($field),
                 description: $('input.fld-description', $field).val(),
@@ -1953,8 +2017,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
                   multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
                   attrsString = _helpers.attrString(xmlAttrs),
                   fSlash = !multipleField ? '/' : '';
-
               serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+
               if (multipleField) {
                 serialStr += fieldOptions($field);
                 serialStr += '\n\t\t</field>';
@@ -1965,6 +2029,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         serialStr += '\n\t</fields>\n</form-template>';
       } // if "$(this).children().length >= 1"
     });
+
     return serialStr;
   };
 })(jQuery);

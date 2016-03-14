@@ -214,6 +214,10 @@ textarea.form-control {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
           transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
+  .form-control:focus {
+    border-color: #66afe9;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6); }
 
 .form-group {
   margin-bottom: 15px; }
@@ -426,6 +430,8 @@ textarea.form-control {
   padding: 0;
   -webkit-transition: background-color 500ms ease-in-out;
           transition: background-color 500ms ease-in-out; }
+  .frmb.removing {
+    overflow: hidden; }
   .empty .frmb {
     border: 3px dashed #ccc;
     margin-right: 5px;
@@ -437,8 +443,8 @@ textarea.form-control {
     margin-left: 0;
     margin-bottom: 3px;
     background-color: #fff;
-    -webkit-transition: background-color 250ms ease-in-out;
-            transition: background-color 250ms ease-in-out; }
+    -webkit-transition: background-color 250ms ease-in-out, margin-top 500ms;
+            transition: background-color 250ms ease-in-out, margin-top 500ms; }
     .frmb li.hidden-field {
       background-color: rgba(255, 255, 255, 0.6); }
     .frmb li:first-child {
@@ -450,7 +456,9 @@ textarea.form-control {
       border-bottom-right-radius: 5px;
       border-bottom-left-radius: 5px; }
     .frmb li:hover {
-      box-shadow: 0 0 1px #000; }
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6); }
       .frmb li:hover li :hover {
         background: #fefefe; }
     .frmb li.no-fields label {
@@ -480,19 +488,21 @@ textarea.form-control {
       box-shadow: 2px 2px 6px 0 #666;
       border: 1px solid #fff;
       border-radius: 5px; }
-    .frmb li.disabled [type=checkbox] {
-      float: left;
-      margin-right: 10px; }
-    .frmb li.disabled h2 {
-      border-bottom: 0 none; }
-    .frmb li.disabled label {
-      font-size: 12px;
-      font-weight: 400;
-      color: #666; }
-    .frmb li.disabled .prev-holder {
-      cursor: default;
-      line-height: 28px;
-      padding-left: 5px; }
+    .frmb li.disabled {
+      z-index: 1; }
+      .frmb li.disabled [type=checkbox] {
+        float: left;
+        margin-right: 10px; }
+      .frmb li.disabled h2 {
+        border-bottom: 0 none; }
+      .frmb li.disabled label {
+        font-size: 12px;
+        font-weight: 400;
+        color: #666; }
+      .frmb li.disabled .prev-holder {
+        cursor: default;
+        line-height: 28px;
+        padding-left: 5px; }
     .frmb li .close-field {
       position: absolute;
       color: #666;
@@ -534,7 +544,7 @@ textarea.form-control {
     left: 20px; }
   .frmb .prev-holder {
     display: block;
-    margin-top: 8px; }
+    margin-top: 12px; }
     .frmb .prev-holder input[type="color"] {
       width: 60px;
       padding: 2px;
@@ -672,7 +682,7 @@ ol.sortable-options {
   padding: 10px 5px;
   background: #f7f7f7;
   border-radius: 3px;
-  margin: 7px 0 0;
+  margin: 12px 0 0;
   /* box-shadow: 0 2px 5px #ccc inset; */
   border: 1px solid #d7d7d7; }
 
@@ -1091,7 +1101,7 @@ a.btn.toggle-form {
   .form-builder-overlay.visible {
     display: block; }
 
-.form-builder-confirm {
+.form-builder-dialog {
   position: absolute;
   border-radius: 5px;
   background: #fff;
@@ -1100,11 +1110,20 @@ a.btn.toggle-form {
           transform: translate(-50%, -50%);
   top: 0;
   left: 0;
-  padding: 10px; }
-  .form-builder-confirm.positioned {
+  padding: 10px;
+  box-shadow: 0 3px 10px #000; }
+  .form-builder-dialog.data-dialog {
+    width: 65%;
+    background-color: #23241f; }
+    .form-builder-dialog.data-dialog pre {
+      background: none;
+      border: 0 none;
+      box-shadow: none;
+      margin: 0; }
+  .form-builder-dialog.positioned {
     -webkit-transform: translate(-50%, -100%);
             transform: translate(-50%, -100%); }
-    .form-builder-confirm.positioned .button-wrap:before {
+    .form-builder-dialog.positioned .button-wrap:before {
       content: '';
       width: 0;
       height: 0;
@@ -1116,10 +1135,10 @@ a.btn.toggle-form {
       top: 100%;
       -webkit-transform: translate(-50%, 10px);
               transform: translate(-50%, 10px); }
-  .form-builder-confirm .button-wrap {
+  .form-builder-dialog .button-wrap {
     position: relative;
     margin-top: 10px;
     text-align: right;
     clear: both; }
-    .form-builder-confirm .button-wrap .btn {
+    .form-builder-dialog .button-wrap .btn {
       margin-left: 10px; }

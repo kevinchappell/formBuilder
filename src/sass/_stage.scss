@@ -5,6 +5,10 @@
   padding: 0;
   transition: background-color 500ms ease-in-out;
 
+  &.removing {
+    overflow: hidden;
+  }
+
   .empty & {
     border: 3px dashed $grey-light;
     margin-right: 5px;
@@ -18,7 +22,7 @@
     margin-left: 0;
     margin-bottom: 3px;
     background-color: $white;
-    transition: background-color 250ms ease-in-out;
+    transition: background-color 250ms ease-in-out, margin-top 500ms;
 
     &.hidden-field {
       background-color: rgba(255, 255, 255, 0.6);
@@ -38,13 +42,12 @@
     &:last-child {
       border-bottom-right-radius: 5px;
       border-bottom-left-radius: 5px;
-
-      // border-radius: 0 0 5px 5px;
-
     }
 
     &:hover {
-      box-shadow: 0 0 1px $black;
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 
       li {
         :hover {
@@ -89,6 +92,8 @@
     }
 
     &.disabled {
+      z-index: 1;
+
       [type=checkbox] {
         float: left;
         margin-right: 10px;
@@ -174,7 +179,7 @@
 
   .prev-holder {
     display: block;
-    margin-top: 8px;
+    margin-top: 12px;
 
     input[type="color"] {
       width: 60px;
@@ -378,7 +383,7 @@ ol.sortable-options {
   padding: 10px 5px;
   background: #f7f7f7;
   border-radius: 3px;
-  margin: 7px 0 0;
+  margin: 12px 0 0;
 
   /* box-shadow: 0 2px 5px #ccc inset; */
   border: 1px solid #d7d7d7;

@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#232323">
   <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css">
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/demo.css">
-  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="apple-touch-icon" sizes="57x57" href="assets/img/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="assets/img/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="assets/img/apple-icon-72x72.png">
@@ -69,14 +69,7 @@
           <form action="">
             <textarea id="fb-template"><form-template>
   <fields>
-    <field className="form-control" label="Autocomplete" name="autocomplete-1457888438805" type="autocomplete"/>
-    <field className="btn btn-default" label="Button" name="button-1457888428458" type="button"/>
-    <field className="btn btn-default" label="Button" name="button-1457888426882" type="button"/>
-    <field className="form-control" label="Checkbox Group" name="checkbox-group-1457888440736" type="checkbox-group">
-      <option value="option-1">Option 1</option>
-      <option value="option-2">Option 2</option>
-    </field>
-    <field label="Checkbox" name="checkbox-1457888426025" type="checkbox"/>
+    <field className="form-control" label="Text Field" name="text-input-1457971592169" type="text"/>
   </fields>
 </form-template></textarea>
           </form>
@@ -141,7 +134,8 @@ $(template).formRender(formRenderOpts);
 
 var options = {
   prepend: '<h1>HEDARERE</h1>',
-  append: '<h1>FOOOOTER</h1>'
+  append: '<h1>FOOOOTER</h1>',
+  fieldRemoveWarn: true
 };
     $(template).formBuilder(options);
 

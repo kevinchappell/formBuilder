@@ -483,22 +483,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return classes.join(' ');
   };
 
-  /**
-   * Generate markup wrapper where needed
-   *
-   * @param  {string} tag
-   * @param  {string} content
-   * @param  {object} attrs
-   * @return {string}
-   */
-  // _helpers.markup = function(tag, content = '', attrs = {}) {
-  //   attrs = _helpers.attrString(attrs);
-  //   content = Array.isArray(content) ? content.join('') : content;
-  //   let inlineElems = ['input', 'hr', 'br'],
-  //     template = inlineElems.indexOf(tag) === -1 ? `<${tag} ${attrs}>${content}</${tag}>` : `<${tag} ${attrs}/>`;
-  //   return template;
-  // };
-
   _helpers.markup = function(tag, content = '', attrs = {}) {
     let contentType,
       field = document.createElement(tag),
@@ -538,27 +522,43 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
   _helpers.closeConfirm = function(overlay, dialog) {
     overlay = overlay || document.getElementsByClassName('form-builder-overlay')[0];
-    dialog = dialog || document.getElementsByClassName('form-builder-confirm')[0];
+    dialog = dialog || document.getElementsByClassName('form-builder-dialog')[0];
     overlay.classList.remove('visible');
     dialog.remove();
   };
 
+  // Add our overlay to the body
+  _helpers.showOverlay = function() {
+    var overlay = _helpers.markup('div', null, {
+      className: 'form-builder-overlay'
+    });
+    document.body.appendChild(overlay);
+    overlay.classList.add('visible');
+
+    overlay.onclick = function() {
+      _helpers.closeConfirm(overlay);
+    };
+
+    return overlay;
+  };
+
   _helpers.confirm = function(message, yesAction, coords = false, className = '') {
+    var overlay = _helpers.showOverlay();
     var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
       no = _helpers.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
 
     no.onclick = function() {
-      _helpers.closeConfirm();
+      _helpers.closeConfirm(overlay);
     };
 
     yes.onclick = function() {
       yesAction();
-      _helpers.closeConfirm();
+      _helpers.closeConfirm(overlay);
     };
 
     var btnWrap = _helpers.markup('div', [no, yes], { className: 'button-wrap' });
 
-    className = 'form-builder-confirm ' + className;
+    className = 'form-builder-dialog ' + className;
 
     var miniModal = _helpers.markup('div', [message, btnWrap], { className: className });
     if (!coords) {
@@ -575,6 +575,78 @@ var formBuilderHelpers = function(opts, formBuilder) {
     miniModal.style.top = coords.pageY + 'px';
 
     document.body.appendChild(miniModal);
+
+    yes.focus();
+    return miniModal;
+  };
+
+  /**
+   * Popup dialog the does not require confirmation.
+   * @param  {String|DOM|Array}  content
+   * @param  {Boolean} coords    false if no coords are provided. Without coordinates
+   *                             the popup will appear center screen.
+   * @param  {String}  className classname to be added to the dialog
+   * @return {Object}            dom
+   */
+  _helpers.dialog = function(content, coords = false, className = '') {
+    _helpers.showOverlay();
+
+    className = 'form-builder-dialog ' + className;
+
+    var miniModal = _helpers.markup('div', content, { className: className });
+    if (!coords) {
+      coords = {
+        pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2
+      };
+      miniModal.style.position = 'fixed';
+    } else {
+      miniModal.classList.add('positioned');
+    }
+
+    miniModal.style.left = coords.pageX + 'px';
+    miniModal.style.top = coords.pageY + 'px';
+
+    document.body.appendChild(miniModal);
+
+    if (className.indexOf('data-dialog') !== -1) {
+      document.dispatchEvent(formBuilder.events.viewData);
+    }
+    return miniModal;
+  };
+
+  _helpers.removeAllfields = function() {
+    var form = document.getElementById(opts.formID);
+    var fields = form.querySelectorAll('li.form-field');
+    var $fields = $(fields);
+    var markEmptyArray = [];
+
+    if (opts.prepend) {
+      markEmptyArray.push(true);
+    }
+
+    if (opts.append) {
+      markEmptyArray.push(true);
+    }
+
+    if (!markEmptyArray.some(elem => elem === true)) {
+      form.parentElement.classList.add('empty');
+    }
+
+    form.classList.add('removing');
+
+    var outerHeight = 0;
+    $fields.each(function() {
+      outerHeight += $(this).outerHeight() + 3;
+    });
+
+    fields[0].style.marginTop = (-outerHeight) + 'px';
+
+    setTimeout(function() {
+      $fields.remove();
+      document.getElementById(opts.formID).classList.remove('removing');
+    }, 500);
+
   };
 
   return _helpers;

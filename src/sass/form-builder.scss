@@ -352,7 +352,7 @@ a.btn.toggle-form {
   }
 }
 
-.form-builder-confirm {
+.form-builder-dialog {
   position: absolute;
   border-radius: 5px;
   background: $white;
@@ -361,6 +361,19 @@ a.btn.toggle-form {
   top: 0;
   left: 0;
   padding: 10px;
+  box-shadow: 0 3px 10px $black;
+
+  &.data-dialog {
+    width: 65%;
+    background-color: #23241f;
+
+    pre {
+      background: none;
+      border: 0 none;
+      box-shadow: none;
+      margin: 0;
+    }
+  }
 
   &.positioned {
     transform: translate(-50%, -100%);

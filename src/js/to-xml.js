@@ -67,6 +67,7 @@
               var roleVals = $.map($('input.roles-field:checked', $field), function(n) {
                 return n.value;
               }).join(',');
+
               var xmlAttrs = {
                   className: _helpers.getClassName($field),
                   description: $('input.fld-description', $field).val(),
@@ -83,8 +84,8 @@
                 multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
                 attrsString = _helpers.attrString(xmlAttrs),
                 fSlash = (!multipleField ? '/' : '');
-
               serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+
               if (multipleField) {
                 serialStr += fieldOptions($field);
                 serialStr += '\n\t\t</field>';
@@ -96,6 +97,7 @@
       } // if "$(this).children().length >= 1"
 
     });
-    return (serialStr);
+
+    return serialStr;
   };
 })(jQuery);
