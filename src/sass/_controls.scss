@@ -10,17 +10,35 @@
   .save:hover {
     color: $success;
   }
+
+  @include breakpoint("phone-lrg") {
+    width: 64px;
+
+    h4 {
+      display: none;
+    }
+  }
 }
 
 .frmb-control li {
   cursor: move;
   list-style: none;
-  border-radius: 2px;
-  margin: 0 0 5px;
+  margin: 0 0 3px;
   padding: 10px;
   text-align: left;
   background: $white;
-  border: 1px solid $white;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:first-child {
+    border-radius: 5px 5px 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 5px 5px;
+  }
 
   &:before {
     margin-right: 10px;
@@ -28,15 +46,57 @@
   }
 
   &:hover {
-    border: 1px solid $grey-light;
+    background-color: darken($white, 5%);
   }
 
   &.ui-state-highlight {
-    background-image: none;
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border: 0 none;
+  }
+
+  &.smallme {
+    transform: scale(0.2);
+  }
+
+  &.ui-sortable-helper {
+    border-radius: 5px;
+    transition: box-shadow 250ms, transform 250ms;
+    transform: scale(1.1);
+    box-shadow: 2px 2px 6px 0 $grey;
+    border: 1px solid $white;
+  }
+
+  &.moving {
+    opacity: 0.6;
+  }
+
+  @include breakpoint("phone-lrg") {
+    &:before {
+      font-size: 30px;
+    }
+
+    span {
+      display: none;
+    }
   }
 }
 
 .frmb-control {
   margin: 0;
   padding: 0;
+}
+
+.form-actions {
+  float: right;
+
+  .clear-all {
+    &:hover {
+      color: #fff;
+
+      @extend .btn-danger:hover;
+    }
+  }
 }

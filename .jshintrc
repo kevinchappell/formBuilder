@@ -38,6 +38,8 @@
         "jQuery"     : false,
         "spyOn"      : false,
         "$"          : false,
-        "_"          : false
+        "_"          : false,
+        "formBuilderHelpers": false,
+        "formBuilderEvents": false
     }
 }

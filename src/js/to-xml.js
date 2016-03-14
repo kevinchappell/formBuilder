@@ -17,11 +17,6 @@
       return type;
     };
 
-    _helpers.getClassName = function($field) {
-      let className = $('.fld-class', $field).val() || $field.data('fieldData').className || '';
-      return className;
-    };
-
     _helpers.hyphenCase = (str) => {
       return str.replace(/([A-Z])/g, function($1) {
         return '-' + $1.toLowerCase();
@@ -45,7 +40,7 @@
         let $option = $(this),
           optionValue = 'value="' + $('.option-value', $option).val() + '"',
           optionLabel = $('.option-label', $option).val(),
-          selected = $('.select-option', $option).is(':checked') ? ' selected="true"' : '';
+          selected = $('.option-selected', $option).is(':checked') ? ' selected="true"' : '';
         options.push('\n\t\t\t<option' + selected + ' ' + optionValue + '>' + optionLabel + '</option>');
       });
       return options.join('');
@@ -56,16 +51,20 @@
       if ($(this).children().length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
 
+
         // build new xml
         $(this).children().each(function() {
           var $field = $(this);
+          var fieldData = $field.data('fieldData');
+
           if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
               var roleVals = $.map($('input.roles-field:checked', $field), function(n) {
                 return n.value;
               }).join(',');
+
               var xmlAttrs = {
-                  className: _helpers.getClassName($field),
+                  className: fieldData.className,
                   description: $('input.fld-description', $field).val(),
                   label: $('input.fld-label', $field).val(),
                   maxlength: $('input.fld-maxlength', $field).val(),
@@ -80,8 +79,8 @@
                 multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
                 attrsString = _helpers.attrString(xmlAttrs),
                 fSlash = (!multipleField ? '/' : '');
-
               serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+
               if (multipleField) {
                 serialStr += fieldOptions($field);
                 serialStr += '\n\t\t</field>';
@@ -93,6 +92,7 @@
       } // if "$(this).children().length >= 1"
 
     });
-    return (serialStr);
+
+    return serialStr;
   };
 })(jQuery);

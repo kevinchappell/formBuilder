@@ -2,6 +2,7 @@
 @import "base/bs";
 @import "base/font";
 @import "base/mixins";
+@import "base/animation";
 @import "controls";
 @import "stage";
 @import "kc-toggle";
@@ -67,80 +68,6 @@ ul.frmb span.required {
   color: $grey;
 }
 
-.view-xml {
-  float: right;
-}
-
-.action-links a.view-xml:hover {
-  color: $black;
-}
-
-.form-elements {
-  background: #f7f7f7;
-  box-shadow: inset 0 0 2px 0 #999;
-  border-radius: 3px;
-  margin: 5px 0 0;
-  padding: 10px 5px;
-}
-
-.form-elements .false-label,
-.form-elements .fields {
-  margin-top: 10px;
-}
-
-.form-elements .fields {
-  width: 70%;
-  float: left;
-}
-
-.form-elements .fields .add-area .add {
-  clear: both;
-}
-
-.form-elements .fields .remove {
-  right: 9px;
-  top: 9px;
-  padding: .2em .6em;
-  border-radius: 0 3px 3px 0;
-}
-
-.form-elements .sortable-options li:nth-child(1) .remove,
-.form-elements .sortable-options li:nth-child(2) .remove {
-  display: none;
-}
-
-ol.sortable-options {
-  margin-top: 0;
-}
-
-ol.sortable-options li {
-  cursor: move;
-}
-
-.form-elements .fields div {
-  clear: both;
-  position: relative;
-}
-
-.form-elements .fields input[type=checkbox],
-.form-elements .fields input[type=radio] {
-  float: left;
-  margin-right: 5px;
-}
-
-.form-elements .fields input[type=text] {
-  width: 39%;
-  margin-right: 2%;
-}
-
-.form-elements input[type=text] {
-  width: 70%;
-  transition: background 250ms ease-in-out;
-  padding: 5px;
-  border: 1px solid #AFAFAB;
-  background-color: $white;
-}
-
 .form-elements input[type=text].error {
   -webkit-border-radius: 0;
   border-radius: 0;
@@ -158,14 +85,20 @@ ol.sortable-options li {
 
 .form-elements .false-label,
 .form-elements label {
-  width: 18%;
-  float: left;
-  margin-left: 5px;
-  padding-right: 5%;
-  font-weight: 700;
-  clear: left;
+  width: 16.66666667%;
+  padding-top: 7px;
+  margin-bottom: 0;
   text-align: right;
-  line-height: 32px;
+  font-weight: 700;
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .col-md-6 &,
+  .col-md-8 & {
+    display: block;
+  }
 }
 
 .form-elements {
@@ -174,10 +107,11 @@ ol.sortable-options li {
     &.required-label,
     &.toggle-label,
     &.roles-label {
-      display: inline;
+      text-align: left;
       float: none;
+      margin-bottom: -3px;
       font-weight: 400;
-      width: auto;
+      width: calc(81.3333% - 23px);
     }
   }
 }
@@ -192,23 +126,7 @@ ol.sortable-options li {
   line-height: 1em;
 }
 
-.form-elements .allow-multi input {
-  margin-top: 10px;
-}
-
-.form-elements .allow-multi,
-.form-elements .name-wrap,
-.form-elements .select-option {
-  // display: none;
-}
-
-.allow-select .form-elements .allow-multi,
-.allow-select .form-elements .select-option,
-.edit-names .form-elements .name-wrap {
-  display: block !important;
-}
-
-.frm-fld .available-roles {
+.form-group .available-roles {
   display: none;
   padding: 5px 10px;
   margin: 5px 0 10px 133px;
@@ -231,14 +149,14 @@ ol.sortable-options li {
 }
 
 .form-elements,
-.frm-fld,
+.form-group,
 .multi-row span,
 textarea {
   display: block;
 }
 
 .form-elements:after,
-.frm-fld:after {
+.form-group:after {
   content: ".";
   display: block;
   height: 0;
@@ -246,7 +164,7 @@ textarea {
   visibility: hidden;
 }
 
-.form-elements .fields div:hover,
+.form-elements .field-options div:hover,
 .frmb .legend,
 .frmb .prev-holder,
 .frmb .prev-holder * {
@@ -265,44 +183,36 @@ textarea {
   background-color: $grey;
   border-radius: 5px;
   padding: 5px;
-  color: lighten($grey, 10%);
+  color: $white;
   z-index: 20;
   text-align: left;
   font-size: 12px;
-}
+  pointer-events: none;
 
-.frmb-tt:after,
-.frmb-tt:before {
-  content: '';
-  position: absolute;
-  border-style: solid;
-  border-width: 10px 10px 0;
-  border-color: #666 transparent;
-  display: block;
-  width: 0;
-  z-index: 1;
-  margin-left: -10px;
-  bottom: -10px;
-  left: 20px;
-}
+  &:before {
+    border-color: darken($grey, 25%) transparent;
+    bottom: -11px;
+  }
 
-.frmb-tt:before {
-  border-color: darken($grey, 25%) transparent;
-  bottom: -11px;
-}
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: #666 transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    margin-left: -10px;
+    bottom: -10px;
+    left: 20px;
+  }
 
-.frmb-tt a {
-  text-decoration: underline;
-  color: $white;
-}
-
-.frmb li.moving,
-.frmb li.ui-sortable-helper,
-.frmb-control li.moving,
-.frmb-control li.ui-sortable-helper {
-  transition: box-shadow 250ms ease-in-out;
-  box-shadow: 2px 2px 6px 0 $grey;
-  border: 1px solid $white;
+  a {
+    text-decoration: underline;
+    color: $white;
+  }
 }
 
 .frmb li {
@@ -343,7 +253,6 @@ textarea {
 }
 
 a.btn.toggle-form {
-  border-radius: 2px;
   margin-left: 5px;
   opacity: 0;
 
@@ -362,14 +271,6 @@ a.btn.toggle-form {
   height: 24px;
   background: #999;
   text-indent: -9999px;
-}
-
-.formb-field-vars .clipboard {
-  background: url("img/clipboard-sprite.png") 50% 0 no-repeat;
-}
-
-.formb-field-vars .clipboard.copied {
-  background: url("img/clipboard-sprite.png") 50% -27px no-repeat;
 }
 
 .ite-warning {
@@ -425,23 +326,6 @@ a.btn.toggle-form {
   padding: 2px 5px;
 }
 
-.fb-button {
-  padding: 5px 10px;
-  background: #00A261;
-  color: $white;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: none;
-  }
-}
-
-.save-btn-wrap {
-  float: left;
-  width: auto;
-}
-
 .required-asterisk {
   display: none;
   color: $error;
@@ -453,49 +337,76 @@ a.btn.toggle-form {
   }
 }
 
-/*   ------------   TOOLTIP   ------------   */
+.form-builder-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 10;
 
-*[tooltip] {
-  position: relative;
+  &.visible {
+    display: block;
+  }
 }
 
-*[tooltip]:hover:after {
-  background: darken($grey, 25%);
-  background: rgba(0, 0, 0, 0.9);
-  border-radius: 5px 5px 5px 0;
-  bottom: 23px;
-  color: $white;
-  content: attr(tooltip);
-  padding: 10px 5px;
+.form-builder-dialog {
   position: absolute;
-  z-index: 98;
-  left: 2px;
-  width: 230px;
-  text-shadow: none;
-  font-size: 12px;
-  line-height: 1.5em;
-}
+  border-radius: 5px;
+  background: $white;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  padding: 10px;
+  box-shadow: 0 3px 10px $black;
 
-*[tooltip]:hover:before {
-  border: solid;
-  border-color: #222 transparent;
-  border-width: 6px 6px 0 6px;
-  bottom: 17px;
-  content: "";
-  left: 2px;
-  position: absolute;
-  z-index: 99;
-}
+  h3 {
+    margin-top: 0;
+  }
 
-.tooltip-element {
-  color: $white;
-  background: $black;
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  display: inline-block;
-  text-align: center;
-  line-height: 16px;
-  margin: 0 5px;
-  font-size: 12px;
+  &.data-dialog {
+    width: 65%;
+    background-color: #23241f;
+
+    pre {
+      background: none;
+      border: 0 none;
+      box-shadow: none;
+      margin: 0;
+      color: darken($white, 5%);
+    }
+  }
+
+  &.positioned {
+    transform: translate(-50%, -100%);
+
+    .button-wrap {
+      &:before {
+        content: '';
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 10px solid $white;
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        transform: translate(-50%, 10px);
+      }
+    }
+  }
+
+  .button-wrap {
+    position: relative;
+    margin-top: 10px;
+    text-align: right;
+    clear: both;
+
+    .btn {
+      margin-left: 10px;
+    }
+  }
 }

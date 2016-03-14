@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.0 - Feature: Style and data updates, Class attribute [#85](https://github.com/kevinchappell/formBuilder/pull/85)
 - v1.8.2 - Bugfix: Radio group preview [#82](https://github.com/kevinchappell/formBuilder/pull/82)
 - v1.8.1 - Feature: File upload element [#80](https://github.com/kevinchappell/formBuilder/pull/80)
 - v1.8.0 - Feature: Button element [#79](https://github.com/kevinchappell/formBuilder/pull/79)
