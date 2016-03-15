@@ -606,8 +606,8 @@
       values.style = values.style || 'default';
 
       if (values.type !== 'button') {
-        let fieldDescLabel = _helpers.markup('label', opts.messages.description),
-          fieldDescInput = _helpers.markup('input', opts.messages.description, {
+        let fieldDescLabel = _helpers.markup('label', opts.messages.description, { 'for': 'description-' + lastID }),
+          fieldDescInput = _helpers.markup('input', null, {
             type: 'text',
             className: 'fld-description form-control',
             name: 'description',

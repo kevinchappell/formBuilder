@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.3
+Version: 1.9.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -723,7 +723,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
   var events = {};
 
   events.loaded = new Event('loaded');
-
   events.viewData = new Event('viewData');
   events.userDeclined = new Event('userDeclined');
   events.modalClosed = new Event('modalClosed');
@@ -1380,8 +1379,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       values.style = values.style || 'default';
 
       if (values.type !== 'button') {
-        var fieldDescLabel = _helpers.markup('label', opts.messages.description),
-            fieldDescInput = _helpers.markup('input', opts.messages.description, {
+        var fieldDescLabel = _helpers.markup('label', opts.messages.description, { 'for': 'description-' + lastID }),
+            fieldDescInput = _helpers.markup('input', null, {
           type: 'text',
           className: 'fld-description form-control',
           name: 'description',
@@ -2072,3 +2071,60 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     return serialStr;
   };
 })(jQuery);
+'use strict';
+
+// Polyfill for Object.assign
+
+if (typeof Object.assign !== 'function') {
+  (function () {
+    var _arguments = arguments;
+
+    Object.assign = function (target) {
+      if (target === undefined || target === null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var output = Object(target);
+      for (var index = 1; index < _arguments.length; index++) {
+        var source = _arguments[index];
+        if (source !== undefined && source !== null) {
+          for (var nextKey in source) {
+            if (source.hasOwnProperty(nextKey)) {
+              output[nextKey] = source[nextKey];
+            }
+          }
+        }
+      }
+      return output;
+    };
+  })();
+}
+
+// Element.remove() polyfill
+if (typeof Element.remove !== 'function') {
+  (function () {
+    var _this = this;
+
+    Element.prototype.remove = function () {
+      _this.parentElement.removeChild(_this);
+    };
+    NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
+      for (var i = this.length - 1; i >= 0; i--) {
+        if (this[i] && this[i].parentElement) {
+          this[i].parentElement.removeChild(this[i]);
+        }
+      }
+    };
+  })();
+}
+
+// Event polyfill
+if (typeof Event !== 'function') {
+  (function () {
+    Event = function Event(evt) {
+      var event = document.createEvent('Event');
+      event.initEvent(evt, true, true);
+      return event;
+    };
+  })();
+}

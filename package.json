@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "main": "dist/form-builder.js",
   "files": [
     "dist/form-builder.js",
@@ -41,7 +41,8 @@
           "src/js/events.js",
           "src/js/kc-toggle.js",
           "src/js/form-builder.js",
-          "src/js/to-xml.js"
+          "src/js/to-xml.js",
+          "src/js/polyfills.js"
         ],
         "fonts": "src/fonts/fontello",
         "sass": [
