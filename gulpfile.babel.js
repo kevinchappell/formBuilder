@@ -24,7 +24,7 @@ var plugins = gulpPlugins(),
       '/*',
       '<%= pkg.name %> - <%= pkg.homepage %>',
       'Version: <%= pkg.version %>',
-      'Author: <%= pkg.authors[0] %>',
+      'Author: <%= pkg.author %>',
       '*/',
       ''
     ].join('\n');

@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.0
+Version: 1.9.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -48,9 +48,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     });
   };
 })(jQuery);
-// render the formBuilder XML into html
 'use strict';
 
+// render the formBuilder XML into html
 var FormRender = function FormRender(options, element) {
   'use strict';
 
@@ -202,8 +202,8 @@ var FormRender = function FormRender(options, element) {
             var optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name;
             fieldOptions.each(function (index, el) {
               var optionAttrs = $.extend({}, fieldAttrs, _helpers.parseAttrs(el.attributes)),
-                  optionAttrsString = undefined,
-                  optionText = undefined;
+                  optionAttrsString = void 0,
+                  optionText = void 0;
 
               if (optionAttrs.selected) {
                 delete optionAttrs.selected;

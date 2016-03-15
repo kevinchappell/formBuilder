@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.0
+Version: 1.9.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 * {
@@ -212,7 +212,7 @@ textarea.form-control {
   border-radius: 4px;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
   .form-control:focus {
     border-color: #66afe9;
     outline: 0;
@@ -245,7 +245,6 @@ textarea.form-control {
   vertical-align: bottom;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
@@ -256,7 +255,7 @@ textarea.form-control {
     width: 115px;
     height: 100%;
     -webkit-transition: left 150ms ease;
-            transition: left 150ms ease; }
+    transition: left 150ms ease; }
   .kc-toggle.on .kct-inner {
     background: #e2e2e2;
     background: -webkit-linear-gradient(top, #e2e2e2 0%, #ffffff 100%);

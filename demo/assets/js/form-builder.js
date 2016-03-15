@@ -1,9 +1,11 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.0
+Version: 1.9.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   'use strict';
@@ -517,10 +519,10 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
     var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
-    var contentType = undefined,
+    var contentType = void 0,
         field = document.createElement(tag),
         getContentType = function getContentType(content) {
-      return Array.isArray(content) ? 'array' : typeof content;
+      return Array.isArray(content) ? 'array' : typeof content === 'undefined' ? 'undefined' : _typeof(content);
     },
         appendContent = {
       string: function string(content) {
@@ -539,8 +541,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
-        var _name = _helpers.safeAttrName(attr);
-        field.setAttribute(_name, attrs[attr]);
+        var name = _helpers.safeAttrName(attr);
+        field.setAttribute(name, attrs[attr]);
       }
     }
 
@@ -787,6 +789,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
 (function ($) {
   'use strict';
+
   var FormBuilder = function FormBuilder(options, element) {
     var formBuilder = this;
 
@@ -1980,11 +1983,13 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     });
   };
 })(jQuery);
-// toXML is a jQuery plugin that turns our form editor into XML
 'use strict';
 
+// toXML is a jQuery plugin that turns our form editor into XML
+// @todo this is a total mess that has to be refactored
 (function ($) {
   'use strict';
+
   $.fn.toXML = function (options) {
     var defaults = {
       prepend: '',
@@ -2077,4 +2082,3 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     return serialStr;
   };
 })(jQuery);
-// @todo this is a total mess that has to be refactored

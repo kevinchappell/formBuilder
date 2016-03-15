@@ -1,12 +1,19 @@
 {
   "name": "formBuilder",
-  "version": "1.9.0",
-  "main": "dist/form-builder.min.js",
-  "homepage": "http://kevinchappell.github.io/formBuilder/",
-  "repository": "http://github.com/kevinchappell/formBuilder",
-  "author": [
-    "Kevin Chappell <kevin.b.chappell@gmail.com>"
+  "version": "1.9.1",
+  "main": "dist/form-builder.js",
+  "files": [
+    "dist/form-builder.js",
+    "dist/form-builder.min.js",
+    "dist/form-builder.css",
+    "dist/form-builder.min.css"
   ],
+  "homepage": "http://kevinchappell.github.io/formBuilder/",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/kevinchappell/formBuilder"
+  },
+  "author": "Kevin Chappell <kevin.b.chappell@gmail.com>",
   "contributors": [],
   "bugs": "https://github.com/kevinchappell/formBuilder/issues",
   "description": "A jQuery plugin for drag and drop form building",
@@ -37,48 +44,55 @@
           "src/js/to-xml.js"
         ],
         "fonts": "src/fonts/fontello",
-        "sass": ["src/sass/form-builder.scss"]
+        "sass": [
+          "src/sass/form-builder.scss"
+        ]
       },
       "formRender": {
         "js": [
           "src/js/kc-toggle.js",
           "src/js/form-render.js"
         ],
-        "sass": ["src/sass/form-render.scss"]
+        "sass": [
+          "src/sass/form-render.scss"
+        ]
       },
       "demoSass": [
         "demo/assets/sass/demo.scss"
       ]
     },
     "fontServer": "http://fontello.com"
-    },
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
   "scripts": {
     "prestart": "npm update",
     "test": "gulp test"
   },
   "dependencies": {},
   "devDependencies": {
-    "babel-core": "^5.8.25",
-    "browser-sync": "^2.8.0",
-    "codeclimate-test-reporter": "^0.1.0",
-    "gulp": "^3.9.0",
-    "gulp-autoprefixer": "^2.3.1",
-    "gulp-babel": "^5.2.1",
+    "babel-core": "^6.7.2",
+    "babel-preset-es2015": "^6.6.0",
+    "browser-sync": "^2.11.1",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-babel": "^6.1.2",
     "gulp-base64": "^0.1.3",
-    "gulp-bump": "^0.3.1",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
-    "gulp-filter": "^3.0.0",
-    "gulp-git": "^1.2.4",
-    "gulp-header": "^1.2.2",
-    "gulp-jshint": "^1.11.2",
-    "gulp-load-plugins": "^0.10.0",
+    "gulp-filter": "^4.0.0",
+    "gulp-git": "^1.7.0",
+    "gulp-header": "^1.7.1",
+    "gulp-jshint": "^2.0.0",
+    "gulp-load-plugins": "^1.2.0",
     "gulp-plumber": "^1.1.0",
-    "gulp-sass": "^2.0.4",
+    "gulp-sass": "^2.2.0",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-tag-version": "^1.3.0",
-    "gulp-uglify": "^1.2.0",
-    "jshint-stylish": "^2.0.1"
+    "gulp-uglify": "^1.5.3",
+    "jshint-stylish": "^2.1.0"
   },
   "engines": {}
 }
