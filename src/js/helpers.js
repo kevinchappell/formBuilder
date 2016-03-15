@@ -14,7 +14,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
    * @return {string}
    */
   _helpers.attrString = function(attrs) {
-    let attributes = [];
+    var attributes = [];
 
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
@@ -205,7 +205,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
     }
   };
 
-  _helpers.getElement = function() {
+  _helpers.getElement = () => {
     let element = false;
     if (formBuilder.element) {
       element = formBuilder.element;

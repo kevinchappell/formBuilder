@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.2
+Version: 1.9.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -101,9 +101,7 @@ var FormRender = function FormRender(options, element) {
    * @param  {Boolean} element
    * @return {String}          new id for element
    */
-  _helpers.makeId = function () {
-    var element = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
+  _helpers.makeId = function (element) {
     var epoch = new Date().getTime();
 
     return element.tagName + '-' + epoch;
