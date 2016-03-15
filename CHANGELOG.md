@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.4 - Bugfix: IE compatibility issues [#90](https://github.com/kevinchappell/formBuilder/pull/90)
 - v1.9.3 - Bugfix: Update .jshintrc [#89](https://github.com/kevinchappell/formBuilder/pull/89)
 - v1.9.2 - Bugfix: remove CustomEvent, no IE support [#88](https://github.com/kevinchappell/formBuilder/pull/88)
 - v1.9.1 - Bugfix: invalid package.json [#86](https://github.com/kevinchappell/formBuilder/pull/86)
