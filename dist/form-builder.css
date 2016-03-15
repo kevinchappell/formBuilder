@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.0
+Version: 1.9.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -213,7 +213,7 @@ textarea.form-control {
   border-radius: 4px;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
   .form-control:focus {
     border-color: #66afe9;
     outline: 0;
@@ -401,7 +401,9 @@ textarea.form-control {
   .frmb-control li.ui-sortable-helper {
     border-radius: 5px;
     -webkit-transition: box-shadow 250ms, -webkit-transform 250ms;
-            transition: box-shadow 250ms, transform 250ms;
+    transition: box-shadow 250ms, -webkit-transform 250ms;
+    transition: box-shadow 250ms, transform 250ms;
+    transition: box-shadow 250ms, transform 250ms, -webkit-transform 250ms;
     -webkit-transform: scale(1.1);
             transform: scale(1.1);
     box-shadow: 2px 2px 6px 0 #666;
@@ -429,7 +431,7 @@ textarea.form-control {
   margin: 0 6px 0 0;
   padding: 0;
   -webkit-transition: background-color 500ms ease-in-out;
-          transition: background-color 500ms ease-in-out; }
+  transition: background-color 500ms ease-in-out; }
   .frmb.removing {
     overflow: hidden; }
   .empty .frmb {
@@ -444,7 +446,7 @@ textarea.form-control {
     margin-bottom: 3px;
     background-color: #fff;
     -webkit-transition: background-color 250ms ease-in-out, margin-top 500ms;
-            transition: background-color 250ms ease-in-out, margin-top 500ms; }
+    transition: background-color 250ms ease-in-out, margin-top 500ms; }
     .frmb li.hidden-field {
       background-color: rgba(255, 255, 255, 0.6); }
     .frmb li:first-child {
@@ -472,7 +474,7 @@ textarea.form-control {
     .frmb li.frmb-placeholder, .frmb li.ui-state-highlight {
       height: 0;
       padding: 0;
-      background: -webkit-radial-gradient(center, ellipse, #545454 0%, transparent 75%);
+      background: -webkit-radial-gradient(center ellipse, #545454 0%, transparent 75%);
       background: radial-gradient(ellipse at center, #545454 0%, transparent 75%);
       border: 0 none;
       -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
@@ -484,7 +486,7 @@ textarea.form-control {
               animation: PLACEHOLDER 250ms forwards; }
     .frmb li.moving, .frmb li.ui-sortable-helper {
       -webkit-transition: box-shadow 500ms ease-in-out;
-              transition: box-shadow 500ms ease-in-out;
+      transition: box-shadow 500ms ease-in-out;
       box-shadow: 2px 2px 6px 0 #666;
       border: 1px solid #fff;
       border-radius: 5px; }
@@ -519,7 +521,7 @@ textarea.form-control {
       border-top-left-radius: 3px;
       cursor: pointer;
       -webkit-transition: background-color 250ms ease-in-out;
-              transition: background-color 250ms ease-in-out; }
+      transition: background-color 250ms ease-in-out; }
       .frmb li .close-field:hover {
         text-decoration: none; }
   .frmb li.deleting,
@@ -695,7 +697,7 @@ ol.sortable-options {
 .form-elements select {
   width: 81.33333333%;
   -webkit-transition: background 250ms ease-in-out;
-          transition: background 250ms ease-in-out;
+  transition: background 250ms ease-in-out;
   margin-left: 2%;
   padding: 6px 12px;
   border: 1px solid #AFAFAB;
@@ -775,7 +777,6 @@ ol.sortable-options {
   vertical-align: bottom;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
@@ -786,7 +787,7 @@ ol.sortable-options {
     width: 115px;
     height: 100%;
     -webkit-transition: left 150ms ease;
-            transition: left 150ms ease; }
+    transition: left 150ms ease; }
   .kc-toggle.on .kct-inner {
     background: #e2e2e2;
     background: -webkit-linear-gradient(top, #e2e2e2 0%, #ffffff 100%);
@@ -867,11 +868,11 @@ textarea.idea-template {
   width: 0;
   height: 20px;
   -webkit-transition: width 250ms;
-          transition: width 250ms; }
+  transition: width 250ms; }
 
 .action-links .dev-mode-link {
   -webkit-transition: color 250ms;
-          transition: color 250ms;
+  transition: color 250ms;
   color: #666;
   cursor: pointer;
   padding-right: 2px; }
