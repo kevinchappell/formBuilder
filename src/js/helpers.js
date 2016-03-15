@@ -114,8 +114,6 @@ var formBuilderHelpers = function(opts, formBuilder) {
       cancelArray = [];
     _helpers.stopIndex = ui.placeholder.index() - 1;
 
-    form.dispatchEvent(formBuilder.events.beforeFieldAdd);
-
     if (ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
     }

@@ -123,8 +123,6 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         cancelArray = [];
     _helpers.stopIndex = ui.placeholder.index() - 1;
 
-    form.dispatchEvent(formBuilder.events.beforeFieldAdd);
-
     if (ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
     }
@@ -723,14 +721,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
   'use strict';
 
   var events = {};
-
-  events.beforeFieldAdd = new CustomEvent('beforeFieldAdd', {
-    detail: {
-      stopIndex: _helpers.stopIndex
-    },
-    bubbles: true,
-    cancelable: true
-  });
 
   events.loaded = new Event('loaded');
 

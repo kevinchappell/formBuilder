@@ -3,16 +3,6 @@ var formBuilderEvents = function(opts, _helpers) {
 
   var events = {};
 
-  events.beforeFieldAdd = new CustomEvent(
-    'beforeFieldAdd', {
-      detail: {
-        stopIndex: _helpers.stopIndex
-      },
-      bubbles: true,
-      cancelable: true
-    }
-  );
-
   events.loaded = new Event('loaded');
 
   events.viewData = new Event('viewData');
