@@ -1,14 +1,14 @@
 {
   "name": "formBuilder",
   "version": "1.9.0",
-  "main": [
-    "dist/*"
-  ],
+  "main": "dist/form-builder.min.js",
   "homepage": "http://kevinchappell.github.io/formBuilder/",
-  "repository": "kevinchappell/formBuilder",
-  "authors": [
+  "repository": "http://github.com/kevinchappell/formBuilder",
+  "author": [
     "Kevin Chappell <kevin.b.chappell@gmail.com>"
   ],
+  "contributors": [],
+  "bugs": "https://github.com/kevinchappell/formBuilder/issues",
   "description": "A jQuery plugin for drag and drop form building",
   "keywords": [
     "jquery-plugin",
@@ -56,6 +56,7 @@
     "prestart": "npm update",
     "test": "gulp test"
   },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^5.8.25",
     "browser-sync": "^2.8.0",
@@ -78,5 +79,6 @@
     "gulp-tag-version": "^1.3.0",
     "gulp-uglify": "^1.2.0",
     "jshint-stylish": "^2.0.1"
-  }
+  },
+  "engines": {}
 }
