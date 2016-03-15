@@ -21,7 +21,6 @@
     "camelcase" : true,
     "nonbsp"    : true,
     "esnext"    : true,
-    "es3"       : true,
     "globals"   : {
         "after"      : false,
         "afterEach"  : false,

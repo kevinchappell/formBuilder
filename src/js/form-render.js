@@ -50,7 +50,7 @@ var FormRender = function(options, element) {
    * @param  {Boolean} element
    * @return {String}          new id for element
    */
-  _helpers.makeId = function(element = false) {
+  _helpers.makeId = function(element) {
     let epoch = new Date().getTime();
 
     return `${element.tagName}-${epoch}`;
