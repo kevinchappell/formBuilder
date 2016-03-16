@@ -69,12 +69,41 @@ var FormRender = function(options, element) {
    * @param  {string} content we wrap this
    * @return {string}
    */
-  _helpers.markup = function(type, attrs = {}, content = '') {
-    attrs = _helpers.attrString(attrs);
-    content = Array.isArray(content) ? content.join('') : content;
-    let inlineElems = ['input'],
-      template = inlineElems.indexOf(type) === -1 ? `<${type} ${attrs}>${content}</${type}>` : `<${type} ${attrs}/>`;
-    return template;
+  _helpers.markup = function(tag, content = '', attrs = {}) {
+    let contentType,
+      field = document.createElement(tag),
+      getContentType = function(content) {
+        return Array.isArray(content) ? 'array' : typeof content;
+      },
+      appendContent = {
+        string: function(content) {
+          field.innerHTML = content;
+        },
+        object: function(content) {
+          return field.appendChild(content);
+        },
+        array: function(content) {
+          for (var i = 0; i < content.length; i++) {
+            contentType = getContentType(content[i]);
+            appendContent[contentType](content[i]);
+          }
+        }
+      };
+
+    for (var attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        let name = _helpers.safeAttrName(attr);
+        field.setAttribute(name, attrs[attr]);
+      }
+    }
+
+    contentType = getContentType(content);
+
+    if (content) {
+      appendContent[contentType].call(this, content);
+    }
+
+    return field;
   };
 
   /**
@@ -189,9 +218,9 @@ var FormRender = function(options, element) {
     }
 
     if (fieldAttrs.type !== 'hidden') {
-      fieldMarkup = _helpers.markup('div', {
+      fieldMarkup = _helpers.markup('div', fieldMarkup, {
         className: 'form-group field-' + fieldAttrs.id
-      }, fieldMarkup);
+      });
     }
 
     return fieldMarkup;
@@ -224,6 +253,14 @@ var FormRender = function(options, element) {
     };
   };
 
+  _helpers.safeAttrName = function(name) {
+    let safeAttr = {
+      className: 'class'
+    };
+
+    return safeAttr[name] || _helpers.hyphenCase(name);
+  };
+
   _helpers.parseAttrs = function(attrNodes) {
     var fieldAttrs = {};
     for (var attr in attrNodes) {
@@ -232,6 +269,19 @@ var FormRender = function(options, element) {
       }
     }
     return fieldAttrs;
+  };
+
+  /**
+   * Extend ELement prototype to allow us to append fields
+   *
+   * @param  {object} fields Node elements
+   */
+  Element.prototype.appendFormFields = function(fields) {
+    var element = this;
+    fields.reverse();
+    for (var i = fields.length - 1; i >= 0; i--) {
+      element.appendChild(fields[i]);
+    }
   };
 
   // Begin the core plugin
@@ -257,15 +307,25 @@ var FormRender = function(options, element) {
     });
   }
 
-  var output = rendered.join('');
-
   if (opts.render) {
     if (opts.container && opts.container.length) {
-      opts.container.html(output);
+      opts.container.appendFormFields(rendered);
     } else if (element) {
-      element.replaceWith(output);
+      let renderedFormWrap = document.querySelector('.rendered-form');
+      if (renderedFormWrap) {
+        while (renderedFormWrap.lastChild) {
+          renderedFormWrap.removeChild(renderedFormWrap.lastChild);
+        }
+        renderedFormWrap.appendFormFields(rendered);
+      } else {
+        renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+        element.parentNode.insertBefore(renderedFormWrap, element.nextSibling);
+        element.style.display = 'none';
+        element.setAttribute('disabled', 'disabled');
+      }
     }
   } else {
+    var output = rendered.join('');
     formRender.markup = output;
   }
 

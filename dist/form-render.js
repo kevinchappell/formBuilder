@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.8
+Version: 1.9.9
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -49,6 +49,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   };
 })(jQuery);
 'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 // render the formBuilder XML into html
 var FormRender = function FormRender(options, element) {
@@ -120,15 +122,44 @@ var FormRender = function FormRender(options, element) {
    * @param  {string} content we wrap this
    * @return {string}
    */
-  _helpers.markup = function (type) {
-    var attrs = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-    var content = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+  _helpers.markup = function (tag) {
+    var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+    var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
-    attrs = _helpers.attrString(attrs);
-    content = Array.isArray(content) ? content.join('') : content;
-    var inlineElems = ['input'],
-        template = inlineElems.indexOf(type) === -1 ? '<' + type + ' ' + attrs + '>' + content + '</' + type + '>' : '<' + type + ' ' + attrs + '/>';
-    return template;
+    var contentType = void 0,
+        field = document.createElement(tag),
+        getContentType = function getContentType(content) {
+      return Array.isArray(content) ? 'array' : typeof content === 'undefined' ? 'undefined' : _typeof(content);
+    },
+        appendContent = {
+      string: function string(content) {
+        field.innerHTML = content;
+      },
+      object: function object(content) {
+        return field.appendChild(content);
+      },
+      array: function array(content) {
+        for (var i = 0; i < content.length; i++) {
+          contentType = getContentType(content[i]);
+          appendContent[contentType](content[i]);
+        }
+      }
+    };
+
+    for (var attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        var name = _helpers.safeAttrName(attr);
+        field.setAttribute(name, attrs[attr]);
+      }
+    }
+
+    contentType = getContentType(content);
+
+    if (content) {
+      appendContent[contentType].call(this, content);
+    }
+
+    return field;
   };
 
   /**
@@ -245,9 +276,9 @@ var FormRender = function FormRender(options, element) {
     }
 
     if (fieldAttrs.type !== 'hidden') {
-      fieldMarkup = _helpers.markup('div', {
+      fieldMarkup = _helpers.markup('div', fieldMarkup, {
         className: 'form-group field-' + fieldAttrs.id
-      }, fieldMarkup);
+      });
     }
 
     return fieldMarkup;
@@ -280,6 +311,14 @@ var FormRender = function FormRender(options, element) {
     };
   };
 
+  _helpers.safeAttrName = function (name) {
+    var safeAttr = {
+      className: 'class'
+    };
+
+    return safeAttr[name] || _helpers.hyphenCase(name);
+  };
+
   _helpers.parseAttrs = function (attrNodes) {
     var fieldAttrs = {};
     for (var attr in attrNodes) {
@@ -288,6 +327,19 @@ var FormRender = function FormRender(options, element) {
       }
     }
     return fieldAttrs;
+  };
+
+  /**
+   * Extend ELement prototype to allow us to append fields
+   *
+   * @param  {object} fields Node elements
+   */
+  Element.prototype.appendFormFields = function (fields) {
+    var element = this;
+    fields.reverse();
+    for (var i = fields.length - 1; i >= 0; i--) {
+      element.appendChild(fields[i]);
+    }
   };
 
   // Begin the core plugin
@@ -313,15 +365,25 @@ var FormRender = function FormRender(options, element) {
     });
   }
 
-  var output = rendered.join('');
-
   if (opts.render) {
     if (opts.container && opts.container.length) {
-      opts.container.html(output);
+      opts.container.appendFormFields(rendered);
     } else if (element) {
-      element.replaceWith(output);
+      var renderedFormWrap = document.querySelector('.rendered-form');
+      if (renderedFormWrap) {
+        while (renderedFormWrap.lastChild) {
+          renderedFormWrap.removeChild(renderedFormWrap.lastChild);
+        }
+        renderedFormWrap.appendFormFields(rendered);
+      } else {
+        renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+        element.parentNode.insertBefore(renderedFormWrap, element.nextSibling);
+        element.style.display = 'none';
+        element.setAttribute('disabled', 'disabled');
+      }
     }
   } else {
+    var output = rendered.join('');
     formRender.markup = output;
   }
 
