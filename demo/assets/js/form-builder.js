@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.6
+Version: 1.9.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -710,6 +710,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     setTimeout(function () {
       $fields.remove();
       document.getElementById(opts.formID).classList.remove('removing');
+      _helpers.save();
     }, 500);
   };
 
@@ -2077,7 +2078,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
 if (typeof Object.assign !== 'function') {
   (function () {
-    Object.assign = function (target, args) {
+    Object.assign = function (target) {
       if (target === undefined || target === null) {
         throw new TypeError('Cannot convert undefined or null to object');
       }
@@ -2110,7 +2111,7 @@ if (!('remove' in Element.prototype)) {
 // Event polyfill
 if (typeof Event !== 'function') {
   (function () {
-    Event = function Event(evt) {
+    window.Event = function (evt) {
       var event = document.createEvent('Event');
       event.initEvent(evt, true, true);
       return event;

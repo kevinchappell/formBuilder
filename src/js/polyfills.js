@@ -3,7 +3,7 @@
 // Polyfill for Object.assign
 if (typeof Object.assign !== 'function') {
   (function() {
-    Object.assign = function(target, args) {
+    Object.assign = function(target) {
       if (target === undefined || target === null) {
         throw new TypeError('Cannot convert undefined or null to object');
       }
@@ -36,7 +36,7 @@ if (!('remove' in Element.prototype)) {
 // Event polyfill
 if (typeof Event !== 'function') {
   (function() {
-    Event = (evt) => {
+    window.Event = function(evt) {
       var event = document.createEvent('Event');
       event.initEvent(evt, true, true);
       return event;

@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.6
+Version: 1.9.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -628,13 +628,6 @@ textarea.form-control {
   font-weight: 700;
   color: #000; }
 
-.form-group {
-  width: 100%;
-  clear: left;
-  float: none; }
-  .form-group input[type=checkbox] {
-    margin: 12px 5px 0 2%; }
-
 .option-actions {
   text-align: right; }
 
@@ -681,6 +674,13 @@ ol.sortable-options {
     width: calc(44.5% - 17px);
     margin: 0 1%;
     float: none; }
+
+.form-field .form-group {
+  width: 100%;
+  clear: left;
+  float: none; }
+  .form-field .form-group input[type=checkbox] {
+    margin: 12px 5px 0 2%; }
 
 .form-elements .field-options .add-area .add {
   clear: both; }

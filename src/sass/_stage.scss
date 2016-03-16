@@ -309,16 +309,6 @@
   color: $black;
 }
 
-.form-group {
-  width: 100%;
-  clear: left;
-  float: none;
-
-  input[type=checkbox] {
-    margin: 12px 5px 0 2%;
-  }
-}
-
 .option-actions {
   text-align: right;
 }
@@ -378,6 +368,18 @@ ol.sortable-options {
     width: calc(44.5% - 17px);
     margin: 0 1%;
     float: none;
+  }
+}
+
+.form-field {
+  .form-group {
+    width: 100%;
+    clear: left;
+    float: none;
+
+    input[type=checkbox] {
+      margin: 12px 5px 0 2%;
+    }
   }
 }
 
