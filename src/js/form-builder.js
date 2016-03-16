@@ -524,15 +524,15 @@
         }];
 
         values.values = values.values.map(function(elem, index) {
+
           elem.label = `${opts.messages.option} ${index + 1}`;
           elem.value = _helpers.hyphenCase(elem.label);
-
           return elem;
         });
       }
 
       var field = '';
-
+     
       field += advFields(values);
       field += '<div class="form-group field-options">';
       field += '<label class="false-label">' + opts.messages.selectOptions + '</label>';

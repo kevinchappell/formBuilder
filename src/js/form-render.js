@@ -128,9 +128,8 @@ var FormRender = function(options, element) {
           fieldOptions.each(function(index, el) {
             index = index;
             let optionAttrs = _helpers.parseAttrs(el.attributes),
-              optionAttrsString = _helpers.attrString(optionAttrs),
-              optionText = el.innerHTML || el.innerContent || el.innerText || el.childNodes[0].nodeValue || el.value;
-            optionsMarkup += `<option ${optionAttrsString}>${optionText}</option>`;
+              optionAttrsString = _helpers.attrString(optionAttrs);
+            optionsMarkup += `<option ${optionAttrsString}>${el.textContent}</option>`;
           });
         }
         fieldMarkup = `${fieldLabel}<select ${fieldAttrsString}>${optionsMarkup}</select>`;
@@ -232,7 +231,7 @@ var FormRender = function(options, element) {
     var fieldAttrs = {};
     for (var attr in attrNodes) {
       if (attrNodes.hasOwnProperty(attr)) {
-        fieldAttrs[attrNodes[attr].nodeName] = attrNodes[attr].nodeValue;
+        fieldAttrs[attrNodes[attr].name] = attrNodes[attr].value;
       }
     }
     return fieldAttrs;

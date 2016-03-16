@@ -3,7 +3,7 @@
 // Polyfill for Object.assign
 if (typeof Object.assign !== 'function') {
   (function() {
-    Object.assign = (target) => {
+    Object.assign = function(target, args) {
       if (target === undefined || target === null) {
         throw new TypeError('Cannot convert undefined or null to object');
       }
