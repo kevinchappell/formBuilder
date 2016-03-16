@@ -6,7 +6,11 @@
     "dist/form-builder.js",
     "dist/form-builder.min.js",
     "dist/form-builder.css",
-    "dist/form-builder.min.css"
+    "dist/form-builder.min.css",
+    "dist/form-render.css",
+    "dist/form-render.js",
+    "dist/form-render.min.css",
+    "dist/form-render.min.js"
   ],
   "homepage": "http://kevinchappell.github.io/formBuilder/",
   "repository": {
