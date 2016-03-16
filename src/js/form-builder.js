@@ -44,7 +44,7 @@
         checkbox: 'Checkbox',
         checkboxes: 'Checkboxes',
         className: 'Class',
-        clearAllMessage: 'Are you sure you want to remove all items?',
+        clearAllMessage: 'Are you sure you want to clear all fields?',
         clearAll: 'Clear',
         close: 'Close',
         copy: 'Copy To Clipboard',
@@ -289,24 +289,6 @@
         type: 'button',
         className: 'view-data btn btn-default'
       }),
-      allowSelect = $('<a/>', {
-        id: frmbID + '-allow-select',
-        text: opts.messages.allowSelect,
-        href: '#',
-        'class': 'allow-select'
-      }).prop('checked', 'checked'),
-      editXML = $('<button/>', {
-        id: frmbID + '-edit-xml',
-        text: opts.messages.editXML,
-        href: '#',
-        'class': 'edit-xml btn btn-default'
-      }),
-      editNames = $('<a/>', {
-        id: frmbID + '-edit-names',
-        text: opts.messages.editNames,
-        href: '#',
-        'class': 'edit-names'
-      }),
       clearAll = _helpers.markup('button', opts.messages.clearAll, {
         id: frmbID + '-clear-all',
         type: 'button',
@@ -319,18 +301,7 @@
       }),
       formActions = _helpers.markup('div', [clearAll, viewData, saveAll], {
         className: 'form-actions btn-group'
-      }).outerHTML,
-      actionLinksInner = $('<div/>', {
-        id: frmbID + '-action-links-inner',
-        'class': 'action-links-inner'
-      }).append(saveAll, editXML, ' | ', editNames, ' | ', allowSelect, ' | '),
-      devMode = $('<span/>', {
-        'class': 'dev-mode-link'
-      }).html(opts.messages.devMode + ' ' + opts.messages.off),
-      actionLinks = $('<div/>', {
-        id: frmbID + '-action-links',
-        'class': 'action-links'
-      }).append(actionLinksInner, devMode);
+      }).outerHTML;
 
     // Sortable fields
     $sortableFields.sortable({
@@ -382,7 +353,7 @@
       'class': 'cb-wrap'
     }).append($cbUL[0], formActions);
 
-    $stageWrap.append($sortableFields, cbWrap, actionLinks);
+    $stageWrap.append($sortableFields, cbWrap);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
@@ -532,7 +503,7 @@
       }
 
       var field = '';
-     
+
       field += advFields(values);
       field += '<div class="form-group field-options">';
       field += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
@@ -1091,7 +1062,7 @@
         };
 
       if (fields.length) {
-        _helpers.confirm('Are you sure you want to clear all fields?', function() {
+        _helpers.confirm(opts.messages.clearAllMessage, function() {
           _helpers.removeAllfields();
           opts.notify.success(opts.messages.allFieldsRemoved);
           _helpers.save();
@@ -1106,68 +1077,6 @@
       e.preventDefault();
       _helpers.save();
       _helpers.validateForm(e);
-    });
-
-    var triggerDevMode = false,
-      keys = [],
-      devCode = '68,69,86';
-    // Super secret Developer Tools
-    $('.fb-save').mouseover(function() {
-      triggerDevMode = true;
-    }).mouseout(function() {
-      triggerDevMode = false;
-    });
-    $(document.documentElement).keydown(function(e) {
-      keys.push(e.keyCode);
-      if (keys.toString().indexOf(devCode) >= 0) {
-        $('.action-links').toggle();
-        $('.view-data').toggle();
-        keys = [];
-      }
-    });
-    // Toggle Developer Mode
-    $('.dev-mode-link').click(function(e) {
-      e.preventDefault();
-      var dml = $(this);
-      $stageWrap.toggleClass('dev-mode');
-      dml.parent().css('opacity', 1);
-      if ($stageWrap.hasClass('dev-mode')) {
-        dml.siblings('.action-links-inner').css('width', '100%');
-        dml.html(opts.messages.devMode + ' ' + opts.messages.on).css('color', '#8CC63F');
-      } else {
-        dml.siblings('.action-links-inner').css('width', 0);
-        dml.html(opts.messages.devMode + ' ' + opts.messages.off).css('color', '#666666');
-        triggerDevMode = false;
-        $('.action-links').toggle();
-        $('.view-data').toggle();
-      }
-    });
-
-    // Toggle Edit Names
-    $(document.getElementById(frmbID + '-edit-names')).click(function(e) {
-      e.preventDefault();
-      $(this).toggleClass('active');
-      $('.name-wrap', $sortableFields).slideToggle(250, function() {
-        $stageWrap.toggleClass('edit-names');
-      });
-    });
-
-    // Toggle Allow Select
-    $(document.getElementById(frmbID + '-allow-select')).click(function(e) {
-      e.preventDefault();
-      $(this).toggleClass('active');
-      $('.allow-multi, .option-selected', $sortableFields).slideToggle(250, function() {
-        $stageWrap.toggleClass('allow-select');
-      });
-    });
-
-    // Toggle Edit XML
-    $(document.getElementById(frmbID + '-edit-xml')).click(function(e) {
-      e.preventDefault();
-      $(this).toggleClass('active');
-      $('textarea.idea-template').show();
-      $('.template-textarea-wrap').slideToggle(250);
-      $stageWrap.toggleClass('edit-xml');
     });
 
     elem.parent().find('p[id*="ideaTemplate"]').remove();
