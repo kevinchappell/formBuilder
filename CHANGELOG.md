@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.6 - Bugfix: Arrows functions don't work with arguments.callee [#92](https://github.com/kevinchappell/formBuilder/pull/92)
 - v1.9.5 - Bugfix: IE Element.remove() polyfill [#91](https://github.com/kevinchappell/formBuilder/pull/91)
 - v1.9.4 - Bugfix: IE compatibility issues [#90](https://github.com/kevinchappell/formBuilder/pull/90)
 - v1.9.3 - Bugfix: Update .jshintrc [#89](https://github.com/kevinchappell/formBuilder/pull/89)

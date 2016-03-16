@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.5
+Version: 1.9.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1298,9 +1298,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         }];
 
         values.values = values.values.map(function (elem, index) {
+
           elem.label = opts.messages.option + ' ' + (index + 1);
           elem.value = _helpers.hyphenCase(elem.label);
-
           return elem;
         });
       }
@@ -2077,16 +2077,14 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
 if (typeof Object.assign !== 'function') {
   (function () {
-    var _arguments = arguments;
-
-    Object.assign = function (target) {
+    Object.assign = function (target, args) {
       if (target === undefined || target === null) {
         throw new TypeError('Cannot convert undefined or null to object');
       }
 
       var output = Object(target);
-      for (var index = 1; index < _arguments.length; index++) {
-        var source = _arguments[index];
+      for (var index = 1; index < arguments.length; index++) {
+        var source = arguments[index];
         if (source !== undefined && source !== null) {
           for (var nextKey in source) {
             if (source.hasOwnProperty(nextKey)) {
