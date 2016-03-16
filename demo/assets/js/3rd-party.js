@@ -3,8 +3,8 @@ if (window.location.href.indexOf('localhost') === -1) {
     .done(function(script, textStatus) {
       window.stLight.options({
         publisher: "ee8fc1cb-2a3e-4afc-9a71-a24d14fb9f86",
-        doNotHash: false,
-        doNotCopy: false,
+        doNotHash: true,
+        doNotCopy: true,
         hashAddressBar: false
       });
     });
