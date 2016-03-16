@@ -330,7 +330,7 @@ var FormRender = function FormRender(options, element) {
   };
 
   /**
-   * Extend ELement prototype to allow us to append fields
+   * Extend Element prototype to allow us to append fields
    *
    * @param  {object} fields Node elements
    */
@@ -339,6 +339,18 @@ var FormRender = function FormRender(options, element) {
     fields.reverse();
     for (var i = fields.length - 1; i >= 0; i--) {
       element.appendChild(fields[i]);
+    }
+  };
+
+  /**
+   * Extend ELement prototype to remove content
+   *
+   * @param  {object} fields Node elements
+   */
+  Element.prototype.emptyContainer = function () {
+    var element = this;
+    while (element.lastChild) {
+      element.removeChild(element.lastChild);
     }
   };
 
@@ -366,14 +378,13 @@ var FormRender = function FormRender(options, element) {
   }
 
   if (opts.render) {
-    if (opts.container && opts.container.length) {
+    if (opts.container) {
+      opts.container.emptyContainer();
       opts.container.appendFormFields(rendered);
     } else if (element) {
       var renderedFormWrap = document.querySelector('.rendered-form');
       if (renderedFormWrap) {
-        while (renderedFormWrap.lastChild) {
-          renderedFormWrap.removeChild(renderedFormWrap.lastChild);
-        }
+        renderedFormWrap.emptyContainer();
         renderedFormWrap.appendFormFields(rendered);
       } else {
         renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
