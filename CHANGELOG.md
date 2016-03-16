@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.9 - Bugfix: formRender reinit, take regular js object [#97](https://github.com/kevinchappell/formBuilder/pull/97)
 - v1.9.8 - Bugfix: Enter toggles XML field [#95](https://github.com/kevinchappell/formBuilder/pull/95)
 - v1.9.7 - Bugfix: Radio group and checkbox group not rendered correctly in IE [#93](https://github.com/kevinchappell/formBuilder/pull/93)
 - v1.9.6 - Bugfix: Arrows functions don't work with arguments.callee [#92](https://github.com/kevinchappell/formBuilder/pull/92)

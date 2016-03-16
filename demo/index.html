@@ -67,7 +67,7 @@
         <div class="build-form">
           <h2>Build The Form</h2>
           <form action="">
-            <textarea id="fb-template"></textarea>
+            <textarea id="fb-template"><form-template><fields><field name="text-input-1454090499448" label="Your Name" description="" required="false" type="text" /><field name="text-input-1454090503475" label="Your Email" description="" required="false" type="text" /><field name="rich-text-1454090531339" label="Text Area" description="" required="false" type="rich-text" /></fields></form-template></textarea>
           </form>
           <br style="clear:both">
         </div>
@@ -136,7 +136,7 @@ $(template).formRender(formRenderOpts);
     $(renderBtn).click(function(e) {
       e.preventDefault();
       $(template).formRender({
-        container: $(formContainer)
+        container: formContainer
       });
     });
   });
