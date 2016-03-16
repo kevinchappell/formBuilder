@@ -690,6 +690,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
     setTimeout(function() {
       $fields.remove();
       document.getElementById(opts.formID).classList.remove('removing');
+      _helpers.save();
     }, 500);
 
   };

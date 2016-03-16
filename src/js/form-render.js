@@ -143,9 +143,8 @@ var FormRender = function(options, element) {
         if (fieldOptions.length) {
           let optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name;
           fieldOptions.each(function(index, el) {
-            let optionAttrs = $.extend({}, fieldAttrs, _helpers.parseAttrs(el.attributes)),
-              optionAttrsString,
-              optionText;
+            let optionAttrs = Object.assign({}, fieldAttrs, _helpers.parseAttrs(el.attributes)),
+              optionAttrsString;
 
             if (optionAttrs.selected) {
               delete optionAttrs.selected;
@@ -155,9 +154,7 @@ var FormRender = function(options, element) {
             optionAttrs.name = optionName;
             optionAttrs.id = fieldAttrs.id + '-' + index;
             optionAttrsString = _helpers.attrString(optionAttrs);
-            optionText = el.innerHTML || el.innerContent || el.innerText || el.value || '';
-
-            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionText}</label><br>`;
+            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${el.textContent}</label><br>`;
           });
         }
         fieldMarkup = `${fieldLabel}<div class="${fieldAttrs.type}-group">${optionsMarkup}</div>`;
