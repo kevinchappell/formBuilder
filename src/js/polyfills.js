@@ -25,19 +25,12 @@ if (typeof Object.assign !== 'function') {
 }
 
 // Element.remove() polyfill
-if (typeof Element.remove !== 'function') {
-  (function() {
-    Element.prototype.remove = () => {
-      this.parentElement.removeChild(this);
-    };
-    NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
-      for (var i = this.length - 1; i >= 0; i--) {
-        if (this[i] && this[i].parentElement) {
-          this[i].parentElement.removeChild(this[i]);
-        }
-      }
-    };
-  })();
+if (!('remove' in Element.prototype)) {
+  Element.prototype.remove = function() {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
+    }
+  };
 }
 
 // Event polyfill

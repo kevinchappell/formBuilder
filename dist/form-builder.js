@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.4
+Version: 1.9.5
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2101,21 +2101,12 @@ if (typeof Object.assign !== 'function') {
 }
 
 // Element.remove() polyfill
-if (typeof Element.remove !== 'function') {
-  (function () {
-    var _this = this;
-
-    Element.prototype.remove = function () {
-      _this.parentElement.removeChild(_this);
-    };
-    NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
-      for (var i = this.length - 1; i >= 0; i--) {
-        if (this[i] && this[i].parentElement) {
-          this[i].parentElement.removeChild(this[i]);
-        }
-      }
-    };
-  })();
+if (!('remove' in Element.prototype)) {
+  Element.prototype.remove = function () {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
+    }
+  };
 }
 
 // Event polyfill
