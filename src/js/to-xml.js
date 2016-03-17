@@ -7,7 +7,7 @@
       prepend: '',
       attributes: ['class']
     };
-    var opts = $.extend(defaults, options);
+    var opts = Object.assign(defaults, options);
 
     var serialStr = '',
       _helpers = {};
@@ -48,18 +48,19 @@
 
     // Begin the core plugin
     this.each(function() {
-      if ($(this).children().length >= 1) {
+      if (this.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
 
-
         // build new xml
-        $(this).children().each(function() {
-          var $field = $(this);
+        this.childNodes.forEach(function(field) {
+          var $field = $(field);
           var fieldData = $field.data('fieldData');
 
-          if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
+          // console.log($(field));
+
+          if (!($field.hasClass('disabled'))) {
             for (var att = 0; att < opts.attributes.length; att++) {
-              var roleVals = $.map($('input.roles-field:checked', $field), function(n) {
+              var roleVals = field.querySelectorAll('.roles-field:checked').map(function(n) {
                 return n.value;
               }).join(',');
 

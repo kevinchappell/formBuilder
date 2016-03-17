@@ -43,3 +43,7 @@ if (typeof Event !== 'function') {
     };
   })();
 }
+
+// Lets us loop and map through NodeLists
+NodeList.prototype.forEach = Array.prototype.forEach;
+NodeList.prototype.map = Array.prototype.map;

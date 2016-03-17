@@ -37,13 +37,6 @@
   <div class="demo-wrap">
     <div id="header_wrap" class="outer">
       <header class="inner">
-        <div class="social">
-          <span class='st_facebook' displayText='Facebook'></span>
-          <span class='st_twitter' displayText='Tweet'></span>
-          <span class='st_linkedin' displayText='LinkedIn'></span>
-          <span class='st_pinterest' displayText='Pinterest'></span>
-          <span class='st_email' displayText='Email'></span>
-        </div>
         <a id="forkme_banner" href="https://github.com/kevinchappell/formBuilder">View on Github</a>
         <h1 id="project_title">jQuery formBuilder</h1>
         <h2 id="project_tagline">A jQuery plugin for drag and drop form creation</h2>
@@ -77,7 +70,7 @@
             <p class="cta">Add some fields to the formBuilder above and render them here.</p>
           </form>
           <div class="render-description">
-            <p>Once you&apos;ve created a form you&apos;ll need a way to render it. formRender is the companion plugin to formBuilder that renders the form data. To use you&apos;'ll call formRender on the <code>textarea</code> containing your saved data like so:</p>
+            <p>Once you&apos;ve created a form you&apos;ll need a way to render it. formRender is the companion plugin to formBuilder that renders the form data. To use you&apos;ll call formRender on the <code>textarea</code> containing your saved data like so:</p>
             <pre><code>var template = document.getElementById('form-builder-template');
 $(template).formRender();
 </code></pre>
@@ -125,12 +118,12 @@ $(template).formRender(formRenderOpts);
   jQuery(document).ready(function($) {
     'use strict';
     var template = document.getElementById('fb-template'),
-      formContainer = document.getElementById('rendered-form'),
-      renderBtn = document.getElementById('render-form-button');
+        formContainer = document.getElementById('rendered-form'),
+        renderBtn = document.getElementById('render-form-button');
 
     var options = {
-      fieldRemoveWarn: true
-    };
+          fieldRemoveWarn: true
+        };
     $(template).formBuilder(options);
 
     $(renderBtn).click(function(e) {
