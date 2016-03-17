@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.10
+Version: 1.9.11
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -279,9 +279,26 @@ var FormRender = function FormRender(options, element) {
       fieldMarkup = _helpers.markup('div', fieldMarkup, {
         className: 'form-group field-' + fieldAttrs.id
       });
+    } else {
+      fieldMarkup = _helpers.markup('input', null, fieldAttrs);
     }
 
     return fieldMarkup;
+  };
+
+  /**
+   * Convert camelCase into lowercase-hyphen
+   *
+   * @param  {string} str
+   * @return {string}
+   */
+  _helpers.hyphenCase = function (str) {
+    str = str.replace(/[^\w\s\-]/gi, '');
+    str = str.replace(/([A-Z])/g, function ($1) {
+      return '-' + $1.toLowerCase();
+    });
+
+    return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
   _helpers.attrString = function (attrs) {
