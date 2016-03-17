@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.12 - Feature: disableFields option, formRender jQuery fallback, formSaved Event [#101](https://github.com/kevinchappell/formBuilder/pull/101)
 - v1.9.11 - Bugfix: formRender hidden field issue [#100](https://github.com/kevinchappell/formBuilder/pull/100)
 - v1.9.10 - Bugfix: formRender not rendering with containers [#98](https://github.com/kevinchappell/formBuilder/pull/98)
 - v1.9.9 - Bugfix: formRender reinit, take regular js object [#97](https://github.com/kevinchappell/formBuilder/pull/97)
