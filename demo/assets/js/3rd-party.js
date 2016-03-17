@@ -1,4 +1,4 @@
-if (window.location.href.indexOf('kevinchappell.github.io') === -1) {
+if (window.location.href.indexOf('kevinchappell.github.io') !== -1) {
   ((window.gitter = {}).chat = {}).options = {
     room: 'kevinchappell/formBuilder'
   };
