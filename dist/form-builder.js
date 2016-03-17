@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.12
+Version: 1.9.13
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1169,6 +1169,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
             appendNewField(opts.defaultFields[i]);
           }
           $stageWrap.removeClass('empty');
+          _helpers.save();
         } else if (!opts.prepend && !opts.append) {
           $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
         }
