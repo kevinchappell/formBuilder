@@ -167,7 +167,7 @@ var FormRender = function(options, element) {
       case 'radio-group':
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
 
-        delete fieldAttrs.className;
+        // delete fieldAttrs.className;
 
         if (fieldOptions.length) {
           let optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name;
@@ -302,7 +302,7 @@ var FormRender = function(options, element) {
   };
 
   /**
-   * Extend ELement prototype to remove content
+   * Extend Element prototype to remove content
    *
    * @param  {object} fields Node elements
    */
@@ -338,6 +338,7 @@ var FormRender = function(options, element) {
 
   if (opts.render) {
     if (opts.container) {
+      opts.container = (opts.container instanceof jQuery) ? opts.container[0] : opts.container;
       opts.container.emptyContainer();
       opts.container.appendFormFields(rendered);
     } else if (element) {

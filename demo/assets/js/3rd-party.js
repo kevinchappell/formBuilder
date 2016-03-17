@@ -1,29 +1,17 @@
-if (window.location.href.indexOf('localhost') === -1) {
-  jQuery.getScript('http://w.sharethis.com/button/buttons.js')
-    .done(function(script, textStatus) {
-      window.stLight.options({
-        publisher: "ee8fc1cb-2a3e-4afc-9a71-a24d14fb9f86",
-        doNotHash: true,
-        doNotCopy: true,
-        hashAddressBar: false
-      });
-    });
-
+if (window.location.href.indexOf('kevinchappell.github.io') === -1) {
   ((window.gitter = {}).chat = {}).options = {
     room: 'kevinchappell/formBuilder'
   };
 
-  jQuery.getScript('https://sidecar.gitter.im/dist/sidecar.v1.js');
-
-  var highlightCss = function() {
+  var getStyles = function() {
     var styles = [];
-    var hljs = [
+    var extStyles = [
       '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css'
     ];
-    for (var i = hljs.length - 1; i >= 0; i--) {
+    for (var i = extStyles.length - 1; i >= 0; i--) {
       var style = document.createElement('link');
       style.appendChild(document.createTextNode(''));
-      style.setAttribute('href', hljs[i]);
+      style.setAttribute('href', extStyles[i]);
       style.setAttribute('rel', 'stylesheet');
       style.setAttribute('type', 'text/css');
       document.head.appendChild(style);
@@ -32,15 +20,16 @@ if (window.location.href.indexOf('localhost') === -1) {
     return styles;
   };
 
-  var highlightJS = function() {
+  var getScripts = function() {
     var scripts = [];
-    var hljs = [
-      '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js'
+    var extScripts = [
+      '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js',
+      'https://sidecar.gitter.im/dist/sidecar.v1.js'
     ];
-    for (var i = hljs.length - 1; i >= 0; i--) {
+    for (var i = extScripts.length - 1; i >= 0; i--) {
       var script = document.createElement('script');
       script.appendChild(document.createTextNode(''));
-      script.setAttribute('src', hljs[i]);
+      script.setAttribute('src', extScripts[i]);
       script.setAttribute('type', 'text/javascript');
       document.body.appendChild(script);
       scripts.push(script);
@@ -48,8 +37,8 @@ if (window.location.href.indexOf('localhost') === -1) {
     return scripts;
   };
 
-  highlightCss();
-  highlightJS();
+  getStyles();
+  getScripts();
 
   document.addEventListener('viewData', function() {
     var code = document.querySelector('.data-dialog code');

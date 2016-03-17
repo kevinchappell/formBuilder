@@ -1,5 +1,6 @@
+'use strict';
+
 (function($) {
-  'use strict';
   var FormBuilder = function(options, element) {
     var formBuilder = this;
 
@@ -7,10 +8,7 @@
       dataType: 'xml',
       // Uneditable fields or other content you would like to
       // appear before and after regular fields.
-      disableFields: {
-        // before: '<h2>Header</h2>',
-        // after: '<h3>Footer</h3>'
-      },
+      disableFields: [], // ex: ['autocomplete']
       append: false,
       prepend: false,
       // array of objects with fields values
@@ -255,6 +253,11 @@
         name: 'autocomplete'
       }
     }];
+
+    // remove disabledFields
+    frmbFields = frmbFields.filter(function(field) {
+      return opts.disableFields.indexOf(field.attrs.type) < 0;
+    });
 
     // Create draggable fields for formBuilder
     var $cbUL = $('<ul/>', {
@@ -1108,4 +1111,5 @@
       }
     });
   };
+
 })(jQuery);

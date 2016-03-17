@@ -48,6 +48,17 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
+  /**
+   * Convert converts messy `cl#ssNames` into valid `class-names`
+   *
+   * @param  {string} str
+   * @return {string}
+   */
+  _helpers.makeClassName = function (str) {
+    str = str.replace(/[^\w\s\-]/gi, '');
+    return _helpers.hyphenCase(str);
+  };
+
   _helpers.safeAttrName = function (name) {
     var safeAttr = {
       className: 'class'
@@ -214,6 +225,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         element.onchange();
       }
     }
+    document.dispatchEvent(formBuilder.events.formSaved);
   };
 
   _helpers.getElement = function () {
@@ -727,6 +739,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
   events.viewData = new Event('viewData');
   events.userDeclined = new Event('userDeclined');
   events.modalClosed = new Event('modalClosed');
+  events.formSaved = new Event('formSaved');
 
   return events;
 };
@@ -778,8 +791,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 'use strict';
 
 (function ($) {
-  'use strict';
-
   var FormBuilder = function FormBuilder(options, element) {
     var formBuilder = this;
 
@@ -787,10 +798,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       dataType: 'xml',
       // Uneditable fields or other content you would like to
       // appear before and after regular fields.
-      disableFields: {
-        // before: '<h2>Header</h2>',
-        // after: '<h3>Footer</h3>'
-      },
+      disableFields: [], // ex: ['autocomplete']
       append: false,
       prepend: false,
       // array of objects with fields values
@@ -1027,6 +1035,11 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         name: 'autocomplete'
       }
     }];
+
+    // remove disabledFields
+    frmbFields = frmbFields.filter(function (field) {
+      return opts.disableFields.indexOf(field.attrs.type) < 0;
+    });
 
     // Create draggable fields for formBuilder
     var $cbUL = $('<ul/>', {
@@ -1894,7 +1907,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       prepend: '',
       attributes: ['class']
     };
-    var opts = $.extend(defaults, options);
+    var opts = Object.assign(defaults, options);
 
     var serialStr = '',
         _helpers = {};
@@ -1935,17 +1948,19 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
     // Begin the core plugin
     this.each(function () {
-      if ($(this).children().length >= 1) {
+      if (this.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
 
         // build new xml
-        $(this).children().each(function () {
-          var $field = $(this);
+        this.childNodes.forEach(function (field) {
+          var $field = $(field);
           var fieldData = $field.data('fieldData');
 
-          if (!($field.hasClass('moving') || $field.hasClass('disabled'))) {
+          // console.log($(field));
+
+          if (!$field.hasClass('disabled')) {
             for (var att = 0; att < opts.attributes.length; att++) {
-              var roleVals = $.map($('input.roles-field:checked', $field), function (n) {
+              var roleVals = field.querySelectorAll('.roles-field:checked').map(function (n) {
                 return n.value;
               }).join(',');
 
@@ -2027,3 +2042,7 @@ if (typeof Event !== 'function') {
     };
   })();
 }
+
+// Lets us loop and map through NodeLists
+NodeList.prototype.forEach = Array.prototype.forEach;
+NodeList.prototype.map = Array.prototype.map;

@@ -39,6 +39,17 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return str.replace(/\s/g, '-').replace(/^-+/g, '');
   };
 
+  /**
+   * Convert converts messy `cl#ssNames` into valid `class-names`
+   *
+   * @param  {string} str
+   * @return {string}
+   */
+  _helpers.makeClassName = (str) => {
+    str = str.replace(/[^\w\s\-]/gi, '');
+    return _helpers.hyphenCase(str);
+  };
+
   _helpers.safeAttrName = function(name) {
     let safeAttr = {
       className: 'class'
@@ -203,6 +214,8 @@ var formBuilderHelpers = function(opts, formBuilder) {
         element.onchange();
       }
     }
+
+    document.dispatchEvent(formBuilder.events.formSaved);
   };
 
   _helpers.getElement = () => {
