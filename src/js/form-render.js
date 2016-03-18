@@ -303,8 +303,6 @@ var FormRender = function(options, element) {
 
   /**
    * Extend Element prototype to remove content
-   *
-   * @param  {object} fields Node elements
    */
   Element.prototype.emptyContainer = function() {
     var element = this;
