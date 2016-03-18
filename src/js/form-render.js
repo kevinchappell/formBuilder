@@ -64,7 +64,7 @@ var FormRender = function(options, element) {
   /**
    * Generate markup wrapper where needed
    *
-   * @param  {string} type
+   * @param  {string} tag
    * @param  {object} attrs
    * @param  {string} content we wrap this
    * @return {string}
