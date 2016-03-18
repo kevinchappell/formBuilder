@@ -136,13 +136,39 @@
         text-decoration: none;
       }
     }
-  }
 
-  // .btn {
-  //   color: $black;
-  //   text-decoration: none;
-  //   border-radius: 0;
-  // }
+    &.button-field,
+    &.header-field,
+    &.paragraph-field {
+      h1,
+      h2,
+      h3,
+      p,
+      canvas,
+      output,
+      address,
+      blockquote,
+      .prev-holder {
+        margin: 0;
+      }
+
+      .field-label {
+        display: none;
+      }
+
+      &.editing {
+        .field-label {
+          display: block;
+        }
+      }
+    }
+
+    &.paragraph-field {
+      .fld-label {
+        min-height: 150px;
+      }
+    }
+  }
 
   li.deleting,
   li.delete:hover,
@@ -218,12 +244,6 @@
 
   .disabled .field-label {
     display: block;
-  }
-
-  .button-field {
-    .field-label {
-      display: none;
-    }
   }
 
   .field-actions {
@@ -399,6 +419,7 @@ ol.sortable-options {
 
 .form-elements {
   input[type=text],
+  textarea,
   select {
     width: 81.33333333%;
     transition: background 250ms ease-in-out;
@@ -416,10 +437,6 @@ ol.sortable-options {
 
   .btn-group {
     margin-left: 2%;
-  }
-
-  .button-field & {
-    margin-top: 32px;
   }
 }
 

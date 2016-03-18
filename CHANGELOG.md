@@ -1,5 +1,9 @@
 # Changelog
 
+- v1.9.14 - 
+  - Feature: Header and Paragraph tags [#108](https://github.com/kevinchappell/formBuilder/pull/108)
+  - Bugfix: button classes, special character encoding, renamed functions for Selenium
+  - Chore: added/updated comments [#106](https://github.com/kevinchappell/formBuilder/pull/106)
 - v1.9.13 - Bugfix: Add `defaultFields` to formData [#103](https://github.com/kevinchappell/formBuilder/pull/103)
 - v1.9.12 - Feature: disableFields option, formRender jQuery fallback, formSaved Event [#101](https://github.com/kevinchappell/formBuilder/pull/101)
 - v1.9.11 - Bugfix: formRender hidden field issue [#100](https://github.com/kevinchappell/formBuilder/pull/100)

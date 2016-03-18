@@ -1,4 +1,4 @@
-var formBuilderEvents = function(opts, _helpers) {
+function formBuilderEventsFn() {
   'use strict';
 
   var events = {};
@@ -10,4 +10,4 @@ var formBuilderEvents = function(opts, _helpers) {
   events.formSaved = new Event('formSaved');
 
   return events;
-};
+}

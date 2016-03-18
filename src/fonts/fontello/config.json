@@ -177,6 +177,18 @@
       "code": 59402,
       "css": "file-input",
       "uid": "f6f11c17a7d16ee01cf0a46b757652af"
+    },
+    {
+      "src": "fontawesome",
+      "code": 59407,
+      "css": "header",
+      "uid": "0c708edd8fae2376b3370aa56d40cf9e"
+    },
+    {
+      "src": "fontawesome",
+      "code": 59408,
+      "css": "paragraph",
+      "uid": "c5845105a87df2ee1999826d90622f6a"
     }
   ],
   "copyright": "Kevin Chappell",
