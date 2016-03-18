@@ -1,16 +1,16 @@
-var formBuilderHelpers = function(opts, formBuilder) {
+function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
 
   var _helpers = {
     doCancel: false
   };
 
-  formBuilder.events = formBuilderEvents(opts, _helpers);
+  formBuilder.events = formBuilderEventsFn();
 
   /**
    * Convert an attrs object into a string
    *
-   * @param  {object} attrs object of attributes for markup
+   * @param  {Object} attrs object of attributes for markup
    * @return {string}
    */
   _helpers.attrString = function(attrs) {
@@ -60,9 +60,10 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
   _helpers.safeAttr = function(name, value) {
     name = _helpers.safeAttrName(name);
-    value = window.JSON.stringify(value);
-    value = value ? `=${value}` : '';
 
+    let valString = window.JSON.stringify(HTML_ENTITIES.encode(value));
+
+    value = value ? `=${valString}` : '';
     return {
       name,
       value
@@ -87,8 +88,8 @@ var formBuilderHelpers = function(opts, formBuilder) {
   /**
    * Callback for when a drag begins
    *
-   * @param  {object} event
-   * @param  {object} ui
+   * @param  {Object} event
+   * @param  {Object} ui
    */
   _helpers.startMoving = function(event, ui) {
     event = event;
@@ -99,8 +100,8 @@ var formBuilderHelpers = function(opts, formBuilder) {
   /**
    * Callback for when a drag ends
    *
-   * @param  {object} event
-   * @param  {object} ui
+   * @param  {Object} event
+   * @param  {Object} ui
    */
   _helpers.stopMoving = function(event, ui) {
     event = event;
@@ -165,7 +166,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
    * fields in the editor.
    *
    * @todo   remove or refactor to make better use
-   * @param  {object} tt jQuery option with nexted tooltip
+   * @param  {Object} tt jQuery option with nexted tooltip
    * @return {void}
    */
   _helpers.initTooltip = function(tt) {
@@ -182,8 +183,36 @@ var formBuilderHelpers = function(opts, formBuilder) {
     tooltip.hide();
   };
 
+
+  _helpers.getTypes = function($field) {
+    return {
+      type: $field.attr('type'),
+      subtype: $('.fld-subtype', $field).val()
+    };
+  };
+
+  // Remove null or undefined values
+  _helpers.trimAttrs = function(attrs) {
+    let xmlRemove = [
+      null,
+      undefined,
+      '',
+      false
+    ];
+    for (var i in attrs) {
+      if (xmlRemove.inArray(attrs[i])) {
+        delete attrs[i];
+      }
+    }
+    return attrs;
+  };
+
+  /**
+   * XML save
+   * @param  {Object} form sortableFields node
+   */
   _helpers.xmlSave = function(form) {
-    let formDataNew = $(form).toXML();
+    let formDataNew = $(form).toXML(_helpers);
     if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
       return false;
     }
@@ -194,17 +223,22 @@ var formBuilderHelpers = function(opts, formBuilder) {
     opts.notify.warning('json data not available yet');
   };
 
-  // saves the field data to our canvas (elem)
+  /**
+   * Saves and returns formData
+   * @return {XML|JSON}
+   */
   _helpers.save = function() {
-    var element = _helpers.getElement();
-    var form = document.getElementById(opts.formID);
+    var element = _helpers.getElement(),
+      form = document.getElementById(opts.formID),
+      formData;
 
     let doSave = {
       xml: _helpers.xmlSave,
       json: _helpers.jsonSave
     };
 
-    doSave[opts.dataType](form);
+    // save action for current `dataType`
+    formData = doSave[opts.dataType](form);
 
     if (element) {
       element.value = formBuilder.formData;
@@ -215,9 +249,16 @@ var formBuilderHelpers = function(opts, formBuilder) {
       }
     }
 
+    //trigger formSaved event
     document.dispatchEvent(formBuilder.events.formSaved);
+    return formData;
   };
 
+  /**
+   * Attempts to find an element,
+   * useful if formBuilder was called without Query
+   * @return {Object}
+   */
   _helpers.getElement = () => {
     let element = false;
     if (formBuilder.element) {
@@ -243,7 +284,10 @@ var formBuilderHelpers = function(opts, formBuilder) {
     return `${element.tagName}-${epoch}`;
   };
 
-  // updatePreview will generate the preview for radio and checkbox groups
+  /**
+   * Collect field attribute values and call fieldPreview to generate preview
+   * @param  {Object} field jQuery wrapped dom object @todo, remove jQuery dependency
+   */
   _helpers.updatePreview = function(field) {
     var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
@@ -252,25 +296,20 @@ var formBuilderHelpers = function(opts, formBuilder) {
       return;
     }
 
-    var fieldType,
-      $prevHolder = $('.prev-holder', field);
+    var fieldType = $(field).attr('type'),
+      $prevHolder = $('.prev-holder', field),
+      previewData = {
+        label: $('.fld-label', field).val(),
+        type: fieldType
+      },
+      preview;
 
     let subtype = $('.fld-subtype', field).val();
-    fieldClass = fieldClass.replace('-field form-field', '');
-
     if (subtype) {
-      fieldType = subtype;
-    } else {
-      fieldType = fieldClass;
+      previewData.subtype = subtype;
     }
 
-    var preview,
-      previewData = {
-        type: fieldType,
-        label: $('.fld-label', field).val()
-      };
-
-    let maxlength = $('.fld-maxlength', field);
+    let maxlength = $('.fld-maxlength', field).val();
     if (maxlength) {
       previewData.maxlength = maxlength.val();
     }
@@ -287,11 +326,11 @@ var formBuilderHelpers = function(opts, formBuilder) {
       previewData.style = style;
     }
 
-    if (fieldClass === 'checkbox') {
+    if (fieldType === 'checkbox') {
       previewData.toggle = $('.checkbox-toggle', field).is(':checked');
     }
 
-    if (fieldClass.match(/(select|checkbox-group|radio-group)/)) {
+    if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
       previewData.values = [];
       previewData.multiple = $('[name="multiple"]', field).is(':checked');
 
@@ -305,6 +344,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
     }
 
     previewData.className = _helpers.classNames(field, previewData);
+    $('.fld-className', field).val(previewData.className);
 
     field.data('fieldData', previewData);
     preview = _helpers.fieldPreview(previewData);
@@ -312,21 +352,23 @@ var formBuilderHelpers = function(opts, formBuilder) {
     $prevHolder.html(preview);
 
     $('input[toggle]', $prevHolder).kcToggle();
-
   };
-
 
   /**
    * Generate preview markup
-   * @param  {object} attrs
+   *
+   * @todo   make this smarter and use tags
+   * @param  {Object} attrs
    * @return {string}       preview markup for field
    */
   _helpers.fieldPreview = function(attrs) {
     var i,
       preview = '',
       epoch = new Date().getTime();
-    let toggle = attrs.toggle ? 'toggle' : '';
 
+    attrs = Object.assign({}, attrs);
+    attrs.type = attrs.subtype || attrs.type;
+    let toggle = attrs.toggle ? 'toggle' : '';
     let attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
@@ -380,7 +422,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
         preview = `<input class="ui-autocomplete-input ${attrs.className}" autocomplete="on">`;
         break;
       default:
-        preview = `<${attrs.type}></${attrs.type}>`;
+        preview = `<${attrs.type}>${attrs.label}</${attrs.type}>`;
     }
 
     return preview;
@@ -465,7 +507,7 @@ var formBuilderHelpers = function(opts, formBuilder) {
   /**
    * Display a custom tooltip for disabled fields.
    *
-   * @param  {object} field
+   * @param  {Object} field
    */
   _helpers.disabledTT = {
     className: 'frmb-tt',
@@ -484,37 +526,48 @@ var formBuilderHelpers = function(opts, formBuilder) {
 
   _helpers.classNames = function(field, previewData) {
     let noFormControl = [
-      'checkbox',
-      'checkbox-group',
-      'radio-group',
-      'button'
-    ];
+        'checkbox',
+        'checkbox-group',
+        'radio-group'
+      ],
+      blockElements = ['header', 'paragraph', 'button'],
+      i;
+
+    for (i = blockElements.length - 1; i >= 0; i--) {
+      blockElements = blockElements.concat(opts.messages.subtypes[blockElements[i]]);
+    }
+
+    noFormControl = noFormControl.concat(blockElements);
+
     let type = previewData.type;
     let style = previewData.style;
-    let classes = [];
+    let className = field[0].querySelector('.fld-className').value;
+    let classes = [].concat(className.split(' '));
     let types = {
       button: 'btn',
       submit: 'btn'
     };
 
-    let className = field[0].querySelector('.fld-className').value;
-
     let primaryType = types[type];
 
-    if (className) {
-      classes.push(className);
-    }
-
     if (primaryType) {
-      classes.push(primaryType);
       if (style) {
+        for (i = classes.length - 1; i >= 0; i--) {
+          let re = new RegExp('(?:^|\s)' + primaryType + '-(.*?)(?:\s|$)+', 'g');
+          let match = classes[i].match(re);
+          if (match) {
+            classes.splice(i, 1);
+          }
+        }
         classes.push(primaryType + '-' + style);
       }
-    } else if (noFormControl.indexOf(type) === -1) {
+      classes.push(primaryType);
+    } else if (!noFormControl.inArray(type)) {
       classes.push('form-control');
     }
 
-    return classes.join(' ');
+    // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
+    return classes.reverse().unique().join(' ').trim();
   };
 
   _helpers.markup = function(tag, content = '', attrs = {}) {
@@ -709,4 +762,4 @@ var formBuilderHelpers = function(opts, formBuilder) {
   };
 
   return _helpers;
-};
+}

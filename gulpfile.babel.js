@@ -94,13 +94,13 @@ var plugins = gulpPlugins(),
 
     exec(script.join(' \n '), function(err, stdout, stderr) {
       console.log(stdout);
+      if (stderr) {
+        console.error(err, stderr);
+      }
       return gulp.src([`${files.formBuilder.fonts}/css/form-builder-font.css`])
         .pipe(plugins.base64())
         .pipe(plugins.concat('_font.scss'))
         .pipe(gulp.dest('src/sass/base/'));
-      if (stderr) {
-        console.error(err, stderr);
-      }
     });
   };
 

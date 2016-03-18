@@ -5,21 +5,206 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
 
+/**
+ * PHP htmlentities recreation in JavaScript
+ * minor changes to match styleguide and remove unneeded functionality
+ * @see https://github.com/kvz/phpjs
+ */
+var HTML_ENTITIES = function () {
+  'use strict';
+
+  var htmlEntities = {};
+
+  htmlEntities.getHtmlTranslationTable = function (table, quoteStyle) {
+
+    var entities = {},
+        hashMap = {},
+        decimal;
+    var constMappingTable = {},
+        constMappingQuoteStyle = {};
+    var useTable = {},
+        useQuoteStyle = {};
+
+    // Translate arguments
+    constMappingTable[0] = 'HTML_SPECIALCHARS';
+    constMappingTable[1] = 'HTML_ENTITIES';
+    constMappingQuoteStyle[0] = 'ENT_NOQUOTES';
+    constMappingQuoteStyle[2] = 'ENT_COMPAT';
+    constMappingQuoteStyle[3] = 'ENT_QUOTES';
+
+    useTable = !isNaN(table) ? constMappingTable[table] : table ? table.toUpperCase() : 'HTML_SPECIALCHARS';
+    useQuoteStyle = !isNaN(quoteStyle) ? constMappingQuoteStyle[quoteStyle] : quoteStyle ? quoteStyle.toUpperCase() : 'ENT_COMPAT';
+
+    if (useTable !== 'HTML_SPECIALCHARS' && useTable !== 'HTML_ENTITIES') {
+      throw new Error('Table: ' + useTable + ' not supported');
+      // return false;
+    }
+
+    entities['38'] = '&amp;';
+    if (useTable === 'HTML_ENTITIES') {
+      entities['160'] = '&nbsp;';
+      entities['161'] = '&iexcl;';
+      entities['162'] = '&cent;';
+      entities['163'] = '&pound;';
+      entities['164'] = '&curren;';
+      entities['165'] = '&yen;';
+      entities['166'] = '&brvbar;';
+      entities['167'] = '&sect;';
+      entities['168'] = '&uml;';
+      entities['169'] = '&copy;';
+      entities['170'] = '&ordf;';
+      entities['171'] = '&laquo;';
+      entities['172'] = '&not;';
+      entities['173'] = '&shy;';
+      entities['174'] = '&reg;';
+      entities['175'] = '&macr;';
+      entities['176'] = '&deg;';
+      entities['177'] = '&plusmn;';
+      entities['178'] = '&sup2;';
+      entities['179'] = '&sup3;';
+      entities['180'] = '&acute;';
+      entities['181'] = '&micro;';
+      entities['182'] = '&para;';
+      entities['183'] = '&middot;';
+      entities['184'] = '&cedil;';
+      entities['185'] = '&sup1;';
+      entities['186'] = '&ordm;';
+      entities['187'] = '&raquo;';
+      entities['188'] = '&frac14;';
+      entities['189'] = '&frac12;';
+      entities['190'] = '&frac34;';
+      entities['191'] = '&iquest;';
+      entities['192'] = '&Agrave;';
+      entities['193'] = '&Aacute;';
+      entities['194'] = '&Acirc;';
+      entities['195'] = '&Atilde;';
+      entities['196'] = '&Auml;';
+      entities['197'] = '&Aring;';
+      entities['198'] = '&AElig;';
+      entities['199'] = '&Ccedil;';
+      entities['200'] = '&Egrave;';
+      entities['201'] = '&Eacute;';
+      entities['202'] = '&Ecirc;';
+      entities['203'] = '&Euml;';
+      entities['204'] = '&Igrave;';
+      entities['205'] = '&Iacute;';
+      entities['206'] = '&Icirc;';
+      entities['207'] = '&Iuml;';
+      entities['208'] = '&ETH;';
+      entities['209'] = '&Ntilde;';
+      entities['210'] = '&Ograve;';
+      entities['211'] = '&Oacute;';
+      entities['212'] = '&Ocirc;';
+      entities['213'] = '&Otilde;';
+      entities['214'] = '&Ouml;';
+      entities['215'] = '&times;';
+      entities['216'] = '&Oslash;';
+      entities['217'] = '&Ugrave;';
+      entities['218'] = '&Uacute;';
+      entities['219'] = '&Ucirc;';
+      entities['220'] = '&Uuml;';
+      entities['221'] = '&Yacute;';
+      entities['222'] = '&THORN;';
+      entities['223'] = '&szlig;';
+      entities['224'] = '&agrave;';
+      entities['225'] = '&aacute;';
+      entities['226'] = '&acirc;';
+      entities['227'] = '&atilde;';
+      entities['228'] = '&auml;';
+      entities['229'] = '&aring;';
+      entities['230'] = '&aelig;';
+      entities['231'] = '&ccedil;';
+      entities['232'] = '&egrave;';
+      entities['233'] = '&eacute;';
+      entities['234'] = '&ecirc;';
+      entities['235'] = '&euml;';
+      entities['236'] = '&igrave;';
+      entities['237'] = '&iacute;';
+      entities['238'] = '&icirc;';
+      entities['239'] = '&iuml;';
+      entities['240'] = '&eth;';
+      entities['241'] = '&ntilde;';
+      entities['242'] = '&ograve;';
+      entities['243'] = '&oacute;';
+      entities['244'] = '&ocirc;';
+      entities['245'] = '&otilde;';
+      entities['246'] = '&ouml;';
+      entities['247'] = '&divide;';
+      entities['248'] = '&oslash;';
+      entities['249'] = '&ugrave;';
+      entities['250'] = '&uacute;';
+      entities['251'] = '&ucirc;';
+      entities['252'] = '&uuml;';
+      entities['253'] = '&yacute;';
+      entities['254'] = '&thorn;';
+      entities['255'] = '&yuml;';
+    }
+
+    if (useQuoteStyle !== 'ENT_NOQUOTES') {
+      entities['34'] = '&quot;';
+    }
+    if (useQuoteStyle === 'ENT_QUOTES') {
+      entities['39'] = '&#39;';
+    }
+    entities['60'] = '&lt;';
+    entities['62'] = '&gt;';
+
+    // ascii decimals to real symbols
+    for (decimal in entities) {
+      if (entities.hasOwnProperty(decimal)) {
+        hashMap[String.fromCharCode(decimal)] = entities[decimal];
+      }
+    }
+
+    return hashMap;
+  };
+
+  htmlEntities.encode = function (string, quoteStyle) {
+    var hashMap = this.getHtmlTranslationTable('HTML_ENTITIES', quoteStyle);
+
+    string = string === null ? '' : string + '';
+
+    if (!hashMap) {
+      return false;
+    }
+
+    if (quoteStyle && quoteStyle === 'ENT_QUOTES') {
+      hashMap['\''] = '&#039;';
+    }
+
+    var regex = new RegExp('&(?:#\\d+|#x[\\da-f]+|[a-zA-Z][\\da-z]*);|[' + Object.keys(hashMap).join('')
+    // replace regexp special chars
+    .replace(/([()[\]{}\-.*+?^$|\/\\])/g, '\\$1') + ']', 'g');
+
+    return string.replace(regex, function (ent) {
+      var encoded = void 0;
+      if (ent.length > 1) {
+        encoded = ent;
+      }
+      encoded = hashMap[ent];
+      return encoded;
+    });
+  };
+
+  return htmlEntities;
+}(HTML_ENTITIES || {});
+'use strict';
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
+function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
 
   var _helpers = {
     doCancel: false
   };
 
-  formBuilder.events = formBuilderEvents(opts, _helpers);
+  formBuilder.events = formBuilderEventsFn();
 
   /**
    * Convert an attrs object into a string
    *
-   * @param  {object} attrs object of attributes for markup
+   * @param  {Object} attrs object of attributes for markup
    * @return {string}
    */
   _helpers.attrString = function (attrs) {
@@ -69,9 +254,10 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
   _helpers.safeAttr = function (name, value) {
     name = _helpers.safeAttrName(name);
-    value = window.JSON.stringify(value);
-    value = value ? '=' + value : '';
 
+    var valString = window.JSON.stringify(HTML_ENTITIES.encode(value));
+
+    value = value ? '=' + valString : '';
     return {
       name: name,
       value: value
@@ -96,8 +282,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   /**
    * Callback for when a drag begins
    *
-   * @param  {object} event
-   * @param  {object} ui
+   * @param  {Object} event
+   * @param  {Object} ui
    */
   _helpers.startMoving = function (event, ui) {
     event = event;
@@ -108,8 +294,8 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   /**
    * Callback for when a drag ends
    *
-   * @param  {object} event
-   * @param  {object} ui
+   * @param  {Object} event
+   * @param  {Object} ui
    */
   _helpers.stopMoving = function (event, ui) {
     event = event;
@@ -176,7 +362,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
    * fields in the editor.
    *
    * @todo   remove or refactor to make better use
-   * @param  {object} tt jQuery option with nexted tooltip
+   * @param  {Object} tt jQuery option with nexted tooltip
    * @return {void}
    */
   _helpers.initTooltip = function (tt) {
@@ -193,8 +379,30 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     tooltip.hide();
   };
 
+  _helpers.getTypes = function ($field) {
+    return {
+      type: $field.attr('type'),
+      subtype: $('.fld-subtype', $field).val()
+    };
+  };
+
+  // Remove null or undefined values
+  _helpers.trimAttrs = function (attrs) {
+    var xmlRemove = [null, undefined, '', false];
+    for (var i in attrs) {
+      if (xmlRemove.inArray(attrs[i])) {
+        delete attrs[i];
+      }
+    }
+    return attrs;
+  };
+
+  /**
+   * XML save
+   * @param  {Object} form sortableFields node
+   */
   _helpers.xmlSave = function (form) {
-    var formDataNew = $(form).toXML();
+    var formDataNew = $(form).toXML(_helpers);
     if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
       return false;
     }
@@ -205,17 +413,22 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     opts.notify.warning('json data not available yet');
   };
 
-  // saves the field data to our canvas (elem)
+  /**
+   * Saves and returns formData
+   * @return {XML|JSON}
+   */
   _helpers.save = function () {
-    var element = _helpers.getElement();
-    var form = document.getElementById(opts.formID);
+    var element = _helpers.getElement(),
+        form = document.getElementById(opts.formID),
+        formData;
 
     var doSave = {
       xml: _helpers.xmlSave,
       json: _helpers.jsonSave
     };
 
-    doSave[opts.dataType](form);
+    // save action for current `dataType`
+    formData = doSave[opts.dataType](form);
 
     if (element) {
       element.value = formBuilder.formData;
@@ -226,9 +439,16 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       }
     }
 
+    //trigger formSaved event
     document.dispatchEvent(formBuilder.events.formSaved);
+    return formData;
   };
 
+  /**
+   * Attempts to find an element,
+   * useful if formBuilder was called without Query
+   * @return {Object}
+   */
   _helpers.getElement = function () {
     var element = false;
     if (formBuilder.element) {
@@ -256,7 +476,10 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     return element.tagName + '-' + epoch;
   };
 
-  // updatePreview will generate the preview for radio and checkbox groups
+  /**
+   * Collect field attribute values and call fieldPreview to generate preview
+   * @param  {Object} field jQuery wrapped dom object @todo, remove jQuery dependency
+   */
   _helpers.updatePreview = function (field) {
     var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
@@ -265,25 +488,20 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       return;
     }
 
-    var fieldType,
-        $prevHolder = $('.prev-holder', field);
+    var fieldType = $(field).attr('type'),
+        $prevHolder = $('.prev-holder', field),
+        previewData = {
+      label: $('.fld-label', field).val(),
+      type: fieldType
+    },
+        preview;
 
     var subtype = $('.fld-subtype', field).val();
-    fieldClass = fieldClass.replace('-field form-field', '');
-
     if (subtype) {
-      fieldType = subtype;
-    } else {
-      fieldType = fieldClass;
+      previewData.subtype = subtype;
     }
 
-    var preview,
-        previewData = {
-      type: fieldType,
-      label: $('.fld-label', field).val()
-    };
-
-    var maxlength = $('.fld-maxlength', field);
+    var maxlength = $('.fld-maxlength', field).val();
     if (maxlength) {
       previewData.maxlength = maxlength.val();
     }
@@ -300,11 +518,11 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
       previewData.style = style;
     }
 
-    if (fieldClass === 'checkbox') {
+    if (fieldType === 'checkbox') {
       previewData.toggle = $('.checkbox-toggle', field).is(':checked');
     }
 
-    if (fieldClass.match(/(select|checkbox-group|radio-group)/)) {
+    if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
       previewData.values = [];
       previewData.multiple = $('[name="multiple"]', field).is(':checked');
 
@@ -318,6 +536,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
     }
 
     previewData.className = _helpers.classNames(field, previewData);
+    $('.fld-className', field).val(previewData.className);
 
     field.data('fieldData', previewData);
     preview = _helpers.fieldPreview(previewData);
@@ -329,15 +548,19 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
 
   /**
    * Generate preview markup
-   * @param  {object} attrs
+   *
+   * @todo   make this smarter and use tags
+   * @param  {Object} attrs
    * @return {string}       preview markup for field
    */
   _helpers.fieldPreview = function (attrs) {
     var i,
         preview = '',
         epoch = new Date().getTime();
-    var toggle = attrs.toggle ? 'toggle' : '';
 
+    attrs = Object.assign({}, attrs);
+    attrs.type = attrs.subtype || attrs.type;
+    var toggle = attrs.toggle ? 'toggle' : '';
     var attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
@@ -391,7 +614,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
         preview = '<input class="ui-autocomplete-input ' + attrs.className + '" autocomplete="on">';
         break;
       default:
-        preview = '<' + attrs.type + '></' + attrs.type + '>';
+        preview = '<' + attrs.type + '>' + attrs.label + '</' + attrs.type + '>';
     }
 
     return preview;
@@ -479,7 +702,7 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   /**
    * Display a custom tooltip for disabled fields.
    *
-   * @param  {object} field
+   * @param  {Object} field
    */
   _helpers.disabledTT = {
     className: 'frmb-tt',
@@ -497,33 +720,45 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   };
 
   _helpers.classNames = function (field, previewData) {
-    var noFormControl = ['checkbox', 'checkbox-group', 'radio-group', 'button'];
+    var noFormControl = ['checkbox', 'checkbox-group', 'radio-group'],
+        blockElements = ['header', 'paragraph', 'button'],
+        i = void 0;
+
+    for (i = blockElements.length - 1; i >= 0; i--) {
+      blockElements = blockElements.concat(opts.messages.subtypes[blockElements[i]]);
+    }
+
+    noFormControl = noFormControl.concat(blockElements);
+
     var type = previewData.type;
     var style = previewData.style;
-    var classes = [];
+    var className = field[0].querySelector('.fld-className').value;
+    var classes = [].concat(className.split(' '));
     var types = {
       button: 'btn',
       submit: 'btn'
     };
 
-    var className = field[0].querySelector('.fld-className').value;
-
     var primaryType = types[type];
 
-    if (className) {
-      classes.push(className);
-    }
-
     if (primaryType) {
-      classes.push(primaryType);
       if (style) {
+        for (i = classes.length - 1; i >= 0; i--) {
+          var re = new RegExp('(?:^|\s)' + primaryType + '-(.*?)(?:\s|$)+', 'g');
+          var match = classes[i].match(re);
+          if (match) {
+            classes.splice(i, 1);
+          }
+        }
         classes.push(primaryType + '-' + style);
       }
-    } else if (noFormControl.indexOf(type) === -1) {
+      classes.push(primaryType);
+    } else if (!noFormControl.inArray(type)) {
       classes.push('form-control');
     }
 
-    return classes.join(' ');
+    // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
+    return classes.reverse().unique().join(' ').trim();
   };
 
   _helpers.markup = function (tag) {
@@ -728,10 +963,10 @@ var formBuilderHelpers = function formBuilderHelpers(opts, formBuilder) {
   };
 
   return _helpers;
-};
+}
 'use strict';
 
-var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
+function formBuilderEventsFn() {
   'use strict';
 
   var events = {};
@@ -743,7 +978,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
   events.formSaved = new Event('formSaved');
 
   return events;
-};
+}
 'use strict';
 
 (function ($) {
@@ -798,10 +1033,11 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     var defaults = {
       dataType: 'xml',
       /**
-       * Uneditable fields or other content you would like to appear before and after regular fields:
+       * Field types to be disabled
        * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
        */
-      disableFields: [],
+      disableFields: ['autocomplete', 'hidden'],
+      // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
       prepend: false,
       // array of objects with fields values
@@ -823,7 +1059,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       roles: {
         1: 'Administrator'
       },
-      serializePrefix: 'frmb',
       messages: {
         addOption: 'Add Option',
         allFieldsRemoved: 'All fields were removed.',
@@ -838,6 +1073,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         clearAllMessage: 'Are you sure you want to clear all fields?',
         clearAll: 'Clear',
         close: 'Close',
+        content: 'Content',
         copy: 'Copy To Clipboard',
         dateField: 'Date Field',
         description: 'Help Text',
@@ -853,6 +1089,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         fileUpload: 'File Upload',
         formUpdated: 'Form Updated',
         getStarted: 'Drag a field from the right to this area',
+        header: 'Header',
         hide: 'Edit',
         hidden: 'Hidden Input',
         label: 'Label',
@@ -916,7 +1153,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         subtype: 'Type',
         subtypes: {
           text: ['text', 'password', 'email', 'color'],
-          button: ['button', 'submit']
+          button: ['button', 'submit'],
+          header: ['h1', 'h2', 'h3'],
+          paragraph: ['p', 'address', 'blockquote', 'canvas', 'output']
         },
         text: 'Text Field',
         textArea: 'Text Area',
@@ -935,7 +1174,8 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         warning: function warning(message) {
           return console.warn(message);
         }
-      }
+      },
+      prefix: 'fb'
     };
 
     // @todo function to set parent types for subtypes
@@ -954,13 +1194,20 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     // @todo refactor these to use proper mdule syntax
-    var _helpers = formBuilderHelpers(opts, formBuilder);
+    var _helpers = formBuilderHelpersFn(opts, formBuilder);
 
     var lastID = 1,
         boxID = frmbID + '-control-box';
 
     // create array of field objects to cycle through
     var frmbFields = [{
+      label: opts.messages.textArea,
+      attrs: {
+        type: 'textarea',
+        className: 'text-area',
+        name: 'textarea'
+      }
+    }, {
       label: opts.messages.text,
       attrs: {
         type: 'text',
@@ -975,13 +1222,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         name: 'select'
       }
     }, {
-      label: opts.messages.textArea,
-      attrs: {
-        type: 'textarea',
-        className: 'text-area',
-        name: 'textarea'
-      }
-    }, {
       label: opts.messages.radioGroup,
       attrs: {
         type: 'radio-group',
@@ -989,11 +1229,23 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         name: 'radio-group'
       }
     }, {
+      label: opts.messages.paragraph,
+      attrs: {
+        type: 'paragraph',
+        className: 'paragraph'
+      }
+    }, {
       label: opts.messages.hidden,
       attrs: {
         type: 'hidden',
         className: 'hidden-input',
         name: 'hidden-input'
+      }
+    }, {
+      label: opts.messages.header,
+      attrs: {
+        type: 'header',
+        className: 'header'
       }
     }, {
       label: opts.messages.fileUpload,
@@ -1039,10 +1291,12 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
     }];
 
-    // remove disabledFields
-    frmbFields = frmbFields.filter(function (field) {
-      return opts.disableFields.indexOf(field.attrs.type) < 0;
-    });
+    if (opts.disableFields) {
+      // remove disabledFields
+      frmbFields = frmbFields.filter(function (field) {
+        return !opts.disableFields.inArray(field.attrs.type);
+      });
+    }
 
     // Create draggable fields for formBuilder
     var $cbUL = $('<ul/>', {
@@ -1152,7 +1406,57 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     });
 
     // Save field on change
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select', saveAndUpdate);
+    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
+
+    // Add append and prepend options if necessary
+    var nonEditableFields = function nonEditableFields() {
+      var cancelArray = [];
+
+      if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
+        var prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
+        cancelArray.push(true);
+        $sortableFields.prepend(prependedField);
+      }
+
+      if (opts.append && !$('.disabled.append', $sortableFields).length) {
+        var appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
+        cancelArray.push(true);
+        $sortableFields.append(appendedField);
+      }
+
+      if (cancelArray.some(function (elem) {
+        return elem === true;
+      })) {
+        $stageWrap.removeClass('empty');
+      }
+    };
+
+    var prepFieldVars = function prepFieldVars($field) {
+      var isNew = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+      var fieldAttrs = $field.data('attrs') || {},
+          fType = fieldAttrs.type || $field.attr('type'),
+          values = {};
+
+      values.label = _helpers.htmlEncode($field.attr('label'));
+      values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
+      values.role = $field.attr('role');
+      values.className = $field.attr('className');
+      values.required = $field.attr('required');
+      values.maxlength = $field.attr('maxlength');
+      values.toggle = $field.attr('toggle');
+      values.multiple = fType.match(/(checkbox-group)/);
+      values.type = fType;
+      values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
+
+      var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(values.className);
+      if (match) {
+        values.style = match[1];
+      }
+
+      appendNewField(values);
+      $stageWrap.removeClass('empty');
+    };
 
     // Parse saved XML template data
     var getXML = function getXML() {
@@ -1165,7 +1469,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         });
       } else if (!xml) {
         // Load default fields if none are set
-        if (opts.defaultFields.length) {
+        if (opts.defaultFields && opts.defaultFields.length) {
           opts.defaultFields.reverse();
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
             appendNewField(opts.defaultFields[i]);
@@ -1196,29 +1500,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       doLoadData[opts.dataType]();
     };
 
-    var nonEditableFields = function nonEditableFields() {
-      var cancelArray = [];
-
-      if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
-        var prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
-        cancelArray.push(true);
-        $sortableFields.prepend(prependedField);
-      }
-
-      if (opts.append && !$('.disabled.append', $sortableFields).length) {
-        var appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
-        cancelArray.push(true);
-        $sortableFields.append(appendedField);
-      }
-
-      if (cancelArray.some(function (elem) {
-        return elem === true;
-      })) {
-        $stageWrap.removeClass('empty');
-      }
-    };
-
-    // callback to call disabled tooltips
+    // callback to track disabled tooltips
     $sortableFields.on('mousemove', 'li.disabled', function (e) {
       $('.frmb-tt', this).css({
         left: e.offsetX - 16,
@@ -1239,27 +1521,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     var nameAttr = function nameAttr(field) {
       var epoch = new Date().getTime();
       return field.data('attrs').name + '-' + epoch;
-    };
-
-    var prepFieldVars = function prepFieldVars($field) {
-      var isNew = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-      var fieldAttrs = $field.data('attrs') || {},
-          fType = fieldAttrs.type || $field.attr('type'),
-          values = {};
-
-      values.label = _helpers.htmlEncode($field.attr('label'));
-      values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
-      values.role = $field.attr('role');
-      values.required = $field.attr('required');
-      values.maxlength = $field.attr('maxlength');
-      values.toggle = $field.attr('toggle');
-      values.multiple = fType.match(/(checkbox-group)/);
-      values.type = fType;
-      values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
-
-      appendNewField(values);
-      $stageWrap.removeClass('empty');
     };
 
     // multi-line textarea
@@ -1343,59 +1604,42 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
     /**
      * Build the editable properties for the field
      * @param  {object} values configuration object for advanced fields
-     * @return {string}        markup for advanced fields
+     * @return {String}        markup for advanced fields
      */
     var advFields = function advFields(values) {
-
       var advFields = [],
           key,
           roles = values.role !== undefined ? values.role.split(',') : [];
 
-      var fieldLabelLabel = _helpers.markup('label', opts.messages.label);
-      var fieldLabelInput = _helpers.markup('input', null, {
-        type: 'text',
-        name: 'label',
-        value: values.label,
-        className: 'fld-label form-control'
-      });
-      var fieldLabel = _helpers.markup('div', [fieldLabelLabel, fieldLabelInput], {
-        className: 'form-group label-wrap'
-      });
+      // var fieldLabelLabel = _helpers.markup('label', opts.messages.label);
+      // var fieldLabelInput = _helpers.markup('input', null, {
+      //   type: 'text',
+      //   name: 'label',
+      //   value: values.label,
+      //   className: 'fld-label form-control'
+      // });
+      // var fieldLabel = _helpers.markup('div', [fieldLabelLabel, fieldLabelInput], {
+      //   className: 'form-group label-wrap'
+      // });
+      advFields.push(textAttribute('label', values));
 
-      advFields.push(fieldLabel.outerHTML);
+      // advFields.push(fieldLabel.outerHTML);
 
       values.size = values.size || 'm';
       values.style = values.style || 'default';
 
-      if (values.type !== 'button') {
-        var fieldDescLabel = _helpers.markup('label', opts.messages.description, { 'for': 'description-' + lastID }),
-            fieldDescInput = _helpers.markup('input', null, {
-          type: 'text',
-          className: 'fld-description form-control',
-          name: 'description',
-          id: 'description-' + lastID,
-          value: values.description
-        }),
-            fieldDesc = _helpers.markup('div', [fieldDescLabel, fieldDescInput], {
-          'class': 'form-group description-wrap'
-        });
-        advFields.push(fieldDesc.outerHTML);
-      }
+      advFields.push(fieldDescription(values));
 
       advFields.push(subTypeField(values.type));
-
-      // Not ready
-      // advFields.push(sizeField(values.size, values.type));
 
       advFields.push(btnStyles(values.style, values.type));
 
       // Placeholder
-      advFields.push(textAttribute('placeholder', values.type));
+      advFields.push(textAttribute('placeholder', values));
       // Class
-      advFields.push(textAttribute('className'));
+      advFields.push(textAttribute('className', values));
 
-      advFields.push('<div class="form-group name-wrap"><label>' + opts.messages.name + ' <span class="required">*</span></label>');
-      advFields.push('<input type="text" name="name" value="' + values.name + '" class="fld-name form-control" id="title-' + lastID + '" /></div>');
+      advFields.push(textAttribute('name', values));
 
       advFields.push('<div class="form-group access-wrap"><label>' + opts.messages.roles + '</label>');
 
@@ -1409,15 +1653,53 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
       advFields.push('</div></div>');
 
-      // if field type is not checkbox, checkbox/radio group or select list, add max length
-      if ($.inArray(values.type, ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden', 'button']) < 0) {
-        advFields.push('<div class="form-group"><label class="maxlength-label">' + opts.messages.maxlength + '</label>');
-        advFields.push('<input type="text" name="maxlength" maxlength="4" value="' + (values.maxlength !== undefined ? values.maxlength : '') + '" class="fld-maxlength form-control" id="maxlength-' + lastID + '" /></div>');
-      }
+      advFields.push(textAttribute('maxlength', values));
 
       return advFields.join('');
     };
 
+    /**
+     * Description meta for field
+     *
+     * @param  {Object} values field values
+     * @return {String}        markup for attribute, @todo change to actual Node
+     */
+    var fieldDescription = function fieldDescription(values) {
+      var noDescFields = ['header', 'paragraph', 'button'],
+          noMakeAttr = [],
+          descriptionField = '';
+
+      noDescFields = noDescFields.concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
+
+      if (noDescFields.indexOf(values.type) === -1) {
+        noMakeAttr.push(true);
+      }
+
+      if (noMakeAttr.some(function (elem) {
+        return elem === true;
+      })) {
+        var fieldDescLabel = _helpers.markup('label', opts.messages.description, { 'for': 'description-' + lastID }),
+            fieldDescInput = _helpers.markup('input', null, {
+          type: 'text',
+          className: 'fld-description form-control',
+          name: 'description',
+          id: 'description-' + lastID,
+          value: values.description
+        }),
+            fieldDesc = _helpers.markup('div', [fieldDescLabel, fieldDescInput], {
+          'class': 'form-group description-wrap'
+        });
+        descriptionField = fieldDesc.outerHTML;
+      }
+
+      return descriptionField;
+    };
+
+    /**
+     * Changes a fields type
+     * @param  {String} type
+     * @return {String}      markup for type <select> input
+     */
     var subTypeField = function subTypeField(type) {
       var subTypes = opts.messages.subtypes,
           subType = '';
@@ -1434,29 +1716,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
 
       return subType;
-    };
-
-    var sizeField = function sizeField(size, type) {
-      var sizes = Object.keys(opts.messages.sizes),
-          tags = {
-        button: 'btn',
-        text: 'input'
-      },
-          sizeField = '';
-
-      if (tags[type]) {
-        var sizeLabel = '<label>' + opts.messages.size + '</label>';
-        sizeField += '<select name="size" class="fld-size form-control" id="size-' + lastID + '">';
-        sizes.forEach(function (element) {
-          var selected = size === element ? 'selected' : '';
-          sizeField += '<option value="' + tags[type] + '-' + element + '" ' + selected + '>' + opts.messages.sizes[element] + '</option>';
-        });
-
-        sizeField += '</select>';
-        sizeField = '<div class="form-group size-wrap">' + sizeLabel + ' ' + sizeField + '</div>';
-      }
-
-      return sizeField;
     };
 
     var btnStyles = function btnStyles(style, type) {
@@ -1484,30 +1743,99 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       return styleField;
     };
 
-    var textAttribute = function textAttribute(attribute) {
-      var type = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-
+    /**
+     * Generate some text inputs for field attributes, **will be replaced**
+     * @param  {String} attribute
+     * @param  {Object} values
+     * @return {String}
+     */
+    var textAttribute = function textAttribute(attribute, values) {
       var placeholderFields = ['text', 'textarea', 'select'];
+      var noName = ['header'];
+
+      var textArea = ['paragraph'];
+
+      var noMaxlength = ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden', 'button', 'header'];
+
+      var attrVal = attribute === 'label' ? values.label : values[attribute] || '';
+      var attrLabel = opts.messages[attribute];
+      if (attribute === 'label' && textArea.inArray(values.type)) {
+        attrLabel = opts.messages.content;
+      }
+
+      noName = noName.concat(opts.messages.subtypes.header, textArea);
+      noMaxlength = noMaxlength.concat(textArea);
+
       var placeholders = opts.messages.placeholders,
           placeholder = placeholders[attribute] || '',
           attributefield = '',
           noMakeAttr = [];
 
-      if (attribute === 'placeholder' && placeholderFields.indexOf(type) === -1) {
+      // Field has placeholder attribute
+      if (attribute === 'placeholder' && !placeholderFields.inArray(values.type)) {
         noMakeAttr.push(true);
       }
 
-      var dontMake = noMakeAttr.some(function (elem) {
-        return elem === true;
-      });
+      // Field has name attribute
+      if (attribute === 'name' && noName.inArray(values.type)) {
+        noMakeAttr.push(true);
+      }
 
-      if (!dontMake) {
-        var attributeLabel = '<label>' + opts.messages[attribute] + '</label>';
-        attributefield += '<input type="text" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
+      // Field has maxlength attribute
+      if (attribute === 'maxlength' && noMaxlength.inArray(values.type)) {
+        noMakeAttr.push(true);
+      }
+
+      if (!noMakeAttr.some(function (elem) {
+        return elem === true;
+      })) {
+        var attributeLabel = '<label>' + attrLabel + '</label>';
+
+        if (attribute === 'label' && textArea.inArray(values.type)) {
+          attributefield += '<textarea name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">' + attrVal + '</textarea>';
+        } else {
+          attributefield += '<input type="text" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
+        }
+
         attributefield = '<div class="form-group ' + attribute + '-wrap">' + attributeLabel + ' ' + attributefield + '</div>';
       }
 
       return attributefield;
+    };
+
+    var requiredField = function requiredField(values) {
+      var noRequire = ['header', 'paragraph', 'button'],
+          noMake = [],
+          requireFeild = '';
+
+      if (noRequire.inArray(values.type)) {
+        noMake.push(true);
+      }
+
+      if (!noMake.some(function (elem) {
+        return elem === true;
+      })) {
+
+        requireFeild += '<div class="form-group">';
+        requireFeild += '<label>&nbsp;</label>';
+        var _requiredField = _helpers.markup('input', null, {
+          className: 'required',
+          type: 'checkbox',
+          name: 'required-' + lastID,
+          id: 'required-' + lastID,
+          value: 1
+        });
+
+        _requiredField.defaultChecked = values.required === 'true';
+
+        requireFeild += _requiredField.outerHTML;
+        requireFeild += _helpers.markup('label', opts.messages.required, {
+          className: 'required-label',
+          'for': 'required-' + lastID
+        }).outerHTML;
+        requireFeild += '</div>';
+      }
+      return requireFeild;
     };
 
     // Append the new field to the editor
@@ -1535,24 +1863,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
       liContents += '<div class="form-elements">';
-      liContents += '<div class="form-group">';
-      liContents += '<label>&nbsp;</label>';
-      var requiredField = _helpers.markup('input', null, {
-        className: 'required',
-        type: 'checkbox',
-        name: 'required-' + lastID,
-        id: 'required-' + lastID,
-        value: 1
-      });
 
-      requiredField.defaultChecked = required === 'true';
+      liContents += requiredField(values);
 
-      liContents += requiredField.outerHTML;
-      liContents += _helpers.markup('label', opts.messages.required, {
-        className: 'required-label',
-        'for': 'required-' + lastID
-      }).outerHTML;
-      liContents += '</div>';
       if (values.type === 'checkbox') {
         liContents += '<div class="form-group">';
         liContents += '<label>&nbsp;</label>';
@@ -1567,6 +1880,7 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
       var li = _helpers.markup('li', liContents, {
         'class': values.type + '-field form-field',
+        'type': values.type,
         id: 'frm-' + lastID + '-item'
       }),
           $li = $(li);
@@ -1674,17 +1988,22 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
       }
     });
 
+    /**
+     * Toggles the edit mode for the given field
+     * @param  {String} fieldId
+     */
     _helpers.toggleEdit = function (fieldId) {
       var field = document.getElementById(fieldId),
           toggleBtn = $('.toggle-form', field),
           editMode = $('.frm-holder', field);
+      field.classList.toggle('editing');
       toggleBtn.toggleClass('open');
       $('.prev-holder', field).slideToggle(250);
       editMode.slideToggle(250);
     };
 
     // update preview to label
-    $sortableFields.on('keyup change', 'input[name="label"]', function () {
+    $sortableFields.on('keyup change', '[name="label"]', function () {
       $('.field-label', $(this).closest('li')).text($(this).val());
     });
 
@@ -1747,6 +2066,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
           $field.removeClass('deleting');
           $field.remove();
           _helpers.save();
+          if (!$sortableFields[0].childNodes.length) {
+            $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
+          }
         });
       };
 
@@ -1762,10 +2084,6 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         $field.addClass('deleting');
       } else {
         removeField($field);
-      }
-
-      if ($('> li', $sortableFields).length === 1) {
-        $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
       }
     });
 
@@ -1903,37 +2221,9 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 (function ($) {
   'use strict';
 
-  $.fn.toXML = function (options) {
-    var defaults = {
-      prepend: '',
-      attributes: ['class']
-    };
-    var opts = Object.assign(defaults, options);
+  $.fn.toXML = function (_helpers) {
 
-    var serialStr = '',
-        _helpers = {};
-
-    _helpers.getType = function ($field) {
-      var type = $('.fld-subtype', $field).val() || $field.attr('class').replace('-field form-field', '');
-      return type;
-    };
-
-    _helpers.hyphenCase = function (str) {
-      return str.replace(/([A-Z])/g, function ($1) {
-        return '-' + $1.toLowerCase();
-      });
-    };
-
-    _helpers.attrString = function (attrs) {
-      var attributes = [];
-      for (var attr in attrs) {
-        if (attrs.hasOwnProperty(attr) && attrs[attr]) {
-          var attrString = attr + '="' + attrs[attr] + '"';
-          attributes.push(attrString);
-        }
-      }
-      return attributes.join(' ');
-    };
+    var serialStr = '';
 
     var fieldOptions = function fieldOptions($field) {
       var options = [];
@@ -1949,44 +2239,44 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
     // Begin the core plugin
     this.each(function () {
-      if (this.childNodes.length >= 1) {
+      var sortableFields = this;
+      if (sortableFields.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
 
         // build new xml
-        this.childNodes.forEach(function (field) {
+        sortableFields.childNodes.forEach(function (field) {
           var $field = $(field);
           var fieldData = $field.data('fieldData');
 
-          // console.log($(field));
-
           if (!$field.hasClass('disabled')) {
-            for (var att = 0; att < opts.attributes.length; att++) {
-              var roleVals = field.querySelectorAll('.roles-field:checked').map(function (n) {
-                return n.value;
-              }).join(',');
+            var roleVals = field.querySelectorAll('.roles-field:checked').map(function (n) {
+              return n.value;
+            }).join(',');
 
-              var xmlAttrs = {
-                className: fieldData.className,
-                description: $('input.fld-description', $field).val(),
-                label: $('input.fld-label', $field).val(),
-                maxlength: $('input.fld-maxlength', $field).val(),
-                multiple: $('input[name="multiple"]', $field).is(':checked'),
-                name: $('input.fld-name', $field).val(),
-                placeholder: $('input.fld-placeholder', $field).val(),
-                required: $('input.required', $field).is(':checked'),
-                role: roleVals,
-                toggle: $('.checkbox-toggle', $field).is(':checked'),
-                type: _helpers.getType($field)
-              },
-                  multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
-                  attrsString = _helpers.attrString(xmlAttrs),
-                  fSlash = !multipleField ? '/' : '';
-              serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+            var types = _helpers.getTypes($field);
+            var xmlAttrs = {
+              className: fieldData.className,
+              description: $('input.fld-description', $field).val(),
+              label: $('.fld-label', $field).val(),
+              maxlength: $('input.fld-maxlength', $field).val(),
+              multiple: $('input[name="multiple"]', $field).is(':checked'),
+              name: $('input.fld-name', $field).val(),
+              placeholder: $('input.fld-placeholder', $field).val(),
+              required: $('input.required', $field).is(':checked'),
+              role: roleVals,
+              toggle: $('.checkbox-toggle', $field).is(':checked'),
+              type: _helpers.getTypes($field)
+            };
+            xmlAttrs = Object.assign(xmlAttrs, types);
+            xmlAttrs = _helpers.trimAttrs(xmlAttrs);
+            var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
+                attrsString = _helpers.attrString(xmlAttrs),
+                fSlash = !multipleField ? '/' : '';
+            serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
 
-              if (multipleField) {
-                serialStr += fieldOptions($field);
-                serialStr += '\n\t\t</field>';
-              }
+            if (multipleField) {
+              serialStr += fieldOptions($field);
+              serialStr += '\n\t\t</field>';
             }
           }
         });
@@ -2043,6 +2333,41 @@ if (typeof Event !== 'function') {
     };
   })();
 }
+
+/**
+ * Nice syntax for testing if element is in array
+ * @param  {String|Object} needle
+ * @return {Boolean}
+ */
+Array.prototype.inArray = function (needle) {
+  return this.indexOf(needle) !== -1;
+};
+
+/**
+ * Remove duplicates from an array of elements
+ * @param  {array} arrArg array with possible duplicates
+ * @return {array}        array with only unique values
+ */
+Array.prototype.unique = function () {
+  return this.filter(function (elem, pos, arr) {
+    return arr.indexOf(elem) === pos;
+  });
+};
+
+// Remove specific values from array. use sparingly
+Array.prototype.remove = function () {
+  var what,
+      a = arguments,
+      L = a.length,
+      ax;
+  while (L && this.length) {
+    what = a[--L];
+    while ((ax = this.indexOf(what)) !== -1) {
+      this.splice(ax, 1);
+    }
+  }
+  return this;
+};
 
 // Lets us loop and map through NodeLists
 NodeList.prototype.forEach = Array.prototype.forEach;

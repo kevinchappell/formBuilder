@@ -2,7 +2,7 @@
     "nonew"     : true,
     "plusplus"  : false,
     "curly"     : true,
-    "latedef"   : true,
+    "latedef"   : false,
     "unused"    : "strict",
     "noarg"     : true,
     "indent"    : 2,
@@ -38,7 +38,7 @@
         "spyOn"      : false,
         "$"          : false,
         "_"          : false,
-        "formBuilderHelpers": false,
-        "formBuilderEvents": false
+        "formBuilderHelpersFn": false,
+        "formBuilderEventsFn": false
     }
 }

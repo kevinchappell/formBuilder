@@ -49,12 +49,11 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   };
 })(jQuery);
 'use strict';
+// render the formBuilder XML into html
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-// render the formBuilder XML into html
-var FormRender = function FormRender(options, element) {
-  'use strict';
+function FormRenderFn(options, element) {
 
   var formRender = this,
       defaults = {
@@ -82,7 +81,7 @@ var FormRender = function FormRender(options, element) {
   },
       _helpers = {};
 
-  var opts = $.extend(defaults, options);
+  var opts = $.extend(true, defaults, options);
 
   /**
    * Require the html element if it has been lost
@@ -101,7 +100,7 @@ var FormRender = function FormRender(options, element) {
    * Make an ID for this element using current date and tag
    *
    * @param  {Boolean} element
-   * @return {String}          new id for element
+   * @return {String}  new id for element
    */
   _helpers.makeId = function (element) {
     var epoch = new Date().getTime();
@@ -117,10 +116,10 @@ var FormRender = function FormRender(options, element) {
   /**
    * Generate markup wrapper where needed
    *
-   * @param  {string} type
-   * @param  {object} attrs
-   * @param  {string} content we wrap this
-   * @return {string}
+   * @param  {string}              tag
+   * @param  {String|Array|Object} content we wrap this
+   * @param  {object}              attrs
+   * @return {String}
    */
   _helpers.markup = function (tag) {
     var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
@@ -173,10 +172,13 @@ var FormRender = function FormRender(options, element) {
         fieldLabel = '',
         optionsMarkup = '';
     var fieldAttrs = _helpers.parseAttrs(field.attributes),
+        fieldLabelText = fieldAttrs.label || '',
         fieldDesc = fieldAttrs.description || '',
         fieldRequired = '',
         fieldOptions = $('option', field);
     fieldAttrs.id = fieldAttrs.name;
+
+    fieldAttrs.type = fieldAttrs.subtype || fieldAttrs.type;
 
     if (fieldAttrs.required) {
       fieldAttrs.required = null;
@@ -188,7 +190,6 @@ var FormRender = function FormRender(options, element) {
       if (fieldDesc) {
         fieldDesc = '<span class="tooltip-element" tooltip="' + fieldDesc + '">?</span>';
       }
-      var fieldLabelText = fieldAttrs.label || '';
       fieldLabel = '<label for="' + fieldAttrs.id + '">' + fieldLabelText + ' ' + fieldRequired + ' ' + fieldDesc + '</label>';
     }
 
@@ -272,12 +273,13 @@ var FormRender = function FormRender(options, element) {
         }
         break;
       default:
-        fieldMarkup = '<' + fieldAttrs.type + '></' + fieldAttrs.type + '>';
+        fieldMarkup = '<' + fieldAttrs.type + '>' + fieldLabelText + '</' + fieldAttrs.type + '>';
     }
 
     if (fieldAttrs.type !== 'hidden') {
+      var className = fieldAttrs.id ? 'form-group field-' + fieldAttrs.id : '';
       fieldMarkup = _helpers.markup('div', fieldMarkup, {
-        className: 'form-group field-' + fieldAttrs.id
+        className: className
       });
     } else {
       fieldMarkup = _helpers.markup('input', null, fieldAttrs);
@@ -377,19 +379,18 @@ var FormRender = function FormRender(options, element) {
   // @todo - form configuration settings (control position, creatorId, theme etc)
   // settings = $('settings', formData);
 
-  if (!formData) {
-    opts.notify.error(opts.label.noFormData);
-    return false;
-  } else {
-    opts.notify.success(opts.label.formRendered);
-  }
-
   // generate field markup if we have fields
   if (fields.length) {
     fields.each(function (index, field) {
       index = index;
       rendered.push(_helpers.fieldRender(field));
     });
+  } else {
+    var noData = _helpers.markup('div', opts.label.noFormData, {
+      className: 'no-form-data'
+    });
+    rendered.push(noData);
+    opts.notify.error(opts.label.noFormData);
   }
 
   if (opts.render) {
@@ -409,20 +410,21 @@ var FormRender = function FormRender(options, element) {
         element.setAttribute('disabled', 'disabled');
       }
     }
+    if (fields.length) {
+      opts.notify.success(opts.label.formRendered);
+    }
   } else {
-    var output = rendered.join('');
-    formRender.markup = output;
+    formRender.markup = rendered.join('');
   }
 
   return formRender;
-};
+}
 
 (function ($) {
-  'use strict';
 
   $.fn.formRender = function (options) {
     this.each(function () {
-      var formRender = new FormRender(options, this);
+      var formRender = new FormRenderFn(options, this);
       return formRender;
     });
   };

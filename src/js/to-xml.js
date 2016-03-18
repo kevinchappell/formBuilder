@@ -2,37 +2,9 @@
 // @todo this is a total mess that has to be refactored
 (function($) {
   'use strict';
-  $.fn.toXML = function(options) {
-    var defaults = {
-      prepend: '',
-      attributes: ['class']
-    };
-    var opts = Object.assign(defaults, options);
+  $.fn.toXML = function(_helpers) {
 
-    var serialStr = '',
-      _helpers = {};
-
-    _helpers.getType = function($field) {
-      let type = $('.fld-subtype', $field).val() || $field.attr('class').replace('-field form-field', '');
-      return type;
-    };
-
-    _helpers.hyphenCase = (str) => {
-      return str.replace(/([A-Z])/g, function($1) {
-        return '-' + $1.toLowerCase();
-      });
-    };
-
-    _helpers.attrString = function(attrs) {
-      var attributes = [];
-      for (var attr in attrs) {
-        if (attrs.hasOwnProperty(attr) && attrs[attr]) {
-          let attrString = `${attr}="${attrs[attr]}"`;
-          attributes.push(attrString);
-        }
-      }
-      return attributes.join(' ');
-    };
+    var serialStr = '';
 
     var fieldOptions = function($field) {
       let options = [];
@@ -48,44 +20,44 @@
 
     // Begin the core plugin
     this.each(function() {
-      if (this.childNodes.length >= 1) {
+      let sortableFields = this;
+      if (sortableFields.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
 
         // build new xml
-        this.childNodes.forEach(function(field) {
+        sortableFields.childNodes.forEach(function(field) {
           var $field = $(field);
           var fieldData = $field.data('fieldData');
 
-          // console.log($(field));
-
           if (!($field.hasClass('disabled'))) {
-            for (var att = 0; att < opts.attributes.length; att++) {
-              var roleVals = field.querySelectorAll('.roles-field:checked').map(function(n) {
-                return n.value;
-              }).join(',');
+            var roleVals = field.querySelectorAll('.roles-field:checked').map(function(n) {
+              return n.value;
+            }).join(',');
 
-              var xmlAttrs = {
-                  className: fieldData.className,
-                  description: $('input.fld-description', $field).val(),
-                  label: $('input.fld-label', $field).val(),
-                  maxlength: $('input.fld-maxlength', $field).val(),
-                  multiple: $('input[name="multiple"]', $field).is(':checked'),
-                  name: $('input.fld-name', $field).val(),
-                  placeholder: $('input.fld-placeholder', $field).val(),
-                  required: $('input.required', $field).is(':checked'),
-                  role: roleVals,
-                  toggle: $('.checkbox-toggle', $field).is(':checked'),
-                  type: _helpers.getType($field)
-                },
-                multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
-                attrsString = _helpers.attrString(xmlAttrs),
-                fSlash = (!multipleField ? '/' : '');
-              serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+            let types = _helpers.getTypes($field);
+            var xmlAttrs = {
+              className: fieldData.className,
+              description: $('input.fld-description', $field).val(),
+              label: $('.fld-label', $field).val(),
+              maxlength: $('input.fld-maxlength', $field).val(),
+              multiple: $('input[name="multiple"]', $field).is(':checked'),
+              name: $('input.fld-name', $field).val(),
+              placeholder: $('input.fld-placeholder', $field).val(),
+              required: $('input.required', $field).is(':checked'),
+              role: roleVals,
+              toggle: $('.checkbox-toggle', $field).is(':checked'),
+              type: _helpers.getTypes($field)
+            };
+            xmlAttrs = Object.assign(xmlAttrs, types);
+            xmlAttrs = _helpers.trimAttrs(xmlAttrs);
+            var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
+              attrsString = _helpers.attrString(xmlAttrs),
+              fSlash = (!multipleField ? '/' : '');
+            serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
 
-              if (multipleField) {
-                serialStr += fieldOptions($field);
-                serialStr += '\n\t\t</field>';
-              }
+            if (multipleField) {
+              serialStr += fieldOptions($field);
+              serialStr += '\n\t\t</field>';
             }
           }
         });

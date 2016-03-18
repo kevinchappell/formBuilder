@@ -1,6 +1,6 @@
+'use strict';
 // render the formBuilder XML into html
-var FormRender = function(options, element) {
-  'use strict';
+function FormRenderFn(options, element) {
 
   var formRender = this,
     defaults = {
@@ -28,7 +28,7 @@ var FormRender = function(options, element) {
     },
     _helpers = {};
 
-  var opts = $.extend(defaults, options);
+  var opts = $.extend(true, defaults, options);
 
 
   /**
@@ -48,7 +48,7 @@ var FormRender = function(options, element) {
    * Make an ID for this element using current date and tag
    *
    * @param  {Boolean} element
-   * @return {String}          new id for element
+   * @return {String}  new id for element
    */
   _helpers.makeId = function(element) {
     let epoch = new Date().getTime();
@@ -64,10 +64,10 @@ var FormRender = function(options, element) {
   /**
    * Generate markup wrapper where needed
    *
-   * @param  {string} tag
-   * @param  {object} attrs
-   * @param  {string} content we wrap this
-   * @return {string}
+   * @param  {string}              tag
+   * @param  {String|Array|Object} content we wrap this
+   * @param  {object}              attrs
+   * @return {String}
    */
   _helpers.markup = function(tag, content = '', attrs = {}) {
     let contentType,
@@ -117,10 +117,13 @@ var FormRender = function(options, element) {
       fieldLabel = '',
       optionsMarkup = '';
     var fieldAttrs = _helpers.parseAttrs(field.attributes),
+      fieldLabelText = fieldAttrs.label || '',
       fieldDesc = fieldAttrs.description || '',
       fieldRequired = '',
       fieldOptions = $('option', field);
     fieldAttrs.id = fieldAttrs.name;
+
+    fieldAttrs.type = fieldAttrs.subtype || fieldAttrs.type;
 
     if (fieldAttrs.required) {
       fieldAttrs.required = null;
@@ -132,7 +135,6 @@ var FormRender = function(options, element) {
       if (fieldDesc) {
         fieldDesc = `<span class="tooltip-element" tooltip="${fieldDesc}">?</span>`;
       }
-      let fieldLabelText = fieldAttrs.label || '';
       fieldLabel = `<label for="${fieldAttrs.id}">${fieldLabelText} ${fieldRequired} ${fieldDesc}</label>`;
     }
 
@@ -214,12 +216,13 @@ var FormRender = function(options, element) {
         }
         break;
       default:
-        fieldMarkup = `<${fieldAttrs.type}></${fieldAttrs.type}>`;
+        fieldMarkup = `<${fieldAttrs.type}>${fieldLabelText}</${fieldAttrs.type}>`;
     }
 
     if (fieldAttrs.type !== 'hidden') {
+      let className = fieldAttrs.id ? 'form-group field-' + fieldAttrs.id : '';
       fieldMarkup = _helpers.markup('div', fieldMarkup, {
-        className: 'form-group field-' + fieldAttrs.id
+        className: className
       });
     } else {
       fieldMarkup = _helpers.markup('input', null, fieldAttrs);
@@ -319,19 +322,18 @@ var FormRender = function(options, element) {
   // @todo - form configuration settings (control position, creatorId, theme etc)
   // settings = $('settings', formData);
 
-  if (!formData) {
-    opts.notify.error(opts.label.noFormData);
-    return false;
-  } else {
-    opts.notify.success(opts.label.formRendered);
-  }
-
   // generate field markup if we have fields
   if (fields.length) {
     fields.each(function(index, field) {
       index = index;
       rendered.push(_helpers.fieldRender(field));
     });
+  } else {
+    let noData = _helpers.markup('div', opts.label.noFormData, {
+      className: 'no-form-data'
+    });
+    rendered.push(noData);
+    opts.notify.error(opts.label.noFormData);
   }
 
   if (opts.render) {
@@ -351,21 +353,21 @@ var FormRender = function(options, element) {
         element.setAttribute('disabled', 'disabled');
       }
     }
+    if (fields.length) {
+      opts.notify.success(opts.label.formRendered);
+    }
   } else {
-    var output = rendered.join('');
-    formRender.markup = output;
+    formRender.markup = rendered.join('');
   }
 
   return formRender;
-
-};
+}
 
 (function($) {
-  'use strict';
 
   $.fn.formRender = function(options) {
     this.each(function() {
-      let formRender = new FormRender(options, this);
+      let formRender = new FormRenderFn(options, this);
       return formRender;
     });
   };

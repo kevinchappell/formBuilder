@@ -14,3 +14,5 @@
 .icon-resize-vertical:before { content: '\e80c'; } /* '' */
 .icon-button-input:before { content: '\e80d'; } /* '' */
 .icon-attach:before { content: '\e80e'; } /* '' */
+.icon-header:before { content: '\e80f'; } /* '' */
+.icon-paragraph:before { content: '\e810'; } /* '' */

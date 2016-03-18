@@ -44,6 +44,41 @@ if (typeof Event !== 'function') {
   })();
 }
 
+/**
+ * Nice syntax for testing if element is in array
+ * @param  {String|Object} needle
+ * @return {Boolean}
+ */
+Array.prototype.inArray = function(needle) {
+  return this.indexOf(needle) !== -1;
+};
+
+
+/**
+ * Remove duplicates from an array of elements
+ * @param  {array} arrArg array with possible duplicates
+ * @return {array}        array with only unique values
+ */
+Array.prototype.unique = function() {
+  return this.filter((elem, pos, arr) => {
+    return arr.indexOf(elem) === pos;
+  });
+};
+
+// Remove specific values from array. use sparingly
+Array.prototype.remove = function() {
+  var what, a = arguments,
+    L = a.length,
+    ax;
+  while (L && this.length) {
+    what = a[--L];
+    while ((ax = this.indexOf(what)) !== -1) {
+      this.splice(ax, 1);
+    }
+  }
+  return this;
+};
+
 // Lets us loop and map through NodeLists
 NodeList.prototype.forEach = Array.prototype.forEach;
 NodeList.prototype.map = Array.prototype.map;
