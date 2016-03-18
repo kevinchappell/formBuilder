@@ -797,9 +797,11 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
 
     var defaults = {
       dataType: 'xml',
-      // Uneditable fields or other content you would like to
-      // appear before and after regular fields.
-      disableFields: [], // ex: ['autocomplete']
+      /**
+       * Uneditable fields or other content you would like to appear before and after regular fields:
+       * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
+       */
+      disableFields: [],
       append: false,
       prepend: false,
       // array of objects with fields values
@@ -1523,14 +1525,11 @@ var formBuilderEvents = function formBuilderEvents(opts, _helpers) {
         className: 'toggle-form btn icon-pencil',
         title: opts.messages.hide
       }),
-          fieldActions = _helpers.markup('div', [toggleBtn, delBtn], {
-        className: 'field-actions'
-      }).outerHTML,
           required = values.required,
           toggle = values.toggle || undefined,
           tooltip = values.description !== '' ? '<span class="tooltip-element" tooltip="' + values.description + '">?</span>' : '';
 
-      var liContents = fieldActions;
+      var liContents = _helpers.markup('div', [toggleBtn, delBtn], { className: 'field-actions' }).outerHTML;
 
       liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>';
       liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;

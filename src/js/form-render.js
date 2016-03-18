@@ -64,7 +64,7 @@ var FormRender = function(options, element) {
   /**
    * Generate markup wrapper where needed
    *
-   * @param  {string} type
+   * @param  {string} tag
    * @param  {object} attrs
    * @param  {string} content we wrap this
    * @return {string}
@@ -303,8 +303,6 @@ var FormRender = function(options, element) {
 
   /**
    * Extend Element prototype to remove content
-   *
-   * @param  {object} fields Node elements
    */
   Element.prototype.emptyContainer = function() {
     var element = this;
