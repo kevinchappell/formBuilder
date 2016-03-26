@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.20
+Version: 1.9.21
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -227,10 +227,10 @@ textarea.form-control {
   background-image: none; }
 
 .pull-right {
-  float: right; }
+  float: right !important; }
 
 .pull-left {
-  float: left; }
+  float: left !important; }
 
 @font-face {
   font-family: 'form-builder-font';

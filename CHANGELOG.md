@@ -1,5 +1,14 @@
 # Changelog
 
+- v1.9.21 - Bugfix: Add pull left and right to  `_bs.scss`
+- v1.9.20 - Feature: sortableFields #114
+- v1.9.19
+  - Feature: controlPosition option #114
+  - Feature: sortableFields option #114
+- v1.9.18 - Bugfix: Button variables not processed from XML #113
+- v1.9.17 - Bugfix: Umlauts break XML #112
+- v1.9.16 - Bugfix: XML parse issue [#110](https://github.com/kevinchappell/formBuilder/pull/110)
+- v1.9.15 - Bugfix: Option character encoding problem [#109](https://github.com/kevinchappell/formBuilder/pull/109)
 - v1.9.14 - 
   - Feature: Header and Paragraph tags [#108](https://github.com/kevinchappell/formBuilder/pull/108)
   - Bugfix: button classes, special character encoding, renamed functions for Selenium
