@@ -1,10 +1,11 @@
 'use strict';
-hljs.initHighlightingOnLoad();
-var isSite = (window.location.href.indexOf('kevinchappell.github.io') !== -1 || window.location.href.indexOf('kevinchappell.github.io') !== -1);
+
+var isSite = (window.location.href.indexOf('kevinchappell.github.io') !== -1 || window.location.href.indexOf('formbuilder.online') !== -1);
 
 ((window.gitter = {}).chat = {}).options = {
   room: 'kevinchappell/formBuilder'
 };
+hljs.initHighlightingOnLoad();
 
 var getStyles = function() {
   var styles = [];
