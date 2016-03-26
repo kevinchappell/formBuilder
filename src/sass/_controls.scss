@@ -2,6 +2,12 @@
   float: right;
   width: 26%;
 
+  &.pull-left {
+    .form-actions {
+      float: left;
+    }
+  }
+
   h4 {
     margin-top: 0;
     color: $grey;
@@ -11,7 +17,7 @@
     color: $success;
   }
 
-  @include breakpoint("phone-lrg") {
+  @include breakpoint('phone-lrg') {
     width: 64px;
 
     h4 {
@@ -20,10 +26,28 @@
   }
 }
 
+.frmb-control {
+  &.sort-enabled {
+    li.ui-state-highlight {
+      box-shadow: none;
+      height: 0;
+      width: 100%;
+      background: radial-gradient(ellipse at center, rgba(84, 84, 84, 1) 0%, rgba(0, 0, 0, 0) 75%);
+      border: 0 none;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      visibility: visible;
+      overflow: hidden;
+      margin: 1px 0 3px;
+      animation: PLACEHOLDER 250ms forwards;
+    }
+  }
+}
+
 .frmb-control li {
   cursor: move;
   list-style: none;
-  margin: 0 0 3px;
+  margin: -1px 0 0;
+  box-shadow: 0 0 1px 0 inset;
   padding: 10px;
   text-align: left;
   background: $white;
@@ -49,6 +73,13 @@
     background-color: darken($white, 5%);
   }
 
+  &.ui-sortable-helper {
+    border-radius: 5px;
+    transition: box-shadow 250ms;
+    box-shadow: 2px 2px 6px 0 $grey;
+    border: 1px solid $white;
+  }
+
   &.ui-state-highlight {
     width: 0;
     overflow: hidden;
@@ -57,23 +88,11 @@
     border: 0 none;
   }
 
-  &.smallme {
-    transform: scale(0.2);
-  }
-
-  &.ui-sortable-helper {
-    border-radius: 5px;
-    transition: box-shadow 250ms, transform 250ms;
-    transform: scale(1.1);
-    box-shadow: 2px 2px 6px 0 $grey;
-    border: 1px solid $white;
-  }
-
   &.moving {
     opacity: 0.6;
   }
 
-  @include breakpoint("phone-lrg") {
+  @include breakpoint('phone-lrg') {
     &:before {
       font-size: 30px;
     }
@@ -91,6 +110,7 @@
 
 .form-actions {
   float: right;
+  margin-top: 5px;
 
   .clear-all {
     &:hover {

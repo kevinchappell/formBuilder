@@ -15,14 +15,14 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.attrString = function(attrs) {
     var attributes = [];
-
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
         attr = _helpers.safeAttr(attr, attrs[attr]);
         attributes.push(attr.name + attr.value);
       }
     }
-    return attributes.join(' ');
+    var attrString = attributes.join(' ');
+    return attrString;
   };
 
   /**
@@ -126,7 +126,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       cancelArray = [];
     _helpers.stopIndex = ui.placeholder.index() - 1;
 
-    if (ui.item.parent().hasClass('frmb-control')) {
+    if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
     }
 
@@ -183,7 +183,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
     tooltip.hide();
   };
 
-
+  /**
+   * Attempts to get element type and subtype
+   *
+   * @param  {Object} $field
+   * @return {Object}
+   */
   _helpers.getTypes = function($field) {
     return {
       type: $field.attr('type'),
@@ -207,8 +212,20 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return attrs;
   };
 
+  // Remove null or undefined values
+  _helpers.escapeAttrs = function(attrs) {
+    for (var attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        attrs[attr] = HTML_ENTITIES.encode(attrs[attr]);
+      }
+    }
+
+    return attrs;
+  };
+
   /**
    * XML save
+   *
    * @param  {Object} form sortableFields node
    */
   _helpers.xmlSave = function(form) {
@@ -291,7 +308,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.updatePreview = function(field) {
     var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
-
     if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
       return;
     }
@@ -359,16 +375,16 @@ function formBuilderHelpersFn(opts, formBuilder) {
    *
    * @todo   make this smarter and use tags
    * @param  {Object} attrs
-   * @return {string}       preview markup for field
+   * @return {String}       preview markup for field
    */
   _helpers.fieldPreview = function(attrs) {
     var i,
       preview = '',
       epoch = new Date().getTime();
-
     attrs = Object.assign({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
     let toggle = attrs.toggle ? 'toggle' : '';
+    // attrs = _helpers.escapeAttrs(attrs);
     let attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
@@ -593,8 +609,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
-        let name = _helpers.safeAttrName(attr);
-        field.setAttribute(name, attrs[attr]);
+        if (attrs[attr]) {
+          let name = _helpers.safeAttrName(attr);
+          field.setAttribute(name, attrs[attr]);
+        }
       }
     }
 
@@ -621,6 +639,26 @@ function formBuilderHelpersFn(opts, formBuilder) {
     dialog.remove();
     overlay.remove();
     document.dispatchEvent(formBuilder.events.modalClosed);
+  };
+
+  /**
+   * Returns the layout data based on controlPosition option
+   * @param  {String} controlPosition 'left' or 'right'
+   * @return {Object}
+   */
+  _helpers.editorLayout = function(controlPosition) {
+    let layoutMap = {
+      left: {
+        stage: 'pull-right',
+        controls: 'pull-left'
+      },
+      right: {
+        stage: 'pull-left',
+        controls: 'pull-right'
+      }
+    };
+
+    return layoutMap[controlPosition] ? layoutMap[controlPosition] : '';
   };
 
   /**
@@ -759,6 +797,52 @@ function formBuilderHelpersFn(opts, formBuilder) {
       _helpers.save();
     }, 500);
 
+  };
+
+  /**
+   * If user re-orders the elements their order should be saved.
+   *
+   * @param {Object} $cbUL our list of elements
+   */
+  _helpers.setFieldOrder = function($cbUL) {
+    if (!opts.sortableControls) {
+      return false;
+    }
+    var fieldOrder = {};
+    $cbUL.children().each(function(index, element) {
+      fieldOrder[index] = $(element).data('attrs').type;
+    });
+    if (window.sessionStorage) {
+      window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
+    }
+  };
+
+  /**
+   * Reorder the controls if the user has previously ordered them.
+   *
+   * @param  {Array} frmbFields
+   * @return {Array}
+   */
+  _helpers.orderFields = function(frmbFields) {
+    var fieldOrder = window.sessionStorage.getItem('fieldOrder');
+    if (!fieldOrder || !opts.sortableControls && window.sessionStorage) {
+      return frmbFields;
+    }
+    var newOrderFields = [];
+
+    fieldOrder = window.JSON.parse(fieldOrder);
+    fieldOrder = Object.keys(fieldOrder).map(function(i) {
+      return fieldOrder[i];
+    });
+
+    for (var i = fieldOrder.length - 1; i >= 0; i--) {
+      var field = frmbFields.filter(function(field) {
+        return field.attrs.type === fieldOrder[i];
+      })[0];
+      newOrderFields.push(field);
+    }
+
+    return newOrderFields.filter(Boolean);
   };
 
   return _helpers;

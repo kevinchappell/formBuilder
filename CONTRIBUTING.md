@@ -1,14 +1,21 @@
 # Contributing
 
-Contributions are always welcome, in this document we'll cover some dependencies and installation process to get your local development rolling.
+FormBuilder is open source to the bone and contributions are always welcome. In this document we'll cover some dependencies and installation process to get your local development environment up and running.
 
 ## Dependencies
-
 To develop for formBuilder you'll need:
 
 - [NodeJS](https://nodejs.org)
+- [GulpJS](http://gulpjs.com/)
 - [Git](https://git-scm.com/)
 - and a [GitHub account](https://github.com/)
+
+## Recommended Tooling
+While not required, the following tools are recommended to maintain code quality and consistency in style.
+
+- [JSCS](http://jscs.info/)
+- [jsHint](http://jshint.com/)
+- [SASS-lint](https://www.npmjs.com/package/sass-lint)
 
 ## Installation
 
@@ -22,7 +29,12 @@ gulp
 
 The above code will clone the repo, install the required `node_modules` and run the default `gulp` task. You should now have a locally running version of the demo page.
 
-## Building
+## Documentation
+For more information on build processes, editing fonts or adding custom fields please see the documentation [here](http://formbuilder.online).
 
-FormBuilder uses a combination of Gulp and Makefile for its build process and release. The Makefile is primarily for module updating and Fontello font management.
-
+## Notes
+Windows users, remember to configure your line endings with `core.autocrlf`. More info [here](https://help.github.com/articles/dealing-with-line-endings/#platform-windows)
+```
+$ git config --global core.autocrlf true
+# Configure Git on Windows to properly handle line endings
+```

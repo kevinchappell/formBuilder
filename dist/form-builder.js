@@ -209,14 +209,14 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.attrString = function (attrs) {
     var attributes = [];
-
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
         attr = _helpers.safeAttr(attr, attrs[attr]);
         attributes.push(attr.name + attr.value);
       }
     }
-    return attributes.join(' ');
+    var attrString = attributes.join(' ');
+    return attrString;
   };
 
   /**
@@ -320,7 +320,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
         cancelArray = [];
     _helpers.stopIndex = ui.placeholder.index() - 1;
 
-    if (ui.item.parent().hasClass('frmb-control')) {
+    if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true);
     }
 
@@ -379,6 +379,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
     tooltip.hide();
   };
 
+  /**
+   * Attempts to get element type and subtype
+   *
+   * @param  {Object} $field
+   * @return {Object}
+   */
   _helpers.getTypes = function ($field) {
     return {
       type: $field.attr('type'),
@@ -397,8 +403,20 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return attrs;
   };
 
+  // Remove null or undefined values
+  _helpers.escapeAttrs = function (attrs) {
+    for (var attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        attrs[attr] = HTML_ENTITIES.encode(attrs[attr]);
+      }
+    }
+
+    return attrs;
+  };
+
   /**
    * XML save
+   *
    * @param  {Object} form sortableFields node
    */
   _helpers.xmlSave = function (form) {
@@ -483,7 +501,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.updatePreview = function (field) {
     var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
-
     if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
       return;
     }
@@ -551,16 +568,16 @@ function formBuilderHelpersFn(opts, formBuilder) {
    *
    * @todo   make this smarter and use tags
    * @param  {Object} attrs
-   * @return {string}       preview markup for field
+   * @return {String}       preview markup for field
    */
   _helpers.fieldPreview = function (attrs) {
     var i,
         preview = '',
         epoch = new Date().getTime();
-
     attrs = Object.assign({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
     var toggle = attrs.toggle ? 'toggle' : '';
+    // attrs = _helpers.escapeAttrs(attrs);
     var attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
@@ -787,8 +804,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
-        var name = _helpers.safeAttrName(attr);
-        field.setAttribute(name, attrs[attr]);
+        if (attrs[attr]) {
+          var name = _helpers.safeAttrName(attr);
+          field.setAttribute(name, attrs[attr]);
+        }
       }
     }
 
@@ -815,6 +834,26 @@ function formBuilderHelpersFn(opts, formBuilder) {
     dialog.remove();
     overlay.remove();
     document.dispatchEvent(formBuilder.events.modalClosed);
+  };
+
+  /**
+   * Returns the layout data based on controlPosition option
+   * @param  {String} controlPosition 'left' or 'right'
+   * @return {Object}
+   */
+  _helpers.editorLayout = function (controlPosition) {
+    var layoutMap = {
+      left: {
+        stage: 'pull-right',
+        controls: 'pull-left'
+      },
+      right: {
+        stage: 'pull-left',
+        controls: 'pull-right'
+      }
+    };
+
+    return layoutMap[controlPosition] ? layoutMap[controlPosition] : '';
   };
 
   /**
@@ -962,6 +1001,52 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }, 500);
   };
 
+  /**
+   * If user re-orders the elements their order should be saved.
+   *
+   * @param {Object} $cbUL our list of elements
+   */
+  _helpers.setFieldOrder = function ($cbUL) {
+    if (!opts.sortableControls) {
+      return false;
+    }
+    var fieldOrder = {};
+    $cbUL.children().each(function (index, element) {
+      fieldOrder[index] = $(element).data('attrs').type;
+    });
+    if (window.sessionStorage) {
+      window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
+    }
+  };
+
+  /**
+   * Reorder the controls if the user has previously ordered them.
+   *
+   * @param  {Array} frmbFields
+   * @return {Array}
+   */
+  _helpers.orderFields = function (frmbFields) {
+    var fieldOrder = window.sessionStorage.getItem('fieldOrder');
+    if (!fieldOrder || !opts.sortableControls && window.sessionStorage) {
+      return frmbFields;
+    }
+    var newOrderFields = [];
+
+    fieldOrder = window.JSON.parse(fieldOrder);
+    fieldOrder = Object.keys(fieldOrder).map(function (i) {
+      return fieldOrder[i];
+    });
+
+    for (var i = fieldOrder.length - 1; i >= 0; i--) {
+      var field = frmbFields.filter(function (field) {
+        return field.attrs.type === fieldOrder[i];
+      })[0];
+      newOrderFields.push(field);
+    }
+
+    return newOrderFields.filter(Boolean);
+  };
+
   return _helpers;
 }
 'use strict';
@@ -1031,6 +1116,7 @@ function formBuilderEventsFn() {
     var formBuilder = this;
 
     var defaults = {
+      controlPosition: 'right',
       dataType: 'xml',
       /**
        * Field types to be disabled
@@ -1175,7 +1261,8 @@ function formBuilderEventsFn() {
           return console.warn(message);
         }
       },
-      prefix: 'fb'
+      sortableControls: false,
+      prefix: 'fb-'
     };
 
     // @todo function to set parent types for subtypes
@@ -1195,6 +1282,8 @@ function formBuilderEventsFn() {
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     // @todo refactor these to use proper mdule syntax
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
+
+    formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
     var lastID = 1,
         boxID = frmbID + '-control-box';
@@ -1291,6 +1380,8 @@ function formBuilderEventsFn() {
       }
     }];
 
+    frmbFields = _helpers.orderFields(frmbFields);
+
     if (opts.disableFields) {
       // remove disabledFields
       frmbFields = frmbFields.filter(function (field) {
@@ -1303,6 +1394,10 @@ function formBuilderEventsFn() {
       id: boxID,
       'class': 'frmb-control'
     });
+
+    if (opts.sortableControls) {
+      $cbUL.addClass('sort-enabled');
+    }
 
     // Loop through
     for (var i = frmbFields.length - 1; i >= 0; i--) {
@@ -1337,7 +1432,7 @@ function formBuilderEventsFn() {
       className: 'clear-all btn btn-default'
     }),
         saveAll = _helpers.markup('button', opts.messages.save, {
-      className: 'btn btn-primary fb-save',
+      className: 'btn btn-primary ' + opts.prefix + 'save',
       id: frmbID + '-save',
       type: 'button'
     }),
@@ -1373,14 +1468,19 @@ function formBuilderEventsFn() {
           return false;
         }
         event = event;
-        prepFieldVars(ui.item, true);
-        _helpers.doCancel = true;
+        if (ui.item.parent()[0] === $sortableFields[0]) {
+          prepFieldVars(ui.item, true);
+          _helpers.doCancel = true;
+        } else {
+          _helpers.setFieldOrder($cbUL);
+          _helpers.doCancel = !opts.sortableControls;
+        }
       }
     });
 
     var $stageWrap = $('<div/>', {
       id: frmbID + '-stage-wrap',
-      'class': 'stage-wrap'
+      'class': 'stage-wrap ' + formBuilder.layout.stage
     });
 
     var $formWrap = $('<div/>', {
@@ -1392,7 +1492,7 @@ function formBuilderEventsFn() {
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
-      'class': 'cb-wrap'
+      'class': 'cb-wrap ' + formBuilder.layout.controls
     }).append($cbUL[0], formActions);
 
     $stageWrap.append($sortableFields, cbWrap);
@@ -1449,6 +1549,18 @@ function formBuilderEventsFn() {
       values.type = fType;
       values.description = $field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '';
 
+      if (!isNew) {
+        values.values = [];
+        $field.children().each(function () {
+          var value = {
+            label: $(this).text(),
+            value: $(this).attr('value'),
+            selected: Boolean($(this).attr('selected'))
+          };
+          values.values.push(value);
+        });
+      }
+
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(values.className);
       if (match) {
         values.style = match[1];
@@ -1460,8 +1572,16 @@ function formBuilderEventsFn() {
 
     // Parse saved XML template data
     var getXML = function getXML() {
-      var xml = elem.val() !== '' ? $.parseXML(elem.val()) : false,
-          fields = $(xml).find('field');
+      var xml = '';
+      if (formBuilder.formData) {
+        xml = formBuilder.formData;
+      } else if (elem.val() !== '') {
+        xml = $.parseXML(formBuilder.element.value.trim());
+      } else {
+        xml = false;
+      }
+
+      var fields = $(xml).find('field');
       if (fields.length > 0) {
         formBuilder.formData = xml;
         fields.each(function () {
@@ -1548,7 +1668,6 @@ function formBuilderEventsFn() {
         }];
 
         values.values = values.values.map(function (elem, index) {
-
           elem.label = opts.messages.option + ' ' + (index + 1);
           elem.value = _helpers.hyphenCase(elem.label);
           return elem;
@@ -2229,12 +2348,14 @@ function formBuilderEventsFn() {
       var options = [];
       $('.sortable-options li', $field).each(function () {
         var $option = $(this),
-            optionValue = 'value="' + $('.option-value', $option).val() + '"',
-            optionLabel = $('.option-label', $option).val(),
-            selected = $('.option-selected', $option).is(':checked') ? ' selected="true"' : '';
-        options.push('\n\t\t\t<option' + selected + ' ' + optionValue + '>' + optionLabel + '</option>');
+            attrs = {
+          value: $('.option-value', $option).val(),
+          selected: $('.option-selected', $option).is(':checked')
+        },
+            option = _helpers.markup('option', $('.option-label', $option).val(), attrs).outerHTML;
+        options.push('\n\t\t\t' + option);
       });
-      return options.join('');
+      return options.join('') + '\n\t\t';
     };
 
     // Begin the core plugin
@@ -2242,7 +2363,6 @@ function formBuilderEventsFn() {
       var sortableFields = this;
       if (sortableFields.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
-
         // build new xml
         sortableFields.childNodes.forEach(function (field) {
           var $field = $(field);
@@ -2265,19 +2385,21 @@ function formBuilderEventsFn() {
               required: $('input.required', $field).is(':checked'),
               role: roleVals,
               toggle: $('.checkbox-toggle', $field).is(':checked'),
-              type: _helpers.getTypes($field)
+              type: types.type,
+              subtype: types.subtype
             };
-            xmlAttrs = Object.assign(xmlAttrs, types);
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
-            var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
-                attrsString = _helpers.attrString(xmlAttrs),
-                fSlash = !multipleField ? '/' : '';
-            serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+            xmlAttrs = _helpers.escapeAttrs(xmlAttrs);
+            var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/);
 
+            var fieldContent = '',
+                xmlField;
             if (multipleField) {
-              serialStr += fieldOptions($field);
-              serialStr += '\n\t\t</field>';
+              fieldContent = fieldOptions($field);
             }
+
+            xmlField = _helpers.markup('field', fieldContent, xmlAttrs);
+            serialStr += '\n\t\t' + xmlField.outerHTML;
           }
         });
         serialStr += '\n\t</fields>\n</form-template>';

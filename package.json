@@ -63,8 +63,8 @@
           "src/sass/form-render.scss"
         ]
       },
-      "demoSass": [
-        "demo/assets/sass/demo.scss"
+      "site": [
+        "demo/assets/sass/site.scss"
       ]
     },
     "fontServer": "http://fontello.com"
