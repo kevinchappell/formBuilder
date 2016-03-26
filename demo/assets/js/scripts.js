@@ -79,42 +79,42 @@ document.addEventListener('viewData', function() {
   window.hljs.highlightBlock(code);
 }, false);
 
-// Facepoop
-(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s);
-  js.id = id;
-  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=940846562669162";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
-// Flattr
-(function(i) {
-  var f, s = document.getElementById(i);
-  f = document.createElement('iframe');
-  f.src = '//button.flattr.com/view/?fid=nw095w&button=compact&url=http%3A%2F%2Fformbuilder.online';
-  f.title = 'Flattr';
-  f.height = 20;
-  f.width = 110;
-  f.style.borderWidth = 0;
-  s.parentNode.insertBefore(f, s);
-  s.parentNode.removeChild(s);
-})('fb92641');
-
-! function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0],
-    p = /^http:/.test(d.location) ? 'http' : 'https';
-  if (!d.getElementById(id)) {
-    js = d.createElement(s);
-    js.id = id;
-    js.src = p + '://platform.twitter.com/widgets.js';
-    fjs.parentNode.insertBefore(js, fjs);
-  }
-}(document, 'script', 'twitter-wjs');
-
 
 if (isSite) {
+
+  // Facepoop
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=940846562669162";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Flattr
+  (function(i) {
+    var f, s = document.getElementById(i);
+    f = document.createElement('iframe');
+    f.src = '//button.flattr.com/view/?fid=nw095w&button=compact&url=http%3A%2F%2Fformbuilder.online';
+    f.title = 'Flattr';
+    f.height = 20;
+    f.width = 110;
+    f.style.borderWidth = 0;
+    s.parentNode.insertBefore(f, s);
+    s.parentNode.removeChild(s);
+  })('fb92641');
+
+  ! function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0],
+      p = /^http:/.test(d.location) ? 'http' : 'https';
+    if (!d.getElementById(id)) {
+      js = d.createElement(s);
+      js.id = id;
+      js.src = p + '://platform.twitter.com/widgets.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    }
+  }(document, 'script', 'twitter-wjs');
 
 
   // Google analytics
