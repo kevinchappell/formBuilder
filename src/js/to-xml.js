@@ -10,12 +10,14 @@
       let options = [];
       $('.sortable-options li', $field).each(function() {
         let $option = $(this),
-          optionValue = 'value="' + $('.option-value', $option).val() + '"',
-          optionLabel = $('.option-label', $option).val(),
-          selected = $('.option-selected', $option).is(':checked') ? ' selected="true"' : '';
-        options.push('\n\t\t\t<option' + selected + ' ' + optionValue + '>' + optionLabel + '</option>');
+          attrs = {
+            value: $('.option-value', $option).val(),
+            selected: $('.option-selected', $option).is(':checked')
+          },
+          option = _helpers.markup('option', $('.option-label', $option).val(), attrs).outerHTML;
+        options.push('\n\t\t\t' + option);
       });
-      return options.join('');
+      return options.join('') + '\n\t\t';
     };
 
     // Begin the core plugin
@@ -23,7 +25,6 @@
       let sortableFields = this;
       if (sortableFields.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
-
         // build new xml
         sortableFields.childNodes.forEach(function(field) {
           var $field = $(field);
@@ -46,19 +47,21 @@
               required: $('input.required', $field).is(':checked'),
               role: roleVals,
               toggle: $('.checkbox-toggle', $field).is(':checked'),
-              type: _helpers.getTypes($field)
+              type: types.type,
+              subtype: types.subtype
             };
-            xmlAttrs = Object.assign(xmlAttrs, types);
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
-            var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/),
-              attrsString = _helpers.attrString(xmlAttrs),
-              fSlash = (!multipleField ? '/' : '');
-            serialStr += '\n\t\t<field ' + attrsString + fSlash + '>';
+            xmlAttrs = _helpers.escapeAttrs(xmlAttrs);
+            var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/);
 
+            var fieldContent = '',
+              xmlField;
             if (multipleField) {
-              serialStr += fieldOptions($field);
-              serialStr += '\n\t\t</field>';
+              fieldContent = fieldOptions($field);
             }
+
+            xmlField = _helpers.markup('field', fieldContent, xmlAttrs);
+            serialStr += '\n\t\t' + xmlField.outerHTML;
           }
         });
         serialStr += '\n\t</fields>\n</form-template>';

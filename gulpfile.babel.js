@@ -14,7 +14,7 @@ var plugins = gulpPlugins(),
   platform = process.platform,
 
   /**
-   * Reusabled banner function for generated files.
+   * Reusable banner function for generated files.
    *
    * @return {stream} modified file back to the stream.
    */
@@ -109,7 +109,7 @@ gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'js']);
   gulp.watch('demo/index.html', bsync.reload);
   gulp.watch('src/sass/**/*.scss', ['css']);
-  gulp.watch('demo/assets/sass/*.scss', ['demoCss']);
+  gulp.watch('demo/assets/sass/*.scss', ['siteCss']);
 });
 
 // Compile the Sass to plain ol' css.
@@ -146,14 +146,15 @@ gulp.task('font-edit', fontEdit);
 gulp.task('font-save', fontSave);
 
 // Demo specific css
-gulp.task('demoCss', function() {
-  return gulp.src(files.demoSass)
+gulp.task('siteCss', function() {
+  return gulp.src(files.site)
     .pipe(plugins.sass())
     .pipe(plugins.autoprefixer({
       cascade: true
     }))
     .pipe(plugins.cssmin())
     .pipe(banner())
+    .pipe(plugins.concat('site.min.css'))
     .pipe(gulp.dest('demo/assets/css'))
     .pipe(bsync.reload({
       stream: true
@@ -238,7 +239,7 @@ gulp.task('deploy', () => {
 });
 
 // Do a build after version bump to update all files.
-gulp.task('build', ['js', 'css', 'demoCss']);
+gulp.task('build', ['js', 'css', 'siteCss']);
 
 // Pretty self-explanatory
 gulp.task('default', ['build', 'watch', 'serve']);

@@ -7,9 +7,9 @@
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
   <meta name="description" content="jQuery formBuilder: A jQuery plugin for drag and drop form creation">
   <meta name="theme-color" content="#232323">
-  <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="assets/css/demo.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/assets/css/site.min.css">
+  <link rel="stylesheet" type="text/css" href="//bootswatch.com/sandstone/bootstrap.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,100,700' rel='stylesheet' type='text/css'>
   <link rel="apple-touch-icon" sizes="57x57" href="assets/img/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="assets/img/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="assets/img/apple-icon-72x72.png">
@@ -31,14 +31,53 @@
   <!-- Only include on form render page -->
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/form-render.min.css">
   <title>jQuery formBuilder | Drag &amp; Drop Form Creation</title>
+  <!-- Facepoop stuff -->
+  <meta property="og:url" content="http://formbuilder.online" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="jQuery formBuilder" />
+  <meta property="og:description" content="Drag and drop form building" />
+  <meta property="og:image" content="http://localhost:3000/assets/img/screenshot.png" />
 </head>
 
 <body>
-  <div class="demo-wrap">
+  <div id="fb-root"></div>
+  <div class="site-wrap container">
     <div id="header_wrap" class="outer">
       <header class="inner">
+        <nav id="menu">
+          <ul class="main-menu">
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Demos <span class="caret"></span></a>
+              <ul class="dropdown-menu demo-sub-menu">
+                <li class="dropdown-header">formBuilder</li>
+                <li><a href="http://codepen.io/kevinchappell/pen/vLjOLL">Basic</a></li>
+                <li><a href="http://codepen.io/kevinchappell/pen/Vedrqr">Edit Existing Form</a></li>
+                <li><a href="http://codepen.io/kevinchappell/pen/ZQqwLp">Auto Render</a></li>
+                <li class="dropdown-header">Options</li>
+                <li><a href="http://codepen.io/kevinchappell/pen/XXYdvv">append, prepend</a></li>
+                <li><a href="http://codepen.io/kevinchappell/pen/pgxYEW">defaultFields</a></li>
+                <li><a href="http://codepen.io/kevinchappell/pen/NNdbVx">disableFields</a></li>
+                <li><a href="http://codepen.io/kevinchappell/pen/PNZZmw">messages</a></li>
+                <li><a href="http://codepen.io/kevinchappell/pen/xVrOVr?editors=0010">notify</a></li>
+                <!-- <li><a href="#">controlPosition</a></li> -->
+                <!-- <li><a href="#">sortableControls</a></li> -->
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">formRender</li>
+                <li><a href="http://codepen.io/kevinchappell/pen/vGBWxO">Basic</a></li>
+              </ul>
+            </li>
+            <!-- <li><a href="#">Docs</a></li> -->
+            <!-- <li><a href="#">Showcase</a></li> -->
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Download <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="https://github.com/kevinchappell/formBuilder/zipball/master">formBuilder.zip</a></li>
+                <li><a href="https://github.com/kevinchappell/formBuilder/tarball/master">formBuilder.tar.gz</a></li>
+                <li><a href="https://github.com/kevinchappell/formBuilder">GitHub</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
         <a id="forkme_banner" href="https://github.com/kevinchappell/formBuilder">View on Github</a>
-        <h1 id="project_title">jQuery formBuilder</h1>
+        <h1 id="project_title"><a href="/"><img src="assets/img/fb-logo.svg" alt="jQuery formBuilder">jQuery formBuilder</a></h1>
         <h2 id="project_tagline">A jQuery plugin for drag and drop form creation</h2>
         <section id="downloads">
           <a class="zip_download_link" href="https://github.com/kevinchappell/formBuilder/zipball/master">Download this project as a .zip file</a>
@@ -47,94 +86,104 @@
       </header>
     </div>
     <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
+    <div id="main-content-wrap" class="outer">
+      <h2 class="tagline">Drag and Drop.</h2>
+      <h2 class="tagline"><strong>Full Featured</strong> Form Editing.</h2>
       <section id="main_content" class="inner">
-        <h2><a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
-        <p>To start building forms with this plugin call <code>formBuilder()</code> on the textarea you would like to make your editor. FormBuilder takes a number of options and is translatable through these options.</p>
-        <pre><code>jQuery(document).ready(function($) {
-  'use strict';
-  var template = document.getElementById('form-builder-template');
-  $(template).formBuilder();
-});
-</code></pre>
         <div class="build-form">
-          <h2>Build The Form</h2>
-          <form action="">
-            <textarea id="fb-template"></textarea>
-          </form>
-          <br style="clear:both">
+          <textarea id="fb-template"></textarea>
         </div>
         <div class="render-form clearfix">
-          <h2>Render The Form</h2>
           <form id="rendered-form">
             <p class="cta">Add some fields to the formBuilder above and render them here.</p>
           </form>
-          <div class="render-description">
-            <p>Once you&apos;ve created a form you&apos;ll need a way to render it. formRender is the companion plugin to formBuilder that renders the form data. To use you&apos;ll call formRender on the <code>textarea</code> containing your saved data like so:</p>
-            <pre><code>var template = document.getElementById('form-builder-template');
-$(template).formRender();
-</code></pre>
-            <p>By default <code>formRender()</code> will replace the textarea with the rendered form but passing a <code>container</code> option to the plugin will render the form to the specified jQuery object. Example:</p>
-            <pre><code>var template = document.getElementById('form-builder-template'),
-formContainer = document.getElementById('rendered-form'),
-formRenderOpts = { container: $(formContainer) };
-$(template).formRender(formRenderOpts);
-</code></pre>
-            <h3>Try it out</h3>
-            <button id="render-form-button" class="btn btn-primary">Render form</button>
-          </div>
+          <button type="button" id="render-form-button" class="btn btn-primary edit-form">Edit Form</button>
         </div>
       </section>
     </div>
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner clearfix">
-        <div class="donate-plea">
-          <h3>Thank you</h3>
-          <p>Hundreds of hours went into making formBuilder what it is today.
-            <br> If this plugin helped you or your project please consider making a donation.</p>
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_s-xclick">
-            <input type="hidden" name="hosted_button_id" value="NCJUSN7FYH68A">
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-          </form>
-        </div>
-        <div class="copyright">
-          <p>jQuery formBuilder maintained by <a href="https://github.com/kevinchappell">kevinchappell</a></p>
-          <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-        </div>
-      </footer>
-    </div>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-  <!-- Only include on form edit page -->
-  <script src="assets/js/form-builder.min.js"></script>
-  <!-- Only include on form render page -->
-  <script src="assets/js/form-render.min.js"></script>
-  <script>
+  <div class="lower-section">
+    <section id="features" class="inner clearfix">
+      <div class="col-md-6 col-sm-6">
+        <h2 class="tagline">Features</h2>
+        <h3>Customization</h3>
+        <ul>
+          <li>Configurable Options</li>
+          <li>Translatable</li>
+          <li>Custom Notifications</li>
+        </ul>
+        <h3>Easy Install</h3>
+        <ul>
+          <li><code>bower install formBuilder</code></li>
+          <li style="list-style:none;">or add the following to your app.</li>
+          <li><code>&lt;script src=&quot;http://formbuilder.online/assets/js/form-builder.min.js&quot;&gt;&lt;/script&gt;</code></li>
+        </ul>
+        <h3>Supportive Community</h3> jQuery formBuilder has an active community, if you hit a blocker you have options.
+        <ul>
+          <li><a href="javascript:void(0)" class="js-gitter-toggle-chat-button" data-gitter-toggle-chat-state="true">Get help on Gitter</a></li>
+          <li style="list-style:none;">or</li>
+          <li><a href="https://github.com/kevinchappell/formBuilder/issues">File an issue</a> on GitHub</li>
+        </ul>
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <h2 class="tagline">Get Started</h2> At a minimum formBuilder needs <code>form-builder.min.js</code> and <code>form-builder.css</code>, but here is a full page example.
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Example formBuilder&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;http://formbuilder.online/assets/css/form-builder.min.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;textarea id=&quot;fb-template&quot;&gt;&lt;/textarea&gt;
+  &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;http://formbuilder.online/assets/js/form-builder.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script&gt;
   jQuery(document).ready(function($) {
     'use strict';
-    var template = document.getElementById('fb-template'),
-        formContainer = document.getElementById('rendered-form'),
-        renderBtn = document.getElementById('render-form-button');
-
-    var options = {
-          fieldRemoveWarn: true
-        };
-    $(template).formBuilder(options);
-
-    $(renderBtn).click(function(e) {
-      e.preventDefault();
-      $(template).formRender({
-        container: formContainer
-      });
-    });
+    $(document.getElementById('fb-template')).formBuilder();
   });
-  </script>
-  <script src="assets/js/3rd-party.js" async defer></script>
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </section>
+  </div>
+  <!-- FOOTER  -->
+  <div id="footer-wrap" class="outer footer">
+    <footer class="inner">
+      <div class="donate-plea col-md-6 col-sm-6">
+        <h3>Thank you</h3>
+        <p>Hundreds of hours went into making formBuilder what it is today.
+          <br> If this plugin helped you or your project please consider making a donation.</p>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="NCJUSN7FYH68A">
+          <input type="image" class="paypal-button" src="https://upload.wikimedia.org/wikipedia/commons/5/53/PayPal_2014_logo.svg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+        <div class="flattr" id='fb92641'></div>
+      </div>
+      <div class="copyright col-md-6 col-sm-6">
+        <div class="social clearfix">
+          <iframe src="https://ghbtns.com/github-btn.html?user=kevinchappell&repo=formBuilder&type=star&count=true" frameborder="0" scrolling="0" width="85" height="20px"></iframe>
+          <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://formBuilder.online" data-via="formBuilderJS" data-hashtags="formBuilder">Tweet</a>
+          <div class="fb-like" data-href="http://formbuilder.online/" data-width="90" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+        </div>
+        <p>jQuery formBuilder maintained by <a href="https://github.com/kevinchappell">kevinchappell</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </div>
+    </footer>
+  </div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+  <script src="assets/js/form-builder.min.js"></script>
+  <script src="assets/js/form-render.min.js"></script>
+  <script src="assets/js/dropdown.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script id="vendor" src="assets/js/scripts.js" async defer></script>
 </body>
 
 </html>

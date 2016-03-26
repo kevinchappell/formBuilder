@@ -213,13 +213,13 @@
     display: block;
     margin-top: 12px;
 
-    input[type="color"] {
+    input[type='color'] {
       width: 60px;
       padding: 2px;
       display: inline-block;
     }
 
-    input[type="date"] {
+    input[type='date'] {
       width: auto;
     }
 
@@ -298,7 +298,13 @@
   float: left;
   width: 74%;
 
-  @include breakpoint("phone-lrg") {
+  &.pull-right {
+    .frmb {
+      margin: 0 0 0 6px;
+    }
+  }
+
+  @include breakpoint('phone-lrg') {
     width: calc(100% - 64px);
   }
 
@@ -381,7 +387,7 @@ ol.sortable-options {
   input[type=checkbox],
   input[type=radio] {
     margin: 0;
-    width: 7%;
+    width: 5%;
   }
 
   input[type=text] {
@@ -397,7 +403,7 @@ ol.sortable-options {
     clear: left;
     float: none;
 
-    input[type=checkbox] {
+    input[type=checkbox]:not(.option-selected) {
       margin: 12px 5px 0 2%;
     }
   }
@@ -469,7 +475,7 @@ ol.sortable-options {
   border-color: #222 transparent;
   border-width: 6px 6px 0 6px;
   bottom: 17px;
-  content: "";
+  content: '';
   left: 2px;
   position: absolute;
   z-index: 99;

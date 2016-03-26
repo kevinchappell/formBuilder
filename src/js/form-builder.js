@@ -5,6 +5,7 @@
     var formBuilder = this;
 
     var defaults = {
+      controlPosition: 'right',
       dataType: 'xml',
       /**
        * Field types to be disabled
@@ -167,7 +168,8 @@
           return console.warn(message);
         }
       },
-      prefix: 'fb'
+      sortableControls: false,
+      prefix: 'fb-'
     };
 
     // @todo function to set parent types for subtypes
@@ -187,6 +189,8 @@
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     // @todo refactor these to use proper mdule syntax
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
+
+    formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
     var lastID = 1,
       boxID = frmbID + '-control-box';
@@ -283,6 +287,8 @@
       }
     }];
 
+    frmbFields = _helpers.orderFields(frmbFields);
+
     if (opts.disableFields) {
       // remove disabledFields
       frmbFields = frmbFields.filter(function(field) {
@@ -295,6 +301,10 @@
       id: boxID,
       'class': 'frmb-control'
     });
+
+    if (opts.sortableControls) {
+      $cbUL.addClass('sort-enabled');
+    }
 
     // Loop through
     for (var i = frmbFields.length - 1; i >= 0; i--) {
@@ -329,7 +339,7 @@
         className: 'clear-all btn btn-default'
       }),
       saveAll = _helpers.markup('button', opts.messages.save, {
-        className: 'btn btn-primary fb-save',
+        className: `btn btn-primary ${opts.prefix}save`,
         id: frmbID + '-save',
         type: 'button'
       }),
@@ -365,14 +375,19 @@
           return false;
         }
         event = event;
-        prepFieldVars(ui.item, true);
-        _helpers.doCancel = true;
+        if (ui.item.parent()[0] === $sortableFields[0]) {
+          prepFieldVars(ui.item, true);
+          _helpers.doCancel = true;
+        } else {
+          _helpers.setFieldOrder($cbUL);
+          _helpers.doCancel = !opts.sortableControls;
+        }
       }
     });
 
     var $stageWrap = $('<div/>', {
       id: frmbID + '-stage-wrap',
-      'class': 'stage-wrap'
+      'class': 'stage-wrap ' + formBuilder.layout.stage
     });
 
     var $formWrap = $('<div/>', {
@@ -384,7 +399,7 @@
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
-      'class': 'cb-wrap'
+      'class': 'cb-wrap ' + formBuilder.layout.controls
     }).append($cbUL[0], formActions);
 
     $stageWrap.append($sortableFields, cbWrap);
@@ -426,6 +441,7 @@
         fType = fieldAttrs.type || $field.attr('type'),
         values = {};
 
+
       values.label = _helpers.htmlEncode($field.attr('label'));
       values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
       values.role = $field.attr('role');
@@ -436,6 +452,19 @@
       values.multiple = fType.match(/(checkbox-group)/);
       values.type = fType;
       values.description = ($field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '');
+
+
+      if (!isNew) {
+        values.values = [];
+        $field.children().each(function() {
+          let value = {
+            label: $(this).text(),
+            value: $(this).attr('value'),
+            selected: Boolean($(this).attr('selected'))
+          };
+          values.values.push(value);
+        });
+      }
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(values.className);
       if (match) {
@@ -448,8 +477,16 @@
 
     // Parse saved XML template data
     var getXML = function() {
-      var xml = (elem.val() !== '' ? $.parseXML(elem.val()) : false),
-        fields = $(xml).find('field');
+      var xml = '';
+      if (formBuilder.formData) {
+        xml = formBuilder.formData;
+      } else if (elem.val() !== '') {
+        xml = $.parseXML(formBuilder.element.value.trim());
+      } else {
+        xml = false;
+      }
+
+      var fields = $(xml).find('field');
       if (fields.length > 0) {
         formBuilder.formData = xml;
         fields.each(function() {
@@ -536,7 +573,6 @@
         }];
 
         values.values = values.values.map(function(elem, index) {
-
           elem.label = `${opts.messages.option} ${index + 1}`;
           elem.value = _helpers.hyphenCase(elem.label);
           return elem;
