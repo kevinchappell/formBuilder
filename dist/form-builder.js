@@ -194,7 +194,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
-
+  var $ = jQuery.noConflict();
   var _helpers = {
     doCancel: false
   };
