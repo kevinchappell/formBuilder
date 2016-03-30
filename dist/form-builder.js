@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.22
+Version: 1.9.23
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -750,7 +750,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var type = previewData.type;
     var style = previewData.style;
     var className = field[0].querySelector('.fld-className').value;
-    var classes = [].concat(className.split(' '));
+    var classes = [].concat(className.split(' ')).reverse();
     var types = {
       button: 'btn',
       submit: 'btn'
@@ -1510,7 +1510,10 @@ function formBuilderEventsFn() {
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
 
-    var saveAndUpdate = _helpers.debounce(function () {
+    var saveAndUpdate = _helpers.debounce(function (evt) {
+      if (evt.type === 'keyup' && this.name === 'className') {
+        return false;
+      }
       var $field = $(this).parents('.form-field:eq(0)');
       _helpers.updatePreview($field);
       _helpers.save();
