@@ -1,6 +1,6 @@
 # Contributing
 
-FormBuilder is open source to the bone and contributions are always welcome. In this document we'll cover some dependencies and installation process to get your local development environment up and running.
+formBuilder is open source to the core and contributions are always welcome. In this document we'll cover some dependencies and installation process to get your local development environment up and running.
 
 ## Dependencies
 To develop for formBuilder you'll need:
@@ -30,7 +30,7 @@ gulp
 The above code will clone the repo, install the required `node_modules` and run the default `gulp` task. You should now have a locally running version of the demo page.
 
 ## Documentation
-For more information on build processes, editing fonts or adding custom fields please see the documentation [here](http://formbuilder.online).
+For more information on build processes, editing fonts or adding custom fields please see the documentation [here](http://formbuilder.readthedocs.org/en/latest/).
 
 ## Notes
 Windows users, remember to configure your line endings with `core.autocrlf`. More info [here](https://help.github.com/articles/dealing-with-line-endings/#platform-windows)

@@ -6,6 +6,21 @@
 
     var defaults = {
       controlPosition: 'right',
+      controlOrder: [
+        'autocomplete',
+        'button',
+        'checkbox',
+        'checkbox-group',
+        'date',
+        'file',
+        'header',
+        'hidden',
+        'paragraph',
+        'radio-group',
+        'select',
+        'text',
+        'textarea'
+      ],
       dataType: 'xml',
       /**
        * Field types to be disabled
@@ -187,7 +202,6 @@
     formBuilder.element = element;
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
-    // @todo refactor these to use proper mdule syntax
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
@@ -297,17 +311,18 @@
     }
 
     // Create draggable fields for formBuilder
-    var $cbUL = $('<ul/>', {
-      id: boxID,
-      'class': 'frmb-control'
-    });
+
+    var cbUl = _helpers.markup('ul', null, { id: boxID, className: 'frmb-control' });
 
     if (opts.sortableControls) {
-      $cbUL.addClass('sort-enabled');
+      cbUl.classList.add('sort-enabled');
     }
+
+    var $cbUL = $(cbUl);
 
     // Loop through
     for (var i = frmbFields.length - 1; i >= 0; i--) {
+
       let $field = $('<li/>', {
         'class': 'icon-' + frmbFields[i].attrs.className,
         'type': frmbFields[i].type,
@@ -1240,6 +1255,7 @@
     document.dispatchEvent(formBuilder.events.loaded);
 
     return formBuilder;
+
   };
 
   $.fn.formBuilder = function(options) {

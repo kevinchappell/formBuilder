@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.22 - Feature: `controlOrder` option. [#118](https://github.com/kevinchappell/formBuilder/pull/118)
 - v1.9.21 - Bugfix: Add pull left and right to  `_bs.scss`
 - v1.9.20 - Feature: sortableFields #114
 - v1.9.19

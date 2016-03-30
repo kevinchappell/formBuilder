@@ -826,14 +826,15 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.orderFields = function(frmbFields) {
     var fieldOrder = window.sessionStorage.getItem('fieldOrder');
     if (!fieldOrder || !opts.sortableControls && window.sessionStorage) {
-      return frmbFields;
+      fieldOrder = opts.controlOrder;
+    } else {
+      fieldOrder = window.JSON.parse(fieldOrder);
+      fieldOrder = Object.keys(fieldOrder).map(function(i) {
+        return fieldOrder[i];
+      });
     }
-    var newOrderFields = [];
 
-    fieldOrder = window.JSON.parse(fieldOrder);
-    fieldOrder = Object.keys(fieldOrder).map(function(i) {
-      return fieldOrder[i];
-    });
+    var newOrderFields = [];
 
     for (var i = fieldOrder.length - 1; i >= 0; i--) {
       var field = frmbFields.filter(function(field) {
