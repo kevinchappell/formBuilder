@@ -824,9 +824,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Array}
    */
   _helpers.orderFields = function(frmbFields) {
-    var fieldOrder = window.sessionStorage.getItem('fieldOrder');
-    if (!fieldOrder || !opts.sortableControls && window.sessionStorage) {
-      fieldOrder = opts.controlOrder;
+    var fieldOrder = window.sessionStorage ? window.sessionStorage.getItem('fieldOrder') : false;
+
+    if (!fieldOrder) {
+      fieldOrder = opts.controlOrder.unique();
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = Object.keys(fieldOrder).map(function(i) {
