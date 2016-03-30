@@ -1,4 +1,4 @@
-formBuilder v1.9.21
+formBuilder v1.9.22
 ===========
 
 [![Join the chat at https://gitter.im/kevinchappell/formBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kevinchappell/formBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -23,3 +23,5 @@ jQuery(document).ready(function($) {
 
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
+## Translators Needed!
+As formBuilder usage grows so does it's need to be available in multiple languages. This is currently possible by manually passing translations through the config options object but wouldn't it be great if it worked out of the box? See [Contributing Languages](https://github.com/kevinchappell/formBuilder/blob/languages/CONTRIBUTING.md) for details.

@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.21
+Version: 1.9.22
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1028,14 +1028,15 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.orderFields = function (frmbFields) {
     var fieldOrder = window.sessionStorage.getItem('fieldOrder');
     if (!fieldOrder || !opts.sortableControls && window.sessionStorage) {
-      return frmbFields;
+      fieldOrder = opts.controlOrder;
+    } else {
+      fieldOrder = window.JSON.parse(fieldOrder);
+      fieldOrder = Object.keys(fieldOrder).map(function (i) {
+        return fieldOrder[i];
+      });
     }
-    var newOrderFields = [];
 
-    fieldOrder = window.JSON.parse(fieldOrder);
-    fieldOrder = Object.keys(fieldOrder).map(function (i) {
-      return fieldOrder[i];
-    });
+    var newOrderFields = [];
 
     for (var i = fieldOrder.length - 1; i >= 0; i--) {
       var field = frmbFields.filter(function (field) {
@@ -1117,6 +1118,7 @@ function formBuilderEventsFn() {
 
     var defaults = {
       controlPosition: 'right',
+      controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'radio-group', 'select', 'text', 'textarea'],
       dataType: 'xml',
       /**
        * Field types to be disabled
@@ -1280,7 +1282,6 @@ function formBuilderEventsFn() {
     formBuilder.element = element;
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
-    // @todo refactor these to use proper mdule syntax
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
@@ -1390,17 +1391,18 @@ function formBuilderEventsFn() {
     }
 
     // Create draggable fields for formBuilder
-    var $cbUL = $('<ul/>', {
-      id: boxID,
-      'class': 'frmb-control'
-    });
+
+    var cbUl = _helpers.markup('ul', null, { id: boxID, className: 'frmb-control' });
 
     if (opts.sortableControls) {
-      $cbUL.addClass('sort-enabled');
+      cbUl.classList.add('sort-enabled');
     }
+
+    var $cbUL = $(cbUl);
 
     // Loop through
     for (var i = frmbFields.length - 1; i >= 0; i--) {
+
       var $field = $('<li/>', {
         'class': 'icon-' + frmbFields[i].attrs.className,
         'type': frmbFields[i].type,
