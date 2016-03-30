@@ -23,3 +23,5 @@ jQuery(document).ready(function($) {
 
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
+## Translators Needed!
+As formBuilder usage grows so does it's need to be available in multiple languages. This is currently possible by manually passing translations through the config options object but wouldn't it be great if it worked out of the box? See [Wiki->Translating] for details.
