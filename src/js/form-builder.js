@@ -422,9 +422,12 @@
     $formWrap.append($stageWrap, cbWrap);
 
     var saveAndUpdate = _helpers.debounce(function(evt) {
-      if (evt.type === 'keyup' && this.name === 'className') {
-        return false;
+      if (evt) {
+        if (evt.type === 'keyup' && this.name === 'className') {
+          return false;
+        }
       }
+
       let $field = $(this).parents('.form-field:eq(0)');
       _helpers.updatePreview($field);
       _helpers.save();
