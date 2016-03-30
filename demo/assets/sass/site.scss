@@ -17,6 +17,7 @@ body > .site-wrap {
   background-size: 120% 100%, 100% 50%, 100% 50.5%;
   background-position: 50% 0,50% 0,50% 100%;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 
   &:after {
     content: '';
