@@ -558,7 +558,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     let type = previewData.type;
     let style = previewData.style;
     let className = field[0].querySelector('.fld-className').value;
-    let classes = [].concat(className.split(' '));
+    let classes = [].concat(className.split(' ')).reverse();
     let types = {
       button: 'btn',
       submit: 'btn'
