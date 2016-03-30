@@ -5,6 +5,21 @@ Nearly every site and app will use formBuilder in a different way and to accommo
 <pre><code class="js">
 var defaults = {
   controlPosition: 'right',
+  controlOrder: [
+    'autocomplete',
+    'button',
+    'checkbox',
+    'checkbox-group',
+    'date',
+    'file',
+    'header',
+    'hidden',
+    'paragraph',
+    'radio-group',
+    'select',
+    'text',
+    'textarea'
+  ],
   dataType: 'xml',
   disableFields: ['autocomplete', 'hidden'],
   append: false,

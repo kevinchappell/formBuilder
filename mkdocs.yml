@@ -17,7 +17,14 @@ pages:
   - Translating: demos/translation.md
 - Options:
     - Overview: options.md
+    - append/prepend: options/appendPrepend.md
+    - controlPosition: options/controlPosition.md
+    - controlOrder: options/controlOrder.md
     - disableFields: options/disableFields.md
+    - fieldRemoveWarn: options/fieldRemoveWarn.md
+    - messages: options/messages.md
+    - notify: options/notify.md
+    - sortableControls: options/sortableControls.md
 - Contributing: contributing.md
 - About:
   - License: license.md
