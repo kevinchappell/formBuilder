@@ -18,8 +18,8 @@ jQuery(document).ready(function($) {
 });
 ```
 
-## [Demo](http://formbuilder.online/) ##
-[![form-builder](https://cloud.githubusercontent.com/assets/1457540/13762292/d7fa75ba-ea35-11e5-96d8-14d813885288.gif)](http://formbuilder.online/)
+## [Demo](https://formbuilder.online/) ##
+[![form-builder](https://cloud.githubusercontent.com/assets/1457540/13762292/d7fa75ba-ea35-11e5-96d8-14d813885288.gif)](https://formbuilder.online/)
 
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
