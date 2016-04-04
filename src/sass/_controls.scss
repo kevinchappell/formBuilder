@@ -119,4 +119,15 @@
       @extend .btn-danger:hover;
     }
   }
+
+  .fb-mobile & {
+    @extend .btn-group-vertical;
+
+    width: 100%;
+
+    button {
+      font-size: .85em;
+      display: block;
+    }
+  }
 }
