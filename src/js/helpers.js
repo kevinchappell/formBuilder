@@ -340,7 +340,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     let maxlength = $('.fld-maxlength', field).val();
     if (maxlength) {
-      previewData.maxlength = maxlength.val();
+      previewData.maxlength = maxlength;
     }
 
     previewData.className = $('.fld-className', field).val() || fieldData.className || '';
