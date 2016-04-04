@@ -2,6 +2,10 @@
 
 var isSite = (window.location.href.indexOf('kevinchappell.github.io') !== -1 || window.location.href.indexOf('formbuilder.online') !== -1);
 
+if (isSite && window.location.protocol !== 'https:') {
+  window.location.protocol = 'https:';
+}
+
 ((window.gitter = {}).chat = {}).options = {
   room: 'kevinchappell/formBuilder'
 };
@@ -27,12 +31,8 @@ var getStyles = function() {
 var getScripts = function() {
   var scripts = [];
   var extScripts = [
-    '//assets.codepen.io/assets/embed/ei.js'
+    '//sidecar.gitter.im/dist/sidecar.v1.js'
   ];
-
-  if (isSite) {
-    extScripts.push('//sidecar.gitter.im/dist/sidecar.v1.js');
-  }
 
   var i = (extScripts.length - 1);
 
@@ -65,7 +65,9 @@ var getScripts = function() {
     document.body.appendChild(script);
   }
 
-  getScript(i);
+  if (isSite) {
+    getScript(i);
+  }
 
   var vendorScripts = document.getElementById('vendor');
   vendorScripts.parentNode.removeChild(vendorScripts);
