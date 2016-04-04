@@ -330,11 +330,13 @@
         'label': frmbFields[i].label
       });
 
-      for (var attr in frmbFields[i]) {
-        if (frmbFields[i].hasOwnProperty(attr)) {
-          $field.data(attr, frmbFields[i][attr]);
-        }
-      }
+      $field.data('fieldData', frmbFields[i]);
+
+      // for (var attr in frmbFields[i]) {
+      //   if (frmbFields[i].hasOwnProperty(attr)) {
+      //     $field.data(attr, frmbFields[i][attr]);
+      //   }
+      // }
 
       let typeLabel = _helpers.markup('span', frmbFields[i].label);
       $field.html(typeLabel).appendTo($cbUL);
@@ -458,41 +460,48 @@
     };
 
     var prepFieldVars = function($field, isNew = false) {
-      var fieldAttrs = $field.data('attrs') || {},
-        fType = fieldAttrs.type || $field.attr('type'),
-        values = {};
+      var field = {};
 
-
-      values.label = _helpers.htmlEncode($field.attr('label'));
-      values.name = isNew ? nameAttr($field) : fieldAttrs.name || $field.attr('name');
-      values.role = $field.attr('role');
-      values.className = $field.attr('className');
-      values.required = $field.attr('required');
-      values.maxlength = $field.attr('maxlength');
-      values.toggle = $field.attr('toggle');
-      values.multiple = fType.match(/(checkbox-group)/);
-      values.type = fType;
-      values.description = ($field.attr('description') !== undefined ? _helpers.htmlEncode($field.attr('description')) : '');
-
-
-      if (!isNew) {
-        values.values = [];
-        $field.children().each(function() {
-          let value = {
-            label: $(this).text(),
-            value: $(this).attr('value'),
-            selected: Boolean($(this).attr('selected'))
-          };
-          values.values.push(value);
-        });
+      if ($field instanceof jQuery) {
+        let fieldData = $field.data('fieldData');
+        if (fieldData) {
+          field = fieldData.attrs;
+          field.label = fieldData.label;
+        } else {
+          let attrs = $field[0].attributes;
+          if (!isNew) {
+            field.values = $field.children().map(function(index, elem) {
+              return {
+                label: $(elem).text(),
+                value: $(elem).attr('value'),
+                selected: Boolean($(elem).attr('selected'))
+              };
+            });
+          }
+          for (var i = attrs.length - 1; i >= 0; i--) {
+            field[attrs[i].name] = attrs[i].value;
+          }
+        }
+      } else {
+        field = $field;
       }
 
-      var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(values.className);
+      field.label = _helpers.htmlEncode(field.label);
+      field.name = isNew ? nameAttr(field) : field.name;
+      field.role = field.role;
+      field.className = field.className;
+      field.required = (field.required === 'true' || field.required === true);
+      field.maxlength = field.maxlength;
+      field.toggle = field.toggle;
+      field.multiple = field.type.match(/(checkbox-group)/);
+      field.description = (field.description !== undefined ? _helpers.htmlEncode(field.description) : '');
+
+      var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {
-        values.style = match[1];
+        field.style = match[1];
       }
 
-      appendNewField(values);
+      appendNewField(field);
       $stageWrap.removeClass('empty');
     };
 
@@ -518,7 +527,8 @@
         if (opts.defaultFields && opts.defaultFields.length) {
           opts.defaultFields.reverse();
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
-            appendNewField(opts.defaultFields[i]);
+            prepFieldVars(opts.defaultFields[i]);
+            // appendNewField(opts.defaultFields[i]);
           }
           $stageWrap.removeClass('empty');
           _helpers.save();
@@ -566,7 +576,7 @@
 
     var nameAttr = function(field) {
       var epoch = new Date().getTime();
-      return field.data('attrs').name + '-' + epoch;
+      return field.name + '-' + epoch;
     };
 
     // multi-line textarea
@@ -872,7 +882,7 @@
           'button'
         ],
         noMake = [],
-        requireFeild = '';
+        requireField = '';
 
       if (noRequire.inArray(values.type)) {
         noMake.push(true);
@@ -880,8 +890,8 @@
 
       if (!noMake.some(elem => elem === true)) {
 
-        requireFeild += '<div class="form-group">';
-        requireFeild += '<label>&nbsp;</label>';
+        requireField += '<div class="form-group">';
+        requireField += '<label>&nbsp;</label>';
         let requiredField = _helpers.markup('input', null, {
           className: 'required',
           type: 'checkbox',
@@ -890,17 +900,17 @@
           value: 1
         });
 
-        requiredField.defaultChecked = (values.required === 'true');
+        requiredField.defaultChecked = values.required;
 
-        requireFeild += requiredField.outerHTML;
-        requireFeild += _helpers.markup('label', opts.messages.required, {
+        requireField += requiredField.outerHTML;
+        requireField += _helpers.markup('label', opts.messages.required, {
           className: 'required-label',
           'for': 'required-' + lastID
         }).outerHTML;
-        requireFeild += '</div>';
+        requireField += '</div>';
 
       }
-      return requireFeild;
+      return requireField;
     };
 
     // Append the new field to the editor
@@ -926,7 +936,7 @@
         'div', [toggleBtn, delBtn], { className: 'field-actions' }
       ).outerHTML;
 
-      liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>';
+      liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required ? 'style="display:inline"' : '') + '> *</span>';
       liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
