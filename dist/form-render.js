@@ -414,7 +414,9 @@ function FormRenderFn(options, element) {
       opts.notify.success(opts.label.formRendered);
     }
   } else {
-    formRender.markup = rendered.join('');
+    formRender.markup = rendered.map(function (elem) {
+      return elem.innerHTML;
+    }).join('');
   }
 
   return formRender;
