@@ -25,6 +25,19 @@ body > .site-wrap {
   }
 }
 
+@media (max-width: 481px) {
+  body > .site-wrap {
+    background-image: linear-gradient(to bottom, #000, #92278F), linear-gradient(to bottom, #92278F, #480246);
+    background-size: 100% 50%, 100% 50.5%;
+    background-position: 50% 0,50% 100%;
+  }
+
+  #project_title img {
+    height: 64px;
+    width: 50.3px;
+  }
+}
+
 #footer-wrap {
   background: #212121;
 }
@@ -104,17 +117,20 @@ legend {
   }
 }
 
-.build-form,
 .render-form {
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
 }
 
 .render-form {
-  background-color: $white;
   display: none;
+  background-color: $white;
 }
 
 #fb-template {
   display: none;
+}
+
+.lower-section {
+  overflow: hidden;
 }

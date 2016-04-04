@@ -486,6 +486,19 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return element;
   };
 
+  /**
+   * increments the field ids with support for multiple editors
+   * @param  {String} id field ID
+   * @return {String}    incremented field ID
+   */
+  _helpers.incrementId = function (id) {
+    var split = id.lastIndexOf('-'),
+        newFieldNumber = parseInt(id.substring(split + 1)) + 1,
+        baseString = id.substring(0, split);
+
+    return baseString + '-' + newFieldNumber;
+  };
+
   _helpers.makeId = function () {
     var element = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
@@ -1295,7 +1308,7 @@ function formBuilderEventsFn() {
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
-    var lastID = 1,
+    var lastID = frmbID + '-fld-1',
         boxID = frmbID + '-control-box';
 
     // create array of field objects to cycle through
@@ -1985,7 +1998,7 @@ function formBuilderEventsFn() {
         title: opts.messages.removeMessage
       }),
           toggleBtn = _helpers.markup('a', null, {
-        id: 'frm-' + lastID,
+        id: lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
         title: opts.messages.hide
       }),
@@ -1997,7 +2010,7 @@ function formBuilderEventsFn() {
 
       liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>';
       liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
-      liContents += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
+      liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
 
       liContents += requiredField(values);
@@ -2017,7 +2030,7 @@ function formBuilderEventsFn() {
       var li = _helpers.markup('li', liContents, {
         'class': values.type + '-field form-field',
         'type': values.type,
-        id: 'frm-' + lastID + '-item'
+        id: lastID
       }),
           $li = $(li);
 
@@ -2033,7 +2046,7 @@ function formBuilderEventsFn() {
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
-      lastID++;
+      lastID = _helpers.incrementId(lastID);
     };
 
     // Select field html, since there may be multiple
@@ -2116,8 +2129,8 @@ function formBuilderEventsFn() {
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
-        var targetID = $(this).attr('id');
-        _helpers.toggleEdit(targetID + '-item');
+        var targetID = $(this).parents('.form-field:eq(0)').attr('id');
+        _helpers.toggleEdit(targetID);
         e.handled = true;
       } else {
         return false;
@@ -2194,8 +2207,8 @@ function formBuilderEventsFn() {
         pageY: buttonPosition.top - bodyRect.top - 12
       };
 
-      var deleteID = $(this).attr('id').replace(/del_/, ''),
-          $field = $(document.getElementById('frm-' + deleteID + '-item'));
+      var deleteID = $(this).parents('.form-field:eq(0)').attr('id'),
+          $field = $(document.getElementById(deleteID));
 
       var removeField = function removeField() {
         $field.slideUp(250, function () {

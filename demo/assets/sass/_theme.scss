@@ -260,6 +260,20 @@ Full-Width Styles
   }
 }
 
+@media (max-width: 481px) {
+  #menu {
+    margin-top: 0;
+    float: none;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+  }
+
+  #header_wrap .inner {
+    padding: 20px 0;
+  }
+}
+
 #project_title {
   font-family: 'Roboto', sans-serif;
   margin: 0;

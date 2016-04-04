@@ -295,6 +295,19 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return element;
   };
 
+  /**
+   * increments the field ids with support for multiple editors
+   * @param  {String} id field ID
+   * @return {String}    incremented field ID
+   */
+  _helpers.incrementId = function(id) {
+    var split = id.lastIndexOf('-'),
+      newFieldNumber = parseInt(id.substring(split + 1)) + 1,
+      baseString = id.substring(0, split);
+
+    return `${baseString}-${newFieldNumber}`;
+  };
+
   _helpers.makeId = function(element = false) {
     let epoch = new Date().getTime();
 

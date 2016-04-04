@@ -71,6 +71,51 @@ textarea {
   .btn-group > .btn:hover {
     z-index: 2; }
 
+.btn-group-vertical > .btn, .fb-mobile .form-actions > .btn,
+.btn-group-vertical > .btn-group, .fb-mobile .form-actions > .btn-group,
+.btn-group-vertical > .btn-group > .btn, .fb-mobile .form-actions > .btn-group > .btn {
+  display: block;
+  float: none;
+  width: 100%;
+  max-width: 100%; }
+
+.btn-group-vertical > .btn-group > .btn, .fb-mobile .form-actions > .btn-group > .btn {
+  float: none; }
+
+.btn-group-vertical > .btn + .btn, .fb-mobile .form-actions > .btn + .btn,
+.btn-group-vertical > .btn + .btn-group, .fb-mobile .form-actions > .btn + .btn-group,
+.btn-group-vertical > .btn-group + .btn, .fb-mobile .form-actions > .btn-group + .btn,
+.btn-group-vertical > .btn-group + .btn-group, .fb-mobile .form-actions > .btn-group + .btn-group {
+  margin-top: -1px;
+  margin-left: 0; }
+
+.btn-group-vertical > .btn:not(:first-child):not(:last-child), .fb-mobile .form-actions > .btn:not(:first-child):not(:last-child) {
+  border-radius: 0; }
+
+.btn-group-vertical > .btn:first-child:not(:last-child), .fb-mobile .form-actions > .btn:first-child:not(:last-child) {
+  border-top-left-radius: 4px !important;
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0; }
+
+.btn-group-vertical > .btn:last-child:not(:first-child), .fb-mobile .form-actions > .btn:last-child:not(:first-child) {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px; }
+
+.btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn, .fb-mobile .form-actions > .btn-group:not(:first-child):not(:last-child) > .btn {
+  border-radius: 0; }
+
+.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child, .fb-mobile .form-actions > .btn-group:first-child:not(:last-child) > .btn:last-child,
+.btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle, .fb-mobile .form-actions > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0; }
+
+.btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child, .fb-mobile .form-actions > .btn-group:last-child:not(:first-child) > .btn:first-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }
+
 .btn {
   color: #fff;
   display: inline-block;
@@ -444,6 +489,11 @@ textarea.form-control {
   margin-top: 5px; }
   .form-actions .clear-all:hover {
     color: #fff; }
+  .fb-mobile .form-actions {
+    width: 100%; }
+    .fb-mobile .form-actions button {
+      font-size: .85em;
+      display: block; }
 
 .frmb {
   list-style-type: none;

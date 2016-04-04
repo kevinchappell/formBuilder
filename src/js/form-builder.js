@@ -206,7 +206,7 @@
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
-    var lastID = 1,
+    var lastID = frmbID + '-fld-1',
       boxID = frmbID + '-control-box';
 
     // create array of field objects to cycle through
@@ -914,7 +914,7 @@
           title: opts.messages.removeMessage
         }),
         toggleBtn = _helpers.markup('a', null, {
-          id: 'frm-' + lastID,
+          id: lastID + '-edit',
           className: 'toggle-form btn icon-pencil',
           title: opts.messages.hide
         }),
@@ -928,7 +928,7 @@
 
       liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required === 'true' ? 'style="display:inline"' : '') + '> *</span>';
       liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
-      liContents += '<div id="frm-' + lastID + '-fld" class="frm-holder">';
+      liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
 
       liContents += requiredField(values);
@@ -948,7 +948,7 @@
       let li = _helpers.markup('li', liContents, {
           'class': values.type + '-field form-field',
           'type': values.type,
-          id: 'frm-' + lastID + '-item'
+          id: lastID
         }),
         $li = $(li);
 
@@ -964,8 +964,10 @@
 
       $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
 
-      lastID++;
+      lastID = _helpers.incrementId(lastID);
     };
+
+
 
     // Select field html, since there may be multiple
     var selectFieldOptions = function(name, values, selected, multipleSelect) {
@@ -1047,8 +1049,8 @@
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
-        var targetID = $(this).attr('id');
-        _helpers.toggleEdit(targetID + '-item');
+        var targetID = $(this).parents('.form-field:eq(0)').attr('id');
+        _helpers.toggleEdit(targetID);
         e.handled = true;
       } else {
         return false;
@@ -1125,8 +1127,8 @@
           pageY: (buttonPosition.top - bodyRect.top) - 12
         };
 
-      var deleteID = $(this).attr('id').replace(/del_/, ''),
-        $field = $(document.getElementById('frm-' + deleteID + '-item'));
+      var deleteID = $(this).parents('.form-field:eq(0)').attr('id'),
+        $field = $(document.getElementById(deleteID));
 
       let removeField = () => {
         $field.slideUp(250, function() {
