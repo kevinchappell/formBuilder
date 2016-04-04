@@ -330,13 +330,7 @@
         'label': frmbFields[i].label
       });
 
-      $field.data('fieldData', frmbFields[i]);
-
-      // for (var attr in frmbFields[i]) {
-      //   if (frmbFields[i].hasOwnProperty(attr)) {
-      //     $field.data(attr, frmbFields[i][attr]);
-      //   }
-      // }
+      $field.data('newFieldData', frmbFields[i]);
 
       let typeLabel = _helpers.markup('span', frmbFields[i].label);
       $field.html(typeLabel).appendTo($cbUL);
@@ -463,7 +457,7 @@
       var field = {};
 
       if ($field instanceof jQuery) {
-        let fieldData = $field.data('fieldData');
+        let fieldData = $field.data('newFieldData');
         if (fieldData) {
           field = fieldData.attrs;
           field.label = fieldData.label;
@@ -489,7 +483,7 @@
       field.label = _helpers.htmlEncode(field.label);
       field.name = isNew ? nameAttr(field) : field.name;
       field.role = field.role;
-      field.className = field.className;
+      field.className = field.className || field.class;
       field.required = (field.required === 'true' || field.required === true);
       field.maxlength = field.maxlength;
       field.toggle = field.toggle;
@@ -528,7 +522,6 @@
           opts.defaultFields.reverse();
           for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
             prepFieldVars(opts.defaultFields[i]);
-            // appendNewField(opts.defaultFields[i]);
           }
           $stageWrap.removeClass('empty');
           _helpers.save();
@@ -576,7 +569,7 @@
 
     var nameAttr = function(field) {
       var epoch = new Date().getTime();
-      return field.name + '-' + epoch;
+      return field.type + '-' + epoch;
     };
 
     // multi-line textarea
