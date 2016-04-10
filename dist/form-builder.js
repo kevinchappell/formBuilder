@@ -1784,7 +1784,7 @@ function formBuilderEventsFn() {
 
       advFields.push(fieldDescription(values));
 
-      advFields.push(subTypeField(values.type));
+      advFields.push(subTypeField(values));
 
       advFields.push(btnStyles(values.style, values.type));
 
@@ -1851,11 +1851,13 @@ function formBuilderEventsFn() {
 
     /**
      * Changes a fields type
-     * @param  {String} type
+     *
+     * @param  {Object} values
      * @return {String}      markup for type <select> input
      */
-    var subTypeField = function subTypeField(type) {
+    var subTypeField = function subTypeField(values) {
       var subTypes = opts.messages.subtypes,
+          type = values.subtype || values.type,
           subType = '';
 
       if (subTypes[type]) {

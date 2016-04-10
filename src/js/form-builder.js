@@ -679,7 +679,7 @@
 
       advFields.push(fieldDescription(values));
 
-      advFields.push(subTypeField(values.type));
+      advFields.push(subTypeField(values));
 
       advFields.push(btnStyles(values.style, values.type));
 
@@ -748,11 +748,13 @@
 
     /**
      * Changes a fields type
-     * @param  {String} type
+     *
+     * @param  {Object} values
      * @return {String}      markup for type <select> input
      */
-    var subTypeField = function(type) {
+    var subTypeField = function(values) {
       let subTypes = opts.messages.subtypes,
+        type = values.subtype || values.type,
         subType = '';
 
       if (subTypes[type]) {
