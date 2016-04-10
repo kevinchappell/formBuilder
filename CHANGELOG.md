@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.26 - Bugfix: saved subtypes not rendering [#134](https://github.com/kevinchappell/formBuilder/pull/134)
 - v1.9.25 - Bugfix: Standardizes how field variables are processed from xml, defaultfields and new field sources [#129](https://github.com/kevinchappell/formBuilder/pull/129)
 - v1.9.24 - Bugfix: Update internal field id to better handle multiple editors [#126](https://github.com/kevinchappell/formBuilder/pull/126)
 - v1.9.23 - Bugfix: editing class attribute is wonky [#122](https://github.com/kevinchappell/formBuilder/pull/122)
