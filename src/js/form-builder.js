@@ -754,21 +754,23 @@
      */
     var subTypeField = function(values) {
       let subTypes = opts.messages.subtypes,
-        type = values.subtype || values.type,
-        subType = '';
+        type = values.type,
+        subtype = values.subtype || '',
+        subTypeField = '',
+        selected;
 
       if (subTypes[type]) {
         let subTypeLabel = `<label>${opts.messages.subtype}</label>`;
-        subType += `<select name="subtype" class="fld-subtype form-control" id="subtype-${lastID}">`;
+        subTypeField += `<select name="subtype" class="fld-subtype form-control" id="subtype-${lastID}">`;
         subTypes[type].forEach(function(element) {
-          let selected = type === element ? 'selected' : '';
-          subType += `<option value="${element}" ${selected}>${element}</option>`;
+          selected = (subtype === element) ? 'selected' : '';
+          subTypeField += `<option value="${element}" ${selected}>${element}</option>`;
         });
-        subType += `</select>`;
-        subType = `<div class="form-group subtype-wrap">${subTypeLabel} ${subType}</div>`;
+        subTypeField += `</select>`;
+        subTypeField = `<div class="form-group subtype-wrap">${subTypeLabel} ${subTypeField}</div>`;
       }
 
-      return subType;
+      return subTypeField;
     };
 
     var btnStyles = function(style, type) {
