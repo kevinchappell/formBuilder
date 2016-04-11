@@ -1857,21 +1857,23 @@ function formBuilderEventsFn() {
      */
     var subTypeField = function subTypeField(values) {
       var subTypes = opts.messages.subtypes,
-          type = values.subtype || values.type,
-          subType = '';
+          type = values.type,
+          subtype = values.subtype || '',
+          subTypeField = '',
+          selected = void 0;
 
       if (subTypes[type]) {
         var subTypeLabel = '<label>' + opts.messages.subtype + '</label>';
-        subType += '<select name="subtype" class="fld-subtype form-control" id="subtype-' + lastID + '">';
+        subTypeField += '<select name="subtype" class="fld-subtype form-control" id="subtype-' + lastID + '">';
         subTypes[type].forEach(function (element) {
-          var selected = type === element ? 'selected' : '';
-          subType += '<option value="' + element + '" ' + selected + '>' + element + '</option>';
+          selected = subtype === element ? 'selected' : '';
+          subTypeField += '<option value="' + element + '" ' + selected + '>' + element + '</option>';
         });
-        subType += '</select>';
-        subType = '<div class="form-group subtype-wrap">' + subTypeLabel + ' ' + subType + '</div>';
+        subTypeField += '</select>';
+        subTypeField = '<div class="form-group subtype-wrap">' + subTypeLabel + ' ' + subTypeField + '</div>';
       }
 
-      return subType;
+      return subTypeField;
     };
 
     var btnStyles = function btnStyles(style, type) {
