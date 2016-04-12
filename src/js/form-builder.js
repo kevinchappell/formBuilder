@@ -184,7 +184,7 @@
         }
       },
       sortableControls: false,
-      prefix: 'fb-'
+      prefix: 'form-builder-'
     };
 
     // @todo function to set parent types for subtypes
