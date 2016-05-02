@@ -151,7 +151,7 @@ function FormRenderFn(options, element) {
       case 'rich-text':
         delete fieldAttrs.type;
         delete fieldAttrs.value;
-        var fieldDefaultValue = (opts.defaultValues[fieldAttrs.name]?opts[fieldAttrs.name]:"");
+        var fieldDefaultValue = (opts.defaultValues[fieldAttrs.name]?opts.defaultValues[fieldAttrs.name]:"");
         fieldMarkup = `${fieldLabel}<textarea ${fieldAttrsString}>${fieldDefaultValue}</textarea>`;
         break;
       case 'select':
