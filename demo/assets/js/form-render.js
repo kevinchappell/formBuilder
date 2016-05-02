@@ -61,6 +61,7 @@ function FormRenderFn(options, element) {
     container: false,
     dataType: 'xml',
     formData: false,
+    defaultValues: null,
     label: {
       selectColor: 'Select Color',
       noFormData: 'No form data.',
@@ -205,7 +206,7 @@ function FormRenderFn(options, element) {
       case 'rich-text':
         delete fieldAttrs.type;
         delete fieldAttrs.value;
-        fieldMarkup = fieldLabel + '<textarea ' + fieldAttrsString + '></textarea>';
+        fieldMarkup = fieldLabel + '<textarea ' + fieldAttrsString + '>'+(opts.defaultValues[fieldAttrs.name]?opts[fieldAttrs.name]:"")+'</textarea>';
         break;
       case 'select':
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
@@ -215,7 +216,7 @@ function FormRenderFn(options, element) {
             index = index;
             var optionAttrs = _helpers.parseAttrs(el.attributes),
                 optionAttrsString = _helpers.attrString(optionAttrs);
-            optionsMarkup += '<option ' + optionAttrsString + '>' + el.textContent + '</option>';
+            optionsMarkup += '<option ' + optionAttrsString + (opts.defaultValues[fieldAttrs.name] == optionAttrs.value ? "selected":"")+'>' + el.textContent + '</option>';
           });
         }
         fieldMarkup = fieldLabel + '<select ' + fieldAttrsString + '>' + optionsMarkup + '</select>';
@@ -241,7 +242,10 @@ function FormRenderFn(options, element) {
               optionAttrs.name = optionName;
               optionAttrs.id = fieldAttrs.id + '-' + index;
               optionAttrsString = _helpers.attrString(optionAttrs);
-              optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + el.textContent + '</label><br>';
+              if(fieldAttrs.type == 'checkbox'){
+                optionsMarkup += '<input ' + optionAttrsString + (jQuery.inArray(optionAttrs.value, opts.defaultValues[fieldAttrs.name]) != '-1' ? "checked":"") + ' /> <label for="' + optionAttrs.id + '">' + el.textContent + '</label><br>';
+              }else if(fieldAttrs.type == 'radio')
+                optionsMarkup += '<input ' + optionAttrsString + (opts.defaultValues[optionAttrs.name] ==  optionAttrs.value ? "checked":"") + ' /> <label for="' + optionAttrs.id + '">' + el.textContent + '</label><br>';
             });
           })();
         }
@@ -254,17 +258,17 @@ function FormRenderFn(options, element) {
       case 'hidden':
       case 'date':
       case 'autocomplete':
-        fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + '>';
+        fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + 'value = "' + (opts.defaultValues[fieldAttrs.name]?opts.defaultValues[fieldAttrs.name]:"") + '" >';
         break;
       case 'color':
-        fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + '> ' + opts.label.selectColor;
+        fieldMarkup = fieldLabel + ' <input ' + fieldAttrsString + 'value = "' + (opts.defaultValues[fieldAttrs.name]?opts.defaultValues[fieldAttrs.name]:"") + '" > ' + opts.label.selectColor;
         break;
       case 'button':
       case 'submit':
         fieldMarkup = '<button ' + fieldAttrsString + '>' + fieldLabelVal + '</button>';
         break;
       case 'checkbox':
-        fieldMarkup = '<input ' + fieldAttrsString + '> ' + fieldLabel;
+        fieldMarkup = '<input ' + fieldAttrsString + (opts.defaultValues[fieldAttrs.name] == "on" ? "checked":"") + '> ' + fieldLabel;
 
         if (fieldAttrs.toggle) {
           setTimeout(function () {
@@ -373,9 +377,11 @@ function FormRenderFn(options, element) {
 
   // Begin the core plugin
   var rendered = [];
+  
 
   var formData = $.parseXML(opts.formData),
       fields = $('field', formData);
+
   // @todo - form configuration settings (control position, creatorId, theme etc)
   // settings = $('settings', formData);
 

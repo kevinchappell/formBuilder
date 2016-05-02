@@ -8,6 +8,7 @@ function FormRenderFn(options, element) {
       container: false,
       dataType: 'xml',
       formData: false,
+      defaultValues: null,
       label: {
         selectColor: 'Select Color',
         noFormData: 'No form data.',
@@ -150,7 +151,8 @@ function FormRenderFn(options, element) {
       case 'rich-text':
         delete fieldAttrs.type;
         delete fieldAttrs.value;
-        fieldMarkup = `${fieldLabel}<textarea ${fieldAttrsString}></textarea>`;
+        var fieldDefaultValue = (opts.defaultValues[fieldAttrs.name]?opts[fieldAttrs.name]:"");
+        fieldMarkup = `${fieldLabel}<textarea ${fieldAttrsString}>${fieldDefaultValue}</textarea>`;
         break;
       case 'select':
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
@@ -159,8 +161,9 @@ function FormRenderFn(options, element) {
           fieldOptions.each(function(index, el) {
             index = index;
             let optionAttrs = _helpers.parseAttrs(el.attributes),
-              optionAttrsString = _helpers.attrString(optionAttrs);
-            optionsMarkup += `<option ${optionAttrsString}>${el.textContent}</option>`;
+              optionAttrsString = _helpers.attrString(optionAttrs),
+              fieldDefaultSelected = (opts.defaultValues[fieldAttrs.name] == optionAttrs.value ? "selected":"");
+            optionsMarkup += `<option ${optionAttrsString} ${fieldDefaultSelected}>${el.textContent}</option>`;
           });
         }
         fieldMarkup = `${fieldLabel}<select ${fieldAttrsString}>${optionsMarkup}</select>`;
@@ -185,7 +188,13 @@ function FormRenderFn(options, element) {
             optionAttrs.name = optionName;
             optionAttrs.id = fieldAttrs.id + '-' + index;
             optionAttrsString = _helpers.attrString(optionAttrs);
-            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${el.textContent}</label><br>`;
+
+            if(fieldAttrs.type == "checkbox")
+              let fieldDefaultSelected = (jQuery.inArray(optionAttrs.value, opts.defaultValues[fieldAttrs.name]) != '-1' ? "checked":"");
+            else if(fieldAttrs.type == "radio")
+              let fieldDefaultSelected = (opts.defaultValues[optionAttrs.name] ==  optionAttrs.value ? "checked":"");
+            
+            optionsMarkup += `<input ${optionAttrsString} ${fieldDefaultSelected} /> <label for="${optionAttrs.id}">${el.textContent}</label><br>`;
           });
         }
         fieldMarkup = `${fieldLabel}<div class="${fieldAttrs.type}-group">${optionsMarkup}</div>`;
@@ -197,17 +206,20 @@ function FormRenderFn(options, element) {
       case 'hidden':
       case 'date':
       case 'autocomplete':
-        fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}>`;
+        var fieldDefaultValue = 'value = "' + (opts.defaultValues[fieldAttrs.name]?opts.defaultValues[fieldAttrs.name]:"") + '"';
+        fieldMarkup = `${fieldLabel} <input ${fieldAttrsString} ${fieldDefaultValue}>`;
         break;
       case 'color':
-        fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}> ${opts.label.selectColor}`;
+        var fieldDefaultValue = 'value = "' + (opts.defaultValues[fieldAttrs.name]?opts.defaultValues[fieldAttrs.name]:"") + '"';
+        fieldMarkup = `${fieldLabel} <input ${fieldAttrsString} ${fieldDefaultValue}> ${opts.label.selectColor}`;
         break;
       case 'button':
       case 'submit':
         fieldMarkup = `<button ${fieldAttrsString}>${fieldLabelVal}</button>`;
         break;
       case 'checkbox':
-        fieldMarkup = `<input ${fieldAttrsString}> ${fieldLabel}`;
+        var fieldDefaultSelected = (opts.defaultValues[fieldAttrs.name] == "on" ? "checked":"");
+        fieldMarkup = `<input ${fieldAttrsString} ${fieldDefaultSelected}> ${fieldLabel}`;
 
         if (fieldAttrs.toggle) {
           setTimeout(function() {
