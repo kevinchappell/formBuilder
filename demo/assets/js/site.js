@@ -18,7 +18,7 @@ jQuery(document).ready(function($) {
     $renderWrap.toggle();
   };
 
-  $('.fb-save').click(function() {
+  $('.form-builder-save').click(function() {
     toggleEdit();
     $(template).formRender(formRenderOpts);
   });

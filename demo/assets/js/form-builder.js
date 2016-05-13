@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.27
+Version: 1.9.28
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -396,7 +396,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.trimAttrs = function (attrs) {
     var xmlRemove = [null, undefined, '', false];
     for (var i in attrs) {
-      if (xmlRemove.inArray(attrs[i])) {
+      if (_helpers.inArray(attrs[i], xmlRemove)) {
         delete attrs[i];
       }
     }
@@ -783,12 +783,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
         classes.push(primaryType + '-' + style);
       }
       classes.push(primaryType);
-    } else if (!noFormControl.inArray(type)) {
+    } else if (!_helpers.inArray(type, noFormControl)) {
       classes.push('form-control');
     }
 
     // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
-    return classes.reverse().unique().join(' ').trim();
+    return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
   _helpers.markup = function (tag) {
@@ -1050,7 +1050,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     if (!fieldOrder) {
-      fieldOrder = opts.controlOrder.unique();
+      fieldOrder = _helpers.unique(opts.controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = Object.keys(fieldOrder).map(function (i) {
@@ -1068,6 +1068,29 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     return newOrderFields.filter(Boolean);
+  };
+
+  // forEach that can be used on nodeList
+  _helpers.forEach = function (array, callback, scope) {
+    for (var i = 0; i < array.length; i++) {
+      callback.call(scope, i, array[i]); // passes back stuff we need
+    }
+  };
+
+  // cleaner syntax for testing indexOf element
+  _helpers.inArray = function (needle, haystack) {
+    return haystack.indexOf(needle) !== -1;
+  };
+
+  /**
+   * Remove duplicates from an array of elements
+   * @param  {array} arrArg array with possible duplicates
+   * @return {array}        array with only unique values
+   */
+  _helpers.unique = function (array) {
+    return array.filter(function (elem, pos, arr) {
+      return arr.indexOf(elem) === pos;
+    });
   };
 
   return _helpers;
@@ -1408,7 +1431,7 @@ function formBuilderEventsFn() {
     if (opts.disableFields) {
       // remove disabledFields
       frmbFields = frmbFields.filter(function (field) {
-        return !opts.disableFields.inArray(field.attrs.type);
+        return !_helpers.inArray(field.attrs.type, opts.disableFields);
       });
     }
 
@@ -1917,7 +1940,7 @@ function formBuilderEventsFn() {
 
       var attrVal = attribute === 'label' ? values.label : values[attribute] || '';
       var attrLabel = opts.messages[attribute];
-      if (attribute === 'label' && textArea.inArray(values.type)) {
+      if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
         attrLabel = opts.messages.content;
       }
 
@@ -1930,17 +1953,17 @@ function formBuilderEventsFn() {
           noMakeAttr = [];
 
       // Field has placeholder attribute
-      if (attribute === 'placeholder' && !placeholderFields.inArray(values.type)) {
+      if (attribute === 'placeholder' && !_helpers.inArray(values.type, placeholderFields)) {
         noMakeAttr.push(true);
       }
 
       // Field has name attribute
-      if (attribute === 'name' && noName.inArray(values.type)) {
+      if (attribute === 'name' && _helpers.inArray(values.type, noName)) {
         noMakeAttr.push(true);
       }
 
       // Field has maxlength attribute
-      if (attribute === 'maxlength' && noMaxlength.inArray(values.type)) {
+      if (attribute === 'maxlength' && _helpers.inArray(values.type, noMaxlength)) {
         noMakeAttr.push(true);
       }
 
@@ -1949,7 +1972,7 @@ function formBuilderEventsFn() {
       })) {
         var attributeLabel = '<label>' + attrLabel + '</label>';
 
-        if (attribute === 'label' && textArea.inArray(values.type)) {
+        if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
           attributefield += '<textarea name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">' + attrVal + '</textarea>';
         } else {
           attributefield += '<input type="text" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
@@ -1966,7 +1989,7 @@ function formBuilderEventsFn() {
           noMake = [],
           requireField = '';
 
-      if (noRequire.inArray(values.type)) {
+      if (_helpers.inArray(values.type, noRequire)) {
         noMake.push(true);
       }
 
@@ -2403,14 +2426,15 @@ function formBuilderEventsFn() {
       if (sortableFields.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
         // build new xml
-        sortableFields.childNodes.forEach(function (field) {
+        _helpers.forEach(sortableFields.childNodes, function (index, field) {
+          index = index;
           var $field = $(field);
           var fieldData = $field.data('fieldData');
 
           if (!$field.hasClass('disabled')) {
-            var roleVals = field.querySelectorAll('.roles-field:checked').map(function (n) {
-              return n.value;
-            }).join(',');
+            var roleVals = $('.roles-field:checked', field).map(function () {
+              return this.value;
+            }).get();
 
             var types = _helpers.getTypes($field);
             var xmlAttrs = {
@@ -2422,11 +2446,13 @@ function formBuilderEventsFn() {
               name: $('input.fld-name', $field).val(),
               placeholder: $('input.fld-placeholder', $field).val(),
               required: $('input.required', $field).is(':checked'),
-              role: roleVals,
               toggle: $('.checkbox-toggle', $field).is(':checked'),
               type: types.type,
               subtype: types.subtype
             };
+            if (roleVals.length) {
+              xmlAttrs.role = roleVals.join(',');
+            }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);
             var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/);
@@ -2494,42 +2520,3 @@ if (typeof Event !== 'function') {
     };
   })();
 }
-
-/**
- * Nice syntax for testing if element is in array
- * @param  {String|Object} needle
- * @return {Boolean}
- */
-Array.prototype.inArray = function (needle) {
-  return this.indexOf(needle) !== -1;
-};
-
-/**
- * Remove duplicates from an array of elements
- * @param  {array} arrArg array with possible duplicates
- * @return {array}        array with only unique values
- */
-Array.prototype.unique = function () {
-  return this.filter(function (elem, pos, arr) {
-    return arr.indexOf(elem) === pos;
-  });
-};
-
-// Remove specific values from array. use sparingly
-Array.prototype.remove = function () {
-  var what,
-      a = arguments,
-      L = a.length,
-      ax;
-  while (L && this.length) {
-    what = a[--L];
-    while ((ax = this.indexOf(what)) !== -1) {
-      this.splice(ax, 1);
-    }
-  }
-  return this;
-};
-
-// Lets us loop and map through NodeLists
-NodeList.prototype.forEach = Array.prototype.forEach;
-NodeList.prototype.map = Array.prototype.map;
