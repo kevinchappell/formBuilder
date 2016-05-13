@@ -306,7 +306,7 @@
     if (opts.disableFields) {
       // remove disabledFields
       frmbFields = frmbFields.filter(function(field) {
-        return !opts.disableFields.inArray(field.attrs.type);
+        return !_helpers.inArray(field.attrs.type, opts.disableFields);
       });
     }
 
@@ -830,7 +830,7 @@
 
       var attrVal = (attribute === 'label') ? values.label : (values[attribute] || '');
       var attrLabel = opts.messages[attribute];
-      if (attribute === 'label' && textArea.inArray(values.type)) {
+      if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
         attrLabel = opts.messages.content;
       }
 
@@ -843,24 +843,24 @@
         noMakeAttr = [];
 
       // Field has placeholder attribute
-      if (attribute === 'placeholder' && !placeholderFields.inArray(values.type)) {
+      if (attribute === 'placeholder' && !_helpers.inArray(values.type, placeholderFields)) {
         noMakeAttr.push(true);
       }
 
       // Field has name attribute
-      if (attribute === 'name' && noName.inArray(values.type)) {
+      if (attribute === 'name' && _helpers.inArray(values.type, noName)) {
         noMakeAttr.push(true);
       }
 
       // Field has maxlength attribute
-      if (attribute === 'maxlength' && noMaxlength.inArray(values.type)) {
+      if (attribute === 'maxlength' && _helpers.inArray(values.type, noMaxlength)) {
         noMakeAttr.push(true);
       }
 
       if (!noMakeAttr.some(elem => elem === true)) {
         let attributeLabel = `<label>${attrLabel}</label>`;
 
-        if (attribute === 'label' && textArea.inArray(values.type)) {
+        if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
           attributefield += `<textarea name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">${attrVal}</textarea>`;
         } else {
           attributefield += `<input type="text" value="${attrVal}" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
@@ -881,7 +881,7 @@
         noMake = [],
         requireField = '';
 
-      if (noRequire.inArray(values.type)) {
+      if (_helpers.inArray(values.type, noRequire)) {
         noMake.push(true);
       }
 

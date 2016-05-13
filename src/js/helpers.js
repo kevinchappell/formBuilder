@@ -205,7 +205,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       false
     ];
     for (var i in attrs) {
-      if (xmlRemove.inArray(attrs[i])) {
+      if (_helpers.inArray(attrs[i], xmlRemove)) {
         delete attrs[i];
       }
     }
@@ -591,12 +591,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
         classes.push(primaryType + '-' + style);
       }
       classes.push(primaryType);
-    } else if (!noFormControl.inArray(type)) {
+    } else if (!_helpers.inArray(type, noFormControl)) {
       classes.push('form-control');
     }
 
     // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
-    return classes.reverse().unique().join(' ').trim();
+    return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
   _helpers.markup = function(tag, content = '', attrs = {}) {
@@ -848,7 +848,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     if (!fieldOrder) {
-      fieldOrder = opts.controlOrder.unique();
+      fieldOrder = _helpers.unique(opts.controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = Object.keys(fieldOrder).map(function(i) {
@@ -866,6 +866,29 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     return newOrderFields.filter(Boolean);
+  };
+
+  // forEach that can be used on nodeList
+  _helpers.forEach = function(array, callback, scope) {
+    for (var i = 0; i < array.length; i++) {
+      callback.call(scope, i, array[i]); // passes back stuff we need
+    }
+  };
+
+  // cleaner syntax for testing indexOf element
+  _helpers.inArray = function(needle, haystack) {
+    return haystack.indexOf(needle) !== -1;
+  };
+
+  /**
+   * Remove duplicates from an array of elements
+   * @param  {array} arrArg array with possible duplicates
+   * @return {array}        array with only unique values
+   */
+  _helpers.unique = function(array) {
+    return array.filter((elem, pos, arr) => {
+      return arr.indexOf(elem) === pos;
+    });
   };
 
   return _helpers;

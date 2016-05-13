@@ -26,14 +26,15 @@
       if (sortableFields.childNodes.length >= 1) {
         serialStr += '<form-template>\n\t<fields>';
         // build new xml
-        sortableFields.childNodes.forEach(function(field) {
+        _helpers.forEach(sortableFields.childNodes, function(index, field) {
+          index = index;
           var $field = $(field);
           var fieldData = $field.data('fieldData');
 
           if (!($field.hasClass('disabled'))) {
-            var roleVals = field.querySelectorAll('.roles-field:checked').map(function(n) {
-              return n.value;
-            }).join(',');
+            var roleVals = $('.roles-field:checked', field).map(function() {
+              return this.value;
+            }).get();
 
             let types = _helpers.getTypes($field);
             var xmlAttrs = {
@@ -45,11 +46,13 @@
               name: $('input.fld-name', $field).val(),
               placeholder: $('input.fld-placeholder', $field).val(),
               required: $('input.required', $field).is(':checked'),
-              role: roleVals,
               toggle: $('.checkbox-toggle', $field).is(':checked'),
               type: types.type,
               subtype: types.subtype
             };
+            if (roleVals.length) {
+              xmlAttrs.role = roleVals.join(',');
+            }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);
             var multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/);
