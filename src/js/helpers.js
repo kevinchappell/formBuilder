@@ -394,7 +394,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var i,
       preview = '',
       epoch = new Date().getTime();
-    attrs = Object.assign({}, attrs);
+    attrs = jQuery.extend({}, attrs)
     attrs.type = attrs.subtype || attrs.type;
     let toggle = attrs.toggle ? 'toggle' : '';
     // attrs = _helpers.escapeAttrs(attrs);
@@ -451,7 +451,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
         preview = `<input class="ui-autocomplete-input ${attrs.className}" autocomplete="on">`;
         break;
       default:
-        preview = `<${attrs.type}>${attrs.label}</${attrs.type}>`;
+        attrsString = _helpers.attrString(attrs);
+        preview = `<${attrs.type} ${attrsString}>${attrs.label}</${attrs.type}>`;
     }
 
     return preview;
