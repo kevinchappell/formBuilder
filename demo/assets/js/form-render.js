@@ -273,7 +273,7 @@ function FormRenderFn(options, element) {
         }
         break;
       default:
-        fieldMarkup = '<' + fieldAttrs.type + '>' + fieldLabelText + '</' + fieldAttrs.type + '>';
+        fieldMarkup = '<' + fieldAttrs.type + ' ' + fieldAttrsString + '>' + fieldLabelVal + '</' + fieldAttrs.type + '>';
     }
 
     if (fieldAttrs.type !== 'hidden') {
