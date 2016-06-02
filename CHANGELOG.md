@@ -1,6 +1,6 @@
 # Changelog
 
-- v1.9.3 - Bugfix: Block elements missing classNames [#159](https://github.com/kevinchappell/formBuilder/pull/159)
+- v1.9.30 - Bugfix: Block elements missing classNames [#159](https://github.com/kevinchappell/formBuilder/pull/159)
 - v1.9.28 - Bugfix: Remove polyfills causing problems in some apps [#151](https://github.com/kevinchappell/formBuilder/pull/151)
 - v1.9.27 - Bugfix: Header subtypes [#136](https://github.com/kevinchappell/formBuilder/pull/136)
 - v1.9.26 - Bugfix: saved subtypes not rendering [#134](https://github.com/kevinchappell/formBuilder/pull/134)
