@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.30
+Version: 1.9.31
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2384,11 +2384,10 @@ function formBuilderEventsFn() {
           formBuilder;
       if ($(element).data('formBuilder')) {
         var existingFormBuilder = $(element).parents('.form-builder:eq(0)');
-        var newElement = $(element).clone();
-        existingFormBuilder.before(newElement);
+        existingFormBuilder.before(element);
         existingFormBuilder.remove();
-        formBuilder = new FormBuilder(options, newElement[0]);
-        newElement.data('formBuilder', formBuilder);
+        formBuilder = new FormBuilder(options, element);
+        $(element).data('formBuilder', formBuilder);
       } else {
         formBuilder = new FormBuilder(options, element);
         $(element).data('formBuilder', formBuilder);
