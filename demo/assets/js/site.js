@@ -27,4 +27,23 @@ jQuery(document).ready(function($) {
     toggleEdit();
   });
 
+  $('#news-wrap').dialog({
+    autoOpen: false,
+    width: 800,
+    modal: true,
+    title: 'News',
+    show: {
+      effect: 'fade',
+      duration: 333
+    },
+    hide: {
+      effect: 'fade',
+      duration: 333
+    }
+  });
+
+  $('#news-open').click(function() {
+    $('#news-wrap').dialog('open');
+  });
+
 });
