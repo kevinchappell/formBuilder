@@ -9,22 +9,28 @@ pages:
 - Introduction: index.md
 - Getting Started: getting-started.md
 - Development:
-    - Overview: development.md
-    - Icon Font: editing-fonts.md
-- Demos:
+  - Overview: development.md
+  - Icon Font: editing-fonts.md
+- formBuilder Demos:
   - Basic: demos/basic.md
   - Toggle formBuilder: demos/toggle-builder.md
   - Translating: demos/translation.md
+  - Data: demos/get-data.md
+- formRender Demos:
+  - Basic: demos/basic-formRender.md
+  - Container: demos/formRender-options.md
+  - Preview popup: demos/preview-popup.md
+  - Columns: demos/formRender-columns.md
 - Options:
-    - Overview: options.md
-    - append/prepend: options/appendPrepend.md
-    - controlPosition: options/controlPosition.md
-    - controlOrder: options/controlOrder.md
-    - disableFields: options/disableFields.md
-    - fieldRemoveWarn: options/fieldRemoveWarn.md
-    - messages: options/messages.md
-    - notify: options/notify.md
-    - sortableControls: options/sortableControls.md
+  - Overview: options.md
+  - append/prepend: options/appendPrepend.md
+  - controlPosition: options/controlPosition.md
+  - controlOrder: options/controlOrder.md
+  - disableFields: options/disableFields.md
+  - fieldRemoveWarn: options/fieldRemoveWarn.md
+  - messages: options/messages.md
+  - notify: options/notify.md
+  - sortableControls: options/sortableControls.md
 - Contributing: contributing.md
 - About:
   - License: license.md
