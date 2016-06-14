@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.9.32 - Bugfix: Change validators to run on blur instead of keyup [#164](https://github.com/kevinchappell/formBuilder/pull/164)
 - v1.9.31 - Bugfix: Firefox loses reference to textarea [#161](https://github.com/kevinchappell/formBuilder/pull/161)
 - v1.9.30 - Bugfix: Block elements missing classNames [#159](https://github.com/kevinchappell/formBuilder/pull/159)
 - v1.9.28 - Bugfix: Remove polyfills causing problems in some apps [#151](https://github.com/kevinchappell/formBuilder/pull/151)
