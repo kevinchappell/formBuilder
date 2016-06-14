@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.31
+Version: 1.9.32
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2216,7 +2216,7 @@ function formBuilderEventsFn() {
     _helpers.updateMultipleSelect();
 
     // format name attribute
-    $sortableFields.delegate('input[name="name"]', 'keyup', function () {
+    $sortableFields.delegate('input[name="name"]', 'blur', function () {
       $(this).val(_helpers.safename($(this).val()));
       if ($(this).val() === '') {
         $(this).addClass('field_error').attr('placeholder', opts.messages.cannotBeEmpty);
@@ -2225,7 +2225,7 @@ function formBuilderEventsFn() {
       }
     });
 
-    $sortableFields.delegate('input.fld-maxlength', 'keyup', function () {
+    $sortableFields.delegate('input.fld-maxlength', 'blur', function () {
       $(this).val(_helpers.forceNumber($(this).val()));
     });
 

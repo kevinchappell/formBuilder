@@ -1110,7 +1110,7 @@
     _helpers.updateMultipleSelect();
 
     // format name attribute
-    $sortableFields.delegate('input[name="name"]', 'keyup', function() {
+    $sortableFields.delegate('input[name="name"]', 'blur', function() {
       $(this).val(_helpers.safename($(this).val()));
       if ($(this).val() === '') {
         $(this).addClass('field_error').attr('placeholder', opts.messages.cannotBeEmpty);
@@ -1119,7 +1119,7 @@
       }
     });
 
-    $sortableFields.delegate('input.fld-maxlength', 'keyup', function() {
+    $sortableFields.delegate('input.fld-maxlength', 'blur', function() {
       $(this).val(_helpers.forceNumber($(this).val()));
     });
 

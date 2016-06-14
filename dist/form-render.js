@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.31
+Version: 1.9.32
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
