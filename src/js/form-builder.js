@@ -1052,7 +1052,7 @@
     });
 
     // toggle fields
-    $sortableFields.on('click touchstart', '.toggle-form', function(e) {
+    $sortableFields.on('click touchstart', '.toggle-form, .close-field', function(e) {
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
@@ -1209,12 +1209,6 @@
 
       $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, false, isMultiple));
       _helpers.updateMultipleSelect();
-    });
-
-    // Attach a callback to close link
-    $sortableFields.on('click touchstart', '.close-field', function() {
-      let fieldId = $(this).parents('li.form-field:eq(0)').attr('id');
-      _helpers.toggleEdit(fieldId);
     });
 
     $sortableFields.on('mouseover mouseout', '.remove, .del-button', function() {

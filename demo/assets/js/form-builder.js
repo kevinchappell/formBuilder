@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.9.32
+Version: 1.9.33
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2158,7 +2158,7 @@ function formBuilderEventsFn() {
     });
 
     // toggle fields
-    $sortableFields.on('click touchstart', '.toggle-form', function (e) {
+    $sortableFields.on('click touchstart', '.toggle-form, .close-field', function (e) {
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
@@ -2315,12 +2315,6 @@ function formBuilderEventsFn() {
 
       $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, false, isMultiple));
       _helpers.updateMultipleSelect();
-    });
-
-    // Attach a callback to close link
-    $sortableFields.on('click touchstart', '.close-field', function () {
-      var fieldId = $(this).parents('li.form-field:eq(0)').attr('id');
-      _helpers.toggleEdit(fieldId);
     });
 
     $sortableFields.on('mouseover mouseout', '.remove, .del-button', function () {
