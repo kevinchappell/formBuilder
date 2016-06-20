@@ -62,9 +62,10 @@ function FormRenderFn(options, element) {
     dataType: 'xml',
     formData: false,
     label: {
-      selectColor: 'Select Color',
+      formRendered: 'Form Rendered',
       noFormData: 'No form data.',
-      formRendered: 'Form Rendered'
+      other: 'Other',
+      selectColor: 'Select Color'
     },
     render: true,
     notify: {
@@ -222,16 +223,20 @@ function FormRenderFn(options, element) {
         break;
       case 'checkbox-group':
       case 'radio-group':
+        var enableOther = false;
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
 
-        // delete fieldAttrs.className;
+        if (fieldAttrs['enable-other']) {
+          delete fieldAttrs['enable-other'];
+          enableOther = true;
+        }
 
         if (fieldOptions.length) {
           (function () {
-            var optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name;
+            var optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name,
+                optionAttrsString = void 0;
             fieldOptions.each(function (index, el) {
-              var optionAttrs = Object.assign({}, fieldAttrs, _helpers.parseAttrs(el.attributes)),
-                  optionAttrsString = void 0;
+              var optionAttrs = Object.assign({}, fieldAttrs, _helpers.parseAttrs(el.attributes));
 
               if (optionAttrs.selected) {
                 delete optionAttrs.selected;
@@ -243,6 +248,17 @@ function FormRenderFn(options, element) {
               optionAttrsString = _helpers.attrString(optionAttrs);
               optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + el.textContent + '</label><br>';
             });
+
+            if (enableOther) {
+              var optionAttrs = {
+                id: fieldAttrs.id + '-' + 'other',
+                name: optionName,
+                class: fieldAttrs.class + ' other-option'
+              };
+
+              optionAttrsString = _helpers.attrString(Object.assign({}, fieldAttrs, optionAttrs));
+              optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + opts.label.other + '</label> <input type="text" data-other-id="' + optionAttrs.id + '" id="' + optionAttrs.id + '-value" style="display:none;" />';
+            }
           })();
         }
         fieldMarkup = fieldLabel + '<div class="' + fieldAttrs.type + '-group">' + optionsMarkup + '</div>';
@@ -371,6 +387,36 @@ function FormRenderFn(options, element) {
     }
   };
 
+  var otherOptionCB = function otherOptionCB() {
+    var otherOptions = document.getElementsByClassName('other-option');
+
+    var _loop = function _loop() {
+      var otherInput = document.getElementById(otherOptions[i].id + '-value');
+      otherOptions[i].onclick = function (evt) {
+        var option = this;
+        if (this.checked) {
+          otherInput.style.display = 'inline-block';
+          option.nextElementSibling.style.display = 'none';
+          otherInput.oninput = function (evt) {
+            option.value = this.value;
+          };
+        } else {
+          otherInput.style.display = 'none';
+          option.nextElementSibling.style.display = 'inline-block';
+          otherInput.oninput = undefined;
+        }
+      };
+    };
+
+    for (var i = 0; i < otherOptions.length; i++) {
+      _loop();
+    }
+  };
+
+  var runCallbacks = function runCallbacks(fields) {
+    otherOptionCB();
+  };
+
   // Begin the core plugin
   var rendered = [];
 
@@ -411,6 +457,7 @@ function FormRenderFn(options, element) {
       }
     }
     if (fields.length) {
+      runCallbacks(fields);
       opts.notify.success(opts.label.formRendered);
     }
   } else {

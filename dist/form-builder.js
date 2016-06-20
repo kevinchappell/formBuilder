@@ -552,6 +552,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
       previewData.toggle = $('.checkbox-toggle', field).is(':checked');
     }
 
+    if (fieldType.match(/(checkbox-group|radio-group)/)) {
+      previewData.enableOther = $('[name="enable-other"]', field).is(':checked');
+    }
+
     if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
       previewData.values = [];
       previewData.multiple = $('[name="multiple"]', field).is(':checked');
@@ -625,6 +629,35 @@ function formBuilderHelpersFn(opts, formBuilder) {
           var optionId = type + '-' + epoch + '-' + i;
           preview += '<div><input type="' + type + '" class="' + attrs.className + '" name="' + optionName + '" id="' + optionId + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + optionId + '">' + attrs.values[i].label + '</label></div>';
         }
+
+        if (attrs.enableOther) {
+          var otherID = optionName + '-other',
+              optionAttrs = {
+            id: otherID,
+            name: optionName,
+            className: attrs.className + ' other-option',
+            type: type,
+            onclick: 'otherOptionCallback(\'' + otherID + '\')'
+          },
+              otherInput = _helpers.markup('input', null, optionAttrs),
+              optionAttrsString = _helpers.attrString(optionAttrs);
+
+          window.otherOptionCallback = function (otherID) {
+            var option = document.getElementById(otherID),
+                otherLabel = option.nextElementSibling,
+                otherInput = otherLabel.nextElementSibling;
+            if (option.checked) {
+              otherInput.style.display = 'inline-block';
+              otherLabel.style.display = 'none';
+            } else {
+              otherInput.style.display = 'none';
+              otherLabel.style.display = 'inline-block';
+            }
+          };
+
+          preview += '<div>' + otherInput.outerHTML + '<label for="' + otherID + '">' + opts.messages.other + '</label> <input type="text" id="' + otherID + '-value" style="display:none;" /></div>';
+        }
+
         break;
       case 'text':
       case 'password':
@@ -1216,6 +1249,8 @@ function formBuilderEventsFn() {
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
+        enableOther: 'Enable &quot;Other&quot;',
+        enableOtherMsg: 'Permit users to enter an unlisted option',
         fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
@@ -1241,6 +1276,7 @@ function formBuilderEventsFn() {
         optionLabelPlaceholder: 'Label',
         optionValuePlaceholder: 'Value',
         optionEmpty: 'Option value required',
+        other: 'Other',
         paragraph: 'Paragraph',
         placeholder: 'Placeholder',
         placeholders: {
@@ -1830,6 +1866,11 @@ function formBuilderEventsFn() {
         }
       }
       advFields.push('</div></div>');
+
+      if (values.type === 'checkbox-group' || values.type === 'radio-group') {
+        advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
+        advFields.push('<input type="checkbox" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+      }
 
       advFields.push(textAttribute('maxlength', values));
 
@@ -2429,6 +2470,7 @@ function formBuilderEventsFn() {
             var roleVals = $('.roles-field:checked', field).map(function () {
               return this.value;
             }).get();
+            var enableOther = $('[name="enable-other"]:checked', field).length;
 
             var types = _helpers.getTypes($field);
             var xmlAttrs = {
@@ -2446,6 +2488,9 @@ function formBuilderEventsFn() {
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');
+            }
+            if (enableOther) {
+              xmlAttrs.enableOther = 'true';
             }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);

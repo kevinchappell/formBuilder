@@ -359,6 +359,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
       previewData.toggle = $('.checkbox-toggle', field).is(':checked');
     }
 
+    if (fieldType.match(/(checkbox-group|radio-group)/)) {
+      previewData.enableOther = $('[name="enable-other"]', field).is(':checked');
+    }
+
     if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
       previewData.values = [];
       previewData.multiple = $('[name="multiple"]', field).is(':checked');
@@ -432,6 +436,35 @@ function formBuilderHelpersFn(opts, formBuilder) {
           let optionId = `${type}-${epoch}-${i}`;
           preview += `<div><input type="${type}" class="${attrs.className}" name="${optionName}" id="${optionId}" value="${attrs.values[i].value}" ${checked}/><label for="${optionId}">${attrs.values[i].label}</label></div>`;
         }
+
+        if (attrs.enableOther) {
+          let otherID = optionName + '-other',
+            optionAttrs = {
+              id: otherID,
+              name: optionName,
+              className: attrs.className + ' other-option',
+              type: type,
+              onclick: 'otherOptionCallback(\'' + otherID + '\')'
+            },
+            otherInput = _helpers.markup('input', null, optionAttrs),
+            optionAttrsString = _helpers.attrString(optionAttrs);
+
+          window.otherOptionCallback = function(otherID) {
+            var option = document.getElementById(otherID),
+              otherLabel = option.nextElementSibling,
+              otherInput = otherLabel.nextElementSibling;
+            if (option.checked) {
+              otherInput.style.display = 'inline-block';
+              otherLabel.style.display = 'none';
+            } else {
+              otherInput.style.display = 'none';
+              otherLabel.style.display = 'inline-block';
+            }
+          };
+
+          preview += `<div>${otherInput.outerHTML}<label for="${otherID}">${opts.messages.other}</label> <input type="text" id="${otherID}-value" style="display:none;" /></div>`;
+        }
+
         break;
       case 'text':
       case 'password':

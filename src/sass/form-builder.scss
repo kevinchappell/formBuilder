@@ -1,11 +1,11 @@
-@import "base/variables";
-@import "base/bs";
-@import "base/font";
-@import "base/mixins";
-@import "base/animation";
-@import "controls";
-@import "stage";
-@import "kc-toggle";
+@import 'base/variables';
+@import 'base/bs';
+@import 'base/font';
+@import 'base/mixins';
+@import 'base/animation';
+@import 'controls';
+@import 'stage';
+@import 'kc-toggle';
 
 textarea.idea-template {
   display: none;
@@ -21,7 +21,7 @@ textarea.idea-template {
 }
 
 .form-wrap:after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -98,7 +98,8 @@ ul.frmb span.required {
     &.multiple,
     &.required-label,
     &.toggle-label,
-    &.roles-label {
+    &.roles-label,
+    &.other-label {
       text-align: left;
       float: none;
       margin-bottom: -3px;
@@ -149,7 +150,7 @@ textarea {
 
 .form-elements:after,
 .form-group:after {
-  content: ".";
+  content: '.';
   display: block;
   height: 0;
   clear: both;
@@ -286,7 +287,7 @@ a.btn.toggle-form {
 }
 
 .ite-warning button.cancel:before {
-  content: "|";
+  content: '|';
   margin-right: 15px;
   padding: 0;
 }
