@@ -72,6 +72,8 @@
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
+        enableOther: 'Enable &quot;Other&quot;',
+        enableOtherMsg: 'Permit users to enter an unlisted option',
         fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
@@ -701,6 +703,11 @@
         }
       }
       advFields.push('</div></div>');
+
+      if (values.type === 'checkbox-group' || values.type === 'radio-group') {
+        advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
+        advFields.push('<input type="checkbox" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+      }
 
       advFields.push(textAttribute('maxlength', values));
 

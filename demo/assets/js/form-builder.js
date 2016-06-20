@@ -1216,6 +1216,8 @@ function formBuilderEventsFn() {
         editNames: 'Edit Names',
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
+        enableOther: 'Enable &quot;Other&quot;',
+        enableOtherMsg: 'Permit users to enter an unlisted option',
         fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
@@ -1831,6 +1833,11 @@ function formBuilderEventsFn() {
       }
       advFields.push('</div></div>');
 
+      if (values.type === 'checkbox-group' || values.type === 'radio-group') {
+        advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
+        advFields.push('<input type="checkbox" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+      }
+
       advFields.push(textAttribute('maxlength', values));
 
       return advFields.join('');
@@ -2429,6 +2436,7 @@ function formBuilderEventsFn() {
             var roleVals = $('.roles-field:checked', field).map(function () {
               return this.value;
             }).get();
+            var enableOther = $('[name="enable-other"]:checked', field).length;
 
             var types = _helpers.getTypes($field);
             var xmlAttrs = {
@@ -2446,6 +2454,9 @@ function formBuilderEventsFn() {
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');
+            }
+            if (enableOther) {
+              xmlAttrs.enableOther = 'true';
             }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);

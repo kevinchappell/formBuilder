@@ -951,7 +951,7 @@ textarea.idea-template {
   display: none; }
 
 .form-wrap:after {
-  content: "";
+  content: '';
   display: table;
   clear: both; }
 
@@ -1014,7 +1014,7 @@ ul.frmb span.required {
   .form-elements label {
     display: block; }
 
-.form-elements label.multiple, .form-elements label.required-label, .form-elements label.toggle-label, .form-elements label.roles-label {
+.form-elements label.multiple, .form-elements label.required-label, .form-elements label.toggle-label, .form-elements label.roles-label, .form-elements label.other-label {
   text-align: left;
   float: none;
   margin-bottom: -3px;
@@ -1055,7 +1055,7 @@ textarea {
 
 .form-elements:after,
 .form-group:after {
-  content: ".";
+  content: '.';
   display: block;
   height: 0;
   clear: both;
@@ -1159,7 +1159,7 @@ a.btn.toggle-form {
   font-weight: 700; }
 
 .ite-warning button.cancel:before {
-  content: "|";
+  content: '|';
   margin-right: 15px;
   padding: 0; }
 

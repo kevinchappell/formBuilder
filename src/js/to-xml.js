@@ -35,6 +35,7 @@
             var roleVals = $('.roles-field:checked', field).map(function() {
               return this.value;
             }).get();
+            var enableOther = $('[name="enable-other"]:checked', field).length;
 
             let types = _helpers.getTypes($field);
             var xmlAttrs = {
@@ -52,6 +53,9 @@
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');
+            }
+            if (enableOther) {
+              xmlAttrs.enableOther = 'true';
             }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);
