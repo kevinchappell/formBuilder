@@ -1,5 +1,7 @@
 # Changelog
 
+- v1.10.1 - Bugfix: Removing an option causes error [#169](https://github.com/kevinchappell/formBuilder/pull/169)
+- v1.10.0 - Feature: Add "Other" option to checkbox and radio group fields [#168](https://github.com/kevinchappell/formBuilder/pull/168)
 - v1.9.33 - Bugfix: field close tab callback fired twice on mobile [#167](https://github.com/kevinchappell/formBuilder/pull/167)
 - v1.9.32 - Bugfix: Change validators to run on blur instead of keyup [#164](https://github.com/kevinchappell/formBuilder/pull/164)
 - v1.9.31 - Bugfix: Firefox loses reference to textarea [#161](https://github.com/kevinchappell/formBuilder/pull/161)
