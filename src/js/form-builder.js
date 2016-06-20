@@ -99,6 +99,7 @@
         optionLabelPlaceholder: 'Label',
         optionValuePlaceholder: 'Value',
         optionEmpty: 'Option value required',
+        other: 'Other',
         paragraph: 'Paragraph',
         placeholder: 'Placeholder',
         placeholders: {
