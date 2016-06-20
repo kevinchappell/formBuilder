@@ -2178,9 +2178,10 @@ function formBuilderEventsFn() {
       } else {
         $(this).parent('li').slideUp('250', function () {
           $(this).remove();
+          _helpers.updatePreview($field);
+          _helpers.save();
         });
       }
-      saveAndUpdate.call($field);
     });
 
     // touch focus
