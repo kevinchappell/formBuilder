@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.0
+Version: 1.10.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2178,9 +2178,10 @@ function formBuilderEventsFn() {
       } else {
         $(this).parent('li').slideUp('250', function () {
           $(this).remove();
+          _helpers.updatePreview($field);
+          _helpers.save();
         });
       }
-      saveAndUpdate.call($field);
     });
 
     // touch focus
