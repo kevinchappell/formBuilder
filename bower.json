@@ -1,6 +1,6 @@
 {
 	"name": "formBuilder",
-	"version": "1.9.33",
+	"version": "1.10.0",
 	"main": [
 		"dist/*"
 	],
