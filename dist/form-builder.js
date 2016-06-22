@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.1
+Version: 1.10.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1823,6 +1823,7 @@ function formBuilderEventsFn() {
     var advFields = function advFields(values) {
       var advFields = [],
           key,
+          checked = '',
           roles = values.role !== undefined ? values.role.split(',') : [];
 
       // var fieldLabelLabel = _helpers.markup('label', opts.messages.label);
@@ -1861,10 +1862,12 @@ function formBuilderEventsFn() {
       advFields.push('<div class="available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>');
 
       for (key in opts.roles) {
-        if ($.inArray(key, ['date', '4']) === -1) {
-          advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + ($.inArray(key, roles) !== -1 ? 'checked' : '') + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
+        if (opts.roles.hasOwnProperty(key)) {
+          checked = _helpers.inArray(key, roles) ? 'checked' : '';
+          advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + checked + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
         }
       }
+
       advFields.push('</div></div>');
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
