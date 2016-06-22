@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.10.2 - Bugfix: Remove role limit [#175](https://github.com/kevinchappell/formBuilder/pull/175)
 - v1.10.1 - Bugfix: Removing an option causes error [#169](https://github.com/kevinchappell/formBuilder/pull/169)
 - v1.10.0 - Feature: Add "Other" option to checkbox and radio group fields [#168](https://github.com/kevinchappell/formBuilder/pull/168)
 - v1.9.33 - Bugfix: field close tab callback fired twice on mobile [#167](https://github.com/kevinchappell/formBuilder/pull/167)
