@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.2
+Version: 1.10.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1653,7 +1653,6 @@ function formBuilderEventsFn() {
       field.required = field.required === 'true' || field.required === true;
       field.maxlength = field.maxlength;
       field.toggle = field.toggle;
-      field.multiple = field.type.match(/(checkbox-group)/);
       field.description = field.description !== undefined ? _helpers.htmlEncode(field.description) : '';
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);

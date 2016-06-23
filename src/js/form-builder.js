@@ -490,7 +490,6 @@
       field.required = (field.required === 'true' || field.required === true);
       field.maxlength = field.maxlength;
       field.toggle = field.toggle;
-      field.multiple = field.type.match(/(checkbox-group)/);
       field.description = (field.description !== undefined ? _helpers.htmlEncode(field.description) : '');
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
