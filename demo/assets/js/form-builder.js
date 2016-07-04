@@ -2137,7 +2137,7 @@ function formBuilderEventsFn() {
         value: ''
       };
 
-      var optionData = Object.assign(defaultOptionData, values),
+      var optionData = $.extend({}, defaultOptionData, values),
           optionInputs = [];
 
       for (var prop in optionData) {
