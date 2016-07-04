@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.3
+Version: 1.10.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -236,7 +236,7 @@ function FormRenderFn(options, element) {
             var optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name,
                 optionAttrsString = void 0;
             fieldOptions.each(function (index, el) {
-              var optionAttrs = Object.assign({}, fieldAttrs, _helpers.parseAttrs(el.attributes));
+              var optionAttrs = $.extend({}, fieldAttrs, _helpers.parseAttrs(el.attributes));
 
               if (optionAttrs.selected) {
                 delete optionAttrs.selected;
@@ -256,7 +256,7 @@ function FormRenderFn(options, element) {
                 class: fieldAttrs.class + ' other-option'
               };
 
-              optionAttrsString = _helpers.attrString(Object.assign({}, fieldAttrs, optionAttrs));
+              optionAttrsString = _helpers.attrString($.extend({}, fieldAttrs, optionAttrs));
               optionsMarkup += '<input ' + optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + opts.label.other + '</label> <input type="text" data-other-id="' + optionAttrs.id + '" id="' + optionAttrs.id + '-value" style="display:none;" />';
             }
           })();

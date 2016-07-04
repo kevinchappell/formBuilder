@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.3
+Version: 1.10.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2137,7 +2137,7 @@ function formBuilderEventsFn() {
         value: ''
       };
 
-      var optionData = Object.assign(defaultOptionData, values),
+      var optionData = $.extend({}, defaultOptionData, values),
           optionInputs = [];
 
       for (var prop in optionData) {

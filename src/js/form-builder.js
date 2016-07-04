@@ -998,7 +998,7 @@
         value: ''
       };
 
-      let optionData = Object.assign(defaultOptionData, values),
+      let optionData = $.extend({}, defaultOptionData, values),
         optionInputs = [];
 
       for (var prop in optionData) {
