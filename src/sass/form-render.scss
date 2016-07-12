@@ -1,9 +1,15 @@
-@import "base/variables";
-@import "base/bs";
-@import "kc-toggle";
+@import 'base/variables';
+@import 'base/bs';
+@import 'kc-toggle';
 
 .form-group .required {
   color: $error;
+}
+
+.form-control {
+  &.number {
+    width: auto;
+  }
 }
 
 /*   ------------   TOOLTIP   ------------   */
@@ -33,7 +39,7 @@
   border-color: #222 transparent;
   border-width: 6px 6px 0 6px;
   bottom: 17px;
-  content: "";
+  content: '';
   left: 2px;
   position: absolute;
   z-index: 99;
@@ -53,7 +59,7 @@
 }
 
 .form-control {
-  &[type="color"] {
+  &[type='color'] {
     width: 60px;
     padding: 2px;
     display: inline-block;

@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.6
+Version: 1.11.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -266,6 +266,7 @@ function FormRenderFn(options, element) {
       case 'text':
       case 'password':
       case 'email':
+      case 'number':
       case 'file':
       case 'hidden':
       case 'date':

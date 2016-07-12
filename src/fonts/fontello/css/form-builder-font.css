@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'form-builder-font';
-  src: url('../font/form-builder-font.eot?89477826');
-  src: url('../font/form-builder-font.eot?89477826#iefix') format('embedded-opentype'),
-       url('../font/form-builder-font.woff2?89477826') format('woff2'),
-       url('../font/form-builder-font.woff?89477826') format('woff'),
-       url('../font/form-builder-font.ttf?89477826') format('truetype'),
-       url('../font/form-builder-font.svg?89477826#form-builder-font') format('svg');
+  src: url('../font/form-builder-font.eot?51078228');
+  src: url('../font/form-builder-font.eot?51078228#iefix') format('embedded-opentype'),
+       url('../font/form-builder-font.woff2?51078228') format('woff2'),
+       url('../font/form-builder-font.woff?51078228') format('woff'),
+       url('../font/form-builder-font.ttf?51078228') format('truetype'),
+       url('../font/form-builder-font.svg?51078228#form-builder-font') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'form-builder-font';
-    src: url('../font/form-builder-font.svg?89477826#form-builder-font') format('svg');
+    src: url('../font/form-builder-font.svg?51078228#form-builder-font') format('svg');
   }
 }
 */
@@ -72,3 +72,4 @@
 .icon-attach:before { content: '\e80e'; } /* '' */
 .icon-header:before { content: '\e80f'; } /* '' */
 .icon-paragraph:before { content: '\e810'; } /* '' */
+.icon-number:before { content: '\e811'; } /* '' */

@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.6
+Version: 1.11.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -548,6 +548,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
       previewData.style = style;
     }
 
+    if (fieldType === 'number') {
+      previewData.min = $('input.fld-min', field).val();
+      previewData.max = $('input.fld-max', field).val();
+      previewData.step = $('input.fld-step', field).val();
+    }
+
     if (fieldType === 'checkbox') {
       previewData.toggle = $('.checkbox-toggle', field).is(':checked');
     }
@@ -664,6 +670,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       case 'email':
       case 'date':
       case 'file':
+      case 'number':
         preview = '<input ' + attrsString + '>';
         break;
       case 'color':
@@ -1197,13 +1204,13 @@ function formBuilderEventsFn() {
 
     var defaults = {
       controlPosition: 'right',
-      controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'radio-group', 'select', 'text', 'textarea'],
+      controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'number', 'radio-group', 'select', 'text', 'textarea'],
       dataType: 'xml',
       /**
        * Field types to be disabled
        * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
        */
-      disableFields: ['autocomplete', 'hidden'],
+      disableFields: ['autocomplete', 'hidden', 'number'],
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
       prepend: false,
@@ -1269,6 +1276,7 @@ function formBuilderEventsFn() {
         minOptionMessage: 'This field requires a minimum of 2 options',
         name: 'Name',
         no: 'No',
+        number: 'Number',
         off: 'Off',
         on: 'On',
         option: 'Option',
@@ -1407,6 +1415,13 @@ function formBuilderEventsFn() {
         className: 'paragraph'
       }
     }, {
+      label: opts.messages.number,
+      attrs: {
+        type: 'number',
+        className: 'number',
+        name: 'number'
+      }
+    }, {
       label: opts.messages.hidden,
       attrs: {
         type: 'hidden',
@@ -1473,7 +1488,6 @@ function formBuilderEventsFn() {
     }
 
     // Create draggable fields for formBuilder
-
     var cbUl = _helpers.markup('ul', null, { id: boxID, className: 'frmb-control' });
 
     if (opts.sortableControls) {
@@ -1846,7 +1860,15 @@ function formBuilderEventsFn() {
 
       advFields.push(subTypeField(values));
 
-      advFields.push(btnStyles(values.style, values.type));
+      if (values.type === 'button') {
+        advFields.push(btnStyles(values.style, values.type));
+      }
+
+      if (values.type === 'number') {
+        advFields.push(numberAttribute('min', values));
+        advFields.push(numberAttribute('max', values));
+        advFields.push(numberAttribute('step', values));
+      }
 
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
@@ -1969,6 +1991,20 @@ function formBuilderEventsFn() {
     };
 
     /**
+     * Add a number attibute to a field.
+     * @param  {String} attribute
+     * @param  {Object} values
+     * @return {String}
+     */
+    var numberAttribute = function numberAttribute(attribute, values) {
+      var attrVal = values[attribute] || '';
+      var attrLabel = opts.messages[attribute] || attribute,
+          placeholder = opts.messages.placeholders[attribute] || '',
+          numberAttribute = '<input type="number" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
+      return '<div class="form-group ' + attribute + '-wrap"><label for="' + attribute + '-' + lastID + '">' + attrLabel + '</label> ' + numberAttribute + '</div>';
+    };
+
+    /**
      * Generate some text inputs for field attributes, **will be replaced**
      * @param  {String} attribute
      * @param  {Object} values
@@ -1980,7 +2016,7 @@ function formBuilderEventsFn() {
 
       var textArea = ['paragraph'];
 
-      var noMaxlength = ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden', 'button', 'header'];
+      var noMaxlength = ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden', 'button', 'header', 'number'];
 
       var attrVal = attribute === 'label' ? values.label : values[attribute] || '';
       var attrLabel = opts.messages[attribute];
@@ -2041,7 +2077,7 @@ function formBuilderEventsFn() {
         return elem === true;
       })) {
 
-        requireField += '<div class="form-group">';
+        requireField += '<div class="form-group required-wrap">';
         requireField += '<label>&nbsp;</label>';
         var _requiredField = _helpers.markup('input', null, {
           className: 'required',
@@ -2487,7 +2523,10 @@ function formBuilderEventsFn() {
               required: $('input.required', $field).is(':checked'),
               toggle: $('.checkbox-toggle', $field).is(':checked'),
               type: types.type,
-              subtype: types.subtype
+              subtype: types.subtype,
+              min: $('input.fld-min', $field).val(),
+              max: $('input.fld-max', $field).val(),
+              step: $('input.fld-step', $field).val()
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');

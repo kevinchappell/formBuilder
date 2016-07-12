@@ -76,40 +76,6 @@ ul.frmb span.required {
   border: 1px solid #afafab;
 }
 
-.form-elements .false-label,
-.form-elements label {
-  width: 16.66666667%;
-  padding-top: 7px;
-  margin-bottom: 0;
-  text-align: right;
-  font-weight: 700;
-  float: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  .col-md-6 &,
-  .col-md-8 & {
-    display: block;
-  }
-}
-
-.form-elements {
-  label {
-    &.multiple,
-    &.required-label,
-    &.toggle-label,
-    &.roles-label,
-    &.other-label {
-      text-align: left;
-      float: none;
-      margin-bottom: -3px;
-      font-weight: 400;
-      width: calc(81.3333% - 23px);
-    }
-  }
-}
-
 .form-elements label em {
   display: block;
   font-weight: 400;
@@ -163,11 +129,6 @@ textarea {
 .frmb .prev-holder,
 .frmb .prev-holder * {
   cursor: move;
-}
-
-.prev-holder input[type=checkbox],
-.prev-holder input[type=radio] {
-  margin-right: 5px;
 }
 
 // tooltips

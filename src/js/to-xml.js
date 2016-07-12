@@ -49,7 +49,10 @@
               required: $('input.required', $field).is(':checked'),
               toggle: $('.checkbox-toggle', $field).is(':checked'),
               type: types.type,
-              subtype: types.subtype
+              subtype: types.subtype,
+              min: $('input.fld-min', $field).val(),
+              max: $('input.fld-max', $field).val(),
+              step: $('input.fld-step', $field).val()
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');

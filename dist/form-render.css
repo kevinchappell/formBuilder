@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.6
+Version: 1.11.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 [id^='frmb-'][id$='-form-wrap'] * {
@@ -353,6 +353,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 .form-group .required {
   color: #C10000; }
 
+.form-control.number {
+  width: auto; }
+
 /*   ------------   TOOLTIP   ------------   */
 *[tooltip] {
   position: relative; }
@@ -378,7 +381,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   border-color: #222 transparent;
   border-width: 6px 6px 0 6px;
   bottom: 17px;
-  content: "";
+  content: '';
   left: 2px;
   position: absolute;
   z-index: 99; }
@@ -395,7 +398,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   margin: 0 5px;
   font-size: 12px; }
 
-.form-control[type="color"] {
+.form-control[type='color'] {
   width: 60px;
   padding: 2px;
   display: inline-block; }
