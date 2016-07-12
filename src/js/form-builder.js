@@ -30,7 +30,7 @@
       disableFields: [
         'autocomplete',
         'hidden',
-        // 'number'
+        'number'
       ],
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,

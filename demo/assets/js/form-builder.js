@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.6
+Version: 1.11.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1210,9 +1210,7 @@ function formBuilderEventsFn() {
        * Field types to be disabled
        * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
        */
-      disableFields: ['autocomplete', 'hidden'],
-
-      // 'number'
+      disableFields: ['autocomplete', 'hidden', 'number'],
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
       prepend: false,
