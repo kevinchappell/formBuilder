@@ -355,6 +355,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
       previewData.style = style;
     }
 
+    if (fieldType === 'number') {
+      previewData.min = $('input.fld-min', field).val();
+      previewData.max = $('input.fld-max', field).val();
+      previewData.step = $('input.fld-step', field).val();
+    }
+
     if (fieldType === 'checkbox') {
       previewData.toggle = $('.checkbox-toggle', field).is(':checked');
     }
@@ -471,6 +477,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       case 'email':
       case 'date':
       case 'file':
+      case 'number':
         preview = `<input ${attrsString}>`;
         break;
       case 'color':

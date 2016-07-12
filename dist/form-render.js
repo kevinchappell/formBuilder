@@ -266,6 +266,7 @@ function FormRenderFn(options, element) {
       case 'text':
       case 'password':
       case 'email':
+      case 'number':
       case 'file':
       case 'hidden':
       case 'date':

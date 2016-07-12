@@ -16,6 +16,7 @@
         'header',
         'hidden',
         'paragraph',
+        'number',
         'radio-group',
         'select',
         'text',
@@ -26,7 +27,11 @@
        * Field types to be disabled
        * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
        */
-      disableFields: ['autocomplete', 'hidden'],
+      disableFields: [
+        'autocomplete',
+        'hidden',
+        // 'number'
+      ],
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
       prepend: false,
@@ -92,6 +97,7 @@
         minOptionMessage: 'This field requires a minimum of 2 options',
         name: 'Name',
         no: 'No',
+        number: 'Number',
         off: 'Off',
         on: 'On',
         option: 'Option',
@@ -248,6 +254,13 @@
         className: 'paragraph'
       }
     }, {
+      label: opts.messages.number,
+      attrs: {
+        type: 'number',
+        className: 'number',
+        name: 'number'
+      }
+    }, {
       label: opts.messages.hidden,
       attrs: {
         type: 'hidden',
@@ -314,7 +327,6 @@
     }
 
     // Create draggable fields for formBuilder
-
     var cbUl = _helpers.markup('ul', null, { id: boxID, className: 'frmb-control' });
 
     if (opts.sortableControls) {
@@ -684,7 +696,15 @@
 
       advFields.push(subTypeField(values));
 
-      advFields.push(btnStyles(values.style, values.type));
+      if (values.type === 'button') {
+        advFields.push(btnStyles(values.style, values.type));
+      }
+
+      if (values.type === 'number') {
+        advFields.push(numberAttribute('min', values));
+        advFields.push(numberAttribute('max', values));
+        advFields.push(numberAttribute('step', values));
+      }
 
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
@@ -809,6 +829,20 @@
     };
 
     /**
+     * Add a number attibute to a field.
+     * @param  {String} attribute
+     * @param  {Object} values
+     * @return {String}
+     */
+    var numberAttribute = function(attribute, values) {
+      var attrVal = values[attribute] || '';
+      var attrLabel = opts.messages[attribute] || attribute,
+        placeholder = opts.messages.placeholders[attribute] || '',
+        numberAttribute = `<input type="number" value="${attrVal}" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
+      return `<div class="form-group ${attribute}-wrap"><label for="${attribute}-${lastID}">${attrLabel}</label> ${numberAttribute}</div>`;
+    };
+
+    /**
      * Generate some text inputs for field attributes, **will be replaced**
      * @param  {String} attribute
      * @param  {Object} values
@@ -835,7 +869,8 @@
         'radio-group',
         'hidden',
         'button',
-        'header'
+        'header',
+        'number'
       ];
 
       var attrVal = (attribute === 'label') ? values.label : (values[attribute] || '');
@@ -897,7 +932,7 @@
 
       if (!noMake.some(elem => elem === true)) {
 
-        requireField += '<div class="form-group">';
+        requireField += '<div class="form-group required-wrap">';
         requireField += '<label>&nbsp;</label>';
         let requiredField = _helpers.markup('input', null, {
           className: 'required',

@@ -7,6 +7,48 @@
     }
   }
 
+  .stage-wrap {
+    position: relative;
+    float: left;
+    width: 74%;
+
+    &.pull-right {
+      .frmb {
+        margin: 0 0 0 6px;
+      }
+    }
+
+    @include breakpoint('phone-lrg') {
+      width: calc(100% - 64px);
+    }
+
+
+    .action-links {
+      width: calc( 100% - 141px);
+      display: none;
+      float: right;
+      overflow: hidden;
+      text-align: right;
+    }
+
+    &.empty {
+      &:after {
+        content: attr(data-content);
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        margin-top: -1em;
+      }
+    }
+
+    .action-links .active {
+      font-weight: 700;
+      color: $black;
+    }
+  }
+
   .frmb {
     list-style-type: none;
     min-height: 200px;
@@ -239,6 +281,21 @@
       label {
         font-weight: normal;
       }
+
+      input[type='number'] {
+        width: auto;
+      }
+
+      input[type='checkbox'],
+      input[type='radio'] {
+        margin-right: 5px;
+      }
+
+      input[type='color'] {
+        width: 60px;
+        padding: 2px;
+        display: inline-block;
+      }
     }
 
     .required-asterisk {
@@ -300,158 +357,161 @@
         }
       }
     }
-  }
 
-  .stage-wrap {
-    position: relative;
-    float: left;
-    width: 74%;
-
-    &.pull-right {
-      .frmb {
-        margin: 0 0 0 6px;
-      }
-    }
-
-    @include breakpoint('phone-lrg') {
-      width: calc(100% - 64px);
-    }
-
-
-    .action-links {
-      width: calc( 100% - 141px);
-      display: none;
-      float: right;
-      overflow: hidden;
+    .option-actions {
       text-align: right;
     }
 
-    &.empty {
-      &:after {
-        content: attr(data-content);
-        position: absolute;
-        text-align: center;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        margin-top: -1em;
+    .sortable-options-wrap {
+      width: 81.33333333%;
+      display: inline-block;
+    }
+
+    ol.sortable-options {
+      display: inline-block;
+      width: 100%;
+      margin-left: 2%;
+      background: $grey-light-30;
+      margin-bottom: 0;
+      border-radius: 5px;
+      list-style: none;
+      padding: 0;
+
+      li {
+        cursor: move;
+        margin: 1px;
+
+        &:nth-child(1) .remove,
+        &:nth-child(2) .remove {
+          display: none;
+        }
+
+        .remove {
+          position: absolute;
+          opacity: 1;
+          right: 14px;
+          height: 17px;
+          width: 17px;
+          line-height: 17px;
+          text-align: center;
+          top: 14px;
+          font-size: 18px;
+          padding: 0;
+          color: $error;
+
+          &:hover {
+            background-color: $error;
+            text-decoration: none;
+            color: $white;
+          }
+        }
+      }
+
+      input[type=checkbox],
+      input[type=radio] {
+        margin: 0;
+        width: 5%;
+      }
+
+      input[type=text] {
+        width: calc(44.5% - 17px);
+        margin: 0 1%;
+        float: none;
       }
     }
-  }
 
-  .stage-wrap .action-links .active {
-    font-weight: 700;
-    color: $black;
-  }
+    .form-field {
+      .form-group {
+        width: 100%;
+        clear: left;
+        float: none;
 
-  .option-actions {
-    text-align: right;
-  }
-
-  .sortable-options-wrap {
-    width: 81.33333333%;
-    display: inline-block;
-  }
-
-  ol.sortable-options {
-    display: inline-block;
-    width: 100%;
-    margin-left: 2%;
-    background: $grey-light-30;
-    margin-bottom: 0;
-    border-radius: 5px;
-    list-style: none;
-    padding: 0;
-
-    li {
-      cursor: move;
-      margin: 1px;
-
-      &:nth-child(1) .remove,
-      &:nth-child(2) .remove {
-        display: none;
-      }
-
-      .remove {
-        position: absolute;
-        opacity: 1;
-        right: 14px;
-        height: 17px;
-        width: 17px;
-        line-height: 17px;
-        text-align: center;
-        top: 14px;
-        font-size: 18px;
-        padding: 0;
-        color: $error;
-
-        &:hover {
-          background-color: $error;
-          text-decoration: none;
-          color: $white;
+        input[type=checkbox]:not(.option-selected) {
+          margin: 12px 5px 0 2%;
         }
       }
     }
 
-    input[type=checkbox],
-    input[type=radio] {
-      margin: 0;
-      width: 5%;
+    .form-elements .field-options .add-area .add {
+      clear: both;
     }
 
-    input[type=text] {
-      width: calc(44.5% - 17px);
-      margin: 0 1%;
-      float: none;
-    }
-  }
-
-  .form-field {
-    .form-group {
-      width: 100%;
-      clear: left;
-      float: none;
-
-      input[type=checkbox]:not(.option-selected) {
-        margin: 12px 5px 0 2%;
+    .col-md-6,
+    .col-md-8 {
+      .form-elements {
+        width: 100%;
       }
     }
-  }
 
-  .form-elements .field-options .add-area .add {
-    clear: both;
-  }
+    .field-options .add-area .add {
+      clear: both;
+    }
 
-  .form-elements {
-    padding: 10px 5px;
-    background: #f7f7f7;
-    border-radius: 3px;
-    margin: 12px 0 0;
-    border: 1px solid #d7d7d7;
-  }
-
-  .col-md-6,
-  .col-md-8 {
     .form-elements {
-      width: 100%;
-    }
-  }
+      padding: 10px 5px;
+      background: #f7f7f7;
+      border-radius: 3px;
+      margin: 12px 0 0;
+      border: 1px solid #d7d7d7;
 
-  .form-elements {
-    input[type=text],
-    textarea,
-    select {
-      width: 81.33333333%;
-      transition: background 250ms ease-in-out;
-      margin-left: 2%;
-      padding: 6px 12px;
-      border: 1px solid #AFAFAB;
-      background-color: $white;
-      float: left;
-    }
+      input[type='text'],
+      input[type='number'],
+      textarea,
+      select {
+        width: 81.33333333%;
+        transition: background 250ms ease-in-out;
+        margin-left: 2%;
+        padding: 6px 12px;
+        border: 1px solid #AFAFAB;
+        background-color: $white;
+        float: left;
 
-    .btn-group {
-      margin-left: 2%;
+        .btn-group {
+          margin-left: 2%;
+        }
+      }
+
+      input[type='number'] {
+        width: auto;
+      }
+
+      .btn-group {
+        margin-left: 2%;
+      }
+
+      .false-label,
+      label {
+        width: 16.66666667%;
+        padding-top: 7px;
+        margin-bottom: 0;
+        text-align: right;
+        font-weight: 700;
+        float: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .col-md-6 &,
+        .col-md-8 & {
+          display: block;
+        }
+
+        &:first-child {
+          text-transform: capitalize;
+        }
+
+        &.multiple,
+        &.required-label,
+        &.toggle-label,
+        &.roles-label,
+        &.other-label {
+          text-align: left;
+          float: none;
+          margin-bottom: -3px;
+          font-weight: 400;
+          width: calc(81.3333% - 23px);
+        }
+      }
     }
   }
 

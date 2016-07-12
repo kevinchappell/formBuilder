@@ -189,6 +189,20 @@
       "code": 59408,
       "css": "paragraph",
       "uid": "c5845105a87df2ee1999826d90622f6a"
+    },
+    {
+      "search": [
+        "number"
+      ],
+      "svg": {
+        "width": 875,
+        "path": "M875 375V250H718.6L749.9 0H624.9L593.6 250H343.7L374.9 0H249.9L218.7 250H0V375H203.1L171.9 625H0V750H156.3L125 1000H250L281.3 750H531.2L499.9 1000H625L656.3 750H875V625H671.9L703 375H875ZM546.8 625H296.9L328.1 375H578L546.8 625Z"
+      },
+      "selected": true,
+      "src": "custom_icons",
+      "code": 59409,
+      "css": "number",
+      "uid": "5c54dda49adb1444c47944fb9550569e"
     }
   ],
   "copyright": "Kevin Chappell",
