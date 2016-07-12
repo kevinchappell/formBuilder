@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.10.4
+Version: 1.10.5
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2493,7 +2493,7 @@ function formBuilderEventsFn() {
               xmlAttrs.role = roleVals.join(',');
             }
             if (enableOther) {
-              xmlAttrs.enableOther = 'true';
+              xmlAttrs.other = 'true';
             }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);

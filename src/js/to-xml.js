@@ -55,7 +55,7 @@
               xmlAttrs.role = roleVals.join(',');
             }
             if (enableOther) {
-              xmlAttrs.enableOther = 'true';
+              xmlAttrs.other = 'true';
             }
             xmlAttrs = _helpers.trimAttrs(xmlAttrs);
             xmlAttrs = _helpers.escapeAttrs(xmlAttrs);

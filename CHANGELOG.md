@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.10.5 - Bugfix: Other option for radio and checkbox xml attribute  [#186](https://github.com/kevinchappell/formBuilder/pull/186)
 - v1.10.4 - Bugfix: Object.assign [#181](https://github.com/kevinchappell/formBuilder/pull/181)
 - v1.10.3 - Bugfix: defaultFields multiple select not applied [#176](https://github.com/kevinchappell/formBuilder/pull/176)
 - v1.10.2 - Bugfix: Remove role limit [#175](https://github.com/kevinchappell/formBuilder/pull/175)
