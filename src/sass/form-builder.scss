@@ -21,6 +21,10 @@ textarea.idea-template {
   display: none;
 }
 
+.form-wrap {
+  position: relative;
+}
+
 .form-wrap:after {
   content: '';
   display: table;
