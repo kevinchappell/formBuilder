@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.11.0
+Version: 1.14.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1134,6 +1134,86 @@ function formBuilderHelpersFn(opts, formBuilder) {
     });
   };
 
+  /**
+   * Close fields being editing
+   * @param  {Object} stage
+   */
+  _helpers.closeAllEdit = function (stage) {
+    var fields = $('> li.editing', stage),
+        toggleBtns = $('.toggle-form', stage),
+        editModes = $('.frm-holder', fields);
+
+    toggleBtns.removeClass('open');
+    fields.removeClass('editing');
+    editModes.hide();
+    $('.prev-holder', fields).show();
+  };
+
+  /**
+   * Toggles the edit mode for the given field
+   * @param  {String} fieldId
+   */
+  _helpers.toggleEdit = function (fieldId) {
+    var field = document.getElementById(fieldId),
+        toggleBtn = $('.toggle-form', field),
+        editMode = $('.frm-holder', field);
+    field.classList.toggle('editing');
+    toggleBtn.toggleClass('open');
+    $('.prev-holder', field).slideToggle(250);
+    editMode.slideToggle(250);
+  };
+
+  /**
+   * Controls follow scroll to the bottom of the editor
+   * @param  {Object} $sortableFields
+   * @param  {DOM Object} cbUL
+   */
+  _helpers.stickyControls = function ($sortableFields, cbUL) {
+
+    var $cbWrap = $(cbUL).parent(),
+        $stageWrap = $sortableFields.parent(),
+        cbWidth = $cbWrap.width(),
+        cbPosition = cbUL.getBoundingClientRect();
+
+    $(window).scroll(function () {
+
+      var scrollTop = $(this).scrollTop();
+
+      if (scrollTop > $stageWrap.offset().top) {
+
+        var cbStyle = {
+          position: 'fixed',
+          width: cbWidth,
+          top: 0,
+          bottom: 'auto',
+          right: 'auto',
+          left: cbPosition.left
+        };
+
+        var cbOffset = $cbWrap.offset(),
+            stageOffset = $stageWrap.offset(),
+            cbBottom = cbOffset.top + $cbWrap.height(),
+            stageBottom = stageOffset.top + $stageWrap.height();
+
+        if (cbBottom > stageBottom && cbOffset.top !== stageOffset.top) {
+          $cbWrap.css({
+            position: 'absolute',
+            top: 'auto',
+            bottom: 0,
+            right: 0,
+            left: 'auto'
+          });
+        }
+
+        if (cbBottom < stageBottom || cbBottom === stageBottom && cbOffset.top > scrollTop) {
+          $cbWrap.css(cbStyle);
+        }
+      } else {
+        cbUL.parentElement.removeAttribute('style');
+      }
+    });
+  };
+
   return _helpers;
 }
 'use strict';
@@ -1211,6 +1291,7 @@ function formBuilderEventsFn() {
        * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
        */
       disableFields: ['autocomplete', 'hidden', 'number'],
+      editOnAdd: false,
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
       prepend: false,
@@ -1354,6 +1435,7 @@ function formBuilderEventsFn() {
         }
       },
       sortableControls: false,
+      stickyControls: false,
       prefix: 'form-builder-'
     };
 
@@ -1607,6 +1689,11 @@ function formBuilderEventsFn() {
 
     // Save field on change
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
+
+    $('li', $cbUL).click(function (evt) {
+      _helpers.stopIndex = undefined;
+      prepFieldVars($(this), true);
+    });
 
     // Add append and prepend options if necessary
     var nonEditableFields = function nonEditableFields() {
@@ -2156,7 +2243,10 @@ function formBuilderEventsFn() {
 
       _helpers.updatePreview($li);
 
-      $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
+      if (opts.editOnAdd) {
+        _helpers.closeAllEdit($sortableFields);
+        _helpers.toggleEdit(lastID);
+      }
 
       lastID = _helpers.incrementId(lastID);
     };
@@ -2249,20 +2339,6 @@ function formBuilderEventsFn() {
         return false;
       }
     });
-
-    /**
-     * Toggles the edit mode for the given field
-     * @param  {String} fieldId
-     */
-    _helpers.toggleEdit = function (fieldId) {
-      var field = document.getElementById(fieldId),
-          toggleBtn = $('.toggle-form', field),
-          editMode = $('.frm-holder', field);
-      field.classList.toggle('editing');
-      toggleBtn.toggleClass('open');
-      $('.prev-holder', field).slideToggle(250);
-      editMode.slideToggle(250);
-    };
 
     // update preview to label
     $sortableFields.on('keyup change', '[name="label"]', function () {
@@ -2446,6 +2522,11 @@ function formBuilderEventsFn() {
     loadData();
 
     $sortableFields.css('min-height', $cbUL.height());
+
+    // If option set, controls will remain in view in editor
+    if (opts.stickyControls) {
+      _helpers.stickyControls($sortableFields, cbUl);
+    }
 
     document.dispatchEvent(formBuilder.events.loaded);
 

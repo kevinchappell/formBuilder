@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.11.0
+Version: 1.14.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -425,6 +425,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 .cb-wrap {
   float: right;
   width: 26%;
+  -webkit-transition: -webkit-transform 250ms;
+  transition: -webkit-transform 250ms;
+  transition: transform 250ms;
+  transition: transform 250ms, -webkit-transform 250ms;
   /* smartphones, Android phones, landscape iPhone */ }
   .cb-wrap.pull-left .form-actions {
     float: left; }
@@ -997,6 +1001,9 @@ textarea.idea-template {
 
 .template-textarea-wrap {
   display: none; }
+
+.form-wrap {
+  position: relative; }
 
 .form-wrap:after {
   content: '';

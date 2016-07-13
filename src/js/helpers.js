@@ -932,5 +932,88 @@ function formBuilderHelpersFn(opts, formBuilder) {
     });
   };
 
+
+  /**
+   * Close fields being editing
+   * @param  {Object} stage
+   */
+  _helpers.closeAllEdit = function(stage) {
+    var fields = $('> li.editing', stage),
+      toggleBtns = $('.toggle-form', stage),
+      editModes = $('.frm-holder', fields);
+
+    toggleBtns.removeClass('open');
+    fields.removeClass('editing');
+    editModes.hide();
+    $('.prev-holder', fields).show();
+  };
+
+  /**
+   * Toggles the edit mode for the given field
+   * @param  {String} fieldId
+   */
+  _helpers.toggleEdit = function(fieldId) {
+    var field = document.getElementById(fieldId),
+      toggleBtn = $('.toggle-form', field),
+      editMode = $('.frm-holder', field);
+    field.classList.toggle('editing');
+    toggleBtn.toggleClass('open');
+    $('.prev-holder', field).slideToggle(250);
+    editMode.slideToggle(250);
+  };
+
+  /**
+   * Controls follow scroll to the bottom of the editor
+   * @param  {Object} $sortableFields
+   * @param  {DOM Object} cbUL
+   */
+  _helpers.stickyControls = function($sortableFields, cbUL) {
+
+    var $cbWrap = $(cbUL).parent(),
+      $stageWrap = $sortableFields.parent(),
+      cbWidth = $cbWrap.width(),
+      cbPosition = cbUL.getBoundingClientRect();
+
+    $(window).scroll(function() {
+
+      var scrollTop = $(this).scrollTop();
+
+      if (scrollTop > $stageWrap.offset().top) {
+
+        let cbStyle = {
+          position: 'fixed',
+          width: cbWidth,
+          top: 0,
+          bottom: 'auto',
+          right: 'auto',
+          left: cbPosition.left
+        };
+
+        var cbOffset = $cbWrap.offset(),
+          stageOffset = $stageWrap.offset(),
+          cbBottom = cbOffset.top + $cbWrap.height(),
+          stageBottom = stageOffset.top + $stageWrap.height();
+
+        if (cbBottom > stageBottom && (cbOffset.top !== stageOffset.top)) {
+          $cbWrap.css({
+            position: 'absolute',
+            top: 'auto',
+            bottom: 0,
+            right: 0,
+            left: 'auto'
+          });
+        }
+
+        if (cbBottom < stageBottom || (cbBottom === stageBottom && cbOffset.top > scrollTop)) {
+          $cbWrap.css(cbStyle);
+        }
+
+      } else {
+        cbUL.parentElement.removeAttribute('style');
+      }
+    });
+
+  };
+
   return _helpers;
 }

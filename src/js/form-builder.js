@@ -32,6 +32,7 @@
         'hidden',
         'number'
       ],
+      editOnAdd: false,
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
       prepend: false,
@@ -193,6 +194,7 @@
         }
       },
       sortableControls: false,
+      stickyControls: false,
       prefix: 'form-builder-'
     };
 
@@ -446,6 +448,11 @@
 
     // Save field on change
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
+
+    $('li', $cbUL).click(function(evt) {
+      _helpers.stopIndex = undefined;
+      prepFieldVars($(this), true);
+    });
 
     // Add append and prepend options if necessary
     var nonEditableFields = function() {
@@ -1014,12 +1021,13 @@
 
       _helpers.updatePreview($li);
 
-      $(document.getElementById('frm-' + lastID + '-item')).hide().slideDown(250);
+      if (opts.editOnAdd) {
+        _helpers.closeAllEdit($sortableFields);
+        _helpers.toggleEdit(lastID);
+      }
 
       lastID = _helpers.incrementId(lastID);
     };
-
-
 
     // Select field html, since there may be multiple
     var selectFieldOptions = function(name, values, selected, multipleSelect) {
@@ -1109,20 +1117,6 @@
         return false;
       }
     });
-
-    /**
-     * Toggles the edit mode for the given field
-     * @param  {String} fieldId
-     */
-    _helpers.toggleEdit = function(fieldId) {
-      var field = document.getElementById(fieldId),
-        toggleBtn = $('.toggle-form', field),
-        editMode = $('.frm-holder', field);
-      field.classList.toggle('editing');
-      toggleBtn.toggleClass('open');
-      $('.prev-holder', field).slideToggle(250);
-      editMode.slideToggle(250);
-    };
 
     // update preview to label
     $sortableFields.on('keyup change', '[name="label"]', function() {
@@ -1306,6 +1300,11 @@
     loadData();
 
     $sortableFields.css('min-height', $cbUL.height());
+
+    // If option set, controls will remain in view in editor
+    if (opts.stickyControls) {
+      _helpers.stickyControls($sortableFields, cbUl);
+    }
 
     document.dispatchEvent(formBuilder.events.loaded);
 
