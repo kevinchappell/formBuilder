@@ -15,15 +15,40 @@ var defaults = {
     'header',
     'hidden',
     'paragraph',
+    'number',
     'radio-group',
     'select',
     'text',
     'textarea'
   ],
   dataType: 'xml',
-  disableFields: ['autocomplete', 'hidden'],
+  /**
+   * Field types to be disabled
+   * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
+   */
+  disableFields: [
+    'autocomplete',
+    'hidden',
+    'number'
+  ],
+  editOnAdd: false,
+  // Uneditable fields or other content you would like to appear before and after regular fields:
   append: false,
   prepend: false,
+  // array of objects with fields values
+  // ex:
+  // defaultFields: [{
+  //   label: 'First Name',
+  //   name: 'first-name',
+  //   required: 'true',
+  //   description: 'Your first name',
+  //   type: 'text'
+  // }, {
+  //   label: 'Phone',
+  //   name: 'phone',
+  //   description: 'How can we reach you?',
+  //   type: 'text'
+  // }],
   defaultFields: [],
   fieldRemoveWarn: false,
   roles: {
@@ -52,6 +77,8 @@ var defaults = {
     editNames: 'Edit Names',
     editorTitle: 'Form Elements',
     editXML: 'Edit XML',
+    enableOther: 'Enable &quot;Other&quot;',
+    enableOtherMsg: 'Permit users to enter an unlisted option',
     fieldDeleteWarning: false,
     fieldVars: 'Field Variables',
     fieldNonEditable: 'This field cannot be edited.',
@@ -70,6 +97,7 @@ var defaults = {
     minOptionMessage: 'This field requires a minimum of 2 options',
     name: 'Name',
     no: 'No',
+    number: 'Number',
     off: 'Off',
     on: 'On',
     option: 'Option',
@@ -77,6 +105,7 @@ var defaults = {
     optionLabelPlaceholder: 'Label',
     optionValuePlaceholder: 'Value',
     optionEmpty: 'Option value required',
+    other: 'Other',
     paragraph: 'Paragraph',
     placeholder: 'Placeholder',
     placeholders: {
@@ -149,7 +178,7 @@ var defaults = {
     textArea: 'Text Area',
     toggle: 'Toggle',
     warning: 'Warning!',
-    viewXML: '&amp;lt;/&amp;gt;',
+    viewXML: '&lt;/&gt;',
     yes: 'Yes'
   },
   notify: {
@@ -164,6 +193,7 @@ var defaults = {
     }
   },
   sortableControls: false,
-  prefix: 'fb-'
+  stickyControls: false,
+  prefix: 'form-builder-'
 };
 </code></pre>
