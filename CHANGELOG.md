@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.14.0 - Feature: Fast edit options. Click to add field, sticky controls, auto edit toggle [#190](https://github.com/kevinchappell/formBuilder/pull/190)
 - v1.11.0 - Feature: Number input [#188](https://github.com/kevinchappell/formBuilder/pull/188)
 - v1.10.6 - Bugfix: Limit scope of bootstrap helpers [#187](https://github.com/kevinchappell/formBuilder/pull/187)
 - v1.10.5 - Bugfix: Other option for radio and checkbox xml attribute  [#186](https://github.com/kevinchappell/formBuilder/pull/186)
