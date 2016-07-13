@@ -9,7 +9,8 @@ jQuery(document).ready(function($) {
       container: document.getElementById('rendered-form')
     },
     formBuilderOpts = {
-      fieldRemoveWarn: true
+      fieldRemoveWarn: true,
+      stickyControls: true
     };
 
   $(template).formBuilder(formBuilderOpts);
