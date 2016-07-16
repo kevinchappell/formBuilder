@@ -1,7 +1,7 @@
 # jQuery formBuilder
 Drag and drop form creation for your app.
 
-<p data-height="550" data-theme-id="0" data-slug-hash="vLjOLL" data-default-tab="result" data-user="kevinchappell" class="codepen"></p>
+<p data-height="570" data-theme-id="0" data-slug-hash="vLjOLL" data-default-tab="result" data-user="kevinchappell" class="codepen"></p>
 
 ## Introduction
 jQuery formBuilder is a 100% client-side plugin that gives users the power to create forms using an intuitive drag and drop interface. FormBuilder supports a number of form fields and some html tags. See: [Field Types]()

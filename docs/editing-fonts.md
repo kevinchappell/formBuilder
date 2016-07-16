@@ -1,5 +1,5 @@
 # Fonts
-SVG icons may be all the [rage](https://github.com/blog/2112-delivering-octicons-with-svg), but for now formBuilder still uses an icon font generated with Fontello and Gulp. Fontello makes it easy for developers to collaborate by providing an API we can incorporate with our normal build processes.
+SVG icons uses an icon font generated with Fontello and Gulp. Fontello makes it easy for developers to collaborate by providing an API we can incorporate with our normal build processes.
 
 ### Editing
 To edit the current icon font, open terminal and run:
@@ -7,7 +7,7 @@ To edit the current icon font, open terminal and run:
 gulp font-edit
 ```
 
-This will open create a new session on fontello.com where you can choose new icons or upload your own. 
+This will open create a new session on fontello.com where you can choose new icons or upload your own.
 
 ### Saving
 When finished, click the Save Session button and return to the terminal and type:
