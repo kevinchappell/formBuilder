@@ -12,31 +12,37 @@ pages:
   - Overview: development.md
   - Icon Font: editing-fonts.md
 - formBuilder Demos:
-  - Basic: demos/basic.md
-  - Toggle formBuilder: demos/toggle-builder.md
-  - Translating: demos/translation.md
-  - Data: demos/get-data.md
+  - Basic: formBuilder/demos/basic.md
+  - Toggle formBuilder: formBuilder/demos/toggle-builder.md
+  - Translating: formBuilder/demos/translation.md
+  - Data: formBuilder/demos/data.md
+- formBuilder Options:
+  - Overview: formBuilder/options.md
+  - append/prepend: formBuilder/options/appendPrepend.md
+  - controlPosition: formBuilder/options/controlPosition.md
+  - controlOrder: formBuilder/options/controlOrder.md
+  - disableFields: formBuilder/options/disableFields.md
+  - editOnAdd: formBuilder/options/editOnAdd.md
+  - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
+  - messages: formBuilder/options/messages.md
+  - notify: formBuilder/options/notify.md
+  - sortableControls: formBuilder/options/sortableControls.md
+  - stickyControls: formBuilder/options/stickyControls.md
 - formRender Demos:
-  - Basic: demos/basic-formRender.md
-  - Container: demos/formRender-options.md
-  - Preview popup: demos/preview-popup.md
-  - Columns: demos/formRender-columns.md
-- Options:
-  - Overview: options.md
-  - append/prepend: options/appendPrepend.md
-  - controlPosition: options/controlPosition.md
-  - controlOrder: options/controlOrder.md
-  - disableFields: options/disableFields.md
-  - editOnAdd: options/editOnAdd.md
-  - fieldRemoveWarn: options/fieldRemoveWarn.md
-  - messages: options/messages.md
-  - notify: options/notify.md
-  - sortableControls: options/sortableControls.md
-  - stickyControls: options/stickyControls.md
+  - Basic: formRender/demos/basic.md
+  - Preview popup: formRender/demos/preview-popup.md
+- formRender Options:
+  - Overview: formRender/options.md
+  - container: formRender/options/container.md
+  - formData: formRender/options/formData.md
+  - render: formRender/options/render.md
 - Contributing: contributing.md
 - About:
   - License: license.md
 extra_css:
   - 'css/site.css'
+  - '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css'
 extra_javascript:
-- 'js/scripts.js'
+  - 'js/scripts.js'
+  - '//assets.codepen.io/assets/embed/ei.js'
+  - '//sidecar.gitter.im/dist/sidecar.v1.js'
