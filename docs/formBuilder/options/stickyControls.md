@@ -10,4 +10,4 @@ $(template).formBuilder(options);
 ```
 
 ## See it in Action
-<p data-height="608" data-theme-id="22927" data-slug-hash="LkOrwE" data-default-tab="result" data-user="kevinchappell" data-embed-version="2" class="codepen">See the Pen <a href="http://codepen.io/kevinchappell/pen/LkOrwE/">formBuilder: stickyControls</a> by Kevin Chappell (<a href="http://codepen.io/kevinchappell">@kevinchappell</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="800" data-theme-id="22927" data-slug-hash="LkOrwE" data-default-tab="result" data-user="kevinchappell" data-embed-version="2" class="codepen"></p>
