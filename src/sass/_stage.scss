@@ -365,6 +365,15 @@
     .sortable-options-wrap {
       width: 81.33333333%;
       display: inline-block;
+
+      label {
+        font-weight: normal;
+      }
+
+      @include breakpoint('phone-lrg') {
+        display: block;
+        width: 100%;
+      }
     }
 
     ol.sortable-options {
@@ -471,6 +480,22 @@
         }
       }
 
+      @include breakpoint('phone-lrg') {
+        input[type='text'],
+        input[type='number'],
+        textarea,
+        select {
+          width: 100%;
+          margin-left: 0;
+          float: none;
+
+          .btn-group {
+            margin-left: 0;
+          }
+        }
+      }
+
+
       input[type='number'] {
         width: auto;
       }
@@ -481,23 +506,33 @@
 
       .false-label,
       label {
-        width: 16.66666667%;
-        padding-top: 7px;
-        margin-bottom: 0;
-        text-align: right;
-        font-weight: 700;
-        float: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
         .col-md-6 &,
         .col-md-8 & {
           display: block;
         }
 
         &:first-child {
+          width: 16.66666667%;
+          padding-top: 7px;
+          margin-bottom: 0;
+          text-align: right;
+          font-weight: 700;
+          float: left;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
           text-transform: capitalize;
+
+          @include breakpoint('phone-lrg') {
+            display: block;
+            width: auto;
+            float: none;
+            text-align: left;
+
+            &.empty-label {
+              display: none;
+            }
+          }
         }
 
         &.multiple,
@@ -512,6 +547,12 @@
           width: calc(81.3333% - 23px);
         }
       }
+    }
+  }
+
+  &.fb-mobile {
+    .field-actions {
+      opacity: 1;
     }
   }
 

@@ -179,6 +179,7 @@
         textArea: 'Text Area',
         toggle: 'Toggle',
         warning: 'Warning!',
+        value: 'Value',
         viewXML: '&lt;/&gt;',
         yes: 'Yes'
       },
@@ -631,14 +632,14 @@
       field += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
       field += `<div class="sortable-options-wrap">`;
       if (values.type === 'select') {
-        field += '<div class="allow-multi">';
-        field += '<input type="checkbox" id="multiple_' + lastID + '" name="multiple"' + (values.multiple ? 'checked="checked"' : '') + '>';
-        field += '<label class="multiple" for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
-        field += '</div>';
+      field += '<div class="allow-multi">';
+      field += '<input class="fld-multiple" type="checkbox" id="multiple_' + lastID + '" name="multiple" ' + (values.multiple ? 'checked="checked"' : '') + '>';
+      field += '<label for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
+      field += '</div>';
       }
       field += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-        field += selectFieldOptions(values.name, values.values[i], values.multiple);
+      field += selectFieldOptions(values.name, values.values[i], values.multiple);
       }
       field += '</ol>';
       let addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' });
@@ -720,9 +721,11 @@
 
       advFields.push(textAttribute('name', values));
 
+      advFields.push(textAttribute('value', values));
+
       advFields.push('<div class="form-group access-wrap"><label>' + opts.messages.roles + '</label>');
 
-      advFields.push('<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
+      advFields.push('<input type="checkbox" class="fld-enable-roles" name="enable-roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable-roles-' + lastID + '"/> <label for="enable-roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
       advFields.push('<div class="available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>');
 
       for (key in opts.roles) {
@@ -736,7 +739,7 @@
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
         advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
-        advFields.push('<input type="checkbox" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+        advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
       }
 
       advFields.push(textAttribute('maxlength', values));
@@ -940,11 +943,11 @@
       if (!noMake.some(elem => elem === true)) {
 
         requireField += '<div class="form-group required-wrap">';
-        requireField += '<label>&nbsp;</label>';
+        requireField += '<label class="empty-label">&nbsp;</label>';
         let requiredField = _helpers.markup('input', null, {
-          className: 'required',
+          className: 'fld-required',
           type: 'checkbox',
-          name: 'required-' + lastID,
+          name: 'required',
           id: 'required-' + lastID,
           value: 1
         });
@@ -995,7 +998,7 @@
       if (values.type === 'checkbox') {
         liContents += '<div class="form-group">';
         liContents += '<label>&nbsp;</label>';
-        liContents += '<input class="checkbox-toggle" type="checkbox" value="1" name="toggle-' + lastID + '" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
+        liContents += '<input class="fld-toggle" type="checkbox" value="1" name="toggle" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
         liContents += '</div>';
       }
       liContents += field;
@@ -1218,13 +1221,13 @@
     });
 
     // Attach a callback to toggle required asterisk
-    $sortableFields.on('click', 'input.required', function() {
+    $sortableFields.on('click', 'input.fld-required', function() {
       var requiredAsterisk = $(this).parents('li.form-field').find('.required-asterisk');
       requiredAsterisk.toggle();
     });
 
     // Attach a callback to toggle roles visibility
-    $sortableFields.on('click', 'input[name="enable_roles"]', function() {
+    $sortableFields.on('click', 'input[name="enable-roles"]', function() {
       var roles = $(this).siblings('div.available-roles'),
         enableRolesCB = $(this);
       roles.slideToggle(250, function() {
