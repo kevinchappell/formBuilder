@@ -4,12 +4,11 @@
 ## Usage
 ```javascript
 var options = {
-      prepend: '<h1>Profile for Miss Marple.</h1>',
+      prepend: '<h1>Profile for Miss Marple.</h1>', // DOM Object, Array of Dom Objects/Strings or String
       append: '<h2>All information is confidential.</h2>'
     };
 $(template).formBuilder(options);
 ```
 
-
 ## See it in Action
-<p data-height="494" data-theme-id="22927" data-slug-hash="XXYdvv" data-default-tab="result" data-user="kevinchappell" class="codepen">See the Pen <a href="http://codepen.io/kevinchappell/pen/XXYdvv">formBuilder: append, prepend</a> by Kevin Chappell (<a href="http://codepen.io/kevinchappell">@kevinchappell</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="494" data-theme-id="22927" data-slug-hash="XXYdvv" data-default-tab="result" data-user="kevinchappell" class="codepen"></p>
