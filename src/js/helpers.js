@@ -40,6 +40,17 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   /**
+   * convert a hyphenated string to camelCase
+   * @param  {String} str
+   * @return {String}
+   */
+  _helpers.camelCase = (str) => {
+    return str.replace(/-([a-z])/g, function(m, w) {
+      return w.toUpperCase();
+    });
+  };
+
+  /**
    * Convert converts messy `cl#ssNames` into valid `class-names`
    *
    * @param  {string} str
@@ -328,45 +339,19 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var fieldType = $(field).attr('type'),
       $prevHolder = $('.prev-holder', field),
       previewData = {
-        label: $('.fld-label', field).val(),
         type: fieldType
       },
       preview;
 
-    let subtype = $('.fld-subtype', field).val();
-    if (subtype) {
-      previewData.subtype = subtype;
-    }
-
-    let maxlength = $('.fld-maxlength', field).val();
-    if (maxlength) {
-      previewData.maxlength = maxlength;
-    }
-
-    previewData.className = $('.fld-className', field).val() || fieldData.className || '';
-
-    let placeholder = $('.fld-placeholder', field).val();
-    if (placeholder) {
-      previewData.placeholder = placeholder;
-    }
+    $('[class*="fld-"]', field).each(function() {
+      console.log();
+      let name = _helpers.camelCase(this.name);
+      previewData[name] = this.type === 'checkbox' ? this.checked : this.value;
+    });
 
     let style = $('.btn-style', field).val();
     if (style) {
       previewData.style = style;
-    }
-
-    if (fieldType === 'number') {
-      previewData.min = $('input.fld-min', field).val();
-      previewData.max = $('input.fld-max', field).val();
-      previewData.step = $('input.fld-step', field).val();
-    }
-
-    if (fieldType === 'checkbox') {
-      previewData.toggle = $('.checkbox-toggle', field).is(':checked');
-    }
-
-    if (fieldType.match(/(checkbox-group|radio-group)/)) {
-      previewData.enableOther = $('[name="enable-other"]', field).is(':checked');
     }
 
     if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
@@ -381,6 +366,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
         previewData.values.push(option);
       });
     }
+
+    previewData = _helpers.trimAttrs(previewData);
 
     previewData.className = _helpers.classNames(field, previewData);
     $('.fld-className', field).val(previewData.className);
@@ -404,7 +391,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var i,
       preview = '',
       epoch = new Date().getTime();
-    attrs = jQuery.extend({}, attrs)
+    attrs = jQuery.extend({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
     let toggle = attrs.toggle ? 'toggle' : '';
     // attrs = _helpers.escapeAttrs(attrs);

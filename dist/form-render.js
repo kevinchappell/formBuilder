@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.14.1
+Version: 1.14.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -226,8 +226,8 @@ function FormRenderFn(options, element) {
         var enableOther = false;
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
 
-        if (fieldAttrs['other']) {
-          delete fieldAttrs['other'];
+        if (fieldAttrs.other) {
+          delete fieldAttrs.other;
           enableOther = true;
         }
 

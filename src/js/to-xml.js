@@ -46,13 +46,13 @@
               multiple: $('input[name="multiple"]', $field).is(':checked'),
               name: $('input.fld-name', $field).val(),
               placeholder: $('input.fld-placeholder', $field).val(),
-              required: $('input.required', $field).is(':checked'),
-              toggle: $('.checkbox-toggle', $field).is(':checked'),
+              required: $('input.fld-required', $field).is(':checked'),
+              toggle: $('.toggle', $field).is(':checked'),
               type: types.type,
               subtype: types.subtype,
               min: $('input.fld-min', $field).val(),
               max: $('input.fld-max', $field).val(),
-              step: $('input.fld-step', $field).val()
+              value: $('input.fld-value', $field).val()
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');

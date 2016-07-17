@@ -172,8 +172,8 @@ function FormRenderFn(options, element) {
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
 
 
-        if (fieldAttrs['other']) {
-          delete fieldAttrs['other'];
+        if (fieldAttrs.other) {
+          delete fieldAttrs.other;
           enableOther = true;
         }
 

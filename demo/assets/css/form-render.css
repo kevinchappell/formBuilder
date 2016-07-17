@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.14.1
+Version: 1.14.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 [id^='frmb-'][id$='-form-wrap'] * {
@@ -69,51 +69,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   [id^='frmb-'][id$='-form-wrap'] .btn-group > .btn:focus,
   [id^='frmb-'][id$='-form-wrap'] .btn-group > .btn:hover {
     z-index: 2; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group > .btn {
-  display: block;
-  float: none;
-  width: 100%;
-  max-width: 100%; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group > .btn {
-  float: none; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn + .btn,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn + .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group + .btn,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group + .btn-group {
-  margin-top: -1px;
-  margin-left: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn:not(:first-child):not(:last-child) {
-  border-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn:first-child:not(:last-child) {
-  border-top-left-radius: 4px !important;
-  border-top-right-radius: 4px !important;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn:last-child:not(:first-child) {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn {
-  border-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0; }
 
 [id^='frmb-'][id$='-form-wrap'] .btn {
   color: #fff;

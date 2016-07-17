@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.14.1
+Version: 1.14.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -231,6 +231,17 @@ function formBuilderHelpersFn(opts, formBuilder) {
     });
 
     return str.replace(/\s/g, '-').replace(/^-+/g, '');
+  };
+
+  /**
+   * convert a hyphenated string to camelCase
+   * @param  {String} str
+   * @return {String}
+   */
+  _helpers.camelCase = function (str) {
+    return str.replace(/-([a-z])/g, function (m, w) {
+      return w.toUpperCase();
+    });
   };
 
   /**
@@ -521,45 +532,19 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var fieldType = $(field).attr('type'),
         $prevHolder = $('.prev-holder', field),
         previewData = {
-      label: $('.fld-label', field).val(),
       type: fieldType
     },
         preview;
 
-    var subtype = $('.fld-subtype', field).val();
-    if (subtype) {
-      previewData.subtype = subtype;
-    }
-
-    var maxlength = $('.fld-maxlength', field).val();
-    if (maxlength) {
-      previewData.maxlength = maxlength;
-    }
-
-    previewData.className = $('.fld-className', field).val() || fieldData.className || '';
-
-    var placeholder = $('.fld-placeholder', field).val();
-    if (placeholder) {
-      previewData.placeholder = placeholder;
-    }
+    $('[class*="fld-"]', field).each(function () {
+      console.log();
+      var name = _helpers.camelCase(this.name);
+      previewData[name] = this.type === 'checkbox' ? this.checked : this.value;
+    });
 
     var style = $('.btn-style', field).val();
     if (style) {
       previewData.style = style;
-    }
-
-    if (fieldType === 'number') {
-      previewData.min = $('input.fld-min', field).val();
-      previewData.max = $('input.fld-max', field).val();
-      previewData.step = $('input.fld-step', field).val();
-    }
-
-    if (fieldType === 'checkbox') {
-      previewData.toggle = $('.checkbox-toggle', field).is(':checked');
-    }
-
-    if (fieldType.match(/(checkbox-group|radio-group)/)) {
-      previewData.enableOther = $('[name="enable-other"]', field).is(':checked');
     }
 
     if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
@@ -574,6 +559,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
         previewData.values.push(option);
       });
     }
+
+    previewData = _helpers.trimAttrs(previewData);
 
     previewData.className = _helpers.classNames(field, previewData);
     $('.fld-className', field).val(previewData.className);
@@ -1420,6 +1407,7 @@ function formBuilderEventsFn() {
         textArea: 'Text Area',
         toggle: 'Toggle',
         warning: 'Warning!',
+        value: 'Value',
         viewXML: '&lt;/&gt;',
         yes: 'Yes'
       },
@@ -1877,8 +1865,8 @@ function formBuilderEventsFn() {
       field += '<div class="sortable-options-wrap">';
       if (values.type === 'select') {
         field += '<div class="allow-multi">';
-        field += '<input type="checkbox" id="multiple_' + lastID + '" name="multiple"' + (values.multiple ? 'checked="checked"' : '') + '>';
-        field += '<label class="multiple" for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
+        field += '<input class="fld-multiple" type="checkbox" id="multiple_' + lastID + '" name="multiple" ' + (values.multiple ? 'checked="checked"' : '') + '>';
+        field += '<label for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
         field += '</div>';
       }
       field += '<ol class="sortable-options">';
@@ -1964,9 +1952,11 @@ function formBuilderEventsFn() {
 
       advFields.push(textAttribute('name', values));
 
+      advFields.push(textAttribute('value', values));
+
       advFields.push('<div class="form-group access-wrap"><label>' + opts.messages.roles + '</label>');
 
-      advFields.push('<input type="checkbox" name="enable_roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable_roles-' + lastID + '"/> <label for="enable_roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
+      advFields.push('<input type="checkbox" class="fld-enable-roles" name="enable-roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable-roles-' + lastID + '"/> <label for="enable-roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
       advFields.push('<div class="available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>');
 
       for (key in opts.roles) {
@@ -1980,7 +1970,7 @@ function formBuilderEventsFn() {
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
         advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
-        advFields.push('<input type="checkbox" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+        advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
       }
 
       advFields.push(textAttribute('maxlength', values));
@@ -2165,11 +2155,11 @@ function formBuilderEventsFn() {
       })) {
 
         requireField += '<div class="form-group required-wrap">';
-        requireField += '<label>&nbsp;</label>';
+        requireField += '<label class="empty-label">&nbsp;</label>';
         var _requiredField = _helpers.markup('input', null, {
-          className: 'required',
+          className: 'fld-required',
           type: 'checkbox',
-          name: 'required-' + lastID,
+          name: 'required',
           id: 'required-' + lastID,
           value: 1
         });
@@ -2217,7 +2207,7 @@ function formBuilderEventsFn() {
       if (values.type === 'checkbox') {
         liContents += '<div class="form-group">';
         liContents += '<label>&nbsp;</label>';
-        liContents += '<input class="checkbox-toggle" type="checkbox" value="1" name="toggle-' + lastID + '" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
+        liContents += '<input class="fld-toggle" type="checkbox" value="1" name="toggle" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
         liContents += '</div>';
       }
       liContents += field;
@@ -2436,13 +2426,13 @@ function formBuilderEventsFn() {
     });
 
     // Attach a callback to toggle required asterisk
-    $sortableFields.on('click', 'input.required', function () {
+    $sortableFields.on('click', 'input.fld-required', function () {
       var requiredAsterisk = $(this).parents('li.form-field').find('.required-asterisk');
       requiredAsterisk.toggle();
     });
 
     // Attach a callback to toggle roles visibility
-    $sortableFields.on('click', 'input[name="enable_roles"]', function () {
+    $sortableFields.on('click', 'input[name="enable-roles"]', function () {
       var roles = $(this).siblings('div.available-roles'),
           enableRolesCB = $(this);
       roles.slideToggle(250, function () {
@@ -2600,13 +2590,13 @@ function formBuilderEventsFn() {
               multiple: $('input[name="multiple"]', $field).is(':checked'),
               name: $('input.fld-name', $field).val(),
               placeholder: $('input.fld-placeholder', $field).val(),
-              required: $('input.required', $field).is(':checked'),
-              toggle: $('.checkbox-toggle', $field).is(':checked'),
+              required: $('input.fld-required', $field).is(':checked'),
+              toggle: $('.toggle', $field).is(':checked'),
               type: types.type,
               subtype: types.subtype,
               min: $('input.fld-min', $field).val(),
               max: $('input.fld-max', $field).val(),
-              step: $('input.fld-step', $field).val()
+              value: $('input.fld-value', $field).val()
             };
             if (roleVals.length) {
               xmlAttrs.role = roleVals.join(',');

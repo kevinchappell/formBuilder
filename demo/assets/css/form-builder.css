@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.14.1
+Version: 1.14.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -186,63 +186,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   [id^='frmb-'][id$='-form-wrap'] .btn-group > .btn:focus,
   [id^='frmb-'][id$='-form-wrap'] .btn-group > .btn:hover {
     z-index: 2; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn, [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn, .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group, .fb-mobile
-[id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group > .btn,
-[id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group > .btn, .fb-mobile
-[id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group > .btn {
-  display: block;
-  float: none;
-  width: 100%;
-  max-width: 100%; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group > .btn, [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group > .btn, .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group > .btn {
-  float: none; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn + .btn, [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn + .btn, .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn + .btn,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn + .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn + .btn-group, .fb-mobile
-[id^='frmb-'][id$='-form-wrap'] .form-actions > .btn + .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group + .btn,
-[id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group + .btn, .fb-mobile
-[id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group + .btn,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group + .btn-group,
-[id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group + .btn-group, .fb-mobile
-[id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group + .btn-group {
-  margin-top: -1px;
-  margin-left: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn:not(:first-child):not(:last-child), [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn:not(:first-child):not(:last-child), .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn:not(:first-child):not(:last-child) {
-  border-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn:first-child:not(:last-child), [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn:first-child:not(:last-child), .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn:first-child:not(:last-child) {
-  border-top-left-radius: 4px !important;
-  border-top-right-radius: 4px !important;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn:last-child:not(:first-child), [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn:last-child:not(:first-child), .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn:last-child:not(:first-child) {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn, [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group:not(:first-child):not(:last-child) > .btn, .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group:not(:first-child):not(:last-child) > .btn {
-  border-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child, [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group:first-child:not(:last-child) > .btn:last-child, .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group:first-child:not(:last-child) > .btn:last-child,
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle,
-[id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group:first-child:not(:last-child) > .dropdown-toggle, .fb-mobile
-[id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0; }
-
-[id^='frmb-'][id$='-form-wrap'] .btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child, [id^='frmb-'][id$='-form-wrap'] .fb-mobile .form-actions > .btn-group:last-child:not(:first-child) > .btn:first-child, .fb-mobile [id^='frmb-'][id$='-form-wrap'] .form-actions > .btn-group:last-child:not(:first-child) > .btn:first-child {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0; }
 
 [id^='frmb-'][id$='-form-wrap'] .btn {
   color: #fff;
@@ -504,16 +447,28 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   margin: 0;
   padding: 0; }
 
+.fb-mobile .form-actions {
+  width: 100%; }
+  .fb-mobile .form-actions button {
+    width: 100%;
+    font-size: .85em !important;
+    display: block !important;
+    border-radius: 0 !important;
+    margin-top: -1px;
+    margin-left: 0 !important; }
+    .fb-mobile .form-actions button:first-child {
+      border-radius: 5px 5px 0 0 !important;
+      margin-top: 0 !important;
+      border-bottom: 0 none; }
+    .fb-mobile .form-actions button:last-child {
+      border-radius: 0 0 5px 5px !important; }
+
 .form-actions {
   float: right;
-  margin-top: 5px; }
+  margin-top: 5px;
+  /* smartphones, Android phones, landscape iPhone */ }
   .form-actions .clear-all:hover {
     color: #fff; }
-  .fb-mobile .form-actions {
-    width: 100%; }
-    .fb-mobile .form-actions button {
-      font-size: .85em;
-      display: block; }
 
 [id^='frmb-'][id$='-form-wrap'] {
   /*   ------------   TOOLTIP   ------------   */ }
@@ -764,7 +719,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       text-align: right; }
     [id^='frmb-'][id$='-form-wrap'] .frmb .sortable-options-wrap {
       width: 81.33333333%;
-      display: inline-block; }
+      display: inline-block;
+      /* smartphones, Android phones, landscape iPhone */ }
+      [id^='frmb-'][id$='-form-wrap'] .frmb .sortable-options-wrap label {
+        font-weight: normal; }
+      @media (max-width: 481px) {
+        [id^='frmb-'][id$='-form-wrap'] .frmb .sortable-options-wrap {
+          display: block;
+          width: 100%; } }
     [id^='frmb-'][id$='-form-wrap'] .frmb ol.sortable-options {
       display: inline-block;
       width: 100%;
@@ -822,7 +784,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       background: #f7f7f7;
       border-radius: 3px;
       margin: 12px 0 0;
-      border: 1px solid #d7d7d7; }
+      border: 1px solid #d7d7d7;
+      /* smartphones, Android phones, landscape iPhone */ }
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='text'],
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='number'],
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements textarea,
@@ -840,12 +803,31 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements textarea .btn-group,
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements select .btn-group {
           margin-left: 2%; }
+      @media (max-width: 481px) {
+        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='text'],
+        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='number'],
+        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements textarea,
+        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements select {
+          width: 100%;
+          margin-left: 0;
+          float: none; }
+          [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='text'] .btn-group,
+          [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='number'] .btn-group,
+          [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements textarea .btn-group,
+          [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements select .btn-group {
+            margin-left: 0; } }
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='number'] {
         width: auto; }
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .btn-group {
         margin-left: 2%; }
-      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label,
+      .col-md-6 [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label,
+      .col-md-8 [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label, .col-md-6
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label,
+      .col-md-8
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label {
+        display: block; }
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label:first-child,
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label:first-child {
         width: 16.66666667%;
         padding-top: 7px;
         margin-bottom: 0;
@@ -854,27 +836,32 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         float: left;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; }
-        .col-md-6 [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label,
-        .col-md-8 [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label, .col-md-6
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label,
-        .col-md-8
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label {
-          display: block; }
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label:first-child,
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label:first-child {
-          text-transform: capitalize; }
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.multiple, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.required-label, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.toggle-label, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.roles-label, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.other-label,
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.multiple,
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.required-label,
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.toggle-label,
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.roles-label,
-        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.other-label {
-          text-align: left;
-          float: none;
-          margin-bottom: -3px;
-          font-weight: 400;
-          width: calc(81.3333% - 23px); }
+        text-overflow: ellipsis;
+        text-transform: capitalize;
+        /* smartphones, Android phones, landscape iPhone */ }
+        @media (max-width: 481px) {
+          [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label:first-child,
+          [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label:first-child {
+            display: block;
+            width: auto;
+            float: none;
+            text-align: left; }
+            [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label:first-child.empty-label,
+            [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label:first-child.empty-label {
+              display: none; } }
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.multiple, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.required-label, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.toggle-label, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.roles-label, [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .false-label.other-label,
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.multiple,
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.required-label,
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.toggle-label,
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.roles-label,
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements label.other-label {
+        text-align: left;
+        float: none;
+        margin-bottom: -3px;
+        font-weight: 400;
+        width: calc(81.3333% - 23px); }
+  [id^='frmb-'][id$='-form-wrap'].fb-mobile .field-actions {
+    opacity: 1; }
   [id^='frmb-'][id$='-form-wrap'] *[tooltip] {
     position: relative; }
   [id^='frmb-'][id$='-form-wrap'] *[tooltip]:hover:after {
@@ -1061,11 +1048,15 @@ ul.frmb span.required {
 
 .form-group .available-roles {
   display: none;
+  margin-left: 18%;
   padding: 5px 10px;
   margin: 5px 0 10px 133px;
-  width: 434px;
   background: #e6e6e6;
-  box-shadow: inset 0 0 2px 0 #999; }
+  box-shadow: inset 0 0 2px 0 #999;
+  /* smartphones, Android phones, landscape iPhone */ }
+  @media (max-width: 481px) {
+    .form-group .available-roles {
+      margin-left: 0; } }
 
 .form-elements .available-roles label {
   font-weight: 400;
