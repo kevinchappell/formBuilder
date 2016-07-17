@@ -1,6 +1,6 @@
 /*
 formBuilder - http://kevinchappell.github.io/formBuilder/
-Version: 1.14.0
+Version: 1.14.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1883,7 +1883,7 @@ function formBuilderEventsFn() {
       }
       field += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-        field += selectFieldOptions(values.name, values.values[i], values.values[i].selected, values.multiple);
+        field += selectFieldOptions(values.name, values.values[i], values.multiple);
       }
       field += '</ol>';
       var addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' });
@@ -2252,21 +2252,21 @@ function formBuilderEventsFn() {
     };
 
     // Select field html, since there may be multiple
-    var selectFieldOptions = function selectFieldOptions(name, values, selected, multipleSelect) {
+    var selectFieldOptions = function selectFieldOptions(name, optionData, multipleSelect) {
       var optionInputType = {
         selected: multipleSelect ? 'checkbox' : 'radio'
-      };
+      },
+          optionDataOrder = ['value', 'label', 'selected'],
+          optionInputs = [];
 
-      var defaultOptionData = {
-        selected: selected,
+      optionData = optionData || {
+        selected: false,
         label: '',
         value: ''
       };
 
-      var optionData = $.extend({}, defaultOptionData, values),
-          optionInputs = [];
-
-      for (var prop in optionData) {
+      for (var i = optionDataOrder.length - 1; i >= 0; i--) {
+        var prop = optionDataOrder[i];
         if (optionData.hasOwnProperty(prop)) {
           var attrs = {
             type: optionInputType[prop] || 'text',
@@ -2275,11 +2275,10 @@ function formBuilderEventsFn() {
             value: optionData[prop],
             name: name
           };
-          var option = _helpers.markup('input', null, attrs);
           if (prop === 'selected') {
-            option.checked = optionData.selected;
+            attrs.checked = optionData.selected;
           }
-          optionInputs.push(option);
+          optionInputs.push(_helpers.markup('input', null, attrs));
         }
       }
 
@@ -2469,7 +2468,7 @@ function formBuilderEventsFn() {
 
       var name = $firstOption.attr('name');
 
-      $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, false, isMultiple));
+      $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple));
       _helpers.updateMultipleSelect();
     });
 

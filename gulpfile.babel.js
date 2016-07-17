@@ -198,7 +198,7 @@ gulp.task('js', function() {
 
     // Plugin scripts
     return gulp.src(jsFileGlob)
-      .pipe(plugins.plumber())
+      .pipe(plugins.plumber({ errorHandler: false }))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.js'))
       .pipe(banner())
@@ -210,6 +210,27 @@ gulp.task('js', function() {
       .pipe(bsync.reload({
         stream: true
       }));
+  });
+});
+
+// Compile the Dev JS
+gulp.task('devJS', function() {
+
+  let jsFiles = new Map();
+  jsFiles.set('formBuilder', files.formBuilder.js);
+  jsFiles.set('formRender', files.formRender.js);
+
+  return jsFiles.forEach(function(jsFileGlob, key) {
+
+    // Demo scripts minified
+    return gulp.src(jsFileGlob)
+      .pipe(plugins.plumber({ errorHandler: false }))
+      .pipe(plugins.sourcemaps.init())
+      .pipe(plugins.babel())
+      .pipe(plugins.concat(rename(key) + '.min.js'))
+      .pipe(plugins.uglify())
+      .pipe(plugins.sourcemaps.write('/'))
+      .pipe(gulp.dest('demo/assets/js'));
   });
 });
 
@@ -242,4 +263,4 @@ gulp.task('deploy', () => {
 gulp.task('build', ['js', 'css', 'siteCss']);
 
 // Pretty self-explanatory
-gulp.task('default', ['build', 'watch', 'serve']);
+gulp.task('default', ['devJS', 'css', 'siteCss', 'watch', 'serve']);

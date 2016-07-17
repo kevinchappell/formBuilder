@@ -1,4 +1,4 @@
-formBuilder v1.14.0
+formBuilder v1.14.1
 ===========
 
 [![Join the chat at https://gitter.im/kevinchappell/formBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kevinchappell/formBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
 ```
 
 ## [Demo](https://formbuilder.online/) ##
-[![form-builder](https://cloud.githubusercontent.com/assets/1457540/13762292/d7fa75ba-ea35-11e5-96d8-14d813885288.gif)](https://formbuilder.online/)
+[![form-builder](https://cloud.githubusercontent.com/assets/1457540/16900532/157d232e-4c1f-11e6-90d6-e5ec842a1a26.gif)](https://formbuilder.online/)
 
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
