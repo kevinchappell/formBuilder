@@ -248,7 +248,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   _helpers.jsonSave = function(form) {
-      let formDataNew = $(form).toXML(_helpers);
+      let formDataNew = $(form).toJSON(_helpers);
       if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
         return false;
       }
