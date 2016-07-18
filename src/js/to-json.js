@@ -1,6 +1,6 @@
 (function($) {
   'use strict';
-  $.fn.toXML = function(_helpers) {
+  $.fn.toJSON = function(_helpers) {
 
     var serialStr = [];
 
