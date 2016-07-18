@@ -247,8 +247,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
     formBuilder.formData = formDataNew;
   };
 
-  _helpers.jsonSave = function() {
-    opts.notify.warning('json data not available yet');
+  _helpers.jsonSave = function(form) {
+      let formDataNew = $(form).toXML(_helpers);
+      if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
+        return false;
+      }
+      formBuilder.formData = formDataNew;
   };
 
   /**
