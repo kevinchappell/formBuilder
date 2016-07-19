@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.14.4 - Bugfix: Form not saving when fields added by click [#203](https://github.com/kevinchappell/formBuilder/pull/203)
 - v1.14.3 - Bugfix/Chore: fix formRender missing bootstrap styling, updated demo [#202](https://github.com/kevinchappell/formBuilder/pull/202)
 - v1.14.2 - Feature: Value attribute, improved mobile styling [#199](https://github.com/kevinchappell/formBuilder/pull/199)
 - v1.14.1 - Bugfix: Option defaults not rendering [#198](https://github.com/kevinchappell/formBuilder/pull/198)
