@@ -162,12 +162,10 @@ gulp.task('js', function() {
     // Demo scripts minified
     gulp.src(jsFileGlob)
       .pipe(plugins.plumber({ errorHandler: false }))
-      .pipe(plugins.sourcemaps.init())
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))
       .pipe(plugins.uglify())
       .pipe(banner())
-      .pipe(plugins.sourcemaps.write('/'))
       .pipe(gulp.dest('demo/assets/js'));
 
     // Plugin scripts
