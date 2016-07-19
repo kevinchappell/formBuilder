@@ -453,6 +453,7 @@
     $('li', $cbUL).click(function(evt) {
       _helpers.stopIndex = undefined;
       prepFieldVars($(this), true);
+      _helpers.save();
     });
 
     // Add append and prepend options if necessary

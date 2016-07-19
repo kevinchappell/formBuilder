@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.14.3
+Version: 1.14.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1681,6 +1681,7 @@ function formBuilderEventsFn() {
     $('li', $cbUL).click(function (evt) {
       _helpers.stopIndex = undefined;
       prepFieldVars($(this), true);
+      _helpers.save();
     });
 
     // Add append and prepend options if necessary
