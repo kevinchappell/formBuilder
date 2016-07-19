@@ -380,9 +380,10 @@ function FormRenderFn(options, element) {
 
   if (opts.render) {
     if (opts.container) {
+      let renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
       opts.container = (opts.container instanceof jQuery) ? opts.container[0] : opts.container;
       opts.container.emptyContainer();
-      opts.container.appendFormFields(rendered);
+      opts.container.appendChild(renderedFormWrap);
     } else if (element) {
       let renderedFormWrap = document.querySelector('.rendered-form');
       if (renderedFormWrap) {

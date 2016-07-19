@@ -12,7 +12,7 @@
     "dist/form-render.min.css",
     "dist/form-render.min.js"
   ],
-  "homepage": "http://kevinchappell.github.io/formBuilder/",
+  "homepage": "https://formbuilder.online/",
   "repository": {
     "type": "git",
     "url": "http://github.com/kevinchappell/formBuilder"

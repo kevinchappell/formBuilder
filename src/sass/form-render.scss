@@ -1,6 +1,10 @@
 @import 'base/variables';
-@import 'base/bs';
+
 @import 'kc-toggle';
+
+.rendered-form {
+  @import 'base/bs';
+}
 
 .form-group .required {
   color: $error;

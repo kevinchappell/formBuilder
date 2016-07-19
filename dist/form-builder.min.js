@@ -1,5 +1,5 @@
 /*
-formBuilder - http://kevinchappell.github.io/formBuilder/
+formBuilder - https://formbuilder.online/
 Version: 1.14.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */

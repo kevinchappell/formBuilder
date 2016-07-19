@@ -1,5 +1,5 @@
 /*
-formBuilder - http://kevinchappell.github.io/formBuilder/
+formBuilder - https://formbuilder.online/
 Version: 1.14.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
@@ -442,17 +442,18 @@ function FormRenderFn(options, element) {
 
   if (opts.render) {
     if (opts.container) {
+      var renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
       opts.container = opts.container instanceof jQuery ? opts.container[0] : opts.container;
       opts.container.emptyContainer();
-      opts.container.appendFormFields(rendered);
+      opts.container.appendChild(renderedFormWrap);
     } else if (element) {
-      var renderedFormWrap = document.querySelector('.rendered-form');
-      if (renderedFormWrap) {
-        renderedFormWrap.emptyContainer();
-        renderedFormWrap.appendFormFields(rendered);
+      var _renderedFormWrap = document.querySelector('.rendered-form');
+      if (_renderedFormWrap) {
+        _renderedFormWrap.emptyContainer();
+        _renderedFormWrap.appendFormFields(rendered);
       } else {
-        renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
-        element.parentNode.insertBefore(renderedFormWrap, element.nextSibling);
+        _renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+        element.parentNode.insertBefore(_renderedFormWrap, element.nextSibling);
         element.style.display = 'none';
         element.setAttribute('disabled', 'disabled');
       }

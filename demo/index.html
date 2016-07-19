@@ -2,206 +2,26 @@
 <html>
 
 <head>
-  <meta charset='utf-8'>
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-  <meta name="description" content="jQuery formBuilder: A jQuery plugin for drag and drop form creation">
-  <meta name="theme-color" content="#232323">
-  <link rel="stylesheet" type="text/css" href="assets/css/site.min.css?6-9-16">
-  <link rel="stylesheet" type="text/css" href="//bootswatch.com/sandstone/bootstrap.min.css">
-  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,100,700' rel='stylesheet' type='text/css'>
-  <link rel="apple-touch-icon" sizes="57x57" href="assets/img/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="assets/img/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="assets/img/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="assets/img/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="assets/img/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="assets/img/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
-  <link rel="manifest" href="/assets/manifest.json">
-  <meta name="msapplication-TileColor" content="#232323">
-  <meta name="msapplication-TileImage" content="assets/img/ms-icon-144x144.png">
-  <!-- Only include on form edit page -->
+  <link rel="stylesheet" type="text/css" href="assets/css/demo.css">
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/form-builder.min.css">
-  <!-- Only include on form render page -->
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/form-render.min.css">
-  <title>jQuery formBuilder | Drag &amp; Drop Form Creation</title>
-  <!-- Facepoop stuff -->
-  <meta property="og:url" content="http://formbuilder.online" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="jQuery formBuilder" />
-  <meta property="og:description" content="Drag and drop form building" />
-  <meta property="og:image" content="http://formbuilder.online/assets/img/screenshot.png" />
+  <title>jQuery formBuilder Demo</title>
 </head>
 
 <body>
-  <div id="fb-root"></div>
-  <div class="site-wrap container">
-    <div id="header_wrap" class="outer">
-      <header class="inner">
-        <nav id="menu">
-          <ul class="main-menu">
-            <li><a href="#news" id="news-open">News</a></li>
-            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Demos <span class="caret"></span></a>
-              <ul class="dropdown-menu demo-sub-menu">
-                <li class="dropdown-header">formBuilder</li>
-                <li><a href="http://codepen.io/kevinchappell/pen/vLjOLL">Basic</a></li>
-                <li><a href="http://codepen.io/kevinchappell/pen/Vedrqr">Edit Existing Form</a></li>
-                <li><a href="http://codepen.io/kevinchappell/pen/ZQqwLp">Auto Render</a></li>
-                <li class="dropdown-header">Options</li>
-                <li><a href="http://codepen.io/kevinchappell/pen/XXYdvv">append, prepend</a></li>
-                <li><a href="http://codepen.io/kevinchappell/pen/pgxYEW">defaultFields</a></li>
-                <li><a href="http://codepen.io/kevinchappell/pen/NNdbVx">disableFields</a></li>
-                <li><a href="http://codepen.io/kevinchappell/pen/PNZZmw">messages</a></li>
-                <li><a href="http://codepen.io/kevinchappell/pen/xVrOVr?editors=0010">notify</a></li>
-                <!-- <li><a href="#">controlPosition</a></li> -->
-                <!-- <li><a href="#">sortableControls</a></li> -->
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">formRender</li>
-                <li><a href="http://codepen.io/kevinchappell/pen/vGBWxO">Basic</a></li>
-              </ul>
-            </li>
-            <li><a href="http://formbuilder.readthedocs.org/">Docs</a></li>
-            <!-- <li><a href="#">Docs</a></li> -->
-            <!-- <li><a href="#">Showcase</a></li> -->
-            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Download <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="https://github.com/kevinchappell/formBuilder/zipball/master">formBuilder.zip</a></li>
-                <li><a href="https://github.com/kevinchappell/formBuilder/tarball/master">formBuilder.tar.gz</a></li>
-                <li><a href="https://github.com/kevinchappell/formBuilder">GitHub</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
-        <a id="forkme_banner" href="https://github.com/kevinchappell/formBuilder">View on Github</a>
-        <h1 id="project_title"><a href="/"><img src="assets/img/fb-logo.svg" alt="jQuery formBuilder">jQuery formBuilder</a></h1>
-        <h2 id="project_tagline">A jQuery plugin for drag and drop form creation</h2>
-        <section id="downloads">
-          <a class="zip_download_link" href="https://github.com/kevinchappell/formBuilder/zipball/master">Download this project as a .zip file</a>
-          <a class="tar_download_link" href="https://github.com/kevinchappell/formBuilder/tarball/master">Download this project as a tar.gz file</a>
-        </section>
-      </header>
+  <div class="content">
+    <h1>jQuery formBuilder</h1>
+    <div class="build-wrap">
+      <textarea id="fb-template"></textarea>
     </div>
-    <div id="news-wrap">
-      <article class="markdown-body">
-        <h3><a id="user-content-formbuilder-20" class="anchor" href="#formbuilder-20" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>formBuilder 2.0</h3>
-        <p><em>June 9, 2016</em></p>
-        <p>It's been a while since there was any info on the long hyped formBuilder 2.0 so I thought I take a moment to address that.</p>
-        <h4><a id="user-content-the-bad-news" class="anchor" href="#the-bad-news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bad News</h4>
-        <p>There is no formBuilder 2.0</p>
-        <h4><a id="user-content-the-good-news" class="anchor" href="#the-good-news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Good News</h4>
-        <p>Because its been renamed Formeo.</p>
-        <p>So why the re-branding?</p>
-        <ol>
-          <li>There are at least 3 other form building plugins or modules named formBuilder or similar. This made registering formBuilder with the same name across package managers difficult. Formeo is catchy and available on our favorite package managers.</li>
-          <li>The second reason addresses the most common question asked in Gitter and GitHub issues- "How do I save form data to a database?". FormBuilder was intended to be a front-end tool only, leaving the backend problems like saving form data for engineers to solve. Formeo will still be available as a free stand alone front-end module but takes things further with <a href="http://formeo.io" target="_blank">formeo.io</a> a service that will handle the data and provide analytics for completed forms.</li>
-        </ol>
-        <p>Formeo is officially available for testing <a href="http://draggable.github.io/formeo/" target="_blank">here</a> and feedback is very much needed. This an alpha release so expect bugs and please feel free to contribute by reporting them <a href="https://github.com/Draggable/formeo/issues" target="_blank">here</a>. With your help Formeo will be one of- if not the best JavaScript form building module on the internet.</p>
-      </article>
-    </div>
-    <!-- MAIN CONTENT -->
-    <div id="main-content-wrap" class="outer">
-      <h2 class="tagline">Drag and Drop.</h2>
-      <h2 class="tagline"><strong>Full Featured</strong> Form Editing.</h2>
-      <section id="main_content" class="inner">
-        <div class="build-form">
-          <textarea id="fb-template"></textarea>
-        </div>
-        <div class="render-form clearfix">
-          <form id="rendered-form">
-            <p class="cta">Add some fields to the formBuilder above and render them here.</p>
-          </form>
-          <button type="button" id="render-form-button" class="btn btn-primary edit-form">Edit Form</button>
-        </div>
-      </section>
-    </div>
-  </div>
-  <div class="lower-section">
-    <section id="features" class="inner clearfix">
-      <div class="col-md-6 col-sm-6">
-        <h2 class="tagline">Features</h2>
-        <h3>Customization</h3>
-        <ul>
-          <li>Configurable Options</li>
-          <li>Translatable</li>
-          <li>Custom Notifications</li>
-        </ul>
-        <h3>Easy Install</h3>
-        <ul>
-          <li><code>bower install formBuilder</code></li>
-          <li style="list-style:none;">or add the following to your app.</li>
-          <li><code>&lt;script src=&quot;http://formbuilder.online/assets/js/form-builder.min.js&quot;&gt;&lt;/script&gt;</code></li>
-        </ul>
-        <h3>Supportive Community</h3> jQuery formBuilder has an active community, if you hit a blocker you have options.
-        <ul>
-          <li><a href="javascript:void(0)" class="js-gitter-toggle-chat-button" data-gitter-toggle-chat-state="true">Get help on Gitter</a></li>
-          <li style="list-style:none;">or</li>
-          <li><a href="https://github.com/kevinchappell/formBuilder/issues">File an issue</a> on GitHub</li>
-        </ul>
-      </div>
-      <div class="col-md-6 col-sm-6">
-        <h2 class="tagline">Get Started</h2> At a minimum formBuilder needs <code>form-builder.min.js</code> and <code>form-builder.css</code>, but here is a full page example.
-        <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;title&gt;Example formBuilder&lt;/title&gt;
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;http://formbuilder.online/assets/css/form-builder.min.css&quot;&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;textarea id=&quot;fb-template&quot;&gt;&lt;/textarea&gt;
-  &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
-  &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
-  &lt;script src=&quot;http://formbuilder.online/assets/js/form-builder.min.js&quot;&gt;&lt;/script&gt;
-  &lt;script&gt;
-  jQuery(document).ready(function($) {
-    'use strict';
-    $(document.getElementById('fb-template')).formBuilder();
-  });
-  &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-      </div>
-    </section>
-  </div>
-  <!-- FOOTER  -->
-  <div id="footer-wrap" class="outer footer clearfix">
-    <footer class="inner">
-      <div class="donate-plea col-md-6 col-sm-6">
-        <h3>Thank you</h3>
-        <p>Hundreds of hours went into making formBuilder what it is today. If this plugin helped you or your project please consider making a donation.</p>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-          <input type="hidden" name="cmd" value="_s-xclick">
-          <input type="hidden" name="hosted_button_id" value="NCJUSN7FYH68A">
-          <input type="image" class="paypal-button" src="https://upload.wikimedia.org/wikipedia/commons/5/53/PayPal_2014_logo.svg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-        </form>
-        <div class="flattr" id='fb92641'></div>
-      </div>
-      <div class="copyright col-md-6 col-sm-6">
-        <div class="social clearfix">
-          <iframe src="https://ghbtns.com/github-btn.html?user=kevinchappell&repo=formBuilder&type=star&count=true" frameborder="0" scrolling="0" width="85" height="20px"></iframe>
-          <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://formBuilder.online" data-via="formBuilderJS" data-hashtags="formBuilder">Tweet</a>
-          <div class="fb-like" data-href="http://formbuilder.online/" data-width="90" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-        </div>
-        <p>jQuery formBuilder maintained by <a href="https://github.com/kevinchappell">kevinchappell</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </div>
-    </footer>
+    <div class="render-wrap"></div>
+    <button id="edit-form">Edit Form</button>
   </div>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
   <script src="assets/js/form-builder.min.js"></script>
   <script src="assets/js/form-render.min.js"></script>
-  <script src="assets/js/dropdown.js"></script>
-  <script src="assets/js/site.js"></script>
-  <script id="vendor" src="assets/js/scripts.js" async defer></script>
+  <script src="assets/js/demo.js"></script>
 </body>
 
 </html>
