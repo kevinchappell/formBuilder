@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "1.14.2",
+  "version": "1.14.3",
   "main": "dist/form-builder.js",
   "files": [
     "dist/form-builder.js",
@@ -12,7 +12,7 @@
     "dist/form-render.min.css",
     "dist/form-render.min.js"
   ],
-  "homepage": "http://kevinchappell.github.io/formBuilder/",
+  "homepage": "https://formbuilder.online/",
   "repository": {
     "type": "git",
     "url": "http://github.com/kevinchappell/formBuilder"

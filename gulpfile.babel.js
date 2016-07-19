@@ -107,9 +107,8 @@ var plugins = gulpPlugins(),
 // Our watch task to monitor files for changes and run tasks when that change happens.
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'js']);
-  gulp.watch('demo/index.html', bsync.reload);
+  gulp.watch('demo/*.html', bsync.reload);
   gulp.watch('src/sass/**/*.scss', ['css']);
-  gulp.watch('demo/assets/sass/*.scss', ['siteCss']);
 });
 
 // Compile the Sass to plain ol' css.
@@ -127,7 +126,6 @@ gulp.task('css', function() {
       }))
       .pipe(plugins.base64())
       .pipe(banner())
-      .pipe(gulp.dest('demo/assets/css'))
       .pipe(gulp.dest('dist/'))
       .pipe(plugins.cssmin())
       .pipe(banner())
@@ -145,22 +143,6 @@ gulp.task('css', function() {
 gulp.task('font-edit', fontEdit);
 gulp.task('font-save', fontSave);
 
-// Demo specific css
-gulp.task('siteCss', function() {
-  return gulp.src(files.site)
-    .pipe(plugins.sass())
-    .pipe(plugins.autoprefixer({
-      cascade: true
-    }))
-    .pipe(plugins.cssmin())
-    .pipe(banner())
-    .pipe(plugins.concat('site.min.css'))
-    .pipe(gulp.dest('demo/assets/css'))
-    .pipe(bsync.reload({
-      stream: true
-    }));
-});
-
 // Stylish linting to ensure good JS
 gulp.task('lint', function() {
   let js = files.formBuilder.js.concat(files.formRender.js);
@@ -177,23 +159,13 @@ gulp.task('js', function() {
   jsFiles.set('formRender', files.formRender.js);
 
   return jsFiles.forEach(function(jsFileGlob, key) {
-    // Demo scripts
-    gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({ errorHandler: false }))
-      .pipe(plugins.babel())
-      .pipe(plugins.concat(rename(key) + '.js'))
-      .pipe(banner())
-      .pipe(gulp.dest('demo/assets/js'));
-
     // Demo scripts minified
     gulp.src(jsFileGlob)
       .pipe(plugins.plumber({ errorHandler: false }))
-      .pipe(plugins.sourcemaps.init())
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))
       .pipe(plugins.uglify())
       .pipe(banner())
-      .pipe(plugins.sourcemaps.write('/'))
       .pipe(gulp.dest('demo/assets/js'));
 
     // Plugin scripts
@@ -245,22 +217,16 @@ gulp.task('serve', function() {
 
 // Deploy the demo
 gulp.task('deploy', () => {
-  var gitArgs = {
-    args: 'subtree push --prefix demo origin gh-pages'
-  };
-
-  plugins.git.exec(gitArgs, function(err) {
-    if (err) {
-      console.error('There was an error deploying the Demo to gh-pages.\n', err);
-      throw err;
-    } else {
-      console.log('Demo was successfully deployed!\n');
+  exec('cd site && gulp deploy && cd ../', function(err, stdout, stderr) {
+    console.log(stdout);
+    if (stderr) {
+      console.error(err, stderr);
     }
   });
 });
 
 // Do a build after version bump to update all files.
-gulp.task('build', ['js', 'css', 'siteCss']);
+gulp.task('build', ['js', 'css']);
 
 // Pretty self-explanatory
-gulp.task('default', ['devJS', 'css', 'siteCss', 'watch', 'serve']);
+gulp.task('default', ['devJS', 'css', 'watch', 'serve']);
