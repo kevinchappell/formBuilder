@@ -394,6 +394,7 @@
       opacity: 0.9,
       connectWith: $sortableFields,
       cursor: 'move',
+      scroll: false,
       placeholder: 'ui-state-highlight',
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
