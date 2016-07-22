@@ -400,6 +400,7 @@
       stop: _helpers.stopMoving,
       revert: 150,
       beforeStop: _helpers.beforeStop,
+      distance: 3,
       update: function(event, ui) {
         if (_helpers.doCancel) {
           return false;
