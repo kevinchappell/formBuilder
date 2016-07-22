@@ -1,0 +1,19 @@
+{
+  "name": "kevinchappell/formBuilder",
+  "type": "library",
+  "description": "jQuery formBuilder",
+  "keywords": [
+    "form",
+    "builder",
+    "formbuilder",
+    "form builder"
+  ],
+  "homepage": "https://formbuilder.online",
+  "license": "MIT",
+  "authors": [{
+    "name": "Kevin Chappell",
+    "email": "kevin.b.chappell@gmail.com",
+    "homepage": "https://kevin-chappell.com",
+    "role": "Developer"
+  }]
+}
