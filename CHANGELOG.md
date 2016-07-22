@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.14.6 - Hotfix: set Sortable `scroll` to `false` [#206](https://github.com/kevinchappell/formBuilder/pull/206)
 - v1.14.5 - Chore: Add composer.json [#207](https://github.com/kevinchappell/formBuilder/pull/207)
 - v1.14.4 - Bugfix: Form not saving when fields added by click [#203](https://github.com/kevinchappell/formBuilder/pull/203)
 - v1.14.3 - Bugfix/Chore: fix formRender missing bootstrap styling, updated demo [#202](https://github.com/kevinchappell/formBuilder/pull/202)

@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.14.5
+Version: 1.14.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';

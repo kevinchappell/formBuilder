@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.14.5
+Version: 1.14.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1622,6 +1622,7 @@ function formBuilderEventsFn() {
       opacity: 0.9,
       connectWith: $sortableFields,
       cursor: 'move',
+      scroll: false,
       placeholder: 'ui-state-highlight',
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
