@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "1.14.6",
+  "version": "1.15.0",
   "main": "dist/form-builder.js",
   "files": [
     "dist/form-builder.js",
@@ -43,7 +43,6 @@
         "js": [
           "src/js/fields.js",
           "src/js/field.js",
-          "src/js/htmlentities.js",
           "src/js/helpers.js",
           "src/js/events.js",
           "src/js/kc-toggle.js",

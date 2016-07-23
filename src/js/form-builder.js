@@ -59,6 +59,7 @@
         addOption: 'Add Option',
         allFieldsRemoved: 'All fields were removed.',
         allowSelect: 'Allow Select',
+        allowMultipleFiles: 'Allow users to upload multiple files',
         autocomplete: 'Autocomplete',
         button: 'Button',
         cannotBeEmpty: 'This field cannot be empty',
@@ -79,7 +80,7 @@
         editorTitle: 'Form Elements',
         editXML: 'Edit XML',
         enableOther: 'Enable &quot;Other&quot;',
-        enableOtherMsg: 'Permit users to enter an unlisted option',
+        enableOtherMsg: 'Let users to enter an unlisted option',
         fieldDeleteWarning: false,
         fieldVars: 'Field Variables',
         fieldNonEditable: 'This field cannot be edited.',
@@ -96,6 +97,7 @@
         mandatory: 'Mandatory',
         maxlength: 'Max Length',
         minOptionMessage: 'This field requires a minimum of 2 options',
+        multipleFiles: 'Multiple Files',
         name: 'Name',
         no: 'No',
         number: 'Number',
@@ -400,6 +402,7 @@
       stop: _helpers.stopMoving,
       revert: 150,
       beforeStop: _helpers.beforeStop,
+      distance: 3,
       update: function(event, ui) {
         if (_helpers.doCancel) {
           return false;
@@ -480,7 +483,6 @@
 
     var prepFieldVars = function($field, isNew = false) {
       var field = {};
-
       if ($field instanceof jQuery) {
         let fieldData = $field.data('newFieldData');
         if (fieldData) {
@@ -497,6 +499,7 @@
               };
             });
           }
+
           for (var i = attrs.length - 1; i >= 0; i--) {
             field[attrs[i].name] = attrs[i].value;
           }
@@ -505,19 +508,15 @@
         field = $field;
       }
 
-      field.label = _helpers.htmlEncode(field.label);
       field.name = isNew ? nameAttr(field) : field.name;
-      field.role = field.role;
-      field.className = field.className || field.class;
-      field.required = (field.required === 'true' || field.required === true);
-      field.maxlength = field.maxlength;
-      field.toggle = field.toggle;
-      field.description = (field.description !== undefined ? _helpers.htmlEncode(field.description) : '');
+      field.className = field.className || field.class; // backwards compatibility
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {
         field.style = match[1];
       }
+
+      _helpers.escapeAttrs(field);
 
       appendNewField(field);
       $stageWrap.removeClass('empty');
@@ -596,23 +595,16 @@
       return field.type + '-' + epoch;
     };
 
-    // multi-line textarea
-    var appendTextarea = function(values) {
-      appendFieldLi(opts.messages.textArea, advFields(values), values);
-    };
-
-    var appendInput = function(values) {
-      let type = values.type || 'text';
-      appendFieldLi(opts.messages[type], advFields(values), values);
-    };
-
     /**
      * Add data for field with options [select, checkbox-group, radio-group]
      *
-     * @todo   refactor this nasty crap, its actually painful to look at
+     * @todo   refactor this nasty ~crap~ code, its actually painful to look at
      * @param  {object} values
      */
-    var appendSelectList = function(values) {
+    var fieldOptions = function(values) {
+      let addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
+        fieldOptions = '';
+
       if (!values.values || !values.values.length) {
         values.values = [{
           selected: true
@@ -627,51 +619,24 @@
         });
       }
 
-      var field = '';
-
-      field += advFields(values);
-      field += '<div class="form-group field-options">';
-      field += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
-      field += `<div class="sortable-options-wrap">`;
+      fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
+      fieldOptions += '<div class="sortable-options-wrap">';
       if (values.type === 'select') {
-      field += '<div class="allow-multi">';
-      field += '<input class="fld-multiple" type="checkbox" id="multiple_' + lastID + '" name="multiple" ' + (values.multiple ? 'checked="checked"' : '') + '>';
-      field += '<label for="multiple_' + lastID + '">' + opts.messages.selectionsMessage + '</label>';
-      field += '</div>';
+        let labels = {
+          second: opts.messages.selectionsMessage
+        };
+        fieldOptions += boolAttribute('multiple', values, labels);
       }
-      field += '<ol class="sortable-options">';
+
+      fieldOptions += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-      field += selectFieldOptions(values.name, values.values[i], values.multiple);
+        fieldOptions += selectFieldOptions(values.name, values.values[i], values.multiple);
       }
-      field += '</ol>';
-      let addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' });
-      field += _helpers.markup('div', addOption, { className: 'option-actions' }).outerHTML;
-      field += '</div>';
-      field += '</div>';
-      appendFieldLi(opts.messages.select, field, values);
+      fieldOptions += '</ol>';
+      fieldOptions += _helpers.markup('div', addOption, { className: 'option-actions' }).outerHTML;
+      fieldOptions += '</div>';
 
-      $('.sortable-options').sortable(); // making the dynamically added option fields sortable.
-    };
-
-    var appendNewField = function(values) {
-
-      // TODO: refactor to move functions into this object
-      var appendFieldType = {
-        'select': appendSelectList,
-        'rich-text': appendTextarea,
-        'textarea': appendTextarea,
-        'radio-group': appendSelectList,
-        'checkbox-group': appendSelectList
-      };
-
-      values = values || '';
-
-      if (appendFieldType[values.type]) {
-        appendFieldType[values.type](values);
-      } else {
-        appendInput(values);
-      }
-
+      return _helpers.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
     };
 
     /**
@@ -683,26 +648,43 @@
       var advFields = [],
         key,
         checked = '',
+        optionFields = [
+          'select',
+          'checkbox-group',
+          'radio-group'
+        ],
+        isOptionField = (function() {
+          return (optionFields.indexOf(values.type) !== -1);
+        })(),
+        noValueField = function() {
+          let noValField = ['header', 'paragraph', 'file'].concat(optionFields, opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
+          return (noValField.indexOf(values.type) === -1);
+        },
         roles = values.role !== undefined ? values.role.split(',') : [];
 
-      // var fieldLabelLabel = _helpers.markup('label', opts.messages.label);
-      // var fieldLabelInput = _helpers.markup('input', null, {
-      //   type: 'text',
-      //   name: 'label',
-      //   value: values.label,
-      //   className: 'fld-label form-control'
-      // });
-      // var fieldLabel = _helpers.markup('div', [fieldLabelLabel, fieldLabelInput], {
-      //   className: 'form-group label-wrap'
-      // });
-      advFields.push(textAttribute('label', values));
+      advFields.push(requiredField(values));
 
-      // advFields.push(fieldLabel.outerHTML);
+      if (values.type === 'checkbox') {
+        advFields.push(boolAttribute('toggle', values, { first: opts.messages.toggle }));
+      }
+
+      advFields.push(textAttribute('label', values));
 
       values.size = values.size || 'm';
       values.style = values.style || 'default';
 
-      advFields.push(fieldDescription(values));
+      //Help Text / Description Field
+      var noDescFields = [
+        'header',
+        'paragraph',
+        'button'
+      ].concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
+
+      noDescFields = noDescFields.concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
+
+      if (noDescFields.indexOf(values.type) === -1) {
+        advFields.push(textAttribute('description', values));
+      }
 
       advFields.push(subTypeField(values));
 
@@ -723,7 +705,17 @@
 
       advFields.push(textAttribute('name', values));
 
-      advFields.push(textAttribute('value', values));
+      if (!noValueField) {
+        advFields.push(textAttribute('value', values));
+      }
+
+      if (values.type === 'file') {
+        let labels = {
+          first: opts.messages.multipleFiles,
+          second: opts.messages.allowMultipleFiles
+        };
+        advFields.push(boolAttribute('multiple', values, labels));
+      }
 
       advFields.push('<div class="form-group access-wrap"><label>' + opts.messages.roles + '</label>');
 
@@ -744,48 +736,34 @@
         advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
       }
 
+      if (isOptionField) {
+        advFields.push(fieldOptions(values));
+      }
+
       advFields.push(textAttribute('maxlength', values));
 
       return advFields.join('');
     };
 
-    /**
-     * Description meta for field
-     *
-     * @param  {Object} values field values
-     * @return {String}        markup for attribute, @todo change to actual Node
-     */
-    var fieldDescription = function(values) {
-      var noDescFields = [
-          'header',
-          'paragraph',
-          'button'
-        ],
-        noMakeAttr = [],
-        descriptionField = '';
+    var boolAttribute = function(name, values, labels) {
+      let label = (txt) => {
+          return `<label for="${name}-${lastID}">${txt}</label>`;
+        },
+        checked = (values[name] !== undefined ? 'checked' : ''),
+        input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/>`,
+        inner = [
+          input
+        ];
 
-      noDescFields = noDescFields.concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-
-      if (noDescFields.indexOf(values.type) === -1) {
-        noMakeAttr.push(true);
+      if (labels.first) {
+        inner.unshift(label(labels.first));
       }
 
-      if (noMakeAttr.some(elem => elem === true)) {
-        let fieldDescLabel = _helpers.markup('label', opts.messages.description, { 'for': 'description-' + lastID }),
-          fieldDescInput = _helpers.markup('input', null, {
-            type: 'text',
-            className: 'fld-description form-control',
-            name: 'description',
-            id: 'description-' + lastID,
-            value: values.description
-          }),
-          fieldDesc = _helpers.markup('div', [fieldDescLabel, fieldDescInput], {
-            'class': 'form-group description-wrap'
-          });
-        descriptionField = fieldDesc.outerHTML;
+      if (labels.second) {
+        inner.push(label(labels.second));
       }
 
-      return descriptionField;
+      return `<div class="form-group ${name}-wrap">${inner.join('')}</div>`;
     };
 
     /**
@@ -866,6 +844,7 @@
         'textarea',
         'select'
       ];
+
       var noName = [
         'header'
       ];
@@ -885,8 +864,8 @@
         'number'
       ];
 
-      var attrVal = (attribute === 'label') ? values.label : (values[attribute] || '');
-      var attrLabel = opts.messages[attribute];
+      var attrVal = values[attribute] || '',
+        attrLabel = opts.messages[attribute];
       if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
         attrLabel = opts.messages.content;
       }
@@ -915,7 +894,7 @@
       }
 
       if (!noMakeAttr.some(elem => elem === true)) {
-        let attributeLabel = `<label>${attrLabel}</label>`;
+        let attributeLabel = `<label for="${attribute}-${lastID}">${attrLabel}</label>`;
 
         if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
           attributefield += `<textarea name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">${attrVal}</textarea>`;
@@ -941,38 +920,17 @@
       if (_helpers.inArray(values.type, noRequire)) {
         noMake.push(true);
       }
-
       if (!noMake.some(elem => elem === true)) {
-
-        requireField += '<div class="form-group required-wrap">';
-        requireField += '<label class="empty-label">&nbsp;</label>';
-        let requiredField = _helpers.markup('input', null, {
-          className: 'fld-required',
-          type: 'checkbox',
-          name: 'required',
-          id: 'required-' + lastID,
-          value: 1
-        });
-
-        requiredField.defaultChecked = values.required;
-
-        requireField += requiredField.outerHTML;
-        requireField += _helpers.markup('label', opts.messages.required, {
-          className: 'required-label',
-          'for': 'required-' + lastID
-        }).outerHTML;
-        requireField += '</div>';
-
+        requireField = boolAttribute('required', values, { first: opts.messages.required });
       }
       return requireField;
     };
 
     // Append the new field to the editor
-    var appendFieldLi = function(title, field, values) {
-      var labelVal = $(field).find('input[name="label"]').val(),
-        label = (labelVal ? labelVal : title);
-
-      var delBtn = _helpers.markup('a', opts.messages.remove, {
+    var appendNewField = function(values) {
+      let type = values.type || 'text',
+        label = values.label || opts.messages[type] || opts.messages.label,
+        delBtn = _helpers.markup('a', opts.messages.remove, {
           id: 'del_' + lastID,
           className: 'del-button btn delete-confirm',
           title: opts.messages.removeMessage
@@ -981,37 +939,35 @@
           id: lastID + '-edit',
           className: 'toggle-form btn icon-pencil',
           title: opts.messages.hide
-        }),
-        required = values.required,
-        toggle = values.toggle || undefined,
-        tooltip = values.description !== '' ? '<span class="tooltip-element" tooltip="' + values.description + '">?</span>' : '';
+        });
 
       var liContents = _helpers.markup(
         'div', [toggleBtn, delBtn], { className: 'field-actions' }
       ).outerHTML;
 
-      liContents += '<label class="field-label">' + label + '</label>' + tooltip + '<span class="required-asterisk" ' + (required ? 'style="display:inline"' : '') + '> *</span>';
+      // Field preview Label
+      liContents += `<label class="field-label">${label}</label>`;
+
+      if (values.description) {
+        liContents += `<span class="tooltip-element" tooltip="${values.description}">?</span>`;
+      }
+
+      let requiredDisplay = values.required ? 'style="display:inline"' : '';
+      liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
+
       liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
 
-      liContents += requiredField(values);
-
-      if (values.type === 'checkbox') {
-        liContents += '<div class="form-group">';
-        liContents += '<label>&nbsp;</label>';
-        liContents += '<input class="fld-toggle" type="checkbox" value="1" name="toggle" id="toggle-' + lastID + '"' + (toggle === 'true' ? ' checked' : '') + ' /><label class="toggle-label" for="toggle-' + lastID + '">' + opts.messages.toggle + '</label>';
-        liContents += '</div>';
-      }
-      liContents += field;
+      liContents += advFields(values);
       liContents += _helpers.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
 
       liContents += '</div>';
       liContents += '</div>';
 
       let li = _helpers.markup('li', liContents, {
-          'class': values.type + '-field form-field',
-          'type': values.type,
+          'class': type + '-field form-field',
+          'type': type,
           id: lastID
         }),
         $li = $(li);
@@ -1023,6 +979,8 @@
       } else {
         $sortableFields.append($li);
       }
+
+      $('.sortable-options', $li).sortable(); // make dynamically added option fields sortable if they exist.
 
       _helpers.updatePreview($li);
 

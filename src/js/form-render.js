@@ -342,7 +342,7 @@ function FormRenderFn(options, element) {
         if (this.checked) {
           otherInput.style.display = 'inline-block';
           option.nextElementSibling.style.display = 'none';
-          otherInput.oninput = function(evt) { option.value = this.value };
+          otherInput.oninput = function(evt) { option.value = this.value; };
         } else {
           otherInput.style.display = 'none';
           option.nextElementSibling.style.display = 'inline-block';
@@ -352,7 +352,7 @@ function FormRenderFn(options, element) {
     }
   };
 
-  var runCallbacks = function(fields) {
+  var runCallbacks = function() {
     otherOptionCB();
   };
 
