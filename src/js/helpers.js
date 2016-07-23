@@ -72,7 +72,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.safeAttr = function(name, value) {
     name = _helpers.safeAttrName(name);
 
-    let valString = window.JSON.stringify(HTML_ENTITIES.encode(value));
+    let valString = window.JSON.stringify(_helpers.escapeAttr(value));
 
     value = value ? `=${valString}` : '';
     return {
@@ -208,7 +208,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   // Remove null or undefined values
-  _helpers.trimAttrs = function(attrs) {
+  _helpers.trimObj = function(attrs) {
     let xmlRemove = [
       null,
       undefined,
@@ -223,11 +223,27 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return attrs;
   };
 
+  _helpers.escapeAttr = function(str) {
+    var match = {
+      '"': '&quot;',
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;'
+    };
+
+    function replaceTag(tag) {
+      return match[tag] || tag;
+    }
+
+    return (typeof str === 'string') ? str.replace(/["&<>]/g, replaceTag) : str;
+  };
+
   // Remove null or undefined values
   _helpers.escapeAttrs = function(attrs) {
+
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
-        attrs[attr] = HTML_ENTITIES.encode(attrs[attr]);
+        attrs[attr] = _helpers.escapeAttr(attrs[attr]);
       }
     }
 
@@ -241,6 +257,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.xmlSave = function(form) {
     let formDataNew = $(form).toXML(_helpers);
+
     if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
       return false;
     }
@@ -330,7 +347,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} field jQuery wrapped dom object @todo, remove jQuery dependency
    */
   _helpers.updatePreview = function(field) {
-    var fieldData = field.data('fieldData') || {};
     var fieldClass = field.attr('class');
     if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
       return;
@@ -344,7 +360,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
       preview;
 
     $('[class*="fld-"]', field).each(function() {
-      console.log();
       let name = _helpers.camelCase(this.name);
       previewData[name] = this.type === 'checkbox' ? this.checked : this.value;
     });
@@ -367,7 +382,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       });
     }
 
-    previewData = _helpers.trimAttrs(previewData);
+    previewData = _helpers.trimObj(previewData);
 
     previewData.className = _helpers.classNames(field, previewData);
     $('.fld-className', field).val(previewData.className);
@@ -439,8 +454,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
               type: type,
               onclick: 'otherOptionCallback(\'' + otherID + '\')'
             },
-            otherInput = _helpers.markup('input', null, optionAttrs),
-            optionAttrsString = _helpers.attrString(optionAttrs);
+            otherInput = _helpers.markup('input', null, optionAttrs);
 
           window.otherOptionCallback = function(otherID) {
             var option = document.getElementById(otherID),

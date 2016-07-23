@@ -43,7 +43,6 @@
         "js": [
           "src/js/fields.js",
           "src/js/field.js",
-          "src/js/htmlentities.js",
           "src/js/helpers.js",
           "src/js/events.js",
           "src/js/kc-toggle.js",

@@ -414,7 +414,7 @@ function FormRenderFn(options, element) {
     }
   };
 
-  var runCallbacks = function runCallbacks(fields) {
+  var runCallbacks = function runCallbacks() {
     otherOptionCB();
   };
 
