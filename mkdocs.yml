@@ -15,6 +15,7 @@ pages:
   - Basic: formBuilder/demos/basic.md
   - Toggle formBuilder: formBuilder/demos/toggle-builder.md
   - Translating: formBuilder/demos/translation.md
+  - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
   - Data: formBuilder/demos/data.md
 - formBuilder Options:
   - Overview: formBuilder/options.md
