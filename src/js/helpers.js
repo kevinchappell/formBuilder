@@ -409,7 +409,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     attrs = jQuery.extend({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
     let toggle = attrs.toggle ? 'toggle' : '';
-    // attrs = _helpers.escapeAttrs(attrs);
     let attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
