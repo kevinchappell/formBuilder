@@ -5,7 +5,7 @@
     var serialStr = [];
 
     var fieldOptions = function($field) {
-      var options = [];
+      let options = [];
       $('.sortable-options li', $field).each(function() {
         let $option = $(this),
           attrs = {
@@ -66,16 +66,17 @@
 
             if (multipleField) {
               fieldContent = fieldOptions($field);
-              jsonAttrs['options'] = fieldContent;
+              jsonAttrs["options"] = fieldContent;
             }
 
-            // xmlField = _helpers.markup('field', fieldContent, xmlAttrs);
-            // serialStr += '\n\t\t' + xmlField.outerHTML;
+            serialStr.push(jsonAttrs);            
+
           }
         });
         // serialStr += '\n\t</fields>\n</form-template>';
         serialStr = JSON.stringify(serialStr, null, 4);
       } // if "$(this).children().length >= 1"
+      console.log(serialStr);
 
     });
 
