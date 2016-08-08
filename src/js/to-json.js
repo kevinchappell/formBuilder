@@ -69,14 +69,13 @@
               jsonAttrs["options"] = fieldContent;
             }
 
-            serialStr.push(jsonAttrs);            
+            serialStr.push(jsonAttrs);
 
           }
         });
         // serialStr += '\n\t</fields>\n</form-template>';
         serialStr = JSON.stringify(serialStr, null, 4);
       } // if "$(this).children().length >= 1"
-      console.log(serialStr);
 
     });
 
