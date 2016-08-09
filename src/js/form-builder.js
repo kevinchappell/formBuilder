@@ -656,10 +656,10 @@
         isOptionField = (function() {
           return (optionFields.indexOf(values.type) !== -1);
         })(),
-        noValueField = function() {
+        valueField = (() => {
           let noValField = ['header', 'paragraph', 'file'].concat(optionFields, opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
           return (noValField.indexOf(values.type) === -1);
-        },
+        })(),
         roles = values.role !== undefined ? values.role.split(',') : [];
 
       advFields.push(requiredField(values));
@@ -705,7 +705,7 @@
 
       advFields.push(textAttribute('name', values));
 
-      if (!noValueField) {
+      if (valueField) {
         advFields.push(textAttribute('value', values));
       }
 
@@ -896,7 +896,7 @@
       if (!noMakeAttr.some(elem => elem === true)) {
         let attributeLabel = `<label for="${attribute}-${lastID}">${attrLabel}</label>`;
 
-        if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
+        if (attribute === 'label' && _helpers.inArray(values.type, textArea) || (attribute === 'value' && values.type === 'textarea')) {
           attributefield += `<textarea name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">${attrVal}</textarea>`;
         } else {
           attributefield += `<input type="text" value="${attrVal}" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
@@ -1274,6 +1274,7 @@
 
     document.dispatchEvent(formBuilder.events.loaded);
 
+    // Make some actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields
     };

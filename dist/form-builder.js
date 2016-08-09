@@ -416,13 +416,14 @@ function formBuilderHelpersFn(opts, formBuilder) {
         epoch = new Date().getTime();
     attrs = jQuery.extend({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
-    var toggle = attrs.toggle ? 'toggle' : '';
-    var attrsString = _helpers.attrString(attrs);
+    var toggle = attrs.toggle ? 'toggle' : '',
+        attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
       case 'textarea':
       case 'rich-text':
-        preview = '<textarea ' + attrsString + '></textarea>';
+        var fieldVal = attrs.value || '';
+        preview = '<textarea ' + attrsString + '>' + fieldVal + '</textarea>';
         break;
       case 'button':
       case 'submit':
@@ -1712,10 +1713,10 @@ function formBuilderEventsFn() {
           isOptionField = function () {
         return optionFields.indexOf(values.type) !== -1;
       }(),
-          noValueField = function noValueField() {
+          valueField = function () {
         var noValField = ['header', 'paragraph', 'file'].concat(optionFields, opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
         return noValField.indexOf(values.type) === -1;
-      },
+      }(),
           roles = values.role !== undefined ? values.role.split(',') : [];
 
       advFields.push(requiredField(values));
@@ -1757,7 +1758,7 @@ function formBuilderEventsFn() {
 
       advFields.push(textAttribute('name', values));
 
-      if (!noValueField) {
+      if (valueField) {
         advFields.push(textAttribute('value', values));
       }
 
@@ -1931,7 +1932,7 @@ function formBuilderEventsFn() {
       })) {
         var attributeLabel = '<label for="' + attribute + '-' + lastID + '">' + attrLabel + '</label>';
 
-        if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
+        if (attribute === 'label' && _helpers.inArray(values.type, textArea) || attribute === 'value' && values.type === 'textarea') {
           attributefield += '<textarea name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">' + attrVal + '</textarea>';
         } else {
           attributefield += '<input type="text" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
@@ -2301,6 +2302,7 @@ function formBuilderEventsFn() {
 
     document.dispatchEvent(formBuilder.events.loaded);
 
+    // Make some actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields
     };

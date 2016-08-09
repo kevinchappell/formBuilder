@@ -205,8 +205,7 @@ function FormRenderFn(options, element) {
       case 'textarea':
       case 'rich-text':
         delete fieldAttrs.type;
-        delete fieldAttrs.value;
-        fieldMarkup = fieldLabel + '<textarea ' + fieldAttrsString + '></textarea>';
+        fieldMarkup = fieldLabel + '<textarea ' + fieldAttrsString + '>' + fieldAttrs.value + '</textarea>';
         break;
       case 'select':
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
