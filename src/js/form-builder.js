@@ -564,7 +564,7 @@
 
       let doLoadData = {
         xml: getXML,
-        json: getJSON,
+        json: getXML,
       };
 
       doLoadData[opts.dataType]();
