@@ -408,13 +408,14 @@ function formBuilderHelpersFn(opts, formBuilder) {
       epoch = new Date().getTime();
     attrs = jQuery.extend({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
-    let toggle = attrs.toggle ? 'toggle' : '';
-    let attrsString = _helpers.attrString(attrs);
+    let toggle = attrs.toggle ? 'toggle' : '',
+      attrsString = _helpers.attrString(attrs);
 
     switch (attrs.type) {
       case 'textarea':
       case 'rich-text':
-        preview = `<textarea ${attrsString}></textarea>`;
+        let fieldVal = attrs.value || '';
+        preview = `<textarea ${attrsString}>${fieldVal}</textarea>`;
         break;
       case 'button':
       case 'submit':
