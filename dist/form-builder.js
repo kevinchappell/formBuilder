@@ -2301,6 +2301,10 @@ function formBuilderEventsFn() {
 
     document.dispatchEvent(formBuilder.events.loaded);
 
+    formBuilder.actions = {
+      clearFields: _helpers.removeAllfields
+    };
+
     return formBuilder;
   };
 
@@ -2308,16 +2312,15 @@ function formBuilderEventsFn() {
     return this.each(function () {
       var element = this,
           formBuilder;
+
       if ($(element).data('formBuilder')) {
         var existingFormBuilder = $(element).parents('.form-builder:eq(0)');
         existingFormBuilder.before(element);
         existingFormBuilder.remove();
-        formBuilder = new FormBuilder(options, element);
-        $(element).data('formBuilder', formBuilder);
-      } else {
-        formBuilder = new FormBuilder(options, element);
-        $(element).data('formBuilder', formBuilder);
       }
+
+      formBuilder = new FormBuilder(options, element);
+      $(element).data('formBuilder', formBuilder);
     });
   };
 })(jQuery);
