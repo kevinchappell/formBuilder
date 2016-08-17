@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.15.3
+Version: 1.15.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -205,7 +205,8 @@ function FormRenderFn(options, element) {
       case 'textarea':
       case 'rich-text':
         delete fieldAttrs.type;
-        fieldMarkup = fieldLabel + '<textarea ' + fieldAttrsString + '>' + fieldAttrs.value + '</textarea>';
+        var fieldVal = fieldAttrs.value || '';
+        fieldMarkup = fieldLabel + '<textarea ' + fieldAttrsString + '>' + fieldVal + '</textarea>';
         break;
       case 'select':
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');

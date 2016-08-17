@@ -150,7 +150,8 @@ function FormRenderFn(options, element) {
       case 'textarea':
       case 'rich-text':
         delete fieldAttrs.type;
-        fieldMarkup = `${fieldLabel}<textarea ${fieldAttrsString}>${fieldAttrs.value}</textarea>`;
+        let fieldVal = fieldAttrs.value || '';
+        fieldMarkup = `${fieldLabel}<textarea ${fieldAttrsString}>${fieldVal}</textarea>`;
         break;
       case 'select':
         fieldAttrs.type = fieldAttrs.type.replace('-group', '');
