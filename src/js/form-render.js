@@ -384,12 +384,11 @@ function FormRenderFn(options, element) {
       opts.container.emptyContainer();
       opts.container.appendChild(renderedFormWrap);
     } else if (element) {
-      let renderedFormWrap = document.querySelector('.rendered-form');
-      if (renderedFormWrap) {
+      if (element.parentElement.classList.contains('rendered-form')) {
         renderedFormWrap.emptyContainer();
         renderedFormWrap.appendFormFields(rendered);
       } else {
-        renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+        let renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
         element.parentNode.insertBefore(renderedFormWrap, element.nextSibling);
         element.style.display = 'none';
         element.setAttribute('disabled', 'disabled');

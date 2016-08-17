@@ -441,18 +441,17 @@ function FormRenderFn(options, element) {
 
   if (opts.render) {
     if (opts.container) {
-      var renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+      var _renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
       opts.container = opts.container instanceof jQuery ? opts.container[0] : opts.container;
       opts.container.emptyContainer();
-      opts.container.appendChild(renderedFormWrap);
+      opts.container.appendChild(_renderedFormWrap);
     } else if (element) {
-      var _renderedFormWrap = document.querySelector('.rendered-form');
-      if (_renderedFormWrap) {
-        _renderedFormWrap.emptyContainer();
-        _renderedFormWrap.appendFormFields(rendered);
+      if (element.parentElement.classList.contains('rendered-form')) {
+        renderedFormWrap.emptyContainer();
+        renderedFormWrap.appendFormFields(rendered);
       } else {
-        _renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
-        element.parentNode.insertBefore(_renderedFormWrap, element.nextSibling);
+        var _renderedFormWrap2 = _helpers.markup('div', rendered, { className: 'rendered-form' });
+        element.parentNode.insertBefore(_renderedFormWrap2, element.nextSibling);
         element.style.display = 'none';
         element.setAttribute('disabled', 'disabled');
       }
