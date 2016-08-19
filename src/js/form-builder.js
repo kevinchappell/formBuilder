@@ -1276,7 +1276,8 @@
 
     // Make some actions accessible
     formBuilder.actions = {
-      clearFields: _helpers.removeAllfields
+      clearFields: _helpers.removeAllfields,
+      save: _helpers.save
     };
 
     return formBuilder;
