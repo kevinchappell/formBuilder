@@ -228,7 +228,7 @@ gulp.task('deploy', () => {
       console.log('Demo was successfully deployed!\n');
     }
   });
-  exec('cd site && gulp deploy && cd ../', function(err, stdout, stderr) {
+  exec(`cd site && git add --all git commit -am "${pkg.version}" && git push origin master && gulp deploy && cd ../`, function(err, stdout, stderr) {
     console.log(stdout);
     if (stderr) {
       console.error(err, stderr);
