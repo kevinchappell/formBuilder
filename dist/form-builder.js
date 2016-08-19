@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.15.4
+Version: 1.15.5
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2304,7 +2304,8 @@ function formBuilderEventsFn() {
 
     // Make some actions accessible
     formBuilder.actions = {
-      clearFields: _helpers.removeAllfields
+      clearFields: _helpers.removeAllfields,
+      save: _helpers.save
     };
 
     return formBuilder;

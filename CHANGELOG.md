@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.15.5 - Feature: `save` action [#228](https://github.com/kevinchappell/formBuilder/pull/228)
 - v1.15.4 - Bugfix: formRender textarea value undefined [#224](https://github.com/kevinchappell/formBuilder/pull/224)
 - v1.15.3 - Bugfix: Cannot run formRender on multiple elements [#223](https://github.com/kevinchappell/formBuilder/pull/223)
 - v1.15.2 - Feature/Bugfix: Actions, formRender textarea `value` bugfix [#219](https://github.com/kevinchappell/formBuilder/pull/219)
