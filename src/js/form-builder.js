@@ -22,7 +22,7 @@
         'text',
         'textarea'
       ],
-      dataType: 'xml',
+      dataType: 'json',
       /**
        * Field types to be disabled
        * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
@@ -564,9 +564,7 @@
 
       let doLoadData = {
         xml: getXML,
-        json: function() {
-          console.log('coming soon');
-        }
+        json: getXML,
       };
 
       doLoadData[opts.dataType]();

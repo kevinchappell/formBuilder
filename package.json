@@ -47,6 +47,7 @@
           "src/js/events.js",
           "src/js/kc-toggle.js",
           "src/js/form-builder.js",
+          "src/js/to-json.js",
           "src/js/to-xml.js",
           "src/js/polyfills.js"
         ],
