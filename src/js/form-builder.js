@@ -23,15 +23,8 @@
         'textarea'
       ],
       dataType: 'xml',
-      /**
-       * Field types to be disabled
-       * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
-       */
-      disableFields: [
-        'autocomplete',
-        'hidden',
-        'number'
-      ],
+      // Array of fields to disable
+      disableFields: [],
       editOnAdd: false,
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
@@ -454,7 +447,7 @@
     // Save field on change
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
-    $('li', $cbUL).click(function(evt) {
+    $('li', $cbUL).click(function() {
       _helpers.stopIndex = undefined;
       prepFieldVars($(this), true);
       _helpers.save();
@@ -492,6 +485,7 @@
           let attrs = $field[0].attributes;
           if (!isNew) {
             field.values = $field.children().map(function(index, elem) {
+              index = index;
               return {
                 label: $(elem).text(),
                 value: $(elem).attr('value'),

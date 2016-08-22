@@ -337,12 +337,12 @@ function FormRenderFn(options, element) {
     var otherOptions = document.getElementsByClassName('other-option');
     for (var i = 0; i < otherOptions.length; i++) {
       let otherInput = document.getElementById(otherOptions[i].id + '-value');
-      otherOptions[i].onclick = function(evt) {
+      otherOptions[i].onclick = function() {
         let option = this;
         if (this.checked) {
           otherInput.style.display = 'inline-block';
           option.nextElementSibling.style.display = 'none';
-          otherInput.oninput = function(evt) { option.value = this.value; };
+          otherInput.oninput = function() { option.value = this.value; };
         } else {
           otherInput.style.display = 'none';
           option.nextElementSibling.style.display = 'inline-block';
@@ -386,8 +386,8 @@ function FormRenderFn(options, element) {
       opts.container.appendChild(renderedFormWrap);
     } else if (element) {
       if (element.parentElement.classList.contains('rendered-form')) {
-        renderedFormWrap.emptyContainer();
-        renderedFormWrap.appendFormFields(rendered);
+        element.parentElement.emptyContainer();
+        element.parentElement.appendFormFields(rendered);
       } else {
         let renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
         element.parentNode.insertBefore(renderedFormWrap, element.nextSibling);

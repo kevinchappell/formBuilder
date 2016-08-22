@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.15.5
+Version: 1.15.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -393,12 +393,12 @@ function FormRenderFn(options, element) {
 
     var _loop = function _loop() {
       var otherInput = document.getElementById(otherOptions[i].id + '-value');
-      otherOptions[i].onclick = function (evt) {
+      otherOptions[i].onclick = function () {
         var option = this;
         if (this.checked) {
           otherInput.style.display = 'inline-block';
           option.nextElementSibling.style.display = 'none';
-          otherInput.oninput = function (evt) {
+          otherInput.oninput = function () {
             option.value = this.value;
           };
         } else {
@@ -442,17 +442,17 @@ function FormRenderFn(options, element) {
 
   if (opts.render) {
     if (opts.container) {
-      var _renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+      var renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
       opts.container = opts.container instanceof jQuery ? opts.container[0] : opts.container;
       opts.container.emptyContainer();
-      opts.container.appendChild(_renderedFormWrap);
+      opts.container.appendChild(renderedFormWrap);
     } else if (element) {
       if (element.parentElement.classList.contains('rendered-form')) {
-        renderedFormWrap.emptyContainer();
-        renderedFormWrap.appendFormFields(rendered);
+        element.parentElement.emptyContainer();
+        element.parentElement.appendFormFields(rendered);
       } else {
-        var _renderedFormWrap2 = _helpers.markup('div', rendered, { className: 'rendered-form' });
-        element.parentNode.insertBefore(_renderedFormWrap2, element.nextSibling);
+        var _renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
+        element.parentNode.insertBefore(_renderedFormWrap, element.nextSibling);
         element.style.display = 'none';
         element.setAttribute('disabled', 'disabled');
       }

@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.15.5
+Version: 1.15.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -55,6 +55,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.camelCase = function (str) {
     return str.replace(/-([a-z])/g, function (m, w) {
+      m = m;
       return w.toUpperCase();
     });
   };
@@ -1102,11 +1103,8 @@ function formBuilderEventsFn() {
       controlPosition: 'right',
       controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'number', 'radio-group', 'select', 'text', 'textarea'],
       dataType: 'xml',
-      /**
-       * Field types to be disabled
-       * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
-       */
-      disableFields: ['autocomplete', 'hidden', 'number'],
+      // Array of fields to disable
+      disableFields: [],
       editOnAdd: false,
       // Uneditable fields or other content you would like to appear before and after regular fields:
       append: false,
@@ -1511,7 +1509,7 @@ function formBuilderEventsFn() {
     // Save field on change
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
-    $('li', $cbUL).click(function (evt) {
+    $('li', $cbUL).click(function () {
       _helpers.stopIndex = undefined;
       prepFieldVars($(this), true);
       _helpers.save();
@@ -1553,6 +1551,7 @@ function formBuilderEventsFn() {
           var attrs = $field[0].attributes;
           if (!isNew) {
             field.values = $field.children().map(function (index, elem) {
+              index = index;
               return {
                 label: $(elem).text(),
                 value: $(elem).attr('value'),

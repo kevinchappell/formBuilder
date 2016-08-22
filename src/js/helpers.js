@@ -46,6 +46,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.camelCase = (str) => {
     return str.replace(/-([a-z])/g, function(m, w) {
+      m = m;
       return w.toUpperCase();
     });
   };
