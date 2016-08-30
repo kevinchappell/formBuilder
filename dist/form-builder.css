@@ -240,7 +240,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   margin-top: 5px;
   /* smartphones, Android phones, landscape iPhone */ }
   .form-actions .clear-all:hover {
-    color: #fff; }
+    color: #fff !important; }
 
 [id^='frmb-'][id$='-form-wrap'] {
   /*   ------------   TOOLTIP   ------------   */ }

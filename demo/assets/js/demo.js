@@ -1,23 +1,20 @@
 jQuery(document).ready(function($) {
-  var template = document.getElementById('fb-template'),
-    $buildWrap = $(document.querySelector('.build-wrap')),
+  var buildWrap = document.querySelector('.build-wrap'),
     renderWrap = document.querySelector('.render-wrap'),
     editBtn = document.getElementById('edit-form'),
     editing = true;
 
   var toggleEdit = function() {
-    document.body.classList.toggle('editing-form', editing);
-    $buildWrap.toggle();
-    $(renderWrap).toggle();
+    document.body.classList.toggle('form-rendered', editing);
     editing = !editing;
   };
 
-  $(template).formBuilder();
+  $(buildWrap).formBuilder();
 
-  $('.form-builder-save').click(function() {
+  $('.form-builder-save').click(function(e) {
     toggleEdit();
-    $(template).formRender({
-      container: renderWrap
+    $(renderWrap).formRender({
+      formData: $(buildWrap).data('formBuilder').formData
     });
   });
 

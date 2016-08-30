@@ -175,6 +175,7 @@
         toggle: 'Toggle',
         warning: 'Warning!',
         value: 'Value',
+        viewJSON: '{  }',
         viewXML: '&lt;/&gt;',
         yes: 'Yes'
       },
@@ -200,9 +201,12 @@
     defaults.messages.subtypes.color = defaults.messages.subtypes.text;
     defaults.messages.subtypes.submit = defaults.messages.subtypes.button;
 
-    var opts = $.extend(true, defaults, options),
-      elem = $(element),
+    var opts = Object.assign({}, defaults, options),
       frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
+
+    if (options.messages) {
+      opts.messages = Object.assign({}, defaults.messages, options.messages);
+    }
 
     opts.formID = frmbID;
 
@@ -210,6 +214,7 @@
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
+    var utils = fbUtils;
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
@@ -320,12 +325,12 @@
     if (opts.disableFields) {
       // remove disabledFields
       frmbFields = frmbFields.filter(function(field) {
-        return !_helpers.inArray(field.attrs.type, opts.disableFields);
+        return !utils.inArray(field.attrs.type, opts.disableFields);
       });
     }
 
     // Create draggable fields for formBuilder
-    var cbUl = _helpers.markup('ul', null, { id: boxID, className: 'frmb-control' });
+    var cbUl = utils.markup('ul', null, { id: boxID, className: 'frmb-control' });
 
     if (opts.sortableControls) {
       cbUl.classList.add('sort-enabled');
@@ -345,31 +350,31 @@
 
       $field.data('newFieldData', frmbFields[i]);
 
-      let typeLabel = _helpers.markup('span', frmbFields[i].label);
+      let typeLabel = utils.markup('span', frmbFields[i].label);
       $field.html(typeLabel).appendTo($cbUL);
     }
 
     let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
 
     // Build our headers and action links
-    var viewData = _helpers.markup('button', viewDataText, {
+    var viewData = utils.markup('button', viewDataText, {
         id: frmbID + '-view-data',
         type: 'button',
         className: 'view-data btn btn-default'
       }),
-      clearAll = _helpers.markup('button', opts.messages.clearAll, {
+      clearAll = utils.markup('button', opts.messages.clearAll, {
         id: frmbID + '-clear-all',
         type: 'button',
         className: 'clear-all btn btn-default'
       }),
-      saveAll = _helpers.markup('button', opts.messages.save, {
+      saveAll = utils.markup('button', opts.messages.save, {
         className: `btn btn-primary ${opts.prefix}save`,
         id: frmbID + '-save',
         type: 'button'
       }),
-      formActions = _helpers.markup('div', [clearAll, viewData, saveAll], {
+      formActions = utils.markup('div', [clearAll, viewData, saveAll], {
         className: 'form-actions btn-group'
-      }).outerHTML;
+      });
 
     // Sortable fields
     $sortableFields.sortable({
@@ -411,17 +416,15 @@
       }
     });
 
-    var $stageWrap = $('<div/>', {
-      id: frmbID + '-stage-wrap',
-      'class': 'stage-wrap ' + formBuilder.layout.stage
-    });
-
     var $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
       'class': 'form-wrap form-builder' + _helpers.mobileClass()
     });
 
-    elem.before($stageWrap).appendTo($stageWrap);
+    var $stageWrap = $('<div/>', {
+      id: frmbID + '-stage-wrap',
+      'class': 'stage-wrap ' + formBuilder.layout.stage
+    });
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
@@ -431,6 +434,7 @@
     $stageWrap.append($sortableFields, cbWrap);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
+    $(element).append($formWrap);
 
     var saveAndUpdate = _helpers.debounce(function(evt) {
       if (evt) {
@@ -458,13 +462,13 @@
       let cancelArray = [];
 
       if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
-        let prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
+        let prependedField = utils.markup('li', opts.prepend, { className: 'disabled prepend' });
         cancelArray.push(true);
         $sortableFields.prepend(prependedField);
       }
 
       if (opts.append && !$('.disabled.append', $sortableFields).length) {
-        let appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
+        let appendedField = utils.markup('li', opts.append, { className: 'disabled append' });
         cancelArray.push(true);
         $sortableFields.append(appendedField);
       }
@@ -510,60 +514,37 @@
         field.style = match[1];
       }
 
-      _helpers.escapeAttrs(field);
+      utils.escapeAttrs(field);
 
       appendNewField(field);
       $stageWrap.removeClass('empty');
     };
 
     // Parse saved XML template data
-    var getXML = function() {
-      var xml = '';
-      if (formBuilder.formData) {
-        xml = formBuilder.formData;
-      } else if (elem.val() !== '') {
-        xml = $.parseXML(formBuilder.element.value.trim());
-      } else {
-        xml = false;
-      }
-
-      var fields = $(xml).find('field');
-      if (fields.length > 0) {
-        formBuilder.formData = xml;
-        fields.each(function() {
-          prepFieldVars($(this));
-        });
-      } else if (!xml) {
-        // Load default fields if none are set
-        if (opts.defaultFields && opts.defaultFields.length) {
-          opts.defaultFields.reverse();
-          for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
-            prepFieldVars(opts.defaultFields[i]);
-          }
-          $stageWrap.removeClass('empty');
-          _helpers.save();
-        } else if (!opts.prepend && !opts.append) {
-          $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
+    var loadFields = function() {
+      let formData = formBuilder.formData;
+      if (formData) {
+        for (let i = 0; i < formData.length; i++) {
+          appendNewField(formData[i]);
         }
+        $stageWrap.removeClass('empty');
+      } else if (opts.defaultFields && opts.defaultFields.length) {
+        // Load default fields if none are set
+        opts.defaultFields.reverse();
+        for (let i = opts.defaultFields.length - 1; i >= 0; i--) {
+          prepFieldVars(opts.defaultFields[i]);
+        }
+        $stageWrap.removeClass('empty');
+      } else if (!opts.prepend && !opts.append) {
+        $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
       }
+      _helpers.save();
 
       $('li.form-field:not(.disabled)', $sortableFields).each(function() {
         _helpers.updatePreview($(this));
       });
 
       nonEditableFields();
-    };
-
-    var loadData = function() {
-
-      let doLoadData = {
-        xml: getXML,
-        json: function() {
-          console.log('coming soon');
-        }
-      };
-
-      doLoadData[opts.dataType]();
     };
 
     // callback to track disabled tooltips
@@ -596,7 +577,7 @@
      * @param  {object} values
      */
     var fieldOptions = function(values) {
-      let addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
+      let addOption = utils.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
         fieldOptions = '';
 
       if (!values.values || !values.values.length) {
@@ -608,9 +589,14 @@
 
         values.values = values.values.map(function(elem, index) {
           elem.label = `${opts.messages.option} ${index + 1}`;
-          elem.value = _helpers.hyphenCase(elem.label);
+          elem.value = utils.hyphenCase(elem.label);
           return elem;
         });
+      } else {
+        // ensure option data is has all required keys
+        for (let i = values.values.length - 1; i >= 0; i--) {
+          values.values[i] = Object.assign({}, { selected: false }, values.values[i]);
+        }
       }
 
       fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
@@ -627,10 +613,10 @@
         fieldOptions += selectFieldOptions(values.name, values.values[i], values.multiple);
       }
       fieldOptions += '</ol>';
-      fieldOptions += _helpers.markup('div', addOption, { className: 'option-actions' }).outerHTML;
+      fieldOptions += utils.markup('div', addOption, { className: 'option-actions' }).outerHTML;
       fieldOptions += '</div>';
 
-      return _helpers.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
+      return utils.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
     };
 
     /**
@@ -718,7 +704,7 @@
 
       for (key in opts.roles) {
         if (opts.roles.hasOwnProperty(key)) {
-          checked = _helpers.inArray(key, roles) ? 'checked' : '';
+          checked = utils.inArray(key, roles) ? 'checked' : '';
           advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + checked + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
         }
       }
@@ -727,7 +713,11 @@
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
         advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
-        advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+        let checked = '';
+        if (values.enableOther || values['enable-other']) {
+          checked = 'checked';
+        }
+        advFields.push(`<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ${checked} id="enable-other-${lastID}"/> <label for="enable-other-${lastID}" class="other-label">${opts.messages.enableOtherMsg}</label></div>`);
       }
 
       if (isOptionField) {
@@ -860,7 +850,7 @@
 
       var attrVal = values[attribute] || '',
         attrLabel = opts.messages[attribute];
-      if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
+      if (attribute === 'label' && utils.inArray(values.type, textArea)) {
         attrLabel = opts.messages.content;
       }
 
@@ -873,24 +863,24 @@
         noMakeAttr = [];
 
       // Field has placeholder attribute
-      if (attribute === 'placeholder' && !_helpers.inArray(values.type, placeholderFields)) {
+      if (attribute === 'placeholder' && !utils.inArray(values.type, placeholderFields)) {
         noMakeAttr.push(true);
       }
 
       // Field has name attribute
-      if (attribute === 'name' && _helpers.inArray(values.type, noName)) {
+      if (attribute === 'name' && utils.inArray(values.type, noName)) {
         noMakeAttr.push(true);
       }
 
       // Field has maxlength attribute
-      if (attribute === 'maxlength' && _helpers.inArray(values.type, noMaxlength)) {
+      if (attribute === 'maxlength' && utils.inArray(values.type, noMaxlength)) {
         noMakeAttr.push(true);
       }
 
       if (!noMakeAttr.some(elem => elem === true)) {
         let attributeLabel = `<label for="${attribute}-${lastID}">${attrLabel}</label>`;
 
-        if (attribute === 'label' && _helpers.inArray(values.type, textArea) || (attribute === 'value' && values.type === 'textarea')) {
+        if (attribute === 'label' && utils.inArray(values.type, textArea) || (attribute === 'value' && values.type === 'textarea')) {
           attributefield += `<textarea name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">${attrVal}</textarea>`;
         } else {
           attributefield += `<input type="text" value="${attrVal}" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
@@ -911,7 +901,7 @@
         noMake = [],
         requireField = '';
 
-      if (_helpers.inArray(values.type, noRequire)) {
+      if (utils.inArray(values.type, noRequire)) {
         noMake.push(true);
       }
       if (!noMake.some(elem => elem === true)) {
@@ -924,18 +914,18 @@
     var appendNewField = function(values) {
       let type = values.type || 'text',
         label = values.label || opts.messages[type] || opts.messages.label,
-        delBtn = _helpers.markup('a', opts.messages.remove, {
+        delBtn = utils.markup('a', opts.messages.remove, {
           id: 'del_' + lastID,
           className: 'del-button btn delete-confirm',
           title: opts.messages.removeMessage
         }),
-        toggleBtn = _helpers.markup('a', null, {
+        toggleBtn = utils.markup('a', null, {
           id: lastID + '-edit',
           className: 'toggle-form btn icon-pencil',
           title: opts.messages.hide
         });
 
-      var liContents = _helpers.markup(
+      var liContents = utils.markup(
         'div', [toggleBtn, delBtn], { className: 'field-actions' }
       ).outerHTML;
 
@@ -949,17 +939,17 @@
       let requiredDisplay = values.required ? 'style="display:inline"' : '';
       liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
-      liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
+      liContents += utils.markup('div', '', { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
 
       liContents += advFields(values);
-      liContents += _helpers.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
+      liContents += utils.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
 
       liContents += '</div>';
       liContents += '</div>';
 
-      let li = _helpers.markup('li', liContents, {
+      let li = utils.markup('li', liContents, {
           'class': type + '-field form-field',
           'type': type,
           id: lastID
@@ -1017,7 +1007,7 @@
           if (prop === 'selected') {
             attrs.checked = optionData.selected;
           }
-          optionInputs.push(_helpers.markup('input', null, attrs));
+          optionInputs.push(utils.markup('input', null, attrs));
         }
       }
 
@@ -1025,9 +1015,9 @@
         className: 'remove btn',
         title: opts.messages.removeMessage
       };
-      optionInputs.push(_helpers.markup('a', opts.messages.remove, removeAttrs));
+      optionInputs.push(utils.markup('a', opts.messages.remove, removeAttrs));
 
-      let field = _helpers.markup('li', optionInputs);
+      let field = utils.markup('li', optionInputs);
 
       return field.outerHTML;
     };
@@ -1154,8 +1144,8 @@
 
       // Check if user is sure they want to remove the field
       if (opts.fieldRemoveWarn) {
-        let warnH3 = _helpers.markup('h3', opts.messages.warning),
-          warnMessage = _helpers.markup('p', opts.messages.fieldRemoveWarning);
+        let warnH3 = utils.markup('h3', opts.messages.warning),
+          warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
         _helpers.confirm([warnH3, warnMessage], removeField, coords);
         $field.addClass('deleting');
       } else {
@@ -1219,9 +1209,9 @@
     var xmlButton = $(document.getElementById(frmbID + '-view-data'));
     xmlButton.click(function(e) {
       e.preventDefault();
-      var xml = _helpers.htmlEncode(elem.val()),
-        code = _helpers.markup('code', xml, { className: 'xml' }),
-        pre = _helpers.markup('pre', code);
+      var data = utils.escapeHtml(formBuilder.formData),
+        code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
+        pre = utils.markup('pre', code);
       _helpers.dialog(pre, null, 'data-dialog');
     });
 
@@ -1254,10 +1244,8 @@
       _helpers.validateForm(e);
     });
 
-    elem.parent().find('p[id*="ideaTemplate"]').remove();
-    elem.wrap('<div class="template-textarea-wrap"/>');
-
-    loadData();
+    _helpers.getData();
+    loadFields();
 
     $sortableFields.css('min-height', $cbUL.height());
 
@@ -1278,18 +1266,12 @@
   };
 
   $.fn.formBuilder = function(options) {
+    options = options || {};
     return this.each(function() {
-      var element = this,
-        formBuilder;
+      var formBuilder = new FormBuilder(options, this);
+      $(this).data('formBuilder', formBuilder);
 
-      if ($(element).data('formBuilder')) {
-        var existingFormBuilder = $(element).parents('.form-builder:eq(0)');
-        existingFormBuilder.before(element);
-        existingFormBuilder.remove();
-      }
-
-      formBuilder = new FormBuilder(options, element);
-      $(element).data('formBuilder', formBuilder);
+      return formBuilder;
     });
   };
 
