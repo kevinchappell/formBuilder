@@ -1,6 +1,9 @@
 'use strict';
+
 // render the formBuilder XML into html
 function FormRenderFn(options, element) {
+
+  var utils = fbUtils;
 
   var formRender = this,
     defaults = {
@@ -31,157 +34,90 @@ function FormRenderFn(options, element) {
 
   var opts = $.extend(true, defaults, options);
 
-
-  /**
-   * Require the html element if it has been lost
-   *
-   * @return {object} javascript object for html element
-   */
-  _helpers.getElement = function() {
-    if (!element.id) {
-      element.id = _helpers.makeId(element);
+  (function() {
+    if (!opts.formData) {
+      return false;
     }
 
-    return document.getElementById(element.id);
-  };
+    let setData = {
+      xml: formData => utils.parseXML(formData),
+      json: formData => window.JSON.parse(formData)
+    };
 
-  /**
-   * Make an ID for this element using current date and tag
-   *
-   * @param  {Boolean} element
-   * @return {String}  new id for element
-   */
-  _helpers.makeId = function(element) {
-    let epoch = new Date().getTime();
-
-    return `${element.tagName}-${epoch}`;
-  };
-
-  if (!opts.formData && element) {
-    element = _helpers.getElement();
-    opts.formData = element.value;
-  }
-
-  /**
-   * Generate markup wrapper where needed
-   *
-   * @param  {string}              tag
-   * @param  {String|Array|Object} content we wrap this
-   * @param  {object}              attrs
-   * @return {String}
-   */
-  _helpers.markup = function(tag, content = '', attrs = {}) {
-    let contentType,
-      field = document.createElement(tag),
-      getContentType = function(content) {
-        return Array.isArray(content) ? 'array' : typeof content;
-      },
-      appendContent = {
-        string: function(content) {
-          field.innerHTML = content;
-        },
-        object: function(content) {
-          return field.appendChild(content);
-        },
-        array: function(content) {
-          for (var i = 0; i < content.length; i++) {
-            contentType = getContentType(content[i]);
-            appendContent[contentType](content[i]);
-          }
-        }
-      };
-
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        let name = _helpers.safeAttrName(attr);
-        field.setAttribute(name, attrs[attr]);
-      }
-    }
-
-    contentType = getContentType(content);
-
-    if (content) {
-      appendContent[contentType].call(this, content);
-    }
-
-    return field;
-  };
+    opts.formData = setData[opts.dataType](opts.formData) || false;
+  })();
 
   /**
    * Generate preview markup
-   * @param  {object} field
+   * @param  {object} fieldData
    * @return {string}       preview markup for field
-   * @todo
    */
-  _helpers.fieldRender = function(field) {
+  _helpers.fieldRender = function(fieldData) {
     var fieldMarkup = '',
       fieldLabel = '',
-      optionsMarkup = '';
-    var fieldAttrs = _helpers.parseAttrs(field.attributes),
-      fieldLabelText = fieldAttrs.label || '',
-      fieldDesc = fieldAttrs.description || '',
+      optionsMarkup = '',
+      fieldLabelText = fieldData.label || '',
+      fieldDesc = fieldData.description || '',
       fieldRequired = '',
-      fieldOptions = $('option', field);
-    fieldAttrs.id = fieldAttrs.name;
+      fieldOptions = fieldData.values || [];
+    fieldData.id = fieldData.name;
 
-    fieldAttrs.type = fieldAttrs.subtype || fieldAttrs.type;
+    fieldData.type = fieldData.subtype || fieldData.type;
 
-    if (fieldAttrs.required) {
-      fieldAttrs.required = null;
-      fieldAttrs['aria-required'] = 'true';
+    if (fieldData.required) {
+      fieldData.required = null;
+      fieldData['aria-required'] = 'true';
       fieldRequired = `<span class="required">*</span>`;
     }
 
-    if (fieldAttrs.type !== 'hidden') {
+    if (fieldData.type !== 'hidden') {
       if (fieldDesc) {
         fieldDesc = `<span class="tooltip-element" tooltip="${fieldDesc}">?</span>`;
       }
-      fieldLabel = `<label for="${fieldAttrs.id}">${fieldLabelText} ${fieldRequired} ${fieldDesc}</label>`;
+      fieldLabel = `<label for="${fieldData.id}">${fieldLabelText} ${fieldRequired} ${fieldDesc}</label>`;
     }
 
-    var fieldLabelVal = fieldAttrs.label;
+    var fieldLabelVal = fieldData.label;
 
-    delete fieldAttrs.label;
-    delete fieldAttrs.description;
+    delete fieldData.label;
+    delete fieldData.description;
 
-    var fieldAttrsString = _helpers.attrString(fieldAttrs);
+    var fieldDataString = utils.attrString(fieldData);
 
-    switch (fieldAttrs.type) {
+    switch (fieldData.type) {
       case 'textarea':
       case 'rich-text':
-        delete fieldAttrs.type;
-        let fieldVal = fieldAttrs.value || '';
-        fieldMarkup = `${fieldLabel}<textarea ${fieldAttrsString}>${fieldVal}</textarea>`;
+        delete fieldData.type;
+        let fieldVal = fieldData.value || '';
+        fieldMarkup = `${fieldLabel}<textarea ${fieldDataString}>${fieldVal}</textarea>`;
         break;
       case 'select':
-        fieldAttrs.type = fieldAttrs.type.replace('-group', '');
+        var optionAttrsString;
+        fieldData.type = fieldData.type.replace('-group', '');
 
-        if (fieldOptions.length) {
-          fieldOptions.each(function(index, el) {
-            index = index;
-            let optionAttrs = _helpers.parseAttrs(el.attributes),
-              optionAttrsString = _helpers.attrString(optionAttrs);
-            optionsMarkup += `<option ${optionAttrsString}>${el.textContent}</option>`;
-          });
+        if (fieldOptions) {
+          for (let i = 0; i < fieldOptions.length; i++) {
+            if (!fieldOptions[i].selected) {
+              delete fieldOptions[i].selected;
+            }
+            optionAttrsString = utils.attrString(fieldOptions[i]);
+            optionsMarkup += `<option ${optionAttrsString}>${fieldOptions[i].label}</option>`;
+          }
         }
-        fieldMarkup = `${fieldLabel}<select ${fieldAttrsString}>${optionsMarkup}</select>`;
+
+        fieldMarkup = `${fieldLabel}<select ${fieldDataString}>${optionsMarkup}</select>`;
         break;
       case 'checkbox-group':
       case 'radio-group':
-        let enableOther = false;
-        fieldAttrs.type = fieldAttrs.type.replace('-group', '');
+        let optionAttrs;
+        fieldData.type = fieldData.type.replace('-group', '');
 
-
-        if (fieldAttrs.other) {
-          delete fieldAttrs.other;
-          enableOther = true;
-        }
-
-        if (fieldOptions.length) {
-          let optionName = fieldAttrs.type === 'checkbox' ? fieldAttrs.name + '[]' : fieldAttrs.name,
+        if (fieldOptions) {
+          let optionName = fieldData.type === 'checkbox' ? fieldData.name + '[]' : fieldData.name,
             optionAttrsString;
-          fieldOptions.each(function(index, el) {
-            let optionAttrs = $.extend({}, fieldAttrs, _helpers.parseAttrs(el.attributes));
+
+          for (let i = 0; i < fieldOptions.length; i++) {
+            optionAttrs = Object.assign({}, fieldData, fieldOptions[i]);
 
             if (optionAttrs.selected) {
               delete optionAttrs.selected;
@@ -189,24 +125,24 @@ function FormRenderFn(options, element) {
             }
 
             optionAttrs.name = optionName;
-            optionAttrs.id = fieldAttrs.id + '-' + index;
-            optionAttrsString = _helpers.attrString(optionAttrs);
-            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${el.textContent}</label><br>`;
-          });
+            optionAttrs.id = fieldData.id + '-' + i;
+            optionAttrsString = utils.attrString(optionAttrs);
+            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionAttrs.label}</label><br>`;
+          }
 
-          if (enableOther) {
-            let optionAttrs = {
-              id: fieldAttrs.id + '-' + 'other',
-              name: optionName,
-              class: fieldAttrs.class + ' other-option'
+          if (fieldData.enableOther || fieldData['enable-other']) {
+            let otherOptionAttrs = {
+              id: fieldData.id + '-' + 'other',
+              className: (fieldData.class || fieldData.className) + ' other-option'
             };
 
-            optionAttrsString = _helpers.attrString($.extend({}, fieldAttrs, optionAttrs));
-            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${opts.label.other}</label> <input type="text" data-other-id="${optionAttrs.id}" id="${optionAttrs.id}-value" style="display:none;" />`;
+            optionAttrsString = utils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+
+            optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.label.other}</label> <input type="text" data-other-id="${otherOptionAttrs.id}" name="${optionName}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
           }
 
         }
-        fieldMarkup = `${fieldLabel}<div class="${fieldAttrs.type}-group">${optionsMarkup}</div>`;
+        fieldMarkup = `${fieldLabel}<div class="${fieldData.type}-group">${optionsMarkup}</div>`;
         break;
       case 'text':
       case 'password':
@@ -216,98 +152,38 @@ function FormRenderFn(options, element) {
       case 'hidden':
       case 'date':
       case 'autocomplete':
-        fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}>`;
+        fieldMarkup = `${fieldLabel} <input ${fieldDataString}>`;
         break;
       case 'color':
-        fieldMarkup = `${fieldLabel} <input ${fieldAttrsString}> ${opts.label.selectColor}`;
+        fieldMarkup = `${fieldLabel} <input ${fieldDataString}> ${opts.label.selectColor}`;
         break;
       case 'button':
       case 'submit':
-        fieldMarkup = `<button ${fieldAttrsString}>${fieldLabelVal}</button>`;
+        fieldMarkup = `<button ${fieldDataString}>${fieldLabelVal}</button>`;
         break;
       case 'checkbox':
-        fieldMarkup = `<input ${fieldAttrsString}> ${fieldLabel}`;
+        fieldMarkup = `<input ${fieldDataString}> ${fieldLabel}`;
 
-        if (fieldAttrs.toggle) {
+        if (fieldData.toggle) {
           setTimeout(function() {
-            $(document.getElementById(fieldAttrs.id)).kcToggle();
+            $(document.getElementById(fieldData.id)).kcToggle();
           }, 100);
         }
         break;
       default:
-        fieldMarkup = `<${fieldAttrs.type} ${fieldAttrsString}>${fieldLabelVal}</${fieldAttrs.type}>`;
+        fieldMarkup = `<${fieldData.type} ${fieldDataString}>${fieldLabelVal}</${fieldData.type}>`;
     }
 
-    if (fieldAttrs.type !== 'hidden') {
-      let className = fieldAttrs.id ? 'form-group field-' + fieldAttrs.id : '';
-      fieldMarkup = _helpers.markup('div', fieldMarkup, {
+    if (fieldData.type !== 'hidden') {
+      let className = fieldData.id ? 'form-group field-' + fieldData.id : '';
+      fieldMarkup = utils.markup('div', fieldMarkup, {
         className: className
       });
     } else {
-      fieldMarkup = _helpers.markup('input', null, fieldAttrs);
+      fieldMarkup = utils.markup('input', null, fieldData);
     }
 
     return fieldMarkup;
-  };
-
-  /**
-   * Convert camelCase into lowercase-hyphen
-   *
-   * @param  {string} str
-   * @return {string}
-   */
-  _helpers.hyphenCase = (str) => {
-    str = str.replace(/[^\w\s\-]/gi, '');
-    str = str.replace(/([A-Z])/g, function($1) {
-      return '-' + $1.toLowerCase();
-    });
-
-    return str.replace(/\s/g, '-').replace(/^-+/g, '');
-  };
-
-  _helpers.attrString = function(attrs) {
-    let attributes = [];
-
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        attr = _helpers.safeAttr(attr, attrs[attr]);
-        attributes.push(attr.name + attr.value);
-      }
-    }
-    return attributes.join(' ');
-  };
-
-  _helpers.safeAttr = function(name, value) {
-    let safeAttr = {
-      className: 'class'
-    };
-
-    name = safeAttr[name] || name;
-    value = value ? window.JSON.stringify(value) : false;
-    value = value ? `=${value}` : '';
-
-    return {
-      name,
-      value
-    };
-  };
-
-  _helpers.safeAttrName = function(name) {
-    let safeAttr = {
-      className: 'class'
-    };
-
-    return safeAttr[name] || _helpers.hyphenCase(name);
-  };
-
-  _helpers.parseAttrs = function(attrNodes) {
-    var fieldAttrs = {};
-    for (var attr in attrNodes) {
-      if (attrNodes.hasOwnProperty(attr)) {
-        fieldAttrs[attrNodes[attr].name] = attrNodes[attr].value;
-      }
-    }
-    return fieldAttrs;
   };
 
   /**
@@ -359,50 +235,36 @@ function FormRenderFn(options, element) {
   // Begin the core plugin
   var rendered = [];
 
-  var formData = $.parseXML(opts.formData),
-    fields = $('field', formData);
-  // @todo - form configuration settings (control position, creatorId, theme etc)
-  // settings = $('settings', formData);
-
   // generate field markup if we have fields
-  if (fields.length) {
-    fields.each(function(index, field) {
-      index = index;
-      rendered.push(_helpers.fieldRender(field));
-    });
+  if (opts.formData) {
+    for (var i = 0; i < opts.formData.length; i++) {
+      rendered.push(_helpers.fieldRender(opts.formData[i]));
+    }
+
+    if (opts.render) {
+      if (opts.container) {
+        let renderedFormWrap = utils.markup('div', rendered, { className: 'rendered-form' });
+        opts.container = (opts.container instanceof jQuery) ? opts.container[0] : opts.container;
+        opts.container.emptyContainer();
+        opts.container.appendChild(renderedFormWrap);
+      } else if (element) {
+        element.emptyContainer();
+        element.appendFormFields(rendered);
+      }
+
+      runCallbacks();
+      opts.notify.success(opts.label.formRendered);
+    } else {
+      formRender.markup = rendered.map(function(elem) {
+        return elem.innerHTML;
+      }).join('');
+    }
   } else {
-    let noData = _helpers.markup('div', opts.label.noFormData, {
+    let noData = utils.markup('div', opts.label.noFormData, {
       className: 'no-form-data'
     });
     rendered.push(noData);
     opts.notify.error(opts.label.noFormData);
-  }
-
-  if (opts.render) {
-    if (opts.container) {
-      let renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
-      opts.container = (opts.container instanceof jQuery) ? opts.container[0] : opts.container;
-      opts.container.emptyContainer();
-      opts.container.appendChild(renderedFormWrap);
-    } else if (element) {
-      if (element.parentElement.classList.contains('rendered-form')) {
-        element.parentElement.emptyContainer();
-        element.parentElement.appendFormFields(rendered);
-      } else {
-        let renderedFormWrap = _helpers.markup('div', rendered, { className: 'rendered-form' });
-        element.parentNode.insertBefore(renderedFormWrap, element.nextSibling);
-        element.style.display = 'none';
-        element.setAttribute('disabled', 'disabled');
-      }
-    }
-    if (fields.length) {
-      runCallbacks(fields);
-      opts.notify.success(opts.label.formRendered);
-    }
-  } else {
-    formRender.markup = rendered.map(function(elem) {
-      return elem.innerHTML;
-    }).join('');
   }
 
   return formRender;

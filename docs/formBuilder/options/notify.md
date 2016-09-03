@@ -16,7 +16,7 @@ var options = {
         }
       }
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 ## See it in Action

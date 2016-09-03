@@ -8,7 +8,7 @@ var options = {
         select: 'Fabulous Dropdown'
       }
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 ## See it in Action

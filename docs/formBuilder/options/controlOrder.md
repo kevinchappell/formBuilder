@@ -9,7 +9,7 @@ var options = {
         'textarea'
       ]
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 

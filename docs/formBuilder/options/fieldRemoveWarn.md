@@ -6,7 +6,7 @@
 var options = {
       fieldRemoveWarn: true // defaults to false
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 

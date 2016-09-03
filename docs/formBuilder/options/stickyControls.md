@@ -6,7 +6,7 @@ When the option `stickyControls` is set to true, the controls will follow the us
 var options = {
       stickyControls: true
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 ## See it in Action

@@ -106,7 +106,7 @@ var plugins = gulpPlugins(),
 
 // Our watch task to monitor files for changes and run tasks when that change happens.
 gulp.task('watch', function() {
-  gulp.watch(['src/**/*.js'], ['lint', 'js']);
+  gulp.watch(['src/**/*.js'], ['lint', 'devJS']);
   gulp.watch('demo/*.html', bsync.reload);
   gulp.watch('src/sass/**/*.scss', ['css']);
 });
@@ -196,13 +196,16 @@ gulp.task('devJS', function() {
 
     // Demo scripts minified
     return gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({ errorHandler: false }))
-      .pipe(plugins.sourcemaps.init())
+      .pipe(plugins.plumber())
+      .pipe(plugins.sourcemaps.init({ loadMaps: true }))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))
       .pipe(plugins.uglify())
       .pipe(plugins.sourcemaps.write('/'))
-      .pipe(gulp.dest('demo/assets/js'));
+      .pipe(gulp.dest('demo/assets/js'))
+      .pipe(bsync.reload({
+        stream: true
+      }));
   });
 });
 

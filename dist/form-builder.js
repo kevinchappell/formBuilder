@@ -5,6 +5,285 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
 
+// Element.remove() polyfill
+
+if (!('remove' in Element.prototype)) {
+  Element.prototype.remove = function () {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
+    }
+  };
+}
+
+// Event polyfill
+if (typeof Event !== 'function') {
+  (function () {
+    window.Event = function (evt) {
+      var event = document.createEvent('Event');
+      event.initEvent(evt, true, true);
+      return event;
+    };
+  })();
+}
+
+// Object.assign polyfill
+if (typeof Object.assign != 'function') {
+  Object.assign = function (target) {
+    'use strict';
+
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    target = Object(target);
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index];
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    return target;
+  };
+}
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var fbUtils = {};
+
+// cleaner syntax for testing indexOf element
+fbUtils.inArray = function (needle, haystack) {
+  return haystack.indexOf(needle) !== -1;
+};
+
+// Remove null or undefined values
+fbUtils.trimObj = function (attrs) {
+  var xmlRemove = [null, undefined, '', false];
+  for (var i in attrs) {
+    if (fbUtils.inArray(attrs[i], xmlRemove)) {
+      delete attrs[i];
+    }
+  }
+  return attrs;
+};
+
+/**
+ * Make an ID for this element using current date and tag
+ *
+ * @param  {Boolean} element
+ * @return {String}  new id for element
+ */
+fbUtils.makeId = function () {
+  var element = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+  var epoch = new Date().getTime();
+
+  return element.tagName + '-' + epoch;
+};
+
+fbUtils.validAttr = function (attr) {
+  var invalid = ['values', 'enableOther', 'other', 'label', 'style', 'subtype'];
+  return !fbUtils.inArray(attr, invalid);
+};
+
+/**
+ * Convert an attrs object into a string
+ *
+ * @param  {Object} attrs object of attributes for markup
+ * @return {string}
+ */
+fbUtils.attrString = function (attrs) {
+  var attributes = [];
+
+  for (var attr in attrs) {
+    if (attrs.hasOwnProperty(attr) && fbUtils.validAttr(attr)) {
+      attr = fbUtils.safeAttr(attr, attrs[attr]);
+      attributes.push(attr.name + attr.value);
+    }
+  }
+  return attributes.join(' ');
+};
+
+fbUtils.safeAttr = function (name, value) {
+  name = fbUtils.safeAttrName(name);
+
+  var valString = window.JSON.stringify(fbUtils.escapeAttr(value));
+
+  value = value ? '=' + valString : '';
+  return {
+    name: name,
+    value: value
+  };
+};
+
+fbUtils.safeAttrName = function (name) {
+  var safeAttr = {
+    className: 'class'
+  };
+
+  return safeAttr[name] || fbUtils.hyphenCase(name);
+};
+
+/**
+ * Convert strings
+ into lowercase-hyphen
+ *
+ * @param  {string} str
+ * @return {string}
+ */
+fbUtils.hyphenCase = function (str) {
+  str = str.replace(/[^\w\s\-]/gi, '');
+  str = str.replace(/([A-Z])/g, function ($1) {
+    return '-' + $1.toLowerCase();
+  });
+
+  return str.replace(/\s/g, '-').replace(/^-+/g, '');
+};
+
+/**
+ * convert a hyphenated string to camelCase
+ * @param  {String} str
+ * @return {String}
+ */
+fbUtils.camelCase = function (str) {
+  return str.replace(/-([a-z])/g, function (m, w) {
+    m = m;
+    return w.toUpperCase();
+  });
+};
+
+/**
+ * Generate markup wrapper where needed
+ *
+ * @param  {string}              tag
+ * @param  {String|Array|Object} content we wrap this
+ * @param  {object}              attrs
+ * @return {String}
+ */
+fbUtils.markup = function (tag) {
+  var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+  var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+  var contentType = void 0,
+      field = document.createElement(tag),
+      getContentType = function getContentType(content) {
+    return Array.isArray(content) ? 'array' : typeof content === 'undefined' ? 'undefined' : _typeof(content);
+  },
+      appendContent = {
+    string: function string(content) {
+      field.innerHTML = content;
+    },
+    object: function object(content) {
+      return field.appendChild(content);
+    },
+    array: function array(content) {
+      for (var i = 0; i < content.length; i++) {
+        contentType = getContentType(content[i]);
+        appendContent[contentType](content[i]);
+      }
+    }
+  };
+
+  for (var attr in attrs) {
+    if (attrs.hasOwnProperty(attr)) {
+      var name = fbUtils.safeAttrName(attr);
+      field.setAttribute(name, attrs[attr]);
+    }
+  }
+
+  contentType = getContentType(content);
+
+  if (content) {
+    appendContent[contentType].call(this, content);
+  }
+
+  return field;
+};
+
+fbUtils.parseAttrs = function (elem) {
+  var attrs = elem.attributes;
+  var data = {};
+
+  for (var attr in attrs) {
+    if (attrs.hasOwnProperty(attr)) {
+      data[attrs[attr].name] = attrs[attr].value;
+    }
+  }
+
+  return data;
+};
+
+fbUtils.parseOptions = function (field) {
+  var options = field.getElementsByTagName('option'),
+      optionData = {},
+      data = [];
+
+  if (options.length) {
+    for (var i = 0; i < options.length; i++) {
+      optionData = fbUtils.parseAttrs(options[i]);
+      optionData.label = options[i].textContent;
+      data.push(optionData);
+    }
+  }
+
+  return data;
+};
+
+fbUtils.parseXML = function (xmlString) {
+  var parser = new window.DOMParser();
+  var xml = parser.parseFromString(xmlString, 'text/xml'),
+      formData = [];
+
+  if (xml) {
+    var fields = xml.getElementsByTagName('field');
+    for (var i = 0; i < fields.length; i++) {
+      var fieldData = fbUtils.parseAttrs(fields[i]);
+      fieldData.values = fbUtils.parseOptions(fields[i]);
+      formData.push(fieldData);
+    }
+  }
+
+  return formData;
+};
+
+fbUtils.escapeHtml = function (html) {
+  var escapeElement = document.createElement('textarea');
+  escapeElement.textContent = html;
+  return escapeElement.innerHTML;
+};
+
+fbUtils.escapeAttr = function (str) {
+  var match = {
+    '"': '&quot;',
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;'
+  };
+
+  function replaceTag(tag) {
+    return match[tag] || tag;
+  }
+
+  return typeof str === 'string' ? str.replace(/["&<>]/g, replaceTag) : str;
+};
+
+// Remove null or undefined values
+fbUtils.escapeAttrs = function (attrs) {
+
+  for (var attr in attrs) {
+    if (attrs.hasOwnProperty(attr)) {
+      attrs[attr] = fbUtils.escapeAttr(attrs[attr]);
+    }
+  }
+
+  return attrs;
+};
+'use strict';
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 function formBuilderHelpersFn(opts, formBuilder) {
@@ -13,52 +292,9 @@ function formBuilderHelpersFn(opts, formBuilder) {
   var _helpers = {
     doCancel: false
   };
+  var utils = fbUtils;
 
   formBuilder.events = formBuilderEventsFn();
-
-  /**
-   * Convert an attrs object into a string
-   *
-   * @param  {Object} attrs object of attributes for markup
-   * @return {string}
-   */
-  _helpers.attrString = function (attrs) {
-    var attributes = [];
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        attr = _helpers.safeAttr(attr, attrs[attr]);
-        attributes.push(attr.name + attr.value);
-      }
-    }
-    var attrString = attributes.join(' ');
-    return attrString;
-  };
-
-  /**
-   * Convert camelCase into lowercase-hyphen
-   *
-   * @param  {string} str
-   * @return {string}
-   */
-  _helpers.hyphenCase = function (str) {
-    str = str.replace(/([A-Z])/g, function ($1) {
-      return '-' + $1.toLowerCase();
-    });
-
-    return str.replace(/\s/g, '-').replace(/^-+/g, '');
-  };
-
-  /**
-   * convert a hyphenated string to camelCase
-   * @param  {String} str
-   * @return {String}
-   */
-  _helpers.camelCase = function (str) {
-    return str.replace(/-([a-z])/g, function (m, w) {
-      m = m;
-      return w.toUpperCase();
-    });
-  };
 
   /**
    * Convert converts messy `cl#ssNames` into valid `class-names`
@@ -68,27 +304,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.makeClassName = function (str) {
     str = str.replace(/[^\w\s\-]/gi, '');
-    return _helpers.hyphenCase(str);
-  };
-
-  _helpers.safeAttrName = function (name) {
-    var safeAttr = {
-      className: 'class'
-    };
-
-    return safeAttr[name] || _helpers.hyphenCase(name);
-  };
-
-  _helpers.safeAttr = function (name, value) {
-    name = _helpers.safeAttrName(name);
-
-    var valString = window.JSON.stringify(_helpers.escapeAttr(value));
-
-    value = value ? '=' + valString : '';
-    return {
-      name: name,
-      value: value
-    };
+    return utils.hyphenCase(str);
   };
 
   /**
@@ -213,48 +429,38 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}
    */
   _helpers.getTypes = function ($field) {
-    return {
-      type: $field.attr('type'),
-      subtype: $('.fld-subtype', $field).val()
-    };
-  };
+    var types = {
+      type: $field.attr('type')
+    },
+        subtype = $('.fld-subtype', $field).val();
 
-  // Remove null or undefined values
-  _helpers.trimObj = function (attrs) {
-    var xmlRemove = [null, undefined, '', false];
-    for (var i in attrs) {
-      if (_helpers.inArray(attrs[i], xmlRemove)) {
-        delete attrs[i];
-      }
-    }
-    return attrs;
-  };
-
-  _helpers.escapeAttr = function (str) {
-    var match = {
-      '"': '&quot;',
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;'
-    };
-
-    function replaceTag(tag) {
-      return match[tag] || tag;
+    if (subtype !== types.type) {
+      types.subtype = subtype;
     }
 
-    return typeof str === 'string' ? str.replace(/["&<>]/g, replaceTag) : str;
+    return types;
   };
 
-  // Remove null or undefined values
-  _helpers.escapeAttrs = function (attrs) {
+  /**
+   * Get option data for a field
+   * @param  {Object} field jQuery field object
+   * @return {Array}        Array of option values
+   */
+  _helpers.fieldOptionData = function (field) {
+    var options = [];
 
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        attrs[attr] = _helpers.escapeAttr(attrs[attr]);
-      }
-    }
+    $('.sortable-options li', field).each(function () {
+      var $option = $(this),
+          attrs = {
+        label: $('.option-label', $option).val(),
+        value: $('.option-value', $option).val(),
+        selected: $('.option-selected', $option).is(':checked')
+      };
 
-    return attrs;
+      options.push(attrs);
+    });
+
+    return options;
   };
 
   /**
@@ -263,16 +469,117 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} form sortableFields node
    */
   _helpers.xmlSave = function (form) {
-    var formDataNew = $(form).toXML(_helpers);
 
-    if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
-      return false;
-    }
-    formBuilder.formData = formDataNew;
+    var formData = _helpers.prepData(form),
+        xml = ['<form-template>\n\t<fields>'];
+
+    _helpers.forEach(formData, function (index) {
+      var field = formData[index],
+          fieldContent = null;
+
+      // Handle options
+      if (field.type.match(/(select|checkbox-group|radio-group)/)) {
+        var optionData = field.values,
+            options = [];
+
+        for (var i = 0; i < optionData.length; i++) {
+          var option = utils.markup('option', optionData[i].label, optionData[i]).outerHTML;
+          options.push('\n\t\t\t' + option);
+        }
+        options.push('\n\t\t');
+
+        fieldContent = options.join('');
+        field.values = undefined;
+      }
+
+      var xmlField = utils.markup('field', fieldContent, field);
+      xml.push('\n\t\t' + xmlField.outerHTML);
+    });
+
+    xml.push('\n\t</fields>\n</form-template>');
+
+    return xml.join('');
   };
 
-  _helpers.jsonSave = function () {
-    opts.notify.warning('json data not available yet');
+  _helpers.prepData = function (form) {
+    var formData = [];
+
+    if (form.childNodes.length !== 0) {
+      // build data object
+      _helpers.forEach(form.childNodes, function (index, field) {
+        index = index;
+        var $field = $(field);
+
+        if (!$field.hasClass('disabled')) {
+          var match;
+          var multipleField;
+
+          (function () {
+            var fieldData = _helpers.getTypes($field),
+                roleVals = $('.roles-field:checked', field).map(function () {
+              return this.value;
+            }).get();
+
+            $('[class*="fld-"]', field).each(function () {
+              var name = utils.camelCase(this.name);
+              fieldData[name] = this.type === 'checkbox' ? this.checked : this.value;
+            });
+
+            if (roleVals.length) {
+              fieldData.role = roleVals.join(',');
+            }
+
+            if ($('[name="enable-other"]:checked', field).length) {
+              fieldData.enableOther = true;
+            }
+
+            fieldData.className = fieldData.className || fieldData.class; // backwards compatibility
+
+            match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className);
+
+            if (match) {
+              fieldData.style = match[1];
+            }
+
+            fieldData = utils.trimObj(fieldData);
+            fieldData = utils.escapeAttrs(fieldData);
+
+            multipleField = fieldData.type.match(/(select|checkbox-group|radio-group)/);
+
+
+            if (multipleField) {
+              fieldData.values = _helpers.fieldOptionData($field);
+            }
+
+            formData.push(fieldData);
+          })();
+        }
+      });
+    }
+
+    return formData;
+  };
+
+  _helpers.jsonSave = function (form) {
+    return window.JSON.stringify(_helpers.prepData(form), null, '\t');
+  };
+
+  _helpers.getData = function () {
+    if (!opts.formData) {
+      return false;
+    }
+
+    var setData = {
+      xml: function xml(formData) {
+        return utils.parseXML(formData);
+      },
+      json: function json(formData) {
+        return window.JSON.parse(formData);
+      }
+    };
+    formBuilder.formData = setData[opts.dataType](opts.formData) || [];
+
+    return formBuilder.formData;
   };
 
   /**
@@ -280,9 +587,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {XML|JSON}
    */
   _helpers.save = function () {
-    var element = _helpers.getElement(),
-        form = document.getElementById(opts.formID),
-        formData;
+    var form = document.getElementById(opts.formID);
 
     var doSave = {
       xml: _helpers.xmlSave,
@@ -290,44 +595,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
     };
 
     // save action for current `dataType`
-    formData = doSave[opts.dataType](form);
-
-    if (element) {
-      element.value = formBuilder.formData;
-      if (window.jQuery) {
-        $(element).trigger('change');
-      } else {
-        element.onchange();
-      }
-    }
+    formBuilder.formData = doSave[opts.dataType](form);
 
     //trigger formSaved event
     document.dispatchEvent(formBuilder.events.formSaved);
-    return formData;
-  };
-
-  /**
-   * Attempts to find an element,
-   * useful if formBuilder was called without Query
-   * @return {Object}
-   */
-  _helpers.getElement = function () {
-    var element = false;
-    if (formBuilder.element) {
-      element = formBuilder.element;
-
-      if (!element.id) {
-        _helpers.makeId(element);
-      }
-
-      if (!element.onchange) {
-        element.onchange = function () {
-          opts.notify.success(opts.messages.formUpdated);
-        };
-      }
-    }
-
-    return element;
+    return formBuilder.formData;
   };
 
   /**
@@ -341,14 +613,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
         baseString = id.substring(0, split);
 
     return baseString + '-' + newFieldNumber;
-  };
-
-  _helpers.makeId = function () {
-    var element = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-    var epoch = new Date().getTime();
-
-    return element.tagName + '-' + epoch;
   };
 
   /**
@@ -369,7 +633,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
         preview;
 
     $('[class*="fld-"]', field).each(function () {
-      var name = _helpers.camelCase(this.name);
+      var name = utils.camelCase(this.name);
       previewData[name] = this.type === 'checkbox' ? this.checked : this.value;
     });
 
@@ -391,7 +655,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       });
     }
 
-    previewData = _helpers.trimObj(previewData);
+    previewData = utils.trimObj(previewData);
 
     previewData.className = _helpers.classNames(field, previewData);
     $('.fld-className', field).val(previewData.className);
@@ -418,7 +682,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     attrs = jQuery.extend({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
     var toggle = attrs.toggle ? 'toggle' : '',
-        attrsString = _helpers.attrString(attrs);
+        attrsString = utils.attrString(attrs);
 
     switch (attrs.type) {
       case 'textarea':
@@ -463,7 +727,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
             type: type,
             onclick: 'otherOptionCallback(\'' + otherID + '\')'
           },
-              otherInput = _helpers.markup('input', null, optionAttrs);
+              otherInput = utils.markup('input', null, optionAttrs);
 
           window.otherOptionCallback = function (otherID) {
             var option = document.getElementById(otherID),
@@ -501,7 +765,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
         preview = '<input class="ui-autocomplete-input ' + attrs.className + '" autocomplete="on">';
         break;
       default:
-        attrsString = _helpers.attrString(attrs);
+        attrsString = utils.attrString(attrs);
         preview = '<' + attrs.type + ' ' + attrsString + '>' + attrs.label + '</' + attrs.type + '>';
     }
 
@@ -547,14 +811,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     };
   };
 
-  _helpers.htmlEncode = function (value) {
-    return $('<div/>').text(value).html();
-  };
-
-  _helpers.htmlDecode = function (value) {
-    return $('<div/>').html(value).text();
-  };
-
   _helpers.validateForm = function () {
     var $form = $(document.getElementById(opts.formID));
 
@@ -598,7 +854,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       var title = opts.messages.fieldNonEditable;
 
       if (title) {
-        var tt = _helpers.markup('p', title, { className: _helpers.disabledTT.className });
+        var tt = utils.markup('p', title, { className: _helpers.disabledTT.className });
         field.append(tt);
       }
     },
@@ -649,7 +905,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
-  _helpers.markup = function (tag) {
+  utils.markup = function (tag) {
     var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
     var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
@@ -676,7 +932,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
         if (attrs[attr]) {
-          var name = _helpers.safeAttrName(attr);
+          var name = utils.safeAttrName(attr);
           field.setAttribute(name, attrs[attr]);
         }
       }
@@ -732,7 +988,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}
    */
   _helpers.showOverlay = function () {
-    var overlay = _helpers.markup('div', null, {
+    var overlay = utils.markup('div', null, {
       className: 'form-builder-overlay'
     });
     document.body.appendChild(overlay);
@@ -759,8 +1015,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var className = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
 
     var overlay = _helpers.showOverlay();
-    var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
-        no = _helpers.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
+    var yes = utils.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
+        no = utils.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
 
     no.onclick = function () {
       _helpers.closeConfirm(overlay);
@@ -771,11 +1027,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
       _helpers.closeConfirm(overlay);
     };
 
-    var btnWrap = _helpers.markup('div', [no, yes], { className: 'button-wrap' });
+    var btnWrap = utils.markup('div', [no, yes], { className: 'button-wrap' });
 
     className = 'form-builder-dialog ' + className;
 
-    var miniModal = _helpers.markup('div', [message, btnWrap], { className: className });
+    var miniModal = utils.markup('div', [message, btnWrap], { className: className });
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -811,7 +1067,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     className = 'form-builder-dialog ' + className;
 
-    var miniModal = _helpers.markup('div', content, { className: className });
+    var miniModal = utils.markup('div', content, { className: className });
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -1237,6 +1493,7 @@ function formBuilderEventsFn() {
         toggle: 'Toggle',
         warning: 'Warning!',
         value: 'Value',
+        viewJSON: '{  }',
         viewXML: '&lt;/&gt;',
         yes: 'Yes'
       },
@@ -1262,9 +1519,12 @@ function formBuilderEventsFn() {
     defaults.messages.subtypes.color = defaults.messages.subtypes.text;
     defaults.messages.subtypes.submit = defaults.messages.subtypes.button;
 
-    var opts = $.extend(true, defaults, options),
-        elem = $(element),
+    var opts = Object.assign({}, defaults, options),
         frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
+
+    if (options.messages) {
+      opts.messages = Object.assign({}, defaults.messages, options.messages);
+    }
 
     opts.formID = frmbID;
 
@@ -1272,6 +1532,7 @@ function formBuilderEventsFn() {
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
+    var utils = fbUtils;
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
@@ -1382,12 +1643,12 @@ function formBuilderEventsFn() {
     if (opts.disableFields) {
       // remove disabledFields
       frmbFields = frmbFields.filter(function (field) {
-        return !_helpers.inArray(field.attrs.type, opts.disableFields);
+        return !utils.inArray(field.attrs.type, opts.disableFields);
       });
     }
 
     // Create draggable fields for formBuilder
-    var cbUl = _helpers.markup('ul', null, { id: boxID, className: 'frmb-control' });
+    var cbUl = utils.markup('ul', null, { id: boxID, className: 'frmb-control' });
 
     if (opts.sortableControls) {
       cbUl.classList.add('sort-enabled');
@@ -1407,31 +1668,31 @@ function formBuilderEventsFn() {
 
       $field.data('newFieldData', frmbFields[i]);
 
-      var typeLabel = _helpers.markup('span', frmbFields[i].label);
+      var typeLabel = utils.markup('span', frmbFields[i].label);
       $field.html(typeLabel).appendTo($cbUL);
     }
 
     var viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
 
     // Build our headers and action links
-    var viewData = _helpers.markup('button', viewDataText, {
+    var viewData = utils.markup('button', viewDataText, {
       id: frmbID + '-view-data',
       type: 'button',
       className: 'view-data btn btn-default'
     }),
-        clearAll = _helpers.markup('button', opts.messages.clearAll, {
+        clearAll = utils.markup('button', opts.messages.clearAll, {
       id: frmbID + '-clear-all',
       type: 'button',
       className: 'clear-all btn btn-default'
     }),
-        saveAll = _helpers.markup('button', opts.messages.save, {
+        saveAll = utils.markup('button', opts.messages.save, {
       className: 'btn btn-primary ' + opts.prefix + 'save',
       id: frmbID + '-save',
       type: 'button'
     }),
-        formActions = _helpers.markup('div', [clearAll, viewData, saveAll], {
+        formActions = utils.markup('div', [clearAll, viewData, saveAll], {
       className: 'form-actions btn-group'
-    }).outerHTML;
+    });
 
     // Sortable fields
     $sortableFields.sortable({
@@ -1473,17 +1734,15 @@ function formBuilderEventsFn() {
       }
     });
 
-    var $stageWrap = $('<div/>', {
-      id: frmbID + '-stage-wrap',
-      'class': 'stage-wrap ' + formBuilder.layout.stage
-    });
-
     var $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
       'class': 'form-wrap form-builder' + _helpers.mobileClass()
     });
 
-    elem.before($stageWrap).appendTo($stageWrap);
+    var $stageWrap = $('<div/>', {
+      id: frmbID + '-stage-wrap',
+      'class': 'stage-wrap ' + formBuilder.layout.stage
+    });
 
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
@@ -1493,6 +1752,7 @@ function formBuilderEventsFn() {
     $stageWrap.append($sortableFields, cbWrap);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
+    $(element).append($formWrap);
 
     var saveAndUpdate = _helpers.debounce(function (evt) {
       if (evt) {
@@ -1520,13 +1780,13 @@ function formBuilderEventsFn() {
       var cancelArray = [];
 
       if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
-        var prependedField = _helpers.markup('li', opts.prepend, { className: 'disabled prepend' });
+        var prependedField = utils.markup('li', opts.prepend, { className: 'disabled prepend' });
         cancelArray.push(true);
         $sortableFields.prepend(prependedField);
       }
 
       if (opts.append && !$('.disabled.append', $sortableFields).length) {
-        var appendedField = _helpers.markup('li', opts.append, { className: 'disabled append' });
+        var appendedField = utils.markup('li', opts.append, { className: 'disabled append' });
         cancelArray.push(true);
         $sortableFields.append(appendedField);
       }
@@ -1576,60 +1836,37 @@ function formBuilderEventsFn() {
         field.style = match[1];
       }
 
-      _helpers.escapeAttrs(field);
+      utils.escapeAttrs(field);
 
       appendNewField(field);
       $stageWrap.removeClass('empty');
     };
 
     // Parse saved XML template data
-    var getXML = function getXML() {
-      var xml = '';
-      if (formBuilder.formData) {
-        xml = formBuilder.formData;
-      } else if (elem.val() !== '') {
-        xml = $.parseXML(formBuilder.element.value.trim());
-      } else {
-        xml = false;
-      }
-
-      var fields = $(xml).find('field');
-      if (fields.length > 0) {
-        formBuilder.formData = xml;
-        fields.each(function () {
-          prepFieldVars($(this));
-        });
-      } else if (!xml) {
-        // Load default fields if none are set
-        if (opts.defaultFields && opts.defaultFields.length) {
-          opts.defaultFields.reverse();
-          for (var i = opts.defaultFields.length - 1; i >= 0; i--) {
-            prepFieldVars(opts.defaultFields[i]);
-          }
-          $stageWrap.removeClass('empty');
-          _helpers.save();
-        } else if (!opts.prepend && !opts.append) {
-          $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
+    var loadFields = function loadFields() {
+      var formData = formBuilder.formData;
+      if (formData) {
+        for (var _i = 0; _i < formData.length; _i++) {
+          appendNewField(formData[_i]);
         }
+        $stageWrap.removeClass('empty');
+      } else if (opts.defaultFields && opts.defaultFields.length) {
+        // Load default fields if none are set
+        opts.defaultFields.reverse();
+        for (var _i2 = opts.defaultFields.length - 1; _i2 >= 0; _i2--) {
+          prepFieldVars(opts.defaultFields[_i2]);
+        }
+        $stageWrap.removeClass('empty');
+      } else if (!opts.prepend && !opts.append) {
+        $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
       }
+      _helpers.save();
 
       $('li.form-field:not(.disabled)', $sortableFields).each(function () {
         _helpers.updatePreview($(this));
       });
 
       nonEditableFields();
-    };
-
-    var loadData = function loadData() {
-
-      var doLoadData = {
-        xml: getXML,
-        json: function json() {
-          console.log('coming soon');
-        }
-      };
-
-      doLoadData[opts.dataType]();
     };
 
     // callback to track disabled tooltips
@@ -1662,7 +1899,7 @@ function formBuilderEventsFn() {
      * @param  {object} values
      */
     var fieldOptions = function fieldOptions(values) {
-      var addOption = _helpers.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
+      var addOption = utils.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
           fieldOptions = '';
 
       if (!values.values || !values.values.length) {
@@ -1674,9 +1911,14 @@ function formBuilderEventsFn() {
 
         values.values = values.values.map(function (elem, index) {
           elem.label = opts.messages.option + ' ' + (index + 1);
-          elem.value = _helpers.hyphenCase(elem.label);
+          elem.value = utils.hyphenCase(elem.label);
           return elem;
         });
+      } else {
+        // ensure option data is has all required keys
+        for (var _i3 = values.values.length - 1; _i3 >= 0; _i3--) {
+          values.values[_i3] = Object.assign({}, { selected: false }, values.values[_i3]);
+        }
       }
 
       fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
@@ -1693,10 +1935,10 @@ function formBuilderEventsFn() {
         fieldOptions += selectFieldOptions(values.name, values.values[i], values.multiple);
       }
       fieldOptions += '</ol>';
-      fieldOptions += _helpers.markup('div', addOption, { className: 'option-actions' }).outerHTML;
+      fieldOptions += utils.markup('div', addOption, { className: 'option-actions' }).outerHTML;
       fieldOptions += '</div>';
 
-      return _helpers.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
+      return utils.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
     };
 
     /**
@@ -1776,7 +2018,7 @@ function formBuilderEventsFn() {
 
       for (key in opts.roles) {
         if (opts.roles.hasOwnProperty(key)) {
-          checked = _helpers.inArray(key, roles) ? 'checked' : '';
+          checked = utils.inArray(key, roles) ? 'checked' : '';
           advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + checked + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
         }
       }
@@ -1785,7 +2027,11 @@ function formBuilderEventsFn() {
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
         advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
-        advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + (values.other !== undefined ? 'checked' : '') + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+        var _checked = '';
+        if (values.enableOther || values['enable-other']) {
+          _checked = 'checked';
+        }
+        advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + _checked + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
       }
 
       if (isOptionField) {
@@ -1899,7 +2145,7 @@ function formBuilderEventsFn() {
 
       var attrVal = values[attribute] || '',
           attrLabel = opts.messages[attribute];
-      if (attribute === 'label' && _helpers.inArray(values.type, textArea)) {
+      if (attribute === 'label' && utils.inArray(values.type, textArea)) {
         attrLabel = opts.messages.content;
       }
 
@@ -1912,17 +2158,17 @@ function formBuilderEventsFn() {
           noMakeAttr = [];
 
       // Field has placeholder attribute
-      if (attribute === 'placeholder' && !_helpers.inArray(values.type, placeholderFields)) {
+      if (attribute === 'placeholder' && !utils.inArray(values.type, placeholderFields)) {
         noMakeAttr.push(true);
       }
 
       // Field has name attribute
-      if (attribute === 'name' && _helpers.inArray(values.type, noName)) {
+      if (attribute === 'name' && utils.inArray(values.type, noName)) {
         noMakeAttr.push(true);
       }
 
       // Field has maxlength attribute
-      if (attribute === 'maxlength' && _helpers.inArray(values.type, noMaxlength)) {
+      if (attribute === 'maxlength' && utils.inArray(values.type, noMaxlength)) {
         noMakeAttr.push(true);
       }
 
@@ -1931,7 +2177,7 @@ function formBuilderEventsFn() {
       })) {
         var attributeLabel = '<label for="' + attribute + '-' + lastID + '">' + attrLabel + '</label>';
 
-        if (attribute === 'label' && _helpers.inArray(values.type, textArea) || attribute === 'value' && values.type === 'textarea') {
+        if (attribute === 'label' && utils.inArray(values.type, textArea) || attribute === 'value' && values.type === 'textarea') {
           attributefield += '<textarea name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">' + attrVal + '</textarea>';
         } else {
           attributefield += '<input type="text" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
@@ -1948,7 +2194,7 @@ function formBuilderEventsFn() {
           noMake = [],
           requireField = '';
 
-      if (_helpers.inArray(values.type, noRequire)) {
+      if (utils.inArray(values.type, noRequire)) {
         noMake.push(true);
       }
       if (!noMake.some(function (elem) {
@@ -1963,18 +2209,18 @@ function formBuilderEventsFn() {
     var appendNewField = function appendNewField(values) {
       var type = values.type || 'text',
           label = values.label || opts.messages[type] || opts.messages.label,
-          delBtn = _helpers.markup('a', opts.messages.remove, {
+          delBtn = utils.markup('a', opts.messages.remove, {
         id: 'del_' + lastID,
         className: 'del-button btn delete-confirm',
         title: opts.messages.removeMessage
       }),
-          toggleBtn = _helpers.markup('a', null, {
+          toggleBtn = utils.markup('a', null, {
         id: lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
         title: opts.messages.hide
       });
 
-      var liContents = _helpers.markup('div', [toggleBtn, delBtn], { className: 'field-actions' }).outerHTML;
+      var liContents = utils.markup('div', [toggleBtn, delBtn], { className: 'field-actions' }).outerHTML;
 
       // Field preview Label
       liContents += '<label class="field-label">' + label + '</label>';
@@ -1986,17 +2232,17 @@ function formBuilderEventsFn() {
       var requiredDisplay = values.required ? 'style="display:inline"' : '';
       liContents += '<span class="required-asterisk" ' + requiredDisplay + '> *</span>';
 
-      liContents += _helpers.markup('div', '', { className: 'prev-holder' }).outerHTML;
+      liContents += utils.markup('div', '', { className: 'prev-holder' }).outerHTML;
       liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
 
       liContents += advFields(values);
-      liContents += _helpers.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
+      liContents += utils.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
 
       liContents += '</div>';
       liContents += '</div>';
 
-      var li = _helpers.markup('li', liContents, {
+      var li = utils.markup('li', liContents, {
         'class': type + '-field form-field',
         'type': type,
         id: lastID
@@ -2050,7 +2296,7 @@ function formBuilderEventsFn() {
           if (prop === 'selected') {
             attrs.checked = optionData.selected;
           }
-          optionInputs.push(_helpers.markup('input', null, attrs));
+          optionInputs.push(utils.markup('input', null, attrs));
         }
       }
 
@@ -2058,9 +2304,9 @@ function formBuilderEventsFn() {
         className: 'remove btn',
         title: opts.messages.removeMessage
       };
-      optionInputs.push(_helpers.markup('a', opts.messages.remove, removeAttrs));
+      optionInputs.push(utils.markup('a', opts.messages.remove, removeAttrs));
 
-      var field = _helpers.markup('li', optionInputs);
+      var field = utils.markup('li', optionInputs);
 
       return field.outerHTML;
     };
@@ -2187,8 +2433,8 @@ function formBuilderEventsFn() {
 
       // Check if user is sure they want to remove the field
       if (opts.fieldRemoveWarn) {
-        var warnH3 = _helpers.markup('h3', opts.messages.warning),
-            warnMessage = _helpers.markup('p', opts.messages.fieldRemoveWarning);
+        var warnH3 = utils.markup('h3', opts.messages.warning),
+            warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
         _helpers.confirm([warnH3, warnMessage], removeField, coords);
         $field.addClass('deleting');
       } else {
@@ -2252,9 +2498,9 @@ function formBuilderEventsFn() {
     var xmlButton = $(document.getElementById(frmbID + '-view-data'));
     xmlButton.click(function (e) {
       e.preventDefault();
-      var xml = _helpers.htmlEncode(elem.val()),
-          code = _helpers.markup('code', xml, { className: 'xml' }),
-          pre = _helpers.markup('pre', code);
+      var data = utils.escapeHtml(formBuilder.formData),
+          code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
+          pre = utils.markup('pre', code);
       _helpers.dialog(pre, null, 'data-dialog');
     });
 
@@ -2287,10 +2533,8 @@ function formBuilderEventsFn() {
       _helpers.validateForm(e);
     });
 
-    elem.parent().find('p[id*="ideaTemplate"]').remove();
-    elem.wrap('<div class="template-textarea-wrap"/>');
-
-    loadData();
+    _helpers.getData();
+    loadFields();
 
     $sortableFields.css('min-height', $cbUL.height());
 
@@ -2311,122 +2555,12 @@ function formBuilderEventsFn() {
   };
 
   $.fn.formBuilder = function (options) {
+    options = options || {};
     return this.each(function () {
-      var element = this,
-          formBuilder;
+      var formBuilder = new FormBuilder(options, this);
+      $(this).data('formBuilder', formBuilder);
 
-      if ($(element).data('formBuilder')) {
-        var existingFormBuilder = $(element).parents('.form-builder:eq(0)');
-        existingFormBuilder.before(element);
-        existingFormBuilder.remove();
-      }
-
-      formBuilder = new FormBuilder(options, element);
-      $(element).data('formBuilder', formBuilder);
+      return formBuilder;
     });
   };
 })(jQuery);
-'use strict';
-
-// toXML is a jQuery plugin that turns our form editor into XML
-// @todo this is a total mess that has to be refactored
-(function ($) {
-  'use strict';
-
-  $.fn.toXML = function (_helpers) {
-
-    var serialStr = '';
-
-    var fieldOptions = function fieldOptions($field) {
-      var options = [];
-      $('.sortable-options li', $field).each(function () {
-        var $option = $(this),
-            attrs = {
-          value: $('.option-value', $option).val(),
-          selected: $('.option-selected', $option).is(':checked')
-        },
-            option = _helpers.markup('option', $('.option-label', $option).val(), attrs).outerHTML;
-        options.push('\n\t\t\t' + option);
-      });
-      return options.join('') + '\n\t\t';
-    };
-
-    // Begin the core plugin
-    this.each(function () {
-      var sortableFields = this;
-      if (sortableFields.childNodes.length >= 1) {
-        serialStr += '<form-template>\n\t<fields>';
-        // build new xml
-        _helpers.forEach(sortableFields.childNodes, function (index, field) {
-          index = index;
-          var $field = $(field);
-
-          if (!$field.hasClass('disabled')) {
-            var roleVals;
-            var enableOther;
-            var multipleField;
-            var fieldContent, xmlField;
-
-            (function () {
-              roleVals = $('.roles-field:checked', field).map(function () {
-                return this.value;
-              }).get();
-              enableOther = $('[name="enable-other"]:checked', field).length;
-
-
-              var xmlAttrs = _helpers.getTypes($field);
-
-              $('[class*="fld-"]', field).each(function () {
-                var name = _helpers.camelCase(this.name);
-                xmlAttrs[name] = this.type === 'checkbox' ? this.checked : this.value;
-              });
-
-              if (roleVals.length) {
-                xmlAttrs.role = roleVals.join(',');
-              }
-              if (enableOther) {
-                xmlAttrs.other = 'true';
-              }
-              xmlAttrs = _helpers.trimObj(xmlAttrs);
-              xmlAttrs = _helpers.escapeAttrs(xmlAttrs);
-              multipleField = xmlAttrs.type.match(/(select|checkbox-group|radio-group)/);
-              fieldContent = '';
-
-              if (multipleField) {
-                fieldContent = fieldOptions($field);
-              }
-
-              xmlField = _helpers.markup('field', fieldContent, xmlAttrs);
-              serialStr += '\n\t\t' + xmlField.outerHTML;
-            })();
-          }
-        });
-        serialStr += '\n\t</fields>\n</form-template>';
-      } // if "$(this).children().length >= 1"
-    });
-
-    return serialStr;
-  };
-})(jQuery);
-'use strict';
-
-// Element.remove() polyfill
-
-if (!('remove' in Element.prototype)) {
-  Element.prototype.remove = function () {
-    if (this.parentNode) {
-      this.parentNode.removeChild(this);
-    }
-  };
-}
-
-// Event polyfill
-if (typeof Event !== 'function') {
-  (function () {
-    window.Event = function (evt) {
-      var event = document.createEvent('Event');
-      event.initEvent(evt, true, true);
-      return event;
-    };
-  })();
-}

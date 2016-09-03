@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.16.0 - Feature: JSON support[#237](https://github.com/kevinchappell/formBuilder/pull/237)
 - v1.15.6 - Bugfix: Remove fields from `disableFields` option.[#231](https://github.com/kevinchappell/formBuilder/pull/231)
 - v1.15.5 - Feature: `save` action [#228](https://github.com/kevinchappell/formBuilder/pull/228)
 - v1.15.4 - Bugfix: formRender textarea value undefined [#224](https://github.com/kevinchappell/formBuilder/pull/224)

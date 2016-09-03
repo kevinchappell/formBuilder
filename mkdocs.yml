@@ -22,10 +22,12 @@ pages:
   - append/prepend: formBuilder/options/appendPrepend.md
   - controlPosition: formBuilder/options/controlPosition.md
   - controlOrder: formBuilder/options/controlOrder.md
+  - dataType: formBuilder/options/dataType.md
   - disableFields: formBuilder/options/disableFields.md
   - defaultFields: formBuilder/options/defaultFields.md
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
+  - formData: formBuilder/options/formData.md
   - messages: formBuilder/options/messages.md
   - notify: formBuilder/options/notify.md
   - sortableControls: formBuilder/options/sortableControls.md

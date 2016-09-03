@@ -6,7 +6,7 @@ When the option `editOnAdd` is set to true, fields will automatically enter edit
 var options = {
       editOnAdd: true
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 ## See it in Action

@@ -140,7 +140,7 @@
 
   .clear-all {
     &:hover {
-      color: #fff;
+      color: #fff !important;
 
       @extend .btn-danger:hover;
     }

@@ -8,7 +8,7 @@ var options = {
         1: 'Administrator'
       }
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 
