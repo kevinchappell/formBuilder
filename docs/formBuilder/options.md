@@ -23,15 +23,12 @@ var defaults = {
   ],
   dataType: 'xml',
   /**
-   * Field types to be disabled
+   * Disable-able field types
    * ['text','select','textarea','radio-group','hidden','file','date','checkbox-group','checkbox','button','autocomplete']
    */
-  disableFields: [
-    'autocomplete',
-    'hidden',
-    'number'
-  ],
+  disableFields: [],
   editOnAdd: false,
+  // formData: '', // accepts json or xml formData string
   // Uneditable fields or other content you would like to appear before and after regular fields:
   append: false,
   prepend: false,
