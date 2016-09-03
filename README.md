@@ -6,14 +6,14 @@ formBuilder v1.16.0
 A jQuery plugin for drag and drop form creation
 
 ## Usage
-To start building forms with this plugin call `formBuilder()` on the textarea you would like to make your editor. FormBuilder takes a number of options and is translatable.
+To start building forms with this plugin call `formBuilder()` on the block element you would like to make your editor. FormBuilder takes a number of options and is translatable.
 
 **Example**
 ```
 jQuery(document).ready(function($) {
   'use strict';
-  var template = document.getElementById('form-builder');
-  $(template).formBuilder();
+  var editor = document.getElementById('fb-editor');
+  $(editor).formBuilder();
 });
 ```
 
