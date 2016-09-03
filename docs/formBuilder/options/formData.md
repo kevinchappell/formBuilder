@@ -9,7 +9,7 @@ var options = {
     };
 $(container).formBuilder(options);
 ```
-<p data-height="525" data-theme-id="22927" data-slug-hash="NRWkwK" data-default-tab="js,result" data-user="kevinchappell" class="codepen"></p>
+<p data-height="525" data-theme-id="22927" data-slug-hash="NRWkwK" data-default-tab="js,result" data-user="kevinchappell" data-embed-version="2" class="codepen"></p>
 
 OR
 
@@ -21,5 +21,4 @@ var options = {
     };
 $(container).formBuilder(options);
 ```
-<p data-height="525" data-theme-id="22927" data-slug-hash="vXYqZz" data-default-tab="js,result" data-user="kevinchappell" class="codepen"></p>
-
+<p data-height="525" data-theme-id="22927" data-slug-hash="vXYqZz" data-default-tab="js,result" data-user="kevinchappell" data-embed-version="2" class="codepen"></p>

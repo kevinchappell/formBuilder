@@ -25,11 +25,13 @@ jQuery(document).ready(function($) {
 | ------------- | ------------- |------------- |------------- |
 | [controlOrder](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlOrder/) | {Array} | `['autocomplete', 'button', 'checkbox', ...]` | |
 | [controlPosition](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlPosition/) | {String} | `'left'` \| `'right'`  | `'right'` |
+| [dataType](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/dataType/) | {String} | `xml` | `json` |
 | [disableFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableFields/) | {Array} | array of field types to disable | `['autocomplete', 'hidden', 'number']` |
 | [editOnAdd](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/editOnAdd/) | {Bool} | `true` \| `false` | `false` |
 | [append / prepend](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/appendPrepend/) | {Object, Array, String} | `DOM Object` \| `[]` \| `'<h1></h1>'` | `false` |
 | [defaultFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/defaultFields/) | {Array} | `[{type: 'text', name: 'first-name'}]` | `[]` |
 | [fieldRemoveWarn](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/fieldRemoveWarn/) | {Bool} | `true` | `false` |
+| [formData](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/formData/) | {String} | `xmlData` | `jsonData` |
 | [roles](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/roles/) | {Object} | `{1: 'Administrator', 2: 'Editor' }` | `{ 1: 'Administrator'}` |
 | [messages](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/messages/) | {Object} | `{ addOption: 'Add Option', ... }` | [See form-builder.js#L58](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L58) |
 | [notify](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/notify/) | {Object} | `{error: message => alert(message)}` | [See form-builder.js#L186](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L186) |
