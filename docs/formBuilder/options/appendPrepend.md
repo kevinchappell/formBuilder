@@ -7,7 +7,7 @@ var options = {
       prepend: '<h1>Profile for Miss Marple.</h1>', // DOM Object, Array of Dom Objects/Strings or String
       append: '<h2>All information is confidential.</h2>'
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 ## See it in Action

@@ -6,7 +6,7 @@
 var options = {
       sortableControls: true // defaults to false
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 ## See it in Action

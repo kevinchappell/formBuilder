@@ -6,7 +6,7 @@
 var options = {
       controlPosition: 'left'
     };
-$(template).formBuilder(options);
+$(container).formBuilder(options);
 ```
 
 
