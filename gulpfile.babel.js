@@ -57,7 +57,7 @@ var plugins = gulpPlugins(),
     let openFont = {
       linux: `/opt/google/chrome/google-chrome --enable-plugins ${pkg.config.fontServer}/$(cat .fontello)`,
       darwin: `open -a "Google Chrome" ${pkg.config.fontServer}/$(cat .fontello)`,
-      win32: `start chrome "${pkg.config.fontServer}/$(cat .fontello)"`
+      win32: `start edge "${pkg.config.fontServer}/$(cat .fontello)"`
     };
 
     if (!openFont[platform]) {
