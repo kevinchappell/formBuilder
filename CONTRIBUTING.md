@@ -7,8 +7,6 @@ To develop for formBuilder you'll need:
 
 - [NodeJS](https://nodejs.org)
 - [GulpJS](http://gulpjs.com/)
-- [Git](https://git-scm.com/)
-- and a [GitHub account](https://github.com/)
 
 ## Recommended Tooling
 While not required, the following tools are recommended to maintain code quality and consistency in style.
@@ -27,9 +25,11 @@ npm install
 gulp
 ```
 
-The above code will clone the repo, install the required `node_modules` and run the default `gulp` task. You should now have a locally running version of the demo page.
+The above code will clone the repo, install the required `node_modules` and run the default `gulp` task. You should now have a locally running version of the formBuilder demo.
 
-## Documentation
+## Getting Started
+If you've followed the above steps you're ready to start making changes. All changes to the plugin should be made in the `/src` directory. The gulp build process will transpile, lint and concatenate the contents of `/src` into the files found in `/dist`. Any changes made in the `/dist` will be lost once the build process is run.
+
 For more information on build processes, editing fonts or adding custom fields please see the documentation [here](http://formbuilder.readthedocs.org/en/latest/).
 
 ## Notes
