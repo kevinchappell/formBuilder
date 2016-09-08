@@ -2070,7 +2070,7 @@ function formBuilderEventsFn() {
     function textUserAttrs(name,  options) {
        return '<div class="form-group ' + name + '-wrap">'
         				+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
-        		 			+'<input type="text" name="' + name + '" '+(options['maxlength']?' maxlength="'+options['maxlength']+'"':'') +' '+(options['description']?' title="'+options['description']+'"':'') +' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '" />'
+        		 			+'<input type="text" name="' + name + '" '+(options['maxlength']?' maxlength="'+options['maxlength']+'"':'') +' '+(options['placeholder']?' placeholder="'+options['placeholder']+'"':'') +' '+(options['description']?' title="'+options['description']+'"':'') +' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '" />'
         		 		+'</div>';
       };
 
