@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "main": "dist/form-builder.js",
   "files": [
     "dist/form-builder.js",
@@ -41,14 +41,12 @@
       ],
       "formBuilder": {
         "js": [
-          "src/js/fields.js",
-          "src/js/field.js",
+          "src/js/polyfills.js",
+          "src/js/utils.js",
           "src/js/helpers.js",
           "src/js/events.js",
           "src/js/kc-toggle.js",
-          "src/js/form-builder.js",
-          "src/js/to-xml.js",
-          "src/js/polyfills.js"
+          "src/js/form-builder.js"
         ],
         "fonts": "src/fonts/fontello",
         "sass": [
@@ -57,7 +55,9 @@
       },
       "formRender": {
         "js": [
+          "src/js/polyfills.js",
           "src/js/kc-toggle.js",
+          "src/js/utils.js",
           "src/js/form-render.js"
         ],
         "sass": [

@@ -1,6 +1,12 @@
 # Changelog
 
-- v1.15.0 - Feature/Bugfix: Allow multiple files, bigfixes [#211](https://github.com/kevinchappell/formBuilder/pull/211)
+- v1.16.0 - Feature: JSON support[#237](https://github.com/kevinchappell/formBuilder/pull/237)
+- v1.15.6 - Bugfix: Remove fields from `disableFields` option.[#231](https://github.com/kevinchappell/formBuilder/pull/231)
+- v1.15.5 - Feature: `save` action [#228](https://github.com/kevinchappell/formBuilder/pull/228)
+- v1.15.4 - Bugfix: formRender textarea value undefined [#224](https://github.com/kevinchappell/formBuilder/pull/224)
+- v1.15.3 - Bugfix: Cannot run formRender on multiple elements [#223](https://github.com/kevinchappell/formBuilder/pull/223)
+- v1.15.2 - Feature/Bugfix: Actions, formRender textarea `value` bugfix [#219](https://github.com/kevinchappell/formBuilder/pull/219)
+- v1.15.0 - Feature/Bugfix: Allow multiple files, bugfixes [#211](https://github.com/kevinchappell/formBuilder/pull/211)
 - v1.14.6 - Hotfix: set Sortable `scroll` to `false` [#206](https://github.com/kevinchappell/formBuilder/pull/206)
 - v1.14.5 - Chore: Add composer.json [#207](https://github.com/kevinchappell/formBuilder/pull/207)
 - v1.14.4 - Bugfix: Form not saving when fields added by click [#203](https://github.com/kevinchappell/formBuilder/pull/203)

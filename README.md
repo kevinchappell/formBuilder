@@ -1,4 +1,4 @@
-formBuilder v1.15.0
+formBuilder v1.16.0
 ===========
 
 [![Join the chat at https://gitter.im/kevinchappell/formBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kevinchappell/formBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -6,14 +6,14 @@ formBuilder v1.15.0
 A jQuery plugin for drag and drop form creation
 
 ## Usage
-To start building forms with this plugin call `formBuilder()` on the textarea you would like to make your editor. FormBuilder takes a number of options and is translatable.
+To start building forms with this plugin call `formBuilder()` on the block element you would like to make your editor. FormBuilder takes a number of options and is translatable.
 
 **Example**
 ```
 jQuery(document).ready(function($) {
   'use strict';
-  var template = document.getElementById('form-builder');
-  $(template).formBuilder();
+  var editor = document.getElementById('fb-editor');
+  $(editor).formBuilder();
 });
 ```
 
@@ -25,11 +25,13 @@ jQuery(document).ready(function($) {
 | ------------- | ------------- |------------- |------------- |
 | [controlOrder](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlOrder/) | {Array} | `['autocomplete', 'button', 'checkbox', ...]` | |
 | [controlPosition](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlPosition/) | {String} | `'left'` \| `'right'`  | `'right'` |
+| [dataType](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/dataType/) | {String} | `xml` | `json` |
 | [disableFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableFields/) | {Array} | array of field types to disable | `['autocomplete', 'hidden', 'number']` |
 | [editOnAdd](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/editOnAdd/) | {Bool} | `true` \| `false` | `false` |
 | [append / prepend](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/appendPrepend/) | {Object, Array, String} | `DOM Object` \| `[]` \| `'<h1></h1>'` | `false` |
 | [defaultFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/defaultFields/) | {Array} | `[{type: 'text', name: 'first-name'}]` | `[]` |
 | [fieldRemoveWarn](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/fieldRemoveWarn/) | {Bool} | `true` | `false` |
+| [formData](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/formData/) | {String} | `xmlData` | `jsonData` |
 | [roles](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/roles/) | {Object} | `{1: 'Administrator', 2: 'Editor' }` | `{ 1: 'Administrator'}` |
 | [messages](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/messages/) | {Object} | `{ addOption: 'Add Option', ... }` | [See form-builder.js#L58](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L58) |
 | [notify](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/notify/) | {Object} | `{error: message => alert(message)}` | [See form-builder.js#L186](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L186) |

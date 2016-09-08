@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.15.0
+Version: 1.16.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -240,7 +240,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   margin-top: 5px;
   /* smartphones, Android phones, landscape iPhone */ }
   .form-actions .clear-all:hover {
-    color: #fff; }
+    color: #fff !important; }
 
 [id^='frmb-'][id$='-form-wrap'] {
   /*   ------------   TOOLTIP   ------------   */ }

@@ -15,16 +15,19 @@ pages:
   - Basic: formBuilder/demos/basic.md
   - Toggle formBuilder: formBuilder/demos/toggle-builder.md
   - Translating: formBuilder/demos/translation.md
+  - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
   - Data: formBuilder/demos/data.md
 - formBuilder Options:
   - Overview: formBuilder/options.md
   - append/prepend: formBuilder/options/appendPrepend.md
   - controlPosition: formBuilder/options/controlPosition.md
   - controlOrder: formBuilder/options/controlOrder.md
+  - dataType: formBuilder/options/dataType.md
   - disableFields: formBuilder/options/disableFields.md
   - defaultFields: formBuilder/options/defaultFields.md
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
+  - formData: formBuilder/options/formData.md
   - messages: formBuilder/options/messages.md
   - notify: formBuilder/options/notify.md
   - sortableControls: formBuilder/options/sortableControls.md

@@ -4,51 +4,9 @@ function formBuilderHelpersFn(opts, formBuilder) {
   var _helpers = {
     doCancel: false
   };
+  var utils = fbUtils;
 
   formBuilder.events = formBuilderEventsFn();
-
-  /**
-   * Convert an attrs object into a string
-   *
-   * @param  {Object} attrs object of attributes for markup
-   * @return {string}
-   */
-  _helpers.attrString = function(attrs) {
-    var attributes = [];
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        attr = _helpers.safeAttr(attr, attrs[attr]);
-        attributes.push(attr.name + attr.value);
-      }
-    }
-    var attrString = attributes.join(' ');
-    return attrString;
-  };
-
-  /**
-   * Convert camelCase into lowercase-hyphen
-   *
-   * @param  {string} str
-   * @return {string}
-   */
-  _helpers.hyphenCase = (str) => {
-    str = str.replace(/([A-Z])/g, function($1) {
-      return '-' + $1.toLowerCase();
-    });
-
-    return str.replace(/\s/g, '-').replace(/^-+/g, '');
-  };
-
-  /**
-   * convert a hyphenated string to camelCase
-   * @param  {String} str
-   * @return {String}
-   */
-  _helpers.camelCase = (str) => {
-    return str.replace(/-([a-z])/g, function(m, w) {
-      return w.toUpperCase();
-    });
-  };
 
   /**
    * Convert converts messy `cl#ssNames` into valid `class-names`
@@ -58,27 +16,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.makeClassName = (str) => {
     str = str.replace(/[^\w\s\-]/gi, '');
-    return _helpers.hyphenCase(str);
-  };
-
-  _helpers.safeAttrName = function(name) {
-    let safeAttr = {
-      className: 'class'
-    };
-
-    return safeAttr[name] || _helpers.hyphenCase(name);
-  };
-
-  _helpers.safeAttr = function(name, value) {
-    name = _helpers.safeAttrName(name);
-
-    let valString = window.JSON.stringify(_helpers.escapeAttr(value));
-
-    value = value ? `=${valString}` : '';
-    return {
-      name,
-      value
-    };
+    return utils.hyphenCase(str);
   };
 
   /**
@@ -201,53 +139,39 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}
    */
   _helpers.getTypes = function($field) {
-    return {
-      type: $field.attr('type'),
-      subtype: $('.fld-subtype', $field).val()
-    };
-  };
+    let types = {
+        type: $field.attr('type')
+      },
+      subtype = $('.fld-subtype', $field).val();
 
-  // Remove null or undefined values
-  _helpers.trimObj = function(attrs) {
-    let xmlRemove = [
-      null,
-      undefined,
-      '',
-      false
-    ];
-    for (var i in attrs) {
-      if (_helpers.inArray(attrs[i], xmlRemove)) {
-        delete attrs[i];
-      }
-    }
-    return attrs;
-  };
-
-  _helpers.escapeAttr = function(str) {
-    var match = {
-      '"': '&quot;',
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;'
-    };
-
-    function replaceTag(tag) {
-      return match[tag] || tag;
+    if (subtype !== types.type) {
+      types.subtype = subtype;
     }
 
-    return (typeof str === 'string') ? str.replace(/["&<>]/g, replaceTag) : str;
+    return types;
   };
 
-  // Remove null or undefined values
-  _helpers.escapeAttrs = function(attrs) {
 
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        attrs[attr] = _helpers.escapeAttr(attrs[attr]);
-      }
-    }
+  /**
+   * Get option data for a field
+   * @param  {Object} field jQuery field object
+   * @return {Array}        Array of option values
+   */
+  _helpers.fieldOptionData = function(field) {
+    let options = [];
 
-    return attrs;
+    $('.sortable-options li', field).each(function() {
+      let $option = $(this),
+        attrs = {
+          label: $('.option-label', $option).val(),
+          value: $('.option-value', $option).val(),
+          selected: $('.option-selected', $option).is(':checked')
+        };
+
+      options.push(attrs);
+    });
+
+    return options;
   };
 
   /**
@@ -256,16 +180,107 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} form sortableFields node
    */
   _helpers.xmlSave = function(form) {
-    let formDataNew = $(form).toXML(_helpers);
 
-    if (window.JSON.stringify(formDataNew) === window.JSON.stringify(formBuilder.formData)) {
-      return false;
-    }
-    formBuilder.formData = formDataNew;
+    let formData = _helpers.prepData(form),
+      xml = ['<form-template>\n\t<fields>'];
+
+    _helpers.forEach(formData, function(index) {
+      let field = formData[index],
+        fieldContent = null;
+
+      // Handle options
+      if (field.type.match(/(select|checkbox-group|radio-group)/)) {
+        let optionData = field.values,
+          options = [];
+
+        for (var i = 0; i < optionData.length; i++) {
+          let option = utils.markup('option', optionData[i].label, optionData[i]).outerHTML;
+          options.push('\n\t\t\t' + option);
+        }
+        options.push('\n\t\t');
+
+        fieldContent = options.join('');
+        field.values = undefined;
+      }
+
+      let xmlField = utils.markup('field', fieldContent, field);
+      xml.push('\n\t\t' + xmlField.outerHTML);
+    });
+
+    xml.push('\n\t</fields>\n</form-template>');
+
+    return xml.join('');
   };
 
-  _helpers.jsonSave = function() {
-    opts.notify.warning('json data not available yet');
+  _helpers.prepData = function(form) {
+    var formData = [];
+
+    if (form.childNodes.length !== 0) {
+      // build data object
+      _helpers.forEach(form.childNodes, function(index, field) {
+        index = index;
+        var $field = $(field);
+
+        if (!($field.hasClass('disabled'))) {
+          let fieldData = _helpers.getTypes($field),
+            roleVals = $('.roles-field:checked', field).map(function() {
+              return this.value;
+            }).get();
+
+          $('[class*="fld-"]', field).each(function() {
+            let name = utils.camelCase(this.name);
+            fieldData[name] = this.type === 'checkbox' ? this.checked : this.value;
+          });
+
+          if (roleVals.length) {
+            fieldData.role = roleVals.join(',');
+          }
+
+          if ($('[name="enable-other"]:checked', field).length) {
+            fieldData.enableOther = true;
+          }
+
+          fieldData.className = fieldData.className || fieldData.class; // backwards compatibility
+
+          var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className);
+          if (match) {
+            fieldData.style = match[1];
+          }
+
+          fieldData = utils.trimObj(fieldData);
+          fieldData = utils.escapeAttrs(fieldData);
+
+          var multipleField = fieldData.type.match(/(select|checkbox-group|radio-group)/);
+
+          if (multipleField) {
+            fieldData.values = _helpers.fieldOptionData($field);
+          }
+
+          formData.push(fieldData);
+        }
+
+      });
+    }
+
+    return formData;
+  };
+
+  _helpers.jsonSave = function(form) {
+    return window.JSON.stringify(_helpers.prepData(form), null, '\t');
+  };
+
+  _helpers.getData = function() {
+    if (!opts.formData) {
+      return false;
+    }
+
+    let setData = {
+      xml: formData => utils.parseXML(formData),
+      json: formData => window.JSON.parse(formData)
+    };
+    formBuilder.formData = setData[opts.dataType](opts.formData) || [];
+
+    return formBuilder.formData;
   };
 
   /**
@@ -273,9 +288,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {XML|JSON}
    */
   _helpers.save = function() {
-    var element = _helpers.getElement(),
-      form = document.getElementById(opts.formID),
-      formData;
+    var form = document.getElementById(opts.formID);
 
     let doSave = {
       xml: _helpers.xmlSave,
@@ -283,44 +296,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
     };
 
     // save action for current `dataType`
-    formData = doSave[opts.dataType](form);
-
-    if (element) {
-      element.value = formBuilder.formData;
-      if (window.jQuery) {
-        $(element).trigger('change');
-      } else {
-        element.onchange();
-      }
-    }
+    formBuilder.formData = doSave[opts.dataType](form);
 
     //trigger formSaved event
     document.dispatchEvent(formBuilder.events.formSaved);
-    return formData;
-  };
-
-  /**
-   * Attempts to find an element,
-   * useful if formBuilder was called without Query
-   * @return {Object}
-   */
-  _helpers.getElement = () => {
-    let element = false;
-    if (formBuilder.element) {
-      element = formBuilder.element;
-
-      if (!element.id) {
-        _helpers.makeId(element);
-      }
-
-      if (!element.onchange) {
-        element.onchange = function() {
-          opts.notify.success(opts.messages.formUpdated);
-        };
-      }
-    }
-
-    return element;
+    return formBuilder.formData;
   };
 
   /**
@@ -334,12 +314,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
       baseString = id.substring(0, split);
 
     return `${baseString}-${newFieldNumber}`;
-  };
-
-  _helpers.makeId = function(element = false) {
-    let epoch = new Date().getTime();
-
-    return `${element.tagName}-${epoch}`;
   };
 
   /**
@@ -360,7 +334,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       preview;
 
     $('[class*="fld-"]', field).each(function() {
-      let name = _helpers.camelCase(this.name);
+      let name = utils.camelCase(this.name);
       previewData[name] = this.type === 'checkbox' ? this.checked : this.value;
     });
 
@@ -382,7 +356,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       });
     }
 
-    previewData = _helpers.trimObj(previewData);
+    previewData = utils.trimObj(previewData);
 
     previewData.className = _helpers.classNames(field, previewData);
     $('.fld-className', field).val(previewData.className);
@@ -408,14 +382,14 @@ function formBuilderHelpersFn(opts, formBuilder) {
       epoch = new Date().getTime();
     attrs = jQuery.extend({}, attrs);
     attrs.type = attrs.subtype || attrs.type;
-    let toggle = attrs.toggle ? 'toggle' : '';
-    // attrs = _helpers.escapeAttrs(attrs);
-    let attrsString = _helpers.attrString(attrs);
+    let toggle = attrs.toggle ? 'toggle' : '',
+      attrsString = utils.attrString(attrs);
 
     switch (attrs.type) {
       case 'textarea':
       case 'rich-text':
-        preview = `<textarea ${attrsString}></textarea>`;
+        let fieldVal = attrs.value || '';
+        preview = `<textarea ${attrsString}>${fieldVal}</textarea>`;
         break;
       case 'button':
       case 'submit':
@@ -454,7 +428,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
               type: type,
               onclick: 'otherOptionCallback(\'' + otherID + '\')'
             },
-            otherInput = _helpers.markup('input', null, optionAttrs);
+            otherInput = utils.markup('input', null, optionAttrs);
 
           window.otherOptionCallback = function(otherID) {
             var option = document.getElementById(otherID),
@@ -492,7 +466,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
         preview = `<input class="ui-autocomplete-input ${attrs.className}" autocomplete="on">`;
         break;
       default:
-        attrsString = _helpers.attrString(attrs);
+        attrsString = utils.attrString(attrs);
         preview = `<${attrs.type} ${attrsString}>${attrs.label}</${attrs.type}>`;
     }
 
@@ -533,14 +507,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
         func.apply(context, args);
       }
     };
-  };
-
-  _helpers.htmlEncode = function(value) {
-    return $('<div/>').text(value).html();
-  };
-
-  _helpers.htmlDecode = function(value) {
-    return $('<div/>').html(value).text();
   };
 
   _helpers.validateForm = function() {
@@ -586,7 +552,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       let title = opts.messages.fieldNonEditable;
 
       if (title) {
-        var tt = _helpers.markup('p', title, { className: _helpers.disabledTT.className });
+        var tt = utils.markup('p', title, { className: _helpers.disabledTT.className });
         field.append(tt);
       }
     },
@@ -641,7 +607,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
-  _helpers.markup = function(tag, content = '', attrs = {}) {
+  utils.markup = function(tag, content = '', attrs = {}) {
     let contentType,
       field = document.createElement(tag),
       getContentType = function(content) {
@@ -665,7 +631,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     for (var attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
         if (attrs[attr]) {
-          let name = _helpers.safeAttrName(attr);
+          let name = utils.safeAttrName(attr);
           field.setAttribute(name, attrs[attr]);
         }
       }
@@ -721,7 +687,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}
    */
   _helpers.showOverlay = function() {
-    var overlay = _helpers.markup('div', null, {
+    var overlay = utils.markup('div', null, {
       className: 'form-builder-overlay'
     });
     document.body.appendChild(overlay);
@@ -745,8 +711,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.confirm = function(message, yesAction, coords = false, className = '') {
     var overlay = _helpers.showOverlay();
-    var yes = _helpers.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
-      no = _helpers.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
+    var yes = utils.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
+      no = utils.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
 
     no.onclick = function() {
       _helpers.closeConfirm(overlay);
@@ -757,11 +723,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
       _helpers.closeConfirm(overlay);
     };
 
-    var btnWrap = _helpers.markup('div', [no, yes], { className: 'button-wrap' });
+    var btnWrap = utils.markup('div', [no, yes], { className: 'button-wrap' });
 
     className = 'form-builder-dialog ' + className;
 
-    var miniModal = _helpers.markup('div', [message, btnWrap], { className: className });
+    var miniModal = utils.markup('div', [message, btnWrap], { className: className });
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -794,7 +760,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     className = 'form-builder-dialog ' + className;
 
-    var miniModal = _helpers.markup('div', content, { className: className });
+    var miniModal = utils.markup('div', content, { className: className });
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -932,7 +898,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
       return arr.indexOf(elem) === pos;
     });
   };
-
 
   /**
    * Close fields being editing

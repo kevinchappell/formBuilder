@@ -12,7 +12,11 @@ body {
 body > div {}
 
 #fb-template {
-  display: none;
+  // display: none;
+}
+
+.template-textarea-wrap {
+  display: block !important;
 }
 
 .content {
@@ -22,8 +26,16 @@ body > div {}
   padding-top: 5em;
 }
 
+.form-rendered .build-wrap {
+  display: none;
+}
+
 .render-wrap {
   display: none;
+}
+
+.form-rendered .render-wrap {
+  display: block;
 }
 
 #edit-form {
@@ -31,6 +43,6 @@ body > div {}
   float: right;
 }
 
-.editing-form #edit-form {
+.form-rendered #edit-form {
   display: block;
 }
