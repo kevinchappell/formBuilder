@@ -355,30 +355,6 @@
       $field.html(typeLabel).appendTo($cbUL);
     }
 
-    let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
-
-    if (opts.showActionButtons) {
-      // Build our headers and action links
-      var viewData = utils.markup('button', viewDataText, {
-          id: frmbID + '-view-data',
-          type: 'button',
-          className: 'view-data btn btn-default'
-        }),
-        clearAll = utils.markup('button', opts.messages.clearAll, {
-          id: frmbID + '-clear-all',
-          type: 'button',
-          className: 'clear-all btn btn-default'
-        }),
-        saveAll = utils.markup('button', opts.messages.save, {
-          className: `btn btn-primary ${opts.prefix}save`,
-          id: frmbID + '-save',
-          type: 'button'
-        }),
-        formActions = utils.markup('div', [clearAll, viewData, saveAll], {
-          className: 'form-actions btn-group'
-      });
-    }
-
     // Sortable fields
     $sortableFields.sortable({
       cursor: 'move',
@@ -432,7 +408,32 @@
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap ' + formBuilder.layout.controls
-    }).append($cbUL[0], formActions);
+    }).append($cbUL[0]);
+
+    if (opts.showActionButtons) {
+      // Build our headers and action links
+      let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON,
+        viewData = utils.markup('button', viewDataText, {
+          id: frmbID + '-view-data',
+          type: 'button',
+          className: 'view-data btn btn-default'
+        }),
+        clearAll = utils.markup('button', opts.messages.clearAll, {
+          id: frmbID + '-clear-all',
+          type: 'button',
+          className: 'clear-all btn btn-default'
+        }),
+        saveAll = utils.markup('button', opts.messages.save, {
+          className: `btn btn-primary ${opts.prefix}save`,
+          id: frmbID + '-save',
+          type: 'button'
+        }),
+        formActions = utils.markup('div', [clearAll, viewData, saveAll], {
+          className: 'form-actions btn-group'
+        });
+
+      cbWrap.append(formActions);
+    }
 
     $stageWrap.append($sortableFields, cbWrap);
     $stageWrap.before($formWrap);
@@ -1209,7 +1210,7 @@
     });
 
 
-    if(opts.showActionButtons) {
+    if (opts.showActionButtons) {
       // View XML
       var xmlButton = $(document.getElementById(frmbID + '-view-data'));
       xmlButton.click(function(e) {
@@ -1259,7 +1260,7 @@
 
     document.dispatchEvent(formBuilder.events.loaded);
 
-    // Make some actions accessible
+    // Make actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
       showData: _helpers.showData,

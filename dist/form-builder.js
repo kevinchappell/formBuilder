@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.17.0
+Version: 1.17.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -283,8 +283,6 @@ fbUtils.escapeAttrs = function (attrs) {
   return attrs;
 };
 'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
@@ -905,48 +903,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
-  utils.markup = function (tag) {
-    var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-    var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-    var contentType = void 0,
-        field = document.createElement(tag),
-        getContentType = function getContentType(content) {
-      return Array.isArray(content) ? 'array' : typeof content === 'undefined' ? 'undefined' : _typeof(content);
-    },
-        appendContent = {
-      string: function string(content) {
-        field.innerHTML = content;
-      },
-      object: function object(content) {
-        return field.appendChild(content);
-      },
-      array: function array(content) {
-        for (var i = 0; i < content.length; i++) {
-          contentType = getContentType(content[i]);
-          appendContent[contentType](content[i]);
-        }
-      }
-    };
-
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        if (attrs[attr]) {
-          var name = utils.safeAttrName(attr);
-          field.setAttribute(name, attrs[attr]);
-        }
-      }
-    }
-
-    contentType = getContentType(content);
-
-    if (content) {
-      appendContent[contentType].call(this, content);
-    }
-
-    return field;
-  };
-
   /**
    * Closes and open dialog
    *
@@ -1083,9 +1039,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     document.body.appendChild(miniModal);
 
+    document.dispatchEvent(formBuilder.events.modalOpened);
+
     if (className.indexOf('data-dialog') !== -1) {
       document.dispatchEvent(formBuilder.events.viewData);
     }
+
     return miniModal;
   };
 
@@ -1097,6 +1056,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var fields = form.querySelectorAll('li.form-field');
     var $fields = $(fields);
     var markEmptyArray = [];
+
+    if (!fields.length) {
+      return false;
+    }
 
     if (opts.prepend) {
       markEmptyArray.push(true);
@@ -1309,6 +1272,7 @@ function formBuilderEventsFn() {
   events.viewData = new Event('viewData');
   events.userDeclined = new Event('userDeclined');
   events.modalClosed = new Event('modalClosed');
+  events.modalOpened = new Event('modalOpened');
   events.formSaved = new Event('formSaved');
 
   return events;
@@ -1682,30 +1646,6 @@ function formBuilderEventsFn() {
       $field.html(typeLabel).appendTo($cbUL);
     }
 
-    var viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
-
-    if (opts.showActionButtons) {
-      // Build our headers and action links
-      var viewData = utils.markup('button', viewDataText, {
-        id: frmbID + '-view-data',
-        type: 'button',
-        className: 'view-data btn btn-default'
-      }),
-          clearAll = utils.markup('button', opts.messages.clearAll, {
-        id: frmbID + '-clear-all',
-        type: 'button',
-        className: 'clear-all btn btn-default'
-      }),
-          saveAll = utils.markup('button', opts.messages.save, {
-        className: 'btn btn-primary ' + opts.prefix + 'save',
-        id: frmbID + '-save',
-        type: 'button'
-      }),
-          formActions = utils.markup('div', [clearAll, viewData, saveAll], {
-        className: 'form-actions btn-group'
-      });
-    }
-
     // Sortable fields
     $sortableFields.sortable({
       cursor: 'move',
@@ -1759,7 +1699,32 @@ function formBuilderEventsFn() {
     var cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap ' + formBuilder.layout.controls
-    }).append($cbUL[0], formActions);
+    }).append($cbUL[0]);
+
+    if (opts.showActionButtons) {
+      // Build our headers and action links
+      var viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON,
+          viewData = utils.markup('button', viewDataText, {
+        id: frmbID + '-view-data',
+        type: 'button',
+        className: 'view-data btn btn-default'
+      }),
+          clearAll = utils.markup('button', opts.messages.clearAll, {
+        id: frmbID + '-clear-all',
+        type: 'button',
+        className: 'clear-all btn btn-default'
+      }),
+          saveAll = utils.markup('button', opts.messages.save, {
+        className: 'btn btn-primary ' + opts.prefix + 'save',
+        id: frmbID + '-save',
+        type: 'button'
+      }),
+          formActions = utils.markup('div', [clearAll, viewData, saveAll], {
+        className: 'form-actions btn-group'
+      });
+
+      cbWrap.append(formActions);
+    }
 
     $stageWrap.append($sortableFields, cbWrap);
     $stageWrap.before($formWrap);
@@ -2556,7 +2521,7 @@ function formBuilderEventsFn() {
 
     document.dispatchEvent(formBuilder.events.loaded);
 
-    // Make some actions accessible
+    // Make actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
       showData: _helpers.showData,

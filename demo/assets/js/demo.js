@@ -9,7 +9,9 @@ jQuery(document).ready(function($) {
     editing = !editing;
   };
 
-  $(buildWrap).formBuilder();
+  var formBuilder = $(buildWrap).formBuilder().data('formBuilder');
+
+  console.log(formBuilder);
 
   $('.form-builder-save').click(function(e) {
     toggleEdit();
