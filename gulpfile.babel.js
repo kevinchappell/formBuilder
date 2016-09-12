@@ -231,7 +231,7 @@ gulp.task('deploy', () => {
       console.log('Demo was successfully deployed!\n');
     }
   });
-  exec(`cd site && OVERCOMMIT_DISABLE=1 git add --all && OVERCOMMIT_DISABLE=1 git commit -am "${pkg.version}" && OVERCOMMIT_DISABLE=1 git push origin master && gulp deploy && cd ../`, function(err, stdout, stderr) {
+  exec(`cd site && gulp deploy && cd ../`, function(err, stdout, stderr) {
     console.log(stdout);
     if (stderr) {
       console.error(err, stderr);

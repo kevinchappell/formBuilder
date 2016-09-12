@@ -791,6 +791,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var $fields = $(fields);
     var markEmptyArray = [];
 
+    if (!fields.length) {
+      return false;
+    }
+
     if (opts.prepend) {
       markEmptyArray.push(true);
     }
