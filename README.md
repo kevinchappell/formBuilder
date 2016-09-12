@@ -33,8 +33,8 @@ jQuery(document).ready(function($) {
 | [fieldRemoveWarn](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/fieldRemoveWarn/) | {Bool} | `true` | `false` |
 | [formData](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/formData/) | {String} | `xmlData` | `jsonData` |
 | [roles](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/roles/) | {Object} | `{1: 'Administrator', 2: 'Editor' }` | `{ 1: 'Administrator'}` |
-| [messages](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/messages/) | {Object} | `{ addOption: 'Add Option', ... }` | [See form-builder.js#L58](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L58) |
-| [notify](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/notify/) | {Object} | `{error: message => alert(message)}` | [See form-builder.js#L186](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L186) |
+| [messages](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/messages/) | {Object} | `{ addOption: 'Add Option', ... }` | [See form-builder.js#L51](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L51) |
+| [notify](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/notify/) | {Object} | `{error: message => alert(message)}` | [See form-builder.js#L182](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L182) |
 | [sortableControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/sortableControls/) | {Bool} | `sortableControls: true` | `false` |
 | [stickyControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/stickyControls/) | {Bool} | `stickyControls: true` | `false` |
 | [showActionButtons](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/showActionButtons/) | {Bool} | `showActionButtons: false` | `true` |

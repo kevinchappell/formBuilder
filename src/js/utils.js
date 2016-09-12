@@ -234,6 +234,17 @@ fbUtils.escapeHtml = function(html) {
   return escapeElement.innerHTML;
 };
 
+/**
+ * Converts escaped HTML into usable HTML
+ * @param  {String} html escaped HTML
+ * @return {String}      parsed HTML
+ */
+fbUtils.parsedHtml = function(html) {
+  var escapeElement = document.createElement('textarea');
+  escapeElement.innerHTML = html;
+  return escapeElement.textContent;
+};
+
 // Escape an attribute
 fbUtils.escapeAttr = function(str) {
   var match = {

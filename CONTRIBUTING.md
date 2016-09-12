@@ -5,8 +5,8 @@ formBuilder is open source to the core and contributions are always welcome. In 
 ## Dependencies
 To develop for formBuilder you'll need:
 
-- [NodeJS](https://nodejs.org)
-- [GulpJS](http://gulpjs.com/)
+- [Node.js](https://nodejs.org)
+- [Gulp](http://gulpjs.com/)
 
 ## Recommended Tooling
 While not required, the following tools are recommended to maintain code quality and consistency in style.
