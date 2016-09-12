@@ -4,7 +4,8 @@ When the option `showActionButtons` is set to false, the buttons for clearing th
 ## Usage
 ```javascript
 var options = {
-      showActionButtons: false
+      showActionButtons: false // defaults: `true`
     };
 $(container).formBuilder(options);
 ```
+<p data-height="666" data-theme-id="22927" data-slug-hash="dpGbzB" data-default-tab="result" data-user="kevinchappell" data-embed-version="2" class="codepen"></p>

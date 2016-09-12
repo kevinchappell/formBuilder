@@ -30,6 +30,7 @@ pages:
   - formData: formBuilder/options/formData.md
   - messages: formBuilder/options/messages.md
   - notify: formBuilder/options/notify.md
+  - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
 - formRender Demos:
