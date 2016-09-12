@@ -1287,7 +1287,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     });
   };
 
-  _helpers.showXML = function () {
+  _helpers.showData = function () {
 
     var data = utils.escapeHtml(formBuilder.formData),
         code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
@@ -1389,7 +1389,6 @@ function formBuilderEventsFn() {
       //   type: 'text'
       // }],
       defaultFields: [],
-      showControls: true,
       fieldRemoveWarn: false,
       roles: {
         1: 'Administrator'
@@ -1520,6 +1519,7 @@ function formBuilderEventsFn() {
       },
       sortableControls: false,
       stickyControls: false,
+      showActionButtons: true,
       prefix: 'form-builder-'
     };
 
@@ -1684,7 +1684,7 @@ function formBuilderEventsFn() {
 
     var viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
 
-    if (opts.showControls) {
+    if (opts.showActionButtons) {
       // Build our headers and action links
       var viewData = utils.markup('button', viewDataText, {
         id: frmbID + '-view-data',
@@ -2506,12 +2506,12 @@ function formBuilderEventsFn() {
       $(this).parents('li:eq(0)').toggleClass('delete');
     });
 
-    if (opts.showControls) {
+    if (opts.showActionButtons) {
       // View XML
       var xmlButton = $(document.getElementById(frmbID + '-view-data'));
       xmlButton.click(function (e) {
         e.preventDefault();
-        _helpers.showXML();
+        _helpers.showData();
       });
 
       // Clear all fields in form editor
@@ -2559,7 +2559,7 @@ function formBuilderEventsFn() {
     // Make some actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
-      showXML: _helpers.showXML,
+      showData: _helpers.showData,
       save: _helpers.save
     };
 

@@ -192,7 +192,7 @@
       },
       sortableControls: false,
       stickyControls: false,
-      showCommandButtons: true,
+      showActionButtons: true,
       prefix: 'form-builder-'
     };
 
@@ -357,7 +357,7 @@
 
     let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
 
-    if (opts.showCommandButtons) {
+    if (opts.showActionButtons) {
       // Build our headers and action links
       var viewData = utils.markup('button', viewDataText, {
           id: frmbID + '-view-data',
@@ -1209,12 +1209,12 @@
     });
 
 
-    if(opts.showCommandButtons) {
+    if(opts.showActionButtons) {
       // View XML
       var xmlButton = $(document.getElementById(frmbID + '-view-data'));
       xmlButton.click(function(e) {
         e.preventDefault();
-        _helpers.showXML();
+        _helpers.showData();
       });
 
       // Clear all fields in form editor
@@ -1262,7 +1262,7 @@
     // Make some actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
-      showXML: _helpers.showXML,
+      showData: _helpers.showData,
       save: _helpers.save
     };
 

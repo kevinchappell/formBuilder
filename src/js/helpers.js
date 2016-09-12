@@ -981,7 +981,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
   };
 
-  _helpers.showXML = function() {
+  _helpers.showData = function() {
 
     var data = utils.escapeHtml(formBuilder.formData),
         code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
