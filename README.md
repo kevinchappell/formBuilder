@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
 | [notify](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/notify/) | {Object} | `{error: message => alert(message)}` | [See form-builder.js#L186](https://github.com/kevinchappell/formBuilder/blob/master/src/js/form-builder.js#L186) |
 | [sortableControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/sortableControls/) | {Bool} | `sortableControls: true` | `false` |
 | [stickyControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/stickyControls/) | {Bool} | `stickyControls: true` | `false` |
-
+| [showActionButtons](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/showActionButtons/) | {Bool} | `showActionButtons: false` | `true` |
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
 ## Translators Needed!

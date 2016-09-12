@@ -192,6 +192,7 @@
       },
       sortableControls: false,
       stickyControls: false,
+      showActionButtons: true,
       prefix: 'form-builder-'
     };
 
@@ -356,25 +357,27 @@
 
     let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON;
 
-    // Build our headers and action links
-    var viewData = utils.markup('button', viewDataText, {
-        id: frmbID + '-view-data',
-        type: 'button',
-        className: 'view-data btn btn-default'
-      }),
-      clearAll = utils.markup('button', opts.messages.clearAll, {
-        id: frmbID + '-clear-all',
-        type: 'button',
-        className: 'clear-all btn btn-default'
-      }),
-      saveAll = utils.markup('button', opts.messages.save, {
-        className: `btn btn-primary ${opts.prefix}save`,
-        id: frmbID + '-save',
-        type: 'button'
-      }),
-      formActions = utils.markup('div', [clearAll, viewData, saveAll], {
-        className: 'form-actions btn-group'
+    if (opts.showActionButtons) {
+      // Build our headers and action links
+      var viewData = utils.markup('button', viewDataText, {
+          id: frmbID + '-view-data',
+          type: 'button',
+          className: 'view-data btn btn-default'
+        }),
+        clearAll = utils.markup('button', opts.messages.clearAll, {
+          id: frmbID + '-clear-all',
+          type: 'button',
+          className: 'clear-all btn btn-default'
+        }),
+        saveAll = utils.markup('button', opts.messages.save, {
+          className: `btn btn-primary ${opts.prefix}save`,
+          id: frmbID + '-save',
+          type: 'button'
+        }),
+        formActions = utils.markup('div', [clearAll, viewData, saveAll], {
+          className: 'form-actions btn-group'
       });
+    }
 
     // Sortable fields
     $sortableFields.sortable({
@@ -1205,44 +1208,44 @@
       $(this).parents('li:eq(0)').toggleClass('delete');
     });
 
-    // View XML
-    var xmlButton = $(document.getElementById(frmbID + '-view-data'));
-    xmlButton.click(function(e) {
-      e.preventDefault();
-      var data = utils.escapeHtml(formBuilder.formData),
-        code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
-        pre = utils.markup('pre', code);
-      _helpers.dialog(pre, null, 'data-dialog');
-    });
 
-    // Clear all fields in form editor
-    var clearButton = $(document.getElementById(frmbID + '-clear-all'));
-    clearButton.click(function() {
-      let fields = $('li.form-field');
-      let buttonPosition = this.getBoundingClientRect(),
-        bodyRect = document.body.getBoundingClientRect(),
-        coords = {
-          pageX: buttonPosition.left + (buttonPosition.width / 2),
-          pageY: (buttonPosition.top - bodyRect.top) - 12
-        };
+    if(opts.showActionButtons) {
+      // View XML
+      var xmlButton = $(document.getElementById(frmbID + '-view-data'));
+      xmlButton.click(function(e) {
+        e.preventDefault();
+        _helpers.showData();
+      });
 
-      if (fields.length) {
-        _helpers.confirm(opts.messages.clearAllMessage, function() {
-          _helpers.removeAllfields();
-          opts.notify.success(opts.messages.allFieldsRemoved);
-          _helpers.save();
-        }, coords);
-      } else {
-        _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
-      }
-    });
+      // Clear all fields in form editor
+      var clearButton = $(document.getElementById(frmbID + '-clear-all'));
+      clearButton.click(function() {
+        let fields = $('li.form-field');
+        let buttonPosition = this.getBoundingClientRect(),
+          bodyRect = document.body.getBoundingClientRect(),
+          coords = {
+            pageX: buttonPosition.left + (buttonPosition.width / 2),
+            pageY: (buttonPosition.top - bodyRect.top) - 12
+          };
 
-    // Save Idea Template
-    $(document.getElementById(frmbID + '-save')).click(function(e) {
-      e.preventDefault();
-      _helpers.save();
-      _helpers.validateForm(e);
-    });
+        if (fields.length) {
+          _helpers.confirm(opts.messages.clearAllMessage, function() {
+            _helpers.removeAllfields();
+            opts.notify.success(opts.messages.allFieldsRemoved);
+            _helpers.save();
+          }, coords);
+        } else {
+          _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
+        }
+      });
+
+      // Save Idea Template
+      $(document.getElementById(frmbID + '-save')).click(function(e) {
+        e.preventDefault();
+        _helpers.save();
+        _helpers.validateForm(e);
+      });
+    }
 
     _helpers.getData();
     loadFields();
@@ -1259,6 +1262,7 @@
     // Make some actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
+      showData: _helpers.showData,
       save: _helpers.save
     };
 
