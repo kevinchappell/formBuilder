@@ -7,6 +7,7 @@ function formBuilderEventsFn() {
   events.viewData = new Event('viewData');
   events.userDeclined = new Event('userDeclined');
   events.modalClosed = new Event('modalClosed');
+  events.modalOpened = new Event('modalOpened');
   events.formSaved = new Event('formSaved');
 
   return events;

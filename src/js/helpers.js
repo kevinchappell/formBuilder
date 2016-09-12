@@ -607,45 +607,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
-  utils.markup = function(tag, content = '', attrs = {}) {
-    let contentType,
-      field = document.createElement(tag),
-      getContentType = function(content) {
-        return Array.isArray(content) ? 'array' : typeof content;
-      },
-      appendContent = {
-        string: function(content) {
-          field.innerHTML = content;
-        },
-        object: function(content) {
-          return field.appendChild(content);
-        },
-        array: function(content) {
-          for (var i = 0; i < content.length; i++) {
-            contentType = getContentType(content[i]);
-            appendContent[contentType](content[i]);
-          }
-        }
-      };
-
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        if (attrs[attr]) {
-          let name = utils.safeAttrName(attr);
-          field.setAttribute(name, attrs[attr]);
-        }
-      }
-    }
-
-    contentType = getContentType(content);
-
-    if (content) {
-      appendContent[contentType].call(this, content);
-    }
-
-    return field;
-  };
-
   /**
    * Closes and open dialog
    *
@@ -776,9 +737,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     document.body.appendChild(miniModal);
 
+    document.dispatchEvent(formBuilder.events.modalOpened);
+
     if (className.indexOf('data-dialog') !== -1) {
       document.dispatchEvent(formBuilder.events.viewData);
     }
+
     return miniModal;
   };
 

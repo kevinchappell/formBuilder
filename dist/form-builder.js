@@ -284,8 +284,6 @@ fbUtils.escapeAttrs = function (attrs) {
 };
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
 
@@ -905,48 +903,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return _helpers.unique(classes.reverse()).join(' ').trim();
   };
 
-  utils.markup = function (tag) {
-    var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-    var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-    var contentType = void 0,
-        field = document.createElement(tag),
-        getContentType = function getContentType(content) {
-      return Array.isArray(content) ? 'array' : typeof content === 'undefined' ? 'undefined' : _typeof(content);
-    },
-        appendContent = {
-      string: function string(content) {
-        field.innerHTML = content;
-      },
-      object: function object(content) {
-        return field.appendChild(content);
-      },
-      array: function array(content) {
-        for (var i = 0; i < content.length; i++) {
-          contentType = getContentType(content[i]);
-          appendContent[contentType](content[i]);
-        }
-      }
-    };
-
-    for (var attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        if (attrs[attr]) {
-          var name = utils.safeAttrName(attr);
-          field.setAttribute(name, attrs[attr]);
-        }
-      }
-    }
-
-    contentType = getContentType(content);
-
-    if (content) {
-      appendContent[contentType].call(this, content);
-    }
-
-    return field;
-  };
-
   /**
    * Closes and open dialog
    *
@@ -1083,9 +1039,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     document.body.appendChild(miniModal);
 
+    document.dispatchEvent(formBuilder.events.modalOpened);
+
     if (className.indexOf('data-dialog') !== -1) {
       document.dispatchEvent(formBuilder.events.viewData);
     }
+
     return miniModal;
   };
 
@@ -1313,6 +1272,7 @@ function formBuilderEventsFn() {
   events.viewData = new Event('viewData');
   events.userDeclined = new Event('userDeclined');
   events.modalClosed = new Event('modalClosed');
+  events.modalOpened = new Event('modalOpened');
   events.formSaved = new Event('formSaved');
 
   return events;
