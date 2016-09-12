@@ -981,5 +981,15 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
   };
 
+  _helpers.showXML = function() {
+
+    var data = utils.escapeHtml(formBuilder.formData),
+        code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
+        pre = utils.markup('pre', code);
+
+    _helpers.dialog(pre, null, 'data-dialog');
+
+  };
+
   return _helpers;
 }

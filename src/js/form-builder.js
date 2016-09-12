@@ -1214,10 +1214,7 @@
       var xmlButton = $(document.getElementById(frmbID + '-view-data'));
       xmlButton.click(function(e) {
         e.preventDefault();
-        var data = utils.escapeHtml(formBuilder.formData),
-          code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
-          pre = utils.markup('pre', code);
-        _helpers.dialog(pre, null, 'data-dialog');
+        _helpers.showXML();
       });
 
       // Clear all fields in form editor
@@ -1265,6 +1262,7 @@
     // Make some actions accessible
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
+      showXML: _helpers.showXML,
       save: _helpers.save
     };
 
