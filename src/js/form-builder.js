@@ -5,6 +5,7 @@
     var formBuilder = this;
 
     var defaults = {
+      typeUserAttrs:{},//+ gimigliano		
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -730,9 +731,43 @@
 
       advFields.push(textAttribute('maxlength', values));
 
-      return advFields.join('');
-    };
+      //+ gimigliano
+      if(opts.typeUserAttrs[values.type]) {}
+      	for (var attribute in opts.typeUserAttrs[values.type]) {
+		  			var orig=opts.messages[attribute];
+		  			opts.typeUserAttrs[values.type][attribute]['value']=values[attribute];
+		  			if(opts.typeUserAttrs[values.type][attribute]['label']) opts.messages[attribute]=opts.typeUserAttrs[values.type][attribute]['label'];
+		  			if(opts.typeUserAttrs[values.type][attribute]['options']) advFields.push(selectUserAttrs(attribute, opts.typeUserAttrs[values.type][attribute]));
+		  																else  advFields.push(textUserAttrs(attribute, opts.typeUserAttrs[values.type][attribute]));
+		  			opts.messages[attribute]=orig;
+		  			
+	  				}
+      //- gimigliano
+   	  return advFields.join('');
+	};
 
+	//+ gimigliao
+				function selectUserAttrs(name,  options) {
+				var optis=[];
+				for (var val in options['options']) optis.push('<option value="'+val+'" '+(val==options['value']?' selected="selected" ':'')+'>'+options['options'][val]+'</option>');  
+				return '<div class="form-group ' + name + '-wrap">'
+							+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
+					 			+'<select name="' + name + '" '+(options['description']?' title="'+options['description']+'"':'') +' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '">'
+					 			+ optis.join('')
+					 		    +'</select>'
+					 		+'</div>';
+				};    
+				
+				
+				function textUserAttrs(name,  options) {
+				return '<div class="form-group ' + name + '-wrap">'
+								+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
+						 			+'<input type="text"  '+(options['value']?' value="'+options['value']+'"':'') +' name="' + name + '" '+(options['maxlength']?' maxlength="'+options['maxlength']+'"':'') +' '+(options['placeholder']?' placeholder="'+options['placeholder']+'"':'') +' '+(options['description']?' title="'+options['description']+'"':'') +' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '" />'
+						 		+'</div>';
+				};
+	//- gimigliano
+    
+    
     var boolAttribute = function(name, values, labels) {
       let label = (txt) => {
           return `<label for="${name}-${lastID}">${txt}</label>`;
