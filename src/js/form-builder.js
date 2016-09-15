@@ -511,7 +511,12 @@
       }
 
       field.name = isNew ? nameAttr(field) : field.name;
-      field.className = field.className || field.class; // backwards compatibility
+
+      if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
+        field.className = 'form-control'; // backwards compatibility
+      } else {
+        field.className = field.class || field.className; // backwards compatibility
+      }
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {
@@ -529,7 +534,7 @@
       let formData = formBuilder.formData;
       if (formData) {
         for (let i = 0; i < formData.length; i++) {
-          appendNewField(formData[i]);
+          prepFieldVars(formData[i]);
         }
         $stageWrap.removeClass('empty');
       } else if (opts.defaultFields && opts.defaultFields.length) {
@@ -582,26 +587,29 @@
      */
     var fieldOptions = function(values) {
       let addOption = utils.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
-        fieldOptions = '';
+        fieldOptions = '',
+        isMultiple = values.multiple || (values.type === 'checkbox-group');
 
       if (!values.values || !values.values.length) {
-        values.values = [{
-          selected: true
-        }, {
-          selected: false
-        }];
-
-        values.values = values.values.map(function(elem, index) {
-          elem.label = `${opts.messages.option} ${index + 1}`;
-          elem.value = utils.hyphenCase(elem.label);
-          return elem;
+        values.values = [1, 2, 3].map(function(index) {
+          let label = `${opts.messages.option} ${index}`;
+          let option = {
+            selected: false,
+            label: label,
+            value: utils.hyphenCase(label)
+          };
+          return option;
         });
+        values.values[0].selected = true;
       } else {
         // ensure option data is has all required keys
         for (let i = values.values.length - 1; i >= 0; i--) {
           values.values[i] = Object.assign({}, { selected: false }, values.values[i]);
         }
       }
+
+      console.log(values.values);
+
 
       fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
       fieldOptions += '<div class="sortable-options-wrap">';
@@ -614,7 +622,7 @@
 
       fieldOptions += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-        fieldOptions += selectFieldOptions(values.name, values.values[i], values.multiple);
+        fieldOptions += selectFieldOptions(values.name, values.values[i], isMultiple);
       }
       fieldOptions += '</ol>';
       fieldOptions += utils.markup('div', addOption, { className: 'option-actions' }).outerHTML;
@@ -684,6 +692,7 @@
 
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
+
       // Class
       advFields.push(textAttribute('className', values));
 
@@ -982,6 +991,7 @@
 
     // Select field html, since there may be multiple
     var selectFieldOptions = function(name, optionData, multipleSelect) {
+      console.log(optionData, multipleSelect);
       let optionInputType = {
           selected: (multipleSelect ? 'checkbox' : 'radio')
         },
@@ -1004,13 +1014,19 @@
           let attrs = {
             type: optionInputType[prop] || 'text',
             'class': 'option-' + prop,
-            placeholder: opts.messages.placeholders[prop],
             value: optionData[prop],
             name: name
           };
-          if (prop === 'selected') {
+          if (opts.messages.placeholders[prop]) {
+            attrs.placeholder = opts.messages.placeholders[prop];
+          }
+
+          if (prop === 'selected' && optionData.selected === true) {
             attrs.checked = optionData.selected;
           }
+
+          console.log(attrs);
+
           optionInputs.push(utils.markup('input', null, attrs));
         }
       }
