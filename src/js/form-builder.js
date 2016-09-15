@@ -745,26 +745,32 @@
       //- gimigliano
    	  return advFields.join('');
 	};
-
-	//+ gimigliao
-				function selectUserAttrs(name,  options) {
-				var optis=[];
-				for (var val in options['options']) optis.push('<option value="'+val+'" '+(val==options['value']?' selected="selected" ':'')+'>'+options['options'][val]+'</option>');  
-				return '<div class="form-group ' + name + '-wrap">'
-							+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
-					 			+'<select name="' + name + '" '+(options['description']?' title="'+options['description']+'"':'') +' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '">'
-					 			+ optis.join('')
-					 		    +'</select>'
-					 		+'</div>';
-				};    
-				
-				
-				function textUserAttrs(name,  options) {
-				return '<div class="form-group ' + name + '-wrap">'
-								+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
-						 			+'<input type="text"  '+(options['value']?' value="'+options['value']+'"':'') +' name="' + name + '" '+(options['maxlength']?' maxlength="'+options['maxlength']+'"':'') +' '+(options['placeholder']?' placeholder="'+options['placeholder']+'"':'') +' '+(options['description']?' title="'+options['description']+'"':'') +' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '" />'
-						 		+'</div>';
-				};
+ 
+	  
+	  //+ gimigliano
+		function selectUserAttrs(name,  options) {
+		var optis=[];
+		for (var opt in options['options']) optis.push('<option value="'+opt.replace('"','&quot;')+'" '+(opt==options['value']?' selected="selected" ':'')+'>'+options['options'][opt]+'</option>');
+		var selectOpen='select name="' + name + '" class="fld-' + name + ' form-control" id="' + name + '-' + lastID+'"';
+		for (var val in options) if(val!='options' && val!='type' && val!='value' && options[val]!=undefined) selectOpen+=val+'="'+options[val].replace('"','&quot;')+'"';
+		return '<div class="form-group ' + name + '-wrap">'
+					+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
+			 		+selectOpen
+			 		 	+optis.join('')
+			 		+'</select>'
+			 +'</div>';
+		};    
+		
+		
+		function textUserAttrs(name,  options) {
+		if(!options['type']) options['type']='text';
+		var text=' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '"';
+		for (var val in options) if(options[val]!=undefined) text+=val+'="'+options[val].replace('"','&quot;')+'"'; 
+		return '<div class="form-group ' + name + '-wrap">'
+						+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
+				 			+'<input '+text + ' />'
+				 		+'</div>';
+		};
 	//- gimigliano
     
     
