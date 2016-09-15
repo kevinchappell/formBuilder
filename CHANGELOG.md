@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.17.2 - Bugfix: Classes not saving in XML mode and option pre-select issues[#250](https://github.com/kevinchappell/formBuilder/pull/250)
 - v1.17.1 - Bugfix: `clearFields` action will error if no fields on stage[#245](https://github.com/kevinchappell/formBuilder/pull/245)
 - v1.17.0 - Feature: `showActionButtons` option and `showData` action[#244](https://github.com/kevinchappell/formBuilder/pull/244)
 - v1.16.0 - Feature: JSON support[#237](https://github.com/kevinchappell/formBuilder/pull/237)

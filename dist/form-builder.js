@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.17.1
+Version: 1.17.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -862,20 +862,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   _helpers.classNames = function (field, previewData) {
-    var noFormControl = ['checkbox', 'checkbox-group', 'radio-group'],
-        blockElements = ['header', 'paragraph', 'button'],
-        i = void 0;
-
-    for (i = blockElements.length - 1; i >= 0; i--) {
-      blockElements = blockElements.concat(opts.messages.subtypes[blockElements[i]]);
-    }
-
-    noFormControl = noFormControl.concat(blockElements);
-
-    var type = previewData.type;
-    var style = previewData.style;
+    var i = void 0,
+        type = previewData.type,
+        style = previewData.style;
     var className = field[0].querySelector('.fld-className').value;
-    var classes = [].concat(className.split(' ')).reverse();
+    var classes = className.split(' ');
     var types = {
       button: 'btn',
       submit: 'btn'
@@ -885,7 +876,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     if (primaryType) {
       if (style) {
-        for (i = classes.length - 1; i >= 0; i--) {
+        for (i = 0; i < classes.length; i++) {
           var re = new RegExp('(?:^|\s)' + primaryType + '-(.*?)(?:\s|$)+', 'g');
           var match = classes[i].match(re);
           if (match) {
@@ -895,12 +886,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
         classes.push(primaryType + '-' + style);
       }
       classes.push(primaryType);
-    } else if (!_helpers.inArray(type, noFormControl)) {
-      classes.push('form-control');
     }
 
     // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
-    return _helpers.unique(classes.reverse()).join(' ').trim();
+    return _helpers.unique(classes).join(' ').trim();
   };
 
   /**
@@ -1806,7 +1795,12 @@ function formBuilderEventsFn() {
       }
 
       field.name = isNew ? nameAttr(field) : field.name;
-      field.className = field.className || field.class; // backwards compatibility
+
+      if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
+        field.className = 'form-control'; // backwards compatibility
+      } else {
+          field.className = field.class || field.className; // backwards compatibility
+        }
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {
@@ -1824,7 +1818,7 @@ function formBuilderEventsFn() {
       var formData = formBuilder.formData;
       if (formData) {
         for (var _i = 0; _i < formData.length; _i++) {
-          appendNewField(formData[_i]);
+          prepFieldVars(formData[_i]);
         }
         $stageWrap.removeClass('empty');
       } else if (opts.defaultFields && opts.defaultFields.length) {
@@ -1877,20 +1871,20 @@ function formBuilderEventsFn() {
      */
     var fieldOptions = function fieldOptions(values) {
       var addOption = utils.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
-          fieldOptions = '';
+          fieldOptions = '',
+          isMultiple = values.multiple || values.type === 'checkbox-group';
 
       if (!values.values || !values.values.length) {
-        values.values = [{
-          selected: true
-        }, {
-          selected: false
-        }];
-
-        values.values = values.values.map(function (elem, index) {
-          elem.label = opts.messages.option + ' ' + (index + 1);
-          elem.value = utils.hyphenCase(elem.label);
-          return elem;
+        values.values = [1, 2, 3].map(function (index) {
+          var label = opts.messages.option + ' ' + index;
+          var option = {
+            selected: false,
+            label: label,
+            value: utils.hyphenCase(label)
+          };
+          return option;
         });
+        values.values[0].selected = true;
       } else {
         // ensure option data is has all required keys
         for (var _i3 = values.values.length - 1; _i3 >= 0; _i3--) {
@@ -1909,7 +1903,7 @@ function formBuilderEventsFn() {
 
       fieldOptions += '<ol class="sortable-options">';
       for (i = 0; i < values.values.length; i++) {
-        fieldOptions += selectFieldOptions(values.name, values.values[i], values.multiple);
+        fieldOptions += selectFieldOptions(values.name, values.values[i], isMultiple);
       }
       fieldOptions += '</ol>';
       fieldOptions += utils.markup('div', addOption, { className: 'option-actions' }).outerHTML;
@@ -1971,6 +1965,7 @@ function formBuilderEventsFn() {
 
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
+
       // Class
       advFields.push(textAttribute('className', values));
 
@@ -2266,13 +2261,17 @@ function formBuilderEventsFn() {
           var attrs = {
             type: optionInputType[prop] || 'text',
             'class': 'option-' + prop,
-            placeholder: opts.messages.placeholders[prop],
             value: optionData[prop],
             name: name
           };
-          if (prop === 'selected') {
+          if (opts.messages.placeholders[prop]) {
+            attrs.placeholder = opts.messages.placeholders[prop];
+          }
+
+          if (prop === 'selected' && optionData.selected === true) {
             attrs.checked = optionData.selected;
           }
+
           optionInputs.push(utils.markup('input', null, attrs));
         }
       }
