@@ -732,7 +732,8 @@
       advFields.push(textAttribute('maxlength', values));
 
       //+ gimigliano
-      if(opts.typeUserAttrs[values.type]) {}
+      
+      if(opts.typeUserAttrs[values.type]) 
       	for (var attribute in opts.typeUserAttrs[values.type]) {
 		  			var orig=opts.messages[attribute];
 		  			opts.typeUserAttrs[values.type][attribute]['value']=values[attribute];
