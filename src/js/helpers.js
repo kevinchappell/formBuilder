@@ -562,24 +562,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   _helpers.classNames = function(field, previewData) {
-    let noFormControl = [
-        'checkbox',
-        'checkbox-group',
-        'radio-group'
-      ],
-      blockElements = ['header', 'paragraph', 'button'],
-      i;
-
-    for (i = blockElements.length - 1; i >= 0; i--) {
-      blockElements = blockElements.concat(opts.messages.subtypes[blockElements[i]]);
-    }
-
-    noFormControl = noFormControl.concat(blockElements);
-
-    let type = previewData.type;
-    let style = previewData.style;
+    let i,
+      type = previewData.type,
+      style = previewData.style;
     let className = field[0].querySelector('.fld-className').value;
-    let classes = [].concat(className.split(' ')).reverse();
+    let classes = className.split(' ');
     let types = {
       button: 'btn',
       submit: 'btn'
@@ -589,7 +576,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     if (primaryType) {
       if (style) {
-        for (i = classes.length - 1; i >= 0; i--) {
+        for (i = 0; i < classes.length; i++) {
           let re = new RegExp('(?:^|\s)' + primaryType + '-(.*?)(?:\s|$)+', 'g');
           let match = classes[i].match(re);
           if (match) {
@@ -599,12 +586,10 @@ function formBuilderHelpersFn(opts, formBuilder) {
         classes.push(primaryType + '-' + style);
       }
       classes.push(primaryType);
-    } else if (!_helpers.inArray(type, noFormControl)) {
-      classes.push('form-control');
     }
 
     // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
-    return _helpers.unique(classes.reverse()).join(' ').trim();
+    return _helpers.unique(classes).join(' ').trim();
   };
 
   /**
@@ -952,8 +937,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
   _helpers.showData = function() {
 
     var data = utils.escapeHtml(formBuilder.formData),
-        code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
-        pre = utils.markup('pre', code);
+      code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
+      pre = utils.markup('pre', code);
 
     _helpers.dialog(pre, null, 'data-dialog');
 
