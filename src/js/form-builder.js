@@ -5,7 +5,7 @@
     var formBuilder = this;
 
     var defaults = {
-      typeUserAttrs:{},//+ gimigliano		
+      typeUserAttrs:{},//+gimigliano		
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -731,7 +731,7 @@
 
       advFields.push(textAttribute('maxlength', values));
 
-      //+ gimigliano
+      //+gimigliano
       
       if(opts.typeUserAttrs[values.type]) 
       	for (var attribute in opts.typeUserAttrs[values.type]) {
@@ -743,21 +743,21 @@
 		  			opts.messages[attribute]=orig;
 		  			
 	  				}
-      //- gimigliano
+      //-gimigliano
    	  return advFields.join('');
 	};
  
 	  
-	  //+ gimigliano
+	  //+gimigliano
 		function selectUserAttrs(name,  options) {
 		var optis=[];
 		for (var opt in options['options']) optis.push('<option value="'+opt.replace('"','&quot;')+'" '+(opt==options['value']?' selected="selected" ':'')+'>'+options['options'][opt]+'</option>');
-		var selectOpen='select name="' + name + '" class="fld-' + name + ' form-control" id="' + name + '-' + lastID+'"';
+		var selectOpen='<select name="'+ name + '" class="fld-' + name + ' form-control" id="' + name + '-' + lastID+'"';
 		for (var val in options) if(val!='options' && val!='type' && val!='value' && options[val]!=undefined) selectOpen+=val+'="'+options[val].replace('"','&quot;')+'"';
 		return '<div class="form-group ' + name + '-wrap">'
 					+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
 			 		+selectOpen
-			 		 	+optis.join('')
+					+optis.join('')
 			 		+'</select>'
 			 +'</div>';
 		};    
@@ -772,7 +772,7 @@
 				 			+'<input '+text + ' />'
 				 		+'</div>';
 		};
-	//- gimigliano
+	//-gimigliano
     
     
     var boolAttribute = function(name, values, labels) {
