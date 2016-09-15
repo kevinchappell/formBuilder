@@ -608,9 +608,6 @@
         }
       }
 
-      console.log(values.values);
-
-
       fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
       fieldOptions += '<div class="sortable-options-wrap">';
       if (values.type === 'select') {
@@ -991,7 +988,6 @@
 
     // Select field html, since there may be multiple
     var selectFieldOptions = function(name, optionData, multipleSelect) {
-      console.log(optionData, multipleSelect);
       let optionInputType = {
           selected: (multipleSelect ? 'checkbox' : 'radio')
         },
@@ -1024,8 +1020,6 @@
           if (prop === 'selected' && optionData.selected === true) {
             attrs.checked = optionData.selected;
           }
-
-          console.log(attrs);
 
           optionInputs.push(utils.markup('input', null, attrs));
         }
