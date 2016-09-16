@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.17.2
+Version: 1.18.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -86,7 +86,9 @@ fbUtils.makeId = function () {
 };
 
 fbUtils.validAttr = function (attr) {
-  var invalid = ['values', 'enableOther', 'other', 'label', 'style', 'subtype'];
+  var invalid = ['values', 'enableOther', 'other', 'label',
+  // 'style',
+  'subtype'];
   return !fbUtils.inArray(attr, invalid);
 };
 
@@ -1318,6 +1320,7 @@ function formBuilderEventsFn() {
     var formBuilder = this;
 
     var defaults = {
+      typeUserAttrs: {}, //+gimigliano
       controlPosition: 'right',
       controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'number', 'radio-group', 'select', 'text', 'textarea'],
       dataType: 'xml',
@@ -1816,7 +1819,7 @@ function formBuilderEventsFn() {
     // Parse saved XML template data
     var loadFields = function loadFields() {
       var formData = formBuilder.formData;
-      if (formData) {
+      if (formData && formData.length) {
         for (var _i = 0; _i < formData.length; _i++) {
           prepFieldVars(formData[_i]);
         }
@@ -2012,8 +2015,79 @@ function formBuilderEventsFn() {
 
       advFields.push(textAttribute('maxlength', values));
 
+      // Append custom attributes as defined in typeUserAttrs option
+      if (opts.typeUserAttrs[values.type]) {
+        advFields.push(processTypeUserAttrs(opts.typeUserAttrs[values.type], values));
+      }
+
       return advFields.join('');
     };
+
+    function processTypeUserAttrs(typeUserAttr, values) {
+      var advField = [];
+
+      for (var attribute in typeUserAttr) {
+        if (typeUserAttr.hasOwnProperty(attribute)) {
+          var orig = opts.messages[attribute];
+          typeUserAttr[attribute].value = values[attribute] || '';
+
+          if (typeUserAttr[attribute].label) {
+            opts.messages[attribute] = typeUserAttr[attribute].label;
+          }
+
+          if (typeUserAttr[attribute].options) {
+            advField.push(selectUserAttrs(attribute, typeUserAttr[attribute]));
+          } else {
+            advField.push(textUserAttrs(attribute, typeUserAttr[attribute]));
+          }
+
+          opts.messages[attribute] = orig;
+        }
+      }
+
+      return advField.join('');
+    }
+
+    function textUserAttrs(name, options) {
+      var textAttrs = {
+        id: name + '-' + lastID,
+        title: options.description || options.label || name.toUpperCase(),
+        name: name,
+        type: options.type || 'text',
+        className: 'fld-' + name + ' form-control'
+      },
+          label = '<label for="' + textAttrs.id + '">' + opts.messages[name] + '</label>';
+
+      textAttrs = Object.assign({}, options, textAttrs);
+      var textInput = '<input ' + utils.attrString(textAttrs) + '>';
+      return '<div class="form-group ' + name + '-wrap">' + label + textInput + '</div>';
+    }
+
+    function selectUserAttrs(name, options) {
+      var optis = Object.keys(options.options).map(function (val) {
+        var attrs = { value: val };
+        if (val === options.value) {
+          attrs.selected = null;
+        }
+        return '<option ' + utils.attrString(attrs) + '>' + options.options[val] + '</option>';
+      }),
+          selectAttrs = {
+        id: name + '-' + lastID,
+        title: options.description || options.label || name.toUpperCase(),
+        name: name,
+        className: 'fld-' + name + ' form-control'
+      },
+          label = '<label for="' + selectAttrs.id + '">' + opts.messages[name] + '</label>';
+
+      Object.keys(options).filter(function (prop) {
+        return !utils.inArray(prop, ['value', 'options', 'label']);
+      }).forEach(function (attr) {
+        selectAttrs[attr] = options[attr];
+      });
+
+      var select = '<select ' + utils.attrString(selectAttrs) + '>' + optis.join('') + '</select>';
+      return '<div class="form-group ' + name + '-wrap">' + label + select + '</div>';
+    }
 
     var boolAttribute = function boolAttribute(name, values, labels) {
       var label = function label(txt) {

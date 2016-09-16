@@ -42,7 +42,7 @@ fbUtils.validAttr = function(attr) {
     'enableOther',
     'other',
     'label',
-    'style',
+    // 'style',
     'subtype'
   ];
   return !fbUtils.inArray(attr, invalid);

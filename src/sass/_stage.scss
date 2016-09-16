@@ -422,7 +422,7 @@
         width: 5%;
       }
 
-      input[type=text] {
+      input[type='text'] {
         width: calc(44.5% - 17px);
         margin: 0 1%;
         float: none;
@@ -465,6 +465,8 @@
 
       input[type='text'],
       input[type='number'],
+      input[type='date'],
+      input[type='color'],
       textarea,
       select {
         width: 81.33333333%;

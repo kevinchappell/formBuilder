@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.17.2
+Version: 1.18.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -534,7 +534,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       [id^='frmb-'][id$='-form-wrap'] .frmb ol.sortable-options input[type=radio] {
         margin: 0;
         width: 5%; }
-      [id^='frmb-'][id$='-form-wrap'] .frmb ol.sortable-options input[type=text] {
+      [id^='frmb-'][id$='-form-wrap'] .frmb ol.sortable-options input[type='text'] {
         width: calc(44.5% - 17px);
         margin: 0 1%;
         float: none; }
@@ -560,6 +560,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       /* smartphones, Android phones, landscape iPhone */ }
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='text'],
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='number'],
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='date'],
+      [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='color'],
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements textarea,
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements select {
         width: 81.33333333%;
@@ -572,6 +574,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         float: left; }
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='text'] .btn-group,
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='number'] .btn-group,
+        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='date'] .btn-group,
+        [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements input[type='color'] .btn-group,
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements textarea .btn-group,
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements select .btn-group {
           margin-left: 2%; }

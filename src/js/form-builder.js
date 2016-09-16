@@ -5,7 +5,7 @@
     var formBuilder = this;
 
     var defaults = {
-      typeUserAttrs:{},//+gimigliano		
+      typeUserAttrs: {}, //+gimigliano
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -533,7 +533,7 @@
     // Parse saved XML template data
     var loadFields = function() {
       let formData = formBuilder.formData;
-      if (formData) {
+      if (formData && formData.length) {
         for (let i = 0; i < formData.length; i++) {
           prepFieldVars(formData[i]);
         }
@@ -737,50 +737,78 @@
 
       advFields.push(textAttribute('maxlength', values));
 
-      //+gimigliano
-      
-      if(opts.typeUserAttrs[values.type]) 
-      	for (var attribute in opts.typeUserAttrs[values.type]) {
-		  			var orig=opts.messages[attribute];
-		  			opts.typeUserAttrs[values.type][attribute]['value']=values[attribute];
-		  			if(opts.typeUserAttrs[values.type][attribute]['label']) opts.messages[attribute]=opts.typeUserAttrs[values.type][attribute]['label'];
-		  			if(opts.typeUserAttrs[values.type][attribute]['options']) advFields.push(selectUserAttrs(attribute, opts.typeUserAttrs[values.type][attribute]));
-		  																else  advFields.push(textUserAttrs(attribute, opts.typeUserAttrs[values.type][attribute]));
-		  			opts.messages[attribute]=orig;
-		  			
-	  				}
-      //-gimigliano
-   	  return advFields.join('');
-	};
- 
-	  
-	  //+gimigliano
-		function selectUserAttrs(name,  options) {
-		var optis=[];
-		for (var opt in options['options']) optis.push('<option value="'+opt.replace('"','&quot;')+'" '+(opt==options['value']?' selected="selected" ':'')+'>'+options['options'][opt]+'</option>');
-		var selectOpen='<select name="'+ name + '" class="fld-' + name + ' form-control" id="' + name + '-' + lastID+'"';
-		for (var val in options) if(val!='options' && val!='type' && val!='value' && options[val]!=undefined) selectOpen+=val+'="'+options[val].replace('"','&quot;')+'">';
-		return '<div class="form-group ' + name + '-wrap">'
-					+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
-			 		+selectOpen
-					+optis.join('')
-			 		+'</select>'
-			 +'</div>';
-		};    
-		
-		
-		function textUserAttrs(name,  options) {
-		if(!options['type']) options['type']='text';
-		var text=' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '"';
-		for (var val in options) if(options[val]!=undefined) text+=val+'="'+options[val].replace('"','&quot;')+'"'; 
-		return '<div class="form-group ' + name + '-wrap">'
-						+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
-				 			+'<input '+text + ' />'
-				 		+'</div>';
-		};
-	//-gimigliano
-    
-    
+      // Append custom attributes as defined in typeUserAttrs option
+      if (opts.typeUserAttrs[values.type]) {
+        advFields.push(processTypeUserAttrs(opts.typeUserAttrs[values.type], values));
+      }
+
+      return advFields.join('');
+    };
+
+    function processTypeUserAttrs(typeUserAttr, values) {
+      let advField = [];
+
+      for (let attribute in typeUserAttr) {
+        if (typeUserAttr.hasOwnProperty(attribute)) {
+          let orig = opts.messages[attribute];
+          typeUserAttr[attribute].value = values[attribute] || '';
+
+          if (typeUserAttr[attribute].label) {
+            opts.messages[attribute] = typeUserAttr[attribute].label;
+          }
+
+          if (typeUserAttr[attribute].options) {
+            advField.push(selectUserAttrs(attribute, typeUserAttr[attribute]));
+          } else {
+            advField.push(textUserAttrs(attribute, typeUserAttr[attribute]));
+          }
+
+          opts.messages[attribute] = orig;
+        }
+      }
+
+      return advField.join('');
+    }
+
+    function textUserAttrs(name, options) {
+      let textAttrs = {
+          id: name + '-' + lastID,
+          title: options.description || options.label || name.toUpperCase(),
+          name: name,
+          type: options.type || 'text',
+          className: `fld-${name} form-control`
+        },
+        label = `<label for="${textAttrs.id}">${opts.messages[name]}</label>`;
+
+      textAttrs = Object.assign({}, options, textAttrs);
+      let textInput = `<input ${utils.attrString(textAttrs)}>`;
+      return `<div class="form-group ${name}-wrap">${label}${textInput}</div>`;
+    }
+
+    function selectUserAttrs(name, options) {
+      let optis = Object.keys(options.options).map(val => {
+          let attrs = {value: val};
+          if (val === options.value) {attrs.selected = null;}
+          return `<option ${utils.attrString(attrs)}>${options.options[val]}</option>`;
+        }),
+        selectAttrs = {
+          id: name + '-' + lastID,
+          title: options.description || options.label || name.toUpperCase(),
+          name: name,
+          className: `fld-${name} form-control`
+        },
+        label = `<label for="${selectAttrs.id}">${opts.messages[name]}</label>`;
+
+      Object.keys(options).filter(prop => {
+        return !utils.inArray(prop, ['value', 'options', 'label']);
+      }).forEach(function(attr) {
+        selectAttrs[attr] = options[attr];
+      });
+
+      let select = `<select ${utils.attrString(selectAttrs)}>${optis.join('')}</select>`;
+      return `<div class="form-group ${name}-wrap">${label}${select}</div>`;
+    }
+
     var boolAttribute = function(name, values, labels) {
       let label = (txt) => {
           return `<label for="${name}-${lastID}">${txt}</label>`;

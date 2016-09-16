@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.17.2
+Version: 1.18.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -131,7 +131,9 @@ fbUtils.makeId = function () {
 };
 
 fbUtils.validAttr = function (attr) {
-  var invalid = ['values', 'enableOther', 'other', 'label', 'style', 'subtype'];
+  var invalid = ['values', 'enableOther', 'other', 'label',
+  // 'style',
+  'subtype'];
   return !fbUtils.inArray(attr, invalid);
 };
 
