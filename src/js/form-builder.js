@@ -810,6 +810,8 @@
     }
 
     var boolAttribute = function(name, values, labels) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][name]) return;
+    		
       let label = (txt) => {
           return `<label for="${name}-${lastID}">${txt}</label>`;
         },
@@ -889,6 +891,7 @@
      * @return {String}
      */
     var numberAttribute = function(attribute, values) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) return;
       var attrVal = values[attribute] || '';
       var attrLabel = opts.messages[attribute] || attribute,
         placeholder = opts.messages.placeholders[attribute] || '',
@@ -903,6 +906,7 @@
      * @return {String}
      */
     var textAttribute = function(attribute, values) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) return;
       var placeholderFields = [
         'text',
         'textarea',
