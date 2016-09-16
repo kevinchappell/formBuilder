@@ -220,20 +220,17 @@ gulp.task('serve', function() {
 
 // Deploy the demo
 gulp.task('deploy', () => {
-  let gitArgs = {
-    args: 'subtree push --prefix demo origin gh-pages'
-  };
-  plugins.git.exec(gitArgs, function(err) {
-    if (err) {
-      console.error('There was an error deploying the Demo to gh-pages.\n', err);
-      throw err;
+  exec('OVERCOMMIT_DISABLE=1 git push origin $(git subtree split --prefix demo master):gh-pages --force', function(err, stdout, stderr) {
+    if (!stderr) {
+      console.log('Demo successfully deployed');
+      exec(`cd site && gulp deploy && cd ../`, function(err, stdout, stderr) {
+        if (!stderr) {
+          console.log('Site successfully deployed');
+        } else {
+          console.error(err, stderr);
+        }
+      });
     } else {
-      console.log('Demo was successfully deployed!\n');
-    }
-  });
-  exec(`cd site && gulp deploy && cd ../`, function(err, stdout, stderr) {
-    console.log(stdout);
-    if (stderr) {
       console.error(err, stderr);
     }
   });
