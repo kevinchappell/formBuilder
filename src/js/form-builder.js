@@ -1067,7 +1067,6 @@
         $clone.attr("id", lastID);
         $clone.attr("name", cloneName);
         $clone.addClass("cloned");
-        $('.sortable-options', $clone).sortable(); 
         lastID = _helpers.incrementId(lastID);
         return $clone;
     };

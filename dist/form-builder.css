@@ -465,8 +465,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       right: 0;
       opacity: 0; }
       [id^='frmb-'][id$='-form-wrap'] .frmb .field-actions a:hover {
-        text-decoration: none;
-        color: #000; }
+        text-decoration: none; }
       [id^='frmb-'][id$='-form-wrap'] .frmb .field-actions .btn {
         display: inline-block;
         width: 32px;
