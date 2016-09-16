@@ -5,6 +5,7 @@
     var formBuilder = this;
 
     var defaults = {
+      typeUserAttrs:{},//+gimigliano		
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -736,9 +737,50 @@
 
       advFields.push(textAttribute('maxlength', values));
 
-      return advFields.join('');
-    };
-
+      //+gimigliano
+      
+      if(opts.typeUserAttrs[values.type]) 
+      	for (var attribute in opts.typeUserAttrs[values.type]) {
+		  			var orig=opts.messages[attribute];
+		  			opts.typeUserAttrs[values.type][attribute]['value']=values[attribute];
+		  			if(opts.typeUserAttrs[values.type][attribute]['label']) opts.messages[attribute]=opts.typeUserAttrs[values.type][attribute]['label'];
+		  			if(opts.typeUserAttrs[values.type][attribute]['options']) advFields.push(selectUserAttrs(attribute, opts.typeUserAttrs[values.type][attribute]));
+		  																else  advFields.push(textUserAttrs(attribute, opts.typeUserAttrs[values.type][attribute]));
+		  			opts.messages[attribute]=orig;
+		  			
+	  				}
+      //-gimigliano
+   	  return advFields.join('');
+	};
+ 
+	  
+	  //+gimigliano
+		function selectUserAttrs(name,  options) {
+		var optis=[];
+		for (var opt in options['options']) optis.push('<option value="'+opt.replace('"','&quot;')+'" '+(opt==options['value']?' selected="selected" ':'')+'>'+options['options'][opt]+'</option>');
+		var selectOpen='<select name="'+ name + '" class="fld-' + name + ' form-control" id="' + name + '-' + lastID+'"';
+		for (var val in options) if(val!='options' && val!='type' && val!='value' && options[val]!=undefined) selectOpen+=val+'="'+options[val].replace('"','&quot;')+'">';
+		return '<div class="form-group ' + name + '-wrap">'
+					+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
+			 		+selectOpen
+					+optis.join('')
+			 		+'</select>'
+			 +'</div>';
+		};    
+		
+		
+		function textUserAttrs(name,  options) {
+		if(!options['type']) options['type']='text';
+		var text=' class="fld-' + name + ' form-control" id="' + name + '-' + lastID + '"';
+		for (var val in options) if(options[val]!=undefined) text+=val+'="'+options[val].replace('"','&quot;')+'"'; 
+		return '<div class="form-group ' + name + '-wrap">'
+						+'<label for="' + name + '-' + lastID + '">'+opts.messages[name] +'</label>' 
+				 			+'<input '+text + ' />'
+				 		+'</div>';
+		};
+	//-gimigliano
+    
+    
     var boolAttribute = function(name, values, labels) {
       let label = (txt) => {
           return `<label for="${name}-${lastID}">${txt}</label>`;
