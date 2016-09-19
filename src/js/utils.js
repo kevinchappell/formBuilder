@@ -69,9 +69,9 @@ fbUtils.attrString = function(attrs) {
 fbUtils.safeAttr = function(name, value) {
   name = fbUtils.safeAttrName(name);
 
-  let valString = window.JSON.stringify(fbUtils.escapeAttr(value));
+  let valString = fbUtils.escapeAttr(value);
 
-  value = value ? `=${valString}` : '';
+  value = value ? `="${valString}"` : '';
   return {
     name,
     value
@@ -210,8 +210,6 @@ fbUtils.escapeHtml = function(html) {
   escapeElement.textContent = html;
   return escapeElement.innerHTML;
 };
-
-
 
 fbUtils.escapeAttr = function(str) {
   var match = {
