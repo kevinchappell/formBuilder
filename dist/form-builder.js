@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.19.0
+Version: 1.19.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2092,6 +2092,8 @@ function formBuilderEventsFn() {
     }
 
     var boolAttribute = function boolAttribute(name, values, labels) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][name]) return;
+
       var label = function label(txt) {
         return '<label for="' + name + '-' + lastID + '">' + txt + '</label>';
       },
@@ -2169,6 +2171,7 @@ function formBuilderEventsFn() {
      * @return {String}
      */
     var numberAttribute = function numberAttribute(attribute, values) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) return;
       var attrVal = values[attribute] || '';
       var attrLabel = opts.messages[attribute] || attribute,
           placeholder = opts.messages.placeholders[attribute] || '',
@@ -2183,6 +2186,7 @@ function formBuilderEventsFn() {
      * @return {String}
      */
     var textAttribute = function textAttribute(attribute, values) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) return;
       var placeholderFields = ['text', 'textarea', 'select'];
 
       var noName = ['header'];
