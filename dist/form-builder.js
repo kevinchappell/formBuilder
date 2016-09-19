@@ -113,9 +113,9 @@ fbUtils.attrString = function (attrs) {
 fbUtils.safeAttr = function (name, value) {
   name = fbUtils.safeAttrName(name);
 
-  var valString = window.JSON.stringify(fbUtils.escapeAttr(value));
+  var valString = fbUtils.escapeAttr(value);
 
-  value = value ? '=' + valString : '';
+  value = value ? '="' + valString + '"' : '';
   return {
     name: name,
     value: value
@@ -2031,7 +2031,7 @@ function formBuilderEventsFn() {
       for (var attribute in typeUserAttr) {
         if (typeUserAttr.hasOwnProperty(attribute)) {
           var orig = opts.messages[attribute];
-          typeUserAttr[attribute].value = values[attribute] || '';
+          typeUserAttr[attribute].value = values[attribute] || typeUserAttr[attribute].value || '';
 
           if (typeUserAttr[attribute].label) {
             opts.messages[attribute] = typeUserAttr[attribute].label;

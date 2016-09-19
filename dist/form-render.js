@@ -158,9 +158,9 @@ fbUtils.attrString = function (attrs) {
 fbUtils.safeAttr = function (name, value) {
   name = fbUtils.safeAttrName(name);
 
-  var valString = window.JSON.stringify(fbUtils.escapeAttr(value));
+  var valString = fbUtils.escapeAttr(value);
 
-  value = value ? '=' + valString : '';
+  value = value ? '="' + valString + '"' : '';
   return {
     name: name,
     value: value
