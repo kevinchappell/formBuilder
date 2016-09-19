@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.18.0
+Version: 1.19.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1366,6 +1366,8 @@ function formBuilderEventsFn() {
         close: 'Close',
         content: 'Content',
         copy: 'Copy To Clipboard',
+        copyButton: '&#43;',
+        copyButtonTooltip: 'Copy',
         dateField: 'Date Field',
         description: 'Help Text',
         descriptionField: 'Description',
@@ -2264,9 +2266,14 @@ function formBuilderEventsFn() {
         id: lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
         title: opts.messages.hide
+      }),
+          copyBtn = utils.markup('a', opts.messages.copyButton, {
+        id: lastID + '-copy',
+        className: 'copy-button btn icon-copy',
+        title: opts.messages.copyButtonTooltip
       });
 
-      var liContents = utils.markup('div', [toggleBtn, delBtn], { className: 'field-actions' }).outerHTML;
+      var liContents = utils.markup('div', [toggleBtn, copyBtn, delBtn], { className: 'field-actions' }).outerHTML;
 
       // Field preview Label
       liContents += '<label class="field-label">' + label + '</label>';
@@ -2361,6 +2368,48 @@ function formBuilderEventsFn() {
       return field.outerHTML;
     };
 
+    var cloneItem = function cloneItem(currentItem) {
+      var currentId = currentItem.attr("id");
+      var cloneName = currentItem.attr("type");
+      var ts = new Date().getTime();
+      cloneName = cloneName + "-" + ts;
+
+      var $clone = currentItem.clone();
+
+      $clone.find('[id]').each(function () {
+        this.id = this.id.replace(currentId, lastID);
+      });
+
+      $clone.find('[for]').each(function () {
+        this.setAttribute('for', this.getAttribute('for').replace(currentId, lastID));
+      });
+
+      $clone.each(function (i, e) {
+        $("e:not(.form-elements)").each(function () {
+          var newName = this.getAttribute('name');
+          newName = newName.substring(0, newName.lastIndexOf('-') + 1);
+          newName = newName + ts.toString();
+          this.setAttribute('name', newName);
+        });
+      });
+
+      $clone.find(".form-elements").find(":input").each(function () {
+        if (this.getAttribute('name') == 'name') {
+          var newVal = this.getAttribute('value');
+          newVal = newVal.substring(0, newVal.lastIndexOf('-') + 1);
+          newVal = newVal + ts.toString();
+          this.setAttribute('value', newVal);
+        }
+      });
+
+      $clone.attr("id", lastID);
+      $clone.attr("name", cloneName);
+      $clone.addClass("cloned");
+      $('.sortable-options', $clone).sortable();
+      lastID = _helpers.incrementId(lastID);
+      return $clone;
+    };
+
     // ---------------------- UTILITIES ---------------------- //
 
     // delete options
@@ -2450,6 +2499,16 @@ function formBuilderEventsFn() {
 
     $sortableFields.delegate('input.fld-maxlength', 'blur', function () {
       $(this).val(_helpers.forceNumber($(this).val()));
+    });
+
+    // Copy field
+    $sortableFields.on('click touchstart', '.icon-copy', function (e) {
+      e.preventDefault();
+      var currentItem = $(this).parent().parent("li");
+      var $clone = cloneItem(currentItem);
+      $clone.insertAfter(currentItem);
+      _helpers.updatePreview($clone);
+      _helpers.save();
     });
 
     // Delete field

@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.19.0 - Feature: typeUserAttrs [#247](https://github.com/kevinchappell/formBuilder/pull/247)
 - v1.18.0 - Feature: typeUserAttrs [#247](https://github.com/kevinchappell/formBuilder/pull/247)
 - v1.17.2 - Bugfix: Classes not saving in XML mode and option pre-select issues[#250](https://github.com/kevinchappell/formBuilder/pull/250)
 - v1.17.1 - Bugfix: `clearFields` action will error if no fields on stage[#245](https://github.com/kevinchappell/formBuilder/pull/245)
