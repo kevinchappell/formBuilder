@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.19.3 - Feature: tel subtype [#256](https://github.com/kevinchappell/formBuilder/pull/256)
 - v1.19.2 - Hotfix: Correctly escape attributes [#255](https://github.com/kevinchappell/formBuilder/pull/255)
 - v1.19.1 - Hotfix: typeUserAttrs duplicate attributes [#254](https://github.com/kevinchappell/formBuilder/pull/254)
 - v1.19.0 - Feature: Copy button [#252](https://github.com/kevinchappell/formBuilder/pull/252)

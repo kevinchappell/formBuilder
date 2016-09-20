@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.19.2
+Version: 1.19.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -486,6 +486,7 @@ function FormRenderFn(options, element) {
       case 'file':
       case 'hidden':
       case 'date':
+      case 'tel':
       case 'autocomplete':
         fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '>';
         break;
