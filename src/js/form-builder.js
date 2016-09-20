@@ -154,7 +154,8 @@
             'text',
             'password',
             'email',
-            'color'
+            'color',
+            'tel'
           ],
           button: [
             'button',
@@ -789,8 +790,8 @@
 
     function selectUserAttrs(name, options) {
       let optis = Object.keys(options.options).map(val => {
-          let attrs = {value: val};
-          if (val === options.value) {attrs.selected = null;}
+          let attrs = { value: val };
+          if (val === options.value) { attrs.selected = null; }
           return `<option ${utils.attrString(attrs)}>${options.options[val]}</option>`;
         }),
         selectAttrs = {
@@ -812,8 +813,10 @@
     }
 
     var boolAttribute = function(name, values, labels) {
-      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][name]) return;
-    		
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][name]) {
+        return;
+      }
+
       let label = (txt) => {
           return `<label for="${name}-${lastID}">${txt}</label>`;
         },
@@ -887,13 +890,15 @@
     };
 
     /**
-     * Add a number attibute to a field.
+     * Add a number attribute to a field.
      * @param  {String} attribute
      * @param  {Object} values
      * @return {String}
      */
     var numberAttribute = function(attribute, values) {
-      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) return;
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
+        return;
+      }
       var attrVal = values[attribute] || '';
       var attrLabel = opts.messages[attribute] || attribute,
         placeholder = opts.messages.placeholders[attribute] || '',
@@ -908,7 +913,9 @@
      * @return {String}
      */
     var textAttribute = function(attribute, values) {
-      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) return;
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
+        return;
+      }
       var placeholderFields = [
         'text',
         'textarea',
@@ -1115,45 +1122,45 @@
       let field = utils.markup('li', optionInputs);
 
       return field.outerHTML;
-      };
+    };
 
     var cloneItem = function cloneItem(currentItem) {
-        var currentId = currentItem.attr("id");
-        var cloneName = currentItem.attr("type");
-        var ts = new Date().getTime();
-        cloneName = cloneName + "-" + ts;
+      var currentId = currentItem.attr('id');
+      var cloneName = currentItem.attr('type');
+      var ts = new Date().getTime();
+      cloneName = cloneName + '-' + ts;
 
-        var $clone = currentItem.clone();
+      var $clone = currentItem.clone();
 
-        $clone.find('[id]').each(function () { this.id = this.id.replace(currentId, lastID) });
+      $clone.find('[id]').each(function() { this.id = this.id.replace(currentId, lastID); });
 
-        $clone.find('[for]').each(function () { this.setAttribute('for', this.getAttribute('for').replace(currentId, lastID)) });
+      $clone.find('[for]').each(function() { this.setAttribute('for', this.getAttribute('for').replace(currentId, lastID)); });
 
-        $clone.each(function (i, e) {
-            $("e:not(.form-elements)").each(function () {
-                var newName = this.getAttribute('name');
-                newName = newName.substring(0, (newName.lastIndexOf('-') + 1));
-                newName = newName + ts.toString();
-                this.setAttribute('name', newName);
-            });
-
+      $clone.each(function() {
+        $('e:not(.form-elements)').each(function() {
+          var newName = this.getAttribute('name');
+          newName = newName.substring(0, (newName.lastIndexOf('-') + 1));
+          newName = newName + ts.toString();
+          this.setAttribute('name', newName);
         });
 
-        $clone.find(".form-elements").find(":input").each(function () {
-            if (this.getAttribute('name') == 'name') {
-                var newVal = this.getAttribute('value');
-                newVal = newVal.substring(0, (newVal.lastIndexOf('-') + 1));
-                newVal = newVal + ts.toString();
-                this.setAttribute('value', newVal);
-            }
-        });
+      });
 
-        $clone.attr("id", lastID);
-        $clone.attr("name", cloneName);
-        $clone.addClass("cloned");
-        $('.sortable-options', $clone).sortable();
-        lastID = _helpers.incrementId(lastID);
-        return $clone;
+      $clone.find('.form-elements').find(':input').each(function() {
+        if (this.getAttribute('name') === 'name') {
+          var newVal = this.getAttribute('value');
+          newVal = newVal.substring(0, (newVal.lastIndexOf('-') + 1));
+          newVal = newVal + ts.toString();
+          this.setAttribute('value', newVal);
+        }
+      });
+
+      $clone.attr('id', lastID);
+      $clone.attr('name', cloneName);
+      $clone.addClass('cloned');
+      $('.sortable-options', $clone).sortable();
+      lastID = _helpers.incrementId(lastID);
+      return $clone;
     };
 
     // ---------------------- UTILITIES ---------------------- //
@@ -1248,13 +1255,13 @@
     });
 
     // Copy field
-    $sortableFields.on('click touchstart', '.icon-copy', function (e) {
-        e.preventDefault();
-        var currentItem = $(this).parent().parent("li");
-        var $clone = cloneItem(currentItem);
-        $clone.insertAfter(currentItem);
-        _helpers.updatePreview($clone);
-        _helpers.save();
+    $sortableFields.on('click touchstart', '.icon-copy', function(e) {
+      e.preventDefault();
+      var currentItem = $(this).parent().parent('li');
+      var $clone = cloneItem(currentItem);
+      $clone.insertAfter(currentItem);
+      _helpers.updatePreview($clone);
+      _helpers.save();
     });
 
     // Delete field
