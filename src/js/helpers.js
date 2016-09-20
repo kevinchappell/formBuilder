@@ -453,6 +453,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       case 'date':
       case 'file':
       case 'number':
+      case 'tel':
         preview = `<input ${attrsString}>`;
         break;
       case 'color':

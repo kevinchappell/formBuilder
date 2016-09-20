@@ -151,6 +151,7 @@ function FormRenderFn(options, element) {
       case 'file':
       case 'hidden':
       case 'date':
+      case 'tel':
       case 'autocomplete':
         fieldMarkup = `${fieldLabel} <input ${fieldDataString}>`;
         break;
