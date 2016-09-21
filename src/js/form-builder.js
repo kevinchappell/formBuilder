@@ -754,6 +754,7 @@
       for (let attribute in typeUserAttr) {
         if (typeUserAttr.hasOwnProperty(attribute)) {
           let orig = opts.messages[attribute];
+          let origValue= typeUserAttr[attribute].value;
           typeUserAttr[attribute].value = values[attribute] || typeUserAttr[attribute].value || '';
 
           if (typeUserAttr[attribute].label) {
@@ -767,6 +768,7 @@
           }
 
           opts.messages[attribute] = orig;
+          typeUserAttr[attribute].value = origValue;
         }
       }
 
