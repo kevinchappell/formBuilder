@@ -38,6 +38,7 @@ jQuery(document).ready(function($) {
 | [sortableControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/sortableControls/) | {Bool} | `sortableControls: true` | `false` |
 | [stickyControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/stickyControls/) | {Bool} | `stickyControls: true` | `false` |
 | [showActionButtons](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/showActionButtons/) | {Bool} | `showActionButtons: false` | `true` |
+| [typeUserAttrs](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/typeUserAttrs/) | {Object} | typeUserAttrs config | null |
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
 ## Translators Needed!
