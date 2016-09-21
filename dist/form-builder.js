@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.19.3
+Version: 1.19.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2032,6 +2032,7 @@ function formBuilderEventsFn() {
       for (var attribute in typeUserAttr) {
         if (typeUserAttr.hasOwnProperty(attribute)) {
           var orig = opts.messages[attribute];
+          var origValue = typeUserAttr[attribute].value;
           typeUserAttr[attribute].value = values[attribute] || typeUserAttr[attribute].value || '';
 
           if (typeUserAttr[attribute].label) {
@@ -2045,6 +2046,7 @@ function formBuilderEventsFn() {
           }
 
           opts.messages[attribute] = orig;
+          typeUserAttr[attribute].value = origValue;
         }
       }
 
