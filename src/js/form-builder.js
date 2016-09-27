@@ -6,6 +6,7 @@
 
     var defaults = {
       typeUserAttrs: {}, //+gimigliano
+      typeUserEvents: {}, //+gimigliano
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -1072,7 +1073,10 @@
         _helpers.closeAllEdit($sortableFields);
         _helpers.toggleEdit(lastID);
       }
-
+      
+      //+gimigliano
+      if (opts.typeUserEvents[type] && opts.typeUserEvents[type]['onadd']) opts.typeUserEvents[type]['onadd']($('#'+lastID));
+     
       lastID = _helpers.incrementId(lastID);
     };
 
@@ -1161,6 +1165,9 @@
       $clone.attr('name', cloneName);
       $clone.addClass('cloned');
       $('.sortable-options', $clone).sortable();
+    //+gimigliano
+      if (opts.typeUserEvents[type] && opts.typeUserEvents[type]['onclone']) opts.typeUserEvents[type]['onclone']($('#'+lastID));
+      
       lastID = _helpers.incrementId(lastID);
       return $clone;
     };
