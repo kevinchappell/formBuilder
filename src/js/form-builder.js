@@ -755,7 +755,7 @@
       for (let attribute in typeUserAttr) {
         if (typeUserAttr.hasOwnProperty(attribute)) {
           let orig = opts.messages[attribute];
-          let origValue= typeUserAttr[attribute].value;
+          let origValue = typeUserAttr[attribute].value;
           typeUserAttr[attribute].value = values[attribute] || typeUserAttr[attribute].value || '';
 
           if (typeUserAttr[attribute].label) {
@@ -1050,12 +1050,12 @@
       liContents += '</div>';
       liContents += '</div>';
 
-      let li = utils.markup('li', liContents, {
+      let field = utils.markup('li', liContents, {
           'class': type + '-field form-field',
           'type': type,
           id: lastID
         }),
-        $li = $(li);
+        $li = $(field);
 
       $li.data('fieldData', { attrs: values });
 
@@ -1073,10 +1073,12 @@
         _helpers.closeAllEdit($sortableFields);
         _helpers.toggleEdit(lastID);
       }
-      
+
       //+gimigliano
-      if (opts.typeUserEvents[type] && opts.typeUserEvents[type]['onadd']) opts.typeUserEvents[type]['onadd']($('#'+lastID));
-     
+      if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
+        opts.typeUserEvents[type].onadd(field);
+      }
+
       lastID = _helpers.incrementId(lastID);
     };
 
@@ -1131,10 +1133,10 @@
     };
 
     var cloneItem = function cloneItem(currentItem) {
-      var currentId = currentItem.attr('id');
-      var cloneName = currentItem.attr('type');
-      var ts = new Date().getTime();
-      cloneName = cloneName + '-' + ts;
+      let currentId = currentItem.attr('id'),
+        type = currentItem.attr('type'),
+        ts = new Date().getTime(),
+        cloneName = type + '-' + ts;
 
       var $clone = currentItem.clone();
 
@@ -1165,9 +1167,12 @@
       $clone.attr('name', cloneName);
       $clone.addClass('cloned');
       $('.sortable-options', $clone).sortable();
-    //+gimigliano
-      if (opts.typeUserEvents[type] && opts.typeUserEvents[type]['onclone']) opts.typeUserEvents[type]['onclone']($('#'+lastID));
-      
+
+      //+gimigliano
+      if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
+        opts.typeUserEvents[type].onclone($clone[0]);
+      }
+
       lastID = _helpers.incrementId(lastID);
       return $clone;
     };
