@@ -221,17 +221,17 @@ gulp.task('serve', function() {
 // Deploy the demo
 gulp.task('deploy', () => {
   exec('OVERCOMMIT_DISABLE=1 git push origin $(git subtree split --prefix demo master):gh-pages --force', function(err, stdout, stderr) {
+    exec('cd site && gulp deploy && cd ../', function(err, stdout, stderr) {
+      if (!stderr) {
+        console.log('Site successfully deployed');
+      } else {
+        console.error(stderr);
+      }
+    });
     if (!stderr) {
       console.log('Demo successfully deployed');
-      exec(`cd site && gulp deploy && cd ../`, function(err, stdout, stderr) {
-        if (!stderr) {
-          console.log('Site successfully deployed');
-        } else {
-          console.error(err, stderr);
-        }
-      });
     } else {
-      console.error(err, stderr);
+      console.error(stderr);
     }
   });
 });
