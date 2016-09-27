@@ -34,6 +34,7 @@ pages:
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
   - typeUserAttrs: formBuilder/options/typeUserAttrs.md
+  - typeUserEvents: formBuilder/options/typeUserEvents.md
 - formRender Demos:
   - Basic: formRender/demos/basic.md
   - Preview popup: formRender/demos/preview-popup.md
