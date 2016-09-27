@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.20.0 - Feature: typeUserEvents [#260](https://github.com/kevinchappell/formBuilder/pull/260)
 - v1.19.4 - Bugfix: typeUserAttrs repeated value from formData [#258](https://github.com/kevinchappell/formBuilder/pull/258)
 - v1.19.3 - Feature: tel subtype [#256](https://github.com/kevinchappell/formBuilder/pull/256)
 - v1.19.2 - Hotfix: Correctly escape attributes [#255](https://github.com/kevinchappell/formBuilder/pull/255)

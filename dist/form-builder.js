@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.19.4
+Version: 1.20.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1322,6 +1322,7 @@ function formBuilderEventsFn() {
 
     var defaults = {
       typeUserAttrs: {}, //+gimigliano
+      typeUserEvents: {}, //+gimigliano
       controlPosition: 'right',
       controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'number', 'radio-group', 'select', 'text', 'textarea'],
       dataType: 'xml',
@@ -2308,12 +2309,12 @@ function formBuilderEventsFn() {
       liContents += '</div>';
       liContents += '</div>';
 
-      var li = utils.markup('li', liContents, {
+      var field = utils.markup('li', liContents, {
         'class': type + '-field form-field',
         'type': type,
         id: lastID
       }),
-          $li = $(li);
+          $li = $(field);
 
       $li.data('fieldData', { attrs: values });
 
@@ -2330,6 +2331,11 @@ function formBuilderEventsFn() {
       if (opts.editOnAdd) {
         _helpers.closeAllEdit($sortableFields);
         _helpers.toggleEdit(lastID);
+      }
+
+      //+gimigliano
+      if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
+        opts.typeUserEvents[type].onadd(field);
       }
 
       lastID = _helpers.incrementId(lastID);
@@ -2382,10 +2388,10 @@ function formBuilderEventsFn() {
     };
 
     var cloneItem = function cloneItem(currentItem) {
-      var currentId = currentItem.attr('id');
-      var cloneName = currentItem.attr('type');
-      var ts = new Date().getTime();
-      cloneName = cloneName + '-' + ts;
+      var currentId = currentItem.attr('id'),
+          type = currentItem.attr('type'),
+          ts = new Date().getTime(),
+          cloneName = type + '-' + ts;
 
       var $clone = currentItem.clone();
 
@@ -2419,6 +2425,12 @@ function formBuilderEventsFn() {
       $clone.attr('name', cloneName);
       $clone.addClass('cloned');
       $('.sortable-options', $clone).sortable();
+
+      //+gimigliano
+      if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
+        opts.typeUserEvents[type].onclone($clone[0]);
+      }
+
       lastID = _helpers.incrementId(lastID);
       return $clone;
     };
