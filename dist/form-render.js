@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.20.0
+Version: 1.20.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -469,7 +469,7 @@ function FormRenderFn(options, element) {
           if (fieldData.enableOther || fieldData['enable-other']) {
             var otherOptionAttrs = {
               id: fieldData.id + '-' + 'other',
-              className: (fieldData.class || fieldData.className) + ' other-option'
+              className: fieldData.className + ' other-option'
             };
 
             _optionAttrsString = utils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
@@ -575,13 +575,22 @@ function FormRenderFn(options, element) {
     otherOptionCB();
   };
 
+  var santizeField = function santizeField(field) {
+    var sanitizedField = Object.assign({}, field);
+    sanitizedField.className = field.className || field.class || null;
+    delete sanitizedField.class;
+
+    return utils.trimObj(sanitizedField);
+  };
+
   // Begin the core plugin
   var rendered = [];
 
   // generate field markup if we have fields
   if (opts.formData) {
     for (var i = 0; i < opts.formData.length; i++) {
-      rendered.push(_helpers.fieldRender(opts.formData[i]));
+      var sanitizedField = santizeField(opts.formData[i]);
+      rendered.push(_helpers.fieldRender(sanitizedField));
     }
 
     if (opts.render) {
