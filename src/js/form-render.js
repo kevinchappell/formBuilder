@@ -133,7 +133,7 @@ function FormRenderFn(options, element) {
           if (fieldData.enableOther || fieldData['enable-other']) {
             let otherOptionAttrs = {
               id: fieldData.id + '-' + 'other',
-              className: (fieldData.class || fieldData.className) + ' other-option'
+              className: fieldData.className + ' other-option'
             };
 
             optionAttrsString = utils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
@@ -233,13 +233,22 @@ function FormRenderFn(options, element) {
     otherOptionCB();
   };
 
+  var santizeField = (field) => {
+    let sanitizedField = Object.assign({}, field);
+    sanitizedField.className = field.className || field.class || null;
+    delete sanitizedField.class;
+
+    return utils.trimObj(sanitizedField);
+  };
+
   // Begin the core plugin
   var rendered = [];
 
   // generate field markup if we have fields
   if (opts.formData) {
     for (var i = 0; i < opts.formData.length; i++) {
-      rendered.push(_helpers.fieldRender(opts.formData[i]));
+      let sanitizedField = santizeField(opts.formData[i]);
+      rendered.push(_helpers.fieldRender(sanitizedField));
     }
 
     if (opts.render) {
