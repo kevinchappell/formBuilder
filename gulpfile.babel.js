@@ -156,7 +156,9 @@ gulp.task('js', function() {
   return jsFiles.forEach(function(jsFileGlob, key) {
     // Demo scripts minified
     gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({ errorHandler: false }))
+      .pipe(plugins.plumber({
+        errorHandler: false
+      }))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))
       .pipe(plugins.uglify())
@@ -165,7 +167,9 @@ gulp.task('js', function() {
 
     // Plugin scripts
     return gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({ errorHandler: false }))
+      .pipe(plugins.plumber({
+        errorHandler: false
+      }))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.js'))
       .pipe(banner())
@@ -192,7 +196,9 @@ gulp.task('devJS', function() {
     // Demo scripts minified
     return gulp.src(jsFileGlob)
       .pipe(plugins.plumber())
-      .pipe(plugins.sourcemaps.init({ loadMaps: true }))
+      .pipe(plugins.sourcemaps.init({
+        loadMaps: true
+      }))
       .pipe(plugins.babel())
       .pipe(plugins.concat(rename(key) + '.min.js'))
       .pipe(plugins.uglify())
