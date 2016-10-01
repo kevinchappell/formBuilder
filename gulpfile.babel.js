@@ -54,25 +54,20 @@ var plugins = gulpPlugins(),
    * @return {void} logs to terminal.
    */
   fontEdit = () => {
-    let openFont = {
-      linux: `/opt/google/chrome/google-chrome --enable-plugins ${pkg.config.fontServer}/$(cat .fontello)`,
-      darwin: `open -a "Google Chrome" ${pkg.config.fontServer}/$(cat .fontello)`,
-      win32: `start chrome "${pkg.config.fontServer}/$(cat .fontello)"`
-    };
-
-    if (!openFont[platform]) {
-      return false;
-    }
+    let fs = require('fs'),
+      open = require('opener');
 
     // Connects to font server to get a fresh token for our editing session.
     // sends current config in the process.
     let getFontToken = `curl --silent --show-error --fail --output .fontello --form "config=@${files.formBuilder.fonts}/config.json" ${pkg.config.fontServer} \n`;
 
-    return exec(getFontToken + openFont[platform], function(err, stdout, stderr) {
-      console.log(stdout);
-      if (stderr) {
-        console.error(err, stderr);
-      }
+    return fs.readFile('.fontello', function(error, token) {
+      return exec(getFontToken, function(err, stdout, stderr) {
+        open(`${pkg.config.fontServer}/${token}`);
+        if (stderr) {
+          console.error(err, stderr);
+        }
+      });
     });
   },
 
