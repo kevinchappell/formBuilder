@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.20.2 - Bugfix: gulp font-edit [#263](https://github.com/kevinchappell/formBuilder/pull/263)
 - v1.20.1 - Bugfix: XML other option [#262](https://github.com/kevinchappell/formBuilder/pull/262)
 - v1.20.0 - Feature: typeUserEvents [#260](https://github.com/kevinchappell/formBuilder/pull/260)
 - v1.19.4 - Bugfix: typeUserAttrs repeated value from formData [#258](https://github.com/kevinchappell/formBuilder/pull/258)
