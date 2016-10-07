@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.20.2
+Version: 1.20.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -96,7 +96,7 @@ if (typeof Object.assign != 'function') {
 })(jQuery);
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var fbUtils = {};
 
@@ -123,7 +123,7 @@ fbUtils.trimObj = function (attrs) {
  * @return {String}  new id for element
  */
 fbUtils.makeId = function () {
-  var element = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+  var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
   var epoch = new Date().getTime();
 
@@ -212,8 +212,8 @@ fbUtils.camelCase = function (str) {
  * @return {String}
  */
 fbUtils.markup = function (tag) {
-  var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-  var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  var content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var attrs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   var contentType = void 0,
       field = document.createElement(tag),
@@ -396,7 +396,9 @@ function FormRenderFn(options, element) {
         fieldDesc = fieldData.description || '',
         fieldRequired = '',
         fieldOptions = fieldData.values || [];
+
     fieldData.id = fieldData.name;
+    fieldData.name = fieldData.multiple ? fieldData.name + '[]' : fieldData.name;
 
     fieldData.type = fieldData.subtype || fieldData.type;
 
@@ -448,9 +450,12 @@ function FormRenderFn(options, element) {
         var optionAttrs = void 0;
         fieldData.type = fieldData.type.replace('-group', '');
 
+        if (fieldData.type === 'checkbox') {
+          fieldData.name = fieldData.name + '[]';
+        }
+
         if (fieldOptions) {
-          var optionName = fieldData.type === 'checkbox' ? fieldData.name + '[]' : fieldData.name,
-              _optionAttrsString = void 0;
+          var _optionAttrsString = void 0;
 
           for (var _i2 = 0; _i2 < fieldOptions.length; _i2++) {
             optionAttrs = Object.assign({}, fieldData, fieldOptions[_i2]);
@@ -460,7 +465,6 @@ function FormRenderFn(options, element) {
               optionAttrs.checked = null;
             }
 
-            optionAttrs.name = optionName;
             optionAttrs.id = fieldData.id + '-' + _i2;
             _optionAttrsString = utils.attrString(optionAttrs);
             optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
@@ -474,7 +478,7 @@ function FormRenderFn(options, element) {
 
             _optionAttrsString = utils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
 
-            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.label.other + '</label> <input type="text" data-other-id="' + otherOptionAttrs.id + '" name="' + optionName + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
+            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.label.other + '</label> <input type="text" data-other-id="' + otherOptionAttrs.id + '" name="' + otherOptionAttrs.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
           }
         }
         fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
