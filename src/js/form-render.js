@@ -60,7 +60,9 @@ function FormRenderFn(options, element) {
       fieldDesc = fieldData.description || '',
       fieldRequired = '',
       fieldOptions = fieldData.values || [];
+
     fieldData.id = fieldData.name;
+    fieldData.name = fieldData.multiple ? fieldData.name + '[]' : fieldData.name;
 
     fieldData.type = fieldData.subtype || fieldData.type;
 
@@ -112,9 +114,12 @@ function FormRenderFn(options, element) {
         let optionAttrs;
         fieldData.type = fieldData.type.replace('-group', '');
 
+        if (fieldData.type === 'checkbox') {
+          fieldData.name = fieldData.name + '[]';
+        }
+
         if (fieldOptions) {
-          let optionName = fieldData.type === 'checkbox' ? fieldData.name + '[]' : fieldData.name,
-            optionAttrsString;
+          let optionAttrsString;
 
           for (let i = 0; i < fieldOptions.length; i++) {
             optionAttrs = Object.assign({}, fieldData, fieldOptions[i]);
@@ -124,7 +129,6 @@ function FormRenderFn(options, element) {
               optionAttrs.checked = null;
             }
 
-            optionAttrs.name = optionName;
             optionAttrs.id = fieldData.id + '-' + i;
             optionAttrsString = utils.attrString(optionAttrs);
             optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionAttrs.label}</label><br>`;
@@ -138,7 +142,7 @@ function FormRenderFn(options, element) {
 
             optionAttrsString = utils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
 
-            optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.label.other}</label> <input type="text" data-other-id="${otherOptionAttrs.id}" name="${optionName}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
+            optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.label.other}</label> <input type="text" data-other-id="${otherOptionAttrs.id}" name="${otherOptionAttrs.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
           }
 
         }
