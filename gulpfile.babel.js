@@ -263,7 +263,7 @@ gulp.task('tag', (done) => {
       .pipe(gulp.dest('./'));
 
       updateMD.on('end', function() {
-        exec(`git tag v${newVer} && git push origin master --tags && npm publish`, function(err, stdout) {
+        exec(`gulp build && git commit -am "v${newVer}" && git tag v${newVer} && git push origin master --tags && npm publish`, function(err, stdout) {
           if (!err) {
             console.log(stdout);
             console.log(`Tag v${newVer} successfully pushed.`);
