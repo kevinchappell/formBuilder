@@ -11,7 +11,6 @@ const files = pkg.config.files;
 var plugins = gulpPlugins(),
   // for executing commands in the command line
   exec = require('child_process').exec,
-  platform = process.platform,
 
   /**
    * Reusable banner function for generated files.
@@ -142,8 +141,8 @@ gulp.task('font-save', fontSave);
 gulp.task('lint', function() {
   let js = files.formBuilder.js.concat(files.formRender.js);
   return gulp.src(js)
-    .pipe(plugins.jshint())
-    .pipe(plugins.jshint.reporter('jshint-stylish'));
+    .pipe(plugins.eslint())
+    .pipe(plugins.eslint.format());
 });
 
 // Compile the JS
@@ -221,7 +220,7 @@ gulp.task('serve', function() {
 
 // Deploy the demo
 gulp.task('deploy', () => {
-  exec('OVERCOMMIT_DISABLE=1 git push origin $(git subtree split --prefix demo master):gh-pages --force', function(err, stdout, stderr) {
+  exec('git push origin $(git subtree split --prefix demo master):gh-pages --force', function(err, stdout, stderr) {
     exec('cd site && gulp deploy && cd ../', function(err, stdout, stderr) {
       if (!stderr) {
         console.log('Site successfully deployed');

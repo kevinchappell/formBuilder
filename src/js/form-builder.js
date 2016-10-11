@@ -531,7 +531,6 @@
 
       appendNewField(field);
       if (isNew) {
-
         document.dispatchEvent(formBuilder.events.fieldAdded);
       }
       $stageWrap.removeClass('empty');

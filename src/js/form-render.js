@@ -69,7 +69,7 @@ function FormRenderFn(options, element) {
     if (fieldData.required) {
       fieldData.required = null;
       fieldData['aria-required'] = 'true';
-      fieldRequired = `<span class="required">*</span>`;
+      fieldRequired = '<span class="required">*</span>';
     }
 
     if (fieldData.type !== 'hidden') {

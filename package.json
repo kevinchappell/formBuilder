@@ -90,10 +90,10 @@
     "gulp-base64": "^0.1.3",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
+    "gulp-eslint": "^3.0.1",
     "gulp-filter": "^4.0.0",
     "gulp-git": "^1.7.0",
     "gulp-header": "^1.7.1",
-    "gulp-jshint": "^2.0.0",
     "gulp-load-plugins": "^1.2.0",
     "gulp-plumber": "^1.1.0",
     "gulp-sass": "^2.2.0",
@@ -111,11 +111,12 @@
     },
     "env": {
       "browser": true,
-      "es6": true
+      "es6": true,
+      "node": true
     },
     "globals": {
-        "jQuery": true,
-        "$": true
+      "jQuery": true,
+      "$": true
     },
     "rules": {
       "no-console": 0,
