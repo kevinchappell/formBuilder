@@ -3,7 +3,9 @@
 import gulp from 'gulp';
 import gulpPlugins from 'gulp-load-plugins';
 import bsync from 'browser-sync';
+import semver from 'semver';
 import pkg from './package.json';
+import fs from 'fs';
 
 const files = pkg.config.files;
 
@@ -218,7 +220,9 @@ gulp.task('serve', function() {
   });
 });
 
-// Deploy the demo
+// Deploy the demo and site.
+// Usually used in combination with `gulp tag`
+// ex. `gulp tag && gulp deploy`
 gulp.task('deploy', () => {
   exec('git push origin $(git subtree split --prefix demo master):gh-pages --force', function(err, stdout, stderr) {
     exec('cd site && gulp deploy && cd ../', function(err, stdout, stderr) {
@@ -233,6 +237,44 @@ gulp.task('deploy', () => {
     } else {
       console.error(stderr);
     }
+  });
+});
+
+// Updates package.json, bower.json, README.md and CHANGELOG.md then tags and pushes
+gulp.task('tag', (done) => {
+  let args = process.argv.slice(2),
+    releaseArg = args[1] || '--patch',
+    releaseType = releaseArg.substring(2, releaseArg.length),
+    oldVer = pkg.version,
+    newVer = semver.inc(oldVer, releaseType),
+    lastLog = fs.readFileSync('./CHANGELOG.md', 'utf8').split('\n')[2];
+
+  exec('git log -1 HEAD --pretty=format:%s', function(err, gitLog) {
+    gitLog = gitLog.replace(/\(#(\d+)\)/g, '[#$1](https://github.com/kevinchappell/formBuilder/pull/$1)');
+
+    let updateJSON = gulp.src(['', './bower.json', './package.json'])
+    .pipe(plugins.bump({type: newVer}))
+    .pipe(gulp.dest('./'));
+
+    updateJSON.on('end', function() {
+      let updateMD = gulp.src(['README.md', 'CHANGELOG.md'])
+      .pipe(plugins.replace('formBuilder v' + oldVer, 'formBuilder v' + newVer))
+      .pipe(plugins.replace(lastLog, `- v${newVer} - ${gitLog}\n${lastLog}`))
+      .pipe(gulp.dest('./'));
+
+      updateMD.on('end', function() {
+        exec(`git tag v${newVer} && git push origin master --tags && npm publish`, function(err, stdout) {
+          if (!err) {
+            console.log(stdout);
+            console.log(`Tag v${newVer} successfully pushed.`);
+          } else {
+            console.error(err);
+          }
+        });
+        //run some code here
+        done();
+      });
+    });
   });
 });
 

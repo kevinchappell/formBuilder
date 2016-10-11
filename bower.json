@@ -1,26 +1,30 @@
 {
-	"name": "formBuilder",
-	"version": "1.21.0",
-	"main": [
-		"dist/*"
-	],
-	"description": "jQuery plugin for drag and drop form building",
-	"authors": [
-		"Kevin Chappell <kevin.b.chappell@gmail.com>"
-	],
-	"keywords": [
-	  "jquery-plugin",
-		"forms",
-		"drag and drop",
-		"form builder"
-	],
-	"license": "MIT",
-	"moduleType": [
-		"jquery"
-	],
-	"ignore": [
-		"*",
-		"!dist",
-		"!dist/**/*"
-	]
+  "name": "formBuilder",
+  "version": "1.21.0",
+  "main": [
+    "dist/*"
+  ],
+  "description": "jQuery plugin for drag and drop form building",
+  "authors": [
+    "Kevin Chappell <kevin.b.chappell@gmail.com>"
+  ],
+  "keywords": [
+    "jquery-plugin",
+    "forms",
+    "drag and drop",
+    "form builder"
+  ],
+  "license": "MIT",
+  "moduleType": [
+    "jquery"
+  ],
+  "ignore": [
+    "*",
+    "!dist",
+    "!dist/**/*"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "jQuery UI Sortable": "jquery-ui-sortable#*"
+  }
 }
