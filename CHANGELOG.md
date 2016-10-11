@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.21.0 - Feature: addField and removeField actions [#276](https://github.com/kevinchappell/formBuilder/pull/276)
 - v1.20.3 - Bugfix: multi option name attribute [#274](https://github.com/kevinchappell/formBuilder/pull/274)
 - v1.20.2 - Bugfix: gulp font-edit [#263](https://github.com/kevinchappell/formBuilder/pull/263)
 - v1.20.1 - Bugfix: XML other option [#262](https://github.com/kevinchappell/formBuilder/pull/262)
@@ -55,7 +56,7 @@
 - v1.9.17 - Bugfix: Umlauts break XML #112
 - v1.9.16 - Bugfix: XML parse issue [#110](https://github.com/kevinchappell/formBuilder/pull/110)
 - v1.9.15 - Bugfix: Option character encoding problem [#109](https://github.com/kevinchappell/formBuilder/pull/109)
-- v1.9.14 - 
+- v1.9.14 -
   - Feature: Header and Paragraph tags [#108](https://github.com/kevinchappell/formBuilder/pull/108)
   - Bugfix: button classes, special character encoding, renamed functions for Selenium
   - Chore: added/updated comments [#106](https://github.com/kevinchappell/formBuilder/pull/106)
@@ -113,8 +114,8 @@
 - v1.4.0 - Feature: `formRender` is a companion plugin to render saved formData into a usable form. [details here](https://github.com/kevinchappell/formBuilder/pull/20)
 - v1.3.5 - Bugfix: XML parse and save
   + This fix brings a slight update in XML markup for multiple value fields, specifically the `<option>` node. The changes is to move away from the proprietary XML parser formBuilder was made for.
-  
-  **This**: 
+
+  **This**:
   ```
   <field name="checkbox-group-1" label="Checkbox Group" style="multiple" required="false" type="checkbox-group" >
       <option label="Option 1">option-1</option>

@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.20.3
+Version: 1.21.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -50,8 +50,11 @@ if (typeof Object.assign != 'function') {
   };
 }
 'use strict';
+/**
+ *
+ */
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var fbUtils = {};
 
@@ -60,7 +63,11 @@ fbUtils.inArray = function (needle, haystack) {
   return haystack.indexOf(needle) !== -1;
 };
 
-// Remove null or undefined values
+/**
+ * Remove null or undefined values
+ * @param  {Object} attrs {attrName: attrValue}
+ * @return {Object}       Object trimmed of null or undefined values
+ */
 fbUtils.trimObj = function (attrs) {
   var xmlRemove = [null, undefined, '', false];
   for (var i in attrs) {
@@ -72,19 +79,10 @@ fbUtils.trimObj = function (attrs) {
 };
 
 /**
- * Make an ID for this element using current date and tag
- *
- * @param  {Boolean} element
- * @return {String}  new id for element
+ * Test if attribute is a valid HTML attribute
+ * @param  {String} attr
+ * @return {Boolean}
  */
-fbUtils.makeId = function () {
-  var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-  var epoch = new Date().getTime();
-
-  return element.tagName + '-' + epoch;
-};
-
 fbUtils.validAttr = function (attr) {
   var invalid = ['values', 'enableOther', 'other', 'label',
   // 'style',
@@ -110,6 +108,12 @@ fbUtils.attrString = function (attrs) {
   return attributes.join(' ');
 };
 
+/**
+ * Convert attributes to markup safe strings
+ * @param  {String} name  attribute name
+ * @param  {String} value attribute value
+ * @return {Object}       {attrName: attrValue}
+ */
 fbUtils.safeAttr = function (name, value) {
   name = fbUtils.safeAttrName(name);
 
@@ -131,11 +135,10 @@ fbUtils.safeAttrName = function (name) {
 };
 
 /**
- * Convert strings
- into lowercase-hyphen
+ * Convert strings into lowercase-hyphen
  *
- * @param  {string} str
- * @return {string}
+ * @param  {String} str
+ * @return {String}
  */
 fbUtils.hyphenCase = function (str) {
   str = str.replace(/[^\w\s\-]/gi, '');
@@ -153,7 +156,6 @@ fbUtils.hyphenCase = function (str) {
  */
 fbUtils.camelCase = function (str) {
   return str.replace(/-([a-z])/g, function (m, w) {
-    m = m;
     return w.toUpperCase();
   });
 };
@@ -163,12 +165,12 @@ fbUtils.camelCase = function (str) {
  *
  * @param  {string}              tag
  * @param  {String|Array|Object} content we wrap this
- * @param  {object}              attrs
+ * @param  {Object}              attrs
  * @return {String}
  */
 fbUtils.markup = function (tag) {
-  var content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  var attrs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+  var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
   var contentType = void 0,
       field = document.createElement(tag),
@@ -206,6 +208,11 @@ fbUtils.markup = function (tag) {
   return field;
 };
 
+/**
+ * Convert html element attributes to key/value object
+ * @param  {DOM Object} DOM element
+ * @return {Object}     ex: {attrName: attrValue}
+ */
 fbUtils.parseAttrs = function (elem) {
   var attrs = elem.attributes;
   var data = {};
@@ -219,6 +226,11 @@ fbUtils.parseAttrs = function (elem) {
   return data;
 };
 
+/**
+ * Convert field options to optionData
+ * @param  {DOM Object} DOM element
+ * @return {Array}      optionData array
+ */
 fbUtils.parseOptions = function (field) {
   var options = field.getElementsByTagName('option'),
       optionData = {},
@@ -235,6 +247,11 @@ fbUtils.parseOptions = function (field) {
   return data;
 };
 
+/**
+ * Parse XML formData
+ * @param  {String} xmlString
+ * @return {Array}            formData array
+ */
 fbUtils.parseXML = function (xmlString) {
   var parser = new window.DOMParser();
   var xml = parser.parseFromString(xmlString, 'text/xml'),
@@ -252,12 +269,18 @@ fbUtils.parseXML = function (xmlString) {
   return formData;
 };
 
+/**
+ * Escape markup so it can be displayed rather than rendered
+ * @param  {String} html markup
+ * @return {String}      escaped html
+ */
 fbUtils.escapeHtml = function (html) {
   var escapeElement = document.createElement('textarea');
   escapeElement.textContent = html;
   return escapeElement.innerHTML;
 };
 
+// Escape an attribute
 fbUtils.escapeAttr = function (str) {
   var match = {
     '"': '&quot;',
@@ -273,9 +296,8 @@ fbUtils.escapeAttr = function (str) {
   return typeof str === 'string' ? str.replace(/["&<>]/g, replaceTag) : str;
 };
 
-// Remove null or undefined values
+// Escape attributes
 fbUtils.escapeAttrs = function (attrs) {
-
   for (var attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       attrs[attr] = fbUtils.escapeAttr(attrs[attr]);
@@ -284,11 +306,30 @@ fbUtils.escapeAttrs = function (attrs) {
 
   return attrs;
 };
+
+// forEach that can be used on nodeList
+fbUtils.forEach = function (array, callback, scope) {
+  for (var i = 0; i < array.length; i++) {
+    callback.call(scope, i, array[i]); // passes back stuff we need
+  }
+};
+
+/**
+ * Remove duplicates from an array of elements
+ * @param  {Array} arrArg array with possible duplicates
+ * @return {Array}        array with only unique values
+ */
+fbUtils.unique = function (array) {
+  return array.filter(function (elem, pos, arr) {
+    return arr.indexOf(elem) === pos;
+  });
+};
 'use strict';
 
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
 
+  console.log(formBuilder);
   var _helpers = {
     doCancel: false
   };
@@ -473,7 +514,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var formData = _helpers.prepData(form),
         xml = ['<form-template>\n\t<fields>'];
 
-    _helpers.forEach(formData, function (index) {
+    utils.forEach(formData, function (index) {
       var field = formData[index],
           fieldContent = null;
 
@@ -506,7 +547,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     if (form.childNodes.length !== 0) {
       // build data object
-      _helpers.forEach(form.childNodes, function (index, field) {
+      utils.forEach(form.childNodes, function (index, field) {
         index = index;
         var $field = $(field);
 
@@ -790,8 +831,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   _helpers.debounce = function (func) {
-    var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 250;
-    var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var wait = arguments.length <= 1 || arguments[1] === undefined ? 250 : arguments[1];
+    var immediate = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
     var timeout;
     return function () {
@@ -892,7 +933,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
-    return _helpers.unique(classes).join(' ').trim();
+    return utils.unique(classes).join(' ').trim();
   };
 
   /**
@@ -959,8 +1000,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}            Reference to the modal
    */
   _helpers.confirm = function (message, yesAction) {
-    var coords = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var className = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
+    var coords = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var className = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
 
     var overlay = _helpers.showOverlay();
     var yes = utils.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
@@ -1008,8 +1049,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}            dom
    */
   _helpers.dialog = function (content) {
-    var coords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+    var coords = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var className = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 
     _helpers.showOverlay();
 
@@ -1119,7 +1160,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     if (!fieldOrder) {
-      fieldOrder = _helpers.unique(opts.controlOrder);
+      fieldOrder = utils.unique(opts.controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = Object.keys(fieldOrder).map(function (i) {
@@ -1137,29 +1178,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     return newOrderFields.filter(Boolean);
-  };
-
-  // forEach that can be used on nodeList
-  _helpers.forEach = function (array, callback, scope) {
-    for (var i = 0; i < array.length; i++) {
-      callback.call(scope, i, array[i]); // passes back stuff we need
-    }
-  };
-
-  // cleaner syntax for testing indexOf element
-  _helpers.inArray = function (needle, haystack) {
-    return haystack.indexOf(needle) !== -1;
-  };
-
-  /**
-   * Remove duplicates from an array of elements
-   * @param  {array} arrArg array with possible duplicates
-   * @return {array}        array with only unique values
-   */
-  _helpers.unique = function (array) {
-    return array.filter(function (elem, pos, arr) {
-      return arr.indexOf(elem) === pos;
-    });
   };
 
   /**
@@ -1242,13 +1260,61 @@ function formBuilderHelpersFn(opts, formBuilder) {
     });
   };
 
+  /**
+   * Open a dialog with the form's data
+   */
   _helpers.showData = function () {
-
     var data = utils.escapeHtml(formBuilder.formData),
         code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
         pre = utils.markup('pre', code);
 
     _helpers.dialog(pre, null, 'data-dialog');
+  };
+
+  /**
+   * Remove a field from the stage
+   * @param  {String}  fieldID ID of the field to be removed
+   * @return {Boolean} fieldRemoved returns true if field is removed
+   */
+  _helpers.removeField = function (fieldID) {
+    var fieldRemoved = false,
+        form = document.getElementById(opts.formID),
+        fields = form.getElementsByClassName('form-field');
+
+    if (!fields.length) {
+      console.warn('No fields to remove');
+      return false;
+    }
+
+    if (!fieldID) {
+      var availableIds = [].slice.call().map(function (field) {
+        return field.id;
+      });
+      console.warn('fieldID required to use `removeField` action.');
+      console.warn('Available IDs: ' + availableIds.join(', '));
+    }
+
+    var field = document.getElementById(fieldID),
+        $field = $(field);
+    if (!field) {
+      console.warn('Field not found');
+      return false;
+    }
+
+    $field.slideUp(250, function () {
+      $field.removeClass('deleting');
+      $field.remove();
+      fieldRemoved = true;
+      _helpers.save();
+      if (!form.childNodes.length) {
+        var stageWrap = form.parentElement;
+        stageWrap.classList.add('empty');
+        stageWrap.dataset.content = opts.messages.getStarted;
+      }
+    });
+
+    document.dispatchEvent(formBuilder.events.fieldRemoved);
+    return fieldRemoved;
   };
 
   return _helpers;
@@ -1266,6 +1332,8 @@ function formBuilderEventsFn() {
   events.modalClosed = new Event('modalClosed');
   events.modalOpened = new Event('modalOpened');
   events.formSaved = new Event('formSaved');
+  events.fieldAdded = new Event('fieldAdded');
+  events.fieldRemoved = new Event('fieldRemoved');
 
   return events;
 }
@@ -1668,10 +1736,10 @@ function formBuilderEventsFn() {
       beforeStop: _helpers.beforeStop,
       distance: 3,
       update: function update(event, ui) {
+        event = event;
         if (_helpers.doCancel) {
           return false;
         }
-        event = event;
         if (ui.item.parent()[0] === $sortableFields[0]) {
           prepFieldVars(ui.item, true);
           _helpers.doCancel = true;
@@ -1772,7 +1840,7 @@ function formBuilderEventsFn() {
     };
 
     var prepFieldVars = function prepFieldVars($field) {
-      var isNew = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var isNew = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
       var field = {};
       if ($field instanceof jQuery) {
@@ -1784,7 +1852,6 @@ function formBuilderEventsFn() {
           var attrs = $field[0].attributes;
           if (!isNew) {
             field.values = $field.children().map(function (index, elem) {
-              index = index;
               return {
                 label: $(elem).text(),
                 value: $(elem).attr('value'),
@@ -1806,8 +1873,8 @@ function formBuilderEventsFn() {
       if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
         field.className = 'form-control'; // backwards compatibility
       } else {
-        field.className = field.class || field.className; // backwards compatibility
-      }
+          field.className = field.class || field.className; // backwards compatibility
+        }
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {
@@ -1817,6 +1884,9 @@ function formBuilderEventsFn() {
       utils.escapeAttrs(field);
 
       appendNewField(field);
+      if (isNew) {
+        document.dispatchEvent(formBuilder.events.fieldAdded);
+      }
       $stageWrap.removeClass('empty');
     };
 
@@ -1832,6 +1902,7 @@ function formBuilderEventsFn() {
         // Load default fields if none are set
         opts.defaultFields.reverse();
         for (var _i2 = opts.defaultFields.length - 1; _i2 >= 0; _i2--) {
+          console.log(opts.defaultFields[_i2]);
           prepFieldVars(opts.defaultFields[_i2]);
         }
         $stageWrap.removeClass('empty');
@@ -2317,9 +2388,8 @@ function formBuilderEventsFn() {
           $li = $(field);
 
       $li.data('fieldData', { attrs: values });
-
       if (typeof _helpers.stopIndex !== 'undefined') {
-        $('> li', $sortableFields).eq(_helpers.stopIndex).after($li);
+        $('> li', $sortableFields).eq(_helpers.stopIndex).before($li);
       } else {
         $sortableFields.append($li);
       }
@@ -2333,7 +2403,6 @@ function formBuilderEventsFn() {
         _helpers.toggleEdit(lastID);
       }
 
-      //+gimigliano
       if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
         opts.typeUserEvents[type].onadd(field);
       }
@@ -2426,7 +2495,6 @@ function formBuilderEventsFn() {
       $clone.addClass('cloned');
       $('.sortable-options', $clone).sortable();
 
-      //+gimigliano
       if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
         opts.typeUserEvents[type].onclone($clone[0]);
       }
@@ -2550,17 +2618,6 @@ function formBuilderEventsFn() {
       var deleteID = $(this).parents('.form-field:eq(0)').attr('id'),
           $field = $(document.getElementById(deleteID));
 
-      var removeField = function removeField() {
-        $field.slideUp(250, function () {
-          $field.removeClass('deleting');
-          $field.remove();
-          _helpers.save();
-          if (!$sortableFields[0].childNodes.length) {
-            $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
-          }
-        });
-      };
-
       document.addEventListener('modalClosed', function () {
         $field.removeClass('deleting');
       }, false);
@@ -2569,10 +2626,12 @@ function formBuilderEventsFn() {
       if (opts.fieldRemoveWarn) {
         var warnH3 = utils.markup('h3', opts.messages.warning),
             warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
-        _helpers.confirm([warnH3, warnMessage], removeField, coords);
+        _helpers.confirm([warnH3, warnMessage], function (deleteID) {
+          return _helpers.removeField(deleteID);
+        }, coords);
         $field.addClass('deleting');
       } else {
-        removeField($field);
+        _helpers.removeField(deleteID);
       }
     });
 
@@ -2682,7 +2741,13 @@ function formBuilderEventsFn() {
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
       showData: _helpers.showData,
-      save: _helpers.save
+      save: _helpers.save,
+      addField: function addField(field, index) {
+        _helpers.stopIndex = index;
+        prepFieldVars(field);
+        document.dispatchEvent(formBuilder.events.fieldAdded);
+      },
+      removeField: _helpers.removeField
     };
 
     return formBuilder;
