@@ -1,6 +1,6 @@
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
-
+  console.log(formBuilder);
   var _helpers = {
     doCancel: false
   };
@@ -151,7 +151,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return types;
   };
 
-
   /**
    * Get option data for a field
    * @param  {Object} field jQuery field object
@@ -184,7 +183,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     let formData = _helpers.prepData(form),
       xml = ['<form-template>\n\t<fields>'];
 
-    _helpers.forEach(formData, function(index) {
+    utils.forEach(formData, function(index) {
       let field = formData[index],
         fieldContent = null;
 
@@ -217,7 +216,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     if (form.childNodes.length !== 0) {
       // build data object
-      _helpers.forEach(form.childNodes, function(index, field) {
+      utils.forEach(form.childNodes, function(index, field) {
         index = index;
         var $field = $(field);
 
@@ -553,7 +552,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       let title = opts.messages.fieldNonEditable;
 
       if (title) {
-        var tt = utils.markup('p', title, { className: _helpers.disabledTT.className });
+        var tt = utils.markup('p', title, {className: _helpers.disabledTT.className});
         field.append(tt);
       }
     },
@@ -590,7 +589,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     // reverse the array to put custom classes at end, remove any duplicates, convert to string, remove whitespace
-    return _helpers.unique(classes).join(' ').trim();
+    return utils.unique(classes).join(' ').trim();
   };
 
   /**
@@ -658,8 +657,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.confirm = function(message, yesAction, coords = false, className = '') {
     var overlay = _helpers.showOverlay();
-    var yes = utils.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
-      no = utils.markup('button', opts.messages.no, { className: 'no btn btn-danger btn-sm' });
+    var yes = utils.markup('button', opts.messages.yes, {className: 'yes btn btn-success btn-sm'}),
+      no = utils.markup('button', opts.messages.no, {className: 'no btn btn-danger btn-sm'});
 
     no.onclick = function() {
       _helpers.closeConfirm(overlay);
@@ -670,11 +669,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
       _helpers.closeConfirm(overlay);
     };
 
-    var btnWrap = utils.markup('div', [no, yes], { className: 'button-wrap' });
+    var btnWrap = utils.markup('div', [no, yes], {className: 'button-wrap'});
 
     className = 'form-builder-dialog ' + className;
 
-    var miniModal = utils.markup('div', [message, btnWrap], { className: className });
+    var miniModal = utils.markup('div', [message, btnWrap], {className: className});
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -707,7 +706,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     className = 'form-builder-dialog ' + className;
 
-    var miniModal = utils.markup('div', content, { className: className });
+    var miniModal = utils.markup('div', content, {className: className});
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -810,7 +809,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     if (!fieldOrder) {
-      fieldOrder = _helpers.unique(opts.controlOrder);
+      fieldOrder = utils.unique(opts.controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = Object.keys(fieldOrder).map(function(i) {
@@ -828,29 +827,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     return newOrderFields.filter(Boolean);
-  };
-
-  // forEach that can be used on nodeList
-  _helpers.forEach = function(array, callback, scope) {
-    for (var i = 0; i < array.length; i++) {
-      callback.call(scope, i, array[i]); // passes back stuff we need
-    }
-  };
-
-  // cleaner syntax for testing indexOf element
-  _helpers.inArray = function(needle, haystack) {
-    return haystack.indexOf(needle) !== -1;
-  };
-
-  /**
-   * Remove duplicates from an array of elements
-   * @param  {array} arrArg array with possible duplicates
-   * @return {array}        array with only unique values
-   */
-  _helpers.unique = function(array) {
-    return array.filter((elem, pos, arr) => {
-      return arr.indexOf(elem) === pos;
-    });
   };
 
   /**
@@ -935,14 +911,61 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
   };
 
-  _helpers.showData = function() {
-
+  /**
+   * Open a dialog with the form's data
+   */
+  _helpers.showData = () => {
     var data = utils.escapeHtml(formBuilder.formData),
-      code = utils.markup('code', data, { className: 'formData-' + opts.dataType }),
+      code = utils.markup('code', data, {className: 'formData-' + opts.dataType}),
       pre = utils.markup('pre', code);
 
     _helpers.dialog(pre, null, 'data-dialog');
+  };
 
+  /**
+   * Remove a field from the stage
+   * @param  {String}  fieldID ID of the field to be removed
+   * @return {Boolean} fieldRemoved returns true if field is removed
+   */
+  _helpers.removeField = (fieldID) => {
+    let fieldRemoved = false,
+      form = document.getElementById(opts.formID),
+      fields = form.getElementsByClassName('form-field');
+
+    if (!fields.length) {
+      console.warn('No fields to remove');
+      return false;
+    }
+
+    if (!fieldID) {
+      let availableIds = [].slice.call().map((field) => {
+        return field.id;
+      });
+      console.warn('fieldID required to use `removeField` action.');
+      console.warn('Available IDs: ' + availableIds.join(', '));
+    }
+
+    let field = document.getElementById(fieldID),
+    $field = $(field);
+    if (!field) {
+      console.warn('Field not found');
+      return false;
+    }
+
+    $field.slideUp(250, function() {
+      $field.removeClass('deleting');
+      $field.remove();
+      fieldRemoved = true;
+      _helpers.save();
+      if (!form.childNodes.length) {
+        let stageWrap = form.parentElement;
+        stageWrap.classList.add('empty');
+        stageWrap.dataset.content = opts.messages.getStarted;
+      }
+    });
+
+    document.dispatchEvent(formBuilder.events.fieldRemoved);
+    return fieldRemoved;
   };
 
   return _helpers;

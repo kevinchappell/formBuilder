@@ -1,4 +1,7 @@
 'use strict';
+/**
+ *
+ */
 
 const fbUtils = {};
 
@@ -7,7 +10,11 @@ fbUtils.inArray = function(needle, haystack) {
   return haystack.indexOf(needle) !== -1;
 };
 
-// Remove null or undefined values
+/**
+ * Remove null or undefined values
+ * @param  {Object} attrs {attrName: attrValue}
+ * @return {Object}       Object trimmed of null or undefined values
+ */
 fbUtils.trimObj = function(attrs) {
   let xmlRemove = [
     null,
@@ -23,19 +30,11 @@ fbUtils.trimObj = function(attrs) {
   return attrs;
 };
 
-
 /**
- * Make an ID for this element using current date and tag
- *
- * @param  {Boolean} element
- * @return {String}  new id for element
+ * Test if attribute is a valid HTML attribute
+ * @param  {String} attr
+ * @return {Boolean}
  */
-fbUtils.makeId = function(element = false) {
-  let epoch = new Date().getTime();
-
-  return `${element.tagName}-${epoch}`;
-};
-
 fbUtils.validAttr = function(attr) {
   let invalid = [
     'values',
@@ -66,6 +65,12 @@ fbUtils.attrString = function(attrs) {
   return attributes.join(' ');
 };
 
+/**
+ * Convert attributes to markup safe strings
+ * @param  {String} name  attribute name
+ * @param  {String} value attribute value
+ * @return {Object}       {attrName: attrValue}
+ */
 fbUtils.safeAttr = function(name, value) {
   name = fbUtils.safeAttrName(name);
 
@@ -87,11 +92,10 @@ fbUtils.safeAttrName = function(name) {
 };
 
 /**
- * Convert strings
- into lowercase-hyphen
+ * Convert strings into lowercase-hyphen
  *
- * @param  {string} str
- * @return {string}
+ * @param  {String} str
+ * @return {String}
  */
 fbUtils.hyphenCase = (str) => {
   str = str.replace(/[^\w\s\-]/gi, '');
@@ -109,7 +113,6 @@ fbUtils.hyphenCase = (str) => {
  */
 fbUtils.camelCase = (str) => {
   return str.replace(/-([a-z])/g, function(m, w) {
-    m = m;
     return w.toUpperCase();
   });
 };
@@ -119,7 +122,7 @@ fbUtils.camelCase = (str) => {
  *
  * @param  {string}              tag
  * @param  {String|Array|Object} content we wrap this
- * @param  {object}              attrs
+ * @param  {Object}              attrs
  * @return {String}
  */
 fbUtils.markup = function(tag, content = '', attrs = {}) {
@@ -159,6 +162,11 @@ fbUtils.markup = function(tag, content = '', attrs = {}) {
   return field;
 };
 
+/**
+ * Convert html element attributes to key/value object
+ * @param  {DOM Object} DOM element
+ * @return {Object}     ex: {attrName: attrValue}
+ */
 fbUtils.parseAttrs = function(elem) {
   var attrs = elem.attributes;
   var data = {};
@@ -172,6 +180,11 @@ fbUtils.parseAttrs = function(elem) {
   return data;
 };
 
+/**
+ * Convert field options to optionData
+ * @param  {DOM Object} DOM element
+ * @return {Array}      optionData array
+ */
 fbUtils.parseOptions = function(field) {
   let options = field.getElementsByTagName('option'),
     optionData = {},
@@ -188,6 +201,11 @@ fbUtils.parseOptions = function(field) {
   return data;
 };
 
+/**
+ * Parse XML formData
+ * @param  {String} xmlString
+ * @return {Array}            formData array
+ */
 fbUtils.parseXML = function(xmlString) {
   const parser = new window.DOMParser();
   let xml = parser.parseFromString(xmlString, 'text/xml'),
@@ -205,12 +223,18 @@ fbUtils.parseXML = function(xmlString) {
   return formData;
 };
 
+/**
+ * Escape markup so it can be displayed rather than rendered
+ * @param  {String} html markup
+ * @return {String}      escaped html
+ */
 fbUtils.escapeHtml = function(html) {
   var escapeElement = document.createElement('textarea');
   escapeElement.textContent = html;
   return escapeElement.innerHTML;
 };
 
+// Escape an attribute
 fbUtils.escapeAttr = function(str) {
   var match = {
     '"': '&quot;',
@@ -226,9 +250,8 @@ fbUtils.escapeAttr = function(str) {
   return (typeof str === 'string') ? str.replace(/["&<>]/g, replaceTag) : str;
 };
 
-// Remove null or undefined values
+// Escape attributes
 fbUtils.escapeAttrs = function(attrs) {
-
   for (var attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       attrs[attr] = fbUtils.escapeAttr(attrs[attr]);
@@ -236,4 +259,22 @@ fbUtils.escapeAttrs = function(attrs) {
   }
 
   return attrs;
+};
+
+// forEach that can be used on nodeList
+fbUtils.forEach = function(array, callback, scope) {
+  for (var i = 0; i < array.length; i++) {
+    callback.call(scope, i, array[i]); // passes back stuff we need
+  }
+};
+
+/**
+ * Remove duplicates from an array of elements
+ * @param  {Array} arrArg array with possible duplicates
+ * @return {Array}        array with only unique values
+ */
+fbUtils.unique = function(array) {
+  return array.filter((elem, pos, arr) => {
+    return arr.indexOf(elem) === pos;
+  });
 };

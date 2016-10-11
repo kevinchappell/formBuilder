@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
 
   var formBuilder = $(buildWrap).formBuilder(fbOptions).data('formBuilder');
 
-  $('.form-builder-save').click(function(e) {
+  $('.form-builder-save').click(function() {
     toggleEdit();
     $(renderWrap).formRender({
       dataType: 'json',

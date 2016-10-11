@@ -336,7 +336,7 @@
     }
 
     // Create draggable fields for formBuilder
-    var cbUl = utils.markup('ul', null, { id: boxID, className: 'frmb-control' });
+    var cbUl = utils.markup('ul', null, {id: boxID, className: 'frmb-control'});
 
     if (opts.sortableControls) {
       cbUl.classList.add('sort-enabled');
@@ -386,10 +386,10 @@
       beforeStop: _helpers.beforeStop,
       distance: 3,
       update: function(event, ui) {
+        event = event;
         if (_helpers.doCancel) {
           return false;
         }
-        event = event;
         if (ui.item.parent()[0] === $sortableFields[0]) {
           prepFieldVars(ui.item, true);
           _helpers.doCancel = true;
@@ -471,13 +471,13 @@
       let cancelArray = [];
 
       if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
-        let prependedField = utils.markup('li', opts.prepend, { className: 'disabled prepend' });
+        let prependedField = utils.markup('li', opts.prepend, {className: 'disabled prepend'});
         cancelArray.push(true);
         $sortableFields.prepend(prependedField);
       }
 
       if (opts.append && !$('.disabled.append', $sortableFields).length) {
-        let appendedField = utils.markup('li', opts.append, { className: 'disabled append' });
+        let appendedField = utils.markup('li', opts.append, {className: 'disabled append'});
         cancelArray.push(true);
         $sortableFields.append(appendedField);
       }
@@ -497,8 +497,7 @@
         } else {
           let attrs = $field[0].attributes;
           if (!isNew) {
-            field.values = $field.children().map(function(index, elem) {
-              index = index;
+            field.values = $field.children().map((index, elem) => {
               return {
                 label: $(elem).text(),
                 value: $(elem).attr('value'),
@@ -531,6 +530,9 @@
       utils.escapeAttrs(field);
 
       appendNewField(field);
+      if (isNew) {
+        document.dispatchEvent(formBuilder.events.fieldAdded);
+      }
       $stageWrap.removeClass('empty');
     };
 
@@ -546,6 +548,7 @@
         // Load default fields if none are set
         opts.defaultFields.reverse();
         for (let i = opts.defaultFields.length - 1; i >= 0; i--) {
+          console.log(opts.defaultFields[i]);
           prepFieldVars(opts.defaultFields[i]);
         }
         $stageWrap.removeClass('empty');
@@ -591,7 +594,7 @@
      * @param  {object} values
      */
     var fieldOptions = function(values) {
-      let addOption = utils.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
+      let addOption = utils.markup('a', opts.messages.addOption, {className: 'add add-opt'}),
         fieldOptions = '',
         isMultiple = values.multiple || (values.type === 'checkbox-group');
 
@@ -609,7 +612,7 @@
       } else {
         // ensure option data is has all required keys
         for (let i = values.values.length - 1; i >= 0; i--) {
-          values.values[i] = Object.assign({}, { selected: false }, values.values[i]);
+          values.values[i] = Object.assign({}, {selected: false}, values.values[i]);
         }
       }
 
@@ -627,10 +630,10 @@
         fieldOptions += selectFieldOptions(values.name, values.values[i], isMultiple);
       }
       fieldOptions += '</ol>';
-      fieldOptions += utils.markup('div', addOption, { className: 'option-actions' }).outerHTML;
+      fieldOptions += utils.markup('div', addOption, {className: 'option-actions'}).outerHTML;
       fieldOptions += '</div>';
 
-      return utils.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
+      return utils.markup('div', fieldOptions, {className: 'form-group field-options'}).outerHTML;
     };
 
     /**
@@ -659,7 +662,7 @@
       advFields.push(requiredField(values));
 
       if (values.type === 'checkbox') {
-        advFields.push(boolAttribute('toggle', values, { first: opts.messages.toggle }));
+        advFields.push(boolAttribute('toggle', values, {first: opts.messages.toggle}));
       }
 
       advFields.push(textAttribute('label', values));
@@ -793,10 +796,10 @@
 
     function selectUserAttrs(name, options) {
       let optis = Object.keys(options.options).map(val => {
-          let attrs = { value: val };
-          if (val === options.value) { attrs.selected = null; }
-          return `<option ${utils.attrString(attrs)}>${options.options[val]}</option>`;
-        }),
+        let attrs = {value: val};
+        if (val === options.value) { attrs.selected = null; }
+        return `<option ${utils.attrString(attrs)}>${options.options[val]}</option>`;
+      }),
         selectAttrs = {
           id: name + '-' + lastID,
           title: options.description || options.label || name.toUpperCase(),
@@ -821,13 +824,13 @@
       }
 
       let label = (txt) => {
-          return `<label for="${name}-${lastID}">${txt}</label>`;
-        },
-        checked = (values[name] !== undefined ? 'checked' : ''),
-        input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/>`,
-        inner = [
-          input
-        ];
+        return `<label for="${name}-${lastID}">${txt}</label>`;
+      },
+      checked = (values[name] !== undefined ? 'checked' : ''),
+      input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/>`,
+      inner = [
+        input
+      ];
 
       if (labels.first) {
         inner.unshift(label(labels.first));
@@ -1001,7 +1004,7 @@
         noMake.push(true);
       }
       if (!noMake.some(elem => elem === true)) {
-        requireField = boolAttribute('required', values, { first: opts.messages.required });
+        requireField = boolAttribute('required', values, {first: opts.messages.required});
       }
       return requireField;
     };
@@ -1027,7 +1030,7 @@
         });
 
       var liContents = utils.markup(
-        'div', [toggleBtn, copyBtn, delBtn], { className: 'field-actions' }
+        'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
       ).outerHTML;
 
       // Field preview Label
@@ -1040,12 +1043,12 @@
       let requiredDisplay = values.required ? 'style="display:inline"' : '';
       liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
-      liContents += utils.markup('div', '', { className: 'prev-holder' }).outerHTML;
+      liContents += utils.markup('div', '', {className: 'prev-holder'}).outerHTML;
       liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
       liContents += '<div class="form-elements">';
 
       liContents += advFields(values);
-      liContents += utils.markup('a', opts.messages.close, { className: 'close-field' }).outerHTML;
+      liContents += utils.markup('a', opts.messages.close, {className: 'close-field'}).outerHTML;
 
       liContents += '</div>';
       liContents += '</div>';
@@ -1057,10 +1060,9 @@
         }),
         $li = $(field);
 
-      $li.data('fieldData', { attrs: values });
-
+      $li.data('fieldData', {attrs: values});
       if (typeof _helpers.stopIndex !== 'undefined') {
-        $('> li', $sortableFields).eq(_helpers.stopIndex).after($li);
+        $('> li', $sortableFields).eq(_helpers.stopIndex).before($li);
       } else {
         $sortableFields.append($li);
       }
@@ -1074,7 +1076,6 @@
         _helpers.toggleEdit(lastID);
       }
 
-      //+gimigliano
       if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
         opts.typeUserEvents[type].onadd(field);
       }
@@ -1168,7 +1169,6 @@
       $clone.addClass('cloned');
       $('.sortable-options', $clone).sortable();
 
-      //+gimigliano
       if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
         opts.typeUserEvents[type].onclone($clone[0]);
       }
@@ -1292,17 +1292,6 @@
       var deleteID = $(this).parents('.form-field:eq(0)').attr('id'),
         $field = $(document.getElementById(deleteID));
 
-      let removeField = () => {
-        $field.slideUp(250, function() {
-          $field.removeClass('deleting');
-          $field.remove();
-          _helpers.save();
-          if (!$sortableFields[0].childNodes.length) {
-            $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
-          }
-        });
-      };
-
       document.addEventListener('modalClosed', function() {
         $field.removeClass('deleting');
       }, false);
@@ -1311,10 +1300,10 @@
       if (opts.fieldRemoveWarn) {
         let warnH3 = utils.markup('h3', opts.messages.warning),
           warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
-        _helpers.confirm([warnH3, warnMessage], removeField, coords);
+        _helpers.confirm([warnH3, warnMessage], deleteID => _helpers.removeField(deleteID), coords);
         $field.addClass('deleting');
       } else {
-        removeField($field);
+        _helpers.removeField(deleteID);
       }
     });
 
@@ -1370,7 +1359,6 @@
       $(this).parents('li:eq(0)').toggleClass('delete');
     });
 
-
     if (opts.showActionButtons) {
       // View XML
       var xmlButton = $(document.getElementById(frmbID + '-view-data'));
@@ -1397,7 +1385,7 @@
             _helpers.save();
           }, coords);
         } else {
-          _helpers.dialog('There are no fields to clear', { pageX: coords.pageX, pageY: coords.pageY });
+          _helpers.dialog('There are no fields to clear', {pageX: coords.pageX, pageY: coords.pageY});
         }
       });
 
@@ -1425,7 +1413,13 @@
     formBuilder.actions = {
       clearFields: _helpers.removeAllfields,
       showData: _helpers.showData,
-      save: _helpers.save
+      save: _helpers.save,
+      addField: (field, index) => {
+        _helpers.stopIndex = index;
+        prepFieldVars(field);
+        document.dispatchEvent(formBuilder.events.fieldAdded);
+      },
+      removeField: _helpers.removeField
     };
 
     return formBuilder;
