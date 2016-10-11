@@ -103,5 +103,32 @@
     "jshint-stylish": "^2.1.0",
     "opener": "^1.4.2"
   },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "env": {
+      "browser": true,
+      "es6": true
+    },
+    "globals": {
+        "jQuery": true,
+        "$": true
+    },
+    "rules": {
+      "no-console": 0,
+      "new-cap": 0,
+      "strict": 0,
+      "no-underscore-dangle": 0,
+      "no-use-before-define": 0,
+      "eol-last": 0,
+      "quotes": [
+        2,
+        "single"
+      ]
+    }
+  },
   "engines": {}
 }

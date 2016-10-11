@@ -9,6 +9,8 @@ function formBuilderEventsFn() {
   events.modalClosed = new Event('modalClosed');
   events.modalOpened = new Event('modalOpened');
   events.formSaved = new Event('formSaved');
+  events.fieldAdded = new Event('fieldAdded');
+  events.fieldRemoved = new Event('fieldRemoved');
 
   return events;
 }
