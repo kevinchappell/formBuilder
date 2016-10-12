@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.21.2
+Version: 1.21.3
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -329,7 +329,6 @@ fbUtils.unique = function (array) {
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
 
-  console.log(formBuilder);
   var _helpers = {
     doCancel: false
   };
@@ -370,7 +369,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} ui
    */
   _helpers.startMoving = function (event, ui) {
-    event = event;
     ui.item.show().addClass('moving');
     _helpers.startIndex = $('li', this).index(ui.item);
   };
@@ -382,7 +380,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} ui
    */
   _helpers.stopMoving = function (event, ui) {
-    event = event;
     ui.item.removeClass('moving');
     if (_helpers.doCancel) {
       $(ui.sender).sortable('cancel');
@@ -397,8 +394,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * Logic for canceling the sort or drop.
    */
   _helpers.beforeStop = function (event, ui) {
-    event = event;
-
     var form = document.getElementById(opts.formID),
         lastIndex = form.children.length - 1,
         cancelArray = [];
@@ -1736,7 +1731,6 @@ function formBuilderEventsFn() {
       beforeStop: _helpers.beforeStop,
       distance: 3,
       update: function update(event, ui) {
-        event = event;
         if (_helpers.doCancel) {
           return false;
         }
@@ -2743,7 +2737,7 @@ function formBuilderEventsFn() {
       showData: _helpers.showData,
       save: _helpers.save,
       addField: function addField(field, index) {
-        _helpers.stopIndex = index;
+        _helpers.stopIndex = $sortableFields[0].children.length ? index : undefined;
         prepFieldVars(field);
         document.dispatchEvent(formBuilder.events.fieldAdded);
       },

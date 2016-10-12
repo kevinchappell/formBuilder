@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.21.3 - Hotfix: addField index 0 without fields [#279](https://github.com/kevinchappell/formBuilder/pull/279)
 - v1.21.2 - Add Build and commit to gulp tag task [#278](https://github.com/kevinchappell/formBuilder/pull/278)
 - v1.21.1 - Chore: Add gulp tag task [#277](https://github.com/kevinchappell/formBuilder/pull/277)
 - v1.21.0 - Feature: addField and removeField actions [#276](https://github.com/kevinchappell/formBuilder/pull/276)
