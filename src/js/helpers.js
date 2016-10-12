@@ -1,6 +1,5 @@
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
-  console.log(formBuilder);
   var _helpers = {
     doCancel: false
   };
@@ -41,7 +40,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} ui
    */
   _helpers.startMoving = function(event, ui) {
-    event = event;
     ui.item.show().addClass('moving');
     _helpers.startIndex = $('li', this).index(ui.item);
   };
@@ -53,7 +51,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @param  {Object} ui
    */
   _helpers.stopMoving = function(event, ui) {
-    event = event;
     ui.item.removeClass('moving');
     if (_helpers.doCancel) {
       $(ui.sender).sortable('cancel');
@@ -68,8 +65,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * Logic for canceling the sort or drop.
    */
   _helpers.beforeStop = function(event, ui) {
-    event = event;
-
     var form = document.getElementById(opts.formID),
       lastIndex = form.children.length - 1,
       cancelArray = [];

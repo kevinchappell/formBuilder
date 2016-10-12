@@ -386,7 +386,6 @@
       beforeStop: _helpers.beforeStop,
       distance: 3,
       update: function(event, ui) {
-        event = event;
         if (_helpers.doCancel) {
           return false;
         }
@@ -1415,7 +1414,7 @@
       showData: _helpers.showData,
       save: _helpers.save,
       addField: (field, index) => {
-        _helpers.stopIndex = index;
+        _helpers.stopIndex = $sortableFields[0].children.length ? index : undefined;
         prepFieldVars(field);
         document.dispatchEvent(formBuilder.events.fieldAdded);
       },
