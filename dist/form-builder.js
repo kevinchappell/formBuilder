@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.21.3
+Version: 1.21.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -2037,6 +2037,11 @@ function formBuilderEventsFn() {
 
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
+
+      //TextArea Rows Attruibute
+      if (values.type === 'textarea') {
+        advFields.push(numberAttribute('rows', values));
+      }
 
       // Class
       advFields.push(textAttribute('className', values));

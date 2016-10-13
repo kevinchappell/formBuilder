@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.22.0 - Feature: Rows Attribute for TextArea [#282](https://github.com/kevinchappell/formBuilder/pull/282)
 - v1.21.3 - Hotfix: addField index 0 without fields [#279](https://github.com/kevinchappell/formBuilder/pull/279)
 - v1.21.2 - Add Build and commit to gulp tag task [#278](https://github.com/kevinchappell/formBuilder/pull/278)
 - v1.21.1 - Chore: Add gulp tag task [#277](https://github.com/kevinchappell/formBuilder/pull/277)
