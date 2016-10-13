@@ -280,6 +280,17 @@ fbUtils.escapeHtml = function (html) {
   return escapeElement.innerHTML;
 };
 
+/**
+ * Converts escaped HTML into usable HTML
+ * @param  {String} html escaped HTML
+ * @return {String}      parsed HTML
+ */
+fbUtils.parsedHtml = function (html) {
+  var escapeElement = document.createElement('textarea');
+  escapeElement.innerHTML = html;
+  return escapeElement.textContent;
+};
+
 // Escape an attribute
 fbUtils.escapeAttr = function (str) {
   var match = {
@@ -1525,7 +1536,7 @@ function formBuilderEventsFn() {
         toggle: 'Toggle',
         warning: 'Warning!',
         value: 'Value',
-        viewJSON: '{  }',
+        viewJSON: '{ json }',
         viewXML: '&lt;/&gt;',
         yes: 'Yes'
       },
@@ -2550,7 +2561,7 @@ function formBuilderEventsFn() {
 
     // update preview to label
     $sortableFields.on('keyup change', '[name="label"]', function () {
-      $('.field-label', $(this).closest('li')).text($(this).val());
+      $('.field-label', $(this).closest('li')).html(this.value);
     });
 
     // remove error styling when users tries to correct mistake
