@@ -693,13 +693,18 @@
         advFields.push(numberAttribute('max', values));
         advFields.push(numberAttribute('step', values));
       }
-
+      
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
+       
+      //TextArea Rows Attruibute
+      if (values.type === 'textarea') {
+        advFields.push(numberAttribute('rows', values));  
+      } 
 
       // Class
       advFields.push(textAttribute('className', values));
-
+      
       advFields.push(textAttribute('name', values));
 
       if (valueField) {
@@ -736,7 +741,7 @@
         }
         advFields.push(`<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ${checked} id="enable-other-${lastID}"/> <label for="enable-other-${lastID}" class="other-label">${opts.messages.enableOtherMsg}</label></div>`);
       }
-
+      
       if (isOptionField) {
         advFields.push(fieldOptions(values));
       }
