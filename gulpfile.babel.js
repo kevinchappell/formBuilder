@@ -253,7 +253,7 @@ gulp.task('tag', (done) => {
     gitLog = gitLog.replace(/\(#(\d+)\)/g, '[#$1](https://github.com/kevinchappell/formBuilder/pull/$1)');
 
     let updateJSON = gulp.src(['', './bower.json', './package.json'])
-    .pipe(plugins.bump({type: newVer}))
+    .pipe(plugins.bump({version: newVer}))
     .pipe(gulp.dest('./'));
 
     updateJSON.on('end', function() {
