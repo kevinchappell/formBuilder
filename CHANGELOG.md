@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.23.0 - Feature: inputSets [#285](https://github.com/kevinchappell/formBuilder/pull/285)
 - v1.22.1 - Bugfix: updateJSON does not set correct version [#284](https://github.com/kevinchappell/formBuilder/pull/284)
 - v1.22.0 - Feature: Rows Attribute for TextArea [#282](https://github.com/kevinchappell/formBuilder/pull/282)
 - v1.21.3 - Hotfix: addField index 0 without fields [#279](https://github.com/kevinchappell/formBuilder/pull/279)
