@@ -28,6 +28,7 @@ pages:
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
   - formData: formBuilder/options/formData.md
+  - inputSets: formBuilder/options/inputSets.md
   - messages: formBuilder/options/messages.md
   - notify: formBuilder/options/notify.md
   - showActionButtons: formBuilder/options/showActionButtons.md

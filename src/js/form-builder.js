@@ -46,6 +46,7 @@
       //   type: 'text'
       // }],
       defaultFields: [],
+      inputSets: [],
       fieldRemoveWarn: false,
       roles: {
         1: 'Administrator'
@@ -229,86 +230,11 @@
 
     // create array of field objects to cycle through
     var frmbFields = [{
-      label: opts.messages.textArea,
+      label: opts.messages.autocomplete,
       attrs: {
-        type: 'textarea',
-        className: 'text-area',
-        name: 'textarea'
-      }
-    }, {
-      label: opts.messages.text,
-      attrs: {
-        type: 'text',
-        className: 'text-input',
-        name: 'text-input'
-      }
-    }, {
-      label: opts.messages.select,
-      attrs: {
-        type: 'select',
-        className: 'select',
-        name: 'select'
-      }
-    }, {
-      label: opts.messages.radioGroup,
-      attrs: {
-        type: 'radio-group',
-        className: 'radio-group',
-        name: 'radio-group'
-      }
-    }, {
-      label: opts.messages.paragraph,
-      attrs: {
-        type: 'paragraph',
-        className: 'paragraph'
-      }
-    }, {
-      label: opts.messages.number,
-      attrs: {
-        type: 'number',
-        className: 'number',
-        name: 'number'
-      }
-    }, {
-      label: opts.messages.hidden,
-      attrs: {
-        type: 'hidden',
-        className: 'hidden-input',
-        name: 'hidden-input'
-      }
-    }, {
-      label: opts.messages.header,
-      attrs: {
-        type: 'header',
-        className: 'header'
-      }
-    }, {
-      label: opts.messages.fileUpload,
-      attrs: {
-        type: 'file',
-        className: 'file-input',
-        name: 'file-input'
-      }
-    }, {
-      label: opts.messages.dateField,
-      attrs: {
-        type: 'date',
-        className: 'calendar',
-        name: 'date-input'
-      }
-    }, {
-      label: opts.messages.checkboxGroup,
-      attrs: {
-        type: 'checkbox-group',
-        className: 'checkbox-group',
-        name: 'checkbox-group'
-      }
-    }, {
-      label: opts.messages.checkbox,
-      attrs: {
-        type: 'checkbox',
-        className: 'checkbox',
-        name: 'checkbox'
+        type: 'autocomplete',
+        className: 'autocomplete',
+        name: 'autocomplete'
       }
     }, {
       label: opts.messages.button,
@@ -318,11 +244,86 @@
         name: 'button'
       }
     }, {
-      label: opts.messages.autocomplete,
+      label: opts.messages.checkbox,
       attrs: {
-        type: 'autocomplete',
-        className: 'autocomplete',
-        name: 'autocomplete'
+        type: 'checkbox',
+        className: 'checkbox',
+        name: 'checkbox'
+      }
+    }, {
+      label: opts.messages.checkboxGroup,
+      attrs: {
+        type: 'checkbox-group',
+        className: 'checkbox-group',
+        name: 'checkbox-group'
+      }
+    }, {
+      label: opts.messages.dateField,
+      attrs: {
+        type: 'date',
+        className: 'calendar',
+        name: 'date-input'
+      }
+    }, {
+      label: opts.messages.fileUpload,
+      attrs: {
+        type: 'file',
+        className: 'file-input',
+        name: 'file-input'
+      }
+    }, {
+      label: opts.messages.header,
+      attrs: {
+        type: 'header',
+        className: 'header'
+      }
+    }, {
+      label: opts.messages.hidden,
+      attrs: {
+        type: 'hidden',
+        className: 'hidden-input',
+        name: 'hidden-input'
+      }
+    }, {
+      label: opts.messages.number,
+      attrs: {
+        type: 'number',
+        className: 'number',
+        name: 'number'
+      }
+    }, {
+      label: opts.messages.paragraph,
+      attrs: {
+        type: 'paragraph',
+        className: 'paragraph'
+      }
+    }, {
+      label: opts.messages.radioGroup,
+      attrs: {
+        type: 'radio-group',
+        className: 'radio-group',
+        name: 'radio-group'
+      }
+    }, {
+      label: opts.messages.select,
+      attrs: {
+        type: 'select',
+        className: 'select',
+        name: 'select'
+      }
+    }, {
+      label: opts.messages.text,
+      attrs: {
+        type: 'text',
+        className: 'text-input',
+        name: 'text-input'
+      }
+    }, {
+      label: opts.messages.textArea,
+      attrs: {
+        type: 'textarea',
+        className: 'text-area',
+        name: 'textarea'
       }
     }];
 
@@ -345,8 +346,7 @@
     var $cbUL = $(cbUl);
 
     // Loop through
-    for (var i = frmbFields.length - 1; i >= 0; i--) {
-
+    utils.forEach(frmbFields, (i) => {
       let $field = $('<li/>', {
         'class': 'icon-' + frmbFields[i].attrs.className,
         'type': frmbFields[i].type,
@@ -358,6 +358,15 @@
 
       let typeLabel = utils.markup('span', frmbFields[i].label);
       $field.html(typeLabel).appendTo($cbUL);
+    });
+
+    if (opts.inputSets.length) {
+      $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
+      opts.inputSets.forEach((set) => {
+        set.name = set.name || _helpers.makeClassName(set.label);
+        let $set =  $('<li/>', {'class': 'input-set-control', type: set.name});
+        $set.html(set.label).appendTo($cbUL);
+      });
     }
 
     // Sortable fields
@@ -377,6 +386,7 @@
       helper: 'clone',
       opacity: 0.9,
       connectWith: $sortableFields,
+      cancel: '.fb-separator',
       cursor: 'move',
       scroll: false,
       placeholder: 'ui-state-highlight',
@@ -390,7 +400,7 @@
           return false;
         }
         if (ui.item.parent()[0] === $sortableFields[0]) {
-          prepFieldVars(ui.item, true);
+          processControl(ui.item);
           _helpers.doCancel = true;
         } else {
           _helpers.setFieldOrder($cbUL);
@@ -398,6 +408,28 @@
         }
       }
     });
+
+    var processControl = (control) => {
+      if (control[0].classList.contains('input-set-control')) {
+        let inputSet = opts.inputSets.filter((set) => {
+          return set.name === control[0].type;
+        })[0];
+        if (inputSet.showHeader) {
+          let header = {
+              type: 'header',
+              subtype: 'h2',
+              id: inputSet.name,
+              label: inputSet.label
+            };
+          prepFieldVars(header, true);
+        }
+        inputSet.fields.forEach((field) => {
+          prepFieldVars(field, true);
+        });
+      } else {
+        prepFieldVars(control, true);
+      }
+    };
 
     var $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
@@ -461,7 +493,7 @@
 
     $('li', $cbUL).click(function() {
       _helpers.stopIndex = undefined;
-      prepFieldVars($(this), true);
+      processControl($(this));
       _helpers.save();
     });
 
@@ -510,7 +542,7 @@
           }
         }
       } else {
-        field = $field;
+        field = Object.assign({}, $field);
       }
 
       field.name = isNew ? nameAttr(field) : field.name;
@@ -545,11 +577,7 @@
         $stageWrap.removeClass('empty');
       } else if (opts.defaultFields && opts.defaultFields.length) {
         // Load default fields if none are set
-        opts.defaultFields.reverse();
-        for (let i = opts.defaultFields.length - 1; i >= 0; i--) {
-          console.log(opts.defaultFields[i]);
-          prepFieldVars(opts.defaultFields[i]);
-        }
+        opts.defaultFields.forEach(prepFieldVars);
         $stageWrap.removeClass('empty');
       } else if (!opts.prepend && !opts.append) {
         $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
@@ -625,7 +653,7 @@
       }
 
       fieldOptions += '<ol class="sortable-options">';
-      for (i = 0; i < values.values.length; i++) {
+      for (let i = 0; i < values.values.length; i++) {
         fieldOptions += selectFieldOptions(values.name, values.values[i], isMultiple);
       }
       fieldOptions += '</ol>';
@@ -693,18 +721,18 @@
         advFields.push(numberAttribute('max', values));
         advFields.push(numberAttribute('step', values));
       }
-      
+
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
-       
+
       //TextArea Rows Attruibute
       if (values.type === 'textarea') {
-        advFields.push(numberAttribute('rows', values));  
-      } 
+        advFields.push(numberAttribute('rows', values));
+      }
 
       // Class
       advFields.push(textAttribute('className', values));
-      
+
       advFields.push(textAttribute('name', values));
 
       if (valueField) {
@@ -741,7 +769,7 @@
         }
         advFields.push(`<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ${checked} id="enable-other-${lastID}"/> <label for="enable-other-${lastID}" class="other-label">${opts.messages.enableOtherMsg}</label></div>`);
       }
-      
+
       if (isOptionField) {
         advFields.push(fieldOptions(values));
       }

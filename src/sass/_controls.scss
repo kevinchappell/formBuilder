@@ -93,6 +93,13 @@
     opacity: 0.6;
   }
 
+  &.fb-separator {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+    cursor: default;
+  }
+
   @include breakpoint('phone-lrg') {
     &:before {
       font-size: 30px;

@@ -800,6 +800,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
         fieldOrder = window.sessionStorage.getItem('fieldOrder');
       } else {
         window.sessionStorage.removeItem('fieldOrder');
+        return frmbFields;
       }
     }
 
