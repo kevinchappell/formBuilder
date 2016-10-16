@@ -20,13 +20,19 @@ fbUtils.trimObj = function(attrs) {
     null,
     undefined,
     '',
-    false
+    false,
+    'false'
   ];
-  for (var i in attrs) {
-    if (fbUtils.inArray(attrs[i], xmlRemove)) {
-      delete attrs[i];
+  for (var attr in attrs) {
+    if (fbUtils.inArray(attrs[attr], xmlRemove)) {
+      delete attrs[attr];
+    } else if (Array.isArray(attrs[attr])) {
+      if (!attrs[attr].length) {
+        delete attrs[attr];
+      }
     }
   }
+
   return attrs;
 };
 
@@ -164,25 +170,32 @@ fbUtils.markup = function(tag, content = '', attrs = {}) {
 
 /**
  * Convert html element attributes to key/value object
- * @param  {DOM Object} DOM element
- * @return {Object}     ex: {attrName: attrValue}
+ * @param  {Object} DOM element
+ * @return {Object} ex: {attrName: attrValue}
  */
 fbUtils.parseAttrs = function(elem) {
   var attrs = elem.attributes;
   var data = {};
-
-  for (var attr in attrs) {
-    if (attrs.hasOwnProperty(attr)) {
-      data[attrs[attr].name] = attrs[attr].value;
+  fbUtils.forEach(attrs, attr => {
+    let attrVal = attrs[attr].value;
+    if (attrVal.match(/false|true/g)) {
+      attrVal = (attrVal === 'true');
+    } else if (attrVal.match(/undefined/g)) {
+      attrVal = undefined;
     }
-  }
+
+    if (attrVal) {
+      data[attrs[attr].name] = attrVal;
+    }
+
+  });
 
   return data;
 };
 
 /**
  * Convert field options to optionData
- * @param  {DOM Object} DOM element
+ * @param  {Object} DOM element
  * @return {Array}      optionData array
  */
 fbUtils.parseOptions = function(field) {
@@ -215,7 +228,11 @@ fbUtils.parseXML = function(xmlString) {
     var fields = xml.getElementsByTagName('field');
     for (var i = 0; i < fields.length; i++) {
       let fieldData = fbUtils.parseAttrs(fields[i]);
-      fieldData.values = fbUtils.parseOptions(fields[i]);
+
+      if (fields[i].children.length) {
+        fieldData.values = fbUtils.parseOptions(fields[i]);
+      }
+
       formData.push(fieldData);
     }
   }
@@ -277,4 +294,187 @@ fbUtils.unique = function(array) {
   return array.filter((elem, pos, arr) => {
     return arr.indexOf(elem) === pos;
   });
+};
+
+/**
+   * Generate preview markup
+   * @param  {object} fieldData
+   * @return {string}       preview markup for field
+   */
+fbUtils.fieldRender = function(fieldData, opts, preview = false) {
+    var fieldMarkup = '',
+      fieldLabel = '',
+      optionsMarkup = '',
+      fieldLabelText = fieldData.label || '',
+      fieldDesc = fieldData.description || '',
+      fieldRequired = '',
+      fieldOptions = fieldData.values;
+
+    fieldData.name = preview ? fieldData.name + '-preview' : fieldData.name;
+    fieldData.id = fieldData.name;
+    fieldData.name = fieldData.multiple ? fieldData.name + '[]' : fieldData.name;
+
+    fieldData.type = fieldData.subtype || fieldData.type;
+
+    if (fieldData.required) {
+      fieldData.required = null;
+      fieldData['aria-required'] = 'true';
+      fieldRequired = '<span class="required">*</span>';
+    }
+
+    if (fieldData.type !== 'hidden') {
+      if (fieldDesc) {
+        fieldDesc = `<span class="tooltip-element" tooltip="${fieldDesc}">?</span>`;
+      }
+      fieldLabel = `<label for="${fieldData.id}" class="fb-${fieldData.type}-label">${fieldLabelText} ${fieldRequired} ${fieldDesc}</label>`;
+    }
+
+    var fieldLabelVal = fieldData.label;
+
+    delete fieldData.label;
+    delete fieldData.description;
+
+    var fieldDataString = fbUtils.attrString(fieldData);
+
+    switch (fieldData.type) {
+      case 'textarea':
+      case 'rich-text':
+        delete fieldData.type;
+        let fieldVal = fieldData.value || '';
+        fieldMarkup = `${fieldLabel}<textarea ${fieldDataString}>${fieldVal}</textarea>`;
+        break;
+      case 'select':
+        var optionAttrsString;
+        fieldData.type = fieldData.type.replace('-group', '');
+
+        if (fieldOptions) {
+
+          if (fieldData.placeholder) {
+            optionsMarkup += `<option disabled selected>${fieldData.placeholder}</option>`;
+          }
+
+          for (let i = 0; i < fieldOptions.length; i++) {
+            if (!fieldOptions[i].selected || fieldData.placeholder) {
+              delete fieldOptions[i].selected;
+            }
+            if (!fieldOptions[i].label) {
+              fieldOptions[i].label = '';
+            }
+            optionAttrsString = fbUtils.attrString(fieldOptions[i]);
+            optionsMarkup += `<option ${optionAttrsString}>${fieldOptions[i].label}</option>`;
+          }
+        }
+
+        fieldMarkup = `${fieldLabel}<select ${fieldDataString}>${optionsMarkup}</select>`;
+        break;
+      case 'checkbox-group':
+      case 'radio-group':
+        let optionAttrs;
+        fieldData.type = fieldData.type.replace('-group', '');
+
+        if (fieldData.type === 'checkbox') {
+          fieldData.name = fieldData.name + '[]';
+        }
+
+        if (fieldOptions) {
+          let optionAttrsString;
+
+          for (let i = 0; i < fieldOptions.length; i++) {
+            optionAttrs = Object.assign({value: '', label: ''}, fieldData, fieldOptions[i]);
+
+            if (optionAttrs.selected) {
+              delete optionAttrs.selected;
+              optionAttrs.checked = null;
+            }
+
+            optionAttrs.id = fieldData.id + '-' + i;
+            optionAttrsString = fbUtils.attrString(optionAttrs);
+            optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionAttrs.label}</label><br>`;
+          }
+
+          if (fieldData.other) {
+            let otherOptionAttrs = {
+              id: fieldData.id + '-' + 'other',
+              className: fieldData.className + ' other-option',
+              onclick: `fbUtils.otherOptionCB('${fieldData.id}-other')`
+            };
+
+            optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+
+            optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.messages.other}</label> <input type="text" name="${fieldData.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
+          }
+
+        }
+        fieldMarkup = `${fieldLabel}<div class="${fieldData.type}-group">${optionsMarkup}</div>`;
+        break;
+      case 'text':
+      case 'password':
+      case 'email':
+      case 'number':
+      case 'file':
+      case 'hidden':
+      case 'date':
+      case 'tel':
+      case 'autocomplete':
+        fieldMarkup = `${fieldLabel} <input ${fieldDataString}>`;
+        break;
+      case 'color':
+        fieldMarkup = `${fieldLabel} <input ${fieldDataString}> ${opts.messages.selectColor}`;
+        break;
+      case 'button':
+      case 'submit':
+        fieldMarkup = `<button ${fieldDataString}>${fieldLabelVal}</button>`;
+        break;
+      case 'checkbox':
+        fieldMarkup = `<input ${fieldDataString}> ${fieldLabel}`;
+
+        if (fieldData.toggle) {
+          setTimeout(function() {
+            $(document.getElementById(fieldData.id)).kcToggle();
+          }, 100);
+        }
+        break;
+      default:
+        fieldMarkup = `<${fieldData.type} ${fieldDataString}>${fieldLabelVal}</${fieldData.type}>`;
+    }
+
+    if (fieldData.type !== 'hidden') {
+      let className = fieldData.id ? `fb-${fieldData.type} form-group field-${fieldData.id}` : '';
+      fieldMarkup = fbUtils.markup('div', fieldMarkup, {
+        className: className
+      });
+    } else {
+      fieldMarkup = fbUtils.markup('input', null, fieldData);
+    }
+
+    return fieldMarkup;
+  };
+
+/**
+ * Callback for other option.
+ * Toggles the hidden text area for "other" option.
+ * @param  {String} otherId id of the "other" option input
+ */
+fbUtils.otherOptionCB = (otherId) => {
+  let otherInput = document.getElementById(otherId),
+  otherInputValue = document.getElementById(`${otherId}-value`);
+
+  if (otherInput.checked) {
+    otherInput.style.display = 'none';
+    otherInputValue.style.display = 'inline-block';
+  } else {
+    otherInput.style.display = 'inline-block';
+    otherInputValue.style.display = 'none';
+  }
+};
+
+/**
+ * Capitalizes a string
+ * @param  {String} str uncapitalized string
+ * @return {String} str capitalized string
+ */
+fbUtils.capitalize = (str) => {
+  return str.replace(/\b\w/g, function(m) {
+      return m.toUpperCase();
+    });
 };

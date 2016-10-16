@@ -67,7 +67,7 @@
       margin-left: 0;
       margin-bottom: 3px;
       background-color: $white;
-      transition: background-color 250ms ease-in-out, margin-top 500ms;
+      transition: background-color 250ms ease-in-out, margin-top 400ms;
 
       &:hover {
         .field-actions {
@@ -264,6 +264,10 @@
       display: block;
       margin-top: 12px;
 
+      .form-group > label:not([class='fb-checkbox-label']) {
+        display: none;
+      }
+
       input[type='color'] {
         width: 60px;
         padding: 2px;
@@ -332,6 +336,7 @@
         padding: 0;
         border-radius: 0;
         border-color: $grey-light-30;
+        background-color: rgba(255, 255, 255, 0.75);
         color: $grey-light-30;
         line-height: 32px;
         font-size: 16px;
@@ -344,10 +349,17 @@
 
       .toggle-form {
         font-size: .85em;
-        background-color: rgba(255, 255, 255, 0.75);
 
         &:hover {
-          color: $black;
+          background-color: $edit;
+          color: $white;
+        }
+      }
+
+      .copy-button {
+        &:hover {
+          background-color: $copy;
+          color: $white;
         }
       }
 
@@ -361,6 +373,19 @@
 
     .option-actions {
       text-align: right;
+      margin-top: 10px;
+      width: 100%;
+      margin-left: 2%;
+
+      button,
+      a {
+        background: #fff;
+        padding: 5px 10px;
+        border: 1px solid $grey-light-30;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: default;
+      }
     }
 
     .sortable-options-wrap {
@@ -435,10 +460,6 @@
         width: 100%;
         clear: left;
         float: none;
-
-        input[type=checkbox]:not(.option-selected) {
-          margin: 12px 5px 0 2%;
-        }
       }
     }
 
@@ -464,37 +485,37 @@
       margin: 12px 0 0;
       border: 1px solid #d7d7d7;
 
+      .input-wrap {
+        width: 81.33333333%;
+        margin-left: 2%;
+        float: left;
+
+        > input[type=checkbox] {
+          margin-top: 8px;
+        }
+      }
+
+      .btn-group {
+        margin-left: 2%;
+      }
+
       input[type='text'],
       input[type='number'],
       input[type='date'],
       input[type='color'],
       textarea,
       select {
-        width: 81.33333333%;
         transition: background 250ms ease-in-out;
-        margin-left: 2%;
         padding: 6px 12px;
         border: 1px solid #AFAFAB;
         background-color: $white;
-        float: left;
-
-        .btn-group {
-          margin-left: 2%;
-        }
       }
 
       @include breakpoint('phone-lrg') {
-        input[type='text'],
-        input[type='number'],
-        textarea,
-        select {
+        .input-wrap {
           width: 100%;
           margin-left: 0;
           float: none;
-
-          .btn-group {
-            margin-left: 0;
-          }
         }
       }
 

@@ -5,7 +5,7 @@
 
     var defaults = {
       theme: 'fresh',
-      labels: {
+      messages: {
         off: 'Off',
         on: 'On'
       }
@@ -16,8 +16,8 @@
 
     $kcToggle.toggleClass('on', element.is(':checked'));
 
-    var kctOn = `<div class="kct-on">${opts.labels.on}</div>`,
-        kctOff = `<div class="kct-off">${opts.labels.off}</div>`,
+    var kctOn = `<div class="kct-on">${opts.messages.on}</div>`,
+        kctOff = `<div class="kct-off">${opts.messages.off}</div>`,
         kctHandle = `<div class="kct-handle"></div>`,
         kctInner = `<div class="kct-inner">${kctOn}${kctHandle}${kctOff}</div>`;
 

@@ -5,8 +5,6 @@
     var formBuilder = this;
 
     var defaults = {
-      typeUserAttrs: {}, //+gimigliano
-      typeUserEvents: {}, //+gimigliano
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -52,7 +50,7 @@
         1: 'Administrator'
       },
       messages: {
-        addOption: 'Add Option',
+        addOption: 'Add Option +',
         allFieldsRemoved: 'All fields were removed.',
         allowSelect: 'Allow Select',
         allowMultipleFiles: 'Allow users to upload multiple files',
@@ -123,6 +121,7 @@
         radioGroup: 'Radio Group',
         radio: 'Radio',
         removeMessage: 'Remove Element',
+        removeOption: 'Remove Option',
         remove: '&#215;',
         required: 'Required',
         richText: 'Rich Text Editor',
@@ -151,31 +150,6 @@
           }
         },
         subtype: 'Type',
-        subtypes: {
-          text: [
-            'text',
-            'password',
-            'email',
-            'color',
-            'tel'
-          ],
-          button: [
-            'button',
-            'submit'
-          ],
-          header: [
-            'h1',
-            'h2',
-            'h3'
-          ],
-          paragraph: [
-            'p',
-            'address',
-            'blockquote',
-            'canvas',
-            'output'
-          ]
-        },
         text: 'Text Field',
         textArea: 'Text Area',
         toggle: 'Toggle',
@@ -199,14 +173,28 @@
       sortableControls: false,
       stickyControls: false,
       showActionButtons: true,
+      typeUserAttrs: {},
+      typeUserEvents: {},
       prefix: 'form-builder-'
     };
 
-    // @todo function to set parent types for subtypes
-    defaults.messages.subtypes.password = defaults.messages.subtypes.text;
-    defaults.messages.subtypes.email = defaults.messages.subtypes.text;
-    defaults.messages.subtypes.color = defaults.messages.subtypes.text;
-    defaults.messages.subtypes.submit = defaults.messages.subtypes.button;
+    var utils = fbUtils;
+
+    defaults.messages.subtypes = (() => {
+      const subtypeDefault = (subtype) => {
+        return {
+          label: subtype,
+          value: subtype
+        };
+      };
+
+      return {
+          text: ['text', 'password', 'email', 'color', 'tel'].map(subtypeDefault),
+          header: ['h1', 'h2', 'h3'].map(subtypeDefault),
+          button: ['button', 'submit', 'reset'].map(subtypeDefault),
+          paragraph: ['p','address','blockquote','canvas','output'].map(subtypeDefault)
+        };
+    })();
 
     var opts = Object.assign({}, defaults, options),
       frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
@@ -221,7 +209,6 @@
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
-    var utils = fbUtils;
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
@@ -621,8 +608,10 @@
      * @param  {object} values
      */
     var fieldOptions = function(values) {
-      let addOption = utils.markup('a', opts.messages.addOption, {className: 'add add-opt'}),
-        fieldOptions = '',
+      let optionActions = [
+          utils.markup('a', opts.messages.addOption, {className: 'add add-opt'})
+        ],
+        fieldOptions = [`<label class="false-label">${opts.messages.selectOptions}</label>`],
         isMultiple = values.multiple || (values.type === 'checkbox-group');
 
       if (!values.values || !values.values.length) {
@@ -638,29 +627,20 @@
         values.values[0].selected = true;
       } else {
         // ensure option data is has all required keys
-        for (let i = values.values.length - 1; i >= 0; i--) {
-          values.values[i] = Object.assign({}, {selected: false}, values.values[i]);
-        }
+        values.values.forEach(option => Object.assign({}, {selected: false}, option));
       }
 
-      fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
-      fieldOptions += '<div class="sortable-options-wrap">';
-      if (values.type === 'select') {
-        let labels = {
-          second: opts.messages.selectionsMessage
-        };
-        fieldOptions += boolAttribute('multiple', values, labels);
-      }
+      fieldOptions.push('<div class="sortable-options-wrap">');
 
-      fieldOptions += '<ol class="sortable-options">';
-      for (let i = 0; i < values.values.length; i++) {
-        fieldOptions += selectFieldOptions(values.name, values.values[i], isMultiple);
-      }
-      fieldOptions += '</ol>';
-      fieldOptions += utils.markup('div', addOption, {className: 'option-actions'}).outerHTML;
-      fieldOptions += '</div>';
+      fieldOptions.push('<ol class="sortable-options">');
+      utils.forEach(values.values, (i) => {
+        fieldOptions.push(selectFieldOptions(values.name, values.values[i], isMultiple));
+      });
+      fieldOptions.push('</ol>');
+      fieldOptions.push(utils.markup('div', optionActions, {className: 'option-actions'}).outerHTML);
+      fieldOptions.push('</div>');
 
-      return utils.markup('div', fieldOptions, {className: 'form-group field-options'}).outerHTML;
+      return utils.markup('div', fieldOptions.join(''), {className: 'form-group field-options'}).outerHTML;
     };
 
     /**
@@ -671,7 +651,6 @@
     var advFields = function(values) {
       var advFields = [],
         key,
-        checked = '',
         optionFields = [
           'select',
           'checkbox-group',
@@ -680,10 +659,7 @@
         isOptionField = (function() {
           return (optionFields.indexOf(values.type) !== -1);
         })(),
-        valueField = (() => {
-          let noValField = ['header', 'paragraph', 'file'].concat(optionFields, opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-          return (noValField.indexOf(values.type) === -1);
-        })(),
+        valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(optionFields)),
         roles = values.role !== undefined ? values.role.split(',') : [];
 
       advFields.push(requiredField(values));
@@ -698,19 +674,14 @@
       values.style = values.style || 'default';
 
       //Help Text / Description Field
-      var noDescFields = [
-        'header',
-        'paragraph',
-        'button'
-      ].concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-
-      noDescFields = noDescFields.concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-
-      if (noDescFields.indexOf(values.type) === -1) {
+      if (!utils.inArray(values.type, ['header', 'paragraph', 'button'])) {
         advFields.push(textAttribute('description', values));
       }
 
-      advFields.push(subTypeField(values));
+      if (opts.messages.subtypes[values.type]) {
+        let optionData = opts.messages.subtypes[values.type];
+        advFields.push(selectAttribute('subtype', values, optionData));
+      }
 
       if (values.type === 'button') {
         advFields.push(btnStyles(values.style, values.type));
@@ -725,7 +696,7 @@
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
 
-      //TextArea Rows Attruibute
+      //TextArea Rows Attribute
       if (values.type === 'textarea') {
         advFields.push(numberAttribute('rows', values));
       }
@@ -747,34 +718,39 @@
         advFields.push(boolAttribute('multiple', values, labels));
       }
 
-      advFields.push('<div class="form-group access-wrap"><label>' + opts.messages.roles + '</label>');
-
-      advFields.push('<input type="checkbox" class="fld-enable-roles" name="enable-roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable-roles-' + lastID + '"/> <label for="enable-roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
-      advFields.push('<div class="available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>');
-
+      let rolesDisplay = values.role !== undefined ? 'style="display:block"' : '';
+      let availableRoles = [
+        `<div class="available-roles" ${rolesDisplay}>`
+      ];
       for (key in opts.roles) {
         if (opts.roles.hasOwnProperty(key)) {
-          checked = utils.inArray(key, roles) ? 'checked' : '';
-          advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + checked + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
+          let checked = utils.inArray(key, roles) ? 'checked' : '',
+          roleId = `fld-${lastID}-roles-${key}`;
+          availableRoles.push(`<input type="checkbox" name="roles[]" value="${key}" id="${roleId}" ${checked} class="roles-field" /> <label for="${roleId}">${opts.roles[key]}</label><br/>`);
         }
       }
 
-      advFields.push('</div></div>');
+      availableRoles.push('</div>');
+
+      let accessLabels = {first: opts.messages.roles, second: opts.messages.limitRole, content: availableRoles.join('')};
+
+      advFields.push(boolAttribute('access', values, accessLabels));
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
-        advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
-        let checked = '';
-        if (values.enableOther || values['enable-other']) {
-          checked = 'checked';
-        }
-        advFields.push(`<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ${checked} id="enable-other-${lastID}"/> <label for="enable-other-${lastID}" class="other-label">${opts.messages.enableOtherMsg}</label></div>`);
+        advFields.push(boolAttribute('other', values, {first: opts.messages.enableOther, second: opts.messages.enableOtherMsg}));
+      }
+
+      if (values.type === 'select') {
+        advFields.push(boolAttribute('multiple', values, {first: ' ', second: opts.messages.selectionsMessage}));
       }
 
       if (isOptionField) {
         advFields.push(fieldOptions(values));
       }
 
-      advFields.push(textAttribute('maxlength', values));
+      if (utils.inArray(values.type, ['text', 'textarea'])) {
+        advFields.push(numberAttribute('maxlength', values));
+      }
 
       // Append custom attributes as defined in typeUserAttrs option
       if (opts.typeUserAttrs[values.type]) {
@@ -800,7 +776,7 @@
           if (typeUserAttr[attribute].options) {
             advField.push(selectUserAttrs(attribute, typeUserAttr[attribute]));
           } else {
-            advField.push(textUserAttrs(attribute, typeUserAttr[attribute]));
+            advField.push(inputUserAttrs(attribute, typeUserAttr[attribute]));
           }
 
           opts.messages[attribute] = orig;
@@ -811,19 +787,24 @@
       return advField.join('');
     }
 
-    function textUserAttrs(name, options) {
+    function inputUserAttrs(name, attrs) {
       let textAttrs = {
           id: name + '-' + lastID,
-          title: options.description || options.label || name.toUpperCase(),
+          title: attrs.description || attrs.label || name.toUpperCase(),
           name: name,
-          type: options.type || 'text',
-          className: `fld-${name} form-control`
+          type: attrs.type || 'text',
+          className: [`fld-${name}`]
         },
         label = `<label for="${textAttrs.id}">${opts.messages[name]}</label>`;
 
-      textAttrs = Object.assign({}, options, textAttrs);
-      let textInput = `<input ${utils.attrString(textAttrs)}>`;
-      return `<div class="form-group ${name}-wrap">${label}${textInput}</div>`;
+      if (!utils.inArray(textAttrs.type, ['checkbox', 'checkbox-group', 'radio-group'])) {
+        textAttrs.className.push('form-control');
+      }
+
+      textAttrs = Object.assign({}, attrs, textAttrs);
+      let textInput = `<input ${utils.attrString(textAttrs)}>`,
+      inputWrap = `<div class="input-wrap">${textInput}</div>`;
+      return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`;
     }
 
     function selectUserAttrs(name, options) {
@@ -846,8 +827,9 @@
         selectAttrs[attr] = options[attr];
       });
 
-      let select = `<select ${utils.attrString(selectAttrs)}>${optis.join('')}</select>`;
-      return `<div class="form-group ${name}-wrap">${label}${select}</div>`;
+      let select = `<select ${utils.attrString(selectAttrs)}>${optis.join('')}</select>`,
+        inputWrap = `<div class="input-wrap">${select}</div>`;
+      return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`;
     }
 
     var boolAttribute = function(name, values, labels) {
@@ -859,47 +841,28 @@
         return `<label for="${name}-${lastID}">${txt}</label>`;
       },
       checked = (values[name] !== undefined ? 'checked' : ''),
-      input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/>`,
-      inner = [
+      input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/> `,
+      left = [],
+      right = [
         input
       ];
 
       if (labels.first) {
-        inner.unshift(label(labels.first));
+        left.unshift(label(labels.first));
       }
 
       if (labels.second) {
-        inner.push(label(labels.second));
+        right.push(label(labels.second));
       }
 
-      return `<div class="form-group ${name}-wrap">${inner.join('')}</div>`;
-    };
-
-    /**
-     * Changes a fields type
-     *
-     * @param  {Object} values
-     * @return {String}      markup for type <select> input
-     */
-    var subTypeField = function(values) {
-      let subTypes = opts.messages.subtypes,
-        type = values.type,
-        subtype = values.subtype || '',
-        subTypeField = '',
-        selected;
-
-      if (subTypes[type]) {
-        let subTypeLabel = `<label>${opts.messages.subtype}</label>`;
-        subTypeField += `<select name="subtype" class="fld-subtype form-control" id="subtype-${lastID}">`;
-        subTypes[type].forEach(function(element) {
-          selected = (subtype === element) ? 'selected' : '';
-          subTypeField += `<option value="${element}" ${selected}>${element}</option>`;
-        });
-        subTypeField += `</select>`;
-        subTypeField = `<div class="form-group subtype-wrap">${subTypeLabel} ${subTypeField}</div>`;
+      if (labels.content) {
+        right.push(labels.content);
       }
 
-      return subTypeField;
+      right.unshift('<div class="input-wrap">');
+      right.push('</div>');
+
+      return `<div class="form-group ${name}-wrap">${left.concat(right).join('')}</div>`;
     };
 
     var btnStyles = function(style, type) {
@@ -937,11 +900,50 @@
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
-      var attrVal = values[attribute] || '';
-      var attrLabel = opts.messages[attribute] || attribute,
-        placeholder = opts.messages.placeholders[attribute] || '',
-        numberAttribute = `<input type="number" value="${attrVal}" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
-      return `<div class="form-group ${attribute}-wrap"><label for="${attribute}-${lastID}">${attrLabel}</label> ${numberAttribute}</div>`;
+
+      let attrVal = values[attribute],
+        attrLabel = opts.messages[attribute] || attribute,
+        placeholder = opts.messages.placeholders[attribute],
+        inputConfig = {
+          type: 'number',
+          value: attrVal,
+          name: attribute,
+          min: '0',
+          placeholder: placeholder,
+          className: `fld-${attribute} form-control`,
+          id: `${attribute}-${lastID}`
+        },
+        numberAttribute = `<input ${utils.attrString(utils.trimObj(inputConfig))}>`,
+        inputWrap = `<div class="input-wrap">${numberAttribute}</div>`;
+
+      return `<div class="form-group ${attribute}-wrap"><label for="${inputConfig.id}">${attrLabel}</label> ${inputWrap}</div>`;
+    };
+
+    var selectAttribute = function(attribute, values, optionData) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
+        return;
+      }
+      let selectOptions = optionData.map((option, i) => {
+        let optionAttrs = Object.assign({
+          label: `${opts.messages.option} ${i}`,
+          value: undefined
+        }, option);
+        if (option.value === values[attribute]) {
+          optionAttrs.selected = true;
+        }
+        return `<option ${utils.attrString(utils.trimObj(optionAttrs))}>${optionAttrs.label}</option>`;
+      }),
+        selectAttrs = {
+          id: attribute + '-' + lastID,
+          name: attribute,
+          className: `fld-${attribute} form-control`
+        },
+        label = `<label for="${selectAttrs.id}">${opts.messages[attribute] || utils.capitalize(attribute)}</label>`;
+
+      let select = `<select ${utils.attrString(selectAttrs)}>${selectOptions.join('')}</select>`,
+        inputWrap = `<div class="input-wrap">${select}</div>`;
+
+      return `<div class="form-group ${selectAttrs.name}-wrap">${label}${inputWrap}</div>`;
     };
 
     /**
@@ -954,6 +956,7 @@
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
+
       var placeholderFields = [
         'text',
         'textarea',
@@ -966,19 +969,6 @@
 
       var textArea = ['paragraph'];
 
-      var noMaxlength = [
-        'checkbox',
-        'select',
-        'checkbox-group',
-        'date',
-        'autocomplete',
-        'radio-group',
-        'hidden',
-        'button',
-        'header',
-        'number'
-      ];
-
       var attrVal = values[attribute] || '',
         attrLabel = opts.messages[attribute];
       if (attribute === 'label' && utils.inArray(values.type, textArea)) {
@@ -986,7 +976,6 @@
       }
 
       noName = noName.concat(opts.messages.subtypes.header, textArea);
-      noMaxlength = noMaxlength.concat(textArea);
 
       let placeholders = opts.messages.placeholders,
         placeholder = placeholders[attribute] || '',
@@ -1003,21 +992,26 @@
         noMakeAttr.push(true);
       }
 
-      // Field has maxlength attribute
-      if (attribute === 'maxlength' && utils.inArray(values.type, noMaxlength)) {
-        noMakeAttr.push(true);
-      }
-
       if (!noMakeAttr.some(elem => elem === true)) {
-        let attributeLabel = `<label for="${attribute}-${lastID}">${attrLabel}</label>`;
+        let inputConfig = {
+          name: attribute,
+          placeholder: placeholder,
+          className: `fld-${attribute} form-control`,
+          id: `${attribute}-${lastID}`
+        };
+        let attributeLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`;
 
         if (attribute === 'label' && utils.inArray(values.type, textArea) || (attribute === 'value' && values.type === 'textarea')) {
-          attributefield += `<textarea name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">${attrVal}</textarea>`;
+          attributefield += `<textarea ${utils.attrString(inputConfig)}>${attrVal}</textarea>`;
         } else {
-          attributefield += `<input type="text" value="${attrVal}" name="${attribute}" placeholder="${placeholder}" class="fld-${attribute} form-control" id="${attribute}-${lastID}">`;
+          inputConfig.value = attrVal;
+          inputConfig.type = 'text';
+          attributefield += `<input ${utils.attrString(inputConfig)}>`;
         }
 
-        attributefield = `<div class="form-group ${attribute}-wrap">${attributeLabel} ${attributefield}</div>`;
+        let inputWrap = `<div class="input-wrap">${attributefield}</div>`;
+
+        attributefield = `<div class="form-group ${attribute}-wrap">${attributeLabel} ${inputWrap}</div>`;
       }
 
       return attributefield;
@@ -1038,6 +1032,7 @@
       if (!noMake.some(elem => elem === true)) {
         requireField = boolAttribute('required', values, {first: opts.messages.required});
       }
+
       return requireField;
     };
 
@@ -1099,7 +1094,7 @@
         $sortableFields.append($li);
       }
 
-      $('.sortable-options', $li).sortable(); // make dynamically added option fields sortable if they exist.
+      $('.sortable-options', $li).sortable({update: () => {_helpers.updatePreview($li);}}); // make dynamically added option fields sortable if they exist.
 
       _helpers.updatePreview($li);
 
@@ -1127,11 +1122,7 @@
         ],
         optionInputs = [];
 
-      optionData = optionData || {
-        selected: false,
-        label: '',
-        value: ''
-      };
+      optionData = Object.assign({selected: false,label: '',value: ''}, optionData);
 
       for (var i = optionDataOrder.length - 1; i >= 0; i--) {
         let prop = optionDataOrder[i];
@@ -1140,8 +1131,9 @@
             type: optionInputType[prop] || 'text',
             'class': 'option-' + prop,
             value: optionData[prop],
-            name: name
+            name: name + '-option'
           };
+
           if (opts.messages.placeholders[prop]) {
             attrs.placeholder = opts.messages.placeholders[prop];
           }
@@ -1255,6 +1247,20 @@
       }
     });
 
+    $sortableFields.on('change', '.prev-holder input, .prev-holder select', e => {
+      if (e.target.classList.contains('other-option')) {
+        return;
+      }
+      let field = $(e.target).closest('li.form-field')[0];
+      if (utils.inArray(field.type, ['select', 'checkbox-group', 'radio-group'])) {
+        field.querySelector('[class="option-value"][value="' + e.target.value + '"]').parentElement.childNodes[0].checked = true;
+      } else {
+        document.getElementById('value-' + field.id).value = e.target.value;
+      }
+
+      _helpers.save();
+    });
+
     // update preview to label
     $sortableFields.on('keyup change', '[name="label"]', function() {
       $('.field-label', $(this).closest('li')).text($(this).val());
@@ -1284,20 +1290,30 @@
       }
     });
 
-    _helpers.updateMultipleSelect();
+    $sortableFields.on('change', '.fld-multiple', e => {
+      let newType = e.target.checked ? 'checkbox' : 'radio';
+
+      $(e.target)
+      .parents('.form-elements:eq(0)')
+      .find('.sortable-options input.option-selected')
+      .each(function() {
+        this.type = newType;
+      });
+
+    });
 
     // format name attribute
-    $sortableFields.delegate('input[name="name"]', 'blur', function() {
-      $(this).val(_helpers.safename($(this).val()));
-      if ($(this).val() === '') {
-        $(this).addClass('field_error').attr('placeholder', opts.messages.cannotBeEmpty);
+    $sortableFields.on('blur', 'input.fld-name', function() {
+      this.value = _helpers.safename(this.value);
+      if (this.value === '') {
+        $(this).addClass('field-error').attr('placeholder', opts.messages.cannotBeEmpty);
       } else {
-        $(this).removeClass('field_error');
+        $(this).removeClass('field-error');
       }
     });
 
-    $sortableFields.delegate('input.fld-maxlength', 'blur', function() {
-      $(this).val(_helpers.forceNumber($(this).val()));
+    $sortableFields.on('blur', 'input.fld-maxlength', function() {
+      this.value = _helpers.forceNumber(this.value);
     });
 
     // Copy field
@@ -1357,8 +1373,8 @@
     });
 
     // Attach a callback to toggle roles visibility
-    $sortableFields.on('click', 'input[name="enable-roles"]', function() {
-      var roles = $(this).siblings('div.available-roles'),
+    $sortableFields.on('click', 'input.fld-access', function() {
+      var roles = $(this).parents('li.form-field').find('div.available-roles'),
         enableRolesCB = $(this);
       roles.slideToggle(250, function() {
         if (!enableRolesCB.is(':checked')) {
@@ -1384,7 +1400,6 @@
       let name = $firstOption.attr('name');
 
       $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple));
-      _helpers.updateMultipleSelect();
     });
 
     $sortableFields.on('mouseover mouseout', '.remove, .del-button', function() {
@@ -1425,7 +1440,6 @@
       $(document.getElementById(frmbID + '-save')).click(function(e) {
         e.preventDefault();
         _helpers.save();
-        _helpers.validateForm(e);
       });
     }
 
@@ -1451,7 +1465,12 @@
         prepFieldVars(field);
         document.dispatchEvent(formBuilder.events.fieldAdded);
       },
-      removeField: _helpers.removeField
+      removeField: _helpers.removeField,
+      setData: formData => {
+        _helpers.removeAllfields();
+        _helpers.getData(formData);
+        loadFields();
+      }
     };
 
     return formBuilder;
