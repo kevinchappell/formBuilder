@@ -934,7 +934,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     if (!fieldID) {
-      let availableIds = [].slice.call().map((field) => {
+      let availableIds = [].slice.call(fields).map((field) => {
         return field.id;
       });
       console.warn('fieldID required to use `removeField` action.');

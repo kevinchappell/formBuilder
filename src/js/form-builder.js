@@ -1332,7 +1332,7 @@
       if (opts.fieldRemoveWarn) {
         let warnH3 = utils.markup('h3', opts.messages.warning),
           warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
-        _helpers.confirm([warnH3, warnMessage], deleteID => _helpers.removeField(deleteID), coords);
+        _helpers.confirm([warnH3, warnMessage], () => _helpers.removeField(deleteID), coords);
         $field.addClass('deleting');
       } else {
         _helpers.removeField(deleteID);
