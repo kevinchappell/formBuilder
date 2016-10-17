@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.23.0
+Version: 1.23.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1283,7 +1283,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
     }
 
     if (!fieldID) {
-      var availableIds = [].slice.call().map(function (field) {
+      var availableIds = [].slice.call(fields).map(function (field) {
         return field.id;
       });
       console.warn('fieldID required to use `removeField` action.');
@@ -2654,7 +2654,7 @@ function formBuilderEventsFn() {
       if (opts.fieldRemoveWarn) {
         var warnH3 = utils.markup('h3', opts.messages.warning),
             warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
-        _helpers.confirm([warnH3, warnMessage], function (deleteID) {
+        _helpers.confirm([warnH3, warnMessage], function () {
           return _helpers.removeField(deleteID);
         }, coords);
         $field.addClass('deleting');
