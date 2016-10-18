@@ -58,7 +58,7 @@ if (typeof Object.assign != 'function') {
 
     var defaults = {
       theme: 'fresh',
-      labels: {
+      messages: {
         off: 'Off',
         on: 'On'
       }
@@ -69,8 +69,8 @@ if (typeof Object.assign != 'function') {
 
     $kcToggle.toggleClass('on', element.is(':checked'));
 
-    var kctOn = '<div class="kct-on">' + opts.labels.on + '</div>',
-        kctOff = '<div class="kct-off">' + opts.labels.off + '</div>',
+    var kctOn = '<div class="kct-on">' + opts.messages.on + '</div>',
+        kctOff = '<div class="kct-off">' + opts.messages.off + '</div>',
         kctHandle = '<div class="kct-handle"></div>',
         kctInner = '<div class="kct-inner">' + kctOn + kctHandle + kctOff + '</div>';
 
@@ -114,12 +114,17 @@ fbUtils.inArray = function (needle, haystack) {
  * @return {Object}       Object trimmed of null or undefined values
  */
 fbUtils.trimObj = function (attrs) {
-  var xmlRemove = [null, undefined, '', false];
-  for (var i in attrs) {
-    if (fbUtils.inArray(attrs[i], xmlRemove)) {
-      delete attrs[i];
+  var xmlRemove = [null, undefined, '', false, 'false'];
+  for (var attr in attrs) {
+    if (fbUtils.inArray(attrs[attr], xmlRemove)) {
+      delete attrs[attr];
+    } else if (Array.isArray(attrs[attr])) {
+      if (!attrs[attr].length) {
+        delete attrs[attr];
+      }
     }
   }
+
   return attrs;
 };
 
@@ -255,25 +260,31 @@ fbUtils.markup = function (tag) {
 
 /**
  * Convert html element attributes to key/value object
- * @param  {DOM Object} DOM element
- * @return {Object}     ex: {attrName: attrValue}
+ * @param  {Object} DOM element
+ * @return {Object} ex: {attrName: attrValue}
  */
 fbUtils.parseAttrs = function (elem) {
   var attrs = elem.attributes;
   var data = {};
-
-  for (var attr in attrs) {
-    if (attrs.hasOwnProperty(attr)) {
-      data[attrs[attr].name] = attrs[attr].value;
+  fbUtils.forEach(attrs, function (attr) {
+    var attrVal = attrs[attr].value;
+    if (attrVal.match(/false|true/g)) {
+      attrVal = attrVal === 'true';
+    } else if (attrVal.match(/undefined/g)) {
+      attrVal = undefined;
     }
-  }
+
+    if (attrVal) {
+      data[attrs[attr].name] = attrVal;
+    }
+  });
 
   return data;
 };
 
 /**
  * Convert field options to optionData
- * @param  {DOM Object} DOM element
+ * @param  {Object} DOM element
  * @return {Array}      optionData array
  */
 fbUtils.parseOptions = function (field) {
@@ -306,7 +317,11 @@ fbUtils.parseXML = function (xmlString) {
     var fields = xml.getElementsByTagName('field');
     for (var i = 0; i < fields.length; i++) {
       var fieldData = fbUtils.parseAttrs(fields[i]);
-      fieldData.values = fbUtils.parseOptions(fields[i]);
+
+      if (fields[i].children.length) {
+        fieldData.values = fbUtils.parseOptions(fields[i]);
+      }
+
       formData.push(fieldData);
     }
   }
@@ -369,6 +384,190 @@ fbUtils.unique = function (array) {
     return arr.indexOf(elem) === pos;
   });
 };
+
+/**
+   * Generate preview markup
+   * @param  {object} fieldData
+   * @return {string}       preview markup for field
+   */
+fbUtils.fieldRender = function (fieldData, opts) {
+  var preview = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+  var fieldMarkup = '',
+      fieldLabel = '',
+      optionsMarkup = '',
+      fieldLabelText = fieldData.label || '',
+      fieldDesc = fieldData.description || '',
+      fieldRequired = '',
+      fieldOptions = fieldData.values;
+
+  fieldData.name = preview ? fieldData.name + '-preview' : fieldData.name;
+  fieldData.id = fieldData.name;
+  fieldData.name = fieldData.multiple ? fieldData.name + '[]' : fieldData.name;
+
+  fieldData.type = fieldData.subtype || fieldData.type;
+
+  if (fieldData.required) {
+    fieldData.required = null;
+    fieldData['aria-required'] = 'true';
+    fieldRequired = '<span class="required">*</span>';
+  }
+
+  if (fieldData.type !== 'hidden') {
+    if (fieldDesc) {
+      fieldDesc = '<span class="tooltip-element" tooltip="' + fieldDesc + '">?</span>';
+    }
+    fieldLabel = '<label for="' + fieldData.id + '" class="fb-' + fieldData.type + '-label">' + fieldLabelText + ' ' + fieldRequired + ' ' + fieldDesc + '</label>';
+  }
+
+  var fieldLabelVal = fieldData.label;
+
+  delete fieldData.label;
+  delete fieldData.description;
+
+  var fieldDataString = fbUtils.attrString(fieldData);
+
+  switch (fieldData.type) {
+    case 'textarea':
+    case 'rich-text':
+      delete fieldData.type;
+      var fieldVal = fieldData.value || '';
+      fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
+      break;
+    case 'select':
+      var optionAttrsString;
+      fieldData.type = fieldData.type.replace('-group', '');
+
+      if (fieldOptions) {
+
+        if (fieldData.placeholder) {
+          optionsMarkup += '<option disabled selected>' + fieldData.placeholder + '</option>';
+        }
+
+        for (var i = 0; i < fieldOptions.length; i++) {
+          if (!fieldOptions[i].selected || fieldData.placeholder) {
+            delete fieldOptions[i].selected;
+          }
+          if (!fieldOptions[i].label) {
+            fieldOptions[i].label = '';
+          }
+          optionAttrsString = fbUtils.attrString(fieldOptions[i]);
+          optionsMarkup += '<option ' + optionAttrsString + '>' + fieldOptions[i].label + '</option>';
+        }
+      }
+
+      fieldMarkup = fieldLabel + '<select ' + fieldDataString + '>' + optionsMarkup + '</select>';
+      break;
+    case 'checkbox-group':
+    case 'radio-group':
+      var optionAttrs = void 0;
+      fieldData.type = fieldData.type.replace('-group', '');
+
+      if (fieldData.type === 'checkbox') {
+        fieldData.name = fieldData.name + '[]';
+      }
+
+      if (fieldOptions) {
+        var _optionAttrsString = void 0;
+
+        for (var _i = 0; _i < fieldOptions.length; _i++) {
+          optionAttrs = Object.assign({ value: '', label: '' }, fieldData, fieldOptions[_i]);
+
+          if (optionAttrs.selected) {
+            delete optionAttrs.selected;
+            optionAttrs.checked = null;
+          }
+
+          optionAttrs.id = fieldData.id + '-' + _i;
+          _optionAttrsString = fbUtils.attrString(optionAttrs);
+          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
+        }
+
+        if (fieldData.other) {
+          var otherOptionAttrs = {
+            id: fieldData.id + '-' + 'other',
+            className: fieldData.className + ' other-option',
+            onclick: 'fbUtils.otherOptionCB(\'' + fieldData.id + '-other\')'
+          };
+
+          _optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+
+          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.messages.other + '</label> <input type="text" name="' + fieldData.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
+        }
+      }
+      fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
+      break;
+    case 'text':
+    case 'password':
+    case 'email':
+    case 'number':
+    case 'file':
+    case 'hidden':
+    case 'date':
+    case 'tel':
+    case 'autocomplete':
+      fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '>';
+      break;
+    case 'color':
+      fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '> ' + opts.messages.selectColor;
+      break;
+    case 'button':
+    case 'submit':
+      fieldMarkup = '<button ' + fieldDataString + '>' + fieldLabelVal + '</button>';
+      break;
+    case 'checkbox':
+      fieldMarkup = '<input ' + fieldDataString + '> ' + fieldLabel;
+
+      if (fieldData.toggle) {
+        setTimeout(function () {
+          $(document.getElementById(fieldData.id)).kcToggle();
+        }, 100);
+      }
+      break;
+    default:
+      fieldMarkup = '<' + fieldData.type + ' ' + fieldDataString + '>' + fieldLabelVal + '</' + fieldData.type + '>';
+  }
+
+  if (fieldData.type !== 'hidden') {
+    var className = fieldData.id ? 'fb-' + fieldData.type + ' form-group field-' + fieldData.id : '';
+    fieldMarkup = fbUtils.markup('div', fieldMarkup, {
+      className: className
+    });
+  } else {
+    fieldMarkup = fbUtils.markup('input', null, fieldData);
+  }
+
+  return fieldMarkup;
+};
+
+/**
+ * Callback for other option.
+ * Toggles the hidden text area for "other" option.
+ * @param  {String} otherId id of the "other" option input
+ */
+fbUtils.otherOptionCB = function (otherId) {
+  var otherInput = document.getElementById(otherId),
+      otherInputValue = document.getElementById(otherId + '-value');
+
+  if (otherInput.checked) {
+    otherInput.style.display = 'none';
+    otherInputValue.style.display = 'inline-block';
+  } else {
+    otherInput.style.display = 'inline-block';
+    otherInputValue.style.display = 'none';
+  }
+};
+
+/**
+ * Capitalizes a string
+ * @param  {String} str uncapitalized string
+ * @return {String} str capitalized string
+ */
+fbUtils.capitalize = function (str) {
+  return str.replace(/\b\w/g, function (m) {
+    return m.toUpperCase();
+  });
+};
 'use strict';
 
 // render the formBuilder XML into html
@@ -383,12 +582,13 @@ function FormRenderFn(options, element) {
     container: false,
     dataType: 'xml',
     formData: false,
-    label: {
+    messages: {
       formRendered: 'Form Rendered',
       noFormData: 'No form data.',
       other: 'Other',
       selectColor: 'Select Color'
     },
+    onRender: function onRender() {},
     render: true,
     notify: {
       error: function error(message) {
@@ -401,8 +601,7 @@ function FormRenderFn(options, element) {
         return console.warn(message);
       }
     }
-  },
-      _helpers = {};
+  };
 
   var opts = $.extend(true, defaults, options);
 
@@ -424,159 +623,15 @@ function FormRenderFn(options, element) {
   })();
 
   /**
-   * Generate preview markup
-   * @param  {object} fieldData
-   * @return {string}       preview markup for field
-   */
-  _helpers.fieldRender = function (fieldData) {
-    var fieldMarkup = '',
-        fieldLabel = '',
-        optionsMarkup = '',
-        fieldLabelText = fieldData.label || '',
-        fieldDesc = fieldData.description || '',
-        fieldRequired = '',
-        fieldOptions = fieldData.values || [];
-
-    fieldData.id = fieldData.name;
-    fieldData.name = fieldData.multiple ? fieldData.name + '[]' : fieldData.name;
-
-    fieldData.type = fieldData.subtype || fieldData.type;
-
-    if (fieldData.required) {
-      fieldData.required = null;
-      fieldData['aria-required'] = 'true';
-      fieldRequired = '<span class="required">*</span>';
-    }
-
-    if (fieldData.type !== 'hidden') {
-      if (fieldDesc) {
-        fieldDesc = '<span class="tooltip-element" tooltip="' + fieldDesc + '">?</span>';
-      }
-      fieldLabel = '<label for="' + fieldData.id + '">' + fieldLabelText + ' ' + fieldRequired + ' ' + fieldDesc + '</label>';
-    }
-
-    var fieldLabelVal = fieldData.label;
-
-    delete fieldData.label;
-    delete fieldData.description;
-
-    var fieldDataString = utils.attrString(fieldData);
-
-    switch (fieldData.type) {
-      case 'textarea':
-      case 'rich-text':
-        delete fieldData.type;
-        var fieldVal = fieldData.value || '';
-        fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
-        break;
-      case 'select':
-        var optionAttrsString;
-        fieldData.type = fieldData.type.replace('-group', '');
-
-        if (fieldOptions) {
-          for (var _i = 0; _i < fieldOptions.length; _i++) {
-            if (!fieldOptions[_i].selected) {
-              delete fieldOptions[_i].selected;
-            }
-            optionAttrsString = utils.attrString(fieldOptions[_i]);
-            optionsMarkup += '<option ' + optionAttrsString + '>' + fieldOptions[_i].label + '</option>';
-          }
-        }
-
-        fieldMarkup = fieldLabel + '<select ' + fieldDataString + '>' + optionsMarkup + '</select>';
-        break;
-      case 'checkbox-group':
-      case 'radio-group':
-        var optionAttrs = void 0;
-        fieldData.type = fieldData.type.replace('-group', '');
-
-        if (fieldData.type === 'checkbox') {
-          fieldData.name = fieldData.name + '[]';
-        }
-
-        if (fieldOptions) {
-          var _optionAttrsString = void 0;
-
-          for (var _i2 = 0; _i2 < fieldOptions.length; _i2++) {
-            optionAttrs = Object.assign({}, fieldData, fieldOptions[_i2]);
-
-            if (optionAttrs.selected) {
-              delete optionAttrs.selected;
-              optionAttrs.checked = null;
-            }
-
-            optionAttrs.id = fieldData.id + '-' + _i2;
-            _optionAttrsString = utils.attrString(optionAttrs);
-            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
-          }
-
-          if (fieldData.enableOther || fieldData['enable-other']) {
-            var otherOptionAttrs = {
-              id: fieldData.id + '-' + 'other',
-              className: fieldData.className + ' other-option'
-            };
-
-            _optionAttrsString = utils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
-
-            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.label.other + '</label> <input type="text" data-other-id="' + otherOptionAttrs.id + '" name="' + otherOptionAttrs.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
-          }
-        }
-        fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
-        break;
-      case 'text':
-      case 'password':
-      case 'email':
-      case 'number':
-      case 'file':
-      case 'hidden':
-      case 'date':
-      case 'tel':
-      case 'autocomplete':
-        fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '>';
-        break;
-      case 'color':
-        fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '> ' + opts.label.selectColor;
-        break;
-      case 'button':
-      case 'submit':
-        fieldMarkup = '<button ' + fieldDataString + '>' + fieldLabelVal + '</button>';
-        break;
-      case 'checkbox':
-        fieldMarkup = '<input ' + fieldDataString + '> ' + fieldLabel;
-
-        if (fieldData.toggle) {
-          setTimeout(function () {
-            $(document.getElementById(fieldData.id)).kcToggle();
-          }, 100);
-        }
-        break;
-      default:
-        fieldMarkup = '<' + fieldData.type + ' ' + fieldDataString + '>' + fieldLabelVal + '</' + fieldData.type + '>';
-    }
-
-    if (fieldData.type !== 'hidden') {
-      var className = fieldData.id ? 'form-group field-' + fieldData.id : '';
-      fieldMarkup = utils.markup('div', fieldMarkup, {
-        className: className
-      });
-    } else {
-      fieldMarkup = utils.markup('input', null, fieldData);
-    }
-
-    return fieldMarkup;
-  };
-
-  /**
    * Extend Element prototype to allow us to append fields
    *
-   * @param  {object} fields Node elements
+   * @param  {Object} fields Node elements
    */
   Element.prototype.appendFormFields = function (fields) {
     var element = this;
-    fields.reverse();
-    for (var i = fields.length - 1; i >= 0; i--) {
-      element.appendChild(fields[i]);
-    }
+    fields.forEach(function (field) {
+      return element.appendChild(field);
+    });
   };
 
   /**
@@ -589,40 +644,22 @@ function FormRenderFn(options, element) {
     }
   };
 
-  var otherOptionCB = function otherOptionCB() {
-    var otherOptions = document.getElementsByClassName('other-option');
-
-    var _loop = function _loop() {
-      var otherInput = document.getElementById(otherOptions[i].id + '-value');
-      otherOptions[i].onclick = function () {
-        var option = this;
-        if (this.checked) {
-          otherInput.style.display = 'inline-block';
-          option.nextElementSibling.style.display = 'none';
-          otherInput.oninput = function () {
-            option.value = this.value;
-          };
-        } else {
-          otherInput.style.display = 'none';
-          option.nextElementSibling.style.display = 'inline-block';
-          otherInput.oninput = undefined;
-        }
-      };
-    };
-
-    for (var i = 0; i < otherOptions.length; i++) {
-      _loop();
-    }
-  };
-
   var runCallbacks = function runCallbacks() {
-    otherOptionCB();
+    if (opts.onRender) {
+      opts.onRender();
+    }
   };
 
   var santizeField = function santizeField(field) {
     var sanitizedField = Object.assign({}, field);
     sanitizedField.className = field.className || field.class || null;
     delete sanitizedField.class;
+
+    if (field.values) {
+      field.values = field.values.map(function (option) {
+        return utils.trimObj(option);
+      });
+    }
 
     return utils.trimObj(sanitizedField);
   };
@@ -634,7 +671,7 @@ function FormRenderFn(options, element) {
   if (opts.formData) {
     for (var i = 0; i < opts.formData.length; i++) {
       var sanitizedField = santizeField(opts.formData[i]);
-      rendered.push(_helpers.fieldRender(sanitizedField));
+      rendered.push(utils.fieldRender(sanitizedField, opts));
     }
 
     if (opts.render) {
@@ -649,18 +686,18 @@ function FormRenderFn(options, element) {
       }
 
       runCallbacks();
-      opts.notify.success(opts.label.formRendered);
+      opts.notify.success(opts.messages.formRendered);
     } else {
       formRender.markup = rendered.map(function (elem) {
         return elem.innerHTML;
       }).join('');
     }
   } else {
-    var noData = utils.markup('div', opts.label.noFormData, {
+    var noData = utils.markup('div', opts.messages.noFormData, {
       className: 'no-form-data'
     });
     rendered.push(noData);
-    opts.notify.error(opts.label.noFormData);
+    opts.notify.error(opts.messages.noFormData);
   }
 
   return formRender;

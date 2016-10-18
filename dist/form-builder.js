@@ -69,12 +69,17 @@ fbUtils.inArray = function (needle, haystack) {
  * @return {Object}       Object trimmed of null or undefined values
  */
 fbUtils.trimObj = function (attrs) {
-  var xmlRemove = [null, undefined, '', false];
-  for (var i in attrs) {
-    if (fbUtils.inArray(attrs[i], xmlRemove)) {
-      delete attrs[i];
+  var xmlRemove = [null, undefined, '', false, 'false'];
+  for (var attr in attrs) {
+    if (fbUtils.inArray(attrs[attr], xmlRemove)) {
+      delete attrs[attr];
+    } else if (Array.isArray(attrs[attr])) {
+      if (!attrs[attr].length) {
+        delete attrs[attr];
+      }
     }
   }
+
   return attrs;
 };
 
@@ -210,25 +215,31 @@ fbUtils.markup = function (tag) {
 
 /**
  * Convert html element attributes to key/value object
- * @param  {DOM Object} DOM element
- * @return {Object}     ex: {attrName: attrValue}
+ * @param  {Object} DOM element
+ * @return {Object} ex: {attrName: attrValue}
  */
 fbUtils.parseAttrs = function (elem) {
   var attrs = elem.attributes;
   var data = {};
-
-  for (var attr in attrs) {
-    if (attrs.hasOwnProperty(attr)) {
-      data[attrs[attr].name] = attrs[attr].value;
+  fbUtils.forEach(attrs, function (attr) {
+    var attrVal = attrs[attr].value;
+    if (attrVal.match(/false|true/g)) {
+      attrVal = attrVal === 'true';
+    } else if (attrVal.match(/undefined/g)) {
+      attrVal = undefined;
     }
-  }
+
+    if (attrVal) {
+      data[attrs[attr].name] = attrVal;
+    }
+  });
 
   return data;
 };
 
 /**
  * Convert field options to optionData
- * @param  {DOM Object} DOM element
+ * @param  {Object} DOM element
  * @return {Array}      optionData array
  */
 fbUtils.parseOptions = function (field) {
@@ -261,7 +272,11 @@ fbUtils.parseXML = function (xmlString) {
     var fields = xml.getElementsByTagName('field');
     for (var i = 0; i < fields.length; i++) {
       var fieldData = fbUtils.parseAttrs(fields[i]);
-      fieldData.values = fbUtils.parseOptions(fields[i]);
+
+      if (fields[i].children.length) {
+        fieldData.values = fbUtils.parseOptions(fields[i]);
+      }
+
       formData.push(fieldData);
     }
   }
@@ -322,6 +337,190 @@ fbUtils.forEach = function (array, callback, scope) {
 fbUtils.unique = function (array) {
   return array.filter(function (elem, pos, arr) {
     return arr.indexOf(elem) === pos;
+  });
+};
+
+/**
+   * Generate preview markup
+   * @param  {object} fieldData
+   * @return {string}       preview markup for field
+   */
+fbUtils.fieldRender = function (fieldData, opts) {
+  var preview = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+  var fieldMarkup = '',
+      fieldLabel = '',
+      optionsMarkup = '',
+      fieldLabelText = fieldData.label || '',
+      fieldDesc = fieldData.description || '',
+      fieldRequired = '',
+      fieldOptions = fieldData.values;
+
+  fieldData.name = preview ? fieldData.name + '-preview' : fieldData.name;
+  fieldData.id = fieldData.name;
+  fieldData.name = fieldData.multiple ? fieldData.name + '[]' : fieldData.name;
+
+  fieldData.type = fieldData.subtype || fieldData.type;
+
+  if (fieldData.required) {
+    fieldData.required = null;
+    fieldData['aria-required'] = 'true';
+    fieldRequired = '<span class="required">*</span>';
+  }
+
+  if (fieldData.type !== 'hidden') {
+    if (fieldDesc) {
+      fieldDesc = '<span class="tooltip-element" tooltip="' + fieldDesc + '">?</span>';
+    }
+    fieldLabel = '<label for="' + fieldData.id + '" class="fb-' + fieldData.type + '-label">' + fieldLabelText + ' ' + fieldRequired + ' ' + fieldDesc + '</label>';
+  }
+
+  var fieldLabelVal = fieldData.label;
+
+  delete fieldData.label;
+  delete fieldData.description;
+
+  var fieldDataString = fbUtils.attrString(fieldData);
+
+  switch (fieldData.type) {
+    case 'textarea':
+    case 'rich-text':
+      delete fieldData.type;
+      var fieldVal = fieldData.value || '';
+      fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
+      break;
+    case 'select':
+      var optionAttrsString;
+      fieldData.type = fieldData.type.replace('-group', '');
+
+      if (fieldOptions) {
+
+        if (fieldData.placeholder) {
+          optionsMarkup += '<option disabled selected>' + fieldData.placeholder + '</option>';
+        }
+
+        for (var i = 0; i < fieldOptions.length; i++) {
+          if (!fieldOptions[i].selected || fieldData.placeholder) {
+            delete fieldOptions[i].selected;
+          }
+          if (!fieldOptions[i].label) {
+            fieldOptions[i].label = '';
+          }
+          optionAttrsString = fbUtils.attrString(fieldOptions[i]);
+          optionsMarkup += '<option ' + optionAttrsString + '>' + fieldOptions[i].label + '</option>';
+        }
+      }
+
+      fieldMarkup = fieldLabel + '<select ' + fieldDataString + '>' + optionsMarkup + '</select>';
+      break;
+    case 'checkbox-group':
+    case 'radio-group':
+      var optionAttrs = void 0;
+      fieldData.type = fieldData.type.replace('-group', '');
+
+      if (fieldData.type === 'checkbox') {
+        fieldData.name = fieldData.name + '[]';
+      }
+
+      if (fieldOptions) {
+        var _optionAttrsString = void 0;
+
+        for (var _i = 0; _i < fieldOptions.length; _i++) {
+          optionAttrs = Object.assign({ value: '', label: '' }, fieldData, fieldOptions[_i]);
+
+          if (optionAttrs.selected) {
+            delete optionAttrs.selected;
+            optionAttrs.checked = null;
+          }
+
+          optionAttrs.id = fieldData.id + '-' + _i;
+          _optionAttrsString = fbUtils.attrString(optionAttrs);
+          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
+        }
+
+        if (fieldData.other) {
+          var otherOptionAttrs = {
+            id: fieldData.id + '-' + 'other',
+            className: fieldData.className + ' other-option',
+            onclick: 'fbUtils.otherOptionCB(\'' + fieldData.id + '-other\')'
+          };
+
+          _optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+
+          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.messages.other + '</label> <input type="text" name="' + fieldData.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
+        }
+      }
+      fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
+      break;
+    case 'text':
+    case 'password':
+    case 'email':
+    case 'number':
+    case 'file':
+    case 'hidden':
+    case 'date':
+    case 'tel':
+    case 'autocomplete':
+      fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '>';
+      break;
+    case 'color':
+      fieldMarkup = fieldLabel + ' <input ' + fieldDataString + '> ' + opts.messages.selectColor;
+      break;
+    case 'button':
+    case 'submit':
+      fieldMarkup = '<button ' + fieldDataString + '>' + fieldLabelVal + '</button>';
+      break;
+    case 'checkbox':
+      fieldMarkup = '<input ' + fieldDataString + '> ' + fieldLabel;
+
+      if (fieldData.toggle) {
+        setTimeout(function () {
+          $(document.getElementById(fieldData.id)).kcToggle();
+        }, 100);
+      }
+      break;
+    default:
+      fieldMarkup = '<' + fieldData.type + ' ' + fieldDataString + '>' + fieldLabelVal + '</' + fieldData.type + '>';
+  }
+
+  if (fieldData.type !== 'hidden') {
+    var className = fieldData.id ? 'fb-' + fieldData.type + ' form-group field-' + fieldData.id : '';
+    fieldMarkup = fbUtils.markup('div', fieldMarkup, {
+      className: className
+    });
+  } else {
+    fieldMarkup = fbUtils.markup('input', null, fieldData);
+  }
+
+  return fieldMarkup;
+};
+
+/**
+ * Callback for other option.
+ * Toggles the hidden text area for "other" option.
+ * @param  {String} otherId id of the "other" option input
+ */
+fbUtils.otherOptionCB = function (otherId) {
+  var otherInput = document.getElementById(otherId),
+      otherInputValue = document.getElementById(otherId + '-value');
+
+  if (otherInput.checked) {
+    otherInput.style.display = 'none';
+    otherInputValue.style.display = 'inline-block';
+  } else {
+    otherInput.style.display = 'inline-block';
+    otherInputValue.style.display = 'none';
+  }
+};
+
+/**
+ * Capitalizes a string
+ * @param  {String} str uncapitalized string
+ * @return {String} str capitalized string
+ */
+fbUtils.capitalize = function (str) {
+  return str.replace(/\b\w/g, function (m) {
+    return m.toUpperCase();
   });
 };
 'use strict';
@@ -487,11 +686,15 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     $('.sortable-options li', field).each(function () {
       var $option = $(this),
+          selected = $('.option-selected', $option).is(':checked'),
           attrs = {
         label: $('.option-label', $option).val(),
-        value: $('.option-value', $option).val(),
-        selected: $('.option-selected', $option).is(':checked')
+        value: $('.option-value', $option).val()
       };
+
+      if (selected) {
+        attrs.selected = selected;
+      }
 
       options.push(attrs);
     });
@@ -509,9 +712,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
     var formData = _helpers.prepData(form),
         xml = ['<form-template>\n\t<fields>'];
 
-    utils.forEach(formData, function (index) {
-      var field = formData[index],
-          fieldContent = null;
+    utils.forEach(formData, function (fieldIndex, field) {
+      var fieldContent = null;
 
       // Handle options
       if (field.type.match(/(select|checkbox-group|radio-group)/)) {
@@ -525,7 +727,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
         options.push('\n\t\t');
 
         fieldContent = options.join('');
-        field.values = undefined;
+        delete field.values;
       }
 
       var xmlField = utils.markup('field', fieldContent, field);
@@ -543,7 +745,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
     if (form.childNodes.length !== 0) {
       // build data object
       utils.forEach(form.childNodes, function (index, field) {
-        index = index;
         var $field = $(field);
 
         if (!$field.hasClass('disabled')) {
@@ -563,10 +764,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
             if (roleVals.length) {
               fieldData.role = roleVals.join(',');
-            }
-
-            if ($('[name="enable-other"]:checked', field).length) {
-              fieldData.enableOther = true;
             }
 
             fieldData.className = fieldData.className || fieldData.class; // backwards compatibility
@@ -600,8 +797,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
     return window.JSON.stringify(_helpers.prepData(form), null, '\t');
   };
 
-  _helpers.getData = function () {
-    if (!opts.formData) {
+  _helpers.getData = function (formData) {
+
+    var data = formData || opts.formData;
+
+    if (!data) {
       return false;
     }
 
@@ -613,7 +813,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
         return window.JSON.parse(formData);
       }
     };
-    formBuilder.formData = setData[opts.dataType](opts.formData) || [];
+
+    formBuilder.formData = setData[opts.dataType](data) || [];
 
     return formBuilder.formData;
   };
@@ -697,132 +898,11 @@ function formBuilderHelpersFn(opts, formBuilder) {
     $('.fld-className', field).val(previewData.className);
 
     field.data('fieldData', previewData);
-    preview = _helpers.fieldPreview(previewData);
+    preview = utils.fieldRender(previewData, opts, true);
 
     $prevHolder.html(preview);
 
     $('input[toggle]', $prevHolder).kcToggle();
-  };
-
-  /**
-   * Generate preview markup
-   *
-   * @todo   make this smarter and use tags
-   * @param  {Object} attrs
-   * @return {String}       preview markup for field
-   */
-  _helpers.fieldPreview = function (attrs) {
-    var i,
-        preview = '',
-        epoch = new Date().getTime();
-    attrs = jQuery.extend({}, attrs);
-    attrs.type = attrs.subtype || attrs.type;
-    var toggle = attrs.toggle ? 'toggle' : '',
-        attrsString = utils.attrString(attrs);
-
-    switch (attrs.type) {
-      case 'textarea':
-      case 'rich-text':
-        var fieldVal = attrs.value || '';
-        preview = '<textarea ' + attrsString + '>' + fieldVal + '</textarea>';
-        break;
-      case 'button':
-      case 'submit':
-        preview = '<button ' + attrsString + '>' + attrs.label + '</button>';
-        break;
-      case 'select':
-        var options = '',
-            multiple = attrs.multiple ? 'multiple' : '';
-        attrs.values.reverse();
-        if (attrs.placeholder) {
-          options += '<option disabled selected>' + attrs.placeholder + '</option>';
-        }
-        for (i = attrs.values.length - 1; i >= 0; i--) {
-          var selected = attrs.values[i].selected && !attrs.placeholder ? 'selected' : '';
-          options += '<option value="' + attrs.values[i].value + '" ' + selected + '>' + attrs.values[i].label + '</option>';
-        }
-        preview = '<' + attrs.type + ' class="' + attrs.className + '" ' + multiple + '>' + options + '</' + attrs.type + '>';
-        break;
-      case 'checkbox-group':
-      case 'radio-group':
-        var type = attrs.type.replace('-group', ''),
-            optionName = type + '-' + epoch;
-        attrs.values.reverse();
-        for (i = attrs.values.length - 1; i >= 0; i--) {
-          var checked = attrs.values[i].selected ? 'checked' : '';
-          var optionId = type + '-' + epoch + '-' + i;
-          preview += '<div><input type="' + type + '" class="' + attrs.className + '" name="' + optionName + '" id="' + optionId + '" value="' + attrs.values[i].value + '" ' + checked + '/><label for="' + optionId + '">' + attrs.values[i].label + '</label></div>';
-        }
-
-        if (attrs.enableOther) {
-          var otherID = optionName + '-other',
-              optionAttrs = {
-            id: otherID,
-            name: optionName,
-            className: attrs.className + ' other-option',
-            type: type,
-            onclick: 'otherOptionCallback(\'' + otherID + '\')'
-          },
-              otherInput = utils.markup('input', null, optionAttrs);
-
-          window.otherOptionCallback = function (otherID) {
-            var option = document.getElementById(otherID),
-                otherLabel = option.nextElementSibling,
-                otherInput = otherLabel.nextElementSibling;
-            if (option.checked) {
-              otherInput.style.display = 'inline-block';
-              otherLabel.style.display = 'none';
-            } else {
-              otherInput.style.display = 'none';
-              otherLabel.style.display = 'inline-block';
-            }
-          };
-
-          preview += '<div>' + otherInput.outerHTML + '<label for="' + otherID + '">' + opts.messages.other + '</label> <input type="text" id="' + otherID + '-value" style="display:none;" /></div>';
-        }
-
-        break;
-      case 'text':
-      case 'password':
-      case 'email':
-      case 'date':
-      case 'file':
-      case 'number':
-      case 'tel':
-        preview = '<input ' + attrsString + '>';
-        break;
-      case 'color':
-        preview = '<input type="' + attrs.type + '" class="' + attrs.className + '"> ' + opts.messages.selectColor;
-        break;
-      case 'hidden':
-      case 'checkbox':
-        preview = '<input type="' + attrs.type + '" ' + toggle + ' >';
-        break;
-      case 'autocomplete':
-        preview = '<input class="ui-autocomplete-input ' + attrs.className + '" autocomplete="on">';
-        break;
-      default:
-        attrsString = utils.attrString(attrs);
-        preview = '<' + attrs.type + ' ' + attrsString + '>' + attrs.label + '</' + attrs.type + '>';
-    }
-
-    return preview;
-  };
-
-  // update preview to label
-  _helpers.updateMultipleSelect = function () {
-    $(document.getElementById(opts.formID)).on('change', 'input[name="multiple"]', function () {
-      var options = $(this).parents('.field-options:eq(0)').find('.sortable-options input.option-selected');
-      if (this.checked) {
-        options.each(function () {
-          $(this).prop('type', 'checkbox');
-        });
-      } else {
-        options.each(function () {
-          $(this).removeAttr('checked').prop('type', 'radio');
-        });
-      }
-    });
   };
 
   _helpers.debounce = function (func) {
@@ -846,38 +926,6 @@ function formBuilderHelpersFn(opts, formBuilder) {
         func.apply(context, args);
       }
     };
-  };
-
-  _helpers.validateForm = function () {
-    var $form = $(document.getElementById(opts.formID));
-
-    var errors = [];
-    // check for empty field labels
-    $('input[name="label"], input[type="text"].option', $form).each(function () {
-      if ($(this).val() === '') {
-        var field = $(this).parents('li.form-field'),
-            fieldAttr = $(this);
-        errors.push({
-          field: field,
-          error: opts.messages.labelEmpty,
-          attribute: fieldAttr
-        });
-      }
-    });
-
-    // @todo add error = { noVal: opts.messages.labelEmpty }
-    if (errors.length) {
-      alert('Error: ' + errors[0].error);
-      $('html, body').animate({
-        scrollTop: errors[0].field.offset().top
-      }, 1000, function () {
-        var targetID = $('.toggle-form', errors[0].field).attr('id');
-        $('.toggle-form', errors[0].field).addClass('open').parent().next('.prev-holder').slideUp(250);
-        $('#' + targetID + '-fld').slideDown(250, function () {
-          errors[0].attribute.addClass('error');
-        });
-      });
-    }
   };
 
   /**
@@ -1101,6 +1149,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       return elem === true;
     })) {
       form.parentElement.classList.add('empty');
+      form.parentElement.dataset.content = opts.messages.getStarted;
     }
 
     form.classList.add('removing');
@@ -1116,7 +1165,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
       $fields.remove();
       document.getElementById(opts.formID).classList.remove('removing');
       _helpers.save();
-    }, 500);
+    }, 400);
   };
 
   /**
@@ -1151,12 +1200,14 @@ function formBuilderHelpersFn(opts, formBuilder) {
         fieldOrder = window.sessionStorage.getItem('fieldOrder');
       } else {
         window.sessionStorage.removeItem('fieldOrder');
-        return frmbFields;
       }
     }
 
     if (!fieldOrder) {
-      fieldOrder = utils.unique(opts.controlOrder);
+      var controlOrder = opts.controlOrder.concat(frmbFields.map(function (field) {
+        return field.attrs.type;
+      }));
+      fieldOrder = utils.unique(controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = Object.keys(fieldOrder).map(function (i) {
@@ -1166,12 +1217,12 @@ function formBuilderHelpersFn(opts, formBuilder) {
 
     var newOrderFields = [];
 
-    for (var i = fieldOrder.length - 1; i >= 0; i--) {
+    fieldOrder.forEach(function (fieldType) {
       var field = frmbFields.filter(function (field) {
-        return field.attrs.type === fieldOrder[i];
+        return field.attrs.type === fieldType;
       })[0];
       newOrderFields.push(field);
-    }
+    });
 
     return newOrderFields.filter(Boolean);
   };
@@ -1208,7 +1259,7 @@ function formBuilderHelpersFn(opts, formBuilder) {
   /**
    * Controls follow scroll to the bottom of the editor
    * @param  {Object} $sortableFields
-   * @param  {DOM Object} cbUL
+   * @param  {Object} cbUL
    */
   _helpers.stickyControls = function ($sortableFields, cbUL) {
 
@@ -1342,7 +1393,7 @@ function formBuilderEventsFn() {
 
     var defaults = {
       theme: 'fresh',
-      labels: {
+      messages: {
         off: 'Off',
         on: 'On'
       }
@@ -1353,8 +1404,8 @@ function formBuilderEventsFn() {
 
     $kcToggle.toggleClass('on', element.is(':checked'));
 
-    var kctOn = '<div class="kct-on">' + opts.labels.on + '</div>',
-        kctOff = '<div class="kct-off">' + opts.labels.off + '</div>',
+    var kctOn = '<div class="kct-on">' + opts.messages.on + '</div>',
+        kctOff = '<div class="kct-off">' + opts.messages.off + '</div>',
         kctHandle = '<div class="kct-handle"></div>',
         kctInner = '<div class="kct-inner">' + kctOn + kctHandle + kctOff + '</div>';
 
@@ -1385,8 +1436,6 @@ function formBuilderEventsFn() {
     var formBuilder = this;
 
     var defaults = {
-      typeUserAttrs: {}, //+gimigliano
-      typeUserEvents: {}, //+gimigliano
       controlPosition: 'right',
       controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'number', 'radio-group', 'select', 'text', 'textarea'],
       dataType: 'xml',
@@ -1417,7 +1466,7 @@ function formBuilderEventsFn() {
         1: 'Administrator'
       },
       messages: {
-        addOption: 'Add Option',
+        addOption: 'Add Option +',
         allFieldsRemoved: 'All fields were removed.',
         allowSelect: 'Allow Select',
         allowMultipleFiles: 'Allow users to upload multiple files',
@@ -1488,6 +1537,7 @@ function formBuilderEventsFn() {
         radioGroup: 'Radio Group',
         radio: 'Radio',
         removeMessage: 'Remove Element',
+        removeOption: 'Remove Option',
         remove: '&#215;',
         required: 'Required',
         richText: 'Rich Text Editor',
@@ -1516,12 +1566,6 @@ function formBuilderEventsFn() {
           }
         },
         subtype: 'Type',
-        subtypes: {
-          text: ['text', 'password', 'email', 'color', 'tel'],
-          button: ['button', 'submit'],
-          header: ['h1', 'h2', 'h3'],
-          paragraph: ['p', 'address', 'blockquote', 'canvas', 'output']
-        },
         text: 'Text Field',
         textArea: 'Text Area',
         toggle: 'Toggle',
@@ -1545,14 +1589,28 @@ function formBuilderEventsFn() {
       sortableControls: false,
       stickyControls: false,
       showActionButtons: true,
+      typeUserAttrs: {},
+      typeUserEvents: {},
       prefix: 'form-builder-'
     };
 
-    // @todo function to set parent types for subtypes
-    defaults.messages.subtypes.password = defaults.messages.subtypes.text;
-    defaults.messages.subtypes.email = defaults.messages.subtypes.text;
-    defaults.messages.subtypes.color = defaults.messages.subtypes.text;
-    defaults.messages.subtypes.submit = defaults.messages.subtypes.button;
+    var utils = fbUtils;
+
+    defaults.messages.subtypes = function () {
+      var subtypeDefault = function subtypeDefault(subtype) {
+        return {
+          label: subtype,
+          value: subtype
+        };
+      };
+
+      return {
+        text: ['text', 'password', 'email', 'color', 'tel'].map(subtypeDefault),
+        header: ['h1', 'h2', 'h3'].map(subtypeDefault),
+        button: ['button', 'submit', 'reset'].map(subtypeDefault),
+        paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'].map(subtypeDefault)
+      };
+    }();
 
     var opts = Object.assign({}, defaults, options),
         frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
@@ -1567,7 +1625,6 @@ function formBuilderEventsFn() {
 
     var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     var _helpers = formBuilderHelpersFn(opts, formBuilder);
-    var utils = fbUtils;
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
@@ -1971,8 +2028,8 @@ function formBuilderEventsFn() {
      * @param  {object} values
      */
     var fieldOptions = function fieldOptions(values) {
-      var addOption = utils.markup('a', opts.messages.addOption, { className: 'add add-opt' }),
-          fieldOptions = '',
+      var optionActions = [utils.markup('a', opts.messages.addOption, { className: 'add add-opt' })],
+          fieldOptions = ['<label class="false-label">' + opts.messages.selectOptions + '</label>'],
           isMultiple = values.multiple || values.type === 'checkbox-group';
 
       if (!values.values || !values.values.length) {
@@ -1988,29 +2045,22 @@ function formBuilderEventsFn() {
         values.values[0].selected = true;
       } else {
         // ensure option data is has all required keys
-        for (var i = values.values.length - 1; i >= 0; i--) {
-          values.values[i] = Object.assign({}, { selected: false }, values.values[i]);
-        }
+        values.values.forEach(function (option) {
+          return Object.assign({}, { selected: false }, option);
+        });
       }
 
-      fieldOptions += '<label class="false-label">' + opts.messages.selectOptions + '</label>';
-      fieldOptions += '<div class="sortable-options-wrap">';
-      if (values.type === 'select') {
-        var labels = {
-          second: opts.messages.selectionsMessage
-        };
-        fieldOptions += boolAttribute('multiple', values, labels);
-      }
+      fieldOptions.push('<div class="sortable-options-wrap">');
 
-      fieldOptions += '<ol class="sortable-options">';
-      for (var _i = 0; _i < values.values.length; _i++) {
-        fieldOptions += selectFieldOptions(values.name, values.values[_i], isMultiple);
-      }
-      fieldOptions += '</ol>';
-      fieldOptions += utils.markup('div', addOption, { className: 'option-actions' }).outerHTML;
-      fieldOptions += '</div>';
+      fieldOptions.push('<ol class="sortable-options">');
+      utils.forEach(values.values, function (i) {
+        fieldOptions.push(selectFieldOptions(values.name, values.values[i], isMultiple));
+      });
+      fieldOptions.push('</ol>');
+      fieldOptions.push(utils.markup('div', optionActions, { className: 'option-actions' }).outerHTML);
+      fieldOptions.push('</div>');
 
-      return utils.markup('div', fieldOptions, { className: 'form-group field-options' }).outerHTML;
+      return utils.markup('div', fieldOptions.join(''), { className: 'form-group field-options' }).outerHTML;
     };
 
     /**
@@ -2021,15 +2071,11 @@ function formBuilderEventsFn() {
     var advFields = function advFields(values) {
       var advFields = [],
           key,
-          checked = '',
           optionFields = ['select', 'checkbox-group', 'radio-group'],
           isOptionField = function () {
         return optionFields.indexOf(values.type) !== -1;
       }(),
-          valueField = function () {
-        var noValField = ['header', 'paragraph', 'file'].concat(optionFields, opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-        return noValField.indexOf(values.type) === -1;
-      }(),
+          valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(optionFields)),
           roles = values.role !== undefined ? values.role.split(',') : [];
 
       advFields.push(requiredField(values));
@@ -2044,15 +2090,14 @@ function formBuilderEventsFn() {
       values.style = values.style || 'default';
 
       //Help Text / Description Field
-      var noDescFields = ['header', 'paragraph', 'button'].concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-
-      noDescFields = noDescFields.concat(opts.messages.subtypes.header, opts.messages.subtypes.paragraph);
-
-      if (noDescFields.indexOf(values.type) === -1) {
+      if (!utils.inArray(values.type, ['header', 'paragraph', 'button'])) {
         advFields.push(textAttribute('description', values));
       }
 
-      advFields.push(subTypeField(values));
+      if (opts.messages.subtypes[values.type]) {
+        var optionData = opts.messages.subtypes[values.type];
+        advFields.push(selectAttribute('subtype', values, optionData));
+      }
 
       if (values.type === 'button') {
         advFields.push(btnStyles(values.style, values.type));
@@ -2067,7 +2112,7 @@ function formBuilderEventsFn() {
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
 
-      //TextArea Rows Attruibute
+      //TextArea Rows Attribute
       if (values.type === 'textarea') {
         advFields.push(numberAttribute('rows', values));
       }
@@ -2089,34 +2134,37 @@ function formBuilderEventsFn() {
         advFields.push(boolAttribute('multiple', values, labels));
       }
 
-      advFields.push('<div class="form-group access-wrap"><label>' + opts.messages.roles + '</label>');
-
-      advFields.push('<input type="checkbox" class="fld-enable-roles" name="enable-roles" value="" ' + (values.role !== undefined ? 'checked' : '') + ' id="enable-roles-' + lastID + '"/> <label for="enable-roles-' + lastID + '" class="roles-label">' + opts.messages.limitRole + '</label>');
-      advFields.push('<div class="available-roles" ' + (values.role !== undefined ? 'style="display:block"' : '') + '>');
-
+      var rolesDisplay = values.role !== undefined ? 'style="display:block"' : '';
+      var availableRoles = ['<div class="available-roles" ' + rolesDisplay + '>'];
       for (key in opts.roles) {
         if (opts.roles.hasOwnProperty(key)) {
-          checked = utils.inArray(key, roles) ? 'checked' : '';
-          advFields.push('<input type="checkbox" name="roles[]" value="' + key + '" id="fld-' + lastID + '-roles-' + key + '" ' + checked + ' class="roles-field" /><label for="fld-' + lastID + '-roles-' + key + '">' + opts.roles[key] + '</label><br/>');
+          var checked = utils.inArray(key, roles) ? 'checked' : '',
+              roleId = 'fld-' + lastID + '-roles-' + key;
+          availableRoles.push('<input type="checkbox" name="roles[]" value="' + key + '" id="' + roleId + '" ' + checked + ' class="roles-field" /> <label for="' + roleId + '">' + opts.roles[key] + '</label><br/>');
         }
       }
 
-      advFields.push('</div></div>');
+      availableRoles.push('</div>');
+
+      var accessLabels = { first: opts.messages.roles, second: opts.messages.limitRole, content: availableRoles.join('') };
+
+      advFields.push(boolAttribute('access', values, accessLabels));
 
       if (values.type === 'checkbox-group' || values.type === 'radio-group') {
-        advFields.push('<div class="form-group other-wrap"><label>' + opts.messages.enableOther + '</label>');
-        var _checked = '';
-        if (values.enableOther || values['enable-other']) {
-          _checked = 'checked';
-        }
-        advFields.push('<input type="checkbox" class="fld-enable-other" name="enable-other" value="" ' + _checked + ' id="enable-other-' + lastID + '"/> <label for="enable-other-' + lastID + '" class="other-label">' + opts.messages.enableOtherMsg + '</label></div>');
+        advFields.push(boolAttribute('other', values, { first: opts.messages.enableOther, second: opts.messages.enableOtherMsg }));
+      }
+
+      if (values.type === 'select') {
+        advFields.push(boolAttribute('multiple', values, { first: ' ', second: opts.messages.selectionsMessage }));
       }
 
       if (isOptionField) {
         advFields.push(fieldOptions(values));
       }
 
-      advFields.push(textAttribute('maxlength', values));
+      if (utils.inArray(values.type, ['text', 'textarea'])) {
+        advFields.push(numberAttribute('maxlength', values));
+      }
 
       // Append custom attributes as defined in typeUserAttrs option
       if (opts.typeUserAttrs[values.type]) {
@@ -2142,7 +2190,7 @@ function formBuilderEventsFn() {
           if (typeUserAttr[attribute].options) {
             advField.push(selectUserAttrs(attribute, typeUserAttr[attribute]));
           } else {
-            advField.push(textUserAttrs(attribute, typeUserAttr[attribute]));
+            advField.push(inputUserAttrs(attribute, typeUserAttr[attribute]));
           }
 
           opts.messages[attribute] = orig;
@@ -2153,19 +2201,24 @@ function formBuilderEventsFn() {
       return advField.join('');
     }
 
-    function textUserAttrs(name, options) {
+    function inputUserAttrs(name, attrs) {
       var textAttrs = {
         id: name + '-' + lastID,
-        title: options.description || options.label || name.toUpperCase(),
+        title: attrs.description || attrs.label || name.toUpperCase(),
         name: name,
-        type: options.type || 'text',
-        className: 'fld-' + name + ' form-control'
+        type: attrs.type || 'text',
+        className: ['fld-' + name]
       },
           label = '<label for="' + textAttrs.id + '">' + opts.messages[name] + '</label>';
 
-      textAttrs = Object.assign({}, options, textAttrs);
-      var textInput = '<input ' + utils.attrString(textAttrs) + '>';
-      return '<div class="form-group ' + name + '-wrap">' + label + textInput + '</div>';
+      if (!utils.inArray(textAttrs.type, ['checkbox', 'checkbox-group', 'radio-group'])) {
+        textAttrs.className.push('form-control');
+      }
+
+      textAttrs = Object.assign({}, attrs, textAttrs);
+      var textInput = '<input ' + utils.attrString(textAttrs) + '>',
+          inputWrap = '<div class="input-wrap">' + textInput + '</div>';
+      return '<div class="form-group ' + name + '-wrap">' + label + inputWrap + '</div>';
     }
 
     function selectUserAttrs(name, options) {
@@ -2190,8 +2243,9 @@ function formBuilderEventsFn() {
         selectAttrs[attr] = options[attr];
       });
 
-      var select = '<select ' + utils.attrString(selectAttrs) + '>' + optis.join('') + '</select>';
-      return '<div class="form-group ' + name + '-wrap">' + label + select + '</div>';
+      var select = '<select ' + utils.attrString(selectAttrs) + '>' + optis.join('') + '</select>',
+          inputWrap = '<div class="input-wrap">' + select + '</div>';
+      return '<div class="form-group ' + name + '-wrap">' + label + inputWrap + '</div>';
     }
 
     var boolAttribute = function boolAttribute(name, values, labels) {
@@ -2203,45 +2257,26 @@ function formBuilderEventsFn() {
         return '<label for="' + name + '-' + lastID + '">' + txt + '</label>';
       },
           checked = values[name] !== undefined ? 'checked' : '',
-          input = '<input type="checkbox" class="fld-' + name + '" name="' + name + '" value="true" ' + checked + ' id="' + name + '-' + lastID + '"/>',
-          inner = [input];
+          input = '<input type="checkbox" class="fld-' + name + '" name="' + name + '" value="true" ' + checked + ' id="' + name + '-' + lastID + '"/> ',
+          left = [],
+          right = [input];
 
       if (labels.first) {
-        inner.unshift(label(labels.first));
+        left.unshift(label(labels.first));
       }
 
       if (labels.second) {
-        inner.push(label(labels.second));
+        right.push(label(labels.second));
       }
 
-      return '<div class="form-group ' + name + '-wrap">' + inner.join('') + '</div>';
-    };
-
-    /**
-     * Changes a fields type
-     *
-     * @param  {Object} values
-     * @return {String}      markup for type <select> input
-     */
-    var subTypeField = function subTypeField(values) {
-      var subTypes = opts.messages.subtypes,
-          type = values.type,
-          subtype = values.subtype || '',
-          subTypeField = '',
-          selected = void 0;
-
-      if (subTypes[type]) {
-        var subTypeLabel = '<label>' + opts.messages.subtype + '</label>';
-        subTypeField += '<select name="subtype" class="fld-subtype form-control" id="subtype-' + lastID + '">';
-        subTypes[type].forEach(function (element) {
-          selected = subtype === element ? 'selected' : '';
-          subTypeField += '<option value="' + element + '" ' + selected + '>' + element + '</option>';
-        });
-        subTypeField += '</select>';
-        subTypeField = '<div class="form-group subtype-wrap">' + subTypeLabel + ' ' + subTypeField + '</div>';
+      if (labels.content) {
+        right.push(labels.content);
       }
 
-      return subTypeField;
+      right.unshift('<div class="input-wrap">');
+      right.push('</div>');
+
+      return '<div class="form-group ' + name + '-wrap">' + left.concat(right).join('') + '</div>';
     };
 
     var btnStyles = function btnStyles(style, type) {
@@ -2279,11 +2314,50 @@ function formBuilderEventsFn() {
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
-      var attrVal = values[attribute] || '';
-      var attrLabel = opts.messages[attribute] || attribute,
-          placeholder = opts.messages.placeholders[attribute] || '',
-          numberAttribute = '<input type="number" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
-      return '<div class="form-group ' + attribute + '-wrap"><label for="' + attribute + '-' + lastID + '">' + attrLabel + '</label> ' + numberAttribute + '</div>';
+
+      var attrVal = values[attribute],
+          attrLabel = opts.messages[attribute] || attribute,
+          placeholder = opts.messages.placeholders[attribute],
+          inputConfig = {
+        type: 'number',
+        value: attrVal,
+        name: attribute,
+        min: '0',
+        placeholder: placeholder,
+        className: 'fld-' + attribute + ' form-control',
+        id: attribute + '-' + lastID
+      },
+          numberAttribute = '<input ' + utils.attrString(utils.trimObj(inputConfig)) + '>',
+          inputWrap = '<div class="input-wrap">' + numberAttribute + '</div>';
+
+      return '<div class="form-group ' + attribute + '-wrap"><label for="' + inputConfig.id + '">' + attrLabel + '</label> ' + inputWrap + '</div>';
+    };
+
+    var selectAttribute = function selectAttribute(attribute, values, optionData) {
+      if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
+        return;
+      }
+      var selectOptions = optionData.map(function (option, i) {
+        var optionAttrs = Object.assign({
+          label: opts.messages.option + ' ' + i,
+          value: undefined
+        }, option);
+        if (option.value === values[attribute]) {
+          optionAttrs.selected = true;
+        }
+        return '<option ' + utils.attrString(utils.trimObj(optionAttrs)) + '>' + optionAttrs.label + '</option>';
+      }),
+          selectAttrs = {
+        id: attribute + '-' + lastID,
+        name: attribute,
+        className: 'fld-' + attribute + ' form-control'
+      },
+          label = '<label for="' + selectAttrs.id + '">' + (opts.messages[attribute] || utils.capitalize(attribute)) + '</label>';
+
+      var select = '<select ' + utils.attrString(selectAttrs) + '>' + selectOptions.join('') + '</select>',
+          inputWrap = '<div class="input-wrap">' + select + '</div>';
+
+      return '<div class="form-group ' + selectAttrs.name + '-wrap">' + label + inputWrap + '</div>';
     };
 
     /**
@@ -2296,13 +2370,12 @@ function formBuilderEventsFn() {
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
+
       var placeholderFields = ['text', 'textarea', 'select'];
 
       var noName = ['header'];
 
       var textArea = ['paragraph'];
-
-      var noMaxlength = ['checkbox', 'select', 'checkbox-group', 'date', 'autocomplete', 'radio-group', 'hidden', 'button', 'header', 'number'];
 
       var attrVal = values[attribute] || '',
           attrLabel = opts.messages[attribute];
@@ -2311,7 +2384,6 @@ function formBuilderEventsFn() {
       }
 
       noName = noName.concat(opts.messages.subtypes.header, textArea);
-      noMaxlength = noMaxlength.concat(textArea);
 
       var placeholders = opts.messages.placeholders,
           placeholder = placeholders[attribute] || '',
@@ -2328,23 +2400,28 @@ function formBuilderEventsFn() {
         noMakeAttr.push(true);
       }
 
-      // Field has maxlength attribute
-      if (attribute === 'maxlength' && utils.inArray(values.type, noMaxlength)) {
-        noMakeAttr.push(true);
-      }
-
       if (!noMakeAttr.some(function (elem) {
         return elem === true;
       })) {
-        var attributeLabel = '<label for="' + attribute + '-' + lastID + '">' + attrLabel + '</label>';
+        var inputConfig = {
+          name: attribute,
+          placeholder: placeholder,
+          className: 'fld-' + attribute + ' form-control',
+          id: attribute + '-' + lastID
+        };
+        var attributeLabel = '<label for="' + inputConfig.id + '">' + attrLabel + '</label>';
 
         if (attribute === 'label' && utils.inArray(values.type, textArea) || attribute === 'value' && values.type === 'textarea') {
-          attributefield += '<textarea name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">' + attrVal + '</textarea>';
+          attributefield += '<textarea ' + utils.attrString(inputConfig) + '>' + attrVal + '</textarea>';
         } else {
-          attributefield += '<input type="text" value="' + attrVal + '" name="' + attribute + '" placeholder="' + placeholder + '" class="fld-' + attribute + ' form-control" id="' + attribute + '-' + lastID + '">';
+          inputConfig.value = attrVal;
+          inputConfig.type = 'text';
+          attributefield += '<input ' + utils.attrString(inputConfig) + '>';
         }
 
-        attributefield = '<div class="form-group ' + attribute + '-wrap">' + attributeLabel + ' ' + attributefield + '</div>';
+        var inputWrap = '<div class="input-wrap">' + attributefield + '</div>';
+
+        attributefield = '<div class="form-group ' + attribute + '-wrap">' + attributeLabel + ' ' + inputWrap + '</div>';
       }
 
       return attributefield;
@@ -2363,6 +2440,7 @@ function formBuilderEventsFn() {
       })) {
         requireField = boolAttribute('required', values, { first: opts.messages.required });
       }
+
       return requireField;
     };
 
@@ -2422,7 +2500,9 @@ function formBuilderEventsFn() {
         $sortableFields.append($li);
       }
 
-      $('.sortable-options', $li).sortable(); // make dynamically added option fields sortable if they exist.
+      $('.sortable-options', $li).sortable({ update: function update() {
+          _helpers.updatePreview($li);
+        } }); // make dynamically added option fields sortable if they exist.
 
       _helpers.updatePreview($li);
 
@@ -2446,11 +2526,7 @@ function formBuilderEventsFn() {
           optionDataOrder = ['value', 'label', 'selected'],
           optionInputs = [];
 
-      optionData = optionData || {
-        selected: false,
-        label: '',
-        value: ''
-      };
+      optionData = Object.assign({ selected: false, label: '', value: '' }, optionData);
 
       for (var i = optionDataOrder.length - 1; i >= 0; i--) {
         var prop = optionDataOrder[i];
@@ -2459,8 +2535,9 @@ function formBuilderEventsFn() {
             type: optionInputType[prop] || 'text',
             'class': 'option-' + prop,
             value: optionData[prop],
-            name: name
+            name: name + '-option'
           };
+
           if (opts.messages.placeholders[prop]) {
             attrs.placeholder = opts.messages.placeholders[prop];
           }
@@ -2577,6 +2654,20 @@ function formBuilderEventsFn() {
       }
     });
 
+    $sortableFields.on('change', '.prev-holder input, .prev-holder select', function (e) {
+      if (e.target.classList.contains('other-option')) {
+        return;
+      }
+      var field = $(e.target).closest('li.form-field')[0];
+      if (utils.inArray(field.type, ['select', 'checkbox-group', 'radio-group'])) {
+        field.querySelector('[class="option-value"][value="' + e.target.value + '"]').parentElement.childNodes[0].checked = true;
+      } else {
+        document.getElementById('value-' + field.id).value = e.target.value;
+      }
+
+      _helpers.save();
+    });
+
     // update preview to label
     $sortableFields.on('keyup change', '[name="label"]', function () {
       $('.field-label', $(this).closest('li')).text($(this).val());
@@ -2606,20 +2697,26 @@ function formBuilderEventsFn() {
       }
     });
 
-    _helpers.updateMultipleSelect();
+    $sortableFields.on('change', '.fld-multiple', function (e) {
+      var newType = e.target.checked ? 'checkbox' : 'radio';
+
+      $(e.target).parents('.form-elements:eq(0)').find('.sortable-options input.option-selected').each(function () {
+        this.type = newType;
+      });
+    });
 
     // format name attribute
-    $sortableFields.delegate('input[name="name"]', 'blur', function () {
-      $(this).val(_helpers.safename($(this).val()));
-      if ($(this).val() === '') {
-        $(this).addClass('field_error').attr('placeholder', opts.messages.cannotBeEmpty);
+    $sortableFields.on('blur', 'input.fld-name', function () {
+      this.value = _helpers.safename(this.value);
+      if (this.value === '') {
+        $(this).addClass('field-error').attr('placeholder', opts.messages.cannotBeEmpty);
       } else {
-        $(this).removeClass('field_error');
+        $(this).removeClass('field-error');
       }
     });
 
-    $sortableFields.delegate('input.fld-maxlength', 'blur', function () {
-      $(this).val(_helpers.forceNumber($(this).val()));
+    $sortableFields.on('blur', 'input.fld-maxlength', function () {
+      this.value = _helpers.forceNumber(this.value);
     });
 
     // Copy field
@@ -2681,8 +2778,8 @@ function formBuilderEventsFn() {
     });
 
     // Attach a callback to toggle roles visibility
-    $sortableFields.on('click', 'input[name="enable-roles"]', function () {
-      var roles = $(this).siblings('div.available-roles'),
+    $sortableFields.on('click', 'input.fld-access', function () {
+      var roles = $(this).parents('li.form-field').find('div.available-roles'),
           enableRolesCB = $(this);
       roles.slideToggle(250, function () {
         if (!enableRolesCB.is(':checked')) {
@@ -2708,7 +2805,6 @@ function formBuilderEventsFn() {
       var name = $firstOption.attr('name');
 
       $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple));
-      _helpers.updateMultipleSelect();
     });
 
     $sortableFields.on('mouseover mouseout', '.remove, .del-button', function () {
@@ -2749,7 +2845,6 @@ function formBuilderEventsFn() {
       $(document.getElementById(frmbID + '-save')).click(function (e) {
         e.preventDefault();
         _helpers.save();
-        _helpers.validateForm(e);
       });
     }
 
@@ -2775,7 +2870,12 @@ function formBuilderEventsFn() {
         prepFieldVars(field);
         document.dispatchEvent(formBuilder.events.fieldAdded);
       },
-      removeField: _helpers.removeField
+      removeField: _helpers.removeField,
+      setData: function setData(formData) {
+        _helpers.removeAllfields();
+        _helpers.getData(formData);
+        loadFields();
+      }
     };
 
     return formBuilder;
