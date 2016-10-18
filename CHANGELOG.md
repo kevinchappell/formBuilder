@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.24.0 - Hotfix and Feature bonanza [#293](https://github.com/kevinchappell/formBuilder/pull/293)
 - v1.23.1 - Hotfix: deleteId undefined [#291](https://github.com/kevinchappell/formBuilder/pull/291)
 - v1.23.0 - Feature: inputSets [#285](https://github.com/kevinchappell/formBuilder/pull/285)
 - v1.22.1 - Bugfix: updateJSON does not set correct version [#284](https://github.com/kevinchappell/formBuilder/pull/284)
