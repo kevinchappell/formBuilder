@@ -1,9 +1,8 @@
 # Getting Data
 
-There are a couple ways to grab the generated data, the most common and easiest is to simply grab the textarea value. Since formBuilder saves it's data as plain XML string, you can read the textarea's value as you would any field value with:
 ```
-var fbTemplate = document.getElementById('fb-template'),
-    formData = fbTemplate.value;
+var formBuilder = $fbEditor.formBuilder().data('formBuilder');
+var formData = formBuilder.formData;
 ```
 
 There is also a jQuery data way to grab the data as demonstrated here:
