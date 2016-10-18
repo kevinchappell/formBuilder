@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.24.1 - Bugfix: defaultFields names are overwritten [#295](https://github.com/kevinchappell/formBuilder/pull/295)
 - v1.24.0 - Hotfix and Feature bonanza [#293](https://github.com/kevinchappell/formBuilder/pull/293)
 - v1.23.1 - Hotfix: deleteId undefined [#291](https://github.com/kevinchappell/formBuilder/pull/291)
 - v1.23.0 - Feature: inputSets [#285](https://github.com/kevinchappell/formBuilder/pull/285)

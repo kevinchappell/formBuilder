@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.24.0
+Version: 1.24.1
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -1952,7 +1952,7 @@ function formBuilderEventsFn() {
         field = Object.assign({}, $field);
       }
 
-      field.name = isNew ? nameAttr(field) : field.name;
+      field.name = isNew ? nameAttr(field) : field.name || nameAttr(field);
 
       if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
         field.className = 'form-control'; // backwards compatibility
@@ -1984,7 +1984,9 @@ function formBuilderEventsFn() {
         $stageWrap.removeClass('empty');
       } else if (opts.defaultFields && opts.defaultFields.length) {
         // Load default fields if none are set
-        opts.defaultFields.forEach(prepFieldVars);
+        opts.defaultFields.forEach(function (field) {
+          return prepFieldVars(field);
+        });
         $stageWrap.removeClass('empty');
       } else if (!opts.prepend && !opts.append) {
         $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
