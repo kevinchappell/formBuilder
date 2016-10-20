@@ -1,0 +1,6 @@
+exclude_paths:
+ - "dist/*"
+ - "demo"
+ - "docs"
+ - "tools"
+ - "yarn.lock"

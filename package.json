@@ -14,8 +14,8 @@
   ],
   "homepage": "https://formbuilder.online/",
   "repository": {
-    "type": "git",
-    "url": "http://github.com/kevinchappell/formBuilder"
+    "url": "http://github.com/kevinchappell/formBuilder",
+    "type": "git"
   },
   "author": "Kevin Chappell <kevin.b.chappell@gmail.com>",
   "contributors": [],

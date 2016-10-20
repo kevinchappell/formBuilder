@@ -1,10 +1,8 @@
 {
   "name": "formBuilder",
   "version": "1.24.1",
-  "main": [
-    "dist/*"
-  ],
-  "description": "jQuery plugin for drag and drop form building",
+  "main": "dist/form-builder.js",
+  "description": "A jQuery plugin for drag and drop form building",
   "authors": [
     "Kevin Chappell <kevin.b.chappell@gmail.com>"
   ],
@@ -24,7 +22,12 @@
     "!dist/**/*"
   ],
   "dependencies": {
-    "jquery": "^3.1.1",
-    "jQuery UI Sortable": "jquery-ui-sortable#*"
-  }
+    "jQuery UI Sortable": "jquery-ui-sortable#*",
+    "jquery": "^3.1.1"
+  },
+  "repository": {
+    "url": "http://github.com/kevinchappell/formBuilder",
+    "type": "git"
+  },
+  "author": "Kevin Chappell <kevin.b.chappell@gmail.com>"
 }
