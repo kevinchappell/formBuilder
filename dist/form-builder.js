@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.24.1
+Version: 1.24.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -54,7 +54,7 @@ if (typeof Object.assign != 'function') {
  *
  */
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var fbUtils = {};
 
@@ -121,8 +121,18 @@ fbUtils.attrString = function (attrs) {
  */
 fbUtils.safeAttr = function (name, value) {
   name = fbUtils.safeAttrName(name);
+  var valString = void 0;
 
-  var valString = fbUtils.escapeAttr(value);
+  if (value) {
+    if (Array.isArray(value)) {
+      valString = fbUtils.escapeAttr(value.join(' '));
+    } else {
+      if (typeof value === 'boolean') {
+        value = value.toString();
+      }
+      valString = fbUtils.escapeAttr(value.replace(',', ' ').trim());
+    }
+  }
 
   value = value ? '="' + valString + '"' : '';
   return {
@@ -174,8 +184,8 @@ fbUtils.camelCase = function (str) {
  * @return {String}
  */
 fbUtils.markup = function (tag) {
-  var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-  var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  var content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var attrs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   var contentType = void 0,
       field = document.createElement(tag),
@@ -346,7 +356,7 @@ fbUtils.unique = function (array) {
    * @return {string}       preview markup for field
    */
 fbUtils.fieldRender = function (fieldData, opts) {
-  var preview = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var preview = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   var fieldMarkup = '',
       fieldLabel = '',
@@ -906,8 +916,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
   };
 
   _helpers.debounce = function (func) {
-    var wait = arguments.length <= 1 || arguments[1] === undefined ? 250 : arguments[1];
-    var immediate = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 250;
+    var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     var timeout;
     return function () {
@@ -1043,8 +1053,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}            Reference to the modal
    */
   _helpers.confirm = function (message, yesAction) {
-    var coords = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-    var className = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
+    var coords = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var className = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
 
     var overlay = _helpers.showOverlay();
     var yes = utils.markup('button', opts.messages.yes, { className: 'yes btn btn-success btn-sm' }),
@@ -1092,8 +1102,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    * @return {Object}            dom
    */
   _helpers.dialog = function (content) {
-    var coords = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-    var className = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+    var coords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var className = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
     _helpers.showOverlay();
 
@@ -1924,7 +1934,7 @@ function formBuilderEventsFn() {
     };
 
     var prepFieldVars = function prepFieldVars($field) {
-      var isNew = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+      var isNew = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       var field = {};
       if ($field instanceof jQuery) {
@@ -1957,8 +1967,8 @@ function formBuilderEventsFn() {
       if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
         field.className = 'form-control'; // backwards compatibility
       } else {
-          field.className = field.class || field.className; // backwards compatibility
-        }
+        field.className = field.class || field.className; // backwards compatibility
+      }
 
       var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {

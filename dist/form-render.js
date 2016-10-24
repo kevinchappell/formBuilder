@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.24.1
+Version: 1.24.2
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -99,7 +99,7 @@ if (typeof Object.assign != 'function') {
  *
  */
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var fbUtils = {};
 
@@ -166,8 +166,18 @@ fbUtils.attrString = function (attrs) {
  */
 fbUtils.safeAttr = function (name, value) {
   name = fbUtils.safeAttrName(name);
+  var valString = void 0;
 
-  var valString = fbUtils.escapeAttr(value);
+  if (value) {
+    if (Array.isArray(value)) {
+      valString = fbUtils.escapeAttr(value.join(' '));
+    } else {
+      if (typeof value === 'boolean') {
+        value = value.toString();
+      }
+      valString = fbUtils.escapeAttr(value.replace(',', ' ').trim());
+    }
+  }
 
   value = value ? '="' + valString + '"' : '';
   return {
@@ -219,8 +229,8 @@ fbUtils.camelCase = function (str) {
  * @return {String}
  */
 fbUtils.markup = function (tag) {
-  var content = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-  var attrs = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  var content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var attrs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   var contentType = void 0,
       field = document.createElement(tag),
@@ -391,7 +401,7 @@ fbUtils.unique = function (array) {
    * @return {string}       preview markup for field
    */
 fbUtils.fieldRender = function (fieldData, opts) {
-  var preview = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var preview = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   var fieldMarkup = '',
       fieldLabel = '',
