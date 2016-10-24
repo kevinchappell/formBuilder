@@ -79,8 +79,18 @@ fbUtils.attrString = function(attrs) {
  */
 fbUtils.safeAttr = function(name, value) {
   name = fbUtils.safeAttrName(name);
+  let valString;
 
-  let valString = fbUtils.escapeAttr(value);
+  if (value) {
+    if (Array.isArray(value)) {
+      valString = fbUtils.escapeAttr(value.join(' '))
+    } else {
+      if (typeof(value) === 'boolean') {
+        value = value.toString();
+      }
+      valString = fbUtils.escapeAttr(value.replace(',', ' ').trim());
+    }
+  }
 
   value = value ? `="${valString}"` : '';
   return {
