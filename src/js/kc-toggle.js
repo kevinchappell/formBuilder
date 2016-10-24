@@ -1,9 +1,6 @@
-(function($) {
-  'use strict';
-
-  var Toggle = function(element, options) {
-
-    var defaults = {
+const kcToggle = () => {
+  const Toggle = function(element, options) {
+    const defaults = {
       theme: 'fresh',
       messages: {
         off: 'Off',
@@ -11,35 +8,37 @@
       }
     };
 
-    var opts = $.extend(defaults, options),
-      $kcToggle = $('<div class="kc-toggle"/>').insertAfter(element).append(element);
+    let opts = $.extend(defaults, options);
+    let $kcToggle = $('<div class="kc-toggle"/>')
+        .insertAfter(element)
+        .append(element);
 
     $kcToggle.toggleClass('on', element.is(':checked'));
 
-    var kctOn = `<div class="kct-on">${opts.messages.on}</div>`,
-        kctOff = `<div class="kct-off">${opts.messages.off}</div>`,
-        kctHandle = '<div class="kct-handle"></div>',
-        kctInner = `<div class="kct-inner">${kctOn}${kctHandle}${kctOff}</div>`;
+    let kctOn = `<div class="kct-on">${opts.messages.on}</div>`;
+    let kctOff = `<div class="kct-off">${opts.messages.off}</div>`;
+    let kctHandle = '<div class="kct-handle"></div>';
+    let kctInner = `<div class="kct-inner">${kctOn}${kctHandle}${kctOff}</div>`;
 
     $kcToggle.append(kctInner);
 
-    $kcToggle.click(function() {
+    $kcToggle.click(function(evt) {
       element.attr('checked', !element.attr('checked'));
-      $(this).toggleClass('on');
+      $kcToggle.toggleClass('on');
     });
-
   };
 
   $.fn.kcToggle = function(options) {
-    var toggle = this;
-    return toggle.each(function() {
-      var element = $(this);
+    const toggle = this;
+    return toggle.each(function(i) {
+      let element = $(toggle[i]);
       if (element.data('kcToggle')) {
         return;
       }
-      var kcToggle = new Toggle(element, options);
+      let kcToggle = new Toggle(element, options);
       element.data('kcToggle', kcToggle);
     });
   };
+};
 
-})(jQuery);
+module.exports = kcToggle();
