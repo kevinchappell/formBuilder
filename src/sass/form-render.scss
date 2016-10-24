@@ -10,19 +10,12 @@
   color: $error;
 }
 
-.form-control {
-  &.number {
-    width: auto;
-  }
-}
-
-/*   ------------   TOOLTIP   ------------   */
+// TOOLTIP   ------------
 *[tooltip] {
   position: relative;
 }
 
-*[tooltip]:hover:after {
-  background: darken($grey, 25%);
+*[tooltip]:hover::after {
   background: rgba(0, 0, 0, 0.9);
   border-radius: 5px 5px 5px 0;
   bottom: 23px;
@@ -38,10 +31,10 @@
   line-height: 1.5em;
 }
 
-*[tooltip]:hover:before {
+*[tooltip]:hover::before {
   border: solid;
   border-color: #222 transparent;
-  border-width: 6px 6px 0 6px;
+  border-width: 6px 6px 0;
   bottom: 17px;
   content: '';
   left: 2px;
@@ -63,6 +56,10 @@
 }
 
 .form-control {
+  &.number {
+    width: auto;
+  }
+
   &[type='color'] {
     width: 60px;
     padding: 2px;
