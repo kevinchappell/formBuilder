@@ -86,7 +86,7 @@ textarea {
 }
 
 .btn {
-  color: #fff;
+  color: $white;
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -109,8 +109,8 @@ textarea {
 
   &.btn-default {
     color: #333;
-    background-color: #fff;
-    border-color: #ccc;
+    background-color: $white;
+    border-color: $input-border-color;
   }
 
   &.btn-lg {
@@ -165,7 +165,7 @@ textarea {
 }
 
 .btn-default {
-  background-color: #fff;
+  background-color: $white;
   border-color: #ccc;
 }
 
@@ -260,7 +260,7 @@ textarea.form-control {
   font-size: 14px;
   line-height: 1.42857143;
   color: #555;
-  background-color: #fff;
+  background-color: $white;
   background-image: none;
   border: 1px solid #ccc;
   border-radius: 4px;

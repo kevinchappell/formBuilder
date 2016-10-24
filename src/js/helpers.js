@@ -1,11 +1,11 @@
-function formBuilderHelpersFn(opts, formBuilder) {
+function helpers(opts, formBuilder) {
   'use strict';
   var _helpers = {
     doCancel: false
   };
-  var utils = fbUtils;
 
-  formBuilder.events = formBuilderEventsFn();
+  const utils = require('./utils.js');
+  formBuilder.events = require('./events.js');
 
   /**
    * Convert converts messy `cl#ssNames` into valid `class-names`
@@ -179,8 +179,8 @@ function formBuilderHelpersFn(opts, formBuilder) {
    */
   _helpers.xmlSave = function(form) {
 
-    let formData = _helpers.prepData(form),
-      xml = ['<form-template>\n\t<fields>'];
+    let formData = _helpers.prepData(form);
+    let xml = ['<form-template>\n\t<fields>'];
 
     utils.forEach(formData, function(fieldIndex, field) {
       let fieldContent = null;
@@ -817,3 +817,4 @@ function formBuilderHelpersFn(opts, formBuilder) {
   return _helpers;
 }
 
+module.exports = helpers;

@@ -1,12 +1,14 @@
-'use strict';
-
-// render the formBuilder XML into html
+/**
+ * render the formBuilder XML into html
+ * @param  {Object} options
+ * @param  {Object} element html element where form will be rendered (optional)
+ * @return {Object} formRender instance
+ */
 function FormRenderFn(options, element) {
+  const utils = require('./utils.js');
 
-  var utils = fbUtils;
-
-  var formRender = this,
-    defaults = {
+  const formRender = this;
+  const defaults = {
       destroyTemplate: true, // @todo
       container: false,
       dataType: 'xml',
@@ -32,7 +34,7 @@ function FormRenderFn(options, element) {
       }
     };
 
-  var opts = $.extend(true, defaults, options);
+  let opts = $.extend(true, defaults, options);
 
   (function() {
     if (!opts.formData) {
@@ -53,7 +55,7 @@ function FormRenderFn(options, element) {
    * @param  {Object} fields Node elements
    */
   Element.prototype.appendFormFields = function(fields) {
-    var element = this;
+    let element = this;
     fields.forEach(field => element.appendChild(field));
   };
 
@@ -61,19 +63,19 @@ function FormRenderFn(options, element) {
    * Extend Element prototype to remove content
    */
   Element.prototype.emptyContainer = function() {
-    var element = this;
+    let element = this;
     while (element.lastChild) {
       element.removeChild(element.lastChild);
     }
   };
 
-  var runCallbacks = function() {
+  let runCallbacks = function() {
     if (opts.onRender) {
       opts.onRender();
     }
   };
 
-  var santizeField = (field) => {
+  let santizeField = (field) => {
     let sanitizedField = Object.assign({}, field);
     sanitizedField.className = field.className || field.class || null;
     delete sanitizedField.class;
@@ -86,19 +88,23 @@ function FormRenderFn(options, element) {
   };
 
   // Begin the core plugin
-  var rendered = [];
+  let rendered = [];
 
   // generate field markup if we have fields
   if (opts.formData) {
-    for (var i = 0; i < opts.formData.length; i++) {
+    for (let i = 0; i < opts.formData.length; i++) {
       let sanitizedField = santizeField(opts.formData[i]);
       rendered.push(utils.fieldRender(sanitizedField, opts));
     }
 
     if (opts.render) {
       if (opts.container) {
-        let renderedFormWrap = utils.markup('div', rendered, {className: 'rendered-form'});
-        opts.container = (opts.container instanceof jQuery) ? opts.container[0] : opts.container;
+        let renderedFormWrap = utils.markup('div', rendered, {
+          className: 'rendered-form'
+        });
+        if (opts.container instanceof jQuery) {
+          opts.container = opts.container[0];
+        }
         opts.container.emptyContainer();
         opts.container.appendChild(renderedFormWrap);
       } else if (element) {
@@ -125,12 +131,11 @@ function FormRenderFn(options, element) {
 }
 
 (function($) {
-
   $.fn.formRender = function(options) {
-    this.each(function() {
-      let formRender = new FormRenderFn(options, this);
+    let elems = this;
+    elems.each(function(i) {
+      let formRender = new FormRenderFn(options, elems[i]);
       return formRender;
     });
   };
-
 })(jQuery);

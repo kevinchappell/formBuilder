@@ -10,11 +10,6 @@
   background: #e9e9e9;
   border: 1px solid #cbcbcb;
   vertical-align: bottom;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 
   .kct-inner {
@@ -52,7 +47,7 @@
 }
 
 .kct-off {
-  color: #666;
+  color: $grey;
 }
 
 .kct-on, .kct-off, .kct-handle {
@@ -75,7 +70,7 @@
   height: 17px;
   background: #ffffff;
   background: linear-gradient(to bottom, #ffffff 0%, #cecece 100%);
-  border: 1px solid #999;
+  border: 1px solid $grey-light-30;
   font-weight: 100;
   color: #4b4b4b;
   text-shadow: none;

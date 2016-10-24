@@ -2,13 +2,21 @@ $black: #000;
 $white: #fff;
 $off-white: #fefefe;
 $grey: #666;
+$grey-dark: #222;
 $grey-light: #ccc;
 $grey-light-30: lighten($grey, 30%);
+$dirt-gray: #23241f;
 
 $success: #08fe00;
-$error: #C10000;
+$error: #c10000;
 $remove: #c66865;
 $copy: #6fc665;
 $edit: #65aac6;
+
+$input-border-color: #c5c5c5;
+
+$overlay-color: rgba(0, 0, 0, 0.5);
+$empty-stage-color: rgba(255, 255, 255, 0.25);
+$hidden-field-bgcolor: rgba(255, 255, 255, 0.6);
 
 $primary: #337ab7;
