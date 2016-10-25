@@ -15,11 +15,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   background: #e9e9e9;
   border: 1px solid #cbcbcb;
   vertical-align: bottom;
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
   .kc-toggle .kct-inner {
     position: absolute;
     top: 0;
@@ -70,7 +69,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   background: #ffffff;
   background: -webkit-linear-gradient(top, #ffffff 0%, #cecece 100%);
   background: linear-gradient(to bottom, #ffffff 0%, #cecece 100%);
-  border: 1px solid #999;
+  border: 1px solid #b3b3b3;
   font-weight: 100;
   color: #4b4b4b;
   text-shadow: none;
@@ -168,7 +167,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   .rendered-form .btn.btn-default {
     color: #333;
     background-color: #fff;
-    border-color: #ccc; }
+    border-color: #c5c5c5; }
   .rendered-form .btn.btn-lg {
     padding: 10px 16px;
     font-size: 18px;
@@ -306,17 +305,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   float: left !important; }
 
 .form-group .required {
-  color: #C10000; }
+  color: #c10000; }
 
-.form-control.number {
-  width: auto; }
-
-/*   ------------   TOOLTIP   ------------   */
 *[tooltip] {
   position: relative; }
 
-*[tooltip]:hover:after {
-  background: #262626;
+*[tooltip]:hover::after {
   background: rgba(0, 0, 0, 0.9);
   border-radius: 5px 5px 5px 0;
   bottom: 23px;
@@ -331,10 +325,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   font-size: 12px;
   line-height: 1.5em; }
 
-*[tooltip]:hover:before {
+*[tooltip]:hover::before {
   border: solid;
   border-color: #222 transparent;
-  border-width: 6px 6px 0 6px;
+  border-width: 6px 6px 0;
   bottom: 17px;
   content: '';
   left: 2px;
@@ -352,6 +346,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   line-height: 16px;
   margin: 0 5px;
   font-size: 12px; }
+
+.form-control.number {
+  width: auto; }
 
 .form-control[type='color'] {
   width: 60px;

@@ -4,103 +4,108 @@ import gulp from 'gulp';
 import gulpPlugins from 'gulp-load-plugins';
 import bsync from 'browser-sync';
 import semver from 'semver';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream';
+import buffer from 'vinyl-buffer';
 import pkg from './package.json';
 import fs from 'fs';
 
 const files = pkg.config.files;
 
-// Rather than manually defined each gulp plugin we need, gulpPlugins defines them for us.
-var plugins = gulpPlugins(),
-  // for executing commands in the command line
-  exec = require('child_process').exec,
+// gulp-* plugins
+const plugins = gulpPlugins();
 
-  /**
-   * Reusable banner function for generated files.
-   *
-   * @return {stream} modified file back to the stream.
-   */
-  banner = () => {
-    let buildDate = new Date();
-    let bannerTemplate = [
-      '/*',
-      '<%= pkg.name %> - <%= pkg.homepage %>',
-      'Version: <%= pkg.version %>',
-      'Author: <%= pkg.author %>',
-      '*/',
-      ''
-    ].join('\n');
+// for executing commands in the command line
+const exec = require('child_process').exec;
 
-    return plugins.header(bannerTemplate, {
-      pkg: pkg,
-      now: buildDate
-    });
-  },
+/**
+ * Reusable banner function for generated files.
+ *
+ * @return {stream} modified file back to the stream.
+ */
+const banner = () => {
+  let buildDate = new Date();
+  let bannerTemplate = [
+    '/*',
+    '<%= pkg.name %> - <%= pkg.homepage %>',
+    'Version: <%= pkg.version %>',
+    'Author: <%= pkg.author %>',
+    '*/',
+    ''
+  ].join('\n');
 
-  /**
-   * camelCase to hyphen-case renaming utility.
-   * Used when iterating though an object where the keys are used as filenames.
-   *
-   * @param  {string} fileName
-   * @return {string} file-name
-   */
-  rename = (fileName) => {
-    return String(fileName).replace(/([A-Z])/g, function($1) {
-      return '-' + $1.toLowerCase();
-    });
-  },
+  return plugins.header(bannerTemplate, {
+    pkg: pkg,
+    now: buildDate
+  });
+};
 
-  /**
-   * Opens the font-server defined in package.json
-   *
-   * @return {void} logs to terminal.
-   */
-  fontEdit = () => {
-    let fs = require('fs'),
-      open = require('opener');
+/**
+ * camelCase to hyphen-case renaming utility.
+ * Used when iterating though an object where the keys are used as filenames.
+ *
+ * @param  {string} fileName
+ * @return {string} file-name
+ */
+const rename = (fileName) => {
+  return String(fileName).replace(/([A-Z])/g, function($1) {
+    return '-' + $1.toLowerCase();
+  });
+};
 
-    // Connects to font server to get a fresh token for our editing session.
-    // sends current config in the process.
-    let getFontToken = `curl --silent --show-error --fail --output .fontello --form "config=@${files.formBuilder.fonts}/config.json" ${pkg.config.fontServer} \n`;
+/**
+ * Opens the font-server defined in package.json
+ *
+ * @return {void} logs to terminal.
+ */
+const fontEdit = () => {
+  const fs = require('fs');
+  const open = require('opener');
 
-    return fs.readFile('.fontello', function(error, token) {
-      return exec(getFontToken, function(err, stdout, stderr) {
-        open(`${pkg.config.fontServer}/${token}`);
-        if (stderr) {
-          console.error(err, stderr);
-        }
-      });
-    });
-  },
+  // Connects to font server to get a fresh token for our editing session.
+  // sends current config in the process.
+  let getFontToken = `curl --silent --show-error --fail --output .fontello --form "config=@${files.formBuilder.fonts}/config.json" ${pkg.config.fontServer} \n`;
 
-  /**
-   * Downloads and unpacks our updated font from the fontServer
-   *
-   * @return {void} logs operations to terminal.
-   */
-  fontSave = () => {
-    var script = [
-      'if test ! $(which unzip); then echo "Unzip is installed"; exit 128; fi',
-      'rm -rf .fontello.src .fontello.zip',
-      `curl --silent --show-error --fail --output .fontello.zip ${pkg.config.fontServer}/$(cat .fontello)/get`,
-      'unzip .fontello.zip -d .fontello.src',
-      `rm -rf ${files.formBuilder.fonts}`,
-      `mv $(find ./.fontello.src -maxdepth 1 -name 'fontello-*') ${files.formBuilder.fonts}`,
-      'rm -rf .fontello.src .fontello.zip'
-    ];
-
-    exec(script.join(' \n '), function(err, stdout, stderr) {
-      console.log(stdout);
+  return fs.readFile('.fontello', function(error, token) {
+    return exec(getFontToken, function(err, stdout, stderr) {
+      open(`${pkg.config.fontServer}/${token}`);
       if (stderr) {
         console.error(err, stderr);
       }
-      return gulp.src([`${files.formBuilder.fonts}/css/form-builder-font.css`])
-        .pipe(plugins.base64())
-        .pipe(plugins.concat('_font.scss'))
-        .pipe(gulp.dest('src/sass/base/'));
     });
-  };
+  });
+};
 
-// Our watch task to monitor files for changes and run tasks when that change happens.
+/**
+ * Downloads and unpacks our updated font from the fontServer
+ *
+ * @return {void} logs operations to terminal.
+ */
+const fontSave = () => {
+  let script = [
+    'if test ! $(which unzip); then echo "Unzip is installed"; exit 128; fi',
+    'rm -rf .fontello.src .fontello.zip',
+    `curl --silent --show-error --fail --output .fontello.zip ${pkg.config.fontServer}/$(cat .fontello)/get`,
+    'unzip .fontello.zip -d .fontello.src',
+    `rm -rf ${files.formBuilder.fonts}`,
+    `mv $(find ./.fontello.src -maxdepth 1 -name 'fontello-*') ${files.formBuilder.fonts}`,
+    'rm -rf .fontello.src .fontello.zip'
+  ];
+
+  exec(script.join(' \n '), function(err, stdout, stderr) {
+    console.log(stdout);
+    if (stderr) {
+      console.error(err, stderr);
+    }
+    return gulp.src([`${files.formBuilder.fonts}/css/form-builder-font.css`])
+      .pipe(plugins.base64())
+      .pipe(plugins.concat('_font.scss'))
+      .pipe(gulp.dest('src/sass/base/'));
+  });
+};
+
+// Our watch task to monitor files for changes and
+// run tasks when that change happens.
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'devJS']);
   gulp.watch('demo/*.html', bsync.reload);
@@ -109,7 +114,6 @@ gulp.task('watch', function() {
 
 // Compile the Sass to plain ol' css.
 gulp.task('css', function() {
-
   let sassFiles = new Map();
   sassFiles.set('formBuilder', files.formBuilder.sass);
   sassFiles.set('formRender', files.formRender.sass);
@@ -149,60 +153,51 @@ gulp.task('lint', function() {
 
 // Compile the JS
 gulp.task('js', function() {
-
   let jsFiles = new Map();
   jsFiles.set('formBuilder', files.formBuilder.js);
   jsFiles.set('formRender', files.formRender.js);
 
   return jsFiles.forEach(function(jsFileGlob, key) {
-    // Demo scripts minified
-    gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({
-        errorHandler: false
-      }))
-      .pipe(plugins.babel())
-      .pipe(plugins.concat(rename(key) + '.min.js'))
-      .pipe(plugins.uglify())
-      .pipe(banner())
-      .pipe(gulp.dest('demo/assets/js'));
-
-    // Plugin scripts
-    return gulp.src(jsFileGlob)
-      .pipe(plugins.plumber({
-        errorHandler: false
-      }))
-      .pipe(plugins.babel())
-      .pipe(plugins.concat(rename(key) + '.js'))
-      .pipe(banner())
-      .pipe(gulp.dest('dist/'))
-      .pipe(plugins.uglify())
-      .pipe(banner())
-      .pipe(plugins.concat(rename(key) + '.min.js'))
-      .pipe(gulp.dest('dist/'))
-      .pipe(bsync.reload({
-        stream: true
-      }));
+    const fileName = rename(key);
+    return browserified(jsFileGlob)
+    .bundle()
+    .pipe(source(fileName + '.js'))
+    .pipe(buffer())
+    .pipe(plugins.plumber())
+    .pipe(banner())
+    .pipe(plugins.concat(fileName + '.js'))
+    .pipe(gulp.dest('demo/assets/js/'))
+    .pipe(gulp.dest('dist/'))
+    .pipe(plugins.uglify())
+    .pipe(banner())
+    // .pipe(gulp.dest('demo/assets/js/'+ fileName + '.min.js'));
+    .pipe(plugins.concat(fileName + '.min.js'))
+    .pipe(gulp.dest('demo/assets/js/'))
+    .pipe(gulp.dest('dist/'));
   });
 });
 
+const browserified = (src) => browserify({entries: src, debug: true});
+
 // Compile the Dev JS
 gulp.task('devJS', function() {
-
   let jsFiles = new Map();
   jsFiles.set('formBuilder', files.formBuilder.js);
   jsFiles.set('formRender', files.formRender.js);
 
   return jsFiles.forEach(function(jsFileGlob, key) {
-
+    const fileName = rename(key);
     // Demo scripts minified
-    return gulp.src(jsFileGlob)
+    return browserified(jsFileGlob)
+      .bundle()
+      .pipe(source(fileName + '.min.js'))
+      .pipe(buffer())
       .pipe(plugins.plumber())
       .pipe(plugins.sourcemaps.init({
         loadMaps: true
       }))
-      .pipe(plugins.babel())
-      .pipe(plugins.concat(rename(key) + '.min.js'))
       .pipe(plugins.uglify())
+      .on('error', console.log)
       .pipe(plugins.sourcemaps.write('/'))
       .pipe(gulp.dest('demo/assets/js'))
       .pipe(bsync.reload({
@@ -240,14 +235,15 @@ gulp.task('deploy', () => {
   });
 });
 
-// Updates package.json, bower.json, README.md and CHANGELOG.md then tags and pushes
+// Updates package.json, bower.json, README.md and
+// CHANGELOG.md then tags and pushes
 gulp.task('tag', (done) => {
-  let args = process.argv.slice(2),
-    releaseArg = args[1] || '--patch',
-    releaseType = releaseArg.substring(2, releaseArg.length),
-    oldVer = pkg.version,
-    newVer = semver.inc(oldVer, releaseType),
-    lastLog = fs.readFileSync('./CHANGELOG.md', 'utf8').split('\n')[2];
+  const args = process.argv.slice(2);
+  const releaseArg = args[1] || '--patch';
+  const releaseType = releaseArg.substring(2, releaseArg.length);
+  const oldVer = pkg.version;
+  const newVer = semver.inc(oldVer, releaseType);
+  const lastLog = fs.readFileSync('./CHANGELOG.md', 'utf8').split('\n')[2];
 
   exec('git log -1 HEAD --pretty=format:%s', function(err, gitLog) {
     gitLog = gitLog.replace(/\(#(\d+)\)/g, '[#$1](https://github.com/kevinchappell/formBuilder/pull/$1)');
@@ -271,7 +267,7 @@ gulp.task('tag', (done) => {
             console.error(err);
           }
         });
-        //run some code here
+        // run some code here
         done();
       });
     });

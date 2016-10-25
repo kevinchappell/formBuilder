@@ -21,8 +21,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   }
 }
 */
-[class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "form-builder-font";
+[class^='icon-']:before, [class*=' icon-']:before {
+  font-family: 'form-builder-font';
   font-style: normal;
   font-weight: normal;
   speak: none;
@@ -46,7 +46,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Uncomment for 3D effect */
-  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */ }
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, .3); */ }
 
 .icon-autocomplete:before {
   content: '\e800'; }
@@ -158,71 +158,72 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       .cb-wrap h4 {
         display: none; } }
 
-.frmb-control.sort-enabled li.ui-state-highlight {
-  box-shadow: none;
-  height: 0;
-  width: 100%;
-  background: -webkit-radial-gradient(center ellipse, #545454 0%, transparent 75%);
-  background: radial-gradient(ellipse at center, #545454 0%, transparent 75%);
-  border: 0 none;
-  -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-          clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  visibility: visible;
-  overflow: hidden;
-  margin: 1px 0 3px;
-  -webkit-animation: PLACEHOLDER 250ms forwards;
-          animation: PLACEHOLDER 250ms forwards; }
-
-.frmb-control li {
-  cursor: move;
-  list-style: none;
-  margin: -1px 0 0;
-  box-shadow: 0 0 1px 0 inset;
-  padding: 10px;
-  text-align: left;
-  background: #fff;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  /* smartphones, Android phones, landscape iPhone */ }
-  .frmb-control li:first-child {
-    border-radius: 5px 5px 0 0; }
-  .frmb-control li:last-child {
-    border-radius: 0 0 5px 5px; }
-  .frmb-control li:before {
-    margin-right: 10px;
-    font-size: 16px; }
-  .frmb-control li:hover {
-    background-color: #f2f2f2; }
-  .frmb-control li.ui-sortable-helper {
-    border-radius: 5px;
-    -webkit-transition: box-shadow 250ms;
-    transition: box-shadow 250ms;
-    box-shadow: 2px 2px 6px 0 #666;
-    border: 1px solid #fff; }
-  .frmb-control li.ui-state-highlight {
-    width: 0;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    border: 0 none; }
-  .frmb-control li.moving {
-    opacity: 0.6; }
-  .frmb-control li.fb-separator {
-    background-color: transparent;
-    box-shadow: none;
-    padding: 0;
-    cursor: default; }
-  @media (max-width: 481px) {
-    .frmb-control li:before {
-      font-size: 30px; }
-    .frmb-control li span {
-      display: none; } }
-
 .frmb-control {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  padding: 1px;
+  border-radius: 5px;
+  background-color: #c5c5c5; }
+  .frmb-control li {
+    cursor: move;
+    list-style: none;
+    margin: 1px 0 0;
+    padding: 10px;
+    text-align: left;
+    background: #fff;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    /* smartphones, Android phones, landscape iPhone */ }
+    .frmb-control li:first-child {
+      border-radius: 5px 5px 0 0;
+      margin-top: 0; }
+    .frmb-control li:last-child {
+      border-radius: 0 0 5px 5px; }
+    .frmb-control li::before {
+      margin-right: 10px;
+      font-size: 16px; }
+    .frmb-control li:hover {
+      background-color: #f2f2f2; }
+    .frmb-control li.ui-sortable-helper {
+      border-radius: 5px;
+      -webkit-transition: box-shadow 250ms;
+      transition: box-shadow 250ms;
+      box-shadow: 2px 2px 6px 0 #666;
+      border: 1px solid #fff; }
+    .frmb-control li.ui-state-highlight {
+      width: 0;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+      border: 0 none; }
+    .frmb-control li.moving {
+      opacity: .6; }
+    .frmb-control li.fb-separator {
+      background-color: transparent;
+      box-shadow: none;
+      padding: 0;
+      cursor: default; }
+    @media (max-width: 481px) {
+      .frmb-control li::before {
+        font-size: 30px; }
+      .frmb-control li span {
+        display: none; } }
+  .frmb-control.sort-enabled li.ui-state-highlight {
+    box-shadow: none;
+    height: 0;
+    width: 100%;
+    background: -webkit-radial-gradient(center ellipse, #545454 0%, transparent 75%);
+    background: radial-gradient(ellipse at center, #545454 0%, transparent 75%);
+    border: 0 none;
+    -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    visibility: visible;
+    overflow: hidden;
+    margin: 1px 0 3px;
+    -webkit-animation: PLACEHOLDER 250ms forwards;
+            animation: PLACEHOLDER 250ms forwards; }
 
 .fb-mobile .form-actions {
   width: 100%; }
@@ -264,12 +265,25 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       [id^='frmb-'][id$='-form-wrap'] .stage-wrap {
         width: calc(100% - 64px); } }
     [id^='frmb-'][id$='-form-wrap'] .stage-wrap .action-links {
-      width: calc( 100% - 141px);
+      width: calc(100% - 141px);
       display: none;
       float: right;
       overflow: hidden;
       text-align: right; }
-    [id^='frmb-'][id$='-form-wrap'] .stage-wrap.empty:after {
+      [id^='frmb-'][id$='-form-wrap'] .stage-wrap .action-links .active {
+        font-weight: 700;
+        color: #000; }
+      [id^='frmb-'][id$='-form-wrap'] .stage-wrap .action-links .action-links-inner {
+        overflow: hidden;
+        width: 0;
+        height: 20px;
+        -webkit-transition: width 250ms;
+        transition: width 250ms; }
+      [id^='frmb-'][id$='-form-wrap'] .stage-wrap .action-links a {
+        color: #666; }
+      [id^='frmb-'][id$='-form-wrap'] .stage-wrap .action-links .clear-all:hover {
+        color: #c10000; }
+    [id^='frmb-'][id$='-form-wrap'] .stage-wrap.empty::after {
       content: attr(data-content);
       position: absolute;
       text-align: center;
@@ -277,9 +291,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       left: 0;
       width: 100%;
       margin-top: -1em; }
-    [id^='frmb-'][id$='-form-wrap'] .stage-wrap .action-links .active {
-      font-weight: 700;
-      color: #000; }
   [id^='frmb-'][id$='-form-wrap'] .frmb {
     list-style-type: none;
     min-height: 200px;
@@ -287,6 +298,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     padding: 0;
     -webkit-transition: background-color 500ms ease-in-out;
     transition: background-color 500ms ease-in-out; }
+    [id^='frmb-'][id$='-form-wrap'] .frmb .required {
+      color: #c10000; }
     [id^='frmb-'][id$='-form-wrap'] .frmb.removing {
       overflow: hidden; }
     [id^='frmb-'][id$='-form-wrap'] .frmb li {
@@ -298,8 +311,14 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       background-color: #fff;
       -webkit-transition: background-color 250ms ease-in-out, margin-top 400ms;
       transition: background-color 250ms ease-in-out, margin-top 400ms; }
-      [id^='frmb-'][id$='-form-wrap'] .frmb li:hover .field-actions {
-        opacity: 1; }
+      [id^='frmb-'][id$='-form-wrap'] .frmb li:hover {
+        border-color: #66afe9;
+        outline: 0;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(102, 175, 233, 0.6); }
+        [id^='frmb-'][id$='-form-wrap'] .frmb li:hover .field-actions {
+          opacity: 1; }
+        [id^='frmb-'][id$='-form-wrap'] .frmb li:hover li :hover {
+          background: #fefefe; }
       [id^='frmb-'][id$='-form-wrap'] .frmb li.hidden-field {
         background-color: rgba(255, 255, 255, 0.6); }
       [id^='frmb-'][id$='-form-wrap'] .frmb li:first-child {
@@ -310,12 +329,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       [id^='frmb-'][id$='-form-wrap'] .frmb li:last-child {
         border-bottom-right-radius: 5px;
         border-bottom-left-radius: 5px; }
-      [id^='frmb-'][id$='-form-wrap'] .frmb li:hover {
-        border-color: #66afe9;
-        outline: 0;
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6); }
-        [id^='frmb-'][id$='-form-wrap'] .frmb li:hover li :hover {
-          background: #fefefe; }
       [id^='frmb-'][id$='-form-wrap'] .frmb li.no-fields label {
         font-weight: 400; }
 
@@ -364,9 +377,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         left: 50%;
         bottom: 6px;
         background: #fff;
-        border-top: 1px solid #d7d7d7;
-        border-left: 1px solid #d7d7d7;
-        border-right: 1px solid #D7D7D7;
+        border-top: 1px solid #c5c5c5;
+        border-left: 1px solid #c5c5c5;
+        border-right: 1px solid #c5c5c5;
         -webkit-transform: translateX(-50%);
                 transform: translateX(-50%);
         padding: 0 5px;
@@ -480,9 +493,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         height: 32px;
         padding: 0;
         border-radius: 0;
-        border-color: #b3b3b3;
+        border-color: #c5c5c5;
         background-color: rgba(255, 255, 255, 0.75);
-        color: #b3b3b3;
+        color: #c5c5c5;
         line-height: 32px;
         font-size: 16px;
         border-width: 0 0 1px 1px; }
@@ -508,7 +521,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       [id^='frmb-'][id$='-form-wrap'] .frmb .option-actions a {
         background: #fff;
         padding: 5px 10px;
-        border: 1px solid #b3b3b3;
+        border: 1px solid #c5c5c5;
         font-size: 14px;
         border-radius: 5px;
         cursor: default; }
@@ -526,7 +539,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       display: inline-block;
       width: 100%;
       margin-left: 2%;
-      background: #b3b3b3;
+      background: #c5c5c5;
       margin-bottom: 0;
       border-radius: 5px;
       list-style: none;
@@ -548,9 +561,9 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
           top: 14px;
           font-size: 18px;
           padding: 0;
-          color: #C10000; }
+          color: #c10000; }
           [id^='frmb-'][id$='-form-wrap'] .frmb ol.sortable-options li .remove:hover {
-            background-color: #C10000;
+            background-color: #c10000;
             text-decoration: none;
             color: #fff; }
       [id^='frmb-'][id$='-form-wrap'] .frmb ol.sortable-options input[type=checkbox],
@@ -577,7 +590,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
       background: #f7f7f7;
       border-radius: 3px;
       margin: 12px 0 0;
-      border: 1px solid #d7d7d7;
+      border: 1px solid #c5c5c5;
       /* smartphones, Android phones, landscape iPhone */ }
       [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .input-wrap {
         width: 81.33333333%;
@@ -596,7 +609,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
         -webkit-transition: background 250ms ease-in-out;
         transition: background 250ms ease-in-out;
         padding: 6px 12px;
-        border: 1px solid #AFAFAB;
+        border: 1px solid #c5c5c5;
         background-color: #fff; }
       @media (max-width: 481px) {
         [id^='frmb-'][id$='-form-wrap'] .frmb .form-elements .input-wrap {
@@ -652,7 +665,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   [id^='frmb-'][id$='-form-wrap'] *[tooltip] {
     position: relative; }
   [id^='frmb-'][id$='-form-wrap'] *[tooltip]:hover:after {
-    background: #262626;
     background: rgba(0, 0, 0, 0.9);
     border-radius: 5px 5px 5px 0;
     bottom: 23px;
@@ -670,7 +682,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   [id^='frmb-'][id$='-form-wrap'] *[tooltip]:hover:before {
     border: solid;
     border-color: #222 transparent;
-    border-width: 6px 6px 0 6px;
+    border-width: 6px 6px 0;
     bottom: 17px;
     content: '';
     left: 2px;
@@ -678,7 +690,6 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     z-index: 99;
     cursor: default; }
   [id^='frmb-'][id$='-form-wrap'] .tooltip-element {
-    display: inline;
     visibility: visible;
     color: #fff;
     background: #000;
@@ -704,11 +715,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   background: #e9e9e9;
   border: 1px solid #cbcbcb;
   vertical-align: bottom;
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
   .kc-toggle .kct-inner {
     position: absolute;
     top: 0;
@@ -758,7 +768,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   background: #ffffff;
   background: -webkit-linear-gradient(top, #ffffff 0%, #cecece 100%);
   background: linear-gradient(to bottom, #ffffff 0%, #cecece 100%);
-  border: 1px solid #999;
+  border: 1px solid #b3b3b3;
   font-weight: 100;
   color: #4b4b4b;
   text-shadow: none;
@@ -856,7 +866,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   [id^='frmb-'][id$='-form-wrap'] .btn.btn-default {
     color: #333;
     background-color: #fff;
-    border-color: #ccc; }
+    border-color: #c5c5c5; }
   [id^='frmb-'][id$='-form-wrap'] .btn.btn-lg {
     padding: 10px 16px;
     font-size: 18px;
@@ -993,65 +1003,30 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 [id^='frmb-'][id$='-form-wrap'] .pull-left {
   float: left !important; }
 
-textarea.idea-template {
-  display: none;
-  width: 617px;
-  color: #fefefe;
-  font: 13px/19px courier;
-  padding-left: 40px;
-  height: 1055px; }
-
-.template-textarea-wrap {
-  display: none; }
-
 .form-wrap {
   position: relative; }
-
-.form-wrap:after {
-  content: '';
-  display: table;
-  clear: both; }
+  .form-wrap::after {
+    content: '';
+    display: table;
+    clear: both; }
 
 .cb-wrap,
 .stage-wrap {
   vertical-align: top; }
 
-.action-links .action-links-inner {
-  overflow: hidden;
-  width: 0;
-  height: 20px;
-  -webkit-transition: width 250ms;
-  transition: width 250ms; }
-
-.action-links .dev-mode-link {
-  -webkit-transition: color 250ms;
-  transition: color 250ms;
-  color: #666;
-  cursor: pointer;
-  padding-right: 2px; }
-
 .stage-wrap h4 {
   margin-top: 0;
   color: #666; }
 
-.action-links a.clear-all:hover,
-.del-button:hover,
-ul.frmb span.required {
-  color: #C10000; }
+.form-elements input.error {
+  border: 1px solid #c10000; }
 
-.action-links a {
-  color: #666; }
-
-.form-elements input[type=text].error {
-  border-radius: 0;
-  border: 1px solid #C10000; }
-
-.form-elements input[type=text].fld-maxlength {
+.form-elements input.fld-maxlength {
   width: 10%; }
 
 .form-elements input.field-error {
   background: #fefefe;
-  border: 1px solid #afafab; }
+  border: 1px solid #c5c5c5; }
 
 .form-elements label em {
   display: block;
@@ -1061,26 +1036,24 @@ ul.frmb span.required {
 .form-elements label.maxlength-label {
   line-height: 1em; }
 
-.form-group .available-roles {
+.form-elements .available-roles {
   display: none;
   padding: 10px;
   margin: 10px 0;
   background: #e6e6e6;
-  box-shadow: inset 0 0 2px 0 #999;
+  box-shadow: inset 0 0 2px 0 #b3b3b3;
   /* smartphones, Android phones, landscape iPhone */ }
   @media (max-width: 481px) {
-    .form-group .available-roles {
+    .form-elements .available-roles {
       margin-left: 0; } }
-
-.form-elements .available-roles label {
-  font-weight: 400;
-  width: auto;
-  float: none;
-  display: inline; }
-
-.form-elements .available-roles input {
-  display: inline;
-  top: auto; }
+  .form-elements .available-roles label {
+    font-weight: 400;
+    width: auto;
+    float: none;
+    display: inline; }
+  .form-elements .available-roles input {
+    display: inline;
+    top: auto; }
 
 .form-elements,
 .form-group,
@@ -1088,8 +1061,8 @@ ul.frmb span.required {
 textarea {
   display: block; }
 
-.form-elements:after,
-.form-group:after {
+.form-elements::after,
+.form-group::after {
   content: '.';
   display: block;
   height: 0;
@@ -1113,10 +1086,10 @@ textarea {
   text-align: left;
   font-size: 12px;
   pointer-events: none; }
-  .frmb-tt:before {
+  .frmb-tt::before {
     border-color: #262626 transparent;
     bottom: -11px; }
-  .frmb-tt:before, .frmb-tt:after {
+  .frmb-tt::before, .frmb-tt::after {
     content: '';
     position: absolute;
     border-style: solid;
@@ -1144,80 +1117,31 @@ textarea {
   line-height: 12px;
   margin-left: 6px; }
 
-.frmb-xml pre.ui-dialog-content {
+.frmb-xml .ui-dialog-content {
   white-space: pre-wrap;
-  white-space: -moz-pre-wrap;
-  white-space: -pre-wrap;
-  white-space: -o-pre-wrap;
   word-wrap: break-word;
   font-size: 12px;
   padding: 0 30px;
   margin-top: 0; }
 
-.action-links a.export-xml:hover,
-.toggle-form.closed:hover {
-  color: #6fc245; }
-
-a.btn.toggle-form {
+.toggle-form {
   margin-left: 5px;
   opacity: 0; }
-  a.btn.toggle-form:hover {
+  .toggle-form:hover {
     border-color: #cccccc; }
-  a.btn.toggle-form:before {
+  .toggle-form::before {
     margin: 0; }
 
 .formb-field-vars .copy-var {
   display: inline-block;
   width: 24px;
   height: 24px;
-  background: #999;
+  background: #b3b3b3;
   text-indent: -9999px; }
-
-.ite-warning {
-  box-shadow: 1px 1px 4px 0 rgba(50, 50, 50, 0.5);
-  border-radius: 0;
-  border: 1px solid #ddd; }
-
-.ite-warning .ui-dialog-buttonpane {
-  height: 27px; }
-
-.ite-warning button {
-  color: #4479B9;
-  margin: 0; }
-
-.ite-warning button:focus {
-  outline: 0;
-  font-weight: 700; }
-
-.ite-warning button.cancel:before {
-  content: '|';
-  margin-right: 15px;
-  padding: 0; }
-
-.ite-warning .ui-dialog-content {
-  padding: 0 15px 10px; }
-
-.ite-warning .ui-dialog-titlebar-close {
-  display: none; }
-
-.ite-warning .ui-widget-header {
-  height: 15px; }
-
-.ite-warning {
-  font-size: 12px;
-  line-height: 1.5em; }
-
-.ite-warning h3 {
-  color: #666;
-  margin-bottom: 10px; }
-
-.ite-warning button {
-  background: 0 0;
-  padding: 2px 5px; }
 
 .required-asterisk {
   display: none;
-  color: #C10000; }
+  color: #c10000; }
 
 .ui-button .ui-button-text {
   line-height: 0; }
@@ -1259,7 +1183,7 @@ a.btn.toggle-form {
   .form-builder-dialog.positioned {
     -webkit-transform: translate(-50%, -100%);
             transform: translate(-50%, -100%); }
-    .form-builder-dialog.positioned .button-wrap:before {
+    .form-builder-dialog.positioned .button-wrap::before {
       content: '';
       width: 0;
       height: 0;

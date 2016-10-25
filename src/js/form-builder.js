@@ -1,10 +1,11 @@
-'use strict';
+require('./kc-toggle.js');
+require('./polyfills.js');
 
 (function($) {
-  var FormBuilder = function(options, element) {
-    var formBuilder = this;
+  const FormBuilder = function(options, element) {
+    let formBuilder = this;
 
-    var defaults = {
+    let defaults = {
       controlPosition: 'right',
       controlOrder: [
         'autocomplete',
@@ -26,7 +27,8 @@
       // Array of fields to disable
       disableFields: [],
       editOnAdd: false,
-      // Uneditable fields or other content you would like to appear before and after regular fields:
+      // Uneditable fields or other content you would like to appear
+      // before and after regular fields:
       append: false,
       prepend: false,
       // array of objects with fields values
@@ -178,7 +180,7 @@
       prefix: 'form-builder-'
     };
 
-    var utils = fbUtils;
+    const utils = require('./utils.js');
 
     defaults.messages.subtypes = (() => {
       const subtypeDefault = (subtype) => {
@@ -189,15 +191,19 @@
       };
 
       return {
-          text: ['text', 'password', 'email', 'color', 'tel'].map(subtypeDefault),
-          header: ['h1', 'h2', 'h3'].map(subtypeDefault),
-          button: ['button', 'submit', 'reset'].map(subtypeDefault),
-          paragraph: ['p','address','blockquote','canvas','output'].map(subtypeDefault)
+          text: ['text', 'password', 'email', 'color', 'tel']
+          .map(subtypeDefault),
+          header: ['h1', 'h2', 'h3']
+          .map(subtypeDefault),
+          button: ['button', 'submit', 'reset']
+          .map(subtypeDefault),
+          paragraph: ['p', 'address', 'blockquote', 'canvas', 'output']
+          .map(subtypeDefault)
         };
     })();
 
-    var opts = Object.assign({}, defaults, options),
-      frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
+    let opts = Object.assign({}, defaults, options);
+    let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
 
     if (options.messages) {
       opts.messages = Object.assign({}, defaults.messages, options.messages);
@@ -207,16 +213,16 @@
 
     formBuilder.element = element;
 
-    var $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
-    var _helpers = formBuilderHelpersFn(opts, formBuilder);
+    let $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
+    let _helpers = require('./helpers.js')(opts, formBuilder);
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
 
-    var lastID = frmbID + '-fld-1',
-      boxID = frmbID + '-control-box';
+    let lastID = frmbID + '-fld-1';
+    let boxID = frmbID + '-control-box';
 
     // create array of field objects to cycle through
-    var frmbFields = [{
+    let frmbFields = [{
       label: opts.messages.autocomplete,
       attrs: {
         type: 'autocomplete',
@@ -324,13 +330,13 @@
     }
 
     // Create draggable fields for formBuilder
-    var cbUl = utils.markup('ul', null, {id: boxID, className: 'frmb-control'});
+    let cbUl = utils.markup('ul', null, {id: boxID, className: 'frmb-control'});
 
     if (opts.sortableControls) {
       cbUl.classList.add('sort-enabled');
     }
 
-    var $cbUL = $(cbUl);
+    let $cbUL = $(cbUl);
 
     // Loop through
     utils.forEach(frmbFields, (i) => {
@@ -351,7 +357,7 @@
       $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
       opts.inputSets.forEach((set) => {
         set.name = set.name || _helpers.makeClassName(set.label);
-        let $set =  $('<li/>', {'class': 'input-set-control', type: set.name});
+        let $set = $('<li/>', {'class': 'input-set-control', type: set.name});
         $set.html(set.label).appendTo($cbUL);
       });
     }
@@ -396,7 +402,7 @@
       }
     });
 
-    var processControl = (control) => {
+    let processControl = (control) => {
       if (control[0].classList.contains('input-set-control')) {
         let inputSet = opts.inputSets.filter((set) => {
           return set.name === control[0].type;
@@ -418,42 +424,47 @@
       }
     };
 
-    var $formWrap = $('<div/>', {
+    let $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
       'class': 'form-wrap form-builder' + _helpers.mobileClass()
     });
 
-    var $stageWrap = $('<div/>', {
+    let $stageWrap = $('<div/>', {
       id: frmbID + '-stage-wrap',
       'class': 'stage-wrap ' + formBuilder.layout.stage
     });
 
-    var cbWrap = $('<div/>', {
+    let cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
       'class': 'cb-wrap ' + formBuilder.layout.controls
     }).append($cbUL[0]);
 
     if (opts.showActionButtons) {
       // Build our headers and action links
-      let viewDataText = opts.dataType === 'xml' ? opts.messages.viewXML : opts.messages.viewJSON,
-        viewData = utils.markup('button', viewDataText, {
-          id: frmbID + '-view-data',
-          type: 'button',
-          className: 'view-data btn btn-default'
-        }),
-        clearAll = utils.markup('button', opts.messages.clearAll, {
-          id: frmbID + '-clear-all',
-          type: 'button',
-          className: 'clear-all btn btn-default'
-        }),
-        saveAll = utils.markup('button', opts.messages.save, {
-          className: `btn btn-primary ${opts.prefix}save`,
-          id: frmbID + '-save',
-          type: 'button'
-        }),
-        formActions = utils.markup('div', [clearAll, viewData, saveAll], {
-          className: 'form-actions btn-group'
-        });
+      let viewDataText;
+      if(opts.dataType === 'xml') {
+        viewDataText = opts.messages.viewXML;
+      } else {
+        viewDataText = opts.messages.viewJSON;
+      }
+      const viewData = utils.markup('button', viewDataText, {
+        id: frmbID + '-view-data',
+        type: 'button',
+        className: 'view-data btn btn-default'
+      });
+      const clearAll = utils.markup('button', opts.messages.clearAll, {
+        id: frmbID + '-clear-all',
+        type: 'button',
+        className: 'clear-all btn btn-default'
+      });
+      const saveAll = utils.markup('button', opts.messages.save, {
+        className: `btn btn-primary ${opts.prefix}save`,
+        id: frmbID + '-save',
+        type: 'button'
+      });
+      const formActions = utils.markup('div', [clearAll, viewData, saveAll], {
+        className: 'form-actions btn-group'
+      });
 
       cbWrap.append(formActions);
     }
@@ -463,29 +474,30 @@
     $formWrap.append($stageWrap, cbWrap);
     $(element).append($formWrap);
 
-    var saveAndUpdate = _helpers.debounce(function(evt) {
+    let saveAndUpdate = _helpers.debounce(evt => {
       if (evt) {
-        if (evt.type === 'keyup' && this.name === 'className') {
+        if (evt.type === 'keyup' && evt.target.name === 'className') {
           return false;
         }
-      }
 
-      let $field = $(this).parents('.form-field:eq(0)');
-      _helpers.updatePreview($field);
-      _helpers.save();
+        let $field = $(evt.target).closest('.form-field');
+        _helpers.updatePreview($field);
+        _helpers.save();
+      }
     });
 
     // Save field on change
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
-    $('li', $cbUL).click(function() {
+    $('li', $cbUL).click(function(evt) {
+      let $control = $(evt.target).closest('.ui-sortable-handle');
       _helpers.stopIndex = undefined;
-      processControl($(this));
+      processControl($control);
       _helpers.save();
     });
 
     // Add append and prepend options if necessary
-    var nonEditableFields = function() {
+    let nonEditableFields = function() {
       let cancelArray = [];
 
       if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
@@ -505,8 +517,8 @@
       }
     };
 
-    var prepFieldVars = function($field, isNew = false) {
-      var field = {};
+    let prepFieldVars = function($field, isNew = false) {
+      let field = {};
       if ($field instanceof jQuery) {
         let fieldData = $field.data('newFieldData');
         if (fieldData) {
@@ -524,7 +536,7 @@
             });
           }
 
-          for (var i = attrs.length - 1; i >= 0; i--) {
+          for (let i = attrs.length - 1; i >= 0; i--) {
             field[attrs[i].name] = attrs[i].value;
           }
         }
@@ -540,7 +552,7 @@
         field.className = field.class || field.className; // backwards compatibility
       }
 
-      var match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
+      let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
       if (match) {
         field.style = match[1];
       }
@@ -555,7 +567,7 @@
     };
 
     // Parse saved XML template data
-    var loadFields = function() {
+    let loadFields = function() {
       let formData = formBuilder.formData;
       if (formData && formData.length) {
         for (let i = 0; i < formData.length; i++) {
@@ -567,19 +579,20 @@
         opts.defaultFields.forEach(field => prepFieldVars(field));
         $stageWrap.removeClass('empty');
       } else if (!opts.prepend && !opts.append) {
-        $stageWrap.addClass('empty').attr('data-content', opts.messages.getStarted);
+        $stageWrap.addClass('empty')
+        .attr('data-content', opts.messages.getStarted);
       }
       _helpers.save();
 
-      $('li.form-field:not(.disabled)', $sortableFields).each(function() {
-        _helpers.updatePreview($(this));
-      });
+      let $fields = $('li.form-field:not(.disabled)', $sortableFields);
+
+      $fields.each(i => _helpers.updatePreview($($fields[i])));
 
       nonEditableFields();
     };
 
     // callback to track disabled tooltips
-    $sortableFields.on('mousemove', 'li.disabled', function(e) {
+    $sortableFields.on('mousemove', 'li.disabled', e => {
       $('.frmb-tt', this).css({
         left: e.offsetX - 16,
         top: e.offsetY - 34
@@ -587,17 +600,15 @@
     });
 
     // callback to call disabled tooltips
-    $sortableFields.on('mouseenter', 'li.disabled', function() {
-      _helpers.disabledTT.add($(this));
-    });
+    $sortableFields.on('mouseenter', 'li.disabled', e =>
+      _helpers.disabledTT.add($(this)));
 
     // callback to call disabled tooltips
-    $sortableFields.on('mouseleave', 'li.disabled', function() {
-      _helpers.disabledTT.remove($(this));
-    });
+    $sortableFields.on('mouseleave', 'li.disabled', e =>
+      _helpers.disabledTT.remove($(this)));
 
-    var nameAttr = function(field) {
-      var epoch = new Date().getTime();
+    let nameAttr = function(field) {
+      let epoch = new Date().getTime();
       return field.type + '-' + epoch;
     };
 
@@ -605,14 +616,17 @@
      * Add data for field with options [select, checkbox-group, radio-group]
      *
      * @todo   refactor this nasty ~crap~ code, its actually painful to look at
-     * @param  {object} values
+     * @param  {Object} values
+     * @return {String} field options markup
      */
-    var fieldOptions = function(values) {
+    let fieldOptions = function(values) {
       let optionActions = [
           utils.markup('a', opts.messages.addOption, {className: 'add add-opt'})
-        ],
-        fieldOptions = [`<label class="false-label">${opts.messages.selectOptions}</label>`],
-        isMultiple = values.multiple || (values.type === 'checkbox-group');
+        ];
+      let fieldOptions = [
+        `<label class="false-label">${opts.messages.selectOptions}</label>`
+      ];
+      const isMultiple = values.multiple || (values.type === 'checkbox-group');
 
       if (!values.values || !values.values.length) {
         values.values = [1, 2, 3].map(function(index) {
@@ -648,19 +662,19 @@
      * @param  {object} values configuration object for advanced fields
      * @return {String}        markup for advanced fields
      */
-    var advFields = function(values) {
-      var advFields = [],
-        key,
-        optionFields = [
-          'select',
-          'checkbox-group',
-          'radio-group'
-        ],
-        isOptionField = (function() {
-          return (optionFields.indexOf(values.type) !== -1);
-        })(),
-        valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(optionFields)),
-        roles = values.role !== undefined ? values.role.split(',') : [];
+    let advFields = function(values) {
+      let advFields = [];
+      let key;
+      let optionFields = [
+        'select',
+        'checkbox-group',
+        'radio-group'
+      ];
+      let isOptionField = (function() {
+        return (optionFields.indexOf(values.type) !== -1);
+      })();
+      let valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(optionFields));
+      let roles = values.role !== undefined ? values.role.split(',') : [];
 
       advFields.push(requiredField(values));
 
@@ -673,7 +687,7 @@
       values.size = values.size || 'm';
       values.style = values.style || 'default';
 
-      //Help Text / Description Field
+      // Help Text / Description Field
       if (!utils.inArray(values.type, ['header', 'paragraph', 'button'])) {
         advFields.push(textAttribute('description', values));
       }
@@ -696,7 +710,7 @@
       // Placeholder
       advFields.push(textAttribute('placeholder', values));
 
-      //TextArea Rows Attribute
+      // TextArea Rows Attribute
       if (values.type === 'textarea') {
         advFields.push(numberAttribute('rows', values));
       }
@@ -724,8 +738,8 @@
       ];
       for (key in opts.roles) {
         if (opts.roles.hasOwnProperty(key)) {
-          let checked = utils.inArray(key, roles) ? 'checked' : '',
-          roleId = `fld-${lastID}-roles-${key}`;
+          let checked = utils.inArray(key, roles) ? 'checked' : '';
+          let roleId = `fld-${lastID}-roles-${key}`;
           availableRoles.push(`<input type="checkbox" name="roles[]" value="${key}" id="${roleId}" ${checked} class="roles-field" /> <label for="${roleId}">${opts.roles[key]}</label><br/>`);
         }
       }
@@ -760,6 +774,12 @@
       return advFields.join('');
     };
 
+    /**
+     * Processes typeUserAttrs
+     * @param  {Object} typeUserAttr option
+     * @param  {Object} values       field attributes
+     * @return {String}              markup for custom user attributes
+     */
     function processTypeUserAttrs(typeUserAttr, values) {
       let advField = [];
 
@@ -787,6 +807,12 @@
       return advField.join('');
     }
 
+    /**
+     * Text input value for attribute
+     * @param  {String} name
+     * @param  {Object} attrs also known as values
+     * @return {String}       input markup
+     */
     function inputUserAttrs(name, attrs) {
       let textAttrs = {
           id: name + '-' + lastID,
@@ -794,32 +820,41 @@
           name: name,
           type: attrs.type || 'text',
           className: [`fld-${name}`]
-        },
-        label = `<label for="${textAttrs.id}">${opts.messages[name]}</label>`;
+        };
+      let label = `<label for="${textAttrs.id}">${opts.messages[name]}</label>`;
 
       if (!utils.inArray(textAttrs.type, ['checkbox', 'checkbox-group', 'radio-group'])) {
         textAttrs.className.push('form-control');
       }
 
       textAttrs = Object.assign({}, attrs, textAttrs);
-      let textInput = `<input ${utils.attrString(textAttrs)}>`,
-      inputWrap = `<div class="input-wrap">${textInput}</div>`;
+      let textInput = `<input ${utils.attrString(textAttrs)}>`;
+      let inputWrap = `<div class="input-wrap">${textInput}</div>`;
       return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`;
     }
 
+    /**
+     * Select input for multiple choice user attributes
+     * @todo  replace with selectAttr
+     * @param  {String} name
+     * @param  {Object} options
+     * @return {String}         select markup
+     */
     function selectUserAttrs(name, options) {
       let optis = Object.keys(options.options).map(val => {
         let attrs = {value: val};
-        if (val === options.value) { attrs.selected = null; }
+        if (val === options.value) {
+          attrs.selected = null;
+        }
         return `<option ${utils.attrString(attrs)}>${options.options[val]}</option>`;
-      }),
-        selectAttrs = {
-          id: name + '-' + lastID,
-          title: options.description || options.label || name.toUpperCase(),
-          name: name,
-          className: `fld-${name} form-control`
-        },
-        label = `<label for="${selectAttrs.id}">${opts.messages[name]}</label>`;
+      });
+      let selectAttrs = {
+        id: name + '-' + lastID,
+        title: options.description || options.label || name.toUpperCase(),
+        name: name,
+        className: `fld-${name} form-control`
+      };
+      let label = `<label for="${selectAttrs.id}">${opts.messages[name]}</label>`;
 
       Object.keys(options).filter(prop => {
         return !utils.inArray(prop, ['value', 'options', 'label']);
@@ -827,23 +862,23 @@
         selectAttrs[attr] = options[attr];
       });
 
-      let select = `<select ${utils.attrString(selectAttrs)}>${optis.join('')}</select>`,
-        inputWrap = `<div class="input-wrap">${select}</div>`;
+      let select = `<select ${utils.attrString(selectAttrs)}>${optis.join('')}</select>`;
+      let inputWrap = `<div class="input-wrap">${select}</div>`;
       return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`;
     }
 
-    var boolAttribute = function(name, values, labels) {
+    let boolAttribute = function(name, values, labels) {
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][name]) {
         return;
       }
 
       let label = (txt) => {
         return `<label for="${name}-${lastID}">${txt}</label>`;
-      },
-      checked = (values[name] !== undefined ? 'checked' : ''),
-      input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/> `,
-      left = [],
-      right = [
+      };
+      let checked = (values[name] !== undefined ? 'checked' : '');
+      let input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/> `;
+      let left = [];
+      let right = [
         input
       ];
 
@@ -865,12 +900,12 @@
       return `<div class="form-group ${name}-wrap">${left.concat(right).join('')}</div>`;
     };
 
-    var btnStyles = function(style, type) {
+    let btnStyles = function(style, type) {
       let tags = {
           button: 'btn'
-        },
-        styles = opts.messages.styles[tags[type]],
-        styleField = '';
+        };
+        let styles = opts.messages.styles[tags[type]];
+        let styleField = '';
 
       if (styles) {
         let styleLabel = `<label>${opts.messages.style}</label>`;
@@ -894,32 +929,39 @@
      * Add a number attribute to a field.
      * @param  {String} attribute
      * @param  {Object} values
-     * @return {String}
+     * @return {String} markup for number attribute
      */
-    var numberAttribute = function(attribute, values) {
+    let numberAttribute = function(attribute, values) {
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
 
-      let attrVal = values[attribute],
-        attrLabel = opts.messages[attribute] || attribute,
-        placeholder = opts.messages.placeholders[attribute],
-        inputConfig = {
-          type: 'number',
-          value: attrVal,
-          name: attribute,
-          min: '0',
-          placeholder: placeholder,
-          className: `fld-${attribute} form-control`,
-          id: `${attribute}-${lastID}`
-        },
-        numberAttribute = `<input ${utils.attrString(utils.trimObj(inputConfig))}>`,
-        inputWrap = `<div class="input-wrap">${numberAttribute}</div>`;
+      let attrVal = values[attribute];
+      let attrLabel = opts.messages[attribute] || attribute;
+      let placeholder = opts.messages.placeholders[attribute];
+      let inputConfig = {
+        type: 'number',
+        value: attrVal,
+        name: attribute,
+        min: '0',
+        placeholder: placeholder,
+        className: `fld-${attribute} form-control`,
+        id: `${attribute}-${lastID}`
+      };
+      let numberAttribute = `<input ${utils.attrString(utils.trimObj(inputConfig))}>`;
+      let inputWrap = `<div class="input-wrap">${numberAttribute}</div>`;
 
       return `<div class="form-group ${attribute}-wrap"><label for="${inputConfig.id}">${attrLabel}</label> ${inputWrap}</div>`;
     };
 
-    var selectAttribute = function(attribute, values, optionData) {
+    /**
+     * selectAttribute
+     * @param  {String} attribute  attribute name
+     * @param  {Object} values     aka attrs
+     * @param  {Array} optionData  select field option data
+     * @return {String}            select input makrup
+     */
+    let selectAttribute = function(attribute, values, optionData) {
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
@@ -932,16 +974,15 @@
           optionAttrs.selected = true;
         }
         return `<option ${utils.attrString(utils.trimObj(optionAttrs))}>${optionAttrs.label}</option>`;
-      }),
-        selectAttrs = {
+      });
+      let selectAttrs = {
           id: attribute + '-' + lastID,
           name: attribute,
           className: `fld-${attribute} form-control`
-        },
-        label = `<label for="${selectAttrs.id}">${opts.messages[attribute] || utils.capitalize(attribute)}</label>`;
-
-      let select = `<select ${utils.attrString(selectAttrs)}>${selectOptions.join('')}</select>`,
-        inputWrap = `<div class="input-wrap">${select}</div>`;
+        };
+      let label = `<label for="${selectAttrs.id}">${opts.messages[attribute] || utils.capitalize(attribute)}</label>`;
+      let select = `<select ${utils.attrString(selectAttrs)}>${selectOptions.join('')}</select>`;
+      let inputWrap = `<div class="input-wrap">${select}</div>`;
 
       return `<div class="form-group ${selectAttrs.name}-wrap">${label}${inputWrap}</div>`;
     };
@@ -952,35 +993,35 @@
      * @param  {Object} values
      * @return {String}
      */
-    var textAttribute = function(attribute, values) {
+    let textAttribute = function(attribute, values) {
       if (opts.typeUserAttrs[values.type] && opts.typeUserAttrs[values.type][attribute]) {
         return;
       }
 
-      var placeholderFields = [
+      let placeholderFields = [
         'text',
         'textarea',
         'select'
       ];
 
-      var noName = [
+      let noName = [
         'header'
       ];
 
-      var textArea = ['paragraph'];
+      let textArea = ['paragraph'];
 
-      var attrVal = values[attribute] || '',
-        attrLabel = opts.messages[attribute];
+      let attrVal = values[attribute] || '';
+      let attrLabel = opts.messages[attribute];
       if (attribute === 'label' && utils.inArray(values.type, textArea)) {
         attrLabel = opts.messages.content;
       }
 
       noName = noName.concat(opts.messages.subtypes.header, textArea);
 
-      let placeholders = opts.messages.placeholders,
-        placeholder = placeholders[attribute] || '',
-        attributefield = '',
-        noMakeAttr = [];
+      let placeholders = opts.messages.placeholders;
+      let placeholder = placeholders[attribute] || '';
+      let attributefield = '';
+      let noMakeAttr = [];
 
       // Field has placeholder attribute
       if (attribute === 'placeholder' && !utils.inArray(values.type, placeholderFields)) {
@@ -1017,14 +1058,14 @@
       return attributefield;
     };
 
-    var requiredField = function(values) {
-      var noRequire = [
+    let requiredField = function(values) {
+      let noRequire = [
           'header',
           'paragraph',
           'button'
-        ],
-        noMake = [],
-        requireField = '';
+        ];
+      let noMake = [];
+      let requireField = '';
 
       if (utils.inArray(values.type, noRequire)) {
         noMake.push(true);
@@ -1037,26 +1078,26 @@
     };
 
     // Append the new field to the editor
-    var appendNewField = function(values) {
-      let type = values.type || 'text',
-        label = values.label || opts.messages[type] || opts.messages.label,
-        delBtn = utils.markup('a', opts.messages.remove, {
+    let appendNewField = function(values) {
+      let type = values.type || 'text';
+      let label = values.label || opts.messages[type] || opts.messages.label;
+      let delBtn = utils.markup('a', opts.messages.remove, {
           id: 'del_' + lastID,
           className: 'del-button btn delete-confirm',
           title: opts.messages.removeMessage
-        }),
-        toggleBtn = utils.markup('a', null, {
-          id: lastID + '-edit',
-          className: 'toggle-form btn icon-pencil',
-          title: opts.messages.hide
-        }),
-        copyBtn = utils.markup('a', opts.messages.copyButton, {
-          id: lastID + '-copy',
-          className: 'copy-button btn icon-copy',
-          title: opts.messages.copyButtonTooltip
         });
+      let toggleBtn = utils.markup('a', null, {
+        id: lastID + '-edit',
+        className: 'toggle-form btn icon-pencil',
+        title: opts.messages.hide
+      });
+      let copyBtn = utils.markup('a', opts.messages.copyButton, {
+        id: lastID + '-copy',
+        className: 'copy-button btn icon-copy',
+        title: opts.messages.copyButtonTooltip
+      });
 
-      var liContents = utils.markup(
+      let liContents = utils.markup(
         'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
       ).outerHTML;
 
@@ -1084,8 +1125,8 @@
           'class': type + '-field form-field',
           'type': type,
           id: lastID
-        }),
-        $li = $(field);
+        });
+      let $li = $(field);
 
       $li.data('fieldData', {attrs: values});
       if (typeof _helpers.stopIndex !== 'undefined') {
@@ -1094,7 +1135,8 @@
         $sortableFields.append($li);
       }
 
-      $('.sortable-options', $li).sortable({update: () => {_helpers.updatePreview($li);}}); // make dynamically added option fields sortable if they exist.
+      $('.sortable-options', $li)
+      .sortable({update: () => _helpers.updatePreview($li)});
 
       _helpers.updatePreview($li);
 
@@ -1111,20 +1153,21 @@
     };
 
     // Select field html, since there may be multiple
-    var selectFieldOptions = function(name, optionData, multipleSelect) {
+    let selectFieldOptions = function(name, optionData, multipleSelect) {
       let optionInputType = {
           selected: (multipleSelect ? 'checkbox' : 'radio')
-        },
-        optionDataOrder = [
-          'value',
-          'label',
-          'selected'
-        ],
-        optionInputs = [];
+        };
+      let optionDataOrder = [
+        'value',
+        'label',
+        'selected'
+      ];
+      let optionInputs = [];
+      let optionTemplate = {selected: false, label: '', value: ''};
 
-      optionData = Object.assign({selected: false,label: '',value: ''}, optionData);
+      optionData = Object.assign(optionTemplate, optionData);
 
-      for (var i = optionDataOrder.length - 1; i >= 0; i--) {
+      for (let i = optionDataOrder.length - 1; i >= 0; i--) {
         let prop = optionDataOrder[i];
         if (optionData.hasOwnProperty(prop)) {
           let attrs = {
@@ -1157,13 +1200,12 @@
       return field.outerHTML;
     };
 
-    var cloneItem = function cloneItem(currentItem) {
-      let currentId = currentItem.attr('id'),
-        type = currentItem.attr('type'),
-        ts = new Date().getTime(),
-        cloneName = type + '-' + ts;
-
-      var $clone = currentItem.clone();
+    let cloneItem = function cloneItem(currentItem) {
+      let currentId = currentItem.attr('id');
+      let type = currentItem.attr('type');
+      let ts = new Date().getTime();
+      let cloneName = type + '-' + ts;
+      let $clone = currentItem.clone();
 
       $clone.find('[id]').each(function() { this.id = this.id.replace(currentId, lastID); });
 
@@ -1171,17 +1213,16 @@
 
       $clone.each(function() {
         $('e:not(.form-elements)').each(function() {
-          var newName = this.getAttribute('name');
+          let newName = this.getAttribute('name');
           newName = newName.substring(0, (newName.lastIndexOf('-') + 1));
           newName = newName + ts.toString();
           this.setAttribute('name', newName);
         });
-
       });
 
       $clone.find('.form-elements').find(':input').each(function() {
         if (this.getAttribute('name') === 'name') {
-          var newVal = this.getAttribute('value');
+          let newVal = this.getAttribute('value');
           newVal = newVal.substring(0, (newVal.lastIndexOf('-') + 1));
           newVal = newVal + ts.toString();
           this.setAttribute('value', newVal);
@@ -1205,9 +1246,9 @@
 
     // delete options
     $sortableFields.on('click touchstart', '.remove', function(e) {
-      var $field = $(this).parents('.form-field:eq(0)');
+      let $field = $(this).parents('.form-field:eq(0)');
       e.preventDefault();
-      var optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
+      let optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
       if (optionsCount <= 2) {
         opts.notify.error('Error: ' + opts.messages.minOptionMessage);
       } else {
@@ -1221,13 +1262,14 @@
 
     // touch focus
     $sortableFields.on('touchstart', 'input', function(e) {
+      let $input = $(this);
       if (e.handled !== true) {
-        if ($(this).attr('type') === 'checkbox') {
-          $(this).trigger('click');
+        if ($input.attr('type') === 'checkbox') {
+          $input.trigger('click');
         } else {
-          $(this).focus();
-          let fieldVal = $(this).val();
-          $(this).val(fieldVal);
+          $input.focus();
+          let fieldVal = $input.val();
+          $input.val(fieldVal);
         }
       } else {
         return false;
@@ -1239,7 +1281,7 @@
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
-        var targetID = $(this).parents('.form-field:eq(0)').attr('id');
+        let targetID = $(e.target).parents('.form-field:eq(0)').attr('id');
         _helpers.toggleEdit(targetID);
         e.handled = true;
       } else {
@@ -1262,23 +1304,23 @@
     });
 
     // update preview to label
-    $sortableFields.on('keyup change', '[name="label"]', function() {
-      $('.field-label', $(this).closest('li')).text($(this).val());
+    $sortableFields.on('keyup change', '[name="label"]', function(e) {
+      $('.field-label', $(e.target).closest('li')).text($(e.target).val());
     });
 
     // remove error styling when users tries to correct mistake
-    $sortableFields.delegate('input.error', 'keyup', function() {
-      $(this).removeClass('error');
+    $sortableFields.delegate('input.error', 'keyup', function(e) {
+      $(e.target).removeClass('error');
     });
 
     // update preview for description
-    $sortableFields.on('keyup', 'input[name="description"]', function() {
-      var $field = $(this).parents('.form-field:eq(0)');
-      var closestToolTip = $('.tooltip-element', $field);
-      var ttVal = $(this).val();
+    $sortableFields.on('keyup', 'input[name="description"]', function(e) {
+      let $field = $(e.target).parents('.form-field:eq(0)');
+      let closestToolTip = $('.tooltip-element', $field);
+      let ttVal = $(e.target).val();
       if (ttVal !== '') {
         if (!closestToolTip.length) {
-          var tt = '<span class="tooltip-element" tooltip="' + ttVal + '">?</span>';
+          let tt = `<span class="tooltip-element" tooltip="${ttVal}">?</span>`;
           $('.field-label', $field).after(tt);
         } else {
           closestToolTip.attr('tooltip', ttVal).css('display', 'inline-block');
@@ -1297,30 +1339,31 @@
       .parents('.form-elements:eq(0)')
       .find('.sortable-options input.option-selected')
       .each(function() {
-        this.type = newType;
+        e.target.type = newType;
       });
-
     });
 
     // format name attribute
-    $sortableFields.on('blur', 'input.fld-name', function() {
-      this.value = _helpers.safename(this.value);
-      if (this.value === '') {
-        $(this).addClass('field-error').attr('placeholder', opts.messages.cannotBeEmpty);
+    $sortableFields.on('blur', 'input.fld-name', function(e) {
+      e.target.value = _helpers.safename(e.target.value);
+      if (e.target.value === '') {
+        $(e.target)
+        .addClass('field-error')
+        .attr('placeholder', opts.messages.cannotBeEmpty);
       } else {
-        $(this).removeClass('field-error');
+        $(e.target).removeClass('field-error');
       }
     });
 
-    $sortableFields.on('blur', 'input.fld-maxlength', function() {
-      this.value = _helpers.forceNumber(this.value);
+    $sortableFields.on('blur', 'input.fld-maxlength', e => {
+      e.target.value = _helpers.forceNumber(e.target.value);
     });
 
     // Copy field
     $sortableFields.on('click touchstart', '.icon-copy', function(e) {
       e.preventDefault();
-      var currentItem = $(this).parent().parent('li');
-      var $clone = cloneItem(currentItem);
+      let currentItem = $(e.target).parent().parent('li');
+      let $clone = cloneItem(currentItem);
       $clone.insertAfter(currentItem);
       _helpers.updatePreview($clone);
       _helpers.save();
@@ -1330,15 +1373,15 @@
     $sortableFields.on('click touchstart', '.delete-confirm', function(e) {
       e.preventDefault();
 
-      let buttonPosition = this.getBoundingClientRect(),
-        bodyRect = document.body.getBoundingClientRect(),
-        coords = {
+      const buttonPosition = e.target.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const coords = {
           pageX: buttonPosition.left + (buttonPosition.width / 2),
           pageY: (buttonPosition.top - bodyRect.top) - 12
         };
 
-      var deleteID = $(this).parents('.form-field:eq(0)').attr('id'),
-        $field = $(document.getElementById(deleteID));
+      let deleteID = $(e.target).parents('.form-field:eq(0)').attr('id');
+      const $field = $(document.getElementById(deleteID));
 
       document.addEventListener('modalClosed', function() {
         $field.removeClass('deleting');
@@ -1346,9 +1389,10 @@
 
       // Check if user is sure they want to remove the field
       if (opts.fieldRemoveWarn) {
-        let warnH3 = utils.markup('h3', opts.messages.warning),
-          warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
-        _helpers.confirm([warnH3, warnMessage], () => _helpers.removeField(deleteID), coords);
+        let warnH3 = utils.markup('h3', opts.messages.warning);
+        let warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
+        _helpers.confirm([warnH3, warnMessage], () =>
+          _helpers.removeField(deleteID), coords);
         $field.addClass('deleting');
       } else {
         _helpers.removeField(deleteID);
@@ -1356,26 +1400,26 @@
     });
 
     // Update button style selection
-    $sortableFields.on('click', '.style-wrap button', function() {
-      let styleVal = $(this).val(),
-        $parent = $(this).parent(),
-        $btnStyle = $parent.prev('.btn-style');
+    $sortableFields.on('click', '.style-wrap button', e => {
+      const $button = $(e.target);
+      let styleVal = $button.val();
+      let $btnStyle = $button.parent().prev('.btn-style');
       $btnStyle.val(styleVal);
-      $(this).siblings('.btn').removeClass('active');
-      $(this).addClass('active');
-      saveAndUpdate.call($parent);
+      $button.siblings('.btn').removeClass('active');
+      $button.addClass('active');
+      _helpers.updatePreview($btnStyle.closest('.form-field'));
+      _helpers.save();
     });
 
     // Attach a callback to toggle required asterisk
-    $sortableFields.on('click', 'input.fld-required', function() {
-      var requiredAsterisk = $(this).parents('li.form-field').find('.required-asterisk');
-      requiredAsterisk.toggle();
+    $sortableFields.on('click', '.fld-required', e => {
+      $(e.target).closest('.form-field').find('.required-asterisk').toggle();
     });
 
     // Attach a callback to toggle roles visibility
-    $sortableFields.on('click', 'input.fld-access', function() {
-      var roles = $(this).parents('li.form-field').find('div.available-roles'),
-        enableRolesCB = $(this);
+    $sortableFields.on('click', 'input.fld-access', function(e) {
+      let roles = $(e.target).closest('.form-field').find('.available-roles');
+      let enableRolesCB = $(e.target);
       roles.slideToggle(250, function() {
         if (!enableRolesCB.is(':checked')) {
           $('input[type="checkbox"]', roles).removeAttr('checked');
@@ -1386,10 +1430,10 @@
     // Attach a callback to add new options
     $sortableFields.on('click', '.add-opt', function(e) {
       e.preventDefault();
-      var $optionWrap = $(this).parents('.field-options:eq(0)'),
-        $multiple = $('[name="multiple"]', $optionWrap),
-        $firstOption = $('.option-selected:eq(0)', $optionWrap),
-        isMultiple = false;
+      let $optionWrap = $(e.target).closest('.field-options');
+      let $multiple = $('[name="multiple"]', $optionWrap);
+      let $firstOption = $('.option-selected:eq(0)', $optionWrap);
+      let isMultiple = false;
 
       if ($multiple.length) {
         isMultiple = $multiple.prop('checked');
@@ -1402,28 +1446,27 @@
       $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple));
     });
 
-    $sortableFields.on('mouseover mouseout', '.remove, .del-button', function() {
-      $(this).parents('li:eq(0)').toggleClass('delete');
-    });
+    $sortableFields.on('mouseover mouseout', '.remove, .del-button', e =>
+      $(e.target).closest('.form-field').toggleClass('delete'));
 
     if (opts.showActionButtons) {
       // View XML
-      var xmlButton = $(document.getElementById(frmbID + '-view-data'));
+      let xmlButton = $(document.getElementById(frmbID + '-view-data'));
       xmlButton.click(function(e) {
         e.preventDefault();
         _helpers.showData();
       });
 
       // Clear all fields in form editor
-      var clearButton = $(document.getElementById(frmbID + '-clear-all'));
-      clearButton.click(function() {
+      let clearButton = $(document.getElementById(frmbID + '-clear-all'));
+      clearButton.click(function(e) {
         let fields = $('li.form-field');
-        let buttonPosition = this.getBoundingClientRect(),
-          bodyRect = document.body.getBoundingClientRect(),
-          coords = {
-            pageX: buttonPosition.left + (buttonPosition.width / 2),
-            pageY: (buttonPosition.top - bodyRect.top) - 12
-          };
+        let buttonPosition = e.target.getBoundingClientRect();
+        let bodyRect = document.body.getBoundingClientRect();
+        let coords = {
+          pageX: buttonPosition.left + (buttonPosition.width / 2),
+          pageY: (buttonPosition.top - bodyRect.top) - 12
+        };
 
         if (fields.length) {
           _helpers.confirm(opts.messages.clearAllMessage, function() {
@@ -1432,12 +1475,12 @@
             _helpers.save();
           }, coords);
         } else {
-          _helpers.dialog('There are no fields to clear', {pageX: coords.pageX, pageY: coords.pageY});
+          _helpers.dialog('There are no fields to clear', coords);
         }
       });
 
       // Save Idea Template
-      $(document.getElementById(frmbID + '-save')).click(function(e) {
+      $(document.getElementById(frmbID + '-save')).click(e => {
         e.preventDefault();
         _helpers.save();
       });
@@ -1477,13 +1520,15 @@
   };
 
   $.fn.formBuilder = function(options) {
-    options = options || {};
-    return this.each(function() {
-      var formBuilder = new FormBuilder(options, this);
-      $(this).data('formBuilder', formBuilder);
+    if (!options) {
+      options = {};
+    }
+    let elems = this;
+    return elems.each((i) => {
+      let formBuilder = new FormBuilder(options, elems[i]);
+      $(elems[i]).data('formBuilder', formBuilder);
 
       return formBuilder;
     });
   };
-
 })(jQuery);

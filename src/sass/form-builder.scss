@@ -10,27 +10,14 @@
   @import 'base/bs';
 }
 
-textarea.idea-template {
-  display: none;
-  width: 617px;
-  color: $off-white;
-  font: 13px/19px courier;
-  padding-left: 40px;
-  height: 1055px;
-}
-
-.template-textarea-wrap {
-  display: none;
-}
-
 .form-wrap {
   position: relative;
-}
 
-.form-wrap:after {
-  content: '';
-  display: table;
-  clear: both;
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
 }
 
 .cb-wrap,
@@ -38,82 +25,63 @@ textarea.idea-template {
   vertical-align: top;
 }
 
-.action-links .action-links-inner {
-  overflow: hidden;
-  width: 0;
-  height: 20px;
-  transition: width 250ms;
-}
-
-.action-links .dev-mode-link {
-  transition: color 250ms;
-  color: $grey;
-  cursor: pointer;
-  padding-right: 2px;
-}
-
 .stage-wrap h4 {
   margin-top: 0;
   color: $grey;
 }
 
-.action-links a.clear-all:hover,
-.del-button:hover,
-ul.frmb span.required {
-  color: $error;
-}
+.form-elements {
+  input {
+    &.error {
+      border: 1px solid $error;
+    }
 
-.action-links a {
-  color: $grey;
-}
+    &.fld-maxlength {
+      width: 10%;
+    }
 
-.form-elements input[type=text].error {
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  border: 1px solid $error;
-}
-
-.form-elements input[type=text].fld-maxlength {
-  width: 10%;
-}
-
-.form-elements input.field-error {
-  background: $off-white;
-  border: 1px solid #afafab;
-}
-
-.form-elements label em {
-  display: block;
-  font-weight: 400;
-  font-size: .75em;
-}
-
-.form-elements label.maxlength-label {
-  line-height: 1em;
-}
-
-.form-group .available-roles {
-  display: none;
-  padding: 10px;
-  margin: 10px 0;
-  background: darken($white, 10%);
-  box-shadow: inset 0 0 2px 0 #999;
-
-  @include breakpoint('phone-lrg') {
-    margin-left: 0;
+    &.field-error {
+      background: $off-white;
+      border: 1px solid $input-border-color;
+    }
   }
-}
 
-.form-elements .available-roles label {
-  font-weight: 400;
-  width: auto;
-  float: none;
-  display: inline;
-}
+  label {
+    em {
+      display: block;
+      font-weight: 400;
+      font-size: .75em;
+    }
 
-.form-elements .available-roles input {
-  display: inline;
-  top: auto;
+    &.maxlength-label {
+      line-height: 1em;
+    }
+  }
+
+  .available-roles {
+    display: none;
+    padding: 10px;
+    margin: 10px 0;
+    background: darken($white, 10%);
+    box-shadow: inset 0 0 2px 0 $grey-light-30;
+
+    @include breakpoint('phone-lrg') {
+      margin-left: 0;
+    }
+
+
+    label {
+      font-weight: 400;
+      width: auto;
+      float: none;
+      display: inline;
+    }
+
+    input {
+      display: inline;
+      top: auto;
+    }
+  }
 }
 
 .form-elements,
@@ -123,8 +91,8 @@ textarea {
   display: block;
 }
 
-.form-elements:after,
-.form-group:after {
+.form-elements::after,
+.form-group::after {
   content: '.';
   display: block;
   height: 0;
@@ -152,18 +120,18 @@ textarea {
   font-size: 12px;
   pointer-events: none;
 
-  &:before {
+  &::before {
     border-color: darken($grey, 25%) transparent;
     bottom: -11px;
   }
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
     border-style: solid;
     border-width: 10px 10px 0;
-    border-color: #666 transparent;
+    border-color: $grey transparent;
     display: block;
     width: 0;
     z-index: 1;
@@ -195,27 +163,15 @@ textarea {
   margin-left: 6px;
 }
 
-.frmb-xml pre.ui-dialog-content {
+.frmb-xml .ui-dialog-content {
   white-space: pre-wrap;
-  white-space: -moz-pre-wrap;
-  white-space: -pre-wrap;
-  white-space: -o-pre-wrap;
   word-wrap: break-word;
   font-size: 12px;
   padding: 0 30px;
   margin-top: 0;
 }
 
-.action-links a.export-xml:hover,
-.toggle-form.closed:hover {
-  color: #6fc245;
-}
-
-.toggle-form.open {
-  // line-height: 14px;
-}
-
-a.btn.toggle-form {
+.toggle-form {
   margin-left: 5px;
   opacity: 0;
 
@@ -223,7 +179,7 @@ a.btn.toggle-form {
     border-color: lighten($grey, 40%);
   }
 
-  &:before {
+  &::before {
     margin: 0;
   }
 }
@@ -232,61 +188,8 @@ a.btn.toggle-form {
   display: inline-block;
   width: 24px;
   height: 24px;
-  background: #999;
+  background: $grey-light-30;
   text-indent: -9999px;
-}
-
-.ite-warning {
-  box-shadow: 1px 1px 4px 0 rgba(50, 50, 50, 0.5);
-  border-radius: 0;
-  border: 1px solid #ddd;
-}
-
-.ite-warning .ui-dialog-buttonpane {
-  height: 27px;
-}
-
-.ite-warning button {
-  color: #4479B9;
-  margin: 0;
-}
-
-.ite-warning button:focus {
-  outline: 0;
-  font-weight: 700;
-}
-
-.ite-warning button.cancel:before {
-  content: '|';
-  margin-right: 15px;
-  padding: 0;
-}
-
-.ite-warning .ui-dialog-content {
-  padding: 0 15px 10px;
-}
-
-.ite-warning .ui-dialog-titlebar-close {
-  display: none;
-}
-
-.ite-warning .ui-widget-header {
-  height: 15px;
-}
-
-.ite-warning {
-  font-size: 12px;
-  line-height: 1.5em;
-}
-
-.ite-warning h3 {
-  color: $grey;
-  margin-bottom: 10px;
-}
-
-.ite-warning button {
-  background: 0 0;
-  padding: 2px 5px;
 }
 
 .required-asterisk {
@@ -306,7 +209,7 @@ a.btn.toggle-form {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $overlay-color;
   display: none;
   z-index: 10;
 
@@ -332,7 +235,7 @@ a.btn.toggle-form {
 
   &.data-dialog {
     width: 65%;
-    background-color: #23241f;
+    background-color: $dirt-gray;
 
     pre {
       background: none;
@@ -347,7 +250,7 @@ a.btn.toggle-form {
     transform: translate(-50%, -100%);
 
     .button-wrap {
-      &:before {
+      &::before {
         content: '';
         width: 0;
         height: 0;
