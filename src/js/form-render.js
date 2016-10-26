@@ -4,14 +4,14 @@
  * @param  {Object} element html element where form will be rendered (optional)
  * @return {Object} formRender instance
  */
-function FormRenderFn(options, element) {
+function FormRender(options, element) {
   const utils = require('./utils.js');
 
   const formRender = this;
   const defaults = {
       destroyTemplate: true, // @todo
       container: false,
-      dataType: 'xml',
+      dataType: 'json',
       formData: false,
       messages: {
         formRendered: 'Form Rendered',
@@ -87,6 +87,8 @@ function FormRenderFn(options, element) {
     return utils.trimObj(sanitizedField);
   };
 
+  let exportMarkup = fields => fields.map(elem => elem.innerHTML).join('');
+
   // Begin the core plugin
   let rendered = [];
 
@@ -115,9 +117,7 @@ function FormRenderFn(options, element) {
       runCallbacks();
       opts.notify.success(opts.messages.formRendered);
     } else {
-      formRender.markup = rendered.map(function(elem) {
-        return elem.innerHTML;
-      }).join('');
+      formRender.markup = exportMarkup(rendered);
     }
   } else {
     let noData = utils.markup('div', opts.messages.noFormData, {
@@ -134,8 +134,13 @@ function FormRenderFn(options, element) {
   $.fn.formRender = function(options) {
     let elems = this;
     elems.each(function(i) {
-      let formRender = new FormRenderFn(options, elems[i]);
+      let formRender = new FormRender(options, elems[i]);
+      elems[i].dataset.formRender = formRender;
       return formRender;
     });
   };
 })(jQuery);
+
+window.FormRender = FormRender;
+
+export default FormRender;
