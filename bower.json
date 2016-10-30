@@ -22,8 +22,9 @@
     "!dist/**/*"
   ],
   "dependencies": {
-    "jquery-ui-sortable": "*",
-    "jquery": "^3.1.1"
+    "jquery-ui-sortable": "jquery-ui-sortable#*",
+    "jquery": "^3.1.1",
+    "jquery-ui": "^1.12.1"
   },
   "repository": {
     "url": "http://github.com/kevinchappell/formBuilder",

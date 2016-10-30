@@ -23,7 +23,7 @@ require('./polyfills.js');
         'text',
         'textarea'
       ],
-      dataType: 'xml',
+      dataType: 'json',
       // Array of fields to disable
       disableFields: [],
       editOnAdd: false,
@@ -128,6 +128,7 @@ require('./polyfills.js');
         required: 'Required',
         richText: 'Rich Text Editor',
         roles: 'Access',
+        rows: 'Rows',
         save: 'Save',
         selectOptions: 'Options',
         select: 'Select',
@@ -210,8 +211,6 @@ require('./polyfills.js');
     }
 
     opts.formID = frmbID;
-
-    formBuilder.element = element;
 
     let $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     let _helpers = require('./helpers.js')(opts, formBuilder);
@@ -472,7 +471,12 @@ require('./polyfills.js');
     $stageWrap.append($sortableFields, cbWrap);
     $stageWrap.before($formWrap);
     $formWrap.append($stageWrap, cbWrap);
-    $(element).append($formWrap);
+
+    if (element.type !== 'textarea') {
+      $(element).append($formWrap);
+    } else {
+      $(element).replaceWith($formWrap);
+    }
 
     let saveAndUpdate = _helpers.debounce(evt => {
       if (evt) {

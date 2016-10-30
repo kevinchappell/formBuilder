@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-  const fbOptions = {};
+  const fbOptions = {stickyControls: true};
   let formData = window.sessionStorage.getItem('formData');
   let editing = true;
 

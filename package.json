@@ -54,7 +54,16 @@
       },
       "site": [
         "demo/assets/sass/site.scss"
-      ]
+      ],
+      "demo": {
+        "vendor": {
+          "js": [
+            "bower_components/jquery/dist/jquery.js",
+            "bower_components/jquery-ui/jquery-ui.js",
+            "bower_components/jquery-ui/ui/widgets/sortable.js"
+          ]
+        }
+      }
     },
     "fontServer": "http://fontello.com"
   },
@@ -77,7 +86,12 @@
   },
   "scripts": {
     "prestart": "npm update",
-    "test": "gulp test"
+    "test": "gulp test",
+    "start": "gulp",
+    "deploy": "gulp deploy",
+    "release:patch": "git co master && git up && gulp tag patch && gulp deploy",
+    "release:minor": "git co master && git up && gulp tag minor && gulp deploy",
+    "build": "gulp build"
   },
   "dependencies": {},
   "devDependencies": {
