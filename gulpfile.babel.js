@@ -151,6 +151,14 @@ gulp.task('lint', function() {
     .pipe(plugins.eslint.format());
 });
 
+gulp.task('demoVendor', () => {
+  return gulp.src(files.demo.vendor.js)
+    .pipe(plugins.plumber())
+    .pipe(plugins.concat('vendor.min.js'))
+    .pipe(plugins.uglify())
+    .pipe(gulp.dest('demo/assets/js/'));
+});
+
 // Compile the JS
 gulp.task('js', function() {
   let jsFiles = new Map();

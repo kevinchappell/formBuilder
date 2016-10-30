@@ -28,7 +28,7 @@ const kcToggle = () => {
     });
   };
 
-  $.fn.kcToggle = function(options) {
+  jQuery.fn.kcToggle = function(options) {
     const toggle = this;
     return toggle.each(function(i) {
       let element = $(toggle[i]);
