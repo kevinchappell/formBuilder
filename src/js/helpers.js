@@ -74,7 +74,7 @@ function helpers(opts, formBuilder) {
    * @return {void}
    */
   _helpers.beforeStop = function(event, ui) {
-    const form = document.getElementById(opts.formID);
+    const form = document.getElementById(formBuilder.formID);
     let lastIndex = form.children.length - 1;
     let cancelArray = [];
     _helpers.stopIndex = ui.placeholder.index() - 1;
@@ -293,7 +293,7 @@ function helpers(opts, formBuilder) {
    * @return {XML|JSON} formData
    */
   _helpers.save = function() {
-    const form = document.getElementById(opts.formID);
+    const form = document.getElementById(formBuilder.formID);
 
     let doSave = {
       xml: _helpers.xmlSave,
@@ -597,7 +597,7 @@ function helpers(opts, formBuilder) {
    * Removes all fields from the form
    */
   _helpers.removeAllfields = function() {
-    let form = document.getElementById(opts.formID);
+    let form = document.getElementById(formBuilder.formID);
     let fields = form.querySelectorAll('li.form-field');
     let $fields = $(fields);
     let markEmptyArray = [];
@@ -630,7 +630,7 @@ function helpers(opts, formBuilder) {
 
     setTimeout(function() {
       $fields.remove();
-      document.getElementById(opts.formID).classList.remove('removing');
+      document.getElementById(formBuilder.formID).classList.remove('removing');
       _helpers.save();
     }, 400);
   };
@@ -697,29 +697,36 @@ function helpers(opts, formBuilder) {
    * Close fields being editing
    * @param  {Object} stage
    */
-  _helpers.closeAllEdit = function(stage) {
+  _helpers.closeAllEdit = () => {
+    const stage = document.getElementById(formBuilder.formID);
     const fields = $('> li.editing', stage);
     const toggleBtns = $('.toggle-form', stage);
-    const editModes = $('.frm-holder', fields);
+    const editPanels = $('.frm-holder', fields);
 
     toggleBtns.removeClass('open');
     fields.removeClass('editing');
-    editModes.hide();
     $('.prev-holder', fields).show();
+    editPanels.hide();
   };
 
   /**
    * Toggles the edit mode for the given field
    * @param  {String} fieldId
+   * @param  {Boolean} animate
    */
-  _helpers.toggleEdit = function(fieldId) {
+  _helpers.toggleEdit = function(fieldId, animate = true) {
     const field = document.getElementById(fieldId);
     const toggleBtn = $('.toggle-form', field);
-    const editMode = $('.frm-holder', field);
+    const editPanel = $('.frm-holder', field);
     field.classList.toggle('editing');
     toggleBtn.toggleClass('open');
-    $('.prev-holder', field).slideToggle(250);
-    editMode.slideToggle(250);
+    if (animate) {
+      $('.prev-holder', field).slideToggle(250);
+      editPanel.slideToggle(250);
+    } else {
+      $('.prev-holder', field).toggle();
+      editPanel.toggle();
+    }
   };
 
   /**
@@ -788,7 +795,7 @@ function helpers(opts, formBuilder) {
    */
   _helpers.removeField = (fieldID) => {
     let fieldRemoved = false;
-    const form = document.getElementById(opts.formID);
+    const form = document.getElementById(formBuilder.formID);
     const fields = form.getElementsByClassName('form-field');
 
     if (!fields.length) {

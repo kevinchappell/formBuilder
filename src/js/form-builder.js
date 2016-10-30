@@ -210,12 +210,13 @@ require('./polyfills.js');
       opts.messages = Object.assign({}, defaults.messages, options.messages);
     }
 
-    opts.formID = frmbID;
+    formBuilder.formID = frmbID;
 
     let $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
     let _helpers = require('./helpers.js')(opts, formBuilder);
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
+    formBuilder.stage = $sortableFields[0];
 
     let lastID = frmbID + '-fld-1';
     let boxID = frmbID + '-control-box';
@@ -330,6 +331,7 @@ require('./polyfills.js');
 
     // Create draggable fields for formBuilder
     let cbUl = utils.markup('ul', null, {id: boxID, className: 'frmb-control'});
+    formBuilder.controls = cbUl;
 
     if (opts.sortableControls) {
       cbUl.classList.add('sort-enabled');
@@ -427,6 +429,8 @@ require('./polyfills.js');
       id: frmbID + '-form-wrap',
       'class': 'form-wrap form-builder' + _helpers.mobileClass()
     });
+
+    formBuilder.editor = $formWrap[0];
 
     let $stageWrap = $('<div/>', {
       id: frmbID + '-stage-wrap',
@@ -1083,25 +1087,26 @@ require('./polyfills.js');
 
     // Append the new field to the editor
     let appendNewField = function(values) {
+      const m = utils.markup;
       let type = values.type || 'text';
       let label = values.label || opts.messages[type] || opts.messages.label;
-      let delBtn = utils.markup('a', opts.messages.remove, {
+      let delBtn = m('a', opts.messages.remove, {
           id: 'del_' + lastID,
           className: 'del-button btn delete-confirm',
           title: opts.messages.removeMessage
         });
-      let toggleBtn = utils.markup('a', null, {
+      let toggleBtn = m('a', null, {
         id: lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
         title: opts.messages.hide
       });
-      let copyBtn = utils.markup('a', opts.messages.copyButton, {
+      let copyBtn = m('a', opts.messages.copyButton, {
         id: lastID + '-copy',
         className: 'copy-button btn icon-copy',
         title: opts.messages.copyButtonTooltip
       });
 
-      let liContents = utils.markup(
+      let liContents = m(
         'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
       ).outerHTML;
 
@@ -1109,23 +1114,27 @@ require('./polyfills.js');
       liContents += `<label class="field-label">${label}</label>`;
 
       if (values.description) {
-        liContents += `<span class="tooltip-element" tooltip="${values.description}">?</span>`;
+        let attrs = {
+          className: 'tooltip-element',
+          tooltip: values.description
+        };
+        liContents += `<span ${utils.attrsString(attrs)}>?</span>`;
       }
 
       let requiredDisplay = values.required ? 'style="display:inline"' : '';
       liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
-      liContents += utils.markup('div', '', {className: 'prev-holder'}).outerHTML;
-      liContents += '<div id="' + lastID + '-holder" class="frm-holder">';
+      liContents += m('div', '', {className: 'prev-holder'}).outerHTML;
+      liContents += `<div id="${lastID}-holder" class="frm-holder">`;
       liContents += '<div class="form-elements">';
 
       liContents += advFields(values);
-      liContents += utils.markup('a', opts.messages.close, {className: 'close-field'}).outerHTML;
+      liContents += m('a', opts.messages.close, {className: 'close-field'}).outerHTML;
 
       liContents += '</div>';
       liContents += '</div>';
 
-      let field = utils.markup('li', liContents, {
+      let field = m('li', liContents, {
           'class': type + '-field form-field',
           'type': type,
           id: lastID
@@ -1133,6 +1142,7 @@ require('./polyfills.js');
       let $li = $(field);
 
       $li.data('fieldData', {attrs: values});
+
       if (typeof _helpers.stopIndex !== 'undefined') {
         $('> li', $sortableFields).eq(_helpers.stopIndex).before($li);
       } else {
@@ -1144,13 +1154,13 @@ require('./polyfills.js');
 
       _helpers.updatePreview($li);
 
-      if (opts.editOnAdd) {
-        _helpers.closeAllEdit($sortableFields);
-        _helpers.toggleEdit(lastID);
-      }
-
       if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
         opts.typeUserEvents[type].onadd(field);
+      }
+
+      if (opts.editOnAdd) {
+        _helpers.closeAllEdit();
+        _helpers.toggleEdit(lastID, false);
       }
 
       lastID = _helpers.incrementId(lastID);
