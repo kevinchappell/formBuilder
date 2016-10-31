@@ -30,8 +30,6 @@ jQuery(document).ready(function($) {
       formData: formBuilder.formData
     });
 
-    console.log(new FormRender({dataType: 'json', render: false, formData: formBuilder.formData}).markup);
-
     window.sessionStorage.setItem('formData', JSON.stringify(formBuilder.formData));
   });
 

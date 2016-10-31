@@ -698,9 +698,8 @@ function helpers(opts, formBuilder) {
    * @param  {Object} stage
    */
   _helpers.closeAllEdit = () => {
-    const stage = document.getElementById(formBuilder.formID);
-    const fields = $('> li.editing', stage);
-    const toggleBtns = $('.toggle-form', stage);
+    const fields = $('> li.editing', formBuilder.stage);
+    const toggleBtns = $('.toggle-form', formBuilder.stage);
     const editPanels = $('.frm-holder', fields);
 
     toggleBtns.removeClass('open');
@@ -731,14 +730,12 @@ function helpers(opts, formBuilder) {
 
   /**
    * Controls follow scroll to the bottom of the editor
-   * @param  {Object} $sortableFields
-   * @param  {Object} cbUL
    */
-  _helpers.stickyControls = function($sortableFields, cbUL) {
-    const $cbWrap = $(cbUL).parent();
-    const $stageWrap = $sortableFields.parent();
+  _helpers.stickyControls = () => {
+    const $cbWrap = $(formBuilder.controls).parent();
+    const $stageWrap = $(formBuilder.stage).parent();
     const cbWidth = $cbWrap.width();
-    const cbPosition = cbUL.getBoundingClientRect();
+    const cbPosition = formBuilder.controls.getBoundingClientRect();
 
     $(window).scroll(function(evt) {
       let scrollTop = $(evt.target).scrollTop();
@@ -772,7 +769,7 @@ function helpers(opts, formBuilder) {
           $cbWrap.css(cbStyle);
         }
       } else {
-        cbUL.parentElement.removeAttribute('style');
+        formBuilder.controls.parentElement.removeAttribute('style');
       }
     });
   };
