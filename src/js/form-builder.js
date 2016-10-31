@@ -566,7 +566,7 @@ require('./polyfills.js');
 
       utils.escapeAttrs(field);
 
-      appendNewField(field);
+      appendNewField(field, isNew);
       if (isNew) {
         document.dispatchEvent(formBuilder.events.fieldAdded);
       }
@@ -1085,7 +1085,7 @@ require('./polyfills.js');
     };
 
     // Append the new field to the editor
-    let appendNewField = function(values) {
+    let appendNewField = function(values, isNew = true) {
       const m = utils.markup;
       let type = values.type || 'text';
       let label = values.label || opts.messages[type] || opts.messages.label;
@@ -1157,7 +1157,7 @@ require('./polyfills.js');
         opts.typeUserEvents[type].onadd(field);
       }
 
-      if (opts.editOnAdd) {
+      if (opts.editOnAdd && isNew) {
         _helpers.closeAllEdit();
         _helpers.toggleEdit(lastID, false);
       }
@@ -1220,9 +1220,13 @@ require('./polyfills.js');
       let cloneName = type + '-' + ts;
       let $clone = currentItem.clone();
 
-      $clone.find('[id]').each(function() { this.id = this.id.replace(currentId, lastID); });
+      $clone.find('[id]').each(function() {
+       this.id = this.id.replace(currentId, lastID);
+      });
 
-      $clone.find('[for]').each(function() { this.setAttribute('for', this.getAttribute('for').replace(currentId, lastID)); });
+      $clone.find('[for]').each(function() {
+       this.setAttribute('for', this.getAttribute('for').replace(currentId, lastID));
+      });
 
       $clone.each(function() {
         $('e:not(.form-elements)').each(function() {
@@ -1522,6 +1526,16 @@ require('./polyfills.js');
         document.dispatchEvent(formBuilder.events.fieldAdded);
       },
       removeField: _helpers.removeField,
+      getData: (type = 'js') => {
+        const stage = formBuilder.stage;
+        const h = _helpers;
+        const data = {
+          js: () => h.prepData(stage),
+          xml: () => h.xmlSave(stage),
+          json: () => window.JSON.stringify(h.prepData(stage), null, '\t')
+        };
+        return data[type];
+      },
       setData: formData => {
         _helpers.removeAllfields();
         _helpers.getData(formData);
