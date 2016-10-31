@@ -155,12 +155,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   white-space: nowrap;
   vertical-align: middle;
   -ms-touch-action: manipulation;
-  touch-action: manipulation;
+      touch-action: manipulation;
   cursor: pointer;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   background-image: none;
   border: 1px solid transparent;
   border-radius: 4px; }
@@ -249,17 +249,16 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   line-height: 1.3333333;
   border-radius: 6px; }
 
-.rendered-form .input-group .form-control {
-  position: relative;
-  z-index: 2;
-  float: left;
-  width: 100%;
-  margin-bottom: 0; }
-
 .rendered-form .input-group {
   position: relative;
   display: table;
   border-collapse: separate; }
+  .rendered-form .input-group .form-control {
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    margin-bottom: 0; }
 
 .rendered-form .form-control,
 .rendered-form output {

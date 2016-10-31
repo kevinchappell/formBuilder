@@ -54,7 +54,6 @@ require('./polyfills.js');
       messages: {
         addOption: 'Add Option +',
         allFieldsRemoved: 'All fields were removed.',
-        allowSelect: 'Allow Select',
         allowMultipleFiles: 'Allow users to upload multiple files',
         autocomplete: 'Autocomplete',
         button: 'Button',
@@ -1507,7 +1506,7 @@ require('./polyfills.js');
 
     // If option set, controls will remain in view in editor
     if (opts.stickyControls) {
-      _helpers.stickyControls($sortableFields, cbUl);
+      _helpers.stickyControls($sortableFields);
     }
 
     document.dispatchEvent(formBuilder.events.loaded);
@@ -1518,7 +1517,7 @@ require('./polyfills.js');
       showData: _helpers.showData,
       save: _helpers.save,
       addField: (field, index) => {
-        _helpers.stopIndex = $sortableFields[0].children.length ? index : undefined;
+        _helpers.stopIndex = formBuilder.stage.children.length ? index : undefined;
         prepFieldVars(field);
         document.dispatchEvent(formBuilder.events.fieldAdded);
       },

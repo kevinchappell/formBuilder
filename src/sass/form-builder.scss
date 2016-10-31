@@ -1,14 +1,15 @@
 @import 'base/variables';
 @import 'base/font';
 @import 'base/mixins';
+@import 'base/bs';
 @import 'base/animation';
 @import 'controls';
 @import 'stage';
 @import 'kc-toggle';
 
-[id^='frmb-'][id$='-form-wrap'] {
-  @import 'base/bs';
-}
+// [id^='frmb-'][id$='-form-wrap'] {
+
+// }
 
 .form-wrap {
   position: relative;
