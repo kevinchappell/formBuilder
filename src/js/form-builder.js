@@ -1534,7 +1534,8 @@ require('./polyfills.js');
           xml: () => h.xmlSave(stage),
           json: () => window.JSON.stringify(h.prepData(stage), null, '\t')
         };
-        return data[type];
+
+        return data[type]();
       },
       setData: formData => {
         _helpers.removeAllfields();
