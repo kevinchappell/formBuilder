@@ -109,7 +109,7 @@ const fontSave = () => {
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.js'], ['lint', 'devJS']);
   gulp.watch('demo/*.html', bsync.reload);
-  gulp.watch('src/sass/**/*.scss', ['css']);
+  gulp.watch('src/sass/**/*.scss', ['devCss']);
 });
 
 // Compile the Sass to plain ol' css.
@@ -131,11 +131,24 @@ gulp.task('css', function() {
       .pipe(banner())
       .pipe(plugins.concat(rename(key) + '.min.css'))
       .pipe(gulp.dest('demo/assets/css'))
-      .pipe(gulp.dest('dist/'))
+      .pipe(gulp.dest('dist/'));
+  });
+});
 
-    .pipe(bsync.reload({
-      stream: true
-    }));
+gulp.task('devCss', function() {
+  let sassFiles = new Map();
+  sassFiles.set('formBuilder', files.formBuilder.sass);
+  sassFiles.set('formRender', files.formRender.sass);
+
+  return sassFiles.forEach(function(sassFile, key) {
+    gulp.src(sassFile)
+      .pipe(plugins.sass({sourcemap: true}))
+      .on('error', err => console.error('Error!', err.message))
+      .pipe(plugins.autoprefixer({cascade: true}))
+      .pipe(plugins.base64())
+      .pipe(plugins.concat(rename(key) + '.css'))
+      .pipe(gulp.dest('demo/assets/css'))
+      .pipe(bsync.stream());
   });
 });
 
@@ -286,4 +299,4 @@ gulp.task('tag', (done) => {
 gulp.task('build', ['js', 'css']);
 
 // Pretty self-explanatory
-gulp.task('default', ['devJS', 'css', 'watch', 'serve']);
+gulp.task('default', ['devJS', 'devCss', 'watch', 'serve']);

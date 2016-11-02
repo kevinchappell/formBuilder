@@ -142,14 +142,4 @@
 .form-actions {
   float: right;
   margin-top: 5px;
-
-  .clear-all {
-    &:hover {
-      @extend .btn-danger:hover;
-
-      color: #fff;
-    }
-  }
-
-  @include breakpoint('phone-lrg') {}
 }

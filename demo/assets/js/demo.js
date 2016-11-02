@@ -26,7 +26,6 @@ jQuery(document).ready(function($) {
   $('.form-builder-save').click(function() {
     toggleEdit();
     $('.render-wrap').formRender({
-      render: false,
       formData: formBuilder.formData
     });
 
@@ -35,5 +34,9 @@ jQuery(document).ready(function($) {
 
   document.getElementById('edit-form').onclick = function() {
     toggleEdit();
+  };
+
+  document.getElementById('get-data').onclick = function() {
+    console.log(formBuilder.actions.getData('xml'));
   };
 });
