@@ -953,7 +953,7 @@ require('./polyfills.js');
     let btnStyles = function(style) {
         let styles = opts.messages.styles.btn;
         let styleField = '';
-console.log(styles);
+
       if (styles) {
         let styleLabel = `<label>${opts.messages.style}</label>`;
         styleField += `<input value="${style}" name="style" type="hidden" class="btn-style">`;
@@ -964,7 +964,6 @@ console.log(styles);
           if (style === element) {
             classList.push('selected');
           }
-console.log(element);
 
           styleField += `<button value="${element}" type="button" class="${classList.join(' ')}">${opts.messages.styles.btn[element]}</button>`;
         });
@@ -1509,7 +1508,7 @@ console.log(element);
     });
 
     $sortableFields.on('mouseover mouseout', '.remove, .del-button', e =>
-      $(e.target).closest('.form-field').toggleClass('delete'));
+      $(e.target).closest('li').toggleClass('delete'));
 
     if (opts.showActionButtons) {
       // View XML
