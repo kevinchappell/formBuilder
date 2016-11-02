@@ -831,6 +831,22 @@ function helpers(opts, formBuilder) {
     return fieldRemoved;
   };
 
+  _helpers.processActionButtons = buttonData => {
+    let m = utils.markup;
+    let {label, events, ...attrs} = buttonData;
+    const button = m('button', label, attrs);
+
+    if (events) {
+      for (let event in events) {
+        if (events.hasOwnProperty(event)) {
+          button.addEventListener(event, evt => events[event](evt));
+        }
+      }
+    }
+
+    return button;
+  };
+
   return _helpers;
 }
 

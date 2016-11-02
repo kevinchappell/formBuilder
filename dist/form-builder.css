@@ -434,25 +434,6 @@ textarea.form-control {
   @media (max-width: 481px) {
     .stage-wrap {
       width: calc(100% - 64px); } }
-  .stage-wrap .action-links {
-    width: calc(100% - 141px);
-    display: none;
-    float: right;
-    overflow: hidden;
-    text-align: right; }
-    .stage-wrap .action-links .active {
-      font-weight: 700;
-      color: #000; }
-    .stage-wrap .action-links .action-links-inner {
-      overflow: hidden;
-      width: 0;
-      height: 20px;
-      -webkit-transition: width 250ms;
-      transition: width 250ms; }
-    .stage-wrap .action-links a {
-      color: #666; }
-    .stage-wrap .action-links .clear-all:hover {
-      color: #c10000; }
   .stage-wrap.empty::after {
     content: attr(data-content);
     position: absolute;
@@ -760,6 +741,10 @@ textarea.form-control {
     width: 100%; }
   .frmb .field-options .add-area .add {
     clear: both; }
+  .frmb .style-wrap button.selected {
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    margin-top: -1px; }
   .frmb .form-elements {
     padding: 10px 5px;
     background: #f7f7f7;
@@ -1122,7 +1107,8 @@ textarea {
   top: 0;
   left: 0;
   padding: 10px;
-  box-shadow: 0 3px 10px #000; }
+  box-shadow: 0 3px 10px #000;
+  min-width: 166px; }
   .form-builder-dialog h3 {
     margin-top: 0; }
   .form-builder-dialog.data-dialog {
