@@ -3,7 +3,8 @@ require('./polyfills.js');
 
 (function($) {
   const FormBuilder = function(options, element) {
-    let formBuilder = this;
+    const mi18n = require('mi18n');
+    const formBuilder = this;
 
     let defaults = {
       controlPosition: 'right',
@@ -97,6 +98,7 @@ require('./polyfills.js');
         multipleFiles: 'Multiple Files',
         name: 'Name',
         no: 'No',
+        noFieldsToClear: 'There are no fields to clear',
         number: 'Number',
         off: 'Off',
         on: 'On',
@@ -172,6 +174,41 @@ require('./polyfills.js');
           return console.warn(message);
         }
       },
+      onSave: () => null,
+      onClearAll: () => null,
+      actionButtons: [{
+        label: 'Clear',
+        className: 'clear-all btn btn-danger',
+        events: {
+          click: (e) => {
+            let fields = $('li.form-field', formBuilder.stage);
+            let buttonPosition = e.target.getBoundingClientRect();
+            let bodyRect = document.body.getBoundingClientRect();
+            let coords = {
+              pageX: buttonPosition.left + (buttonPosition.width / 2),
+              pageY: (buttonPosition.top - bodyRect.top) - 12
+            };
+
+            if (fields.length) {
+              _helpers.confirm(opts.messages.clearAllMessage, function() {
+                _helpers.removeAllfields();
+                opts.notify.success(opts.messages.allFieldsRemoved);
+                _helpers.save();
+                opts.onClearAll();
+              }, coords);
+            } else {
+              _helpers.dialog(opts.messages.noFieldsToClear, coords);
+            }
+          }
+        }
+      }, {
+        label: 'Save',
+        type: 'button',
+        className: 'btn btn-primary save-template',
+        events: {
+          click: () => opts.onSave(_helpers.save())
+        }
+      }],
       sortableControls: false,
       stickyControls: false,
       showActionButtons: true,
@@ -444,27 +481,33 @@ require('./polyfills.js');
     if (opts.showActionButtons) {
       // Build our headers and action links
       let viewDataText;
+      let m = utils.markup;
       if(opts.dataType === 'xml') {
         viewDataText = opts.messages.viewXML;
       } else {
         viewDataText = opts.messages.viewJSON;
       }
-      const viewData = utils.markup('button', viewDataText, {
-        id: frmbID + '-view-data',
-        type: 'button',
-        className: 'view-data btn btn-default'
-      });
-      const clearAll = utils.markup('button', opts.messages.clearAll, {
+
+      let buttons = opts.actionButtons.map(_helpers.processActionButtons);
+
+      console.log(buttons);
+
+      // const viewData = m('button', viewDataText, {
+      //   id: frmbID + '-view-data',
+      //   type: 'button',
+      //   className: 'view-data btn btn-default'
+      // });
+      const clearAll = m('button', opts.messages.clearAll, {
         id: frmbID + '-clear-all',
         type: 'button',
-        className: 'clear-all btn btn-default'
+        className: 'clear-all btn btn-danger'
       });
-      const saveAll = utils.markup('button', opts.messages.save, {
+      const saveAll = m('button', opts.messages.save, {
         className: `btn btn-primary ${opts.prefix}save`,
         id: frmbID + '-save',
         type: 'button'
       });
-      const formActions = utils.markup('div', [clearAll, viewData, saveAll], {
+      const formActions = m('div', buttons, {
         className: 'form-actions btn-group'
       });
 
@@ -705,7 +748,7 @@ require('./polyfills.js');
       }
 
       if (values.type === 'button') {
-        advFields.push(btnStyles(values.style, values.type));
+        advFields.push(btnStyles(values.style));
       }
 
       if (values.type === 'number') {
@@ -907,21 +950,23 @@ require('./polyfills.js');
       return `<div class="form-group ${name}-wrap">${left.concat(right).join('')}</div>`;
     };
 
-    let btnStyles = function(style, type) {
-      let tags = {
-          button: 'btn'
-        };
-        let styles = opts.messages.styles[tags[type]];
+    let btnStyles = function(style) {
+        let styles = opts.messages.styles.btn;
         let styleField = '';
-
+console.log(styles);
       if (styles) {
         let styleLabel = `<label>${opts.messages.style}</label>`;
         styleField += `<input value="${style}" name="style" type="hidden" class="btn-style">`;
         styleField += '<div class="btn-group" role="group">';
 
-        Object.keys(opts.messages.styles[tags[type]]).forEach(function(element) {
-          let active = style === element ? 'active' : '';
-          styleField += `<button value="${element}" type="${type}" class="${active} btn-xs ${tags[type]} ${tags[type]}-${element}">${opts.messages.styles[tags[type]][element]}</button>`;
+        Object.keys(styles).forEach(element => {
+          let classList = ['btn-xs', 'btn', `btn-${element}`];
+          if (style === element) {
+            classList.push('selected');
+          }
+console.log(element);
+
+          styleField += `<button value="${element}" type="button" class="${classList.join(' ')}">${opts.messages.styles.btn[element]}</button>`;
         });
 
         styleField += '</div>';
@@ -1422,8 +1467,8 @@ require('./polyfills.js');
       let styleVal = $button.val();
       let $btnStyle = $button.parent().prev('.btn-style');
       $btnStyle.val(styleVal);
-      $button.siblings('.btn').removeClass('active');
-      $button.addClass('active');
+      $button.siblings('.btn').removeClass('selected');
+      $button.addClass('selected');
       _helpers.updatePreview($btnStyle.closest('.form-field'));
       _helpers.save();
     });
@@ -1468,39 +1513,39 @@ require('./polyfills.js');
 
     if (opts.showActionButtons) {
       // View XML
-      let xmlButton = $(document.getElementById(frmbID + '-view-data'));
-      xmlButton.click(function(e) {
-        e.preventDefault();
-        _helpers.showData();
-      });
+      // let xmlButton = $(document.getElementById(frmbID + '-view-data'));
+      // xmlButton.click(function(e) {
+      //   e.preventDefault();
+      //   _helpers.showData();
+      // });
 
       // Clear all fields in form editor
-      let clearButton = $(document.getElementById(frmbID + '-clear-all'));
-      clearButton.click(function(e) {
-        let fields = $('li.form-field');
-        let buttonPosition = e.target.getBoundingClientRect();
-        let bodyRect = document.body.getBoundingClientRect();
-        let coords = {
-          pageX: buttonPosition.left + (buttonPosition.width / 2),
-          pageY: (buttonPosition.top - bodyRect.top) - 12
-        };
+      // let clearButton = document.getElementById(`${frmbID}-clear-all`);
+      // clearButton.onclick = () => {
+      //   let fields = $('li.form-field', formBuilder.stage);
+      //   let buttonPosition = clearButton.getBoundingClientRect();
+      //   let bodyRect = document.body.getBoundingClientRect();
+      //   let coords = {
+      //     pageX: buttonPosition.left + (buttonPosition.width / 2),
+      //     pageY: (buttonPosition.top - bodyRect.top) - 12
+      //   };
 
-        if (fields.length) {
-          _helpers.confirm(opts.messages.clearAllMessage, function() {
-            _helpers.removeAllfields();
-            opts.notify.success(opts.messages.allFieldsRemoved);
-            _helpers.save();
-          }, coords);
-        } else {
-          _helpers.dialog('There are no fields to clear', coords);
-        }
-      });
+      //   if (fields.length) {
+      //     _helpers.confirm(opts.messages.clearAllMessage, function() {
+      //       _helpers.removeAllfields();
+      //       opts.notify.success(opts.messages.allFieldsRemoved);
+      //       _helpers.save();
+      //       opts.onClearAll();
+      //     }, coords);
+      //   } else {
+      //     _helpers.dialog('There are no fields to clear', coords);
+      //   }
+      // };
 
       // Save Idea Template
-      $(document.getElementById(frmbID + '-save')).click(e => {
-        e.preventDefault();
-        _helpers.save();
-      });
+      // document.getElementById(`${frmbID}-save`).onclick = () => {
+      //   opts.onSave(_helpers.save());
+      // };
     }
 
     _helpers.getData();

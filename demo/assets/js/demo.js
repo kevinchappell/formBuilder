@@ -1,7 +1,12 @@
 jQuery(document).ready(function($) {
   const fbOptions = {
+    onSave: function(formData) {
+      toggleEdit();
+      $('.render-wrap').formRender({formData});
+      window.sessionStorage.setItem('formData', JSON.stringify(formData));
+    }
     // stickyControls: true,
-    editOnAdd: true
+    // editOnAdd: true
   };
   let formData = window.sessionStorage.getItem('formData');
   let editing = true;
@@ -20,23 +25,14 @@ jQuery(document).ready(function($) {
   }
 
   const formBuilder = $('.build-wrap')
-  .formBuilder(fbOptions)
-  .data('formBuilder');
-
-  $('.form-builder-save').click(function() {
-    toggleEdit();
-    $('.render-wrap').formRender({
-      formData: formBuilder.formData
-    });
-
-    window.sessionStorage.setItem('formData', JSON.stringify(formBuilder.formData));
-  });
+                      .formBuilder(fbOptions)
+                      .data('formBuilder');
 
   document.getElementById('edit-form').onclick = function() {
     toggleEdit();
   };
 
   document.getElementById('get-data').onclick = function() {
-    console.log(formBuilder.actions.getData('xml'));
+    console.log(formBuilder.actions.getData());
   };
 });

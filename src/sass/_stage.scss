@@ -22,36 +22,6 @@
   }
 
 
-  .action-links {
-    width: calc(100% - 141px);
-    display: none;
-    float: right;
-    overflow: hidden;
-    text-align: right;
-
-    .active {
-      font-weight: 700;
-      color: $black;
-    }
-
-    .action-links-inner {
-      overflow: hidden;
-      width: 0;
-      height: 20px;
-      transition: width 250ms;
-    }
-
-    a {
-      color: $grey;
-    }
-
-    .clear-all {
-      &:hover {
-        color: $error;
-      }
-    }
-  }
-
   &.empty {
     &::after {
       content: attr(data-content);
@@ -500,6 +470,22 @@
 
   .field-options .add-area .add {
     clear: both;
+  }
+
+  .style-wrap {
+    button {
+      &.selected {
+        // box-shadow: inset 0 0 0 1px $white;
+        border-top: 2px solid $black;
+        border-bottom: 2px solid $black;
+
+        // border-width: 2px 0;
+        margin-top: -1px;
+
+        // margin-right: 1px;
+
+      }
+    }
   }
 
   .form-elements {
