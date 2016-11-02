@@ -232,7 +232,8 @@ gulp.task('serve', function() {
   bsync.init({
     server: {
       baseDir: './demo'
-    }
+    },
+    open: false
   });
 });
 
