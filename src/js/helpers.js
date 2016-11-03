@@ -6,6 +6,8 @@
  * @return {Object} helper functions
  */
 function helpers(opts, formBuilder) {
+  const mi18n = require('mi18n').default;
+
   let _helpers = {
     doCancel: false
   };
@@ -845,6 +847,32 @@ function helpers(opts, formBuilder) {
     }
 
     return button;
+  };
+
+  _helpers.processSubtypes = subtypeOpts => {
+    const subtypeFormat = subtype => {
+        return {
+          label: mi18n.get(subtype),
+          value: subtype
+        };
+      };
+
+      const defaultSubtypes = {
+        text: ['text', 'password', 'email', 'color', 'tel'],
+        header: ['h1', 'h2', 'h3'],
+        button: ['button', 'submit', 'reset'],
+        paragraph: ['p', 'address', 'blockquote', 'canvas', 'output']
+      };
+
+      let subtypes = utils.merge(defaultSubtypes, subtypeOpts);
+
+      for (let subtype in subtypes) {
+        if (subtypes.hasOwnProperty(subtype)) {
+          subtypes[subtype] = subtypes[subtype].map(subtypeFormat);
+        }
+      }
+
+      return subtypes;
   };
 
   return _helpers;

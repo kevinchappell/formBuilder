@@ -304,6 +304,97 @@
     });
   };
 
+  fbUtils.makeLabel = (data, label = '', description = '') => {
+    let fieldLabel = '';
+    let fieldDesc = '';
+    let fieldRequired = '';
+
+    if (data.hasOwnProperty('required')) {
+      fieldRequired = ' <span class="required">*</span>';
+    }
+
+    if (data.type !== 'hidden') {
+      if (description) {
+        fieldDesc = ` <span class="tooltip-element" tooltip="${description}">?</span>`;
+      }
+      if (label) {
+        fieldLabel = `<label for="${data.id}" class="fb-${data.type}-label">${label}${fieldRequired}${fieldDesc}</label>`;
+      }
+    }
+
+    return fieldLabel;
+  };
+
+  fbUtils.selectTemplate = (fieldData) => {
+    let optionAttrsString;
+    let options = [];
+    let {values, placeholder, ...data} = fieldData;
+    let attrString = fbUtils.attrString(data);
+
+    if (values) {
+      if (placeholder) {
+        options.push(`<option disabled selected>${placeholder}</option>`);
+      }
+
+      for (let i = 0; i < values.length; i++) {
+        let {label, ...optionAttrs} = values[i];
+        if (!optionAttrs.selected || placeholder) {
+          delete optionAttrs.selected;
+        }
+        if (!label) {
+          label = '';
+        }
+        optionAttrsString = fbUtils.attrString(optionAttrs);
+        options.push(`<option ${optionAttrsString}>${label}</option>`);
+      }
+    }
+
+    return `<select ${attrString}>${options.join('')}</select>`;
+  };
+
+  fbUtils.getTemplate = (fieldData, opts) => {
+    let {label, description, subtype, isPreview, ...data} = fieldData;
+    let template;
+
+    if (isPreview) {
+      data.name = data.name + '-preview';
+    }
+    data.id = data.name;
+
+    if (subtype) {
+      data.type = subtype;
+    }
+
+    if (data.multiple) {
+      data.name = data.name + '[]';
+    }
+
+    if (data.required) {
+      data.required = null;
+      data['aria-required'] = 'true';
+    }
+
+    let fieldLabel = fbUtils.makeLabel(data, label, description);
+
+    let attrString = fbUtils.attrString(data);
+
+    let templates = [
+      [['text', 'password', 'email', 'number', 'file'], `${fieldLabel} <input ${attrString}>`],
+      [['select'], `${fieldLabel} ${fbUtils.selectTemplate(data)}`]
+        ];
+
+      let templateMap = new Map(templates);
+
+      for (let [key, value] of templateMap) {
+        if(fbUtils.inArray(data.type, key)) {
+          template = value;
+          break;
+        }
+      }
+
+      return template;
+  };
+
   /**
    * Generate preview markup
    * @param  {Object}  fieldData
@@ -319,6 +410,8 @@
       let fieldDesc = fieldData.description || '';
       let fieldRequired = '';
       let fieldOptions = fieldData.values;
+      fieldData.isPreview = preview;
+      let template = fbUtils.getTemplate(fieldData, opts);
 
       fieldData.name = preview ? fieldData.name + '-preview' : fieldData.name;
       fieldData.id = fieldData.name;
@@ -450,7 +543,7 @@
 
       if (fieldData.type !== 'hidden') {
         let className = fieldData.id ? `fb-${fieldData.type} form-group field-${fieldData.id}` : '';
-        fieldMarkup = fbUtils.markup('div', fieldMarkup, {
+        fieldMarkup = fbUtils.markup('div', template, {
           className: className
         });
       } else {
@@ -488,7 +581,25 @@
         return m.toUpperCase();
       });
   };
-//   return fbUtils;
-// }
+
+
+fbUtils.merge = (obj1, obj2) => {
+  let mergedObj = Object.assign({}, obj1, obj2);
+  for (let prop in obj2) {
+    if (mergedObj.hasOwnProperty(prop)) {
+      if (Array.isArray(obj2[prop])) {
+        mergedObj[prop] = Array.isArray(obj1[prop]) ? fbUtils.unique(obj1[prop].concat(obj2[prop])) : obj2[prop];
+      } else if (typeof obj2[prop] === 'object') {
+        mergedObj[prop] = fbUtils.merge(obj1[prop], obj2[prop]);
+      } else {
+        mergedObj[prop] = obj2[prop];
+      }
+    }
+  }
+  return mergedObj;
+};
+
+fbUtils.noop = () => null;
+
 
 module.exports = fbUtils;

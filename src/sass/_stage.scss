@@ -457,10 +457,6 @@
     }
   }
 
-  .form-elements .add {
-    clear: both;
-  }
-
   .col-md-6,
   .col-md-8 {
     .form-elements {
@@ -501,6 +497,10 @@
 
     .btn-group {
       margin-left: 2%;
+    }
+
+    .add {
+      clear: both;
     }
 
     input[type='text'],

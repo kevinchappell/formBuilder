@@ -1,5 +1,8 @@
 jQuery(document).ready(function($) {
   const fbOptions = {
+    subtypes: {
+      text: ['datetime']
+    },
     onSave: function(formData) {
       toggleEdit();
       $('.render-wrap').formRender({formData});
