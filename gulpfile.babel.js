@@ -107,7 +107,7 @@ const fontSave = () => {
 // Our watch task to monitor files for changes and
 // run tasks when that change happens.
 gulp.task('watch', function() {
-  gulp.watch(['src/**/*.js'], ['lint', 'devJS']);
+  gulp.watch(['src/**/*.js'], ['devJS']);
   gulp.watch('demo/*.html', bsync.reload);
   gulp.watch('src/sass/**/*.scss', ['devCss']);
 });
