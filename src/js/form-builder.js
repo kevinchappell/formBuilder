@@ -1,9 +1,11 @@
 require('./kc-toggle.js');
 require('./polyfills.js');
+const extend = require('deep-extend');
 
 (function($) {
-  const FormBuilder = function(options, element) {
-    const mi18n = require('mi18n');
+  const FormBuilder = async function(options, element) {
+    const utils = require('./utils.js');
+    const mi18n = require('mi18n').default;
     const formBuilder = this;
 
     let defaults = {
@@ -174,8 +176,8 @@ require('./polyfills.js');
           return console.warn(message);
         }
       },
-      onSave: () => null,
-      onClearAll: () => null,
+      onSave: utils.noop,
+      onClearAll: utils.noop,
       actionButtons: [{
         label: 'Clear',
         className: 'clear-all btn btn-danger',
@@ -217,39 +219,136 @@ require('./polyfills.js');
       prefix: 'form-builder-'
     };
 
-    const utils = require('./utils.js');
 
-    defaults.messages.subtypes = (() => {
-      const subtypeDefault = (subtype) => {
-        return {
-          label: subtype,
-          value: subtype
-        };
-      };
+    defaults.i18n = {
+      langs: [
+        'en-US'
+      ],
+      preloaded: {
+        'en-US': {
+          addOption: 'Add Option +',
+          allFieldsRemoved: 'All fields were removed.',
+          allowMultipleFiles: 'Allow users to upload multiple files',
+          autocomplete: 'Autocomplete',
+          button: 'Button',
+          cannotBeEmpty: 'This field cannot be empty',
+          checkboxGroup: 'Checkbox Group',
+          checkbox: 'Checkbox',
+          checkboxes: 'Checkboxes',
+          className: 'Class',
+          clearAllMessage: 'Are you sure you want to clear all fields?',
+          clearAll: 'Clear',
+          close: 'Close',
+          content: 'Content',
+          copy: 'Copy To Clipboard',
+          copyButton: '&#43;',
+          copyButtonTooltip: 'Copy',
+          dateField: 'Date Field',
+          description: 'Help Text',
+          descriptionField: 'Description',
+          devMode: 'Developer Mode',
+          editNames: 'Edit Names',
+          editorTitle: 'Form Elements',
+          editXML: 'Edit XML',
+          enableOther: 'Enable &quot;Other&quot;',
+          enableOtherMsg: 'Let users to enter an unlisted option',
+          fieldDeleteWarning: false,
+          fieldVars: 'Field Variables',
+          fieldNonEditable: 'This field cannot be edited.',
+          fieldRemoveWarning: 'Are you sure you want to remove this field?',
+          fileUpload: 'File Upload',
+          formUpdated: 'Form Updated',
+          getStarted: 'Drag a field from the right to this area',
+          header: 'Header',
+          hide: 'Edit',
+          hidden: 'Hidden Input',
+          label: 'Label',
+          labelEmpty: 'Field Label cannot be empty',
+          limitRole: 'Limit access to one or more of the following roles:',
+          mandatory: 'Mandatory',
+          maxlength: 'Max Length',
+          minOptionMessage: 'This field requires a minimum of 2 options',
+          multipleFiles: 'Multiple Files',
+          name: 'Name',
+          no: 'No',
+          noFieldsToClear: 'There are no fields to clear',
+          number: 'Number',
+          off: 'Off',
+          on: 'On',
+          option: 'Option',
+          optional: 'optional',
+          optionLabelPlaceholder: 'Label',
+          optionValuePlaceholder: 'Value',
+          optionEmpty: 'Option value required',
+          other: 'Other',
+          paragraph: 'Paragraph',
+          placeholder: 'Placeholder',
+          placeholders: {
+            value: 'Value',
+            label: 'Label',
+            text: '',
+            textarea: '',
+            email: 'Enter you email',
+            placeholder: '',
+            className: 'space separated classes',
+            password: 'Enter your password'
+          },
+          preview: 'Preview',
+          radioGroup: 'Radio Group',
+          radio: 'Radio',
+          removeMessage: 'Remove Element',
+          removeOption: 'Remove Option',
+          remove: '&#215;',
+          required: 'Required',
+          richText: 'Rich Text Editor',
+          roles: 'Access',
+          rows: 'Rows',
+          save: 'Save',
+          selectOptions: 'Options',
+          select: 'Select',
+          selectColor: 'Select Color',
+          selectionsMessage: 'Allow Multiple Selections',
+          size: 'Size',
+          sizes: {
+            xs: 'Extra Small',
+            sm: 'Small',
+            m: 'Default',
+            lg: 'Large'
+          },
+          style: 'Style',
+          styles: {
+            btn: {
+              'default': 'Default',
+              danger: 'Danger',
+              info: 'Info',
+              primary: 'Primary',
+              success: 'Success',
+              warning: 'Warning'
+            }
+          },
+          subtype: 'Type',
+          text: 'Text Field',
+          textArea: 'Text Area',
+          toggle: 'Toggle',
+          warning: 'Warning!',
+          value: 'Value',
+          viewJSON: '{  }',
+          viewXML: '&lt;/&gt;',
+          yes: 'Yes'
+        }
+      }
+    };
 
-      return {
-          text: ['text', 'password', 'email', 'color', 'tel']
-          .map(subtypeDefault),
-          header: ['h1', 'h2', 'h3']
-          .map(subtypeDefault),
-          button: ['button', 'submit', 'reset']
-          .map(subtypeDefault),
-          paragraph: ['p', 'address', 'blockquote', 'canvas', 'output']
-          .map(subtypeDefault)
-        };
-    })();
-
-    let opts = Object.assign({}, defaults, options);
     let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
-
-    if (options.messages) {
-      opts.messages = Object.assign({}, defaults.messages, options.messages);
-    }
-
     formBuilder.formID = frmbID;
+    let {i18n, ...opts} = extend(defaults, options);
+
+    await mi18n.init(i18n);
+    let _helpers = require('./helpers.js')(opts, formBuilder);
+
+    const subtypes = _helpers.processSubtypes(opts.subtypes);
 
     let $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
-    let _helpers = require('./helpers.js')(opts, formBuilder);
 
     formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
     formBuilder.stage = $sortableFields[0];
@@ -742,8 +841,8 @@ require('./polyfills.js');
         advFields.push(textAttribute('description', values));
       }
 
-      if (opts.messages.subtypes[values.type]) {
-        let optionData = opts.messages.subtypes[values.type];
+      if (subtypes[values.type]) {
+        let optionData = subtypes[values.type];
         advFields.push(selectAttribute('subtype', values, optionData));
       }
 
@@ -1056,7 +1155,8 @@ require('./polyfills.js');
       ];
 
       let noName = [
-        'header'
+        'header',
+        'paragraph'
       ];
 
       let textArea = ['paragraph'];
@@ -1067,7 +1167,9 @@ require('./polyfills.js');
         attrLabel = opts.messages.content;
       }
 
-      noName = noName.concat(opts.messages.subtypes.header, textArea);
+      if (subtypes.header) {
+        noName = noName.concat(subtypes.header);
+      }
 
       let placeholders = opts.messages.placeholders;
       let placeholder = placeholders[attribute] || '';
@@ -1161,7 +1263,7 @@ require('./polyfills.js');
           className: 'tooltip-element',
           tooltip: values.description
         };
-        liContents += `<span ${utils.attrsString(attrs)}>?</span>`;
+        liContents += `<span ${utils.attrString(attrs)}>?</span>`;
       }
 
       let requiredDisplay = values.required ? 'style="display:inline"' : '';
@@ -1356,7 +1458,16 @@ require('./polyfills.js');
       }
       let field = $(e.target).closest('li.form-field')[0];
       if (utils.inArray(field.type, ['select', 'checkbox-group', 'radio-group'])) {
-        field.querySelector('[class="option-value"][value="' + e.target.value + '"]').parentElement.childNodes[0].checked = true;
+        let options = field.getElementsByClassName('option-value');
+        utils.forEach(options, i => {
+          let selectedOption = options[i].parentElement.childNodes[0];
+          console.log(e.target.value);
+          if (Array.isArray(e.target.value)) {
+            selectedOption.checked = utils.inArray(options[i].value, e.target.value);
+          }else {
+            selectedOption.checked = options[i].value === e.target.value;
+          }
+        });
       } else {
         document.getElementById('value-' + field.id).value = e.target.value;
       }
@@ -1585,6 +1696,13 @@ require('./polyfills.js');
         _helpers.removeAllfields();
         _helpers.getData(formData);
         loadFields();
+      }
+    };
+
+    formBuilder.i18n = {
+      setLang: async locale => {
+        let newLang = await mi18n.setCurrent.call(mi18n, locale);
+        console.log(newLang);
       }
     };
 

@@ -734,8 +734,6 @@ textarea.form-control {
     width: 100%;
     clear: left;
     float: none; }
-  .frmb .form-elements .add {
-    clear: both; }
   .frmb .col-md-6 .form-elements,
   .frmb .col-md-8 .form-elements {
     width: 100%; }
@@ -760,6 +758,8 @@ textarea.form-control {
         margin-top: 8px; }
     .frmb .form-elements .btn-group {
       margin-left: 2%; }
+    .frmb .form-elements .add {
+      clear: both; }
     .frmb .form-elements input[type='text'],
     .frmb .form-elements input[type='number'],
     .frmb .form-elements input[type='date'],

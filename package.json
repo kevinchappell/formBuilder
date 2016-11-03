@@ -69,14 +69,22 @@
   },
   "browserify": {
     "transform": [
-      ["babelify", {
-      "presets": ["es2015","node6", "stage-3"],
-      "plugins": [
-        "transform-object-rest-spread",
-        "transform-es2015-destructuring",
-        "syntax-object-rest-spread"
-        ]
-      }]
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015",
+            "node6",
+            "stage-3"
+          ],
+          "plugins": [
+            "transform-object-rest-spread",
+            "transform-es2015-destructuring",
+            "syntax-object-rest-spread",
+            "transform-runtime"
+          ]
+        }
+      ]
     ]
   },
   "babel": {
@@ -124,6 +132,7 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.11.1",
     "browserify": "^13.1.1",
+    "deep-extend": "^0.4.1",
     "eslint": "^3.9.1",
     "eslint-config-google": "^0.7.0",
     "gulp-autoprefixer": "^3.1.0",
