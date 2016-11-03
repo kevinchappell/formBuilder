@@ -5,6 +5,7 @@
  */
 // function utils() {
   const fbUtils = {};
+  const mi18n = require('mi18n').default;
 
   // cleaner syntax for testing indexOf element
   fbUtils.inArray = function(needle, haystack) {
@@ -326,10 +327,13 @@
   };
 
   fbUtils.selectTemplate = (fieldData) => {
+    let template;
     let optionAttrsString;
     let options = [];
-    let {values, placeholder, ...data} = fieldData;
+    let {values, placeholder, type, inline, other, ...data} = fieldData;
+    let optionType = type.replace('-group', '');
     let attrString = fbUtils.attrString(data);
+    let isSelect = type === 'select';
 
     if (values) {
       if (placeholder) {
@@ -337,19 +341,64 @@
       }
 
       for (let i = 0; i < values.length; i++) {
-        let {label, ...optionAttrs} = values[i];
+        let {label = '', ...optionAttrs} = values[i];
+
+        optionAttrs.id = `${data.id}-${i}`;
+
         if (!optionAttrs.selected || placeholder) {
           delete optionAttrs.selected;
         }
-        if (!label) {
-          label = '';
+        if (isSelect) {
+          optionAttrsString = fbUtils.attrString(optionAttrs);
+          options.push(`<option ${optionAttrsString}>${label}</option>`);
+        } else {
+          let wrapperClass = optionType;
+          if (inline) {
+            wrapperClass += '-inline';
+          }
+          optionAttrsString = fbUtils.attrString(Object.assign({}, data, optionAttrs));
+          options.push(`<div class="${wrapperClass}"><label for="${optionAttrs.id}"><input type="${optionType}" ${optionAttrsString} /> ${label}</label></div>`);
         }
+      }
+
+      if (!isSelect && other) {
+        let otherOptionAttrs = {
+          id: `${data.id}-other`,
+          className: `${data.className} other-option`,
+          onclick: `fbUtils.otherOptionCB('${data.id}-other')`
+        };
+        let label = mi18n.current.other;
+        let wrapperClass = optionType;
+        if (inline) {
+          wrapperClass += '-inline';
+        }
+
+        let optionAttrs = Object.assign({}, data, otherOptionAttrs);
         optionAttrsString = fbUtils.attrString(optionAttrs);
-        options.push(`<option ${optionAttrsString}>${label}</option>`);
+        options.push(`<div class="${wrapperClass}">`);
+        options.push(`<label for="${optionAttrs.id}">`);
+        options.push(`<input type="${optionType}" ${optionAttrsString} /> ${label}`);
+        options.push('</label>');
+        options.push(`<input type="text" name="${data.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`);
+        options.push('</div>');
       }
     }
 
-    return `<select ${attrString}>${options.join('')}</select>`;
+    const templates = [
+      [['select'], `<${optionType} ${attrString}>${options.join('')}</${optionType}>`],
+      [['checkbox-group', 'radio-group'], `<div class="${type}">${options.join('')}</div>`]
+    ];
+
+    let templateMap = new Map(templates);
+
+    for (let [key, value] of templateMap) {
+      if(fbUtils.inArray(type, key)) {
+        template = value;
+        break;
+      }
+    }
+
+    return template;
   };
 
   fbUtils.getTemplate = (fieldData, opts) => {
@@ -365,7 +414,7 @@
       data.type = subtype;
     }
 
-    if (data.multiple) {
+    if (data.multiple || data.type === 'checkbox-group') {
       data.name = data.name + '[]';
     }
 
@@ -380,7 +429,7 @@
 
     let templates = [
       [['text', 'password', 'email', 'number', 'file'], `${fieldLabel} <input ${attrString}>`],
-      [['select'], `${fieldLabel} ${fbUtils.selectTemplate(data)}`]
+      [['select', 'checkbox-group', 'radio-group'], `${fieldLabel} ${fbUtils.selectTemplate(data)}`]
         ];
 
       let templateMap = new Map(templates);

@@ -1459,12 +1459,14 @@ const extend = require('deep-extend');
       let field = $(e.target).closest('li.form-field')[0];
       if (utils.inArray(field.type, ['select', 'checkbox-group', 'radio-group'])) {
         let options = field.getElementsByClassName('option-value');
+        const preview = document.getElementsByName(e.target.name);
+        console.log([preview]);
         utils.forEach(options, i => {
           let selectedOption = options[i].parentElement.childNodes[0];
-          console.log(e.target.value);
+          console.log();
           if (Array.isArray(e.target.value)) {
             selectedOption.checked = utils.inArray(options[i].value, e.target.value);
-          }else {
+          } else {
             selectedOption.checked = options[i].value === e.target.value;
           }
         });

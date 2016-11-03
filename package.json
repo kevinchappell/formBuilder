@@ -89,13 +89,15 @@
   },
   "babel": {
     "presets": [
+      "es2015",
       "node6",
       "stage-3"
     ],
     "plugins": [
       "transform-object-rest-spread",
       "transform-es2015-destructuring",
-      "syntax-object-rest-spread"
+      "syntax-object-rest-spread",
+      "transform-runtime"
     ],
     "env": {
       "test": {
