@@ -369,9 +369,10 @@ function helpers(opts, formBuilder) {
     $('.fld-className', field).val(previewData.className);
 
     field.data('fieldData', previewData);
-    preview = utils.fieldRender(previewData, opts, true);
+    preview = utils.getTemplate(previewData, opts, true);
 
-    $prevHolder.html(preview);
+    utils.empty($prevHolder[0]);
+    $prevHolder[0].appendChild(preview);
 
     $('input[toggle]', $prevHolder).kcToggle();
   };

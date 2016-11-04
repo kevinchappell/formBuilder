@@ -5,7 +5,6 @@
  */
 // function utils() {
   const fbUtils = {};
-  const mi18n = require('mi18n').default;
 
   // cleaner syntax for testing indexOf element
   fbUtils.inArray = function(needle, haystack) {
@@ -136,33 +135,61 @@
   };
 
   /**
+   * Determine content type
+   * @param  {Node | String | Array | Object} content
+   * @return {String}                         contentType for mapping
+   */
+  fbUtils.contentType = content => {
+    let type = typeof content;
+    if (content instanceof Node || content instanceof HTMLElement) {
+      type = 'node';
+    } else if (Array.isArray(content)) {
+      type = 'array';
+    }
+
+    return type;
+  };
+
+  /**
    * Generate markup wrapper where needed
    *
    * @param  {string}              tag
    * @param  {String|Array|Object} content we wrap this
    * @param  {Object}              attrs
-   * @return {String}
+   * @return {Object} DOM Element
    */
-  fbUtils.markup = function(tag, content = '', attrs = {}) {
-    let contentType,
-      field = document.createElement(tag),
-      getContentType = function(content) {
-        return Array.isArray(content) ? 'array' : typeof content;
+  fbUtils.markup = function(tag, content = '', attributes = {}) {
+    const _this = this;
+    let contentType = fbUtils.contentType(content);
+    let {events, ...attrs} = attributes;
+    const field = document.createElement(tag);
+
+    const appendContent = {
+      string: (content) => {
+        field.innerHTML += content;
       },
-      appendContent = {
-        string: function(content) {
-          field.innerHTML = content;
-        },
-        object: function(content) {
-          return field.appendChild(content);
-        },
-        array: function(content) {
-          for (let i = 0; i < content.length; i++) {
-            contentType = getContentType(content[i]);
-            appendContent[contentType](content[i]);
-          }
+      object: (config) => {
+        let {tag, content, ...data} = config;
+        return field.appendChild(fbUtils.markup(tag, content, data));
+      },
+      node: (content) => {
+        return field.appendChild(content);
+      },
+      array: (content) => {
+        for (let i = 0; i < content.length; i++) {
+          contentType = fbUtils.contentType(content[i]);
+          appendContent[contentType](content[i]);
         }
-      };
+      },
+      function: content => {
+        content = content();
+        contentType = fbUtils.contentType(content);
+        appendContent[contentType](content);
+      },
+      undefined: () => {
+        console.error(_this.arguments);
+      },
+    };
 
     for (let attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
@@ -171,18 +198,25 @@
       }
     }
 
-    contentType = getContentType(content);
-
     if (content) {
       appendContent[contentType].call(this, content);
     }
 
+    if (events) {
+      for (let event in events) {
+        if (events.hasOwnProperty(event)) {
+          field.addEventListener(event, evt => events[event](evt));
+        }
+      }
+    }
+
     return field;
   };
+  const m = fbUtils.markup;
 
   /**
    * Convert html element attributes to key/value object
-   * @param  {Object} DOM element
+   * @param  {Object} elem DOM element
    * @return {Object} ex: {attrName: attrValue}
    */
   fbUtils.parseAttrs = function(elem) {
@@ -206,13 +240,13 @@
 
   /**
    * Convert field options to optionData
-   * @param  {Object} DOM element
-   * @return {Array}      optionData array
+   * @param  {Object} field  DOM element
+   * @return {Array}         optionData array
    */
   fbUtils.parseOptions = function(field) {
-    let options = field.getElementsByTagName('option'),
-      optionData = {},
-      data = [];
+    const options = field.getElementsByTagName('option');
+    let optionData = {};
+    let data = [];
 
     if (options.length) {
       for (let i = 0; i < options.length; i++) {
@@ -232,8 +266,8 @@
    */
   fbUtils.parseXML = function(xmlString) {
     const parser = new window.DOMParser();
-    let xml = parser.parseFromString(xmlString, 'text/xml'),
-      formData = [];
+    let xml = parser.parseFromString(xmlString, 'text/xml');
+    let formData = [];
 
     if (xml) {
       let fields = xml.getElementsByTagName('field');
@@ -296,7 +330,7 @@
 
   /**
    * Remove duplicates from an array of elements
-   * @param  {Array} arrArg array with possible duplicates
+   * @param  {Array} array  array with possible duplicates
    * @return {Array}        array with only unique values
    */
   fbUtils.unique = function(array) {
@@ -306,38 +340,45 @@
   };
 
   fbUtils.makeLabel = (data, label = '', description = '') => {
-    let fieldLabel = '';
-    let fieldDesc = '';
-    let fieldRequired = '';
+    let labelContents = [document.createTextNode(label)];
 
     if (data.hasOwnProperty('required')) {
-      fieldRequired = ' <span class="required">*</span>';
+      labelContents.push(m('span', '*', {className: 'required'}));
     }
 
     if (data.type !== 'hidden') {
       if (description) {
-        fieldDesc = ` <span class="tooltip-element" tooltip="${description}">?</span>`;
-      }
-      if (label) {
-        fieldLabel = `<label for="${data.id}" class="fb-${data.type}-label">${label}${fieldRequired}${fieldDesc}</label>`;
+        labelContents.push(m('span', '?', {
+          className: 'tooltip-element',
+          tooltip: description
+        }));
       }
     }
 
-    return fieldLabel;
+    return m('label', labelContents, {
+      for: data.id,
+      className: `fb-${data.type}-label`
+    });
   };
 
+  /**
+   * Generate DOM elements for select, checkbox-group and radio-group.
+   * @param  {Object} fieldData
+   * @return {Object}           DOM elements
+   */
   fbUtils.selectTemplate = (fieldData) => {
     let template;
-    let optionAttrsString;
     let options = [];
     let {values, placeholder, type, inline, other, ...data} = fieldData;
     let optionType = type.replace('-group', '');
-    let attrString = fbUtils.attrString(data);
     let isSelect = type === 'select';
 
     if (values) {
-      if (placeholder) {
-        options.push(`<option disabled selected>${placeholder}</option>`);
+      if (placeholder && isSelect) {
+        options.push(m('option', placeholder, {
+          disabled: null,
+          selected: null
+        }));
       }
 
       for (let i = 0; i < values.length; i++) {
@@ -349,15 +390,18 @@
           delete optionAttrs.selected;
         }
         if (isSelect) {
-          optionAttrsString = fbUtils.attrString(optionAttrs);
-          options.push(`<option ${optionAttrsString}>${label}</option>`);
+          let o = m('option', document.createTextNode(label), optionAttrs);
+          options.push(o);
         } else {
           let wrapperClass = optionType;
           if (inline) {
             wrapperClass += '-inline';
           }
-          optionAttrsString = fbUtils.attrString(Object.assign({}, data, optionAttrs));
-          options.push(`<div class="${wrapperClass}"><label for="${optionAttrs.id}"><input type="${optionType}" ${optionAttrsString} /> ${label}</label></div>`);
+          optionAttrs.type = optionType;
+          let input = m('input', null, Object.assign({}, data, optionAttrs));
+          let inputLabel = m('label', [input, label], {for: optionAttrs.id});
+          let wrapper = m('div', inputLabel, {className: wrapperClass});
+          options.push(wrapper);
         }
       }
 
@@ -365,45 +409,64 @@
         let otherOptionAttrs = {
           id: `${data.id}-other`,
           className: `${data.className} other-option`,
-          onclick: `fbUtils.otherOptionCB('${data.id}-other')`
+          events: {
+            click: () => fbUtils.otherOptionCB(otherOptionAttrs.id)
+          }
         };
-        let label = mi18n.current.other;
+        // let label = mi18n.current.other;
         let wrapperClass = optionType;
         if (inline) {
           wrapperClass += '-inline';
         }
 
         let optionAttrs = Object.assign({}, data, otherOptionAttrs);
-        optionAttrsString = fbUtils.attrString(optionAttrs);
-        options.push(`<div class="${wrapperClass}">`);
-        options.push(`<label for="${optionAttrs.id}">`);
-        options.push(`<input type="${optionType}" ${optionAttrsString} /> ${label}`);
-        options.push('</label>');
-        options.push(`<input type="text" name="${data.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`);
-        options.push('</div>');
+        optionAttrs.type = optionType;
+
+        let otherValAttrs = {
+          type: 'text',
+          name: data.name,
+          id: `${otherOptionAttrs.id}-value`,
+          className: 'other-val'
+        };
+        let otherInputs = [
+          m('input', null, optionAttrs),
+          document.createTextNode('Other'),
+          m('input', null, otherValAttrs)
+        ];
+        let inputLabel = m('label', otherInputs, {for: optionAttrs.id});
+        let wrapper = m('div', inputLabel, {className: wrapperClass});
+        options.push(wrapper);
       }
     }
 
     const templates = [
-      [['select'], `<${optionType} ${attrString}>${options.join('')}</${optionType}>`],
-      [['checkbox-group', 'radio-group'], `<div class="${type}">${options.join('')}</div>`]
+      ['select',
+        () => m(optionType, options, data)],
+      [['checkbox-group', 'radio-group'],
+        () => m('div', options, {className: type})]
     ];
 
     let templateMap = new Map(templates);
 
     for (let [key, value] of templateMap) {
-      if(fbUtils.inArray(type, key)) {
+      if (Array.isArray(key)) {
+        if(fbUtils.inArray(type, key)) {
+          template = value;
+          break;
+        }
+      } else if (type === key) {
         template = value;
         break;
       }
     }
 
-    return template;
+    return template();
   };
 
   fbUtils.getTemplate = (fieldData, opts) => {
     let {label, description, subtype, isPreview, ...data} = fieldData;
     let template;
+    let field;
 
     if (isPreview) {
       data.name = data.name + '-preview';
@@ -425,23 +488,45 @@
 
     let fieldLabel = fbUtils.makeLabel(data, label, description);
 
-    let attrString = fbUtils.attrString(data);
-
     let templates = [
-      [['text', 'password', 'email', 'number', 'file'], `${fieldLabel} <input ${attrString}>`],
-      [['select', 'checkbox-group', 'radio-group'], `${fieldLabel} ${fbUtils.selectTemplate(data)}`]
-        ];
+      [['text', 'password', 'email', 'number', 'file'],
+        () => [fieldLabel, m('input', null, data)]],
+      [['button', 'submit', 'reset'],
+        () => m('button', label, data)],
+      [['select', 'checkbox-group', 'radio-group'],
+        () => [fieldLabel, fbUtils.selectTemplate(data)]]
+      ];
 
       let templateMap = new Map(templates);
 
       for (let [key, value] of templateMap) {
-        if(fbUtils.inArray(data.type, key)) {
+        if (Array.isArray(key)) {
+          if(fbUtils.inArray(data.type, key)) {
+            template = value;
+            break;
+          }
+        } else if (data.type === key) {
           template = value;
           break;
         }
       }
 
-      return template;
+      if (!template) {
+        template = () => m(data.type, label, data);
+      }
+
+      if (data.type !== 'hidden') {
+        let wrapperAttrs = {};
+        if (data.id) {
+          wrapperAttrs.className =
+          `fb-${data.type} form-group field-${data.id}`;
+        }
+        field = fbUtils.markup('div', template(), wrapperAttrs);
+      } else {
+        field = fbUtils.markup('input', null, data);
+      }
+
+      return field;
   };
 
   /**
@@ -497,82 +582,82 @@
           let fieldVal = fieldData.value || '';
           fieldMarkup = `${fieldLabel}<textarea ${fieldDataString}>${fieldVal}</textarea>`;
           break;
-        case 'select':
-          let optionAttrsString;
-          fieldData.type = fieldData.type.replace('-group', '');
+        // case 'select':
+        //   let optionAttrsString;
+        //   fieldData.type = fieldData.type.replace('-group', '');
 
-          if (fieldOptions) {
-            if (fieldData.placeholder) {
-              optionsMarkup += `<option disabled selected>${fieldData.placeholder}</option>`;
-            }
+        //   if (fieldOptions) {
+        //     if (fieldData.placeholder) {
+        //       optionsMarkup += `<option disabled selected>${fieldData.placeholder}</option>`;
+        //     }
 
-            for (let i = 0; i < fieldOptions.length; i++) {
-              if (!fieldOptions[i].selected || fieldData.placeholder) {
-                delete fieldOptions[i].selected;
-              }
-              if (!fieldOptions[i].label) {
-                fieldOptions[i].label = '';
-              }
-              optionAttrsString = fbUtils.attrString(fieldOptions[i]);
-              optionsMarkup += `<option ${optionAttrsString}>${fieldOptions[i].label}</option>`;
-            }
-          }
+        //     for (let i = 0; i < fieldOptions.length; i++) {
+        //       if (!fieldOptions[i].selected || fieldData.placeholder) {
+        //         delete fieldOptions[i].selected;
+        //       }
+        //       if (!fieldOptions[i].label) {
+        //         fieldOptions[i].label = '';
+        //       }
+        //       optionAttrsString = fbUtils.attrString(fieldOptions[i]);
+        //       optionsMarkup += `<option ${optionAttrsString}>${fieldOptions[i].label}</option>`;
+        //     }
+        //   }
 
-          fieldMarkup = `${fieldLabel}<select ${fieldDataString}>${optionsMarkup}</select>`;
-          break;
-        case 'checkbox-group':
-        case 'radio-group':
-          let optionAttrs;
-          fieldData.type = fieldData.type.replace('-group', '');
+        //   fieldMarkup = `${fieldLabel}<select ${fieldDataString}>${optionsMarkup}</select>`;
+        //   break;
+        // case 'checkbox-group':
+        // case 'radio-group':
+        //   let optionAttrs;
+        //   fieldData.type = fieldData.type.replace('-group', '');
 
-          if (fieldData.type === 'checkbox') {
-            fieldData.name = fieldData.name + '[]';
-          }
+        //   if (fieldData.type === 'checkbox') {
+        //     fieldData.name = fieldData.name + '[]';
+        //   }
 
-          if (fieldOptions) {
-            let optionAttrsString;
+        //   if (fieldOptions) {
+        //     let optionAttrsString;
 
-            for (let i = 0; i < fieldOptions.length; i++) {
-              optionAttrs = Object.assign({value: '', label: ''}, fieldData, fieldOptions[i]);
+        //     for (let i = 0; i < fieldOptions.length; i++) {
+        //       optionAttrs = Object.assign({value: '', label: ''}, fieldData, fieldOptions[i]);
 
-              if (optionAttrs.selected) {
-                delete optionAttrs.selected;
-                optionAttrs.checked = null;
-              }
+        //       if (optionAttrs.selected) {
+        //         delete optionAttrs.selected;
+        //         optionAttrs.checked = null;
+        //       }
 
-              optionAttrs.id = fieldData.id + '-' + i;
-              optionAttrsString = fbUtils.attrString(optionAttrs);
-              optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionAttrs.label}</label><br>`;
-            }
+        //       optionAttrs.id = fieldData.id + '-' + i;
+        //       optionAttrsString = fbUtils.attrString(optionAttrs);
+        //       optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionAttrs.label}</label><br>`;
+        //     }
 
-            if (fieldData.other) {
-              let otherOptionAttrs = {
-                id: fieldData.id + '-' + 'other',
-                className: fieldData.className + ' other-option',
-                onclick: `fbUtils.otherOptionCB('${fieldData.id}-other')`
-              };
+        //     if (fieldData.other) {
+        //       let otherOptionAttrs = {
+        //         id: fieldData.id + '-' + 'other',
+        //         className: fieldData.className + ' other-option',
+        //         onclick: `fbUtils.otherOptionCB('${fieldData.id}-other')`
+        //       };
 
-              optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+        //       optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
 
-              optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.messages.other}</label> <input type="text" name="${fieldData.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
-            }
-          }
-          fieldMarkup = `${fieldLabel}<div class="${fieldData.type}-group">${optionsMarkup}</div>`;
-          break;
-        case 'text':
-        case 'password':
-        case 'email':
-        case 'number':
-        case 'file':
-        case 'hidden':
-        case 'date':
-        case 'tel':
-        case 'autocomplete':
-          fieldMarkup = `${fieldLabel} <input ${fieldDataString}>`;
-          break;
-        case 'color':
-          fieldMarkup = `${fieldLabel} <input ${fieldDataString}> ${opts.messages.selectColor}`;
-          break;
+        //       optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.messages.other}</label> <input type="text" name="${fieldData.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
+        //     }
+        //   }
+        //   fieldMarkup = `${fieldLabel}<div class="${fieldData.type}-group">${optionsMarkup}</div>`;
+        //   break;
+        // case 'text':
+        // case 'password':
+        // case 'email':
+        // case 'number':
+        // case 'file':
+        // case 'hidden':
+        // case 'date':
+        // case 'tel':
+        // case 'autocomplete':
+        //   fieldMarkup = `${fieldLabel} <input ${fieldDataString}>`;
+        //   break;
+        // case 'color':
+        //   fieldMarkup = `${fieldLabel} <input ${fieldDataString}> ${opts.messages.selectColor}`;
+        //   break;
         case 'button':
         case 'submit':
           fieldMarkup = `<button ${fieldDataString}>${fieldLabelVal}</button>`;
@@ -612,10 +697,8 @@
     const otherInputValue = document.getElementById(`${otherId}-value`);
 
     if (otherInput.checked) {
-      otherInput.style.display = 'none';
       otherInputValue.style.display = 'inline-block';
     } else {
-      otherInput.style.display = 'inline-block';
       otherInputValue.style.display = 'none';
     }
   };
@@ -646,6 +729,18 @@ fbUtils.merge = (obj1, obj2) => {
     }
   }
   return mergedObj;
+};
+
+/**
+ * Util to remove contents of DOM Object
+ * @param  {Object} element
+ * @return {Object}         element with its children removed
+ */
+fbUtils.empty = element => {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+  return element;
 };
 
 fbUtils.noop = () => null;

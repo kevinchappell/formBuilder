@@ -589,8 +589,6 @@ const extend = require('deep-extend');
 
       let buttons = opts.actionButtons.map(_helpers.processActionButtons);
 
-      console.log(buttons);
-
       // const viewData = m('button', viewDataText, {
       //   id: frmbID + '-view-data',
       //   type: 'button',
