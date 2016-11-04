@@ -489,7 +489,7 @@
     let fieldLabel = fbUtils.makeLabel(data, label, description);
 
     let templates = [
-      [['text', 'password', 'email', 'number', 'file'],
+      [['text', 'password', 'email', 'number', 'file', 'color', 'date', 'tel'],
         () => [fieldLabel, m('input', null, data)]],
       [['button', 'submit', 'reset'],
         () => m('button', label, data)],
