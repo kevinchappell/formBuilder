@@ -13,6 +13,7 @@
   events.formSaved = new Event('formSaved');
   events.fieldAdded = new Event('fieldAdded');
   events.fieldRemoved = new Event('fieldRemoved');
+  events.fieldRendered = new Event('fieldRendered');
 
 //   return events;
 // }

@@ -5,6 +5,7 @@
  */
 // function utils() {
   const fbUtils = {};
+  window.fbLoadedScripts = [];
 
   // cleaner syntax for testing indexOf element
   fbUtils.inArray = function(needle, haystack) {
@@ -151,6 +152,22 @@
   };
 
   /**
+   * Bind events to an element
+   * @param  {Object} element DOM element
+   * @param  {Object} events  object full of events eg. {click: evt => callback}
+   * @return {void}
+   */
+  fbUtils.bindEvents = (element, events) => {
+    if (events) {
+      for (let event in events) {
+        if (events.hasOwnProperty(event)) {
+          element.addEventListener(event, evt => events[event](evt));
+        }
+      }
+    }
+  };
+
+  /**
    * Generate markup wrapper where needed
    *
    * @param  {string}              tag
@@ -159,7 +176,6 @@
    * @return {Object} DOM Element
    */
   fbUtils.markup = function(tag, content = '', attributes = {}) {
-    const _this = this;
     let contentType = fbUtils.contentType(content);
     let {events, ...attrs} = attributes;
     const field = document.createElement(tag);
@@ -187,9 +203,10 @@
         appendContent[contentType](content);
       },
       undefined: () => {
-        console.error(_this.arguments);
+        console.error(tag, content, attributes);
       },
     };
+
 
     for (let attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
@@ -202,13 +219,7 @@
       appendContent[contentType].call(this, content);
     }
 
-    if (events) {
-      for (let event in events) {
-        if (events.hasOwnProperty(event)) {
-          field.addEventListener(event, evt => events[event](evt));
-        }
-      }
-    }
+    fbUtils.bindEvents(field, events);
 
     return field;
   };
@@ -361,6 +372,29 @@
     });
   };
 
+  fbUtils.templateMap = (templates, type, fallback) => {
+    let template;
+    let templateMap = new Map(templates);
+
+    for (let [key, value] of templateMap) {
+      if (Array.isArray(key)) {
+        if(fbUtils.inArray(type, key)) {
+          template = value;
+          break;
+        }
+      } else if (type === key) {
+        template = value;
+        break;
+      }
+    }
+
+    if (!template) {
+      template = fallback;
+    }
+
+    return template();
+  };
+
   /**
    * Generate DOM elements for select, checkbox-group and radio-group.
    * @param  {Object} fieldData
@@ -446,25 +480,111 @@
         () => m('div', options, {className: type})]
     ];
 
-    let templateMap = new Map(templates);
+    return fbUtils.templateMap(templates, type);
+  };
 
-    for (let [key, value] of templateMap) {
-      if (Array.isArray(key)) {
-        if(fbUtils.inArray(type, key)) {
-          template = value;
-          break;
-        }
-      } else if (type === key) {
-        template = value;
-        break;
+  fbUtils.defaultField = fieldData => {
+    let {label, description, subtype, type, id, isPreview, ...data} = fieldData;
+    if (id) {
+      if (isPreview) {
+        data.name = data.name + '-preview';
       }
+      data.id = data.name;
+    }
+    if (description) {
+      data.title = description;
+    }
+    if (subtype) {
+      type = subtype;
     }
 
-    return template();
+    return () => m(type, label, data);
+  };
+
+  /**
+   * Loads an array of scripts using jQuery's `getScript`
+   * @param  {Array}  arr    scripts
+   * @param  {String} path   optional to load form
+   * @return {Promise}        a promise
+   */
+  fbUtils.getScripts = (arr, path) => {
+    const $ = jQuery;
+    let _arr = $.map(arr, scr => $.getScript( (path || '') + scr ));
+    _arr.push($.Deferred( deferred => $( deferred.resolve )));
+
+    return $.when(..._arr);
+  };
+
+  /**
+   * Appends stylesheets to the head
+   * @param  {Array} arr
+   * @param  {String} path
+   * @return {void}
+   */
+  fbUtils.getStyles = (arr, path) => {
+    const appendStyle = (href) => {
+      const link = document.createElement('link');
+      link.type = 'text/css';
+      link.rel = 'stylesheet';
+      link.href = href;
+      document.head.appendChild(link);
+    };
+    arr.forEach(scr => appendStyle((path || '') + scr));
+  };
+
+  fbUtils.longTextTemplate = data => {
+    let {value, ...attrs} = data;
+    let template = {
+      field: m('textarea', value, attrs)
+    };
+    let editors = {
+      tinymce: {
+        js: ['//cdnjs.cloudflare.com/ajax/libs/tinymce/4.4.3/jquery.tinymce.min.js'],
+        onRender: (response) => {
+          console.log('field rendered');
+        }
+      },
+      quill: {
+        js: ['//cdn.quilljs.com/1.1.3/quill.js'],
+        css: ['//cdn.quilljs.com/1.1.3/quill.snow.css'],
+        onRender: evt => {
+          const onLoad = () => {
+            new window.Quill(template.field, {
+              modules: {
+                toolbar: [
+                  [{'header': [1, 2, false]}],
+                  ['bold', 'italic', 'underline'],
+                  ['image', 'code-block']
+                ]
+              },
+              placeholder: attrs.placeholder || '',
+              theme: 'snow'
+            });
+          };
+          if (fbUtils.inArray(data.type, window.fbLoadedScripts)) {
+            onLoad();
+          } else {
+            fbUtils.getStyles(editors[data.type].css);
+            fbUtils.getScripts(editors[data.type].js).done(() => {
+              window.fbLoadedScripts.push(data.type);
+              onLoad();
+            });
+          }
+          document.removeEventListener('fieldRendered', editors['quill'].onRender);
+        }
+      }
+    };
+
+    if (data.type !== 'textarea') {
+      template.onRender = editors[data.type].onRender;
+      template.field = m('div', null, attrs);
+    }
+
+    return {field: template.field, onRender: template.onRender};
   };
 
   fbUtils.getTemplate = (fieldData, opts) => {
-    let {label, description, subtype, isPreview, ...data} = fieldData;
+    let {label, description, subtype, isPreview, onRender, ...data} = fieldData;
     let template;
     let field;
 
@@ -490,30 +610,46 @@
 
     let templates = [
       [['text', 'password', 'email', 'number', 'file', 'color', 'date', 'tel'],
-        () => [fieldLabel, m('input', null, data)]],
+        () => {
+          let template = {
+            field: [fieldLabel, m('input', null, data)],
+            onRender: fbUtils.noop
+          };
+          return template;
+        }],
       [['button', 'submit', 'reset'],
-        () => m('button', label, data)],
+        () => {
+          let template = {
+            field: m('button', label, data),
+            onRender: fbUtils.noop
+          };
+          return template;
+        }],
       [['select', 'checkbox-group', 'radio-group'],
-        () => [fieldLabel, fbUtils.selectTemplate(data)]]
+        () => {
+          let field = fbUtils.selectTemplate(data);
+          let template = {
+            field: [fieldLabel, field],
+            onRender: fbUtils.noop
+          };
+          return template;
+        }],
+      [['textarea', 'tinymce', 'quill'],
+        () => {
+          let field = fbUtils.longTextTemplate(data);
+          let template = {
+            field: [fieldLabel, field.field],
+            onRender: field.onRender
+          };
+          return template;
+        }]
       ];
 
-      let templateMap = new Map(templates);
-
-      for (let [key, value] of templateMap) {
-        if (Array.isArray(key)) {
-          if(fbUtils.inArray(data.type, key)) {
-            template = value;
-            break;
-          }
-        } else if (data.type === key) {
-          template = value;
-          break;
-        }
-      }
-
-      if (!template) {
-        template = () => m(data.type, label, data);
-      }
+      template = fbUtils.templateMap(
+        templates,
+        data.type,
+        fbUtils.defaultField(fieldData) // fallback
+      );
 
       if (data.type !== 'hidden') {
         let wrapperAttrs = {};
@@ -521,10 +657,12 @@
           wrapperAttrs.className =
           `fb-${data.type} form-group field-${data.id}`;
         }
-        field = fbUtils.markup('div', template(), wrapperAttrs);
+        field = fbUtils.markup('div', template.field, wrapperAttrs);
       } else {
         field = fbUtils.markup('input', null, data);
       }
+
+      field.addEventListener('fieldRendered', template.onRender);
 
       return field;
   };

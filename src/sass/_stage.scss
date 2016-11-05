@@ -252,6 +252,10 @@
     display: block;
     margin-top: 12px;
 
+    .ql-editor {
+      min-height: 125px;
+    }
+
     .form-group > label:not([class='fb-checkbox-label']) {
       display: none;
     }

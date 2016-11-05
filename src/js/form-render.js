@@ -6,6 +6,7 @@
  */
 function FormRender(options, element) {
   const utils = require('./utils.js');
+  const events = require('./events.js');
 
   const formRender = this;
   const defaults = {
@@ -56,7 +57,10 @@ function FormRender(options, element) {
    */
   Element.prototype.appendFormFields = function(fields) {
     let element = this;
-    fields.forEach(field => element.appendChild(field));
+    fields.forEach(field => {
+      element.appendChild(field);
+      field.dispatchEvent(events.fieldRendered);
+    });
   };
 
   /**
@@ -96,7 +100,8 @@ function FormRender(options, element) {
   if (opts.formData) {
     for (let i = 0; i < opts.formData.length; i++) {
       let sanitizedField = santizeField(opts.formData[i]);
-      rendered.push(utils.fieldRender(sanitizedField, opts));
+      rendered.push(utils.getTemplate(sanitizedField, opts));
+      // rendered.push(utils.fieldRender(sanitizedField, opts));
     }
 
     if (opts.render) {
