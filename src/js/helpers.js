@@ -373,6 +373,7 @@ function helpers(opts, formBuilder) {
 
     utils.empty($prevHolder[0]);
     $prevHolder[0].appendChild(preview);
+    preview.dispatchEvent(formBuilder.events.fieldRendered);
 
     $('input[toggle]', $prevHolder).kcToggle();
   };
@@ -862,7 +863,8 @@ function helpers(opts, formBuilder) {
         text: ['text', 'password', 'email', 'color', 'tel'],
         header: ['h1', 'h2', 'h3'],
         button: ['button', 'submit', 'reset'],
-        paragraph: ['p', 'address', 'blockquote', 'canvas', 'output']
+        paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
+        textarea: ['textarea', 'quill', 'tinymce']
       };
 
       let subtypes = utils.merge(defaultSubtypes, subtypeOpts);

@@ -602,6 +602,8 @@ textarea.form-control {
   .frmb .prev-holder {
     display: block;
     margin-top: 12px; }
+    .frmb .prev-holder .ql-editor {
+      min-height: 125px; }
     .frmb .prev-holder .form-group > label:not([class='fb-checkbox-label']) {
       display: none; }
     .frmb .prev-holder select, .frmb .prev-holder input[type='text'], .frmb .prev-holder textarea, .frmb .prev-holder input[type='number'] {
@@ -1013,8 +1015,7 @@ textarea {
 
 .form-elements .field-options div:hover,
 .frmb .legend,
-.frmb .prev-holder,
-.frmb .prev-holder * {
+.frmb .prev-holder {
   cursor: move; }
 
 .frmb-tt {
