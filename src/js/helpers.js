@@ -748,7 +748,7 @@ function helpers(opts, formBuilder) {
         let cbStyle = {
           position: 'fixed',
           width: cbWidth,
-          top: '5px',
+          top: opts.stickyControls.offset.top,
           bottom: 'auto',
           right: 'auto',
           left: cbPosition.left

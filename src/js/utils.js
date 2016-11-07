@@ -5,7 +5,10 @@
  */
 // function utils() {
   const fbUtils = {};
-  window.fbLoadedScripts = [];
+  window.fbLoaded = {
+    js: [],
+    css: []
+  };
 
   // cleaner syntax for testing indexOf element
   fbUtils.inArray = function(needle, haystack) {
@@ -503,33 +506,70 @@
 
   /**
    * Loads an array of scripts using jQuery's `getScript`
-   * @param  {Array}  arr    scripts
+   * @param  {Array|String}  scriptScr    scripts
    * @param  {String} path   optional to load form
-   * @return {Promise}        a promise
+   * @return {Promise}       a promise
    */
-  fbUtils.getScripts = (arr, path) => {
+  fbUtils.getScripts = (scriptScr, path) => {
     const $ = jQuery;
-    let _arr = $.map(arr, scr => $.getScript( (path || '') + scr ));
+    let _arr = [];
+
+    if (!Array.isArray(scriptScr)) {
+      scriptScr = [scriptScr];
+    }
+
+    if (!fbUtils.isCached(scriptScr)) {
+      _arr = $.map(scriptScr, src => {
+        let options = {
+          dataType: 'script',
+          cache: true,
+          url: (path || '') + src
+        };
+        return $.ajax(options).done(() => window.fbLoaded.js.push(src));
+      });
+    }
+
     _arr.push($.Deferred( deferred => $( deferred.resolve )));
 
     return $.when(..._arr);
   };
 
   /**
+   * Checks if remote resource is already loaded
+   * @param  {String|Array} src  url of remote script or css
+   * @param  {String}       type       'js' or 'css'
+   * @return {Boolean}      isCached
+   */
+  fbUtils.isCached = (src, type = 'js') => {
+    let isCached = false;
+    const cache = window.fbLoaded[type];
+    if (Array.isArray(src)) {
+      isCached = src.every(s => fbUtils.inArray(s, cache));
+    } else {
+      isCached = fbUtils.inArray(src, cache);
+    }
+    return isCached;
+  };
+
+  /**
    * Appends stylesheets to the head
-   * @param  {Array} arr
+   * @param  {Array} scriptScr
    * @param  {String} path
    * @return {void}
    */
-  fbUtils.getStyles = (arr, path) => {
+  fbUtils.getStyles = (scriptScr, path) => {
+    if (fbUtils.isCached(scriptScr, 'css')) {
+      return;
+    }
     const appendStyle = (href) => {
       const link = document.createElement('link');
       link.type = 'text/css';
       link.rel = 'stylesheet';
       link.href = href;
       document.head.appendChild(link);
+      window.fbLoaded.css.push(href);
     };
-    arr.forEach(scr => appendStyle((path || '') + scr));
+    scriptScr.forEach(src => appendStyle((path || '') + src));
   };
 
   fbUtils.longTextTemplate = data => {
@@ -539,48 +579,65 @@
     };
     let editors = {
       tinymce: {
-        js: ['//cdnjs.cloudflare.com/ajax/libs/tinymce/4.4.3/jquery.tinymce.min.js'],
-        onRender: (response) => {
-          console.log('field rendered');
+        js: ['//cdn.tinymce.com/4/tinymce.min.js'],
+        onRender: (evt) => {
+          for (template.field.id in window.tinymce.editors) {
+            window.tinymce.editors[template.field.id].remove();
+          }
+          window.tinymce.init({
+            target: template.field,
+            height: 250,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table contextmenu paste code'
+            ],
+            toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
+          });
         }
       },
       quill: {
         js: ['//cdn.quilljs.com/1.1.3/quill.js'],
         css: ['//cdn.quilljs.com/1.1.3/quill.snow.css'],
         onRender: evt => {
-          const onLoad = () => {
-            new window.Quill(template.field, {
-              modules: {
-                toolbar: [
-                  [{'header': [1, 2, false]}],
-                  ['bold', 'italic', 'underline'],
-                  ['image', 'code-block']
-                ]
-              },
-              placeholder: attrs.placeholder || '',
-              theme: 'snow'
-            });
-          };
-          if (fbUtils.inArray(data.type, window.fbLoadedScripts)) {
-            onLoad();
-          } else {
-            fbUtils.getStyles(editors[data.type].css);
-            fbUtils.getScripts(editors[data.type].js).done(() => {
-              window.fbLoadedScripts.push(data.type);
-              onLoad();
-            });
-          }
-          document.removeEventListener('fieldRendered', editors['quill'].onRender);
+          new window.Quill(template.field, {
+            modules: {
+              toolbar: [
+                [{'header': [1, 2, false]}],
+                ['bold', 'italic', 'underline'],
+                ['image', 'code-block']
+              ]
+            },
+            placeholder: attrs.placeholder || '',
+            theme: 'snow'
+          });
         }
       }
     };
 
     if (data.type !== 'textarea') {
       template.onRender = editors[data.type].onRender;
+    }
+    if (data.type === 'quill') {
       template.field = m('div', null, attrs);
     }
 
-    return {field: template.field, onRender: template.onRender};
+    const onRender = () => {
+      if (editors[data.type]) {
+        document.removeEventListener('fieldRendered', onRender);
+
+        if (editors[data.type].css) {
+          fbUtils.getStyles(editors[data.type].css);
+        }
+        if (editors[data.type].js && !fbUtils.isCached(editors[data.type].js)) {
+          fbUtils.getScripts(editors[data.type].js).done(template.onRender);
+        } else {
+          template.onRender();
+        }
+      }
+    };
+
+    return {field: template.field, onRender};
   };
 
   fbUtils.getTemplate = (fieldData, opts) => {
