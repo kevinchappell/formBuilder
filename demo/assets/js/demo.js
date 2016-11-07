@@ -7,8 +7,10 @@ jQuery(document).ready(function($) {
       toggleEdit();
       $('.render-wrap').formRender({formData});
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
-    }
-    // stickyControls: true,
+    },
+    stickyControls: {
+      enable: true
+    },
     // editOnAdd: true
   };
   let formData = window.sessionStorage.getItem('formData');

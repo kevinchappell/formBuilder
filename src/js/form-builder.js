@@ -212,7 +212,15 @@ const extend = require('deep-extend');
         }
       }],
       sortableControls: false,
-      stickyControls: false,
+      stickyControls: {
+        enable: true,
+        offset: {
+          top: 5,
+          bottom: 'auto',
+          right: 'auto'
+        }
+
+      },
       showActionButtons: true,
       typeUserAttrs: {},
       typeUserEvents: {},
@@ -731,9 +739,8 @@ const extend = require('deep-extend');
       }
       _helpers.save();
 
-      let $fields = $('li.form-field:not(.disabled)', $sortableFields);
-
-      $fields.each(i => _helpers.updatePreview($($fields[i])));
+      // let $fields = $('li.form-field:not(.disabled)', $sortableFields);
+      // $fields.each(i => _helpers.updatePreview($($fields[i])));
 
       nonEditableFields();
     };
@@ -1664,7 +1671,7 @@ const extend = require('deep-extend');
     $sortableFields.css('min-height', $cbUL.height());
 
     // If option set, controls will remain in view in editor
-    if (opts.stickyControls) {
+    if (opts.stickyControls.enable) {
       _helpers.stickyControls($sortableFields);
     }
 
