@@ -3,6 +3,7 @@ jQuery(document).ready(function($) {
     subtypes: {
       text: ['datetime']
     },
+    prepend: '<h1>im disabled</h1>',
     onSave: function(formData) {
       toggleEdit();
       $('.render-wrap').formRender({formData});
