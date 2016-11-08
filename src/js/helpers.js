@@ -6,14 +6,12 @@
  * @return {Object} helper functions
  */
 function helpers(opts, formBuilder) {
-  const mi18n = require('mi18n').default;
+  const i18n = formBuilder.mi18n;
+  const utils = formBuilder.utils;
 
   let _helpers = {
     doCancel: false
   };
-
-  const utils = require('./utils.js');
-  formBuilder.events = require('./events.js');
 
   /**
    * Convert converts messy `cl#ssNames` into valid `class-names`
@@ -854,7 +852,7 @@ function helpers(opts, formBuilder) {
   _helpers.processSubtypes = subtypeOpts => {
     const subtypeFormat = subtype => {
         return {
-          label: mi18n.get(subtype),
+          label: i18n.get(subtype),
           value: subtype
         };
       };

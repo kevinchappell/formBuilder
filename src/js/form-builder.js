@@ -1,12 +1,14 @@
 require('./kc-toggle.js');
 require('./polyfills.js');
-const extend = require('deep-extend');
+// const extend = require('deep-extend');
 
 (function($) {
   const FormBuilder = async function(options, element) {
-    const utils = require('./utils.js');
-    const mi18n = require('mi18n').default;
     const formBuilder = this;
+    const utils = require('./utils.js');
+    formBuilder.events = require('./events.js');
+    formBuilder.utils = utils;
+    formBuilder.mi18n = require('mi18n').default;
 
     let defaults = {
       controlPosition: 'right',
@@ -349,9 +351,9 @@ const extend = require('deep-extend');
 
     let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
     formBuilder.formID = frmbID;
-    let {i18n, ...opts} = extend(defaults, options);
+    let {i18n, ...opts} = $.extend(defaults, options, true);
 
-    await mi18n.init(i18n);
+    await formBuilder.mi18n.init(i18n);
     let _helpers = require('./helpers.js')(opts, formBuilder);
 
     const subtypes = _helpers.processSubtypes(opts.subtypes);
@@ -1708,7 +1710,7 @@ const extend = require('deep-extend');
 
     formBuilder.i18n = {
       setLang: async locale => {
-        let newLang = await mi18n.setCurrent.call(mi18n, locale);
+        let newLang = await formBuilder.mi18n.setCurrent.call(formBuilder.mi18n, locale);
         console.log(newLang);
       }
     };
