@@ -516,7 +516,7 @@ require('./polyfills.js');
       beforeStop: _helpers.beforeStop,
       start: _helpers.startMoving,
       stop: _helpers.stopMoving,
-      cancel: 'input, select, .disabled, .form-group, .btn',
+      cancel: 'input, select, .disabled-field, .form-group, .btn',
       placeholder: 'frmb-placeholder'
     });
 
@@ -654,24 +654,28 @@ require('./polyfills.js');
     });
 
     // Add append and prepend options if necessary
-    let nonEditableFields = function() {
+    let nonEditableFields = () => {
       let cancelArray = [];
+      const disabledField = type =>
+      utils.markup('li', opts[type], {
+        className: `disabled-field form-${type}`
+      });
 
-      if (opts.prepend && !$('.disabled.prepend', $sortableFields).length) {
-        let prependedField = utils.markup('li', opts.prepend, {className: 'disabled prepend'});
+      if (opts.prepend && !$('.disabled-field.form-prepend', $sortableFields).length) {
         cancelArray.push(true);
-        $sortableFields.prepend(prependedField);
+        $sortableFields.prepend(disabledField('prepend'));
       }
 
-      if (opts.append && !$('.disabled.append', $sortableFields).length) {
-        let appendedField = utils.markup('li', opts.append, {className: 'disabled append'});
+      if (opts.append && !$('.disabled-field.form-.append', $sortableFields).length) {
         cancelArray.push(true);
-        $sortableFields.append(appendedField);
+        $sortableFields.append(disabledField('append'));
       }
 
       if (cancelArray.some(elem => elem === true)) {
         $stageWrap.removeClass('empty');
       }
+
+      _helpers.disabledTT.init();
     };
 
     let prepFieldVars = function($field, isNew = false) {
@@ -741,27 +745,27 @@ require('./polyfills.js');
       }
       _helpers.save();
 
-      // let $fields = $('li.form-field:not(.disabled)', $sortableFields);
+      // let $fields = $('li.form-field:not(.disabled-field)', $sortableFields);
       // $fields.each(i => _helpers.updatePreview($($fields[i])));
 
       nonEditableFields();
     };
 
     // callback to track disabled tooltips
-    $sortableFields.on('mousemove', 'li.disabled', e => {
-      $('.frmb-tt', this).css({
-        left: e.offsetX - 16,
-        top: e.offsetY - 34
-      });
-    });
+    // $sortableFields.on('mousemove', 'li.disabled', e => {
+    //   $('.frmb-tt', e.target).css({
+    //     left: e.offsetX - 16,
+    //     top: e.offsetY - 34
+    //   });
+    // });
 
     // callback to call disabled tooltips
-    $sortableFields.on('mouseenter', 'li.disabled', e =>
-      _helpers.disabledTT.add($(this)));
+    // $sortableFields.on('mouseenter', 'li.disabled', e =>
+      // _helpers.disabledTT.add(e.target));
 
     // callback to call disabled tooltips
-    $sortableFields.on('mouseleave', 'li.disabled', e =>
-      _helpers.disabledTT.remove($(this)));
+    // $sortableFields.on('mouseleave', 'li.disabled', e =>
+      // _helpers.disabledTT.remove(e.target));
 
     let nameAttr = function(field) {
       let epoch = new Date().getTime();

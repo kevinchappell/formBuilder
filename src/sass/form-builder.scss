@@ -105,7 +105,10 @@ textarea {
 
 // tooltips
 .frmb-tt {
+  display: none;
   position: absolute;
+  top: 0;
+  left: 0;
   border: 1px solid darken($grey, 25%);
   background-color: $grey;
   border-radius: 5px;
