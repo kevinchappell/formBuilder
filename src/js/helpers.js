@@ -227,7 +227,7 @@ function helpers(opts, formBuilder) {
       utils.forEach(form.childNodes, function(index, field) {
         let $field = $(field);
 
-        if (!($field.hasClass('disabled'))) {
+        if (!($field.hasClass('disabled-field'))) {
           let fieldData = _helpers.getTypes($field);
           let roleVals = $('.roles-field:checked', field).map(function() {
               return this.value;
@@ -402,18 +402,26 @@ function helpers(opts, formBuilder) {
    * @param  {Object} field
    */
   _helpers.disabledTT = {
-    className: 'frmb-tt',
-    add: function(field) {
-      let title = opts.messages.fieldNonEditable;
-
-      if (title) {
-        let tt = utils.markup('p', title, {className: _helpers.disabledTT.className});
-        field.append(tt);
-      }
+    move: (e, elem) => {
+      const fieldOffset = elem.field.getBoundingClientRect();
+      const x = e.clientX - fieldOffset.left - 21;
+      const y = e.clientY - fieldOffset.top - elem.tt.offsetHeight - 12;
+      elem.tt.style.transform = `translate(${x}px, ${y}px)`;
     },
-    remove: function(field) {
-      $('.frmb-tt', field).remove();
-    }
+    init: () => {
+      formBuilder.stage.querySelectorAll('.disabled-field').forEach(
+        field => {
+          let title = opts.messages.fieldNonEditable;
+
+          if (title) {
+            let tt = utils.markup('p', title, {className: 'frmb-tt'});
+            field.appendChild(tt);
+            field.addEventListener('mousemove', e => {
+              _helpers.disabledTT.move(e, {tt, field});
+            });
+          }
+        });
+    },
   };
 
   _helpers.classNames = function(field, previewData) {

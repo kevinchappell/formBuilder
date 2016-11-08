@@ -130,8 +130,16 @@
       border-radius: 5px;
     }
 
-    &.disabled {
+    &.disabled-field {
       z-index: 1;
+      position: relative;
+      overflow: visible;
+
+      &:hover {
+        .frmb-tt {
+          display: inline-block;
+        }
+      }
 
       [type=checkbox] {
         float: left;
@@ -224,7 +232,7 @@
     pointer-events: none;
   }
 
-  &.disabled {
+  &.disabled-field {
     padding: 0 5px;
 
     :hover {
@@ -310,7 +318,7 @@
     margin-bottom: 5px;
   }
 
-  .disabled .field-label {
+  .disabled-field .field-label {
     display: block;
   }
 

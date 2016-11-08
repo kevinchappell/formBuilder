@@ -502,18 +502,22 @@ textarea.form-control {
       box-shadow: 2px 2px 6px 0 #666;
       border: 1px solid #fff;
       border-radius: 5px; }
-    .frmb li.disabled {
-      z-index: 1; }
-      .frmb li.disabled [type=checkbox] {
+    .frmb li.disabled-field {
+      z-index: 1;
+      position: relative;
+      overflow: visible; }
+      .frmb li.disabled-field:hover .frmb-tt {
+        display: inline-block; }
+      .frmb li.disabled-field [type=checkbox] {
         float: left;
         margin-right: 10px; }
-      .frmb li.disabled h2 {
+      .frmb li.disabled-field h2 {
         border-bottom: 0 none; }
-      .frmb li.disabled label {
+      .frmb li.disabled-field label {
         font-size: 12px;
         font-weight: 400;
         color: #666; }
-      .frmb li.disabled .prev-holder {
+      .frmb li.disabled-field .prev-holder {
         cursor: default;
         line-height: 28px;
         padding-left: 5px; }
@@ -579,11 +583,11 @@ textarea.form-control {
   .frmb li.deleting {
     z-index: 20;
     pointer-events: none; }
-  .frmb.disabled {
+  .frmb.disabled-field {
     padding: 0 5px; }
-    .frmb.disabled :hover {
+    .frmb.disabled-field :hover {
       border-color: transparent; }
-    .frmb.disabled .form-element {
+    .frmb.disabled-field .form-element {
       float: none;
       margin-bottom: 10px;
       overflow: visible;
@@ -629,7 +633,7 @@ textarea.form-control {
   .frmb .legend {
     color: #666;
     margin-bottom: 5px; }
-  .frmb .disabled .field-label {
+  .frmb .disabled-field .field-label {
     display: block; }
   .frmb .other-val {
     margin-left: 5px;
@@ -1013,7 +1017,10 @@ textarea {
   cursor: move; }
 
 .frmb-tt {
+  display: none;
   position: absolute;
+  top: 0;
+  left: 0;
   border: 1px solid #262626;
   background-color: #666;
   border-radius: 5px;
