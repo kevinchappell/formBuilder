@@ -52,5 +52,5 @@ extra_css:
   - '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css'
 extra_javascript:
   - 'js/scripts.js'
-  - '//assets.codepen.io/assets/embed/ei.js'
+  - '//production-assets.codepen.io/assets/embed/ei.js'
   - '//sidecar.gitter.im/dist/sidecar.v1.js'
