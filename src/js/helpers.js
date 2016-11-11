@@ -1,3 +1,4 @@
+import d from './dom';
 /**
  * Helper functions specific to formBuilder.
  * Called form formBuilder
@@ -194,9 +195,10 @@ function helpers(opts, formBuilder) {
 
     utils.forEach(formData, function(fieldIndex, field) {
       let fieldContent = null;
+      const optionFields = /(select|checkbox-group|radio-group|autocomplete)/;
 
       // Handle options
-      if (field.type.match(/(select|checkbox-group|radio-group)/)) {
+      if (field.type.match(optionFields)) {
         let optionData = field.values;
         let options = [];
 
@@ -253,8 +255,7 @@ function helpers(opts, formBuilder) {
           fieldData = utils.trimObj(fieldData);
           fieldData = utils.escapeAttrs(fieldData);
 
-          let multipleField = fieldData
-          .type.match(/(select|checkbox-group|radio-group)/);
+          let multipleField = fieldData.type.match(d.optionFieldsRegEx);
 
           if (multipleField) {
             fieldData.values = _helpers.fieldOptionData($field);
@@ -348,7 +349,7 @@ function helpers(opts, formBuilder) {
       previewData.style = style;
     }
 
-    if (fieldType.match(/(select|checkbox-group|radio-group)/)) {
+    if (fieldType.match(d.optionFieldsRegEx)) {
       previewData.values = [];
       previewData.multiple = $('[name="multiple"]', field).is(':checked');
 
@@ -605,11 +606,11 @@ function helpers(opts, formBuilder) {
 
   /**
    * Removes all fields from the form
+   * @param {Boolean} animate whether to animate or not
    */
-  _helpers.removeAllfields = function() {
-    let form = document.getElementById(formBuilder.formID);
+  _helpers.removeAllfields = function(animate = true) {
+    let form = formBuilder.stage;
     let fields = form.querySelectorAll('li.form-field');
-    let $fields = $(fields);
     let markEmptyArray = [];
 
     if (!fields.length) {
@@ -629,20 +630,19 @@ function helpers(opts, formBuilder) {
       form.parentElement.dataset.content = opts.messages.getStarted;
     }
 
-    form.classList.add('removing');
-
-    let outerHeight = 0;
-    $fields.each(function(i) {
-      outerHeight += $($fields[i]).outerHeight() + 3;
-    });
-
-    fields[0].style.marginTop = (-outerHeight) + 'px';
-
-    setTimeout(function() {
-      $fields.remove();
-      document.getElementById(formBuilder.formID).classList.remove('removing');
+    if (animate) {
+      form.classList.add('removing');
+      let outerHeight = 0;
+      fields.forEach(field => outerHeight += field.offsetHeight + 3);
+      fields[0].style.marginTop = `${-outerHeight}px`;
+      setTimeout(() => {
+        d.empty(form).classList.remove('removing');
+        _helpers.save();
+      }, 400);
+    } else {
+      d.empty(form);
       _helpers.save();
-    }, 400);
+    }
   };
 
   /**

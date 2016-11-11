@@ -50,15 +50,7 @@
     overflow: hidden;
   }
 
-  li {
-    position: relative;
-    padding: 6px;
-    clear: both;
-    margin-left: 0;
-    margin-bottom: 3px;
-    background-color: $white;
-    transition: background-color 250ms ease-in-out, margin-top 400ms;
-
+  > li {
     &:hover {
       .field-actions {
         opacity: 1;
@@ -74,6 +66,16 @@
         }
       }
     }
+  }
+
+  li {
+    position: relative;
+    padding: 6px;
+    clear: both;
+    margin-left: 0;
+    margin-bottom: 3px;
+    background-color: $white;
+    transition: background-color 250ms ease-in-out, margin-top 400ms;
 
     &.hidden-field {
       background-color: $hidden-field-bgcolor;
@@ -413,7 +415,7 @@
     }
   }
 
-  ol.sortable-options {
+  .sortable-options {
     display: inline-block;
     width: 100%;
     margin-left: 2%;
@@ -423,7 +425,7 @@
     list-style: none;
     padding: 0;
 
-    li {
+    > li {
       cursor: move;
       margin: 1px;
 
@@ -453,8 +455,7 @@
       }
     }
 
-    input[type=checkbox],
-    input[type=radio] {
+    .option-selected {
       margin: 0;
       width: 5%;
     }
@@ -591,6 +592,34 @@
         font-weight: 400;
         width: calc(81.3333% - 23px);
       }
+    }
+  }
+}
+
+.autocomplete-field {
+  .sortable-options {
+    .option-selected {
+      display: none;
+    }
+  }
+}
+
+.fb-autocomplete-list {
+  display: none;
+  list-style: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-width: 0 1px 1px;
+
+  li {
+    display: none;
+    cursor: default;
+    padding: 5px;
+    margin: 0;
+    transition: background-color 200ms ease-in-out;
+
+    &:hover {
+      background-color: $input-box-shadow-color;
     }
   }
 }
