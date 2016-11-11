@@ -58,117 +58,6 @@ require('./polyfills.js');
       roles: {
         1: 'Administrator'
       },
-      messages: {
-        addOption: 'Add Option +',
-        allFieldsRemoved: 'All fields were removed.',
-        allowMultipleFiles: 'Allow users to upload multiple files',
-        autocomplete: 'Autocomplete',
-        button: 'Button',
-        cannotBeEmpty: 'This field cannot be empty',
-        checkboxGroup: 'Checkbox Group',
-        checkbox: 'Checkbox',
-        checkboxes: 'Checkboxes',
-        className: 'Class',
-        clearAllMessage: 'Are you sure you want to clear all fields?',
-        clearAll: 'Clear',
-        close: 'Close',
-        content: 'Content',
-        copy: 'Copy To Clipboard',
-        copyButton: '&#43;',
-        copyButtonTooltip: 'Copy',
-        dateField: 'Date Field',
-        description: 'Help Text',
-        descriptionField: 'Description',
-        devMode: 'Developer Mode',
-        editNames: 'Edit Names',
-        editorTitle: 'Form Elements',
-        editXML: 'Edit XML',
-        enableOther: 'Enable &quot;Other&quot;',
-        enableOtherMsg: 'Let users to enter an unlisted option',
-        fieldDeleteWarning: false,
-        fieldVars: 'Field Variables',
-        fieldNonEditable: 'This field cannot be edited.',
-        fieldRemoveWarning: 'Are you sure you want to remove this field?',
-        fileUpload: 'File Upload',
-        formUpdated: 'Form Updated',
-        getStarted: 'Drag a field from the right to this area',
-        header: 'Header',
-        hide: 'Edit',
-        hidden: 'Hidden Input',
-        label: 'Label',
-        labelEmpty: 'Field Label cannot be empty',
-        limitRole: 'Limit access to one or more of the following roles:',
-        mandatory: 'Mandatory',
-        maxlength: 'Max Length',
-        minOptionMessage: 'This field requires a minimum of 2 options',
-        multipleFiles: 'Multiple Files',
-        name: 'Name',
-        no: 'No',
-        noFieldsToClear: 'There are no fields to clear',
-        number: 'Number',
-        off: 'Off',
-        on: 'On',
-        option: 'Option',
-        optional: 'optional',
-        optionLabelPlaceholder: 'Label',
-        optionValuePlaceholder: 'Value',
-        optionEmpty: 'Option value required',
-        other: 'Other',
-        paragraph: 'Paragraph',
-        placeholder: 'Placeholder',
-        placeholders: {
-          value: 'Value',
-          label: 'Label',
-          text: '',
-          textarea: '',
-          email: 'Enter you email',
-          placeholder: '',
-          className: 'space separated classes',
-          password: 'Enter your password'
-        },
-        preview: 'Preview',
-        radioGroup: 'Radio Group',
-        radio: 'Radio',
-        removeMessage: 'Remove Element',
-        removeOption: 'Remove Option',
-        remove: '&#215;',
-        required: 'Required',
-        richText: 'Rich Text Editor',
-        roles: 'Access',
-        rows: 'Rows',
-        save: 'Save',
-        selectOptions: 'Options',
-        select: 'Select',
-        selectColor: 'Select Color',
-        selectionsMessage: 'Allow Multiple Selections',
-        size: 'Size',
-        sizes: {
-          xs: 'Extra Small',
-          sm: 'Small',
-          m: 'Default',
-          lg: 'Large'
-        },
-        style: 'Style',
-        styles: {
-          btn: {
-            'default': 'Default',
-            danger: 'Danger',
-            info: 'Info',
-            primary: 'Primary',
-            success: 'Success',
-            warning: 'Warning'
-          }
-        },
-        subtype: 'Type',
-        text: 'Text Field',
-        textArea: 'Text Area',
-        toggle: 'Toggle',
-        warning: 'Warning!',
-        value: 'Value',
-        viewJSON: '{  }',
-        viewXML: '&lt;/&gt;',
-        yes: 'Yes'
-      },
       notify: {
         error: function(message) {
           return console.error(message);
@@ -196,13 +85,13 @@ require('./polyfills.js');
             };
 
             if (fields.length) {
-              _helpers.confirm(opts.messages.clearAllMessage, function() {
+              _helpers.confirm(i18n.clearAllMessage, function() {
                 _helpers.removeAllfields();
-                opts.notify.success(opts.messages.allFieldsRemoved);
+                opts.notify.success(i18n.allFieldsRemoved);
                 opts.onClearAll();
               }, coords);
             } else {
-              _helpers.dialog(opts.messages.noFieldsToClear, coords);
+              _helpers.dialog(i18n.noFieldsToClear, coords);
             }
           }
         }
@@ -228,7 +117,6 @@ require('./polyfills.js');
           bottom: 'auto',
           right: 'auto'
         }
-
       },
       showActionButtons: true,
       typeUserAttrs: {},
@@ -279,6 +167,8 @@ require('./polyfills.js');
           header: 'Header',
           hide: 'Edit',
           hidden: 'Hidden Input',
+          inline: 'Inline',
+          inlineDesc: 'Display {type} inline',
           label: 'Label',
           labelEmpty: 'Field Label cannot be empty',
           limitRole: 'Limit access to one or more of the following roles:',
@@ -293,6 +183,7 @@ require('./polyfills.js');
           off: 'Off',
           on: 'On',
           option: 'Option',
+          options: 'Options',
           optional: 'optional',
           optionLabelPlaceholder: 'Label',
           optionValuePlaceholder: 'Value',
@@ -326,12 +217,10 @@ require('./polyfills.js');
           selectColor: 'Select Color',
           selectionsMessage: 'Allow Multiple Selections',
           size: 'Size',
-          sizes: {
-            xs: 'Extra Small',
-            sm: 'Small',
-            m: 'Default',
-            lg: 'Large'
-          },
+          'size.xs': 'Extra Small',
+          'size.sm': 'Small',
+          'size.m': 'Default',
+          'size.lg': 'Large',
           style: 'Style',
           styles: {
             btn: {
@@ -358,9 +247,11 @@ require('./polyfills.js');
 
     let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
     formBuilder.formID = frmbID;
-    let {i18n, ...opts} = $.extend(defaults, options, true);
+    let {i18n, ...opts} = $.extend({}, defaults, options, true);
 
-    await formBuilder.mi18n.init(i18n);
+    i18n = await formBuilder.mi18n.init(i18n);
+    const mi18n = formBuilder.mi18n;
+
     let _helpers = require('./helpers.js')(opts, formBuilder);
 
     const subtypes = _helpers.processSubtypes(opts.subtypes);
@@ -375,96 +266,96 @@ require('./polyfills.js');
 
     // create array of field objects to cycle through
     let frmbFields = [{
-      label: opts.messages.autocomplete,
+      label: i18n['autocomplete'],
       attrs: {
         type: 'autocomplete',
         className: 'autocomplete',
         name: 'autocomplete'
       }
     }, {
-      label: opts.messages.button,
+      label: i18n['button'],
       attrs: {
         type: 'button',
         className: 'button-input',
         name: 'button'
       }
     }, {
-      label: opts.messages.checkbox,
+      label: i18n['checkbox'],
       attrs: {
         type: 'checkbox',
         className: 'checkbox',
         name: 'checkbox'
       }
     }, {
-      label: opts.messages.checkboxGroup,
+      label: i18n['checkboxGroup'],
       attrs: {
         type: 'checkbox-group',
         className: 'checkbox-group',
         name: 'checkbox-group'
       }
     }, {
-      label: opts.messages.dateField,
+      label: i18n['dateField'],
       attrs: {
         type: 'date',
         className: 'calendar',
         name: 'date-input'
       }
     }, {
-      label: opts.messages.fileUpload,
+      label: i18n['fileUpload'],
       attrs: {
         type: 'file',
         className: 'file-input',
         name: 'file-input'
       }
     }, {
-      label: opts.messages.header,
+      label: i18n['header'],
       attrs: {
         type: 'header',
         className: 'header'
       }
     }, {
-      label: opts.messages.hidden,
+      label: i18n['hidden'],
       attrs: {
         type: 'hidden',
         className: 'hidden-input',
         name: 'hidden-input'
       }
     }, {
-      label: opts.messages.number,
+      label: i18n['number'],
       attrs: {
         type: 'number',
         className: 'number',
         name: 'number'
       }
     }, {
-      label: opts.messages.paragraph,
+      label: i18n['paragraph'],
       attrs: {
         type: 'paragraph',
         className: 'paragraph'
       }
     }, {
-      label: opts.messages.radioGroup,
+      label: i18n['radioGroup'],
       attrs: {
         type: 'radio-group',
         className: 'radio-group',
         name: 'radio-group'
       }
     }, {
-      label: opts.messages.select,
+      label: i18n['select'],
       attrs: {
         type: 'select',
         className: 'select',
         name: 'select'
       }
     }, {
-      label: opts.messages.text,
+      label: i18n['text'],
       attrs: {
         type: 'text',
         className: 'text-input',
         name: 'text-input'
       }
     }, {
-      label: opts.messages.textArea,
+      label: i18n['textArea'],
       attrs: {
         type: 'textarea',
         className: 'text-area',
@@ -730,7 +621,7 @@ require('./polyfills.js');
         $stageWrap.removeClass('empty');
       } else if (!opts.prepend && !opts.append) {
         $stageWrap.addClass('empty')
-        .attr('data-content', opts.messages.getStarted);
+        .attr('data-content', i18n.getStarted);
       }
       _helpers.save();
 
@@ -751,16 +642,16 @@ require('./polyfills.js');
      */
     let fieldOptions = function(values) {
       let optionActions = [
-          utils.markup('a', opts.messages.addOption, {className: 'add add-opt'})
+          utils.markup('a', i18n.addOption, {className: 'add add-opt'})
         ];
       let fieldOptions = [
-        `<label class="false-label">${opts.messages.selectOptions}</label>`
+        `<label class="false-label">${i18n.selectOptions}</label>`
       ];
       const isMultiple = values.multiple || (values.type === 'checkbox-group');
 
       if (!values.values || !values.values.length) {
         values.values = [1, 2, 3].map(function(index) {
-          let label = `${opts.messages.option} ${index}`;
+          let label = `${i18n.option} ${index}`;
           let option = {
             selected: false,
             label: label,
@@ -801,7 +692,17 @@ require('./polyfills.js');
       advFields.push(requiredField(values));
 
       if (values.type === 'checkbox') {
-        advFields.push(boolAttribute('toggle', values, {first: opts.messages.toggle}));
+        advFields.push(boolAttribute('toggle', values, {first: i18n.toggle}));
+      }
+
+      // Inline options
+      if (utils.inArray(values.type, ['checkbox-group', 'radio-group'])) {
+        let labels = {
+          first: i18n.inline,
+          second: mi18n.get('messages.inlineDesc', values.type.replace('-group', ''))
+        };
+
+        advFields.push(boolAttribute('inline', values, labels));
       }
 
       advFields.push(textAttribute('label', values));
@@ -848,8 +749,8 @@ require('./polyfills.js');
 
       if (values.type === 'file') {
         let labels = {
-          first: opts.messages.multipleFiles,
-          second: opts.messages.allowMultipleFiles
+          first: i18n.multipleFiles,
+          second: i18n.allowMultipleFiles
         };
         advFields.push(boolAttribute('multiple', values, labels));
       }
@@ -868,16 +769,16 @@ require('./polyfills.js');
 
       availableRoles.push('</div>');
 
-      let accessLabels = {first: opts.messages.roles, second: opts.messages.limitRole, content: availableRoles.join('')};
+      let accessLabels = {first: i18n.roles, second: i18n.limitRole, content: availableRoles.join('')};
 
       advFields.push(boolAttribute('access', values, accessLabels));
 
       if (values.type.match(/(checkbox-group|radio-group)/)) {
-        advFields.push(boolAttribute('other', values, {first: opts.messages.enableOther, second: opts.messages.enableOtherMsg}));
+        advFields.push(boolAttribute('other', values, {first: i18n.enableOther, second: i18n.enableOtherMsg}));
       }
 
       if (values.type === 'select') {
-        advFields.push(boolAttribute('multiple', values, {first: ' ', second: opts.messages.selectionsMessage}));
+        advFields.push(boolAttribute('multiple', values, {first: ' ', second: i18n.selectionsMessage}));
       }
 
       if (values.type.match(d.optionFieldsRegEx)) {
@@ -907,12 +808,12 @@ require('./polyfills.js');
 
       for (let attribute in typeUserAttr) {
         if (typeUserAttr.hasOwnProperty(attribute)) {
-          let orig = opts.messages[attribute];
+          let orig = i18n[attribute];
           let origValue = typeUserAttr[attribute].value;
           typeUserAttr[attribute].value = values[attribute] || typeUserAttr[attribute].value || '';
 
           if (typeUserAttr[attribute].label) {
-            opts.messages[attribute] = typeUserAttr[attribute].label;
+            i18n[attribute] = typeUserAttr[attribute].label;
           }
 
           if (typeUserAttr[attribute].options) {
@@ -921,7 +822,7 @@ require('./polyfills.js');
             advField.push(inputUserAttrs(attribute, typeUserAttr[attribute]));
           }
 
-          opts.messages[attribute] = orig;
+          i18n[attribute] = orig;
           typeUserAttr[attribute].value = origValue;
         }
       }
@@ -943,7 +844,7 @@ require('./polyfills.js');
           type: attrs.type || 'text',
           className: [`fld-${name}`]
         };
-      let label = `<label for="${textAttrs.id}">${opts.messages[name]}</label>`;
+      let label = `<label for="${textAttrs.id}">${i18n[name]}</label>`;
 
       if (!utils.inArray(textAttrs.type, ['checkbox', 'checkbox-group', 'radio-group'])) {
         textAttrs.className.push('form-control');
@@ -976,7 +877,7 @@ require('./polyfills.js');
         name: name,
         className: `fld-${name} form-control`
       };
-      let label = `<label for="${selectAttrs.id}">${opts.messages[name]}</label>`;
+      let label = `<label for="${selectAttrs.id}">${i18n[name]}</label>`;
 
       Object.keys(options).filter(prop => {
         return !utils.inArray(prop, ['value', 'options', 'label']);
@@ -1023,11 +924,11 @@ require('./polyfills.js');
     };
 
     let btnStyles = function(style) {
-        let styles = opts.messages.styles.btn;
+        let styles = i18n['styles.btn'];
         let styleField = '';
 
       if (styles) {
-        let styleLabel = `<label>${opts.messages.style}</label>`;
+        let styleLabel = `<label>${i18n.style}</label>`;
         styleField += `<input value="${style}" name="style" type="hidden" class="btn-style">`;
         styleField += '<div class="btn-group" role="group">';
 
@@ -1037,7 +938,7 @@ require('./polyfills.js');
             classList.push('selected');
           }
 
-          styleField += `<button value="${element}" type="button" class="${classList.join(' ')}">${opts.messages.styles.btn[element]}</button>`;
+          styleField += `<button value="${element}" type="button" class="${classList.join(' ')}">${i18n.styles.btn[element]}</button>`;
         });
 
         styleField += '</div>';
@@ -1060,8 +961,8 @@ require('./polyfills.js');
       }
 
       let attrVal = values[attribute];
-      let attrLabel = opts.messages[attribute] || attribute;
-      let placeholder = opts.messages.placeholders[attribute];
+      let attrLabel = i18n[attribute] || attribute;
+      let placeholder = i18n.placeholders[attribute];
       let inputConfig = {
         type: 'number',
         value: attrVal,
@@ -1090,7 +991,7 @@ require('./polyfills.js');
       }
       let selectOptions = optionData.map((option, i) => {
         let optionAttrs = Object.assign({
-          label: `${opts.messages.option} ${i}`,
+          label: `${i18n.option} ${i}`,
           value: undefined
         }, option);
         if (option.value === values[attribute]) {
@@ -1103,7 +1004,7 @@ require('./polyfills.js');
           name: attribute,
           className: `fld-${attribute} form-control`
         };
-      let label = `<label for="${selectAttrs.id}">${opts.messages[attribute] || utils.capitalize(attribute)}</label>`;
+      let label = `<label for="${selectAttrs.id}">${i18n[attribute] || utils.capitalize(attribute)}</label>`;
       let select = `<select ${utils.attrString(selectAttrs)}>${selectOptions.join('')}</select>`;
       let inputWrap = `<div class="input-wrap">${select}</div>`;
 
@@ -1136,16 +1037,16 @@ require('./polyfills.js');
       let textArea = ['paragraph'];
 
       let attrVal = values[attribute] || '';
-      let attrLabel = opts.messages[attribute];
+      let attrLabel = i18n[attribute];
       if (attribute === 'label' && utils.inArray(values.type, textArea)) {
-        attrLabel = opts.messages.content;
+        attrLabel = i18n.content;
       }
 
       if (subtypes.header) {
         noName = noName.concat(subtypes.header);
       }
 
-      let placeholders = opts.messages.placeholders;
+      let placeholders = i18n.placeholders;
       let placeholder = placeholders[attribute] || '';
       let attributefield = '';
       let noMakeAttr = [];
@@ -1179,7 +1080,12 @@ require('./polyfills.js');
 
         let inputWrap = `<div class="input-wrap">${attributefield}</div>`;
 
-        attributefield = `<div class="form-group ${attribute}-wrap">${attributeLabel} ${inputWrap}</div>`;
+        let visibility = 'block';
+        if (attribute === 'value') {
+          visibility = values.subtype && values.subtype === 'quill' && 'none';
+        }
+
+        attributefield = `<div class="form-group ${attribute}-wrap" style="display: ${visibility}">${attributeLabel} ${inputWrap}</div>`;
       }
 
       return attributefield;
@@ -1198,7 +1104,7 @@ require('./polyfills.js');
         noMake.push(true);
       }
       if (!noMake.some(elem => elem === true)) {
-        requireField = boolAttribute('required', values, {first: opts.messages.required});
+        requireField = boolAttribute('required', values, {first: i18n.required});
       }
 
       return requireField;
@@ -1207,21 +1113,21 @@ require('./polyfills.js');
     // Append the new field to the editor
     let appendNewField = function(values, isNew = true) {
       let type = values.type || 'text';
-      let label = values.label || opts.messages[type] || opts.messages.label;
-      let delBtn = m('a', opts.messages.remove, {
+      let label = values.label || i18n[type] || i18n.label;
+      let delBtn = m('a', i18n.remove, {
           id: 'del_' + lastID,
           className: 'del-button btn delete-confirm',
-          title: opts.messages.removeMessage
+          title: i18n.removeMessage
         });
       let toggleBtn = m('a', null, {
         id: lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
-        title: opts.messages.hide
+        title: i18n.hide
       });
-      let copyBtn = m('a', opts.messages.copyButton, {
+      let copyBtn = m('a', i18n.copyButton, {
         id: lastID + '-copy',
         className: 'copy-button btn icon-copy',
-        title: opts.messages.copyButtonTooltip
+        title: i18n.copyButtonTooltip
       });
 
       let liContents = m(
@@ -1247,7 +1153,7 @@ require('./polyfills.js');
       liContents += '<div class="form-elements">';
 
       liContents += advFields(values);
-      liContents += m('a', opts.messages.close, {className: 'close-field'}).outerHTML;
+      liContents += m('a', i18n.close, {className: 'close-field'}).outerHTML;
 
       liContents += '</div>';
       liContents += '</div>';
@@ -1309,8 +1215,8 @@ require('./polyfills.js');
             name: name + '-option'
           };
 
-          if (opts.messages.placeholders[prop]) {
-            attrs.placeholder = opts.messages.placeholders[prop];
+          if (i18n.placeholders[prop]) {
+            attrs.placeholder = i18n.placeholders[prop];
           }
 
           if (prop === 'selected' && optionData.selected === true) {
@@ -1323,9 +1229,9 @@ require('./polyfills.js');
 
       let removeAttrs = {
         className: 'remove btn',
-        title: opts.messages.removeMessage
+        title: i18n.removeMessage
       };
-      optionInputs.push(utils.markup('a', opts.messages.remove, removeAttrs));
+      optionInputs.push(utils.markup('a', i18n.remove, removeAttrs));
 
       let field = utils.markup('li', optionInputs);
 
@@ -1386,7 +1292,7 @@ require('./polyfills.js');
       e.preventDefault();
       let optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
       if (optionsCount <= 2) {
-        opts.notify.error('Error: ' + opts.messages.minOptionMessage);
+        opts.notify.error('Error: ' + i18n.minOptionMessage);
       } else {
         $(this).parent('li').slideUp('250', function() {
           $(this).remove();
@@ -1423,6 +1329,12 @@ require('./polyfills.js');
       } else {
         return false;
       }
+    });
+
+    $sortableFields.on('change', '[name="subtype"]', (e) => {
+      const $field = $(e.target).closest('li.form-field');
+      const $valWrap = $('.value-wrap', $field);
+      $valWrap.toggle(e.target.value !== 'quill');
     });
 
     $sortableFields.on('change', '.prev-holder input, .prev-holder select', e => {
@@ -1498,7 +1410,7 @@ require('./polyfills.js');
       if (e.target.value === '') {
         $(e.target)
         .addClass('field-error')
-        .attr('placeholder', opts.messages.cannotBeEmpty);
+        .attr('placeholder', i18n.cannotBeEmpty);
       } else {
         $(e.target).removeClass('field-error');
       }
@@ -1538,8 +1450,8 @@ require('./polyfills.js');
 
       // Check if user is sure they want to remove the field
       if (opts.fieldRemoveWarn) {
-        let warnH3 = utils.markup('h3', opts.messages.warning);
-        let warnMessage = utils.markup('p', opts.messages.fieldRemoveWarning);
+        let warnH3 = utils.markup('h3', i18n.warning);
+        let warnMessage = utils.markup('p', i18n.fieldRemoveWarning);
         _helpers.confirm([warnH3, warnMessage], () =>
           _helpers.removeField(deleteID), coords);
         $field.addClass('deleting');
@@ -1598,44 +1510,6 @@ require('./polyfills.js');
     $sortableFields.on('mouseover mouseout', '.remove, .del-button', e =>
       $(e.target).closest('li').toggleClass('delete'));
 
-    if (opts.showActionButtons) {
-      // View XML
-      // let xmlButton = $(document.getElementById(frmbID + '-view-data'));
-      // xmlButton.click(function(e) {
-      //   e.preventDefault();
-      //   _helpers.showData();
-      // });
-
-      // Clear all fields in form editor
-      // let clearButton = document.getElementById(`${frmbID}-clear-all`);
-      // clearButton.onclick = () => {
-      //   let fields = $('li.form-field', formBuilder.stage);
-      //   let buttonPosition = clearButton.getBoundingClientRect();
-      //   let bodyRect = document.body.getBoundingClientRect();
-      //   let coords = {
-      //     pageX: buttonPosition.left + (buttonPosition.width / 2),
-      //     pageY: (buttonPosition.top - bodyRect.top) - 12
-      //   };
-
-      //   if (fields.length) {
-      //     _helpers.confirm(opts.messages.clearAllMessage, function() {
-      //       _helpers.removeAllfields();
-      //       opts.notify.success(opts.messages.allFieldsRemoved);
-      //       _helpers.save();
-      //       opts.onClearAll();
-      //     }, coords);
-      //   } else {
-      //     _helpers.dialog('There are no fields to clear', coords);
-      //   }
-      // };
-
-      // Save Idea Template
-      // document.getElementById(`${frmbID}-save`).onclick = () => {
-      //   opts.onSave(_helpers.save());
-      // };
-    }
-
-
     loadFields();
 
     $sortableFields.css('min-height', $cbUL.height());
@@ -1678,7 +1552,6 @@ require('./polyfills.js');
     formBuilder.i18n = {
       setLang: async locale => {
         let newLang = await formBuilder.mi18n.setCurrent.call(formBuilder.mi18n, locale);
-        console.log(newLang);
       }
     };
 

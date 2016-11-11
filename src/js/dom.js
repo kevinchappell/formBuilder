@@ -21,11 +21,12 @@ dom.empty = (element) => {
 };
 
 /**
-   * Hide or show an Array or HTMLCollection of elements
-   * @param  {Array} elems
-   * @param  {String} term  match textContent to this term
-   * @return {Array}        filtered elements
-   */
+ * Hide or show an Array or HTMLCollection of elements
+ * @param  {Array}   elems
+ * @param  {String}  term  match textContent to this term
+ * @param  {Boolean} show  or hide elements
+ * @return {Array}         filtered elements
+ */
 dom.filter = (elems, term, show = true) => {
   let filteredElems = [];
   let toggle = ['none', 'block'];

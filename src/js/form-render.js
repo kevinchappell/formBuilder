@@ -101,7 +101,6 @@ function FormRender(options, element) {
     for (let i = 0; i < opts.formData.length; i++) {
       let sanitizedField = santizeField(opts.formData[i]);
       rendered.push(utils.getTemplate(sanitizedField));
-      // rendered.push(utils.fieldRender(sanitizedField, opts));
     }
 
     if (opts.render) {
