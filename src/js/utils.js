@@ -1,3 +1,5 @@
+import d from './dom';
+
 /**
  * Cross file utilities for working with arrays,
  * sorting and other fun stuff
@@ -378,7 +380,6 @@
   fbUtils.templateMap = (templates, type, fallback) => {
     let template;
     let templateMap = new Map(templates);
-
     for (let [key, value] of templateMap) {
       if (Array.isArray(key)) {
         if(fbUtils.inArray(type, key)) {
@@ -398,13 +399,64 @@
     return template();
   };
 
+  fbUtils.autocompleteTemplate = fieldData => {
+    let {values, type, ...data} = fieldData;
+    const fauxEvents = {
+      input: (evt) => {
+        const list = document.getElementById(`${data.id}-list`);
+        d.filter(list.querySelectorAll('li'), evt.target.value);
+        if (!evt.target.value) {
+          list.style.display = 'none';
+        } else {
+          list.style.display = 'block';
+        }
+      }
+    };
+    let fauxAttrs = Object.assign({}, data,
+      {
+        id: `${data.id}-input`,
+        events: fauxEvents
+      });
+    let hiddenAttrs = Object.assign({}, data, {type: 'hidden'});
+    delete fauxAttrs.name;
+    const field = [
+      m('input', null, fauxAttrs),
+      m('input', null, hiddenAttrs)
+    ];
+
+    const options = values.map((optionData, i) => {
+      let label = optionData.label;
+      let config = {
+        events: {
+          click: () => {
+            const list = document.getElementById(`${data.id}-list`);
+            const field = document.getElementById(data.id);
+            field.value = optionData.value;
+            field.previousSibling.value = optionData.label;
+            list.style.display = 'none';
+          }
+        },
+        value: optionData.value
+      };
+      return m('li', label, config);
+    });
+
+    field.push(m('ul', options,
+      {id: `${data.id}-list`, className: `fb-${type}-list`}));
+
+    const onRender = (evt) => {
+
+    };
+
+    return {field, onRender};
+  };
+
   /**
    * Generate DOM elements for select, checkbox-group and radio-group.
    * @param  {Object} fieldData
    * @return {Object}           DOM elements
    */
-  fbUtils.selectTemplate = (fieldData) => {
-    let template;
+  fbUtils.selectTemplate = fieldData => {
     let options = [];
     let {values, placeholder, type, inline, other, ...data} = fieldData;
     let optionType = type.replace('-group', '');
@@ -501,7 +553,12 @@
       type = subtype;
     }
 
-    return () => m(type, label, data);
+    let field = {
+      field: m(type, label, data),
+      onRender: fbUtils.noop
+    };
+
+    return () => field;
   };
 
   /**
@@ -640,8 +697,15 @@
     return {field: template.field, onRender};
   };
 
-  fbUtils.getTemplate = (fieldData, opts) => {
-    let {label, description, subtype, isPreview, onRender, ...data} = fieldData;
+  fbUtils.getTemplate = (fieldData) => {
+    console.log(fieldData);
+    let {
+      label,
+      description,
+      subtype,
+      isPreview,
+      labelPosition,
+      ...data} = fieldData;
     let template;
     let field;
 
@@ -666,6 +730,15 @@
     let fieldLabel = fbUtils.makeLabel(data, label, description);
 
     let templates = [
+      [['autocomplete'],
+        () => {
+          let autocomplete = fbUtils.autocompleteTemplate(data);
+          let template = {
+            field: [fieldLabel, autocomplete.field],
+            onRender: autocomplete.onRender
+          };
+          return template;
+        }],
       [['text', 'password', 'email', 'number', 'file', 'color', 'date', 'tel'],
         () => {
           let template = {
@@ -688,6 +761,25 @@
           let template = {
             field: [fieldLabel, field],
             onRender: fbUtils.noop
+          };
+          return template;
+        }],
+      ['checkbox',
+        () => {
+          let field = [m('input', label, data)];
+          if (labelPosition === 'beforeInput') {
+            field.unshift(fieldLabel, ' ');
+          } else {
+            field.push(' ', fieldLabel);
+          }
+          let template = {
+            field,
+            onRender: () => {
+              console.log($.kcToggle);
+              if (data.toggle) {
+                $(field).kcToggle();
+              }
+            }
           };
           return template;
         }],
@@ -853,10 +945,10 @@
         // case 'color':
         //   fieldMarkup = `${fieldLabel} <input ${fieldDataString}> ${opts.messages.selectColor}`;
         //   break;
-        case 'button':
-        case 'submit':
-          fieldMarkup = `<button ${fieldDataString}>${fieldLabelVal}</button>`;
-          break;
+        // case 'button':
+        // case 'submit':
+        //   fieldMarkup = `<button ${fieldDataString}>${fieldLabelVal}</button>`;
+        //   break;
         case 'checkbox':
           fieldMarkup = `<input ${fieldDataString}> ${fieldLabel}`;
 

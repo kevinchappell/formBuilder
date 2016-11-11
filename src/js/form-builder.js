@@ -1,3 +1,4 @@
+import d from './dom';
 require('./kc-toggle.js');
 require('./polyfills.js');
 // const extend = require('deep-extend');
@@ -195,15 +196,20 @@ require('./polyfills.js');
 
             if (fields.length) {
               _helpers.confirm(opts.messages.clearAllMessage, function() {
-                _helpers.removeAllfields();
+                _helpers.removeAllfields(false);
                 opts.notify.success(opts.messages.allFieldsRemoved);
-                _helpers.save();
                 opts.onClearAll();
               }, coords);
             } else {
               _helpers.dialog(opts.messages.noFieldsToClear, coords);
             }
           }
+        }
+      }, {
+        label: 'Data',
+        type: 'button',
+        events: {
+          click: () => _helpers.showData()
         }
       }, {
         label: 'Save',
@@ -707,10 +713,16 @@ require('./polyfills.js');
 
       field.name = isNew ? nameAttr(field) : ( field.name || nameAttr(field) );
 
-      if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
+      if (isNew && utils.inArray(field.type,
+        ['text',
+         'number',
+         'file',
+         'select',
+         'textarea',
+         'autocomplete'])) {
         field.className = 'form-control'; // backwards compatibility
       } else {
-        field.className = field.class || field.className; // backwards compatibility
+        field.className = field.class || field.className;
       }
 
       let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
@@ -729,6 +741,7 @@ require('./polyfills.js');
 
     // Parse saved XML template data
     let loadFields = function() {
+      _helpers.getData();
       let formData = formBuilder.formData;
       if (formData && formData.length) {
         for (let i = 0; i < formData.length; i++) {
@@ -825,15 +838,7 @@ require('./polyfills.js');
     let advFields = function(values) {
       let advFields = [];
       let key;
-      let optionFields = [
-        'select',
-        'checkbox-group',
-        'radio-group'
-      ];
-      let isOptionField = (function() {
-        return (optionFields.indexOf(values.type) !== -1);
-      })();
-      let valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(optionFields));
+      let valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(d.optionFields));
       let roles = values.role !== undefined ? values.role.split(',') : [];
 
       advFields.push(requiredField(values));
@@ -910,7 +915,7 @@ require('./polyfills.js');
 
       advFields.push(boolAttribute('access', values, accessLabels));
 
-      if (values.type === 'checkbox-group' || values.type === 'radio-group') {
+      if (values.type.match(/(checkbox-group|radio-group)/)) {
         advFields.push(boolAttribute('other', values, {first: opts.messages.enableOther, second: opts.messages.enableOtherMsg}));
       }
 
@@ -918,7 +923,7 @@ require('./polyfills.js');
         advFields.push(boolAttribute('multiple', values, {first: ' ', second: opts.messages.selectionsMessage}));
       }
 
-      if (isOptionField) {
+      if (values.type.match(d.optionFieldsRegEx)) {
         advFields.push(fieldOptions(values));
       }
 
@@ -1162,7 +1167,8 @@ require('./polyfills.js');
       let placeholderFields = [
         'text',
         'textarea',
-        'select'
+        'select',
+        'autocomplete'
       ];
 
       let noName = [
@@ -1671,7 +1677,7 @@ require('./polyfills.js');
       // };
     }
 
-    _helpers.getData();
+
     loadFields();
 
     $sortableFields.css('min-height', $cbUL.height());
@@ -1706,8 +1712,7 @@ require('./polyfills.js');
         return data[type]();
       },
       setData: formData => {
-        _helpers.removeAllfields();
-        _helpers.getData(formData);
+        _helpers.removeAllfields(false);
         loadFields();
       }
     };
