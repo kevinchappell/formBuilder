@@ -827,6 +827,7 @@ textarea.form-control {
   display: none; }
 
 .fb-autocomplete-list {
+  background-color: #fff;
   display: none;
   list-style: none;
   padding: 0;

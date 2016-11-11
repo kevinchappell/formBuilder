@@ -474,10 +474,10 @@ import d from './dom';
         let {label = '', ...optionAttrs} = values[i];
 
         optionAttrs.id = `${data.id}-${i}`;
-
         if (!optionAttrs.selected || placeholder) {
           delete optionAttrs.selected;
         }
+
         if (isSelect) {
           let o = m('option', document.createTextNode(label), optionAttrs);
           options.push(o);
@@ -487,6 +487,10 @@ import d from './dom';
             wrapperClass += '-inline';
           }
           optionAttrs.type = optionType;
+          if (optionAttrs.selected) {
+            optionAttrs.checked = null;
+            delete optionAttrs.selected;
+          }
           let input = m('input', null, Object.assign({}, data, optionAttrs));
           let inputLabel = m('label', [input, label], {for: optionAttrs.id});
           let wrapper = m('div', inputLabel, {className: wrapperClass});
@@ -697,13 +701,12 @@ import d from './dom';
     return {field: template.field, onRender};
   };
 
-  fbUtils.getTemplate = (fieldData) => {
+  fbUtils.getTemplate = (fieldData, isPreview = false) => {
     console.log(fieldData);
     let {
       label,
       description,
       subtype,
-      isPreview,
       labelPosition,
       ...data} = fieldData;
     let template;
@@ -815,164 +818,6 @@ import d from './dom';
 
       return field;
   };
-
-  /**
-   * Generate preview markup
-   * @param  {Object}  fieldData
-   * @param  {Object}  opts
-   * @param  {Boolean} preview
-   * @return {String}  preview markup for field
-   */
-  fbUtils.fieldRender = function(fieldData, opts, preview = false) {
-      let fieldMarkup = '';
-      let fieldLabel = '';
-      let optionsMarkup = '';
-      let fieldLabelText = fieldData.label || '';
-      let fieldDesc = fieldData.description || '';
-      let fieldRequired = '';
-      let fieldOptions = fieldData.values;
-      fieldData.isPreview = preview;
-      let template = fbUtils.getTemplate(fieldData, opts);
-
-      fieldData.name = preview ? fieldData.name + '-preview' : fieldData.name;
-      fieldData.id = fieldData.name;
-      if (fieldData.multiple) {
-        fieldData.name = fieldData.name + '[]';
-      }
-
-      fieldData.type = fieldData.subtype || fieldData.type;
-
-      if (fieldData.required) {
-        fieldData.required = null;
-        fieldData['aria-required'] = 'true';
-        fieldRequired = '<span class="required">*</span>';
-      }
-
-      if (fieldData.type !== 'hidden') {
-        if (fieldDesc) {
-          fieldDesc = `<span class="tooltip-element" tooltip="${fieldDesc}">?</span>`;
-        }
-        fieldLabel = `<label for="${fieldData.id}" class="fb-${fieldData.type}-label">${fieldLabelText} ${fieldRequired} ${fieldDesc}</label>`;
-      }
-
-      let fieldLabelVal = fieldData.label;
-
-      delete fieldData.label;
-      delete fieldData.description;
-
-      let fieldDataString = fbUtils.attrString(fieldData);
-
-      switch (fieldData.type) {
-        case 'textarea':
-        case 'rich-text':
-          delete fieldData.type;
-          let fieldVal = fieldData.value || '';
-          fieldMarkup = `${fieldLabel}<textarea ${fieldDataString}>${fieldVal}</textarea>`;
-          break;
-        // case 'select':
-        //   let optionAttrsString;
-        //   fieldData.type = fieldData.type.replace('-group', '');
-
-        //   if (fieldOptions) {
-        //     if (fieldData.placeholder) {
-        //       optionsMarkup += `<option disabled selected>${fieldData.placeholder}</option>`;
-        //     }
-
-        //     for (let i = 0; i < fieldOptions.length; i++) {
-        //       if (!fieldOptions[i].selected || fieldData.placeholder) {
-        //         delete fieldOptions[i].selected;
-        //       }
-        //       if (!fieldOptions[i].label) {
-        //         fieldOptions[i].label = '';
-        //       }
-        //       optionAttrsString = fbUtils.attrString(fieldOptions[i]);
-        //       optionsMarkup += `<option ${optionAttrsString}>${fieldOptions[i].label}</option>`;
-        //     }
-        //   }
-
-        //   fieldMarkup = `${fieldLabel}<select ${fieldDataString}>${optionsMarkup}</select>`;
-        //   break;
-        // case 'checkbox-group':
-        // case 'radio-group':
-        //   let optionAttrs;
-        //   fieldData.type = fieldData.type.replace('-group', '');
-
-        //   if (fieldData.type === 'checkbox') {
-        //     fieldData.name = fieldData.name + '[]';
-        //   }
-
-        //   if (fieldOptions) {
-        //     let optionAttrsString;
-
-        //     for (let i = 0; i < fieldOptions.length; i++) {
-        //       optionAttrs = Object.assign({value: '', label: ''}, fieldData, fieldOptions[i]);
-
-        //       if (optionAttrs.selected) {
-        //         delete optionAttrs.selected;
-        //         optionAttrs.checked = null;
-        //       }
-
-        //       optionAttrs.id = fieldData.id + '-' + i;
-        //       optionAttrsString = fbUtils.attrString(optionAttrs);
-        //       optionsMarkup += `<input ${optionAttrsString} /> <label for="${optionAttrs.id}">${optionAttrs.label}</label><br>`;
-        //     }
-
-        //     if (fieldData.other) {
-        //       let otherOptionAttrs = {
-        //         id: fieldData.id + '-' + 'other',
-        //         className: fieldData.className + ' other-option',
-        //         onclick: `fbUtils.otherOptionCB('${fieldData.id}-other')`
-        //       };
-
-        //       optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
-
-        //       optionsMarkup += `<input ${optionAttrsString} /> <label for="${otherOptionAttrs.id}">${opts.messages.other}</label> <input type="text" name="${fieldData.name}" id="${otherOptionAttrs.id}-value" style="display:none;" />`;
-        //     }
-        //   }
-        //   fieldMarkup = `${fieldLabel}<div class="${fieldData.type}-group">${optionsMarkup}</div>`;
-        //   break;
-        // case 'text':
-        // case 'password':
-        // case 'email':
-        // case 'number':
-        // case 'file':
-        // case 'hidden':
-        // case 'date':
-        // case 'tel':
-        // case 'autocomplete':
-        //   fieldMarkup = `${fieldLabel} <input ${fieldDataString}>`;
-        //   break;
-        // case 'color':
-        //   fieldMarkup = `${fieldLabel} <input ${fieldDataString}> ${opts.messages.selectColor}`;
-        //   break;
-        // case 'button':
-        // case 'submit':
-        //   fieldMarkup = `<button ${fieldDataString}>${fieldLabelVal}</button>`;
-        //   break;
-        case 'checkbox':
-          fieldMarkup = `<input ${fieldDataString}> ${fieldLabel}`;
-
-          if (fieldData.toggle) {
-            setTimeout(function() {
-              $(document.getElementById(fieldData.id)).kcToggle();
-            }, 100);
-          }
-          break;
-        default:
-          fieldMarkup = `<${fieldData.type} ${fieldDataString}>${fieldLabelVal}</${fieldData.type}>`;
-      }
-
-      if (fieldData.type !== 'hidden') {
-        let className = fieldData.id ? `fb-${fieldData.type} form-group field-${fieldData.id}` : '';
-        fieldMarkup = fbUtils.markup('div', template, {
-          className: className
-        });
-      } else {
-        fieldMarkup = fbUtils.markup('input', null, fieldData);
-      }
-
-      return fieldMarkup;
-    };
 
   /**
    * Callback for other option.
