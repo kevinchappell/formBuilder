@@ -226,7 +226,7 @@ function helpers(opts, formBuilder) {
 
     if (form.childNodes.length !== 0) {
       // build data object
-      utils.forEach(form.childNodes, function(index, field) {
+      utils.forEach(form.childNodes, async function(index, field) {
         let $field = $(field);
 
         if (!($field.hasClass('disabled-field'))) {
@@ -240,6 +240,23 @@ function helpers(opts, formBuilder) {
             let name = utils.camelCase(attr.name);
             fieldData[name] = attr.type === 'checkbox' ? attr.checked : attr.value;
           });
+
+          if (fieldData.subtype) {
+            if (fieldData.subtype === 'quill') {
+              let id = `${fieldData.name}-preview`;
+              if (window.fbEditors.quill[id]) {
+                let instance = window.fbEditors.quill[id].instance;
+                const data = instance.getContents();
+                fieldData.value = window.JSON.stringify(data.ops);
+              }
+            } else if(fieldData.subtype === 'tinymce' && window.tinymce) {
+              let id = `${fieldData.name}-preview`;
+              if (window.tinymce.editors[id]) {
+                let editor = window.tinymce.editors[id];
+                fieldData.value = editor.getContent();
+              }
+            }
+          }
 
           if (roleVals.length) {
             fieldData.role = roleVals.join(',');
@@ -374,7 +391,6 @@ function helpers(opts, formBuilder) {
     $prevHolder[0].appendChild(preview);
     preview.dispatchEvent(formBuilder.events.fieldRendered);
 
-    $('input[toggle]', $prevHolder).kcToggle();
   };
 
   _helpers.debounce = function(func, wait = 250, immediate = false) {
@@ -749,16 +765,22 @@ function helpers(opts, formBuilder) {
 
     $(window).scroll(function(evt) {
       let scrollTop = $(evt.target).scrollTop();
+      const offsetDefaults = {
+        top: 5,
+        bottom: 'auto',
+        right: 'auto',
+        left: cbPosition.left
+      };
+
+      let offset = opts.stickyControls.offset || offsetDefaults;
 
       if (scrollTop > $stageWrap.offset().top) {
-        let cbStyle = {
+        const style = {
           position: 'fixed',
-          width: cbWidth,
-          top: opts.stickyControls.offset.top,
-          bottom: 'auto',
-          right: 'auto',
-          left: cbPosition.left
+          width: cbWidth
         };
+
+        const cbStyle = Object.assign(style, offset);
 
         let cbOffset = $cbWrap.offset();
         let stageOffset = $stageWrap.offset();
@@ -870,7 +892,7 @@ function helpers(opts, formBuilder) {
         header: ['h1', 'h2', 'h3'],
         button: ['button', 'submit', 'reset'],
         paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
-        textarea: ['textarea', 'quill', 'tinymce']
+        textarea: ['textarea', 'quill']
       };
 
       let subtypes = utils.merge(defaultSubtypes, subtypeOpts);

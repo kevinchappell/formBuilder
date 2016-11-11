@@ -11,6 +11,10 @@ import d from './dom';
     js: [],
     css: []
   };
+  window.fbEditors = {
+    quill: {},
+    tinymce: {}
+  };
 
   // cleaner syntax for testing indexOf element
   fbUtils.inArray = function(needle, haystack) {
@@ -299,6 +303,17 @@ import d from './dom';
     }
 
     return formData;
+  };
+
+  /**
+   * Converts escaped HTML into usable HTML
+   * @param  {String} html escaped HTML
+   * @return {String}      parsed HTML
+   */
+  fbUtils.parsedHtml = function(html) {
+    let escapeElement = document.createElement('textarea');
+    escapeElement.innerHTML = html;
+    return escapeElement.textContent;
   };
 
   /**
@@ -634,16 +649,16 @@ import d from './dom';
   };
 
   fbUtils.longTextTemplate = data => {
-    let {value, ...attrs} = data;
+    let {value = '', ...attrs} = data;
     let template = {
-      field: m('textarea', value, attrs)
+      field: m('textarea', fbUtils.parsedHtml(value), attrs)
     };
     let editors = {
       tinymce: {
         js: ['//cdn.tinymce.com/4/tinymce.min.js'],
-        onRender: (evt) => {
-          for (template.field.id in window.tinymce.editors) {
-            window.tinymce.editors[template.field.id].remove();
+        onRender: evt => {
+          if (window.tinymce.editors[data.id]) {
+            window.tinymce.editors[data.id].remove();
           }
           window.tinymce.init({
             target: template.field,
@@ -661,16 +676,26 @@ import d from './dom';
         js: ['//cdn.quilljs.com/1.1.3/quill.js'],
         css: ['//cdn.quilljs.com/1.1.3/quill.snow.css'],
         onRender: evt => {
-          new window.Quill(template.field, {
+          const Delta = window.Quill.import('delta');
+          window.fbEditors.quill[data.id] = {};
+          let editor = window.fbEditors.quill[data.id];
+          editor.instance = new window.Quill(template.field, {
             modules: {
               toolbar: [
                 [{'header': [1, 2, false]}],
                 ['bold', 'italic', 'underline'],
-                ['image', 'code-block']
+                ['code-block']
               ]
             },
             placeholder: attrs.placeholder || '',
             theme: 'snow'
+          });
+          editor.data = new Delta();
+          if (value) {
+            editor.instance.setContents(window.JSON.parse(fbUtils.parsedHtml(value)));
+          }
+          editor.instance.on('text-change', function(delta) {
+            editor.data = editor.data.compose(delta);
           });
         }
       }
@@ -702,7 +727,6 @@ import d from './dom';
   };
 
   fbUtils.getTemplate = (fieldData, isPreview = false) => {
-    console.log(fieldData);
     let {
       label,
       description,
@@ -769,7 +793,7 @@ import d from './dom';
         }],
       ['checkbox',
         () => {
-          let field = [m('input', label, data)];
+          let field = [m('input', null, data)];
           if (labelPosition === 'beforeInput') {
             field.unshift(fieldLabel, ' ');
           } else {
@@ -778,9 +802,8 @@ import d from './dom';
           let template = {
             field,
             onRender: () => {
-              console.log($.kcToggle);
               if (data.toggle) {
-                $(field).kcToggle();
+                $(document.getElementById(data.id)).kcToggle();
               }
             }
           };
