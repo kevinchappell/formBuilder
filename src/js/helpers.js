@@ -368,7 +368,7 @@ function helpers(opts, formBuilder) {
     $('.fld-className', field).val(previewData.className);
 
     field.data('fieldData', previewData);
-    preview = utils.getTemplate(previewData, opts, true);
+    preview = utils.getTemplate(previewData, true);
 
     utils.empty($prevHolder[0]);
     $prevHolder[0].appendChild(preview);

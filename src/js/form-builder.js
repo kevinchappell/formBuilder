@@ -7,6 +7,7 @@ require('./polyfills.js');
   const FormBuilder = async function(options, element) {
     const formBuilder = this;
     const utils = require('./utils.js');
+    const m = utils.markup;
     formBuilder.events = require('./events.js');
     formBuilder.utils = utils;
     formBuilder.mi18n = require('mi18n').default;
@@ -196,7 +197,7 @@ require('./polyfills.js');
 
             if (fields.length) {
               _helpers.confirm(opts.messages.clearAllMessage, function() {
-                _helpers.removeAllfields(false);
+                _helpers.removeAllfields();
                 opts.notify.success(opts.messages.allFieldsRemoved);
                 opts.onClearAll();
               }, coords);
@@ -594,32 +595,7 @@ require('./polyfills.js');
     }).append($cbUL[0]);
 
     if (opts.showActionButtons) {
-      // Build our headers and action links
-      let viewDataText;
-      let m = utils.markup;
-      if(opts.dataType === 'xml') {
-        viewDataText = opts.messages.viewXML;
-      } else {
-        viewDataText = opts.messages.viewJSON;
-      }
-
-      let buttons = opts.actionButtons.map(_helpers.processActionButtons);
-
-      // const viewData = m('button', viewDataText, {
-      //   id: frmbID + '-view-data',
-      //   type: 'button',
-      //   className: 'view-data btn btn-default'
-      // });
-      const clearAll = m('button', opts.messages.clearAll, {
-        id: frmbID + '-clear-all',
-        type: 'button',
-        className: 'clear-all btn btn-danger'
-      });
-      const saveAll = m('button', opts.messages.save, {
-        className: `btn btn-primary ${opts.prefix}save`,
-        id: frmbID + '-save',
-        type: 'button'
-      });
+      const buttons = opts.actionButtons.map(_helpers.processActionButtons);
       const formActions = m('div', buttons, {
         className: 'form-actions btn-group'
       });
@@ -758,27 +734,8 @@ require('./polyfills.js');
       }
       _helpers.save();
 
-      // let $fields = $('li.form-field:not(.disabled-field)', $sortableFields);
-      // $fields.each(i => _helpers.updatePreview($($fields[i])));
-
       nonEditableFields();
     };
-
-    // callback to track disabled tooltips
-    // $sortableFields.on('mousemove', 'li.disabled', e => {
-    //   $('.frmb-tt', e.target).css({
-    //     left: e.offsetX - 16,
-    //     top: e.offsetY - 34
-    //   });
-    // });
-
-    // callback to call disabled tooltips
-    // $sortableFields.on('mouseenter', 'li.disabled', e =>
-      // _helpers.disabledTT.add(e.target));
-
-    // callback to call disabled tooltips
-    // $sortableFields.on('mouseleave', 'li.disabled', e =>
-      // _helpers.disabledTT.remove(e.target));
 
     let nameAttr = function(field) {
       let epoch = new Date().getTime();
@@ -1249,7 +1206,6 @@ require('./polyfills.js');
 
     // Append the new field to the editor
     let appendNewField = function(values, isNew = true) {
-      const m = utils.markup;
       let type = values.type || 'text';
       let label = values.label || opts.messages[type] || opts.messages.label;
       let delBtn = m('a', opts.messages.remove, {
@@ -1470,23 +1426,25 @@ require('./polyfills.js');
     });
 
     $sortableFields.on('change', '.prev-holder input, .prev-holder select', e => {
+      let prevOptions;
       if (e.target.classList.contains('other-option')) {
         return;
       }
       let field = $(e.target).closest('li.form-field')[0];
       if (utils.inArray(field.type, ['select', 'checkbox-group', 'radio-group'])) {
         let options = field.getElementsByClassName('option-value');
-        const preview = document.getElementsByName(e.target.name);
-        console.log([preview]);
-        utils.forEach(options, i => {
-          let selectedOption = options[i].parentElement.childNodes[0];
-          console.log();
-          if (Array.isArray(e.target.value)) {
-            selectedOption.checked = utils.inArray(options[i].value, e.target.value);
-          } else {
-            selectedOption.checked = options[i].value === e.target.value;
-          }
-        });
+        if (field.type === 'select') {
+          utils.forEach(options, i => {
+            let selectedOption = options[i].parentElement.childNodes[0];
+            selectedOption.checked = e.target.value === options[i].value;
+          });
+        } else {
+          prevOptions = document.getElementsByName(e.target.name);
+          utils.forEach(prevOptions, i => {
+            let selectedOption = options[i].parentElement.childNodes[0];
+            selectedOption.checked = prevOptions[i].checked;
+          });
+        }
       } else {
         document.getElementById('value-' + field.id).value = e.target.value;
       }
