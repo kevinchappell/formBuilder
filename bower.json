@@ -22,7 +22,7 @@
     "!dist/**/*"
   ],
   "dependencies": {
-    "jQuery UI Sortable": "jquery-ui-sortable#*",
+    "jquery-ui-sortable": "*",
     "jquery": "^3.1.1"
   },
   "repository": {
