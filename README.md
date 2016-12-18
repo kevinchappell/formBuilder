@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 | ------------- | ------------- |------------- |------------- |
 | [controlOrder](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlOrder/) | {Array} | `['autocomplete', 'button', 'checkbox', ...]` | |
 | [controlPosition](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlPosition/) | {String} | `'left'` \| `'right'`  | `'right'` |
-| [dataType](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/dataType/) | {String} | `xml` | `json` |
+| [dataType](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/dataType/) | {String} | `json` | `xml` |
 | [disableFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableFields/) | {Array} | array of field types to disable | `['autocomplete', 'hidden', 'number']` |
 | [editOnAdd](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/editOnAdd/) | {Bool} | `true` \| `false` | `false` |
 | [append / prepend](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/appendPrepend/) | {Object, Array, String} | `DOM Object` \| `[]` \| `'<h1></h1>'` | `false` |
