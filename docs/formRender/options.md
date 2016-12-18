@@ -4,6 +4,7 @@
 var defaults = {
   container: false,
   formData: false,
+  dataType: 'xml',
   label: {
     formRendered: 'Form Rendered',
     noFormData: 'No form data.',
