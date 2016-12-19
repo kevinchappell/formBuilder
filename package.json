@@ -117,7 +117,9 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "mi18n": "^0.3.2"
+    "gulp": "^3.9.1",
+    "mi18n": "^0.3.2",
+    "node-sass": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
