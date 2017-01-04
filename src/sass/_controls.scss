@@ -42,6 +42,9 @@
     text-align: left;
     background: $white;
     user-select: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow:hidden;
 
     &:first-child {
       border-radius: 5px 5px 0 0;
@@ -142,4 +145,7 @@
 .form-actions {
   float: right;
   margin-top: 5px;
+  button {
+    border: 0 none;
+  }
 }

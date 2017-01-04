@@ -72,37 +72,20 @@ require('./polyfills.js');
       onSave: utils.noop,
       onClearAll: utils.noop,
       actionButtons: [{
-        label: 'Clear',
+        id: 'clear',
         className: 'clear-all btn btn-danger',
         events: {
-          click: (e) => {
-            let fields = $('li.form-field', formBuilder.stage);
-            let buttonPosition = e.target.getBoundingClientRect();
-            let bodyRect = document.body.getBoundingClientRect();
-            let coords = {
-              pageX: buttonPosition.left + (buttonPosition.width / 2),
-              pageY: (buttonPosition.top - bodyRect.top) - 12
-            };
-
-            if (fields.length) {
-              _helpers.confirm(i18n.clearAllMessage, function() {
-                _helpers.removeAllfields();
-                opts.notify.success(i18n.allFieldsRemoved);
-                opts.onClearAll();
-              }, coords);
-            } else {
-              _helpers.dialog(i18n.noFieldsToClear, coords);
-            }
-          }
+          click: e => _helpers.confirmRemoveAll(e)
         }
       }, {
-        label: 'Data',
-        type: 'button',
+        label: 'viewJSON',
+        id: 'data',
+        className: 'btn btn-default',
         events: {
           click: () => _helpers.showData()
         }
       }, {
-        label: 'Save',
+        id: 'save',
         type: 'button',
         className: 'btn btn-primary save-template',
         events: {
@@ -118,6 +101,7 @@ require('./polyfills.js');
           right: 'auto'
         }
       },
+      disabledActionButtons: [],
       showActionButtons: true,
       typeUserAttrs: {},
       typeUserEvents: {},
@@ -247,6 +231,7 @@ require('./polyfills.js');
 
     let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
     formBuilder.formID = frmbID;
+    // let {i18n, ...opts} = $.extend({}, defaults, options, true);
     let {i18n, ...opts} = $.extend({}, defaults, options, true);
 
     i18n = await formBuilder.mi18n.init(i18n);
@@ -699,7 +684,7 @@ require('./polyfills.js');
       if (utils.inArray(values.type, ['checkbox-group', 'radio-group'])) {
         let labels = {
           first: i18n.inline,
-          second: mi18n.get('messages.inlineDesc', values.type.replace('-group', ''))
+          second: mi18n.get('inlineDesc', values.type.replace('-group', ''))
         };
 
         advFields.push(boolAttribute('inline', values, labels));

@@ -7,8 +7,10 @@ import d from './dom';
  * @return {Object} helper functions
  */
 function helpers(opts, formBuilder) {
-  const i18n = formBuilder.mi18n;
+  const mi18n = formBuilder.mi18n;
+  const i18n = mi18n.current;
   const utils = formBuilder.utils;
+  const m = utils.markup;
 
   let _helpers = {
     doCancel: false
@@ -189,7 +191,6 @@ function helpers(opts, formBuilder) {
    * @return {String} xml in string
    */
   _helpers.xmlSave = function(form) {
-    const m = utils.markup;
     let formData = _helpers.prepData(form);
     let xml = ['<form-template>\n\t<fields>'];
 
@@ -540,12 +541,12 @@ function helpers(opts, formBuilder) {
    * @return {Object}            Reference to the modal
    */
   _helpers.confirm = (message, yesAction, coords = false, className = '') => {
-    const m = utils.markup;
     let overlay = _helpers.showOverlay();
-    let yes = m('button', opts.messages.yes, {
+    console.log(i18n);
+    let yes = m('button', i18n.yes, {
       className: 'yes btn btn-success btn-sm'
     });
-    let no = m('button', opts.messages.no, {
+    let no = m('button', i18n.no, {
       className: 'no btn btn-danger btn-sm'
     });
 
@@ -562,7 +563,7 @@ function helpers(opts, formBuilder) {
 
     className = 'form-builder-dialog ' + className;
 
-    let miniModal = m('div', [message, btnWrap], {className: className});
+    let miniModal = m('div', [message, btnWrap], {className});
     if (!coords) {
       coords = {
         pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
@@ -620,6 +621,27 @@ function helpers(opts, formBuilder) {
     return miniModal;
   };
 
+  _helpers.confirmRemoveAll = e => {
+    console.log(e);
+    let fields = $('li.form-field', formBuilder.stage);
+    let buttonPosition = e.target.getBoundingClientRect();
+    let bodyRect = document.body.getBoundingClientRect();
+    let coords = {
+      pageX: buttonPosition.left + (buttonPosition.width / 2),
+      pageY: (buttonPosition.top - bodyRect.top) - 12
+    };
+
+    if (fields.length) {
+      _helpers.confirm(i18n.clearAllMessage, function() {
+        _helpers.removeAllfields();
+        opts.notify.success(i18n.allFieldsRemoved);
+        opts.onClearAll();
+      }, coords);
+    } else {
+      _helpers.dialog(i18n.noFieldsToClear, coords);
+    }
+  };
+
   /**
    * Removes all fields from the form
    * @param {Boolean} animate whether to animate or not
@@ -643,7 +665,7 @@ function helpers(opts, formBuilder) {
 
     if (!markEmptyArray.some(elem => elem === true)) {
       form.parentElement.classList.add('empty');
-      form.parentElement.dataset.content = opts.messages.getStarted;
+      form.parentElement.dataset.content = i18n.getStarted;
     }
 
     if (animate) {
@@ -810,7 +832,6 @@ function helpers(opts, formBuilder) {
    * Open a dialog with the form's data
    */
   _helpers.showData = () => {
-    const m = utils.markup;
     const data = utils.escapeHtml(formBuilder.formData);
     const code = m('code', data, {className: `formData-${opts.dataType}`});
 
@@ -864,8 +885,20 @@ function helpers(opts, formBuilder) {
   };
 
   _helpers.processActionButtons = buttonData => {
-    let m = utils.markup;
     let {label, events, ...attrs} = buttonData;
+
+    if (!label) {
+      label = attrs.id ? utils.capitalize(attrs.id) : '';
+    } else {
+      label = i18n[label] || '';
+    }
+
+    if (!attrs.id) {
+      attrs.id = `${formBuilder.formID}-action-${Math.round(Math.random()*1000)}`;
+    } else {
+      attrs.id = `${formBuilder.formID}-${attrs.id}-action`;
+    }
+
     const button = m('button', label, attrs);
 
     if (events) {
@@ -879,10 +912,15 @@ function helpers(opts, formBuilder) {
     return button;
   };
 
+  /**
+   * Cross link subtypes and define markup config
+   * @param  {Array} subtypeOpts
+   * @return {Array} subtypes
+   */
   _helpers.processSubtypes = subtypeOpts => {
     const subtypeFormat = subtype => {
         return {
-          label: i18n.get(subtype),
+          label: mi18n.get(subtype),
           value: subtype
         };
       };
