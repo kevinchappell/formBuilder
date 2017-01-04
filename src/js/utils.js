@@ -863,7 +863,7 @@ import d from './dom';
    * @param  {String} str uncapitalized string
    * @return {String} str capitalized string
    */
-  fbUtils.capitalize = (str) => {
+  fbUtils.capitalize = str => {
     return str.replace(/\b\w/g, function(m) {
         return m.toUpperCase();
       });

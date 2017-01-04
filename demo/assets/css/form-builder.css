@@ -343,6 +343,9 @@ textarea.form-control {
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     /* smartphones, Android phones, landscape iPhone */ }
     .frmb-control li:first-child {
       border-radius: 5px 5px 0 0;
@@ -412,6 +415,8 @@ textarea.form-control {
 .form-actions {
   float: right;
   margin-top: 5px; }
+  .form-actions button {
+    border: 0 none; }
 
 .empty .frmb {
   border: 3px dashed #ccc;
