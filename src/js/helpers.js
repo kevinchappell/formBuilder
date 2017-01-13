@@ -542,7 +542,6 @@ function helpers(opts, formBuilder) {
    */
   _helpers.confirm = (message, yesAction, coords = false, className = '') => {
     let overlay = _helpers.showOverlay();
-    console.log(i18n);
     let yes = m('button', i18n.yes, {
       className: 'yes btn btn-success btn-sm'
     });
@@ -592,6 +591,8 @@ function helpers(opts, formBuilder) {
    * @return {Object}            dom
    */
   _helpers.dialog = function(content, coords = false, className = '') {
+    let clientWidth = document.documentElement.clientWidth;
+    let clientHeight = document.documentElement.clientHeight;
     _helpers.showOverlay();
 
     className = 'form-builder-dialog ' + className;
@@ -599,8 +600,8 @@ function helpers(opts, formBuilder) {
     let miniModal = utils.markup('div', content, {className: className});
     if (!coords) {
       coords = {
-        pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
-        pageY: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2
+        pageX: Math.max(clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(clientHeight, window.innerHeight || 0) / 2
       };
       miniModal.style.position = 'fixed';
     } else {
@@ -621,8 +622,11 @@ function helpers(opts, formBuilder) {
     return miniModal;
   };
 
+  /**
+   * Confirm all fields will be removed then remove them
+   * @param  {Object} e click event object
+   */
   _helpers.confirmRemoveAll = e => {
-    console.log(e);
     let fields = $('li.form-field', formBuilder.stage);
     let buttonPosition = e.target.getBoundingClientRect();
     let bodyRect = document.body.getBoundingClientRect();
@@ -645,6 +649,7 @@ function helpers(opts, formBuilder) {
   /**
    * Removes all fields from the form
    * @param {Boolean} animate whether to animate or not
+   * @return {void}
    */
   _helpers.removeAllfields = function(animate = true) {
     let form = formBuilder.stage;
@@ -884,6 +889,11 @@ function helpers(opts, formBuilder) {
     return fieldRemoved;
   };
 
+  /**
+   * Generate markup for form action buttons
+   * @param  {Object} buttonData
+   * @return {Object} DOM element for action button
+   */
   _helpers.processActionButtons = buttonData => {
     let {label, events, ...attrs} = buttonData;
 
