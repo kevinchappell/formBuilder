@@ -18,7 +18,7 @@
 
     var kctOn = `<div class="kct-on">${opts.messages.on}</div>`,
         kctOff = `<div class="kct-off">${opts.messages.off}</div>`,
-        kctHandle = `<div class="kct-handle"></div>`,
+        kctHandle = '<div class="kct-handle"></div>',
         kctInner = `<div class="kct-inner">${kctOn}${kctHandle}${kctOff}</div>`;
 
     $kcToggle.append(kctInner);

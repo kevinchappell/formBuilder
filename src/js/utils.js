@@ -348,11 +348,12 @@ fbUtils.fieldRender = function(fieldData, opts, preview = false) {
 
     switch (fieldData.type) {
       case 'textarea':
-      case 'rich-text':
+      case 'rich-text': {
         delete fieldData.type;
         let fieldVal = fieldData.value || '';
         fieldMarkup = `${fieldLabel}<textarea ${fieldDataString}>${fieldVal}</textarea>`;
         break;
+      }
       case 'select':
         var optionAttrsString;
         fieldData.type = fieldData.type.replace('-group', '');
@@ -378,7 +379,7 @@ fbUtils.fieldRender = function(fieldData, opts, preview = false) {
         fieldMarkup = `${fieldLabel}<select ${fieldDataString}>${optionsMarkup}</select>`;
         break;
       case 'checkbox-group':
-      case 'radio-group':
+      case 'radio-group': {
         let optionAttrs;
         fieldData.type = fieldData.type.replace('-group', '');
 
@@ -417,6 +418,7 @@ fbUtils.fieldRender = function(fieldData, opts, preview = false) {
         }
         fieldMarkup = `${fieldLabel}<div class="${fieldData.type}-group">${optionsMarkup}</div>`;
         break;
+      }
       case 'text':
       case 'password':
       case 'email':
