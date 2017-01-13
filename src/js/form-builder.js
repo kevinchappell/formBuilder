@@ -59,15 +59,9 @@ require('./polyfills.js');
         1: 'Administrator'
       },
       notify: {
-        error: function(message) {
-          return console.error(message);
-        },
-        success: function(message) {
-          return console.log(message);
-        },
-        warning: function(message) {
-          return console.warn(message);
-        }
+        error: message => console.error(message),
+        success: message => console.log(message),
+        warning: message => console.warn(message)
       },
       onSave: utils.noop,
       onClearAll: utils.noop,
