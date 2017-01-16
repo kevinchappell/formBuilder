@@ -3,3 +3,4 @@ bower_components
 npm-debug.log
 demo/assets/**/*.map
 site
+yarn.lock
