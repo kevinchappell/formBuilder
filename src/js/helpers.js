@@ -1,3 +1,4 @@
+/*global formBuilderEventsFn, fbUtils*/
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
   var _helpers = {
