@@ -5,7 +5,8 @@ jQuery(document).ready(function($) {
     formData = window.sessionStorage.getItem('formData'),
     editing = true,
     fbOptions = {
-      dataType: 'json'
+      dataType: 'json',
+      type: 'vertical'
     };
 
   if (formData) {
@@ -17,7 +18,8 @@ jQuery(document).ready(function($) {
     editing = !editing;
   };
 
-  var formBuilder = $(buildWrap).formBuilder(fbOptions).data('formBuilder');
+  var formBuilder = $(buildWrap).neonFormBuilder(fbOptions).data('formBuilder');
+  formBuilder.test();
 
   $('.form-builder-save').click(function() {
     toggleEdit();

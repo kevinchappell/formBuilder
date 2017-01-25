@@ -49,6 +49,30 @@ if (typeof Object.assign != 'function') {
     return target;
   };
 }
+
+// Object.create polyfill
+if (typeof Object.create != 'function') {
+  Object.create = function (undefined) {
+    var Temp = function Temp() {};
+    return function (prototype, propertiesObject) {
+      if (prototype !== Object(prototype) || prototype !== null) {
+        throw TypeError('Argument must be an object, or null');
+      }
+      Temp.prototype = prototype || {};
+      var result = new Temp();
+      Temp.prototype = null;
+      if (propertiesObject !== undefined) {
+        Object.defineProperties(result, propertiesObject);
+      }
+
+      // to imitate the case of Object.create(null)
+      if (prototype === null) {
+        result.__proto__ = null;
+      }
+      return result;
+    };
+  }();
+}
 'use strict';
 /**
  *
@@ -283,7 +307,7 @@ fbUtils.parseXML = function (xmlString) {
     for (var i = 0; i < fields.length; i++) {
       var fieldData = fbUtils.parseAttrs(fields[i]);
 
-      if (fields[i].children.length) {
+      if (fields[i].children && fields[i].children.length) {
         fieldData.values = fbUtils.parseOptions(fields[i]);
       }
 
@@ -395,10 +419,12 @@ fbUtils.fieldRender = function (fieldData, opts) {
   switch (fieldData.type) {
     case 'textarea':
     case 'rich-text':
-      delete fieldData.type;
-      var fieldVal = fieldData.value || '';
-      fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
-      break;
+      {
+        delete fieldData.type;
+        var fieldVal = fieldData.value || '';
+        fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
+        break;
+      }
     case 'select':
       var optionAttrsString;
       fieldData.type = fieldData.type.replace('-group', '');
@@ -425,43 +451,45 @@ fbUtils.fieldRender = function (fieldData, opts) {
       break;
     case 'checkbox-group':
     case 'radio-group':
-      var optionAttrs = void 0;
-      fieldData.type = fieldData.type.replace('-group', '');
+      {
+        var optionAttrs = void 0;
+        fieldData.type = fieldData.type.replace('-group', '');
 
-      if (fieldData.type === 'checkbox') {
-        fieldData.name = fieldData.name + '[]';
-      }
+        if (fieldData.type === 'checkbox') {
+          fieldData.name = fieldData.name + '[]';
+        }
 
-      if (fieldOptions) {
-        var _optionAttrsString = void 0;
+        if (fieldOptions) {
+          var _optionAttrsString = void 0;
 
-        for (var _i = 0; _i < fieldOptions.length; _i++) {
-          optionAttrs = Object.assign({ value: '', label: '' }, fieldData, fieldOptions[_i]);
+          for (var _i = 0; _i < fieldOptions.length; _i++) {
+            optionAttrs = Object.assign({ value: '', label: '' }, fieldData, fieldOptions[_i]);
 
-          if (optionAttrs.selected) {
-            delete optionAttrs.selected;
-            optionAttrs.checked = null;
+            if (optionAttrs.selected) {
+              delete optionAttrs.selected;
+              optionAttrs.checked = null;
+            }
+
+            optionAttrs.id = fieldData.id + '-' + _i;
+            _optionAttrsString = fbUtils.attrString(optionAttrs);
+            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
           }
 
-          optionAttrs.id = fieldData.id + '-' + _i;
-          _optionAttrsString = fbUtils.attrString(optionAttrs);
-          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
+          if (fieldData.other) {
+            var otherOptionAttrs = {
+              id: fieldData.id + '-' + 'other',
+              className: fieldData.className + ' other-option',
+              onclick: 'fbUtils.otherOptionCB(\'' + fieldData.id + '-other\')'
+            };
+
+            _optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+
+            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.messages.other + '</label> <input type="text" name="' + fieldData.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
+          }
         }
-
-        if (fieldData.other) {
-          var otherOptionAttrs = {
-            id: fieldData.id + '-' + 'other',
-            className: fieldData.className + ' other-option',
-            onclick: 'fbUtils.otherOptionCB(\'' + fieldData.id + '-other\')'
-          };
-
-          _optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
-
-          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.messages.other + '</label> <input type="text" name="' + fieldData.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
-        }
+        fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
+        break;
       }
-      fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
-      break;
     case 'text':
     case 'password':
     case 'email':
@@ -532,6 +560,25 @@ fbUtils.capitalize = function (str) {
   return str.replace(/\b\w/g, function (m) {
     return m.toUpperCase();
   });
+};
+
+/** 
+ * Extends a super class
+ * @param {Object} superclass The class to extend 
+ * @param {Object} overrides The list of functions belong to subclass.  This should be specified as an object literal 
+ * containing one or more methods. 
+ * @return super class 
+ */
+fbUtils.extend = function (superclass, overrides) {
+  var subclass = function subclass() {
+    superclass.apply(this, arguments);
+  };
+  subclass.prototype = Object.create(superclass.prototype);
+  subclass.prototype.constructor = subclass;
+  for (var o in overrides) {
+    subclass.prototype[o] = overrides[o];
+  }
+  return subclass;
 };
 'use strict';
 
@@ -1448,7 +1495,7 @@ function formBuilderEventsFn() {
     var defaults = {
       controlPosition: 'right',
       controlOrder: ['autocomplete', 'button', 'checkbox', 'checkbox-group', 'date', 'file', 'header', 'hidden', 'paragraph', 'number', 'radio-group', 'select', 'text', 'textarea'],
-      dataType: 'xml',
+      dataType: 'json', // or xml 
       // Array of fields to disable
       disableFields: [],
       editOnAdd: false,

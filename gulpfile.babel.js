@@ -113,6 +113,7 @@ gulp.task('css', function() {
   let sassFiles = new Map();
   sassFiles.set('formBuilder', files.formBuilder.sass);
   sassFiles.set('formRender', files.formRender.sass);
+  sassFiles.set('neonFormBuilder', files.neonFormBuilder.sass);
 
   return sassFiles.forEach(function(sassFile, key) {
     gulp.src(sassFile)
@@ -141,7 +142,7 @@ gulp.task('font-save', fontSave);
 
 // Stylish linting to ensure good JS
 gulp.task('lint', function() {
-  let js = files.formBuilder.js.concat(files.formRender.js);
+  let js = files.formBuilder.js.concat(files.formRender.js).concat(files.neonFormBuilder.js);
   return gulp.src(js)
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format());
@@ -153,6 +154,7 @@ gulp.task('js', function() {
   let jsFiles = new Map();
   jsFiles.set('formBuilder', files.formBuilder.js);
   jsFiles.set('formRender', files.formRender.js);
+  jsFiles.set('neonFormBuilder', files.neonFormBuilder.js);
 
   return jsFiles.forEach(function(jsFileGlob, key) {
     // Demo scripts minified
@@ -191,6 +193,7 @@ gulp.task('devJS', function() {
   let jsFiles = new Map();
   jsFiles.set('formBuilder', files.formBuilder.js);
   jsFiles.set('formRender', files.formRender.js);
+  jsFiles.set('neonFormBuilder', files.neonFormBuilder.js);
 
   return jsFiles.forEach(function(jsFileGlob, key) {
 

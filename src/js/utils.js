@@ -490,3 +490,23 @@ fbUtils.capitalize = (str) => {
       return m.toUpperCase();
     });
 };
+
+/** 
+ * Extends a super class
+ * @param {Object} superclass The class to extend 
+ * @param {Object} overrides The list of functions belong to subclass.  This should be specified as an object literal 
+ * containing one or more methods. 
+ * @return super class 
+ */  
+fbUtils.extend = function(superclass, overrides) {
+  var subclass = function() {
+    superclass.apply(this, arguments);
+  };
+  subclass.prototype = Object.create(superclass.prototype);
+  subclass.prototype.constructor = subclass;
+  for(var o in overrides) {
+    subclass.prototype[o] = overrides[o];
+  }
+  subclass.superclass = superclass.prototype;
+  return subclass;
+}

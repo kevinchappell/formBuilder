@@ -22,7 +22,7 @@
         'text',
         'textarea'
       ],
-      dataType: 'xml',
+      dataType: 'json', // or xml 
       // Array of fields to disable
       disableFields: [],
       editOnAdd: false,

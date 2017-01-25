@@ -64,6 +64,23 @@
           "src/sass/form-render.scss"
         ]
       },
+      "neonFormBuilder": {
+        "js": [
+          "src/js/polyfills.js",
+          "src/js/utils.js",
+          "src/js/helpers.js",
+          "src/js/events.js",
+          "src/js/kc-toggle.js",
+          "src/js/neon-builder-base.js",
+          "src/js/neon-builder-vertical.js",
+          "src/js/neon-builder-horizontal.js",
+          "src/js/neon-form-builder.js"
+        ],
+        "fonts": "src/fonts/fontello",
+        "sass": [
+          "src/sass/neon-form-builder.scss"
+        ]
+      },
       "site": [
         "demo/assets/sass/site.scss"
       ]
