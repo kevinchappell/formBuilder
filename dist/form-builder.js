@@ -1961,8 +1961,8 @@ function formBuilderEventsFn() {
       } else {
         field = Object.assign({}, $field);
       }
-
-      field.name = isNew ? nameAttr(field) : field.name || nameAttr(field);
+      
+      field.name = isNew ? field.name || nameAttr(field) : nameAttr(field);
 
       if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
         field.className = 'form-control'; // backwards compatibility
