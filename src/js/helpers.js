@@ -799,7 +799,7 @@ function helpers(opts, formBuilder) {
         left: cbPosition.left
       };
 
-      let offset = opts.stickyControls.offset || offsetDefaults;
+      let offset = Object.assign({}, offsetDefaults, opts.stickyControls.offset);
 
       if (scrollTop > $stageWrap.offset().top) {
         const style = {
