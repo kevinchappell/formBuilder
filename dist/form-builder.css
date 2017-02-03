@@ -851,7 +851,7 @@ textarea.form-control {
     margin: 0;
     -webkit-transition: background-color 200ms ease-in-out;
     transition: background-color 200ms ease-in-out; }
-    .fb-autocomplete-list li:hover {
+    .fb-autocomplete-list li:hover, .fb-autocomplete-list li.active-option {
       background-color: rgba(0, 0, 0, 0.075); }
 
 .fb-mobile .field-actions {

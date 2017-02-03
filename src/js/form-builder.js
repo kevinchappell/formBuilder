@@ -1337,7 +1337,10 @@ require('./polyfills.js');
           });
         }
       } else {
-        document.getElementById('value-' + field.id).value = e.target.value;
+        let fieldVal = document.getElementById('value-' + field.id);
+        if(fieldVal) {
+          fieldVal.value = e.target.value;
+        }
       }
 
       _helpers.save();

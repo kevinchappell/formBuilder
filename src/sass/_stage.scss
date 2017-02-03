@@ -619,7 +619,8 @@
     margin: 0;
     transition: background-color 200ms ease-in-out;
 
-    &:hover {
+    &:hover,
+    &.active-option {
       background-color: $input-box-shadow-color;
     }
   }

@@ -416,9 +416,66 @@ import d from './dom';
 
   fbUtils.autocompleteTemplate = fieldData => {
     let {values, type, ...data} = fieldData;
+    const keyboardNav = (e) => {
+      const list = e.target.nextSibling.nextSibling;
+      let activeOption = list.getElementsByClassName('active-option')[0];
+      const keyCodeMapVals = [
+        // up
+        [38, () => {
+          if (activeOption) {
+            if (activeOption.previousSibling) {
+              activeOption.classList.remove('active-option');
+              activeOption = activeOption.previousSibling;
+              activeOption.classList.add('active-option');
+            }
+          }
+        }],
+        // down
+        [40, () => {
+          if (activeOption) {
+            if (activeOption.nextSibling) {
+              activeOption.classList.remove('active-option');
+              activeOption = activeOption.nextSibling;
+              activeOption.classList.add('active-option');
+            }
+          } else {
+            activeOption = list.firstChild;
+            activeOption.classList.add('active-option');
+          }
+        }],
+        [13, () => {
+          if (activeOption) {
+            e.target.value = activeOption.innerHTML;
+            if (list.style.display === 'none') {
+              list.style.display = 'block';
+            } else {
+              list.style.display = 'none';
+            }
+          }
+        }]
+      ];
+      let keyCodeMap = new Map(keyCodeMapVals);
+
+      let direction = keyCodeMap.get(e.keyCode);
+      if(!direction) {
+        direction = () => false;
+      }
+
+      return direction();
+    };
     const fauxEvents = {
+      focus: evt => {
+        evt.target.addEventListener('keydown', keyboardNav);
+        evt.target.nextSibling.nextSibling.style.display = 'block';
+      },
+      blur: evt => {
+        evt.target.removeEventListener('keydown', keyboardNav);
+        setTimeout(() => {
+          evt.target.nextSibling.nextSibling.style.display = 'none';
+        }, 200);
+      },
       input: (evt) => {
-        const list = document.getElementById(`${data.id}-list`);
+        const list = evt.target.nextSibling.nextSibling;
         d.filter(list.querySelectorAll('li'), evt.target.value);
         if (!evt.target.value) {
           list.style.display = 'none';
@@ -439,15 +496,16 @@ import d from './dom';
       m('input', null, hiddenAttrs)
     ];
 
-    const options = values.map((optionData, i) => {
+    const options = values.map(optionData => {
       let label = optionData.label;
       let config = {
         events: {
-          click: () => {
-            const list = document.getElementById(`${data.id}-list`);
-            const field = document.getElementById(data.id);
-            field.value = optionData.value;
-            field.previousSibling.value = optionData.label;
+          click: evt => {
+            const list = evt.target.parentElement;
+            const field = list.previousSibling.previousSibling;
+            console.log(list, field);
+            field.value = optionData.label;
+            field.previousSibling.value = optionData.value;
             list.style.display = 'none';
           }
         },
