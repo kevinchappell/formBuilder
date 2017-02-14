@@ -108,13 +108,12 @@
     }
   },
   "scripts": {
-    "prestart": "npm update",
     "test": "gulp test",
-    "start": "gulp",
-    "deploy": "gulp deploy",
-    "release:patch": "git co master && git up && gulp tag patch && gulp deploy",
-    "release:minor": "git co master && git up && gulp tag minor && gulp deploy",
-    "build": "gulp build"
+    "start": "./node_modules/gulp/bin/gulp.js",
+    "deploy": "./node_modules/gulp/bin/gulp.js deploy",
+    "release:patch": "git checkout master && git fetch origin master && git rebase origin/master && ./node_modules/gulp/bin/gulp.js tag patch && ./node_modules/gulp/bin/gulp.js deploy",
+    "release:minor": "git checkout master && git fetch origin master && git rebase origin/master && ./node_modules/gulp/bin/gulp.js tag minor && ./node_modules/gulp/bin/gulp.js deploy",
+    "build": "./node_modules/gulp/bin/gulp.js build"
   },
   "dependencies": {
     "gulp": "^3.9.1",

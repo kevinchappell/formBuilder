@@ -265,7 +265,6 @@
 
   .prev-holder {
     display: block;
-    margin-top: 12px;
 
     .ql-editor {
       min-height: 125px;
@@ -323,6 +322,9 @@
   .legend {
     color: $grey;
     margin-bottom: 5px;
+    line-height: 27px;
+    font-size: 16px;
+    font-weight:normal;
   }
 
   .disabled-field .field-label {
@@ -354,7 +356,7 @@
       padding: 0;
       border-radius: 0;
       border-color: $input-border-color;
-      background-color: rgba(255, 255, 255, 0.75);
+      background-color: $white;
       color: $input-border-color;
       line-height: 32px;
       font-size: 16px;
@@ -366,8 +368,6 @@
     }
 
     .toggle-form {
-      font-size: .85em;
-
       &:hover {
         background-color: $edit;
         color: $white;
@@ -375,6 +375,7 @@
     }
 
     .copy-button {
+      font-size: 14px;
       &:hover {
         background-color: $copy;
         color: $white;
@@ -382,6 +383,8 @@
     }
 
     .del-button {
+      font-size:20px;
+      line-height:30px;
       &:hover {
         background-color: $remove;
         color: $white;
@@ -507,7 +510,7 @@
     padding: 10px 5px;
     background: #f7f7f7;
     border-radius: 3px;
-    margin: 12px 0 0;
+    margin: 0;
     border: 1px solid $input-border-color;
 
     .input-wrap {
