@@ -748,9 +748,11 @@ textarea.form-control {
   .frmb .field-options .add-area .add {
     clear: both; }
   .frmb .style-wrap button.selected {
-    border-top: 2px solid #000;
-    border-bottom: 2px solid #000;
-    margin-top: -1px; }
+    border: 1px solid #000;
+    margin-top: 0;
+    margin-right: 1px;
+    box-shadow: 0 0 0 1px #fff inset;
+    padding: 1px 5px; }
   .frmb .form-elements {
     padding: 10px 5px;
     background: #f7f7f7;

@@ -489,9 +489,11 @@
   .style-wrap {
     button {
       &.selected {
-        border-top: 2px solid $black;
-        border-bottom: 2px solid $black;
-        margin-top: -1px;
+        border: 1px solid $black;
+        margin-top: 0;
+        margin-right: 1px;
+        box-shadow: 0 0 0 1px $white inset;
+        padding: 1px 5px;
       }
     }
   }
