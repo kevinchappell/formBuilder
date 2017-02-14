@@ -225,7 +225,6 @@ require('./polyfills.js');
 
     let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
     formBuilder.formID = frmbID;
-    // let {i18n, ...opts} = $.extend({}, defaults, options, true);
     let {i18n, ...opts} = $.extend({}, defaults, options, true);
 
     i18n = await formBuilder.mi18n.init(i18n);
@@ -361,7 +360,7 @@ require('./polyfills.js');
 
     let $cbUL = $(cbUl);
 
-    // Loop through
+    // Loop through fmrbFields
     utils.forEach(frmbFields, (i) => {
       let $field = $('<li/>', {
         'class': 'icon-' + frmbFields[i].attrs.className,
@@ -425,11 +424,11 @@ require('./polyfills.js');
       }
     });
 
-    let processControl = (control) => {
+    let processControl = control => {
       if (control[0].classList.contains('input-set-control')) {
-        let inputSet = opts.inputSets.filter((set) => {
-          return set.name === control[0].type;
-        })[0];
+        let inputSets = [];
+        let inputSet = opts.inputSets.filter(set =>
+          set.name === control[0].type)[0];
         if (inputSet.showHeader) {
           let header = {
               type: 'header',
@@ -437,10 +436,14 @@ require('./polyfills.js');
               id: inputSet.name,
               label: inputSet.label
             };
-          prepFieldVars(header, true);
+            inputSets.push(header);
         }
-        inputSet.fields.forEach((field) => {
+        inputSets.push(...inputSet.fields);
+        inputSets.forEach(field => {
           prepFieldVars(field, true);
+          if (_helpers.stopIndex || _helpers.stopIndex === 0) {
+            _helpers.stopIndex++;
+          }
         });
       } else {
         prepFieldVars(control, true);
@@ -498,7 +501,7 @@ require('./polyfills.js');
     // Save field on change
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
-    $('li', $cbUL).click(function(evt) {
+    $('li', $cbUL).click(evt => {
       let $control = $(evt.target).closest('.ui-sortable-handle');
       _helpers.stopIndex = undefined;
       processControl($control);
@@ -698,6 +701,7 @@ require('./polyfills.js');
         let optionData = subtypes[values.type];
         advFields.push(selectAttribute('subtype', values, optionData));
       }
+
 
       if (values.type === 'button') {
         advFields.push(btnStyles(values.style));
@@ -903,7 +907,7 @@ require('./polyfills.js');
     };
 
     let btnStyles = function(style) {
-        let styles = i18n['styles.btn'];
+        let styles = i18n.styles.btn;
         let styleField = '';
 
       if (styles) {
@@ -1224,8 +1228,8 @@ require('./polyfills.js');
       let cloneName = type + '-' + ts;
       let $clone = currentItem.clone();
 
-      $clone.find('[id]').each(function() {
-       this.id = this.id.replace(currentId, lastID);
+      $clone.find('[id]').each((i, elem) => {
+       elem.id = elem.id.replace(currentId, lastID);
       });
 
       $clone.find('[for]').each(function() {
