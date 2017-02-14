@@ -246,8 +246,7 @@ require('./polyfills.js');
     let frmbFields = [{
       label: i18n['autocomplete'],
       attrs: {
-        type: 'autocomplete',
-        name: 'autocomplete'
+        type: 'autocomplete'
       }
     }, {
       label: i18n['button'],
@@ -344,7 +343,7 @@ require('./polyfills.js');
       let $field = $(m('li',
       m('span', field.label),
       {
-        className: icon,
+        className: `${icon} input-control input-control-${i}`,
         type: attrs.type,
         name: attrs.name,
         label: field.label
@@ -357,10 +356,13 @@ require('./polyfills.js');
 
     if (opts.inputSets.length) {
       $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
-      opts.inputSets.forEach((set) => {
+      opts.inputSets.forEach((set, i) => {
         set.name = set.name || _helpers.makeClassName(set.label);
-        let $set = $('<li/>', {'class': 'input-set-control', type: set.name});
-        $set.html(set.label).appendTo($cbUL);
+        let inputSet = m('li', set.label, {
+          className: `input-set-control input-set-${i}`,
+          type: set.name
+        });
+        $(inputSet).appendTo($cbUL);
       });
     }
 
@@ -1081,7 +1083,7 @@ require('./polyfills.js');
         className: 'toggle-form btn icon-pencil',
         title: i18n.hide
       });
-      let copyBtn = m('a', i18n.copyButton, {
+      let copyBtn = m('a', null, {
         id: lastID + '-copy',
         className: 'copy-button btn icon-copy',
         title: i18n.copyButtonTooltip
