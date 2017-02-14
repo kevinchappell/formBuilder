@@ -107,7 +107,7 @@
     },
     {
       "uid": "206b010525b2181ffa0ad26f52b1762a",
-      "css": "text-input",
+      "css": "text",
       "code": 59400,
       "src": "custom_icons",
       "selected": true,
@@ -121,7 +121,7 @@
     },
     {
       "uid": "c34ccd41e97f9d3639a660841e3475ab",
-      "css": "hidden-input",
+      "css": "hidden",
       "code": 59403,
       "src": "custom_icons",
       "selected": true,
@@ -167,7 +167,7 @@
     },
     {
       "uid": "f6f11c17a7d16ee01cf0a46b757652af",
-      "css": "file-input",
+      "css": "file",
       "code": 59402,
       "src": "custom_icons",
       "selected": true,
@@ -207,7 +207,7 @@
     },
     {
       "uid": "531bc468eecbb8867d822f1c11f1e039",
-      "css": "date-input",
+      "css": "date",
       "code": 59393,
       "src": "fontawesome"
     }
