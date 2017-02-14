@@ -253,31 +253,26 @@ require('./polyfills.js');
       label: i18n['button'],
       attrs: {
         type: 'button',
-        name: 'button'
       }
     }, {
       label: i18n['checkbox'],
       attrs: {
         type: 'checkbox',
-        name: 'checkbox'
       }
     }, {
       label: i18n['checkboxGroup'],
       attrs: {
         type: 'checkbox-group',
-        name: 'checkbox-group'
       }
     }, {
       label: i18n['dateField'],
       attrs: {
         type: 'date',
-        name: 'date-input'
       }
     }, {
       label: i18n['fileUpload'],
       attrs: {
         type: 'file',
-        name: 'file-input'
       }
     }, {
       label: i18n['header'],
@@ -288,13 +283,11 @@ require('./polyfills.js');
       label: i18n['hidden'],
       attrs: {
         type: 'hidden',
-        name: 'hidden-input'
       }
     }, {
       label: i18n['number'],
       attrs: {
         type: 'number',
-        name: 'number'
       }
     }, {
       label: i18n['paragraph'],
@@ -305,25 +298,21 @@ require('./polyfills.js');
       label: i18n['radioGroup'],
       attrs: {
         type: 'radio-group',
-        name: 'radio-group'
       }
     }, {
       label: i18n['select'],
       attrs: {
         type: 'select',
-        name: 'select'
       }
     }, {
       label: i18n['text'],
       attrs: {
         type: 'text',
-        name: 'text-input'
       }
     }, {
       label: i18n['textArea'],
       attrs: {
-        type: 'textarea',
-        name: 'textarea'
+        type: 'textarea'
       }
     }];
 
@@ -337,7 +326,7 @@ require('./polyfills.js');
     }
 
     // Create draggable fields for formBuilder
-    let cbUl = utils.markup('ul', null, {id: boxID, className: 'frmb-control'});
+    let cbUl = m('ul', null, {id: boxID, className: 'frmb-control'});
     formBuilder.controls = cbUl;
 
     if (opts.sortableControls) {
@@ -351,12 +340,13 @@ require('./polyfills.js');
       let field = frmbFields[i];
       let attrs = field.attrs;
       let icon = attrs.icon || `icon-${attrs.name || attrs.type}`;
+      attrs.name = attrs.name || utils.nameAttr(field);
       let $field = $(m('li',
       m('span', field.label),
       {
         className: icon,
-        type: field.type,
-        name: field.name,
+        type: attrs.type,
+        name: attrs.name,
         label: field.label
       }));
 
@@ -550,8 +540,6 @@ require('./polyfills.js');
         field = Object.assign({}, $field);
       }
 
-      field.name = field.name || nameAttr(field);
-
       if (isNew && utils.inArray(field.type,
         ['text',
          'number',
@@ -599,11 +587,6 @@ require('./polyfills.js');
       _helpers.save();
 
       nonEditableFields();
-    };
-
-    let nameAttr = function(field) {
-      let epoch = new Date().getTime();
-      return field.type + '-' + epoch;
     };
 
     /**

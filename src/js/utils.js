@@ -176,6 +176,17 @@ import d from './dom';
     }
   };
 
+/**
+ * Generate a unique name attribute
+ * @param  {Object} field
+ * @return {String}       name
+ */
+  fbUtils.nameAttr = function(field) {
+      let epoch = new Date().getTime();
+      let prefix = field.attrs.type || fbUtils.hyphenCase(field.label);
+      return prefix + '-' + epoch;
+    };
+
   /**
    * Generate markup wrapper where needed
    *
