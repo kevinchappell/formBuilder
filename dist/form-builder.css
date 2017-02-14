@@ -583,6 +583,8 @@ textarea.form-control {
       display: block; }
     .frmb li.paragraph-field .fld-label {
       min-height: 150px; }
+    .frmb li.checkbox-field .field-label {
+      display: none; }
   .frmb li.deleting,
   .frmb li.delete:hover,
   .frmb li:hover li.delete:hover {
