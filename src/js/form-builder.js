@@ -566,6 +566,7 @@ require('./polyfills.js');
         ['text',
          'number',
          'file',
+         'date',
          'select',
          'textarea',
          'autocomplete'])) {
