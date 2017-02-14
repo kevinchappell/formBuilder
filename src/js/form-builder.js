@@ -560,7 +560,7 @@ require('./polyfills.js');
         field = Object.assign({}, $field);
       }
 
-      field.name = isNew ? nameAttr(field) : ( field.name || nameAttr(field) );
+      field.name = field.name || nameAttr(field);
 
       if (isNew && utils.inArray(field.type,
         ['text',
@@ -569,7 +569,7 @@ require('./polyfills.js');
          'select',
          'textarea',
          'autocomplete'])) {
-        field.className = 'form-control'; // backwards compatibility
+        field.className = field.class || field.className || 'form-control';
       } else {
         field.className = field.class || field.className;
       }
