@@ -450,7 +450,11 @@ require('./polyfills.js');
     }).append($cbUL[0]);
 
     if (opts.showActionButtons) {
-      const buttons = opts.actionButtons.map(_helpers.processActionButtons);
+      const buttons = opts.actionButtons.map(btnData => {
+          if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
+            return _helpers.processActionButtons(btnData);
+          }
+      });
       const formActions = m('div', buttons, {
         className: 'form-actions btn-group'
       });
@@ -1527,8 +1531,9 @@ require('./polyfills.js');
       options = {};
     }
     let elems = this;
-    return elems.each((i) => {
-      let formBuilder = new FormBuilder(options, elems[i]);
+    return elems.each(async i => {
+      let formBuilder = await new FormBuilder(options, elems[i]);
+      console.log(formBuilder);
       $(elems[i]).data('formBuilder', formBuilder);
 
       return formBuilder;
