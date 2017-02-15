@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.24.2
+Version: 1.24.4
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -328,7 +328,7 @@ fbUtils.parseXML = function (xmlString) {
     for (var i = 0; i < fields.length; i++) {
       var fieldData = fbUtils.parseAttrs(fields[i]);
 
-      if (fields[i].children.length) {
+      if (fields[i].children && fields[i].children.length) {
         fieldData.values = fbUtils.parseOptions(fields[i]);
       }
 
@@ -440,10 +440,12 @@ fbUtils.fieldRender = function (fieldData, opts) {
   switch (fieldData.type) {
     case 'textarea':
     case 'rich-text':
-      delete fieldData.type;
-      var fieldVal = fieldData.value || '';
-      fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
-      break;
+      {
+        delete fieldData.type;
+        var fieldVal = fieldData.value || '';
+        fieldMarkup = fieldLabel + '<textarea ' + fieldDataString + '>' + fieldVal + '</textarea>';
+        break;
+      }
     case 'select':
       var optionAttrsString;
       fieldData.type = fieldData.type.replace('-group', '');
@@ -451,7 +453,7 @@ fbUtils.fieldRender = function (fieldData, opts) {
       if (fieldOptions) {
 
         if (fieldData.placeholder) {
-          optionsMarkup += '<option value disabled selected>' + fieldData.placeholder + '</option>';
+          optionsMarkup += '<option disabled selected>' + fieldData.placeholder + '</option>';
         }
 
         for (var i = 0; i < fieldOptions.length; i++) {
@@ -470,43 +472,45 @@ fbUtils.fieldRender = function (fieldData, opts) {
       break;
     case 'checkbox-group':
     case 'radio-group':
-      var optionAttrs = void 0;
-      fieldData.type = fieldData.type.replace('-group', '');
+      {
+        var optionAttrs = void 0;
+        fieldData.type = fieldData.type.replace('-group', '');
 
-      if (fieldData.type === 'checkbox') {
-        fieldData.name = fieldData.name + '[]';
-      }
+        if (fieldData.type === 'checkbox') {
+          fieldData.name = fieldData.name + '[]';
+        }
 
-      if (fieldOptions) {
-        var _optionAttrsString = void 0;
+        if (fieldOptions) {
+          var _optionAttrsString = void 0;
 
-        for (var _i = 0; _i < fieldOptions.length; _i++) {
-          optionAttrs = Object.assign({ value: '', label: '' }, fieldData, fieldOptions[_i]);
+          for (var _i = 0; _i < fieldOptions.length; _i++) {
+            optionAttrs = Object.assign({ value: '', label: '' }, fieldData, fieldOptions[_i]);
 
-          if (optionAttrs.selected) {
-            delete optionAttrs.selected;
-            optionAttrs.checked = null;
+            if (optionAttrs.selected) {
+              delete optionAttrs.selected;
+              optionAttrs.checked = null;
+            }
+
+            optionAttrs.id = fieldData.id + '-' + _i;
+            _optionAttrsString = fbUtils.attrString(optionAttrs);
+            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
           }
 
-          optionAttrs.id = fieldData.id + '-' + _i;
-          _optionAttrsString = fbUtils.attrString(optionAttrs);
-          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + optionAttrs.id + '">' + optionAttrs.label + '</label><br>';
+          if (fieldData.other) {
+            var otherOptionAttrs = {
+              id: fieldData.id + '-' + 'other',
+              className: fieldData.className + ' other-option',
+              onclick: 'fbUtils.otherOptionCB(\'' + fieldData.id + '-other\')'
+            };
+
+            _optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
+
+            optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.messages.other + '</label> <input type="text" name="' + fieldData.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
+          }
         }
-
-        if (fieldData.other) {
-          var otherOptionAttrs = {
-            id: fieldData.id + '-' + 'other',
-            className: fieldData.className + ' other-option',
-            onclick: 'fbUtils.otherOptionCB(\'' + fieldData.id + '-other\')'
-          };
-
-          _optionAttrsString = fbUtils.attrString(Object.assign({}, fieldData, otherOptionAttrs));
-
-          optionsMarkup += '<input ' + _optionAttrsString + ' /> <label for="' + otherOptionAttrs.id + '">' + opts.messages.other + '</label> <input type="text" name="' + fieldData.name + '" id="' + otherOptionAttrs.id + '-value" style="display:none;" />';
-        }
+        fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
+        break;
       }
-      fieldMarkup = fieldLabel + '<div class="' + fieldData.type + '-group">' + optionsMarkup + '</div>';
-      break;
     case 'text':
     case 'password':
     case 'email':

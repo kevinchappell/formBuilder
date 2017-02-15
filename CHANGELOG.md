@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.24.4 - Bug fixes: bower.json, formRender children undefined
 - v1.24.2 - Hotfix: typeUserEvents, attribute array converted to comma separated list [#297](https://github.com/kevinchappell/formBuilder/pull/297)
 - v1.24.1 - Bugfix: defaultFields names are overwritten [#295](https://github.com/kevinchappell/formBuilder/pull/295)
 - v1.24.0 - Hotfix and Feature bonanza [#293](https://github.com/kevinchappell/formBuilder/pull/293)
