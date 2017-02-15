@@ -266,6 +266,10 @@
   .prev-holder {
     display: block;
 
+    .form-group {
+      margin-bottom: 0;
+    }
+
     .ql-editor {
       min-height: 125px;
     }

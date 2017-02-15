@@ -1029,8 +1029,8 @@ require('./polyfills.js');
         };
         let attributeLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`;
 
-        if (attribute === 'label' && utils.inArray(values.type, textArea) || (attribute === 'value' && values.type === 'textarea')) {
-          attributefield += `<textarea ${utils.attrString(inputConfig)}>${attrVal}</textarea>`;
+        if (attribute === 'label') {
+          attributefield += `<div contenteditable ${utils.attrString(inputConfig)}>${attrVal}</div>`;
         } else {
           inputConfig.value = attrVal;
           inputConfig.type = 'text';
@@ -1094,7 +1094,7 @@ require('./polyfills.js');
       ).outerHTML;
 
       // Field preview Label
-      liContents += `<label class="field-label">${label}</label>`;
+      liContents += `<label class="field-label">${utils.parsedHtml(label)}</label>`;
 
       if (values.description) {
         let attrs = {
@@ -1327,8 +1327,9 @@ require('./polyfills.js');
     });
 
     // update preview to label
-    $sortableFields.on('keyup change', '[name="label"]', function(e) {
-      $('.field-label', $(e.target).closest('li')).text($(e.target).val());
+    $sortableFields.on('keyup change', '[name="label"]', e => {
+      let value = e.target.value || e.target.innerHTML;
+      $('.field-label', $(e.target).closest('li')).html(utils.parsedHtml(value));
     });
 
     // remove error styling when users tries to correct mistake
