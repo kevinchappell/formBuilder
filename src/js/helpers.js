@@ -236,11 +236,7 @@ function helpers(opts, formBuilder) {
               return this.value;
             }).get();
 
-          $('[class*="fld-"]', field).each(function() {
-            const attr = this;
-            let name = utils.camelCase(attr.name);
-            fieldData[name] = attr.type === 'checkbox' ? attr.checked : attr.value;
-          });
+          _helpers.setAttrVals(field, fieldData);
 
           if (fieldData.subtype) {
             if (fieldData.subtype === 'quill') {
@@ -271,7 +267,6 @@ function helpers(opts, formBuilder) {
           }
 
           fieldData = utils.trimObj(fieldData);
-          fieldData = utils.escapeAttrs(fieldData);
 
           let multipleField = fieldData.type.match(d.optionFieldsRegEx);
 
@@ -340,27 +335,42 @@ function helpers(opts, formBuilder) {
     return `${baseString}-${newFieldNumber}`;
   };
 
+
+  _helpers.setAttrVals = (field, fieldData) => {
+    let attrs = field.querySelectorAll('[class*="fld-"]');
+    attrs.forEach(attr => {
+      let value;
+      let name = utils.camelCase(attr.getAttribute('name'));
+      if (attr.attributes['contenteditable']) {
+        value = attr.innerHTML;
+      } else if (attr.type === 'checkbox') {
+        value = attr.checked;
+      } else {
+        value = attr.value;
+      }
+      fieldData[name] = value;
+    });
+  };
+
   /**
    * Collect field attribute values and call fieldPreview to generate preview
    * @param  {Object} field DOM element
    */
-  _helpers.updatePreview = function(field) {
-    const fieldClass = field.attr('class');
+  _helpers.updatePreview = $field => {
+    const fieldClass = $field.attr('class');
+    let field = $field[0];
     if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
       return;
     }
 
-    let fieldType = $(field).attr('type');
+    let fieldType = $field.attr('type');
     let $prevHolder = $('.prev-holder', field);
     let previewData = {
       type: fieldType
     };
     let preview;
 
-    $('[class*="fld-"]', field).each(function() {
-      let name = utils.camelCase(this.name);
-      previewData[name] = this.type === 'checkbox' ? this.checked : this.value;
-    });
+    _helpers.setAttrVals(field, previewData);
 
     let style = $('.btn-style', field).val();
     if (style) {
@@ -371,11 +381,11 @@ function helpers(opts, formBuilder) {
       previewData.values = [];
       previewData.multiple = $('[name="multiple"]', field).is(':checked');
 
-      $('.sortable-options li', field).each(function() {
+      $('.sortable-options li', field).each(function(i, $option) {
         let option = {};
-        option.selected = $('.option-selected', this).is(':checked');
-        option.value = $('.option-value', this).val();
-        option.label = $('.option-label', this).val();
+        option.selected = $('.option-selected', $option).is(':checked');
+        option.value = $('.option-value', $option).val();
+        option.label = $('.option-label', $option).val();
         previewData.values.push(option);
       });
     }
@@ -385,7 +395,7 @@ function helpers(opts, formBuilder) {
     previewData.className = _helpers.classNames(field, previewData);
     $('.fld-className', field).val(previewData.className);
 
-    field.data('fieldData', previewData);
+    $field.data('fieldData', previewData);
     preview = utils.getTemplate(previewData, true);
 
     utils.empty($prevHolder[0]);
@@ -442,11 +452,11 @@ function helpers(opts, formBuilder) {
     },
   };
 
-  _helpers.classNames = function(field, previewData) {
+  _helpers.classNames = (field, previewData) => {
     let i;
     let type = previewData.type;
     let style = previewData.style;
-    let className = field[0].querySelector('.fld-className').value;
+    let className = field.querySelector('.fld-className').value;
     let classes = className.split(' ');
     let types = {
       button: 'btn',

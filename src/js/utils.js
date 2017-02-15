@@ -138,11 +138,8 @@ import d from './dom';
    * @param  {String} str
    * @return {String}
    */
-  fbUtils.camelCase = (str) => {
-    return str.replace(/-([a-z])/g, function(m, w) {
-      return w.toUpperCase();
-    });
-  };
+  fbUtils.camelCase = str => str.replace(/-([a-z])/g, (m, w) =>
+    w.toUpperCase());
 
   /**
    * Determine content type
@@ -382,7 +379,8 @@ import d from './dom';
   };
 
   fbUtils.makeLabel = (data, label = '', description = '') => {
-    let labelContents = [document.createTextNode(label)];
+    let labelText = fbUtils.parsedHtml(label);
+    let labelContents = [labelText];
 
     if (data.hasOwnProperty('required')) {
       labelContents.push(m('span', '*', {className: 'required'}));
@@ -642,7 +640,7 @@ import d from './dom';
     }
 
     let field = {
-      field: m(type, label, data),
+      field: m(type, fbUtils.parsedHtml(label), data),
       onRender: fbUtils.noop
     };
 

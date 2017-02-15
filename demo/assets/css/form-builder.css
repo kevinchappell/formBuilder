@@ -607,6 +607,8 @@ textarea.form-control {
     left: 20px; }
   .frmb .prev-holder {
     display: block; }
+    .frmb .prev-holder .form-group {
+      margin-bottom: 0; }
     .frmb .prev-holder .ql-editor {
       min-height: 125px; }
     .frmb .prev-holder .form-group > label:not([class='fb-checkbox-label']) {
