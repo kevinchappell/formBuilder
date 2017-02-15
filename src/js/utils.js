@@ -220,7 +220,7 @@ import d from './dom';
         appendContent[contentType](content);
       },
       undefined: () => {
-        console.error(tag, content, attributes);
+        // console.error(tag, content, attributes);
       },
     };
 
@@ -833,7 +833,7 @@ import d from './dom';
           };
           return template;
         }],
-      [['text', 'password', 'email', 'number', 'file', 'color', 'date', 'tel'],
+      [d.subtypes.text.concat(['number', 'file']),
         () => {
           let template = {
             field: [fieldLabel, m('input', null, data)],
@@ -841,7 +841,7 @@ import d from './dom';
           };
           return template;
         }],
-      [['button', 'submit', 'reset'],
+      [d.subtypes.button,
         () => {
           let template = {
             field: m('button', label, data),

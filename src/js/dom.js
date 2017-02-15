@@ -8,6 +8,16 @@ dom.optionFields = [
 ];
 dom.optionFieldsRegEx = new RegExp(`(${dom.optionFields.join('|')})`);
 
+dom.defaultSubtypes = {
+  text: ['text', 'password', 'email', 'color', 'tel'],
+  header: ['h1', 'h2', 'h3'],
+  button: ['button', 'submit', 'reset'],
+  paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
+  textarea: ['textarea', 'quill']
+};
+
+dom.subtypes = dom.defaultSubtypes;
+
 /**
    * Util to remove contents of DOM Object
    * @param  {Object} element

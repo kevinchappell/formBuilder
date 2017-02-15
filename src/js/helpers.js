@@ -938,6 +938,7 @@ function helpers(opts, formBuilder) {
    * @return {Array} subtypes
    */
   _helpers.processSubtypes = subtypeOpts => {
+    let subtypes = {};
     const subtypeFormat = subtype => {
         return {
           label: mi18n.get(subtype),
@@ -945,19 +946,11 @@ function helpers(opts, formBuilder) {
         };
       };
 
-      const defaultSubtypes = {
-        text: ['text', 'password', 'email', 'color', 'tel'],
-        header: ['h1', 'h2', 'h3'],
-        button: ['button', 'submit', 'reset'],
-        paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
-        textarea: ['textarea', 'quill']
-      };
+      d.subtypes = utils.merge(d.defaultSubtypes, subtypeOpts);
 
-      let subtypes = utils.merge(defaultSubtypes, subtypeOpts);
-
-      for (let subtype in subtypes) {
-        if (subtypes.hasOwnProperty(subtype)) {
-          subtypes[subtype] = subtypes[subtype].map(subtypeFormat);
+      for (let subtype in d.subtypes) {
+        if (d.subtypes.hasOwnProperty(subtype)) {
+          subtypes[subtype] = d.subtypes[subtype].map(subtypeFormat);
         }
       }
 
