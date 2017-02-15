@@ -359,7 +359,7 @@ function helpers(opts, formBuilder) {
   _helpers.updatePreview = $field => {
     const fieldClass = $field.attr('class');
     let field = $field[0];
-    if (fieldClass.indexOf('ui-sortable-handle') !== -1) {
+    if (fieldClass.indexOf('input-control') !== -1) {
       return;
     }
 
