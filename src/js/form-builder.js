@@ -1356,15 +1356,16 @@ require('./polyfills.js');
       }
     });
 
+    /**
+     * Toggle multiple select options
+     * @param  {Object} e click event
+     * @return {String} newType
+     */
     $sortableFields.on('change', '.fld-multiple', e => {
       let newType = e.target.checked ? 'checkbox' : 'radio';
-
-      $(e.target)
-      .parents('.form-elements:eq(0)')
-      .find('.sortable-options input.option-selected')
-      .each(function() {
-        e.target.type = newType;
-      });
+      let $options = $('.option-selected', $(e.target).closest('.form-elements'));
+      $options.each(i => $options[i].type = newType);
+      return newType;
     });
 
     // format name attribute
