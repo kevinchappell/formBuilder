@@ -59,8 +59,7 @@
         "vendor": {
           "js": [
             "bower_components/jquery/dist/jquery.js",
-            "bower_components/jquery-ui/jquery-ui.js",
-            "bower_components/jquery-ui/ui/widgets/sortable.js"
+            "bower_components/jquery-ui-sortable/jquery-ui-sortable.js"
           ]
         }
       }

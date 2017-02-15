@@ -488,7 +488,7 @@ require('./polyfills.js');
     $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
     $('li', $cbUL).click(evt => {
-      let $control = $(evt.target).closest('.ui-sortable-handle');
+      let $control = $(evt.target).closest('.input-control');
       _helpers.stopIndex = undefined;
       processControl($control);
       _helpers.save();
