@@ -1,243 +1,30 @@
 import d from './dom';
+import data from './data';
+import mi18n from 'mi18n';
+import utils from './utils';
+import events from './events';
+import helpers from './helpers';
+import {defaultOptions, defaultI18n, config} from './config';
+
 require('./kc-toggle.js');
-require('./polyfills.js');
-// const extend = require('deep-extend');
+require('./polyfills.js').default;
+
+const m = utils.markup;
 
 (function($) {
-  const FormBuilder = async function(options, element) {
+  const FormBuilder = function(opts, element) {
     const formBuilder = this;
-    const utils = require('./utils.js');
-    const m = utils.markup;
-    formBuilder.events = require('./events.js');
-    formBuilder.utils = utils;
-    formBuilder.mi18n = require('mi18n').default;
-
-    let defaults = {
-      controlPosition: 'right',
-      controlOrder: [
-        'autocomplete',
-        'button',
-        'checkbox',
-        'checkbox-group',
-        'date',
-        'file',
-        'header',
-        'hidden',
-        'paragraph',
-        'number',
-        'radio-group',
-        'select',
-        'text',
-        'textarea'
-      ],
-      dataType: 'json',
-      // Array of fields to disable
-      disableFields: [],
-      editOnAdd: false,
-      // Uneditable fields or other content you would like to appear
-      // before and after regular fields:
-      append: false,
-      prepend: false,
-      // array of objects with fields values
-      // ex:
-      // defaultFields: [{
-      //   label: 'First Name',
-      //   name: 'first-name',
-      //   required: 'true',
-      //   description: 'Your first name',
-      //   type: 'text'
-      // }, {
-      //   label: 'Phone',
-      //   name: 'phone',
-      //   description: 'How can we reach you?',
-      //   type: 'text'
-      // }],
-      defaultFields: [],
-      inputSets: [],
-      fieldRemoveWarn: false,
-      roles: {
-        1: 'Administrator'
-      },
-      notify: {
-        error: message => console.error(message),
-        success: message => console.log(message),
-        warning: message => console.warn(message)
-      },
-      onSave: utils.noop,
-      onClearAll: utils.noop,
-      actionButtons: [{
-        id: 'clear',
-        className: 'clear-all btn btn-danger',
-        events: {
-          click: e => _helpers.confirmRemoveAll(e)
-        }
-      }, {
-        label: 'viewJSON',
-        id: 'data',
-        className: 'btn btn-default',
-        events: {
-          click: () => _helpers.showData()
-        }
-      }, {
-        id: 'save',
-        type: 'button',
-        className: 'btn btn-primary save-template',
-        events: {
-          click: () => opts.onSave(_helpers.save())
-        }
-      }],
-      sortableControls: false,
-      stickyControls: {
-        enable: true,
-        offset: {
-          top: 5,
-          bottom: 'auto',
-          right: 'auto'
-        }
-      },
-      disabledActionButtons: [],
-      showActionButtons: true,
-      typeUserAttrs: {},
-      typeUserEvents: {},
-      prefix: 'form-builder-'
-    };
-
-
-    defaults.i18n = {
-      langs: [
-        'en-US'
-      ],
-      preloaded: {
-        'en-US': {
-          addOption: 'Add Option +',
-          allFieldsRemoved: 'All fields were removed.',
-          allowMultipleFiles: 'Allow users to upload multiple files',
-          autocomplete: 'Autocomplete',
-          button: 'Button',
-          cannotBeEmpty: 'This field cannot be empty',
-          checkboxGroup: 'Checkbox Group',
-          checkbox: 'Checkbox',
-          checkboxes: 'Checkboxes',
-          className: 'Class',
-          clearAllMessage: 'Are you sure you want to clear all fields?',
-          clearAll: 'Clear',
-          close: 'Close',
-          content: 'Content',
-          copy: 'Copy To Clipboard',
-          copyButton: '&#43;',
-          copyButtonTooltip: 'Copy',
-          dateField: 'Date Field',
-          description: 'Help Text',
-          descriptionField: 'Description',
-          devMode: 'Developer Mode',
-          editNames: 'Edit Names',
-          editorTitle: 'Form Elements',
-          editXML: 'Edit XML',
-          enableOther: 'Enable &quot;Other&quot;',
-          enableOtherMsg: 'Let users to enter an unlisted option',
-          fieldDeleteWarning: false,
-          fieldVars: 'Field Variables',
-          fieldNonEditable: 'This field cannot be edited.',
-          fieldRemoveWarning: 'Are you sure you want to remove this field?',
-          fileUpload: 'File Upload',
-          formUpdated: 'Form Updated',
-          getStarted: 'Drag a field from the right to this area',
-          header: 'Header',
-          hide: 'Edit',
-          hidden: 'Hidden Input',
-          inline: 'Inline',
-          inlineDesc: 'Display {type} inline',
-          label: 'Label',
-          labelEmpty: 'Field Label cannot be empty',
-          limitRole: 'Limit access to one or more of the following roles:',
-          mandatory: 'Mandatory',
-          maxlength: 'Max Length',
-          minOptionMessage: 'This field requires a minimum of 2 options',
-          multipleFiles: 'Multiple Files',
-          name: 'Name',
-          no: 'No',
-          noFieldsToClear: 'There are no fields to clear',
-          number: 'Number',
-          off: 'Off',
-          on: 'On',
-          option: 'Option',
-          options: 'Options',
-          optional: 'optional',
-          optionLabelPlaceholder: 'Label',
-          optionValuePlaceholder: 'Value',
-          optionEmpty: 'Option value required',
-          other: 'Other',
-          paragraph: 'Paragraph',
-          placeholder: 'Placeholder',
-          placeholders: {
-            value: 'Value',
-            label: 'Label',
-            text: '',
-            textarea: '',
-            email: 'Enter you email',
-            placeholder: '',
-            className: 'space separated classes',
-            password: 'Enter your password'
-          },
-          preview: 'Preview',
-          radioGroup: 'Radio Group',
-          radio: 'Radio',
-          removeMessage: 'Remove Element',
-          removeOption: 'Remove Option',
-          remove: '&#215;',
-          required: 'Required',
-          richText: 'Rich Text Editor',
-          roles: 'Access',
-          rows: 'Rows',
-          save: 'Save',
-          selectOptions: 'Options',
-          select: 'Select',
-          selectColor: 'Select Color',
-          selectionsMessage: 'Allow Multiple Selections',
-          size: 'Size',
-          'size.xs': 'Extra Small',
-          'size.sm': 'Small',
-          'size.m': 'Default',
-          'size.lg': 'Large',
-          style: 'Style',
-          styles: {
-            btn: {
-              'default': 'Default',
-              danger: 'Danger',
-              info: 'Info',
-              primary: 'Primary',
-              success: 'Success',
-              warning: 'Warning'
-            }
-          },
-          subtype: 'Type',
-          text: 'Text Field',
-          textArea: 'Text Area',
-          toggle: 'Toggle',
-          warning: 'Warning!',
-          value: 'Value',
-          viewJSON: '{  }',
-          viewXML: '&lt;/&gt;',
-          yes: 'Yes'
-        }
-      }
-    };
+    const i18n = mi18n.current;
 
     let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
-    formBuilder.formID = frmbID;
-    let {i18n, ...opts} = $.extend({}, defaults, options, true);
+    data.formID = formBuilder.formID = frmbID;
 
-    i18n = await formBuilder.mi18n.init(i18n);
-    const mi18n = formBuilder.mi18n;
-
-    let _helpers = require('./helpers.js')(opts, formBuilder);
-
-    const subtypes = _helpers.processSubtypes(opts.subtypes);
+    const subtypes = helpers.processSubtypes(opts.subtypes);
 
     let $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
 
-    formBuilder.layout = _helpers.editorLayout(opts.controlPosition);
-    formBuilder.stage = $sortableFields[0];
+    config.layout = helpers.editorLayout(opts.controlPosition);
+    d.stage = $sortableFields[0];
 
     let lastID = frmbID + '-fld-1';
     let boxID = frmbID + '-control-box';
@@ -315,7 +102,7 @@ require('./polyfills.js');
       }
     }];
 
-    frmbFields = _helpers.orderFields(frmbFields);
+    frmbFields = helpers.orderFields(frmbFields);
 
     if (opts.disableFields) {
       // remove disabledFields
@@ -326,7 +113,7 @@ require('./polyfills.js');
 
     // Create draggable fields for formBuilder
     let cbUl = m('ul', null, {id: boxID, className: 'frmb-control'});
-    formBuilder.controls = cbUl;
+    d.controls = cbUl;
 
     if (opts.sortableControls) {
       cbUl.classList.add('sort-enabled');
@@ -357,7 +144,7 @@ require('./polyfills.js');
     if (opts.inputSets.length) {
       $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
       opts.inputSets.forEach((set, i) => {
-        set.name = set.name || _helpers.makeClassName(set.label);
+        set.name = set.name || helpers.makeClassName(set.label);
         let inputSet = m('li', set.label, {
           className: `input-set-control input-set-${i}`,
           type: set.name
@@ -371,9 +158,9 @@ require('./polyfills.js');
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
-      beforeStop: _helpers.beforeStop,
-      start: _helpers.startMoving,
-      stop: _helpers.stopMoving,
+      beforeStop: helpers.beforeStop,
+      start: helpers.startMoving,
+      stop: helpers.stopMoving,
       cancel: 'input, select, .disabled-field, .form-group, .btn',
       placeholder: 'frmb-placeholder'
     });
@@ -387,21 +174,21 @@ require('./polyfills.js');
       cursor: 'move',
       scroll: false,
       placeholder: 'ui-state-highlight',
-      start: _helpers.startMoving,
-      stop: _helpers.stopMoving,
+      start: helpers.startMoving,
+      stop: helpers.stopMoving,
       revert: 150,
-      beforeStop: _helpers.beforeStop,
+      beforeStop: helpers.beforeStop,
       distance: 3,
       update: function(event, ui) {
-        if (_helpers.doCancel) {
+        if (helpers.doCancel) {
           return false;
         }
         if (ui.item.parent()[0] === $sortableFields[0]) {
           processControl(ui.item);
-          _helpers.doCancel = true;
+          helpers.doCancel = true;
         } else {
-          _helpers.setFieldOrder($cbUL);
-          _helpers.doCancel = !opts.sortableControls;
+          helpers.setFieldOrder($cbUL);
+          helpers.doCancel = !opts.sortableControls;
         }
       }
     });
@@ -423,8 +210,8 @@ require('./polyfills.js');
         inputSets.push(...inputSet.fields);
         inputSets.forEach(field => {
           prepFieldVars(field, true);
-          if (_helpers.stopIndex || _helpers.stopIndex === 0) {
-            _helpers.stopIndex++;
+          if (helpers.stopIndex || helpers.stopIndex === 0) {
+            helpers.stopIndex++;
           }
         });
       } else {
@@ -434,25 +221,23 @@ require('./polyfills.js');
 
     let $formWrap = $('<div/>', {
       id: frmbID + '-form-wrap',
-      'class': 'form-wrap form-builder' + _helpers.mobileClass()
+      'class': 'form-wrap form-builder' + helpers.mobileClass()
     });
-
-    formBuilder.editor = $formWrap[0];
 
     let $stageWrap = $('<div/>', {
       id: frmbID + '-stage-wrap',
-      'class': 'stage-wrap ' + formBuilder.layout.stage
+      'class': 'stage-wrap ' + config.layout.stage
     });
 
     let cbWrap = $('<div/>', {
       id: frmbID + '-cb-wrap',
-      'class': 'cb-wrap ' + formBuilder.layout.controls
+      'class': 'cb-wrap ' + config.layout.controls
     }).append($cbUL[0]);
 
     if (opts.showActionButtons) {
       const buttons = opts.actionButtons.map(btnData => {
           if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
-            return _helpers.processActionButtons(btnData);
+            return helpers.processActionButtons(btnData);
           }
       });
       const formActions = m('div', buttons, {
@@ -472,15 +257,15 @@ require('./polyfills.js');
       $(element).replaceWith($formWrap);
     }
 
-    let saveAndUpdate = _helpers.debounce(evt => {
+    let saveAndUpdate = helpers.debounce(evt => {
       if (evt) {
         if (evt.type === 'keyup' && evt.target.name === 'className') {
           return false;
         }
 
         let $field = $(evt.target).closest('.form-field');
-        _helpers.updatePreview($field);
-        _helpers.save();
+        helpers.updatePreview($field);
+        helpers.save();
       }
     });
 
@@ -489,9 +274,9 @@ require('./polyfills.js');
 
     $('li', $cbUL).click(evt => {
       let $control = $(evt.target).closest('.input-control');
-      _helpers.stopIndex = undefined;
+      helpers.stopIndex = undefined;
       processControl($control);
-      _helpers.save();
+      helpers.save();
     });
 
     // Add append and prepend options if necessary
@@ -516,7 +301,7 @@ require('./polyfills.js');
         $stageWrap.removeClass('empty');
       }
 
-      _helpers.disabledTT.init();
+      helpers.disabledTT.init();
     };
 
     let prepFieldVars = function($field, isNew = false) {
@@ -567,16 +352,17 @@ require('./polyfills.js');
       utils.escapeAttrs(field);
 
       appendNewField(field, isNew);
+
       if (isNew) {
-        document.dispatchEvent(formBuilder.events.fieldAdded);
+        document.dispatchEvent(events.fieldAdded);
       }
+
       $stageWrap.removeClass('empty');
     };
 
     // Parse saved XML template data
-    let loadFields = function() {
-      _helpers.getData();
-      let formData = formBuilder.formData;
+    let loadFields = function(formData) {
+      formData = helpers.getData(formData);
       if (formData && formData.length) {
         for (let i = 0; i < formData.length; i++) {
           prepFieldVars(formData[i]);
@@ -590,7 +376,7 @@ require('./polyfills.js');
         $stageWrap.addClass('empty')
         .attr('data-content', i18n.getStarted);
       }
-      _helpers.save();
+      helpers.save();
 
       nonEditableFields();
     };
@@ -610,18 +396,29 @@ require('./polyfills.js');
         `<label class="false-label">${i18n.selectOptions}</label>`
       ];
       const isMultiple = values.multiple || (values.type === 'checkbox-group');
+      const optionDataTemplate = label => {
+        let optionData = {
+            label,
+            value: utils.hyphenCase(label)
+        };
+
+        if (values.type !== 'autocomplete') {
+          optionData.selected = false;
+        }
+
+        return optionData;
+      };
 
       if (!values.values || !values.values.length) {
         values.values = [1, 2, 3].map(function(index) {
           let label = `${i18n.option} ${index}`;
-          let option = {
-            selected: false,
-            label: label,
-            value: utils.hyphenCase(label)
-          };
-          return option;
+          return optionDataTemplate(label);
         });
-        values.values[0].selected = true;
+
+      let firstOption = values.values[0];
+        if (firstOption.hasOwnProperty('selected')) {
+          firstOption.selected = true;
+        }
       } else {
         // ensure option data is has all required keys
         values.values.forEach(option => Object.assign({}, {selected: false}, option));
@@ -1130,27 +927,27 @@ require('./polyfills.js');
 
       $li.data('fieldData', {attrs: values});
 
-      if (typeof _helpers.stopIndex !== 'undefined') {
-        $('> li', $sortableFields).eq(_helpers.stopIndex).before($li);
+      if (typeof helpers.stopIndex !== 'undefined') {
+        $('> li', $sortableFields).eq(helpers.stopIndex).before($li);
       } else {
         $sortableFields.append($li);
       }
 
       $('.sortable-options', $li)
-      .sortable({update: () => _helpers.updatePreview($li)});
+      .sortable({update: () => helpers.updatePreview($li)});
 
-      _helpers.updatePreview($li);
+      helpers.updatePreview($li);
 
       if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
         opts.typeUserEvents[type].onadd(field);
       }
 
       if (opts.editOnAdd && isNew) {
-        _helpers.closeAllEdit();
-        _helpers.toggleEdit(lastID, false);
+        helpers.closeAllEdit();
+        helpers.toggleEdit(lastID, false);
       }
 
-      lastID = _helpers.incrementId(lastID);
+      lastID = helpers.incrementId(lastID);
     };
 
     // Select field html, since there may be multiple
@@ -1243,7 +1040,7 @@ require('./polyfills.js');
         opts.typeUserEvents[type].onclone($clone[0]);
       }
 
-      lastID = _helpers.incrementId(lastID);
+      lastID = helpers.incrementId(lastID);
       return $clone;
     };
 
@@ -1259,8 +1056,8 @@ require('./polyfills.js');
       } else {
         $(this).parent('li').slideUp('250', function() {
           $(this).remove();
-          _helpers.updatePreview($field);
-          _helpers.save();
+          helpers.updatePreview($field);
+          helpers.save();
         });
       }
     });
@@ -1287,7 +1084,7 @@ require('./polyfills.js');
       e.preventDefault();
       if (e.handled !== true) {
         let targetID = $(e.target).parents('.form-field:eq(0)').attr('id');
-        _helpers.toggleEdit(targetID);
+        helpers.toggleEdit(targetID);
         e.handled = true;
       } else {
         return false;
@@ -1327,7 +1124,7 @@ require('./polyfills.js');
         }
       }
 
-      _helpers.save();
+      helpers.save();
     });
 
     // update preview to label
@@ -1374,7 +1171,7 @@ require('./polyfills.js');
 
     // format name attribute
     $sortableFields.on('blur', 'input.fld-name', function(e) {
-      e.target.value = _helpers.safename(e.target.value);
+      e.target.value = helpers.safename(e.target.value);
       if (e.target.value === '') {
         $(e.target)
         .addClass('field-error')
@@ -1385,7 +1182,7 @@ require('./polyfills.js');
     });
 
     $sortableFields.on('blur', 'input.fld-maxlength', e => {
-      e.target.value = _helpers.forceNumber(e.target.value);
+      e.target.value = helpers.forceNumber(e.target.value);
     });
 
     // Copy field
@@ -1394,8 +1191,8 @@ require('./polyfills.js');
       let currentItem = $(e.target).parent().parent('li');
       let $clone = cloneItem(currentItem);
       $clone.insertAfter(currentItem);
-      _helpers.updatePreview($clone);
-      _helpers.save();
+      helpers.updatePreview($clone);
+      helpers.save();
     });
 
     // Delete field
@@ -1420,11 +1217,11 @@ require('./polyfills.js');
       if (opts.fieldRemoveWarn) {
         let warnH3 = utils.markup('h3', i18n.warning);
         let warnMessage = utils.markup('p', i18n.fieldRemoveWarning);
-        _helpers.confirm([warnH3, warnMessage], () =>
-          _helpers.removeField(deleteID), coords);
+        helpers.confirm([warnH3, warnMessage], () =>
+          helpers.removeField(deleteID), coords);
         $field.addClass('deleting');
       } else {
-        _helpers.removeField(deleteID);
+        helpers.removeField(deleteID);
       }
     });
 
@@ -1436,8 +1233,8 @@ require('./polyfills.js');
       $btnStyle.val(styleVal);
       $button.siblings('.btn').removeClass('selected');
       $button.addClass('selected');
-      _helpers.updatePreview($btnStyle.closest('.form-field'));
-      _helpers.save();
+      helpers.updatePreview($btnStyle.closest('.form-field'));
+      helpers.save();
     });
 
     // Attach a callback to toggle required asterisk
@@ -1484,25 +1281,25 @@ require('./polyfills.js');
 
     // If option set, controls will remain in view in editor
     if (opts.stickyControls.enable) {
-      _helpers.stickyControls($sortableFields);
+      helpers.stickyControls($sortableFields);
     }
 
-    document.dispatchEvent(formBuilder.events.loaded);
+    document.dispatchEvent(events.loaded);
 
     // Make actions accessible
     formBuilder.actions = {
-      clearFields: _helpers.removeAllfields,
-      showData: _helpers.showData,
-      save: _helpers.save,
+      clearFields: helpers.removeAllFields,
+      showData: helpers.showData,
+      save: helpers.save,
       addField: (field, index) => {
-        _helpers.stopIndex = formBuilder.stage.children.length ? index : undefined;
+        helpers.stopIndex = d.stage.children.length ? index : undefined;
         prepFieldVars(field);
-        document.dispatchEvent(formBuilder.events.fieldAdded);
+        document.dispatchEvent(events.fieldAdded);
       },
-      removeField: _helpers.removeField,
+      removeField: helpers.removeField,
       getData: (type = 'js') => {
-        const stage = formBuilder.stage;
-        const h = _helpers;
+        const stage = d.stage;
+        const h = helpers;
         const data = {
           js: () => h.prepData(stage),
           xml: () => h.xmlSave(stage),
@@ -1512,28 +1309,45 @@ require('./polyfills.js');
         return data[type]();
       },
       setData: formData => {
-        _helpers.removeAllfields(false);
-        loadFields();
+        helpers.removeAllFields(false);
+        loadFields(formData);
       }
     };
 
     formBuilder.i18n = {
       setLang: async locale => {
-        let newLang = await formBuilder.mi18n.setCurrent.call(formBuilder.mi18n, locale);
+        let newLang = await mi18n.setCurrent.call(mi18n, locale);
       }
     };
 
+    formBuilder.formData = data.formData;
+
     return formBuilder;
   };
+
+  /**
+   * wrapper for i18n init
+   * @param  {Object} i18nOpts
+   * @return {Promise} mi18n
+   */
+  async function initI18N(i18nOpts){
+    return await mi18n.init(i18nOpts);
+  }
 
   $.fn.formBuilder = function(options) {
     if (!options) {
       options = {};
     }
     let elems = this;
-    return elems.each(async i => {
-      let formBuilder = await new FormBuilder(options, elems[i]);
-      console.log(formBuilder);
+
+    let {i18nOptions, ...opts} = $.extend({}, defaultOptions, options, true);
+    config.opts = opts;
+    let i18nOpts = $.extend({}, defaultI18n, i18nOptions, true);
+
+    initI18N(i18nOpts);
+
+    return elems.each(i => {
+      let formBuilder = new FormBuilder(opts, elems[i]);
       $(elems[i]).data('formBuilder', formBuilder);
 
       return formBuilder;

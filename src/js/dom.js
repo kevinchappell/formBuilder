@@ -19,11 +19,11 @@ dom.defaultSubtypes = {
 dom.subtypes = dom.defaultSubtypes;
 
 /**
-   * Util to remove contents of DOM Object
-   * @param  {Object} element
-   * @return {Object}         element with its children removed
-   */
-dom.empty = (element) => {
+ * Util to remove contents of DOM Object
+ * @param  {Object} element
+ * @return {Object} element with its children removed
+ */
+dom.empty = element => {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }

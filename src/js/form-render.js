@@ -1,3 +1,6 @@
+import utils from './utils';
+import events from './events';
+
 /**
  * render the formBuilder XML into html
  * @param  {Object} options
@@ -5,9 +8,6 @@
  * @return {Object} formRender instance
  */
 function FormRender(options, element) {
-  const utils = require('./utils.js');
-  const events = require('./events.js');
-
   const formRender = this;
   const defaults = {
       destroyTemplate: true, // @todo
