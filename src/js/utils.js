@@ -512,7 +512,6 @@ import d from './dom';
           click: evt => {
             const list = evt.target.parentElement;
             const field = list.previousSibling.previousSibling;
-            console.log(list, field);
             field.value = optionData.label;
             field.previousSibling.value = optionData.value;
             list.style.display = 'none';
@@ -953,19 +952,7 @@ fbUtils.merge = (obj1, obj2) => {
   return mergedObj;
 };
 
-/**
- * Util to remove contents of DOM Object
- * @param  {Object} element
- * @return {Object}         element with its children removed
- */
-fbUtils.empty = element => {
-  while (element.firstChild) {
-    element.removeChild(element.firstChild);
-  }
-  return element;
-};
-
 fbUtils.noop = () => null;
 
 
-module.exports = fbUtils;
+export default fbUtils;

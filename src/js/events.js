@@ -18,4 +18,4 @@
 //   return events;
 // }
 
-module.exports = events;
+export default events;

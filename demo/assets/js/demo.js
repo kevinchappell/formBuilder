@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+jQuery(function($) {
   const fbOptions = {
     subtypes: {
       text: ['datetime-local']
@@ -48,12 +48,7 @@ jQuery(document).ready(function($) {
         };
       formBuilder.actions.addField(field);
     },
-    removeField: () => {
-      let fieldId = $('.form-field:last', formBuilder).attr('id');
-      if (fieldId) {
-        formBuilder.actions.removeField(fieldId);
-      }
-    },
+    removeField: () => formBuilder.actions.removeField(),
     setLanguage: () => {
 
     }
