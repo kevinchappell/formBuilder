@@ -1,4 +1,4 @@
-formBuilder v1.24.2
+formBuilder v1.24.5
 ===========
 
 [![Join the chat at https://gitter.im/kevinchappell/formBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kevinchappell/formBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -10,8 +10,7 @@ To start building forms with this plugin call `formBuilder()` on the block eleme
 
 **Example**
 ```
-jQuery(document).ready(function($) {
-  'use strict';
+jQuery(function($) {
   var editor = document.getElementById('fb-editor');
   $(editor).formBuilder();
 });
