@@ -1,3 +1,3 @@
-const data = {};
+export const data = {};
 
-export default data;
+export const availablefields = {};

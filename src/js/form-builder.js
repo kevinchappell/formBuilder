@@ -1,5 +1,9 @@
 import d from './dom';
-import data from './data';
+import {
+  data,
+  availablefields as aFields,
+  formData
+} from './data';
 import mi18n from 'mi18n';
 import utils from './utils';
 import events from './events';
@@ -15,19 +19,17 @@ const m = utils.markup;
   const FormBuilder = function(opts, element) {
     const formBuilder = this;
     const i18n = mi18n.current;
-
-    let frmbID = 'frmb-' + $('ul[id^=frmb-]').length++;
-    data.formID = formBuilder.formID = frmbID;
+    data.formID = 'frmb-' + $('ul[id^=frmb-]').length++;
 
     const subtypes = helpers.processSubtypes(opts.subtypes);
 
-    let $sortableFields = $('<ul/>').attr('id', frmbID).addClass('frmb');
+    helpers.editorUI();
+
+    let $stage = $(d.stage);
 
     config.layout = helpers.editorLayout(opts.controlPosition);
-    d.stage = $sortableFields[0];
 
-    let lastID = frmbID + '-fld-1';
-    let boxID = frmbID + '-control-box';
+    data.lastID = `${data.formID}-fld-1`;
 
     // create array of field objects to cycle through
     let frmbFields = [{
@@ -112,33 +114,29 @@ const m = utils.markup;
     }
 
     // Create draggable fields for formBuilder
-    let cbUl = m('ul', null, {id: boxID, className: 'frmb-control'});
-    d.controls = cbUl;
+    d.controls = m('ul', null, {
+      id: `${data.formID}-control-box`,
+      className: 'frmb-control'
+    });
 
     if (opts.sortableControls) {
-      cbUl.classList.add('sort-enabled');
+      d.controls.classList.add('sort-enabled');
     }
 
-    let $cbUL = $(cbUl);
+    let $cbUL = $(d.controls);
 
     // Loop through fmrbFields
     utils.forEach(frmbFields, (i) => {
-      let field = frmbFields[i];
-      let attrs = field.attrs;
+      let {attrs, ...field} = frmbFields[i];
       let icon = attrs.icon || `icon-${attrs.name || attrs.type}`;
-      attrs.name = attrs.name || utils.nameAttr(field);
-      let $field = $(m('li',
-      m('span', field.label),
-      {
-        className: `${icon} input-control input-control-${i}`,
-        type: attrs.type,
-        name: attrs.name,
-        label: field.label
-      }));
+      let newFieldControl = m('li',
+        m('span', field.label),
+        {className: `${icon} input-control input-control-${i}`}
+      );
 
-      $field.data('newFieldData', field);
-
-      $field.appendTo($cbUL);
+      aFields[attrs.type] = frmbFields[i];
+      newFieldControl.dataset.type = attrs.type;
+      d.controls.appendChild(newFieldControl);
     });
 
     if (opts.inputSets.length) {
@@ -154,7 +152,7 @@ const m = utils.markup;
     }
 
     // Sortable fields
-    $sortableFields.sortable({
+    $stage.sortable({
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
@@ -169,7 +167,7 @@ const m = utils.markup;
     $cbUL.sortable({
       helper: 'clone',
       opacity: 0.9,
-      connectWith: $sortableFields,
+      connectWith: $stage,
       cancel: '.fb-separator',
       cursor: 'move',
       scroll: false,
@@ -183,7 +181,8 @@ const m = utils.markup;
         if (helpers.doCancel) {
           return false;
         }
-        if (ui.item.parent()[0] === $sortableFields[0]) {
+        if (ui.item.parent()[0] === $stage[0]) {
+          console.log(ui.item);
           processControl(ui.item);
           helpers.doCancel = true;
         } else {
@@ -219,20 +218,17 @@ const m = utils.markup;
       }
     };
 
-    let $formWrap = $('<div/>', {
-      id: frmbID + '-form-wrap',
-      'class': 'form-wrap form-builder' + helpers.mobileClass()
+    d.editorWrap = m('div', null, {
+      id: `${data.formID}-form-wrap`,
+      className: 'form-wrap form-builder' + helpers.mobileClass()
     });
 
-    let $stageWrap = $('<div/>', {
-      id: frmbID + '-stage-wrap',
-      'class': 'stage-wrap ' + config.layout.stage
-    });
+    let $editorWrap = $(d.editorWrap);
 
-    let cbWrap = $('<div/>', {
-      id: frmbID + '-cb-wrap',
-      'class': 'cb-wrap ' + config.layout.controls
-    }).append($cbUL[0]);
+    let cbWrap = m('div', d.controls, {
+      id: `${data.formID}-cb-wrap`,
+      className: 'cb-wrap ' + config.layout.controls
+    });
 
     if (opts.showActionButtons) {
       const buttons = opts.actionButtons.map(btnData => {
@@ -240,21 +236,24 @@ const m = utils.markup;
             return helpers.processActionButtons(btnData);
           }
       });
-      const formActions = m('div', buttons, {
+      const formActions = d.formActions = m('div', buttons, {
         className: 'form-actions btn-group'
       });
 
-      cbWrap.append(formActions);
+      cbWrap.appendChild(formActions);
     }
 
-    $stageWrap.append($sortableFields, cbWrap);
-    $stageWrap.before($formWrap);
-    $formWrap.append($stageWrap, cbWrap);
+    let stageWrap = m('div', [d.stage, cbWrap], {
+      id: `${data.formID}-stage-wrap`,
+      className: 'stage-wrap ' + config.layout.stage
+    });
+
+    $editorWrap.append(stageWrap, cbWrap);
 
     if (element.type !== 'textarea') {
-      $(element).append($formWrap);
+      $(element).append($editorWrap);
     } else {
-      $(element).replaceWith($formWrap);
+      $(element).replaceWith($editorWrap);
     }
 
     let saveAndUpdate = helpers.debounce(evt => {
@@ -270,9 +269,9 @@ const m = utils.markup;
     });
 
     // Save field on change
-    $sortableFields.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
+    $stage.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
-    $('li', $cbUL).click(evt => {
+    $('li', d.controls).click(evt => {
       let $control = $(evt.target).closest('.input-control');
       helpers.stopIndex = undefined;
       processControl($control);
@@ -287,31 +286,29 @@ const m = utils.markup;
         className: `disabled-field form-${type}`
       });
 
-      if (opts.prepend && !$('.disabled-field.form-prepend', $sortableFields).length) {
+      if (opts.prepend && !$('.disabled-field.form-prepend', d.stage).length) {
         cancelArray.push(true);
-        $sortableFields.prepend(disabledField('prepend'));
+        $stage.prepend(disabledField('prepend'));
       }
 
-      if (opts.append && !$('.disabled-field.form-.append', $sortableFields).length) {
+      if (opts.append && !$('.disabled-field.form-.append', d.stage).length) {
         cancelArray.push(true);
-        $sortableFields.append(disabledField('append'));
-      }
-
-      if (cancelArray.some(elem => elem === true)) {
-        $stageWrap.removeClass('empty');
+        $stage.append(disabledField('append'));
       }
 
       helpers.disabledTT.init();
+      return cancelArray.some(elem => elem === true);
     };
 
     let prepFieldVars = function($field, isNew = false) {
       let field = {};
       if ($field instanceof jQuery) {
-        let fieldData = $field.data('newFieldData');
+        console.log($field);
+        let fieldData = aFields[$field[0].dataset.type];
         if (fieldData) {
           field = fieldData.attrs;
           field.label = fieldData.label;
-        } else {
+        } else { // is dataType XML
           let attrs = $field[0].attributes;
           if (!isNew) {
             field.values = $field.children().map((index, elem) => {
@@ -339,9 +336,9 @@ const m = utils.markup;
          'select',
          'textarea',
          'autocomplete'])) {
-        field.className = field.class || field.className || 'form-control';
+        field.className = field.className || 'form-control';
       } else {
-        field.className = field.class || field.className;
+        field.className = field.className;
       }
 
       let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
@@ -357,7 +354,7 @@ const m = utils.markup;
         document.dispatchEvent(events.fieldAdded);
       }
 
-      $stageWrap.removeClass('empty');
+      stageWrap.classList.remove('empty');
     };
 
     // Parse saved XML template data
@@ -367,18 +364,20 @@ const m = utils.markup;
         for (let i = 0; i < formData.length; i++) {
           prepFieldVars(formData[i]);
         }
-        $stageWrap.removeClass('empty');
+        stageWrap.classList.remove('empty');
       } else if (opts.defaultFields && opts.defaultFields.length) {
         // Load default fields if none are set
         opts.defaultFields.forEach(field => prepFieldVars(field));
-        $stageWrap.removeClass('empty');
+        stageWrap.classList.remove('empty');
       } else if (!opts.prepend && !opts.append) {
-        $stageWrap.addClass('empty')
-        .attr('data-content', i18n.getStarted);
+        stageWrap.classList.add('empty');
+        stageWrap.dataset.content = i18n.getStarted;
       }
       helpers.save();
 
-      nonEditableFields();
+      if (nonEditableFields()) {
+        stageWrap.classList.remove('empty');
+      }
     };
 
     /**
@@ -522,7 +521,7 @@ const m = utils.markup;
       for (key in opts.roles) {
         if (opts.roles.hasOwnProperty(key)) {
           let checked = utils.inArray(key, roles) ? 'checked' : '';
-          let roleId = `fld-${lastID}-roles-${key}`;
+          let roleId = `fld-${data.lastID}-roles-${key}`;
           availableRoles.push(`<input type="checkbox" name="roles[]" value="${key}" id="${roleId}" ${checked} class="roles-field" /> <label for="${roleId}">${opts.roles[key]}</label><br/>`);
         }
       }
@@ -598,7 +597,7 @@ const m = utils.markup;
      */
     function inputUserAttrs(name, attrs) {
       let textAttrs = {
-          id: name + '-' + lastID,
+          id: name + '-' + data.lastID,
           title: attrs.description || attrs.label || name.toUpperCase(),
           name: name,
           type: attrs.type || 'text',
@@ -632,7 +631,7 @@ const m = utils.markup;
         return `<option ${utils.attrString(attrs)}>${options.options[val]}</option>`;
       });
       let selectAttrs = {
-        id: name + '-' + lastID,
+        id: name + '-' + data.lastID,
         title: options.description || options.label || name.toUpperCase(),
         name: name,
         className: `fld-${name} form-control`
@@ -656,10 +655,10 @@ const m = utils.markup;
       }
 
       let label = (txt) => {
-        return `<label for="${name}-${lastID}">${txt}</label>`;
+        return `<label for="${name}-${data.lastID}">${txt}</label>`;
       };
       let checked = (values[name] !== undefined ? 'checked' : '');
-      let input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${lastID}"/> `;
+      let input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${data.lastID}"/> `;
       let left = [];
       let right = [
         input
@@ -730,7 +729,7 @@ const m = utils.markup;
         min: '0',
         placeholder: placeholder,
         className: `fld-${attribute} form-control`,
-        id: `${attribute}-${lastID}`
+        id: `${attribute}-${data.lastID}`
       };
       let numberAttribute = `<input ${utils.attrString(utils.trimObj(inputConfig))}>`;
       let inputWrap = `<div class="input-wrap">${numberAttribute}</div>`;
@@ -760,7 +759,7 @@ const m = utils.markup;
         return `<option ${utils.attrString(utils.trimObj(optionAttrs))}>${optionAttrs.label}</option>`;
       });
       let selectAttrs = {
-          id: attribute + '-' + lastID,
+          id: attribute + '-' + data.lastID,
           name: attribute,
           className: `fld-${attribute} form-control`
         };
@@ -826,7 +825,7 @@ const m = utils.markup;
           name: attribute,
           placeholder: placeholder,
           className: `fld-${attribute} form-control`,
-          id: `${attribute}-${lastID}`
+          id: `${attribute}-${data.lastID}`
         };
         let attributeLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`;
 
@@ -875,17 +874,17 @@ const m = utils.markup;
       let type = values.type || 'text';
       let label = values.label || i18n[type] || i18n.label;
       let delBtn = m('a', i18n.remove, {
-          id: 'del_' + lastID,
+          id: 'del_' + data.lastID,
           className: 'del-button btn delete-confirm',
           title: i18n.removeMessage
         });
       let toggleBtn = m('a', null, {
-        id: lastID + '-edit',
+        id: data.lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
         title: i18n.hide
       });
       let copyBtn = m('a', null, {
-        id: lastID + '-copy',
+        id: data.lastID + '-copy',
         className: 'copy-button btn icon-copy',
         title: i18n.copyButtonTooltip
       });
@@ -909,7 +908,7 @@ const m = utils.markup;
       liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
       liContents += m('div', '', {className: 'prev-holder'}).outerHTML;
-      liContents += `<div id="${lastID}-holder" class="frm-holder">`;
+      liContents += `<div id="${data.lastID}-holder" class="frm-holder">`;
       liContents += '<div class="form-elements">';
 
       liContents += advFields(values);
@@ -921,16 +920,16 @@ const m = utils.markup;
       let field = m('li', liContents, {
           'class': type + '-field form-field',
           'type': type,
-          id: lastID
+          id: data.lastID
         });
       let $li = $(field);
 
       $li.data('fieldData', {attrs: values});
 
       if (typeof helpers.stopIndex !== 'undefined') {
-        $('> li', $sortableFields).eq(helpers.stopIndex).before($li);
+        $('> li', d.stage).eq(helpers.stopIndex).before($li);
       } else {
-        $sortableFields.append($li);
+        $stage.append($li);
       }
 
       $('.sortable-options', $li)
@@ -944,10 +943,10 @@ const m = utils.markup;
 
       if (opts.editOnAdd && isNew) {
         helpers.closeAllEdit();
-        helpers.toggleEdit(lastID, false);
+        helpers.toggleEdit(data.lastID, false);
       }
 
-      lastID = helpers.incrementId(lastID);
+      data.lastID = helpers.incrementId(data.lastID);
     };
 
     // Select field html, since there may be multiple
@@ -1006,11 +1005,11 @@ const m = utils.markup;
       let $clone = currentItem.clone();
 
       $clone.find('[id]').each((i, elem) => {
-       elem.id = elem.id.replace(currentId, lastID);
+       elem.id = elem.id.replace(currentId, data.lastID);
       });
 
       $clone.find('[for]').each(function() {
-       this.setAttribute('for', this.getAttribute('for').replace(currentId, lastID));
+       this.setAttribute('for', this.getAttribute('for').replace(currentId, data.lastID));
       });
 
       $clone.each(function() {
@@ -1031,7 +1030,7 @@ const m = utils.markup;
         }
       });
 
-      $clone.attr('id', lastID);
+      $clone.attr('id', data.lastID);
       $clone.attr('name', cloneName);
       $clone.addClass('cloned');
       $('.sortable-options', $clone).sortable();
@@ -1040,14 +1039,14 @@ const m = utils.markup;
         opts.typeUserEvents[type].onclone($clone[0]);
       }
 
-      lastID = helpers.incrementId(lastID);
+      data.lastID = helpers.incrementId(data.lastID);
       return $clone;
     };
 
     // ---------------------- UTILITIES ---------------------- //
 
     // delete options
-    $sortableFields.on('click touchstart', '.remove', function(e) {
+    $stage.on('click touchstart', '.remove', function(e) {
       let $field = $(this).parents('.form-field:eq(0)');
       e.preventDefault();
       let optionsCount = $(this).parents('.sortable-options:eq(0)').children('li').length;
@@ -1063,7 +1062,7 @@ const m = utils.markup;
     });
 
     // touch focus
-    $sortableFields.on('touchstart', 'input', function(e) {
+    $stage.on('touchstart', 'input', function(e) {
       let $input = $(this);
       if (e.handled !== true) {
         if ($input.attr('type') === 'checkbox') {
@@ -1079,7 +1078,7 @@ const m = utils.markup;
     });
 
     // toggle fields
-    $sortableFields.on('click touchstart', '.toggle-form, .close-field', function(e) {
+    $stage.on('click touchstart', '.toggle-form, .close-field', function(e) {
       e.stopPropagation();
       e.preventDefault();
       if (e.handled !== true) {
@@ -1091,13 +1090,13 @@ const m = utils.markup;
       }
     });
 
-    $sortableFields.on('change', '[name="subtype"]', (e) => {
+    $stage.on('change', '[name="subtype"]', (e) => {
       const $field = $(e.target).closest('li.form-field');
       const $valWrap = $('.value-wrap', $field);
       $valWrap.toggle(e.target.value !== 'quill');
     });
 
-    $sortableFields.on('change', '.prev-holder input, .prev-holder select', e => {
+    $stage.on('change', '.prev-holder input, .prev-holder select', e => {
       let prevOptions;
       if (e.target.classList.contains('other-option')) {
         return;
@@ -1128,18 +1127,20 @@ const m = utils.markup;
     });
 
     // update preview to label
-    $sortableFields.on('keyup change', '[name="label"]', e => {
+    utils.addEventListeners(d.stage, 'keyup change', e => {
+      if (!e.target.classList.contains('fld-label')) return;
       let value = e.target.value || e.target.innerHTML;
-      $('.field-label', $(e.target).closest('li')).html(utils.parsedHtml(value));
+      let label = utils.closest(e.target, '.form-field').querySelector('.field-label');
+      label.innerHTML = utils.parsedHtml(value);
     });
 
     // remove error styling when users tries to correct mistake
-    $sortableFields.delegate('input.error', 'keyup', function(e) {
+    $stage.on('keyup', 'input.error', function(e) {
       $(e.target).removeClass('error');
     });
 
     // update preview for description
-    $sortableFields.on('keyup', 'input[name="description"]', function(e) {
+    $stage.on('keyup', 'input[name="description"]', function(e) {
       let $field = $(e.target).parents('.form-field:eq(0)');
       let closestToolTip = $('.tooltip-element', $field);
       let ttVal = $(e.target).val();
@@ -1162,7 +1163,7 @@ const m = utils.markup;
      * @param  {Object} e click event
      * @return {String} newType
      */
-    $sortableFields.on('change', '.fld-multiple', e => {
+    $stage.on('change', '.fld-multiple', e => {
       let newType = e.target.checked ? 'checkbox' : 'radio';
       let $options = $('.option-selected', $(e.target).closest('.form-elements'));
       $options.each(i => $options[i].type = newType);
@@ -1170,7 +1171,7 @@ const m = utils.markup;
     });
 
     // format name attribute
-    $sortableFields.on('blur', 'input.fld-name', function(e) {
+    $stage.on('blur', 'input.fld-name', function(e) {
       e.target.value = helpers.safename(e.target.value);
       if (e.target.value === '') {
         $(e.target)
@@ -1181,12 +1182,12 @@ const m = utils.markup;
       }
     });
 
-    $sortableFields.on('blur', 'input.fld-maxlength', e => {
+    $stage.on('blur', 'input.fld-maxlength', e => {
       e.target.value = helpers.forceNumber(e.target.value);
     });
 
     // Copy field
-    $sortableFields.on('click touchstart', '.icon-copy', function(e) {
+    $stage.on('click touchstart', '.icon-copy', function(e) {
       e.preventDefault();
       let currentItem = $(e.target).parent().parent('li');
       let $clone = cloneItem(currentItem);
@@ -1196,7 +1197,7 @@ const m = utils.markup;
     });
 
     // Delete field
-    $sortableFields.on('click touchstart', '.delete-confirm', function(e) {
+    $stage.on('click touchstart', '.delete-confirm', e => {
       e.preventDefault();
 
       const buttonPosition = e.target.getBoundingClientRect();
@@ -1226,7 +1227,7 @@ const m = utils.markup;
     });
 
     // Update button style selection
-    $sortableFields.on('click', '.style-wrap button', e => {
+    $stage.on('click', '.style-wrap button', e => {
       const $button = $(e.target);
       let styleVal = $button.val();
       let $btnStyle = $button.parent().prev('.btn-style');
@@ -1238,12 +1239,12 @@ const m = utils.markup;
     });
 
     // Attach a callback to toggle required asterisk
-    $sortableFields.on('click', '.fld-required', e => {
+    $stage.on('click', '.fld-required', e => {
       $(e.target).closest('.form-field').find('.required-asterisk').toggle();
     });
 
     // Attach a callback to toggle roles visibility
-    $sortableFields.on('click', 'input.fld-access', function(e) {
+    $stage.on('click', 'input.fld-access', function(e) {
       let roles = $(e.target).closest('.form-field').find('.available-roles');
       let enableRolesCB = $(e.target);
       roles.slideToggle(250, function() {
@@ -1254,7 +1255,7 @@ const m = utils.markup;
     });
 
     // Attach a callback to add new options
-    $sortableFields.on('click', '.add-opt', function(e) {
+    $stage.on('click', '.add-opt', function(e) {
       e.preventDefault();
       let $optionWrap = $(e.target).closest('.field-options');
       let $multiple = $('[name="multiple"]', $optionWrap);
@@ -1272,16 +1273,16 @@ const m = utils.markup;
       $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple));
     });
 
-    $sortableFields.on('mouseover mouseout', '.remove, .del-button', e =>
+    $stage.on('mouseover mouseout', '.remove, .del-button', e =>
       $(e.target).closest('li').toggleClass('delete'));
 
     loadFields();
 
-    $sortableFields.css('min-height', $cbUL.height());
+    $stage.css('min-height', $cbUL.height());
 
     // If option set, controls will remain in view in editor
     if (opts.stickyControls.enable) {
-      helpers.stickyControls($sortableFields);
+      helpers.stickyControls($stage);
     }
 
     document.dispatchEvent(events.loaded);
@@ -1311,12 +1312,12 @@ const m = utils.markup;
       setData: formData => {
         helpers.removeAllFields(false);
         loadFields(formData);
-      }
-    };
-
-    formBuilder.i18n = {
+      },
       setLang: async locale => {
         let newLang = await mi18n.setCurrent.call(mi18n, locale);
+        defaultI18n.langs.unshift(locale);
+        defaultI18n.preloaded[locale] = newLang;
+        console.log(locale, newLang, defaultI18n);
       }
     };
 
@@ -1330,7 +1331,7 @@ const m = utils.markup;
    * @param  {Object} i18nOpts
    * @return {Promise} mi18n
    */
-  async function initI18N(i18nOpts){
+  async function initI18N(i18nOpts) {
     return await mi18n.init(i18nOpts);
   }
 
