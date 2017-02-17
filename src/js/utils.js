@@ -179,10 +179,10 @@ import d from './dom';
  * @return {String}       name
  */
   fbUtils.nameAttr = function(field) {
-      let epoch = new Date().getTime();
-      let prefix = field.attrs.type || fbUtils.hyphenCase(field.label);
-      return prefix + '-' + epoch;
-    };
+    let epoch = new Date().getTime();
+    let prefix = field.attrs.type || fbUtils.hyphenCase(field.label);
+    return prefix + '-' + epoch;
+  };
 
   /**
    * Generate markup wrapper where needed
@@ -223,7 +223,6 @@ import d from './dom';
         // console.error(tag, content, attributes);
       },
     };
-
 
     for (let attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
@@ -950,6 +949,16 @@ fbUtils.merge = (obj1, obj2) => {
     }
   }
   return mergedObj;
+};
+
+fbUtils.addEventListeners = (el, evts, fn) => {
+  return evts.split(' ').forEach(e => el.addEventListener(e, fn, false));
+};
+
+fbUtils.closest = (el, cls) => {
+  let className = cls.replace('.', '');
+  while ((el = el.parentElement) && !el.classList.contains(className));
+  return el;
 };
 
 fbUtils.noop = () => null;

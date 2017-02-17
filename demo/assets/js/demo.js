@@ -48,15 +48,16 @@ jQuery(function($) {
         };
       formBuilder.actions.addField(field);
     },
-    removeField: () => formBuilder.actions.removeField(),
-    setLanguage: () => {
-
-    }
+    removeField: () => formBuilder.actions.removeField()
   };
 
   Object.keys(apiBtns).forEach(action => {
-    document.getElementById(action).onclick = apiBtns[action];
+    document.getElementById(action)
+    .addEventListener('click', e => apiBtns[action]());
   });
+
+  document.getElementById('setLanguage')
+  .addEventListener('change', e => formBuilder.actions.setLang(e.target.value));
 
   document.getElementById('edit-form').onclick = function() {
     toggleEdit();

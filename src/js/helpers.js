@@ -1,5 +1,5 @@
 import d from './dom';
-import data from './data';
+import {data} from './data';
 import utils from './utils';
 import events from './events';
 import mi18n from 'mi18n';
@@ -957,6 +957,14 @@ helpers.processSubtypes = subtypeOpts => {
     }
 
     return subtypes;
+};
+
+
+helpers.editorUI = () => {
+  d.stage = m('ul', null, {
+      id: data.formID,
+      className: 'frmb'
+    });
 };
 
 export default helpers;
