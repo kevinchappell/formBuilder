@@ -3,7 +3,7 @@ jQuery(function($) {
     subtypes: {
       text: ['datetime-local']
     },
-    onSave: function(formData) {
+    onSave: function(e, formData) {
       toggleEdit();
       $('.render-wrap').formRender({formData});
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
