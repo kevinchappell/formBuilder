@@ -534,7 +534,13 @@
 
       field.name = isNew ? nameAttr(field) : ( field.name || nameAttr(field) );
 
-      if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'select', 'textarea'])) {
+      if (isNew && utils.inArray(field.type, [
+        'text',
+        'number',
+        'file',
+        'date',
+        'select',
+        'textarea'])) {
         field.className = 'form-control'; // backwards compatibility
       } else {
         field.className = field.class || field.className; // backwards compatibility

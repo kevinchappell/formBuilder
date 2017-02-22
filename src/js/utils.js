@@ -238,8 +238,9 @@ fbUtils.parseXML = function(xmlString) {
     var fields = xml.getElementsByTagName('field');
     for (var i = 0; i < fields.length; i++) {
       let fieldData = fbUtils.parseAttrs(fields[i]);
+      let nodeChildren = fields[i].children || [];
 
-      if (fields[i].children && fields[i].children.length) {
+      if (nodeChildren.length) {
         fieldData.values = fbUtils.parseOptions(fields[i]);
       }
 
