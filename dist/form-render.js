@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.24.5
+Version: 1.24.6
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 'use strict';
@@ -327,8 +327,9 @@ fbUtils.parseXML = function (xmlString) {
     var fields = xml.getElementsByTagName('field');
     for (var i = 0; i < fields.length; i++) {
       var fieldData = fbUtils.parseAttrs(fields[i]);
+      var nodeChildren = fields[i].children || [];
 
-      if (fields[i].children && fields[i].children.length) {
+      if (nodeChildren.length) {
         fieldData.values = fbUtils.parseOptions(fields[i]);
       }
 
