@@ -1,7 +1,4 @@
 'use strict';
-/**
- *
- */
 
 const fbUtils = {};
 

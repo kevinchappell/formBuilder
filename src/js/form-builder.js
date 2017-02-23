@@ -1,6 +1,7 @@
-'use strict';
-
+/*global fbUtils, formBuilderHelpersFn*/
 (function($) {
+  'use strict';
+
   var FormBuilder = function(options, element) {
     var formBuilder = this;
 

@@ -1,7 +1,7 @@
-'use strict';
-
+/*global fbUtils*/
 // render the formBuilder XML into html
 function FormRenderFn(options, element) {
+  'use strict';
 
   var utils = fbUtils;
 
@@ -125,6 +125,7 @@ function FormRenderFn(options, element) {
 }
 
 (function($) {
+  'use strict';
 
   $.fn.formRender = function(options) {
     this.each(function() {
