@@ -180,7 +180,7 @@ import d from './dom';
  */
   fbUtils.nameAttr = function(field) {
     let epoch = new Date().getTime();
-    let prefix = field.attrs.type || fbUtils.hyphenCase(field.label);
+    let prefix = field.type || fbUtils.hyphenCase(field.label);
     return prefix + '-' + epoch;
   };
 
@@ -955,6 +955,12 @@ fbUtils.addEventListeners = (el, evts, fn) => {
   return evts.split(' ').forEach(e => el.addEventListener(e, fn, false));
 };
 
+/**
+ * Find the closest parent by class
+ * @param  {Object} el  DOM element
+ * @param  {String} cls class
+ * @return {Object}     DOM Element
+ */
 fbUtils.closest = (el, cls) => {
   let className = cls.replace('.', '');
   while ((el = el.parentElement) && !el.classList.contains(className));

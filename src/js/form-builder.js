@@ -1,8 +1,7 @@
 import d from './dom';
 import {
   data,
-  availablefields as aFields,
-  formData
+  availablefields as aFields
 } from './data';
 import mi18n from 'mi18n';
 import utils from './utils';
@@ -20,6 +19,7 @@ const m = utils.markup;
     const formBuilder = this;
     const i18n = mi18n.current;
     data.formID = 'frmb-' + $('ul[id^=frmb-]').length++;
+    data.formData.subtypes = opts.subtypes;
 
     const subtypes = helpers.processSubtypes(opts.subtypes);
 
@@ -112,12 +112,6 @@ const m = utils.markup;
         return !utils.inArray(field.attrs.type, opts.disableFields);
       });
     }
-
-    // Create draggable fields for formBuilder
-    d.controls = m('ul', null, {
-      id: `${data.formID}-control-box`,
-      className: 'frmb-control'
-    });
 
     if (opts.sortableControls) {
       d.controls.classList.add('sort-enabled');
@@ -303,7 +297,6 @@ const m = utils.markup;
     let prepFieldVars = function($field, isNew = false) {
       let field = {};
       if ($field instanceof jQuery) {
-        console.log($field);
         let fieldData = aFields[$field[0].dataset.type];
         if (fieldData) {
           field = fieldData.attrs;
@@ -326,6 +319,10 @@ const m = utils.markup;
         }
       } else {
         field = Object.assign({}, $field);
+      }
+
+      if (!field.name) {
+        field.name = utils.nameAttr(field);
       }
 
       if (isNew && utils.inArray(field.type,
@@ -1101,7 +1098,7 @@ const m = utils.markup;
       if (e.target.classList.contains('other-option')) {
         return;
       }
-      let field = $(e.target).closest('li.form-field')[0];
+      let field = utils.closest(e.target, '.form-field');
       if (utils.inArray(field.type, ['select', 'checkbox-group', 'radio-group'])) {
         let options = field.getElementsByClassName('option-value');
         if (field.type === 'select') {
@@ -1315,8 +1312,8 @@ const m = utils.markup;
       },
       setLang: async locale => {
         let newLang = await mi18n.setCurrent.call(mi18n, locale);
-        defaultI18n.langs.unshift(locale);
-        defaultI18n.preloaded[locale] = newLang;
+        // defaultI18n.langs.unshift(locale);
+        // defaultI18n.preloaded[locale] = newLang;
         console.log(locale, newLang, defaultI18n);
       }
     };

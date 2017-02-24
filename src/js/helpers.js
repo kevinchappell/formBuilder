@@ -965,6 +965,12 @@ helpers.editorUI = () => {
       id: data.formID,
       className: 'frmb'
     });
+
+  // Create draggable fields for formBuilder
+  d.controls = m('ul', null, {
+    id: `${data.formID}-control-box`,
+    className: 'frmb-control'
+  });
 };
 
 export default helpers;
