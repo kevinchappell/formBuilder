@@ -3,7 +3,8 @@ import {
   data,
   availablefields as aFields
 } from './data';
-import mi18n from 'mi18n';
+// import mi18n from 'mi18n';
+import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
 import utils from './utils';
 import events from './events';
 import helpers from './helpers';
@@ -14,10 +15,11 @@ require('./polyfills.js').default;
 
 const m = utils.markup;
 
-(function($) {
   const FormBuilder = function(opts, element) {
     const formBuilder = this;
     const i18n = mi18n.current;
+    console.log(mi18n);
+
     data.formID = 'frmb-' + $('ul[id^=frmb-]').length++;
     data.formData.subtypes = opts.subtypes;
 
@@ -1332,6 +1334,7 @@ const m = utils.markup;
     return await mi18n.init(i18nOpts);
   }
 
+(function( $ ) {
   $.fn.formBuilder = function(options) {
     if (!options) {
       options = {};
@@ -1351,4 +1354,4 @@ const m = utils.markup;
       return formBuilder;
     });
   };
-})(jQuery);
+})( jQuery );

@@ -2,7 +2,8 @@ import d from './dom';
 import {data} from './data';
 import utils from './utils';
 import events from './events';
-import mi18n from 'mi18n';
+// import mi18n from 'mi18n';
+import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
 import {config} from './config';
 
 const opts = config.opts;
