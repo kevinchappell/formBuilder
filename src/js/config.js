@@ -91,7 +91,7 @@ export const defaultOptions = {
 
 
 export const defaultI18n = {
-      location: 'assets/i18n/',
+      location: 'assets/lang/',
       langs: [
         'en-US'
       ],
