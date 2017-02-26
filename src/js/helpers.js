@@ -1,6 +1,6 @@
-import {instanceDom, defaultSubtypes, empty} from './dom';
+import {instanceDom, defaultSubtypes, empty, optionFieldsRegEx} from './dom';
 import {instanceData} from './data';
-import {utils} from './utils';
+import utils from './utils';
 import events from './events';
 // import mi18n from 'mi18n';
 import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
@@ -8,451 +8,381 @@ import {config} from './config';
 
 const opts = config.opts;
 const m = utils.markup;
-// let data = {};
-// let d = {};
 
-export const helpers = {
-  doCancel: false
-};
-
+/**
+ * Utilities specific to form-builder.js
+ */
 export default class Helpers {
-  constructor(formID){
-    let _this = Object.assign({}, helpers);
-    _this.data = instanceData[formID];
-    _this.d = instanceDom[formID];
-    return _this;
-  }
-}
-
-/**
- * Convert converts messy `cl#ssNames` into valid `class-names`
- *
- * @param  {String} str
- * @return {String} hyphenated string
- */
-helpers.makeClassName = (str) => {
-  str = str.replace(/[^\w\s\-]/gi, '');
-  return utils.hyphenCase(str);
-};
-
-/**
- * Add a mobile class
- * @todo find css only solution
- * @return {String} Mobile class added to formBuilder
- */
-helpers.mobileClass = function() {
-  let mobileClass = '';
-  (function(a) {
-    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
-      mobileClass = ' fb-mobile';
-    }
-  })(navigator.userAgent || navigator.vendor || window.opera);
-  return mobileClass;
-};
-
-/**
- * Callback for when a drag begins
- *
- * @param  {Object} event
- * @param  {Object} ui
- */
-helpers.startMoving = function(event, ui) {
-  ui.item.show().addClass('moving');
-  helpers.startIndex = $('li', this).index(ui.item);
-};
-
-/**
- * Callback for when a drag ends
- *
- * @param  {Object} event
- * @param  {Object} ui
- */
-helpers.stopMoving = function(event, ui) {
-  ui.item.removeClass('moving');
-  if (helpers.doCancel) {
-    $(ui.sender).sortable('cancel');
-    $(this).sortable('cancel');
-  }
-  helpers.save();
-  helpers.doCancel = false;
-};
-
-/**
- * jQuery UI sortable beforeStop callback used for both lists.
- * Logic for canceling the sort or drop.
- * @param  {Object} event
- * @param  {Object} ui
- * @return {void}
- */
-helpers.beforeStop = function(event, ui) {
-  const opts = config.opts;
-  const form = document.getElementById(data.formID);
-  let lastIndex = form.children.length - 1;
-  let cancelArray = [];
-  helpers.stopIndex = ui.placeholder.index() - 1;
-
-  if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
-    cancelArray.push(true);
+  /**
+   * Setup defaults, get instance data and dom
+   * @param  {String} formID [description]
+   */
+  constructor(formID) {
+    this.data = instanceData[formID];
+    this.d = instanceDom[formID];
+    this.doCancel = false;
   }
 
-  if (opts.prepend) {
-    cancelArray.push(helpers.stopIndex === 0);
+  /**
+   * Callback for when a drag begins
+   *
+   * @param  {Object} event
+   * @param  {Object} ui
+   */
+  startMoving(event, ui) {
+    ui.item.show().addClass('moving');
+    // this.d.startIndex = $('li', this).index(ui.item);
   }
 
-  if (opts.append) {
-    cancelArray.push((helpers.stopIndex + 1) === lastIndex);
-  }
-
-  helpers.doCancel = cancelArray.some(elem => elem === true);
-};
-
-/**
- * Make strings safe to be used as classes
- *
- * @param  {String} str string to be converted
- * @return {String}     converter string
- */
-helpers.safename = function(str) {
-  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\-]/g, '').toLowerCase();
-};
-
-/**
- * Strips non-numbers from a number only input
- *
- * @param  {string} str string with possible number
- * @return {string}     string without numbers
- */
-helpers.forceNumber = function(str) {
-  return str.replace(/[^0-9]/g, '');
-};
-
-/**
- * hide and show mouse tracking tooltips, only used for disabled
- * fields in the editor.
- *
- * @todo   remove or refactor to make better use
- * @param  {Object} tt jQuery option with nexted tooltip
- * @return {void}
- */
-helpers.initTooltip = function(tt) {
-  const tooltip = tt.find('.tooltip');
-  tt.mouseenter(function() {
-    if (tooltip.outerWidth() > 200) {
-      tooltip.addClass('max-width');
-    }
-    tooltip.css('left', tt.width() + 14);
-    tooltip.stop(true, true).fadeIn('fast');
-  }).mouseleave(function() {
-    tt.find('.tooltip').stop(true, true).fadeOut('fast');
-  });
-  tooltip.hide();
-};
-
-/**
- * Attempts to get element type and subtype
- *
- * @param  {Object} $field
- * @return {Object} {type: 'fieldType', subtype: 'fieldSubType'}
- */
-helpers.getTypes = function($field) {
-  let types = {
-      type: $field.attr('type')
-    };
-  let subtype = $('.fld-subtype', $field).val();
-
-  if (subtype !== types.type) {
-    types.subtype = subtype;
-  }
-
-  return types;
-};
-
-/**
- * Get option data for a field
- * @param  {Object} field jQuery field object
- * @return {Array}        Array of option values
- */
-helpers.fieldOptionData = function(field) {
-  let options = [];
-
-  $('.sortable-options li', field).each(function() {
-    let $option = $(this);
-    const selected = $('.option-selected', $option).is(':checked');
-    let attrs = {
-        label: $('.option-label', $option).val(),
-        value: $('.option-value', $option).val()
-      };
-
-    if (selected) {
-      attrs.selected = selected;
-    }
-
-    options.push(attrs);
-  });
-
-  return options;
-};
-
-/**
- * XML save
- *
- * @param  {Object} form sortableFields node
- * @return {String} xml in string
- */
-helpers.xmlSave = function(form) {
-  let formData = helpers.prepData(form);
-  let xml = ['<form-template>\n\t<fields>'];
-
-  utils.forEach(formData, function(fieldIndex, field) {
-    let fieldContent = null;
-    const optionFields = d.optionFieldsRegEx;
-
-    // Handle options
-    if (field.type.match(optionFields)) {
-      let optionData = field.values;
-      let options = [];
-
-      for (let i = 0; i < optionData.length; i++) {
-        let option = m('option', optionData[i].label, optionData[i]).outerHTML;
-        options.push('\n\t\t\t' + option);
+  /**
+   * Callback for when a drag ends
+   *
+   * @param  {Object} event
+   * @param  {Object} ui
+   */
+  stopMoving(event, ui) {
+    let _this = this;
+    ui.item.removeClass('moving');
+    if (_this.doCancel) {
+      if (ui.sender) {
+        $(ui.sender).sortable('cancel');
       }
-      options.push('\n\t\t');
+      ui.item.parent().sortable('cancel');
+    }
+    _this.save();
+    _this.doCancel = false;
+  }
 
-      fieldContent = options.join('');
-      delete field.values;
+  /**
+   * jQuery UI sortable beforeStop callback used for both lists.
+   * Logic for canceling the sort or drop.
+   * @param  {Object} event
+   * @param  {Object} ui
+   * @return {void}
+   */
+  beforeStop(event, ui) {
+    let _this = this;
+    const opts = config.opts;
+    const form = _this.d.stage;
+    let lastIndex = form.children.length - 1;
+    let cancelArray = [];
+    _this.stopIndex = ui.placeholder.index() - 1;
+
+    if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
+      cancelArray.push(true);
     }
 
-    let xmlField = m('field', fieldContent, field);
-    xml.push('\n\t\t' + xmlField.outerHTML);
-  });
+    if (opts.prepend) {
+      cancelArray.push(_this.stopIndex === 0);
+    }
 
-  xml.push('\n\t</fields>\n</form-template>');
+    if (opts.append) {
+      cancelArray.push((_this.stopIndex + 1) === lastIndex);
+    }
 
-  return xml.join('');
-};
+    _this.doCancel = cancelArray.some(elem => elem === true);
+  }
 
-helpers.prepData = function(form) {
-  let formData = [];
-  let d = this.d;
 
-  if (form.childNodes.length !== 0) {
-    // build data object
-    utils.forEach(form.childNodes, async function(index, field) {
-      let $field = $(field);
+  /**
+   * Attempts to get element type and subtype
+   *
+   * @param  {Object} $field
+   * @return {Object} {type: 'fieldType', subtype: 'fieldSubType'}
+   */
+  getTypes($field) {
+    let types = {
+        type: $field.attr('type')
+      };
+    let subtype = $('.fld-subtype', $field).val();
 
-      if (!($field.hasClass('disabled-field'))) {
-        let fieldData = helpers.getTypes($field);
-        let roleVals = $('.roles-field:checked', field).map(function() {
-            return this.value;
-          }).get();
+    if (subtype !== types.type) {
+      types.subtype = subtype;
+    }
 
-        helpers.setAttrVals(field, fieldData);
+    return types;
+  }
 
-        if (fieldData.subtype) {
-          if (fieldData.subtype === 'quill') {
-            let id = `${fieldData.name}-preview`;
-            if (window.fbEditors.quill[id]) {
-              let instance = window.fbEditors.quill[id].instance;
-              const data = instance.getContents();
-              fieldData.value = window.JSON.stringify(data.ops);
-            }
-          } else if(fieldData.subtype === 'tinymce' && window.tinymce) {
-            let id = `${fieldData.name}-preview`;
-            if (window.tinymce.editors[id]) {
-              let editor = window.tinymce.editors[id];
-              fieldData.value = editor.getContent();
+  /**
+   * Get option data for a field
+   * @param  {Object} field jQuery field object
+   * @return {Array}        Array of option values
+   */
+  fieldOptionData(field) {
+    let options = [];
+
+    $('.sortable-options li', field).each(function() {
+      let $option = $(this);
+      const selected = $('.option-selected', $option).is(':checked');
+      let attrs = {
+          label: $('.option-label', $option).val(),
+          value: $('.option-value', $option).val()
+        };
+
+      if (selected) {
+        attrs.selected = selected;
+      }
+
+      options.push(attrs);
+    });
+
+    return options;
+  }
+
+  /**
+   * XML save
+   *
+   * @param  {Object} form sortableFields node
+   * @return {String} xml in string
+   */
+  xmlSave(form) {
+    let formData = this.prepData(form);
+    let xml = ['<form-template>\n\t<fields>'];
+
+    utils.forEach(formData, function(fieldIndex, field) {
+      let fieldContent = null;
+      const optionFields = optionFieldsRegEx;
+
+      // Handle options
+      if (field.type.match(optionFields)) {
+        let optionData = field.values;
+        let options = [];
+
+        for (let i = 0; i < optionData.length; i++) {
+          let option = m('option', optionData[i].label, optionData[i]).outerHTML;
+          options.push('\n\t\t\t' + option);
+        }
+        options.push('\n\t\t');
+
+        fieldContent = options.join('');
+        delete field.values;
+      }
+
+      let xmlField = m('field', fieldContent, field);
+      xml.push('\n\t\t' + xmlField.outerHTML);
+    });
+
+    xml.push('\n\t</fields>\n</form-template>');
+
+    return xml.join('');
+  }
+
+  /**
+   * Get formData from editor in JS Object format
+   * @param  {Object} form aka stage, DOM element
+   * @return {Object} formData
+   */
+  prepData(form) {
+    let formData = [];
+    let d = this.d;
+    let _this = this;
+
+    if (form.childNodes.length !== 0) {
+      // build data object
+      utils.forEach(form.childNodes, async function(index, field) {
+        let $field = $(field);
+
+        if (!($field.hasClass('disabled-field'))) {
+          let fieldData = _this.getTypes($field);
+          let roleVals = $('.roles-field:checked', field).map(elem => elem.value).get();
+
+          _this.setAttrVals(field, fieldData);
+
+          if (fieldData.subtype) {
+            if (fieldData.subtype === 'quill') {
+              let id = `${fieldData.name}-preview`;
+              if (window.fbEditors.quill[id]) {
+                let instance = window.fbEditors.quill[id].instance;
+                const data = instance.getContents();
+                fieldData.value = window.JSON.stringify(data.ops);
+              }
+            } else if(fieldData.subtype === 'tinymce' && window.tinymce) {
+              let id = `${fieldData.name}-preview`;
+              if (window.tinymce.editors[id]) {
+                let editor = window.tinymce.editors[id];
+                fieldData.value = editor.getContent();
+              }
             }
           }
+
+          if (roleVals.length) {
+            fieldData.role = roleVals.join(',');
+          }
+
+          fieldData.className = fieldData.className || fieldData.class;
+
+          let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className);
+          if (match) {
+            fieldData.style = match[1];
+          }
+
+          fieldData = utils.trimObj(fieldData);
+
+          let multipleField = fieldData.type.match(d.optionFieldsRegEx);
+
+          if (multipleField) {
+            fieldData.values = _this.fieldOptionData($field);
+          }
+
+          formData.push(fieldData);
         }
-
-        if (roleVals.length) {
-          fieldData.role = roleVals.join(',');
-        }
-
-        fieldData.className = fieldData.className || fieldData.class;
-
-        let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className);
-        if (match) {
-          fieldData.style = match[1];
-        }
-
-        fieldData = utils.trimObj(fieldData);
-
-        let multipleField = fieldData.type.match(d.optionFieldsRegEx);
-
-        if (multipleField) {
-          fieldData.values = helpers.fieldOptionData($field);
-        }
-
-        formData.push(fieldData);
-      }
-    });
-  }
-
-  return formData;
-};
-
-helpers.jsonSave = function(form) {
-  console.log('jsonSave', this);
-  window.JSON.stringify(helpers.prepData.call(this, form), null, '\t');
-};
-
-helpers.getData = function(formData) {
-  let data = this.data;
-  if (!formData) {
-    formData = config.opts.formData;
-  }
-
-  if (!formData) {
-    return false;
-  }
-
-  let setData = {
-    xml: formData => utils.parseXML(formData),
-    json: formData => window.JSON.parse(formData)
-  };
-
-  data.formData = setData[config.opts.dataType](formData) || [];
-
-  return data.formData;
-};
-
-/**
- * Saves and returns formData
- * @return {XML|JSON} formData
- */
-helpers.save = function() {
-  console.log(this);
-  let data = this.data;
-  let d = this.d;
-  let doSave = {
-    xml: helpers.xmlSave,
-    json: helpers.jsonSave
-  };
-
-  // save action for current `dataType`
-  data.formData = doSave[config.opts.dataType].call(this, d.stage);
-
-  // trigger formSaved event
-  document.dispatchEvent(events.formSaved);
-  return data.formData;
-};
-
-/**
- * increments the field ids with support for multiple editors
- * @param  {String} id field ID
- * @return {String}    incremented field ID
- */
-helpers.incrementId = function(id) {
-  let split = id.lastIndexOf('-');
-  let newFieldNumber = parseInt(id.substring(split + 1)) + 1;
-  let baseString = id.substring(0, split);
-
-  return `${baseString}-${newFieldNumber}`;
-};
-
-
-helpers.setAttrVals = (field, fieldData) => {
-  let attrs = field.querySelectorAll('[class*="fld-"]');
-  attrs.forEach(attr => {
-    let value;
-    let name = utils.camelCase(attr.getAttribute('name'));
-    if (attr.attributes['contenteditable']) {
-      value = attr.innerHTML;
-    } else if (attr.type === 'checkbox') {
-      value = attr.checked;
-    } else {
-      value = attr.value;
+      });
     }
-    fieldData[name] = value;
-  });
-};
 
-/**
- * Collect field attribute values and call fieldPreview to generate preview
- * @param  {Object} field DOM element
- */
-helpers.updatePreview = function($field) {
-  let d = this.d;
-  const fieldClass = $field.attr('class');
-  let field = $field[0];
-  if (fieldClass.indexOf('input-control') !== -1) {
-    return;
+    return formData;
   }
 
-  let fieldType = $field.attr('type');
-  let $prevHolder = $('.prev-holder', field);
-  let previewData = {
-    type: fieldType
-  };
-  let preview;
+  /**
+   * Get and set the data for an editor. Mainly
+   * a wrapper for handling dataType option
+   * @param  {Object} formData
+   * @return {Object} formData
+   */
+  getData(formData) {
+    let data = this.data;
+    if (!formData) {
+      formData = config.opts.formData;
+    }
 
-  helpers.setAttrVals(field, previewData);
+    if (!formData) {
+      return false;
+    }
 
-  let style = $('.btn-style', field).val();
-  if (style) {
-    previewData.style = style;
-  }
-
-  if (fieldType.match(d.optionFieldsRegEx)) {
-    previewData.values = [];
-    previewData.multiple = $('[name="multiple"]', field).is(':checked');
-
-    $('.sortable-options li', field).each(function(i, $option) {
-      let option = {};
-      option.selected = $('.option-selected', $option).is(':checked');
-      option.value = $('.option-value', $option).val();
-      option.label = $('.option-label', $option).val();
-      previewData.values.push(option);
-    });
-  }
-
-  previewData = utils.trimObj(previewData);
-
-  previewData.className = helpers.classNames(field, previewData);
-  $('.fld-className', field).val(previewData.className);
-
-  $field.data('fieldData', previewData);
-  preview = utils.getTemplate(previewData, true);
-
-  empty($prevHolder[0]);
-  $prevHolder[0].appendChild(preview);
-  preview.dispatchEvent(events.fieldRendered);
-};
-
-helpers.debounce = function(func, wait = 250, immediate = false) {
-  let timeout;
-  return function() {
-    let context = this;
-    let args = arguments;
-    let later = function() {
-      timeout = null;
-      if (!immediate) {
-        func.apply(context, args);
-      }
+    let setData = {
+      xml: formData => utils.parseXML(formData),
+      json: formData => window.JSON.parse(formData)
     };
-    let callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) {
-      func.apply(context, args);
-    }
-  };
-};
 
-/**
- * Display a custom tooltip for disabled fields.
- *
- * @param  {Object} field
- */
-helpers.disabledTT = {
-  move: (e, elem) => {
-    const fieldOffset = elem.field.getBoundingClientRect();
-    const x = e.clientX - fieldOffset.left - 21;
-    const y = e.clientY - fieldOffset.top - elem.tt.offsetHeight - 12;
-    elem.tt.style.transform = `translate(${x}px, ${y}px)`;
-  },
-  init: stage => {
+    data.formData = setData[config.opts.dataType](formData) || [];
+
+    return data.formData;
+  }
+
+  /**
+   * Saves and returns formData
+   * @param {Object} stage DOM element
+   * @return {XML|JSON} formData
+   */
+  save(stage) {
+    let _this = this;
+    let data = this.data;
+    if(!stage) {
+      stage = this.d.stage;
+    }
+    let doSave = {
+      xml: _this.xmlSave,
+      json: () =>
+      window.JSON.stringify(_this.prepData(stage), null, '\t')
+    };
+
+    // save action for current `dataType`
+    data.formData = doSave[config.opts.dataType](stage);
+
+    // trigger formSaved event
+    document.dispatchEvent(events.formSaved);
+    return data.formData;
+  }
+
+  /**
+   * increments the field ids with support for multiple editors
+   * @param  {String} id field ID
+   * @return {String}    incremented field ID
+   */
+  incrementId(id) {
+    let split = id.lastIndexOf('-');
+    let newFieldNumber = parseInt(id.substring(split + 1)) + 1;
+    let baseString = id.substring(0, split);
+
+    return `${baseString}-${newFieldNumber}`;
+  }
+
+  /**
+   * Set the values for field attributes in the editor
+   * @param {Object} field
+   * @param {Object} fieldData
+   */
+  setAttrVals(field, fieldData) {
+    let attrs = field.querySelectorAll('[class*="fld-"]');
+    attrs.forEach(attr => {
+      let value;
+      let name = utils.camelCase(attr.getAttribute('name'));
+      if (attr.attributes['contenteditable']) {
+        value = attr.innerHTML;
+      } else if (attr.type === 'checkbox') {
+        value = attr.checked;
+      } else {
+        value = attr.value;
+      }
+      fieldData[name] = value;
+    });
+  }
+
+  /**
+   * Collect field attribute values and call fieldPreview to generate preview
+   * @param  {Object} $field jQuery DOM element
+   */
+  updatePreview($field) {
+    let _this = this;
+    let d = this.d;
+    const fieldClass = $field.attr('class');
+    let field = $field[0];
+    if (fieldClass.indexOf('input-control') !== -1) {
+      return;
+    }
+
+    let fieldType = $field.attr('type');
+    let $prevHolder = $('.prev-holder', field);
+    let previewData = {
+      type: fieldType
+    };
+    let preview;
+
+    _this.setAttrVals(field, previewData);
+
+    let style = $('.btn-style', field).val();
+    if (style) {
+      previewData.style = style;
+    }
+
+    if (fieldType.match(d.optionFieldsRegEx)) {
+      previewData.values = [];
+      previewData.multiple = $('[name="multiple"]', field).is(':checked');
+
+      $('.sortable-options li', field).each(function(i, $option) {
+        let option = {};
+        option.selected = $('.option-selected', $option).is(':checked');
+        option.value = $('.option-value', $option).val();
+        option.label = $('.option-label', $option).val();
+        previewData.values.push(option);
+      });
+    }
+
+    previewData = utils.trimObj(previewData);
+
+    previewData.className = _this.classNames(field, previewData);
+    $('.fld-className', field).val(previewData.className);
+
+    $field.data('fieldData', previewData);
+    preview = utils.getTemplate(previewData, true);
+
+    empty($prevHolder[0]);
+    $prevHolder[0].appendChild(preview);
+    preview.dispatchEvent(events.fieldRendered);
+  }
+
+  /**
+   * Display a custom tooltip for disabled fields.
+   *
+   * @param  {Object} field
+   */
+  disabledTT(stage) {
+    const move = (e, elem) => {
+      const fieldOffset = elem.field.getBoundingClientRect();
+      const x = e.clientX - fieldOffset.left - 21;
+      const y = e.clientY - fieldOffset.top - elem.tt.offsetHeight - 12;
+      elem.tt.style.transform = `translate(${x}px, ${y}px)`;
+    };
+
     stage.querySelectorAll('.disabled-field').forEach(
       field => {
         let title = opts.messages.fieldNonEditable;
@@ -460,548 +390,595 @@ helpers.disabledTT = {
         if (title) {
           let tt = utils.markup('p', title, {className: 'frmb-tt'});
           field.appendChild(tt);
-          field.addEventListener('mousemove', e => {
-            helpers.disabledTT.move(e, {tt, field});
-          });
+          field.addEventListener('mousemove', e => move(e, {tt, field}));
         }
       });
-  },
-};
+  }
 
-helpers.classNames = (field, previewData) => {
-  let i;
-  let type = previewData.type;
-  let style = previewData.style;
-  let className = field.querySelector('.fld-className').value;
-  let classes = className.split(' ');
-  let types = {
-    button: 'btn',
-    submit: 'btn'
-  };
+  /**
+   * Process classNames for field
+   * @param  {Object} field
+   * @param  {Object} previewData
+   * @return {String} classNames
+   */
+  classNames(field, previewData) {
+    let i;
+    let type = previewData.type;
+    let style = previewData.style;
+    let className = field.querySelector('.fld-className').value;
+    let classes = className.split(' ');
+    let types = {
+      button: 'btn',
+      submit: 'btn'
+    };
 
-  let primaryType = types[type];
+    let primaryType = types[type];
 
-  if (primaryType) {
-    if (style) {
-      for (i = 0; i < classes.length; i++) {
-        let re = new RegExp(`(?:^|\s)${primaryType}-(.*?)(?:\s|$)+`, 'g');
-        let match = classes[i].match(re);
-        if (match) {
-          classes.splice(i, 1);
+    if (primaryType) {
+      if (style) {
+        for (i = 0; i < classes.length; i++) {
+          let re = new RegExp(`(?:^|\s)${primaryType}-(.*?)(?:\s|$)+`, 'g');
+          let match = classes[i].match(re);
+          if (match) {
+            classes.splice(i, 1);
+          }
+        }
+        classes.push(primaryType + '-' + style);
+      }
+      classes.push(primaryType);
+    }
+
+    // reverse the array to put custom classes at end,
+    // remove any duplicates, convert to string, remove whitespace
+    return utils.unique(classes).join(' ').trim();
+  }
+
+  /**
+   * Closes and open dialog
+   *
+   * @param  {Object} overlay Existing overlay if there is one
+   * @param  {Object} dialog  Existing dialog
+   */
+  closeConfirm(overlay, dialog) {
+    if (!overlay) {
+      overlay = document.getElementsByClassName('form-builder-overlay')[0];
+    }
+    if (!dialog) {
+      dialog = document.getElementsByClassName('form-builder-dialog')[0];
+    }
+    overlay.classList.remove('visible');
+    dialog.remove();
+    overlay.remove();
+    document.dispatchEvent(events.modalClosed);
+  }
+
+  /**
+   * Returns the layout data based on controlPosition option
+   * @param  {String} controlPosition 'left' or 'right'
+   * @return {Object} layout object
+   */
+  editorLayout(controlPosition) {
+    let layoutMap = {
+      left: {
+        stage: 'pull-right',
+        controls: 'pull-left'
+      },
+      right: {
+        stage: 'pull-left',
+        controls: 'pull-right'
+      }
+    };
+
+    return layoutMap[controlPosition] ? layoutMap[controlPosition] : '';
+  }
+
+  /**
+   * Adds overlay to the page. Used for modals.
+   * @return {Object} DOM Object
+   */
+  showOverlay() {
+    const _this = this;
+    let overlay = utils.markup('div', null, {
+      className: 'form-builder-overlay'
+    });
+    document.body.appendChild(overlay);
+    overlay.classList.add('visible');
+
+    overlay.onclick = function() {
+      _this.closeConfirm(overlay);
+    };
+
+    return overlay;
+  }
+
+  /**
+   * Custom confirmation dialog
+   *
+   * @param  {Object}  message   Content to be displayed in the dialog
+   * @param  {Func}  yesAction callback to fire if they confirm
+   * @param  {Boolean} coords    location to put the dialog
+   * @param  {String}  className Custom class to be added to the dialog
+   * @return {Object}            Reference to the modal
+   */
+  confirm(message, yesAction, coords = false, className = '') {
+    const _this = this;
+    let i18n = mi18n.current;
+    let overlay = _this.showOverlay();
+    let yes = m('button', i18n.yes, {
+      className: 'yes btn btn-success btn-sm'
+    });
+    let no = m('button', i18n.no, {
+      className: 'no btn btn-danger btn-sm'
+    });
+
+    no.onclick = function() {
+      _this.closeConfirm(overlay);
+    };
+
+    yes.onclick = function() {
+      yesAction();
+      _this.closeConfirm(overlay);
+    };
+
+    let btnWrap = m('div', [no, yes], {className: 'button-wrap'});
+
+    className = 'form-builder-dialog ' + className;
+
+    let miniModal = m('div', [message, btnWrap], {className});
+    if (!coords) {
+      const dE = document.documentElement;
+      coords = {
+        pageX: Math.max(dE.clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(dE.clientHeight, window.innerHeight || 0) / 2
+      };
+      miniModal.style.position = 'fixed';
+    } else {
+      miniModal.classList.add('positioned');
+    }
+
+    miniModal.style.left = coords.pageX + 'px';
+    miniModal.style.top = coords.pageY + 'px';
+
+    document.body.appendChild(miniModal);
+
+    yes.focus();
+    return miniModal;
+  }
+
+  /**
+   * Popup dialog the does not require confirmation.
+   * @param  {String|DOM|Array}  content
+   * @param  {Boolean} coords    false if no coords are provided. Without coordinates
+   *                             the popup will appear center screen.
+   * @param  {String}  className classname to be added to the dialog
+   * @return {Object}            dom
+   */
+  dialog(content, coords = false, className = '') {
+    const _this = this;
+    let clientWidth = document.documentElement.clientWidth;
+    let clientHeight = document.documentElement.clientHeight;
+    _this.showOverlay();
+
+    className = 'form-builder-dialog ' + className;
+
+    let miniModal = utils.markup('div', content, {className: className});
+    if (!coords) {
+      coords = {
+        pageX: Math.max(clientWidth, window.innerWidth || 0) / 2,
+        pageY: Math.max(clientHeight, window.innerHeight || 0) / 2
+      };
+      miniModal.style.position = 'fixed';
+    } else {
+      miniModal.classList.add('positioned');
+    }
+
+    miniModal.style.left = coords.pageX + 'px';
+    miniModal.style.top = coords.pageY + 'px';
+
+    document.body.appendChild(miniModal);
+
+    document.dispatchEvent(events.modalOpened);
+
+    if (className.indexOf('data-dialog') !== -1) {
+      document.dispatchEvent(events.viewData);
+    }
+
+    return miniModal;
+  }
+
+  /**
+   * Confirm all fields will be removed then remove them
+   * @param  {Object} e click event object
+   */
+  confirmRemoveAll(e) {
+    let _this = this;
+    let formID = e.target.id.match(/frmb-\d{13}/)[0];
+    let stage = document.getElementById(formID);
+    let i18n = mi18n.current;
+    let fields = $('li.form-field', stage);
+    let buttonPosition = e.target.getBoundingClientRect();
+    let bodyRect = document.body.getBoundingClientRect();
+    let coords = {
+      pageX: buttonPosition.left + (buttonPosition.width / 2),
+      pageY: (buttonPosition.top - bodyRect.top) - 12
+    };
+
+    if (fields.length) {
+      _this.confirm(i18n.clearAllMessage, function() {
+        _this.removeAllFields.call(_this, stage);
+        config.opts.notify.success(i18n.allFieldsRemoved);
+        config.opts.onClearAll();
+      }, coords);
+    } else {
+      _this.dialog(i18n.noFieldsToClear, coords);
+    }
+  }
+
+  /**
+   * Removes all fields from the form
+   * @param {Boolean} animate whether to animate or not
+   * @return {void}
+   */
+  removeAllFields(stage, animate = true) {
+    let _this = this;
+    let i18n = mi18n.current;
+    let opts = config.opts;
+    let fields = stage.querySelectorAll('li.form-field');
+    let markEmptyArray = [];
+
+    if (!fields.length) {
+      return false;
+    }
+
+    if (opts.prepend) {
+      markEmptyArray.push(true);
+    }
+
+    if (opts.append) {
+      markEmptyArray.push(true);
+    }
+
+    if (!markEmptyArray.some(elem => elem === true)) {
+      stage.parentElement.classList.add('empty');
+      stage.parentElement.dataset.content = i18n.getStarted;
+    }
+
+    if (animate) {
+      stage.classList.add('removing');
+      let outerHeight = 0;
+      fields.forEach(field => outerHeight += field.offsetHeight + 3);
+      fields[0].style.marginTop = `${-outerHeight}px`;
+      setTimeout(() => {
+        empty(stage).classList.remove('removing');
+        _this.save(stage);
+      }, 400);
+    } else {
+      empty(stage);
+      _this.save(stage);
+    }
+  }
+
+  /**
+   * If user re-orders the elements their order should be saved.
+   *
+   * @param {Object} $cbUL our list of elements
+   */
+  setFieldOrder($cbUL) {
+    if (!opts.sortableControls) {
+      return false;
+    }
+    let fieldOrder = {};
+    $cbUL.children().each(function(index, element) {
+      fieldOrder[index] = $(element).data('attrs').type;
+    });
+    if (window.sessionStorage) {
+      window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
+    }
+  }
+
+  /**
+   * Reorder the controls if the user has previously ordered them.
+   *
+   * @param  {Array} frmbFields
+   * @return {Array} ordered fields
+   */
+  orderFields(frmbFields) {
+    const opts = config.opts;
+    let fieldOrder = false;
+    let newOrderFields = [];
+
+    if (window.sessionStorage) {
+      if (opts.sortableControls) {
+        fieldOrder = window.sessionStorage.getItem('fieldOrder');
+      } else {
+        window.sessionStorage.removeItem('fieldOrder');
+      }
+    }
+
+    if (!fieldOrder) {
+      let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
+        field.attrs.type));
+      fieldOrder = utils.unique(controlOrder);
+    } else {
+      fieldOrder = window.JSON.parse(fieldOrder);
+      fieldOrder = Object.keys(fieldOrder).map(function(i) {
+        return fieldOrder[i];
+      });
+    }
+
+
+    fieldOrder.forEach((fieldType) => {
+      let field = frmbFields.filter(function(field) {
+        return field.attrs.type === fieldType;
+      })[0];
+      newOrderFields.push(field);
+    });
+
+    return newOrderFields.filter(Boolean);
+  }
+
+  /**
+   * Close fields being editing
+   * @param  {Object} stage
+   */
+  closeAllEdit() {
+    const _this = this;
+    const fields = $('> li.editing', _this.d.stage);
+    const toggleBtns = $('.toggle-form', _this.d.stage);
+    const editPanels = $('.frm-holder', fields);
+
+    toggleBtns.removeClass('open');
+    fields.removeClass('editing');
+    $('.prev-holder', fields).show();
+    editPanels.hide();
+  }
+
+  /**
+   * Toggles the edit mode for the given field
+   * @param  {String} fieldId
+   * @param  {Boolean} animate
+   */
+  toggleEdit(fieldId, animate = true) {
+    const field = document.getElementById(fieldId);
+    const toggleBtn = $('.toggle-form', field);
+    const editPanel = $('.frm-holder', field);
+    field.classList.toggle('editing');
+    toggleBtn.toggleClass('open');
+    if (animate) {
+      $('.prev-holder', field).slideToggle(250);
+      editPanel.slideToggle(250);
+    } else {
+      $('.prev-holder', field).toggle();
+      editPanel.toggle();
+    }
+  }
+
+  /**
+   * Controls follow scroll to the bottom of the editor
+   */
+  stickyControls() {
+    let d = this.d;
+    const $cbWrap = $(d.controls).parent();
+    const $stageWrap = $(d.stage).parent();
+    const cbWidth = $cbWrap.width();
+    const cbPosition = d.controls.getBoundingClientRect();
+
+    $(window).scroll(function(evt) {
+      let scrollTop = $(evt.target).scrollTop();
+      const offsetDefaults = {
+        top: 5,
+        bottom: 'auto',
+        right: 'auto',
+        left: cbPosition.left
+      };
+
+      let offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset);
+
+      if (scrollTop > $stageWrap.offset().top) {
+        const style = {
+          position: 'fixed',
+          width: cbWidth
+        };
+
+        const cbStyle = Object.assign(style, offset);
+
+        let cbOffset = $cbWrap.offset();
+        let stageOffset = $stageWrap.offset();
+        let cbBottom = cbOffset.top + $cbWrap.height();
+        let stageBottom = stageOffset.top + $stageWrap.height();
+
+        if (cbBottom > stageBottom && (cbOffset.top !== stageOffset.top)) {
+          $cbWrap.css({
+            position: 'absolute',
+            top: 'auto',
+            bottom: 0,
+            right: 0,
+            left: 'auto'
+          });
+        }
+
+        if (cbBottom < stageBottom || (cbBottom === stageBottom && cbOffset.top > scrollTop)) {
+          $cbWrap.css(cbStyle);
+        }
+      } else {
+        d.controls.parentElement.removeAttribute('style');
+      }
+    });
+  }
+
+  /**
+   * Open a dialog with the form's data
+   */
+  showData(e) {
+    const data = this.data;
+    const formData = utils.escapeHtml(data.formData);
+    const code = m('code', formData, {
+      className: `formData-${config.opts.dataType}`
+    });
+
+    this.dialog(m('pre', code), null, 'data-dialog');
+  }
+
+  /**
+   * Remove a field from the stage
+   * @param  {String}  fieldID ID of the field to be removed
+   * @return {Boolean} fieldRemoved returns true if field is removed
+   */
+  removeField(fieldID) {
+    let fieldRemoved = false;
+    let _this = this;
+    console.log(this);
+    const form = this.d.stage;
+    const fields = form.getElementsByClassName('form-field');
+
+    if (!fields.length) {
+      console.warn('No fields to remove');
+      return false;
+    }
+
+    if (!fieldID) {
+      let availableIds = [].slice.call(fields).map((field) => {
+        return field.id;
+      });
+      console.warn('fieldID required to remove specific fields. Removing last field since no ID was supplied.');
+      console.warn('Available IDs: ' + availableIds.join(', '));
+      fieldID = form.lastChild.id;
+    }
+
+    const field = document.getElementById(fieldID);
+    const $field = $(field);
+    if (!field) {
+      console.warn('Field not found');
+      return false;
+    }
+
+    $field.slideUp(250, function() {
+      $field.removeClass('deleting');
+      $field.remove();
+      fieldRemoved = true;
+      _this.save();
+      if (!form.childNodes.length) {
+        let stageWrap = form.parentElement;
+        stageWrap.classList.add('empty');
+        stageWrap.dataset.content = mi18n.current.getStarted;
+      }
+    });
+
+    document.dispatchEvent(events.fieldRemoved);
+    return fieldRemoved;
+  }
+
+  /**
+   * Generate markup for form action buttons
+   * @param  {Object} buttonData
+   * @return {Object} DOM element for action button
+   */
+  processActionButtons(buttonData) {
+    let {label, events, ...attrs} = buttonData;
+    let data = this.data;
+
+    if (!label) {
+      label = attrs.id ? utils.capitalize(attrs.id) : '';
+    } else {
+      label = mi18n.current[label] || '';
+    }
+
+    if (!attrs.id) {
+      attrs.id = `${data.formID}-action-${Math.round(Math.random()*1000)}`;
+    } else {
+      attrs.id = `${data.formID}-${attrs.id}-action`;
+    }
+
+    const button = m('button', label, attrs);
+
+    if (events) {
+      for (let event in events) {
+        if (events.hasOwnProperty(event)) {
+          button.addEventListener(event, evt => events[event](evt));
         }
       }
-      classes.push(primaryType + '-' + style);
     }
-    classes.push(primaryType);
+
+    return button;
   }
 
-  // reverse the array to put custom classes at end,
-  // remove any duplicates, convert to string, remove whitespace
-  return utils.unique(classes).join(' ').trim();
-};
-
-/**
- * Closes and open dialog
- *
- * @param  {Object} overlay Existing overlay if there is one
- * @param  {Object} dialog  Existing dialog
- */
-helpers.closeConfirm = function(overlay, dialog) {
-  if (!overlay) {
-    overlay = document.getElementsByClassName('form-builder-overlay')[0];
-  }
-  if (!dialog) {
-    dialog = document.getElementsByClassName('form-builder-dialog')[0];
-  }
-  overlay.classList.remove('visible');
-  dialog.remove();
-  overlay.remove();
-  document.dispatchEvent(events.modalClosed);
-};
-
-/**
- * Returns the layout data based on controlPosition option
- * @param  {String} controlPosition 'left' or 'right'
- * @return {Object} layout object
- */
-helpers.editorLayout = function(controlPosition) {
-  let layoutMap = {
-    left: {
-      stage: 'pull-right',
-      controls: 'pull-left'
-    },
-    right: {
-      stage: 'pull-left',
-      controls: 'pull-right'
-    }
-  };
-
-  return layoutMap[controlPosition] ? layoutMap[controlPosition] : '';
-};
-
-/**
- * Adds overlay to the page. Used for modals.
- * @return {Object} DOM Object
- */
-helpers.showOverlay = function() {
-  let overlay = utils.markup('div', null, {
-    className: 'form-builder-overlay'
-  });
-  document.body.appendChild(overlay);
-  overlay.classList.add('visible');
-
-  overlay.onclick = function() {
-    helpers.closeConfirm(overlay);
-  };
-
-  return overlay;
-};
-
-/**
- * Custom confirmation dialog
- *
- * @param  {Object}  message   Content to be displayed in the dialog
- * @param  {Func}  yesAction callback to fire if they confirm
- * @param  {Boolean} coords    location to put the dialog
- * @param  {String}  className Custom class to be added to the dialog
- * @return {Object}            Reference to the modal
- */
-helpers.confirm = (message, yesAction, coords = false, className = '') => {
-  let i18n = mi18n.current;
-  let overlay = helpers.showOverlay();
-  let yes = m('button', i18n.yes, {
-    className: 'yes btn btn-success btn-sm'
-  });
-  let no = m('button', i18n.no, {
-    className: 'no btn btn-danger btn-sm'
-  });
-
-  no.onclick = function() {
-    helpers.closeConfirm(overlay);
-  };
-
-  yes.onclick = function() {
-    yesAction();
-    helpers.closeConfirm(overlay);
-  };
-
-  let btnWrap = m('div', [no, yes], {className: 'button-wrap'});
-
-  className = 'form-builder-dialog ' + className;
-
-  let miniModal = m('div', [message, btnWrap], {className});
-  if (!coords) {
-    coords = {
-      pageX: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) / 2,
-      pageY: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 2
-    };
-    miniModal.style.position = 'fixed';
-  } else {
-    miniModal.classList.add('positioned');
-  }
-
-  miniModal.style.left = coords.pageX + 'px';
-  miniModal.style.top = coords.pageY + 'px';
-
-  document.body.appendChild(miniModal);
-
-  yes.focus();
-  return miniModal;
-};
-
-/**
- * Popup dialog the does not require confirmation.
- * @param  {String|DOM|Array}  content
- * @param  {Boolean} coords    false if no coords are provided. Without coordinates
- *                             the popup will appear center screen.
- * @param  {String}  className classname to be added to the dialog
- * @return {Object}            dom
- */
-helpers.dialog = function(content, coords = false, className = '') {
-  let clientWidth = document.documentElement.clientWidth;
-  let clientHeight = document.documentElement.clientHeight;
-  helpers.showOverlay();
-
-  className = 'form-builder-dialog ' + className;
-
-  let miniModal = utils.markup('div', content, {className: className});
-  if (!coords) {
-    coords = {
-      pageX: Math.max(clientWidth, window.innerWidth || 0) / 2,
-      pageY: Math.max(clientHeight, window.innerHeight || 0) / 2
-    };
-    miniModal.style.position = 'fixed';
-  } else {
-    miniModal.classList.add('positioned');
-  }
-
-  miniModal.style.left = coords.pageX + 'px';
-  miniModal.style.top = coords.pageY + 'px';
-
-  document.body.appendChild(miniModal);
-
-  document.dispatchEvent(events.modalOpened);
-
-  if (className.indexOf('data-dialog') !== -1) {
-    document.dispatchEvent(events.viewData);
-  }
-
-  return miniModal;
-};
-
-/**
- * Confirm all fields will be removed then remove them
- * @param  {Object} e click event object
- */
-helpers.confirmRemoveAll = function(e) {
-  let formID = e.target.id.match(/frmb-\d/)[0];
-  let stage = document.getElementById(formID);
-  let i18n = mi18n.current;
-  let fields = $('li.form-field', stage);
-  let buttonPosition = e.target.getBoundingClientRect();
-  let bodyRect = document.body.getBoundingClientRect();
-  let coords = {
-    pageX: buttonPosition.left + (buttonPosition.width / 2),
-    pageY: (buttonPosition.top - bodyRect.top) - 12
-  };
-
-  if (fields.length) {
-    helpers.confirm(i18n.clearAllMessage, function() {
-      helpers.removeAllFields(stage);
-      config.opts.notify.success(i18n.allFieldsRemoved);
-      config.opts.onClearAll();
-    }, coords);
-  } else {
-    helpers.dialog(i18n.noFieldsToClear, coords);
-  }
-};
-
-/**
- * Removes all fields from the form
- * @param {Boolean} animate whether to animate or not
- * @return {void}
- */
-helpers.removeAllFields = function(stage, animate = true) {
-  let _this = this;
-  let i18n = mi18n.current;
-  let opts = config.opts;
-  let fields = stage.querySelectorAll('li.form-field');
-  let markEmptyArray = [];
-
-  if (!fields.length) {
-    return false;
-  }
-
-  if (opts.prepend) {
-    markEmptyArray.push(true);
-  }
-
-  if (opts.append) {
-    markEmptyArray.push(true);
-  }
-
-  if (!markEmptyArray.some(elem => elem === true)) {
-    stage.parentElement.classList.add('empty');
-    stage.parentElement.dataset.content = i18n.getStarted;
-  }
-
-  if (animate) {
-    stage.classList.add('removing');
-    let outerHeight = 0;
-    fields.forEach(field => outerHeight += field.offsetHeight + 3);
-    fields[0].style.marginTop = `${-outerHeight}px`;
-    setTimeout(() => {
-      empty(stage).classList.remove('removing');
-      console.log(_this);
-      helpers.save();
-    }, 400);
-  } else {
-    empty(stage);
-    helpers.save();
-  }
-};
-
-/**
- * If user re-orders the elements their order should be saved.
- *
- * @param {Object} $cbUL our list of elements
- */
-helpers.setFieldOrder = function($cbUL) {
-  if (!opts.sortableControls) {
-    return false;
-  }
-  let fieldOrder = {};
-  $cbUL.children().each(function(index, element) {
-    fieldOrder[index] = $(element).data('attrs').type;
-  });
-  if (window.sessionStorage) {
-    window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
-  }
-};
-
-/**
- * Reorder the controls if the user has previously ordered them.
- *
- * @param  {Array} frmbFields
- * @return {Array} ordered fields
- */
-helpers.orderFields = function(frmbFields) {
-  const opts = config.opts;
-  let fieldOrder = false;
-  let newOrderFields = [];
-
-  if (window.sessionStorage) {
-    if (opts.sortableControls) {
-      fieldOrder = window.sessionStorage.getItem('fieldOrder');
-    } else {
-      window.sessionStorage.removeItem('fieldOrder');
-    }
-  }
-
-  if (!fieldOrder) {
-    let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
-      field.attrs.type));
-    fieldOrder = utils.unique(controlOrder);
-  } else {
-    fieldOrder = window.JSON.parse(fieldOrder);
-    fieldOrder = Object.keys(fieldOrder).map(function(i) {
-      return fieldOrder[i];
-    });
-  }
-
-
-  fieldOrder.forEach((fieldType) => {
-    let field = frmbFields.filter(function(field) {
-      return field.attrs.type === fieldType;
-    })[0];
-    newOrderFields.push(field);
-  });
-
-  return newOrderFields.filter(Boolean);
-};
-
-/**
- * Close fields being editing
- * @param  {Object} stage
- */
-helpers.closeAllEdit = () => {
-  const fields = $('> li.editing', d.stage);
-  const toggleBtns = $('.toggle-form', d.stage);
-  const editPanels = $('.frm-holder', fields);
-
-  toggleBtns.removeClass('open');
-  fields.removeClass('editing');
-  $('.prev-holder', fields).show();
-  editPanels.hide();
-};
-
-/**
- * Toggles the edit mode for the given field
- * @param  {String} fieldId
- * @param  {Boolean} animate
- */
-helpers.toggleEdit = function(fieldId, animate = true) {
-  const field = document.getElementById(fieldId);
-  const toggleBtn = $('.toggle-form', field);
-  const editPanel = $('.frm-holder', field);
-  field.classList.toggle('editing');
-  toggleBtn.toggleClass('open');
-  if (animate) {
-    $('.prev-holder', field).slideToggle(250);
-    editPanel.slideToggle(250);
-  } else {
-    $('.prev-holder', field).toggle();
-    editPanel.toggle();
-  }
-};
-
-/**
- * Controls follow scroll to the bottom of the editor
- */
-helpers.stickyControls = function() {
-  let d = this.d;
-  const $cbWrap = $(d.controls).parent();
-  const $stageWrap = $(d.stage).parent();
-  const cbWidth = $cbWrap.width();
-  const cbPosition = d.controls.getBoundingClientRect();
-
-  $(window).scroll(function(evt) {
-    let scrollTop = $(evt.target).scrollTop();
-    const offsetDefaults = {
-      top: 5,
-      bottom: 'auto',
-      right: 'auto',
-      left: cbPosition.left
-    };
-
-    let offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset);
-
-    if (scrollTop > $stageWrap.offset().top) {
-      const style = {
-        position: 'fixed',
-        width: cbWidth
+  /**
+   * Cross link subtypes and define markup config
+   * @param  {Array} subtypeOpts
+   * @return {Array} subtypes
+   */
+  processSubtypes(subtypeOpts) {
+    let subtypes = {};
+    const subtypeFormat = subtype => {
+        return {
+          label: mi18n.get(subtype),
+          value: subtype
+        };
       };
 
-      const cbStyle = Object.assign(style, offset);
+      config.subtypes = utils.merge(defaultSubtypes, subtypeOpts);
 
-      let cbOffset = $cbWrap.offset();
-      let stageOffset = $stageWrap.offset();
-      let cbBottom = cbOffset.top + $cbWrap.height();
-      let stageBottom = stageOffset.top + $stageWrap.height();
-
-      if (cbBottom > stageBottom && (cbOffset.top !== stageOffset.top)) {
-        $cbWrap.css({
-          position: 'absolute',
-          top: 'auto',
-          bottom: 0,
-          right: 0,
-          left: 'auto'
-        });
+      for (let subtype in config.subtypes) {
+        if (config.subtypes.hasOwnProperty(subtype)) {
+          subtypes[subtype] = config.subtypes[subtype].map(subtypeFormat);
+        }
       }
 
-      if (cbBottom < stageBottom || (cbBottom === stageBottom && cbOffset.top > scrollTop)) {
-        $cbWrap.css(cbStyle);
-      }
-    } else {
-      d.controls.parentElement.removeAttribute('style');
-    }
-  });
-};
-
-/**
- * Open a dialog with the form's data
- */
-helpers.showData = e => {
-  console.log(data);
-  const formData = utils.escapeHtml(data.formData);
-  const code = m('code', formData, {
-    className: `formData-${config.opts.dataType}`
-  });
-
-  helpers.dialog(m('pre', code), null, 'data-dialog');
-};
-
-/**
- * Remove a field from the stage
- * @param  {String}  fieldID ID of the field to be removed
- * @return {Boolean} fieldRemoved returns true if field is removed
- */
-helpers.removeField = fieldID => {
-  let fieldRemoved = false;
-  const form = d.stage;
-  const fields = form.getElementsByClassName('form-field');
-
-  if (!fields.length) {
-    console.warn('No fields to remove');
-    return false;
+      return subtypes;
   }
 
-  if (!fieldID) {
-    let availableIds = [].slice.call(fields).map((field) => {
-      return field.id;
+
+  editorUI(formID) {
+    let d = this.d;
+    let data = this.data;
+    d.stage = m('ul', null, {
+        id: data.formID,
+        className: 'frmb'
+      });
+
+    // Create draggable fields for formBuilder
+    d.controls = m('ul', null, {
+      id: `${data.formID}-control-box`,
+      className: 'frmb-control'
     });
-    console.warn('fieldID required to remove specific fields. Removing last field since no ID was supplied.');
-    console.warn('Available IDs: ' + availableIds.join(', '));
-    fieldID = form.lastChild.id;
   }
 
-  const field = document.getElementById(fieldID);
-  const $field = $(field);
-  if (!field) {
-    console.warn('Field not found');
-    return false;
-  }
-
-  $field.slideUp(250, function() {
-    $field.removeClass('deleting');
-    $field.remove();
-    fieldRemoved = true;
-    helpers.save();
-    if (!form.childNodes.length) {
-      let stageWrap = form.parentElement;
-      stageWrap.classList.add('empty');
-      stageWrap.dataset.content = mi18n.current.getStarted;
-    }
-  });
-
-  document.dispatchEvent(events.fieldRemoved);
-  return fieldRemoved;
-};
-
-/**
- * Generate markup for form action buttons
- * @param  {Object} buttonData
- * @return {Object} DOM element for action button
- */
-helpers.processActionButtons = function(buttonData) {
-  let {label, events, ...attrs} = buttonData;
-  let data = this.data;
-
-  if (!label) {
-    label = attrs.id ? utils.capitalize(attrs.id) : '';
-  } else {
-    label = mi18n.current[label] || '';
-  }
-
-  if (!attrs.id) {
-    attrs.id = `${data.formID}-action-${Math.round(Math.random()*1000)}`;
-  } else {
-    attrs.id = `${data.formID}-${attrs.id}-action`;
-  }
-
-  const button = m('button', label, attrs);
-
-  if (events) {
-    for (let event in events) {
-      if (events.hasOwnProperty(event)) {
-        button.addEventListener(event, evt => events[event](evt));
+  /**
+   * Process user options for actionButtons
+   * @param  {Object} opts
+   * @return {Object} processedOptions
+   */
+  processOptions(opts) {
+    const _this = this;
+    let actionButtons = [{
+      id: 'clear',
+      className: 'clear-all btn btn-danger',
+      events: {
+        click: _this.confirmRemoveAll
       }
-    }
+    }, {
+      label: 'viewJSON',
+      id: 'data',
+      className: 'btn btn-default',
+      events: {
+        click: () => _this.showData.call(_this)
+      }
+    }, {
+      id: 'save',
+      type: 'button',
+      className: 'btn btn-primary save-template',
+      events: {
+        click: config.opts.onSave
+      }
+    }];
+
+    config.opts = Object.assign({}, {actionButtons}, opts);
+
+    return config.opts;
   }
 
-  return button;
-};
 
-/**
- * Cross link subtypes and define markup config
- * @param  {Array} subtypeOpts
- * @return {Array} subtypes
- */
-helpers.processSubtypes = function(subtypeOpts) {
-  let d = this.d;
-  let subtypes = {};
-  const subtypeFormat = subtype => {
-      return {
-        label: mi18n.get(subtype),
-        value: subtype
-      };
-    };
-
-    d.subtypes = utils.merge(defaultSubtypes, subtypeOpts);
-
-    for (let subtype in d.subtypes) {
-      if (d.subtypes.hasOwnProperty(subtype)) {
-        subtypes[subtype] = d.subtypes[subtype].map(subtypeFormat);
-      }
-    }
-
-    return subtypes;
-};
-
-
-helpers.editorUI = function(formID) {
-  let d = this.d;
-  let data = this.data;
-  d.stage = m('ul', null, {
-      id: data.formID,
-      className: 'frmb'
-    });
-
-  // Create draggable fields for formBuilder
-  d.controls = m('ul', null, {
-    id: `${data.formID}-control-box`,
-    className: 'frmb-control'
-  });
-};
+  // end class
+}
 
 // export default Helpers;

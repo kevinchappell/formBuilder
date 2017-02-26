@@ -5,7 +5,7 @@ import {
 } from './data';
 // import mi18n from 'mi18n';
 import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
-import Utils from './utils';
+import utils from './utils';
 import events from './events';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
@@ -13,45 +13,21 @@ import {defaultOptions, defaultI18n, config} from './config';
 require('./kc-toggle.js');
 require('./polyfills.js').default;
 
-let instanceCount = 0;
+let instanceTime = new Date().getTime();
 
 const FormBuilder = function(opts, element) {
   const formBuilder = this;
   const i18n = mi18n.current;
-  const formID = 'frmb-' + instanceCount++;
+  const formID = 'frmb-' + instanceTime++;
   const data = new Data(formID);
   const d = new Dom(formID);
   const helpers = new Helpers(formID);
-  const utils = new Utils(formID);
   const m = utils.markup;
-  config.opts = opts;
 
-  let actionButtons = [{
-    id: 'clear',
-    className: 'clear-all btn btn-danger',
-    events: {
-      click: helpers.confirmRemoveAll
-    }
-  }, {
-    label: 'viewJSON',
-    id: 'data',
-    className: 'btn btn-default',
-    events: {
-      click: helpers.showData
-    }
-  }, {
-    id: 'save',
-    type: 'button',
-    className: 'btn btn-primary save-template',
-    events: {
-      click: config.opts.onSave
-    }
-  }];
+  opts = helpers.processOptions(opts);
 
-  config.opts = Object.assign({}, {actionButtons}, opts);
-
-  const subtypes = helpers.processSubtypes(opts.subtypes);
-  d.subtypes = subtypes;
+  const subtypes = config.subtypes = helpers.processSubtypes(opts.subtypes);
+  // config.subtypes = subtypes;
 
   helpers.editorUI(formID);
 
@@ -180,9 +156,9 @@ const FormBuilder = function(opts, element) {
     cursor: 'move',
     opacity: 0.9,
     revert: 150,
-    beforeStop: helpers.beforeStop,
-    start: helpers.startMoving,
-    stop: helpers.stopMoving,
+    beforeStop: (evt, ui) => helpers.beforeStop.call(helpers, evt, ui),
+    start: (evt, ui) => helpers.startMoving.call(helpers, evt, ui),
+    stop: (evt, ui) => helpers.stopMoving.call(helpers, evt, ui),
     cancel: 'input, select, .disabled-field, .form-group, .btn',
     placeholder: 'frmb-placeholder'
   });
@@ -196,17 +172,16 @@ const FormBuilder = function(opts, element) {
     cursor: 'move',
     scroll: false,
     placeholder: 'ui-state-highlight',
-    start: helpers.startMoving,
-    stop: helpers.stopMoving,
+    start: (evt, ui) => helpers.startMoving.call(helpers, evt, ui),
+    stop: (evt, ui) => helpers.stopMoving.call(helpers, evt, ui),
     revert: 150,
-    beforeStop: helpers.beforeStop,
+    beforeStop: (evt, ui) => helpers.beforeStop.call(helpers, evt, ui),
     distance: 3,
     update: function(event, ui) {
       if (helpers.doCancel) {
         return false;
       }
       if (ui.item.parent()[0] === $stage[0]) {
-        console.log(ui.item);
         processControl(ui.item);
         helpers.doCancel = true;
       } else {
@@ -244,7 +219,7 @@ const FormBuilder = function(opts, element) {
 
   d.editorWrap = m('div', null, {
     id: `${data.formID}-form-wrap`,
-    className: 'form-wrap form-builder' + helpers.mobileClass()
+    className: 'form-wrap form-builder' + utils.mobileClass()
   });
 
   let $editorWrap = $(d.editorWrap);
@@ -255,7 +230,7 @@ const FormBuilder = function(opts, element) {
   });
 
   if (opts.showActionButtons) {
-    const buttons = config.opts.actionButtons.map(btnData => {
+    const buttons = opts.actionButtons.map(btnData => {
         if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
           return helpers.processActionButtons(btnData);
         }
@@ -280,7 +255,7 @@ const FormBuilder = function(opts, element) {
     $(element).replaceWith($editorWrap);
   }
 
-  let saveAndUpdate = helpers.debounce(evt => {
+  let saveAndUpdate = utils.debounce(evt => {
     if (evt) {
       if (evt.type === 'keyup' && evt.target.name === 'className') {
         return false;
@@ -288,7 +263,7 @@ const FormBuilder = function(opts, element) {
 
       let $field = $(evt.target).closest('.form-field');
       helpers.updatePreview($field);
-      helpers.save();
+      helpers.save.call(helpers);
     }
   });
 
@@ -299,7 +274,7 @@ const FormBuilder = function(opts, element) {
     let $control = $(evt.target).closest('.input-control');
     helpers.stopIndex = undefined;
     processControl($control);
-    helpers.save();
+    helpers.save.call(helpers);
   });
 
   // Add append and prepend options if necessary
@@ -320,7 +295,7 @@ const FormBuilder = function(opts, element) {
       $stage.append(disabledField('append'));
     }
 
-    helpers.disabledTT.init(d.stage);
+    helpers.disabledTT(d.stage);
     return cancelArray.some(elem => elem === true);
   };
 
@@ -400,7 +375,7 @@ const FormBuilder = function(opts, element) {
       stageWrap.classList.add('empty');
       stageWrap.dataset.content = i18n.getStarted;
     }
-    helpers.save();
+    helpers.save.call(helpers);
 
     if (nonEditableFields()) {
       stageWrap.classList.remove('empty');
@@ -1080,7 +1055,7 @@ const FormBuilder = function(opts, element) {
       $(this).parent('li').slideUp('250', function() {
         $(this).remove();
         helpers.updatePreview($field);
-        helpers.save();
+        helpers.save.call(helpers);
       });
     }
   });
@@ -1147,7 +1122,7 @@ const FormBuilder = function(opts, element) {
       }
     }
 
-    helpers.save();
+    helpers.save.call(helpers);
   });
 
   // update preview to label
@@ -1196,7 +1171,7 @@ const FormBuilder = function(opts, element) {
 
   // format name attribute
   $stage.on('blur', 'input.fld-name', function(e) {
-    e.target.value = helpers.safename(e.target.value);
+    e.target.value = utils.safename(e.target.value);
     if (e.target.value === '') {
       $(e.target)
       .addClass('field-error')
@@ -1207,7 +1182,7 @@ const FormBuilder = function(opts, element) {
   });
 
   $stage.on('blur', 'input.fld-maxlength', e => {
-    e.target.value = helpers.forceNumber(e.target.value);
+    e.target.value = utils.forceNumber(e.target.value);
   });
 
   // Copy field
@@ -1217,7 +1192,7 @@ const FormBuilder = function(opts, element) {
     let $clone = cloneItem(currentItem);
     $clone.insertAfter(currentItem);
     helpers.updatePreview($clone);
-    helpers.save();
+    helpers.save.call(helpers);
   });
 
   // Delete field
@@ -1259,7 +1234,7 @@ const FormBuilder = function(opts, element) {
     $button.siblings('.btn').removeClass('selected');
     $button.addClass('selected');
     helpers.updatePreview($btnStyle.closest('.form-field'));
-    helpers.save();
+    helpers.save.call(helpers);
   });
 
   // Attach a callback to toggle required asterisk
@@ -1314,7 +1289,7 @@ const FormBuilder = function(opts, element) {
   // Make actions accessible
   formBuilder.actions = {
     clearFields: animate => helpers.removeAllFields(d.stage, animate),
-    showData: helpers.showData,
+    showData: () => helpers.showData.call(helpers),
     save: helpers.save,
     addField: (field, index) => {
       helpers.stopIndex = d.stage.children.length ? index : undefined;
@@ -1357,24 +1332,36 @@ const FormBuilder = function(opts, element) {
       options = {};
     }
     let elems = this;
-    // let instance = this.data('formBuilder');
-
     let {i18n, ...opts} = $.extend({}, defaultOptions, options, true);
+    config.opts = opts;
     let i18nOpts = $.extend({}, defaultI18n, i18n, true);
-
-    mi18n.init(i18nOpts).then(() => {
-      return elems.each(i => {
-        let formBuilder = new FormBuilder(opts, elems[i]);
-        $(elems[i]).data('formBuilder', formBuilder);
-      });
-    });
-
-    return {
+    let instance = {
       actions: {
-        showData: () => {
-          this.data('formBuilder').actions.showData();
-        }
-      }
+        getData: null,
+        setData: null,
+        save: null,
+        showData: null,
+        setLang: null,
+        addField: null,
+        removeField: null,
+        clearFields: null
+      },
+      formData: [],
+      promise: new Promise(function(resolve, reject) {
+        mi18n.init(i18nOpts).then(() => {
+          elems.each(i => {
+            let formBuilder = new FormBuilder(opts, elems[i]);
+            $(elems[i]).data('formBuilder', formBuilder);
+          });
+          let fbInstance = $(elems[0]).data('formBuilder');
+          instance.actions = fbInstance.actions;
+          instance.formData = fbInstance.formData;
+          delete instance.promise;
+          resolve(instance);
+        }).catch(reject);
+      })
     };
+
+    return instance;
   };
 })( jQuery );
