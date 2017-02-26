@@ -1,43 +1,22 @@
-const dom = {};
 
-dom.optionFields = [
-'select',
-'checkbox-group',
-'radio-group',
-'autocomplete'
-];
-dom.optionFieldsRegEx = new RegExp(`(${dom.optionFields.join('|')})`);
+export const instanceDom = {};
+export const defaultSubtypes = {
+      text: ['text', 'password', 'email', 'color', 'tel'],
+      header: ['h1', 'h2', 'h3'],
+      button: ['button', 'submit', 'reset'],
+      paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
+      textarea: ['textarea', 'quill']
+    };
 
-dom.defaultSubtypes = {
-  text: ['text', 'password', 'email', 'color', 'tel'],
-  header: ['h1', 'h2', 'h3'],
-  button: ['button', 'submit', 'reset'],
-  paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
-  textarea: ['textarea', 'quill']
-};
 
-dom.subtypes = dom.defaultSubtypes;
-
-/**
- * Util to remove contents of DOM Object
- * @param  {Object} element
- * @return {Object} element with its children removed
- */
-dom.empty = element => {
+export const empty = element => {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
   return element;
 };
 
-/**
- * Hide or show an Array or HTMLCollection of elements
- * @param  {Array}   elems
- * @param  {String}  term  match textContent to this term
- * @param  {Boolean} show  or hide elements
- * @return {Array}         filtered elements
- */
-dom.filter = (elems, term, show = true) => {
+export const filter = (elems, term, show = true) => {
   let filteredElems = [];
   let toggle = ['none', 'block'];
 
@@ -58,4 +37,38 @@ dom.filter = (elems, term, show = true) => {
   return filteredElems;
 };
 
-export default dom;
+export const optionFields = [
+      'select',
+      'checkbox-group',
+      'radio-group',
+      'autocomplete'
+    ];
+
+export const optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`);
+export default class Dom {
+  constructor(formID) {
+    this.optionFields = optionFields;
+    this.optionFieldsRegEx = optionFieldsRegEx;
+
+    this.subtypes = defaultSubtypes;
+
+    /**
+     * Util to remove contents of DOM Object
+     * @param  {Object} element
+     * @return {Object} element with its children removed
+     */
+    this.empty = empty;
+
+    /**
+     * Hide or show an Array or HTMLCollection of elements
+     * @param  {Array}   elems
+     * @param  {String}  term  match textContent to this term
+     * @param  {Boolean} show  or hide elements
+     * @return {Array}         filtered elements
+     */
+    this.filter = filter;
+
+    instanceDom[formID] = this;
+    return instanceDom[formID];
+  }
+}

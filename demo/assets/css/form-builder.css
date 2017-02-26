@@ -660,9 +660,8 @@ textarea.form-control {
       color: #000; }
     .frmb .field-actions .btn {
       display: inline-block;
-      width: 32px;
       height: 32px;
-      padding: 0;
+      padding: 0 6px;
       border-radius: 0;
       border-color: #c5c5c5;
       background-color: #fff;

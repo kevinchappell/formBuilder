@@ -355,9 +355,9 @@
 
     .btn {
       display: inline-block;
-      width: 32px;
+      // width: 32px;
       height: 32px;
-      padding: 0;
+      padding: 0 6px;
       border-radius: 0;
       border-color: $input-border-color;
       background-color: $white;
