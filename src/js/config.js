@@ -1,4 +1,3 @@
-import {helpers} from './helpers';
 export const defaultOptions = {
   controlPosition: 'right',
       controlOrder: [
@@ -52,27 +51,6 @@ export const defaultOptions = {
       },
       onSave: () => null,
       onClearAll: () => null,
-      actionButtons: [{
-        id: 'clear',
-        className: 'clear-all btn btn-danger',
-        events: {
-          click: e => helpers.confirmRemoveAll(e)
-        }
-      }, {
-        label: 'viewJSON',
-        id: 'data',
-        className: 'btn btn-default',
-        events: {
-          click: e => helpers.showData(e)
-        }
-      }, {
-        id: 'save',
-        type: 'button',
-        className: 'btn btn-primary save-template',
-        events: {
-          click: e => config.opts.onSave(e, helpers.save())
-        }
-      }],
       sortableControls: false,
       stickyControls: {
         enable: true,
