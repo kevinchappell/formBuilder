@@ -1,4 +1,4 @@
-import helpers from './helpers';
+import {helpers} from './helpers';
 export const defaultOptions = {
   controlPosition: 'right',
       controlOrder: [
@@ -63,7 +63,7 @@ export const defaultOptions = {
         id: 'data',
         className: 'btn btn-default',
         events: {
-          click: () => helpers.showData()
+          click: e => helpers.showData(e)
         }
       }, {
         id: 'save',

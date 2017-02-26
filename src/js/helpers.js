@@ -1,6 +1,6 @@
-import d from './dom';
-import {data} from './data';
-import utils from './utils';
+import {instanceDom, defaultSubtypes, empty} from './dom';
+import {instanceData} from './data';
+import {utils} from './utils';
 import events from './events';
 // import mi18n from 'mi18n';
 import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
@@ -8,10 +8,21 @@ import {config} from './config';
 
 const opts = config.opts;
 const m = utils.markup;
+// let data = {};
+// let d = {};
 
-const helpers = {
+export const helpers = {
   doCancel: false
 };
+
+export default class Helpers {
+  constructor(formID){
+    let _this = Object.assign({}, helpers);
+    _this.data = instanceData[formID];
+    _this.d = instanceDom[formID];
+    return _this;
+  }
+}
 
 /**
  * Convert converts messy `cl#ssNames` into valid `class-names`
@@ -222,6 +233,7 @@ helpers.xmlSave = function(form) {
 
 helpers.prepData = function(form) {
   let formData = [];
+  let d = this.d;
 
   if (form.childNodes.length !== 0) {
     // build data object
@@ -280,11 +292,16 @@ helpers.prepData = function(form) {
   return formData;
 };
 
-helpers.jsonSave = form =>
-  window.JSON.stringify(helpers.prepData(form), null, '\t');
+helpers.jsonSave = function(form) {
+  console.log('jsonSave', this);
+  window.JSON.stringify(helpers.prepData.call(this, form), null, '\t');
+};
 
-helpers.getData = formData => {
-  formData = formData || config.opts.formData;
+helpers.getData = function(formData) {
+  let data = this.data;
+  if (!formData) {
+    formData = config.opts.formData;
+  }
 
   if (!formData) {
     return false;
@@ -305,13 +322,16 @@ helpers.getData = formData => {
  * @return {XML|JSON} formData
  */
 helpers.save = function() {
+  console.log(this);
+  let data = this.data;
+  let d = this.d;
   let doSave = {
     xml: helpers.xmlSave,
     json: helpers.jsonSave
   };
 
   // save action for current `dataType`
-  data.formData = doSave[config.opts.dataType](d.stage);
+  data.formData = doSave[config.opts.dataType].call(this, d.stage);
 
   // trigger formSaved event
   document.dispatchEvent(events.formSaved);
@@ -352,7 +372,8 @@ helpers.setAttrVals = (field, fieldData) => {
  * Collect field attribute values and call fieldPreview to generate preview
  * @param  {Object} field DOM element
  */
-helpers.updatePreview = $field => {
+helpers.updatePreview = function($field) {
+  let d = this.d;
   const fieldClass = $field.attr('class');
   let field = $field[0];
   if (fieldClass.indexOf('input-control') !== -1) {
@@ -394,7 +415,7 @@ helpers.updatePreview = $field => {
   $field.data('fieldData', previewData);
   preview = utils.getTemplate(previewData, true);
 
-  d.empty($prevHolder[0]);
+  empty($prevHolder[0]);
   $prevHolder[0].appendChild(preview);
   preview.dispatchEvent(events.fieldRendered);
 };
@@ -431,8 +452,8 @@ helpers.disabledTT = {
     const y = e.clientY - fieldOffset.top - elem.tt.offsetHeight - 12;
     elem.tt.style.transform = `translate(${x}px, ${y}px)`;
   },
-  init: () => {
-    d.stage.querySelectorAll('.disabled-field').forEach(
+  init: stage => {
+    stage.querySelectorAll('.disabled-field').forEach(
       field => {
         let title = opts.messages.fieldNonEditable;
 
@@ -632,9 +653,11 @@ helpers.dialog = function(content, coords = false, className = '') {
  * Confirm all fields will be removed then remove them
  * @param  {Object} e click event object
  */
-helpers.confirmRemoveAll = e => {
+helpers.confirmRemoveAll = function(e) {
+  let formID = e.target.id.match(/frmb-\d/)[0];
+  let stage = document.getElementById(formID);
   let i18n = mi18n.current;
-  let fields = $('li.form-field', d.stage);
+  let fields = $('li.form-field', stage);
   let buttonPosition = e.target.getBoundingClientRect();
   let bodyRect = document.body.getBoundingClientRect();
   let coords = {
@@ -644,7 +667,7 @@ helpers.confirmRemoveAll = e => {
 
   if (fields.length) {
     helpers.confirm(i18n.clearAllMessage, function() {
-      helpers.removeAllFields();
+      helpers.removeAllFields(stage);
       config.opts.notify.success(i18n.allFieldsRemoved);
       config.opts.onClearAll();
     }, coords);
@@ -658,11 +681,11 @@ helpers.confirmRemoveAll = e => {
  * @param {Boolean} animate whether to animate or not
  * @return {void}
  */
-helpers.removeAllFields = (animate = true) => {
+helpers.removeAllFields = function(stage, animate = true) {
+  let _this = this;
   let i18n = mi18n.current;
   let opts = config.opts;
-  let form = d.stage;
-  let fields = form.querySelectorAll('li.form-field');
+  let fields = stage.querySelectorAll('li.form-field');
   let markEmptyArray = [];
 
   if (!fields.length) {
@@ -678,21 +701,22 @@ helpers.removeAllFields = (animate = true) => {
   }
 
   if (!markEmptyArray.some(elem => elem === true)) {
-    form.parentElement.classList.add('empty');
-    form.parentElement.dataset.content = i18n.getStarted;
+    stage.parentElement.classList.add('empty');
+    stage.parentElement.dataset.content = i18n.getStarted;
   }
 
   if (animate) {
-    form.classList.add('removing');
+    stage.classList.add('removing');
     let outerHeight = 0;
     fields.forEach(field => outerHeight += field.offsetHeight + 3);
     fields[0].style.marginTop = `${-outerHeight}px`;
     setTimeout(() => {
-      d.empty(form).classList.remove('removing');
+      empty(stage).classList.remove('removing');
+      console.log(_this);
       helpers.save();
     }, 400);
   } else {
-    d.empty(form);
+    empty(stage);
     helpers.save();
   }
 };
@@ -794,7 +818,8 @@ helpers.toggleEdit = function(fieldId, animate = true) {
 /**
  * Controls follow scroll to the bottom of the editor
  */
-helpers.stickyControls = () => {
+helpers.stickyControls = function() {
+  let d = this.d;
   const $cbWrap = $(d.controls).parent();
   const $stageWrap = $(d.stage).parent();
   const cbWidth = $cbWrap.width();
@@ -846,7 +871,8 @@ helpers.stickyControls = () => {
 /**
  * Open a dialog with the form's data
  */
-helpers.showData = () => {
+helpers.showData = e => {
+  console.log(data);
   const formData = utils.escapeHtml(data.formData);
   const code = m('code', formData, {
     className: `formData-${config.opts.dataType}`
@@ -907,8 +933,9 @@ helpers.removeField = fieldID => {
  * @param  {Object} buttonData
  * @return {Object} DOM element for action button
  */
-helpers.processActionButtons = buttonData => {
+helpers.processActionButtons = function(buttonData) {
   let {label, events, ...attrs} = buttonData;
+  let data = this.data;
 
   if (!label) {
     label = attrs.id ? utils.capitalize(attrs.id) : '';
@@ -940,7 +967,8 @@ helpers.processActionButtons = buttonData => {
  * @param  {Array} subtypeOpts
  * @return {Array} subtypes
  */
-helpers.processSubtypes = subtypeOpts => {
+helpers.processSubtypes = function(subtypeOpts) {
+  let d = this.d;
   let subtypes = {};
   const subtypeFormat = subtype => {
       return {
@@ -949,7 +977,7 @@ helpers.processSubtypes = subtypeOpts => {
       };
     };
 
-    d.subtypes = utils.merge(d.defaultSubtypes, subtypeOpts);
+    d.subtypes = utils.merge(defaultSubtypes, subtypeOpts);
 
     for (let subtype in d.subtypes) {
       if (d.subtypes.hasOwnProperty(subtype)) {
@@ -961,7 +989,9 @@ helpers.processSubtypes = subtypeOpts => {
 };
 
 
-helpers.editorUI = () => {
+helpers.editorUI = function(formID) {
+  let d = this.d;
+  let data = this.data;
   d.stage = m('ul', null, {
       id: data.formID,
       className: 'frmb'
@@ -974,4 +1004,4 @@ helpers.editorUI = () => {
   });
 };
 
-export default helpers;
+// export default Helpers;

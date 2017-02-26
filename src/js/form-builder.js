@@ -1,36 +1,40 @@
-import d from './dom';
+import Dom from './dom';
 import {
-  data,
+  Data,
   availablefields as aFields
 } from './data';
 // import mi18n from 'mi18n';
 import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
-import utils from './utils';
+import Utils from './utils';
 import events from './events';
-import helpers from './helpers';
+import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
 
 require('./kc-toggle.js');
 require('./polyfills.js').default;
 
-const m = utils.markup;
+let instanceCount = 0;
+
 
   const FormBuilder = function(opts, element) {
     const formBuilder = this;
     const i18n = mi18n.current;
-    console.log(mi18n);
-
-    data.formID = 'frmb-' + $('ul[id^=frmb-]').length++;
-    data.formData.subtypes = opts.subtypes;
+    const formID = 'frmb-' + instanceCount++;
+    const data = new Data(formID);
+    const d = new Dom(formID);
+    const helpers = new Helpers(formID);
+    const utils = new Utils(formID);
+    const m = utils.markup;
 
     const subtypes = helpers.processSubtypes(opts.subtypes);
+    d.subtypes = subtypes;
 
-    helpers.editorUI();
+    helpers.editorUI(formID);
 
     let $stage = $(d.stage);
 
-    config.layout = helpers.editorLayout(opts.controlPosition);
-
+    data.layout = helpers.editorLayout(opts.controlPosition);
+    data.formID = formID;
     data.lastID = `${data.formID}-fld-1`;
 
     // create array of field objects to cycle through
@@ -223,7 +227,7 @@ const m = utils.markup;
 
     let cbWrap = m('div', d.controls, {
       id: `${data.formID}-cb-wrap`,
-      className: 'cb-wrap ' + config.layout.controls
+      className: 'cb-wrap ' + data.layout.controls
     });
 
     if (opts.showActionButtons) {
@@ -241,7 +245,7 @@ const m = utils.markup;
 
     let stageWrap = m('div', [d.stage, cbWrap], {
       id: `${data.formID}-stage-wrap`,
-      className: 'stage-wrap ' + config.layout.stage
+      className: 'stage-wrap ' + data.layout.stage
     });
 
     $editorWrap.append(stageWrap, cbWrap);
@@ -292,7 +296,7 @@ const m = utils.markup;
         $stage.append(disabledField('append'));
       }
 
-      helpers.disabledTT.init();
+      helpers.disabledTT.init(d.stage);
       return cancelArray.some(elem => elem === true);
     };
 
@@ -720,7 +724,7 @@ const m = utils.markup;
 
       let attrVal = values[attribute];
       let attrLabel = i18n[attribute] || attribute;
-      let placeholder = i18n.placeholders[attribute];
+      let placeholder = i18n[`placeholders.${attribute}`];
       let inputConfig = {
         type: 'number',
         value: attrVal,
@@ -804,8 +808,7 @@ const m = utils.markup;
         noName = noName.concat(subtypes.header);
       }
 
-      let placeholders = i18n.placeholders;
-      let placeholder = placeholders[attribute] || '';
+      let placeholder = i18n[`placeholders.${attribute}`] || '';
       let attributefield = '';
       let noMakeAttr = [];
 
@@ -968,20 +971,18 @@ const m = utils.markup;
         if (optionData.hasOwnProperty(prop)) {
           let attrs = {
             type: optionInputType[prop] || 'text',
-            'class': 'option-' + prop,
+            className: 'option-' + prop,
             value: optionData[prop],
             name: name + '-option'
           };
 
-          if (i18n.placeholders[prop]) {
-            attrs.placeholder = i18n.placeholders[prop];
-          }
+          attrs.placeholder = i18n[`placeholders.${prop}`] || '';
 
           if (prop === 'selected' && optionData.selected === true) {
             attrs.checked = optionData.selected;
           }
 
-          optionInputs.push(utils.markup('input', null, attrs));
+          optionInputs.push(m('input', null, attrs));
         }
       }
 
@@ -1288,7 +1289,9 @@ const m = utils.markup;
 
     // Make actions accessible
     formBuilder.actions = {
-      clearFields: helpers.removeAllFields,
+      clearFields: function(animate) {
+        helpers.removeAllFields(d.stage, animate);
+      },
       showData: helpers.showData,
       save: helpers.save,
       addField: (field, index) => {
@@ -1309,7 +1312,7 @@ const m = utils.markup;
         return data[type]();
       },
       setData: formData => {
-        helpers.removeAllFields(false);
+        helpers.removeAllFields(d.stage, false);
         loadFields(formData);
       },
       setLang: async locale => {
@@ -1325,14 +1328,6 @@ const m = utils.markup;
     return formBuilder;
   };
 
-  /**
-   * wrapper for i18n init
-   * @param  {Object} i18nOpts
-   * @return {Promise} mi18n
-   */
-  async function initI18N(i18nOpts) {
-    return await mi18n.init(i18nOpts);
-  }
 
 (function( $ ) {
   $.fn.formBuilder = function(options) {
@@ -1340,18 +1335,26 @@ const m = utils.markup;
       options = {};
     }
     let elems = this;
+    // let instance = this.data('formBuilder');
 
-    let {i18nOptions, ...opts} = $.extend({}, defaultOptions, options, true);
+    let {i18n, ...opts} = $.extend({}, defaultOptions, options, true);
     config.opts = opts;
-    let i18nOpts = $.extend({}, defaultI18n, i18nOptions, true);
+    let i18nOpts = $.extend({}, defaultI18n, i18n, true);
 
-    initI18N(i18nOpts);
-
-    return elems.each(i => {
-      let formBuilder = new FormBuilder(opts, elems[i]);
-      $(elems[i]).data('formBuilder', formBuilder);
-
-      return formBuilder;
+    mi18n.init(i18nOpts).then(() => {
+      return elems.each(i => {
+        console.log('setup formBuilder');
+        let formBuilder = new FormBuilder(opts, elems[i]);
+        $(elems[i]).data('formBuilder', formBuilder);
+      });
     });
+
+    return {
+      actions: {
+        showData: () => {
+          this.data('formBuilder').actions.showData();
+        }
+      }
+    };
   };
 })( jQuery );
