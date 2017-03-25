@@ -1,6 +1,7 @@
 import utils from './utils';
 import events from './events';
-
+import {config} from './config';
+import {defaultSubtypes} from './dom';
 /**
  * render the formBuilder XML into html
  * @param  {Object} options
@@ -14,6 +15,7 @@ function FormRender(options, element) {
       container: false,
       dataType: 'json',
       formData: false,
+      subtypes: defaultSubtypes,
       messages: {
         formRendered: 'Form Rendered',
         noFormData: 'No form data.',

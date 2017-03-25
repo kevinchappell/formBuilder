@@ -11,13 +11,13 @@ jQuery(function($) {
     stickyControls: {
       enable: true
     },
-    i18n: {
-      locale: 'es-ES',
+    // i18n: {
+      // locale: 'es-ES',
       // langs: [
       // 'es-ES',
       // 'en-US',
       // ]
-    },
+    // },
   };
   let formData = window.sessionStorage.getItem('formData');
   let editing = true;

@@ -27,8 +27,6 @@ const FormBuilder = function(opts, element) {
   opts = helpers.processOptions(opts);
 
   const subtypes = config.subtypes = helpers.processSubtypes(opts.subtypes);
-  // config.subtypes = subtypes;
-
   helpers.editorUI(formID);
 
   let $stage = $(d.stage);

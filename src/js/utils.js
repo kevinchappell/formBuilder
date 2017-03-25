@@ -1,4 +1,4 @@
-import {filter} from './dom';
+import {defaultSubtypes, filter} from './dom';
 import {config} from './config';
 
 /**
@@ -403,8 +403,7 @@ import {config} from './config';
 
   utils.templateMap = (templates, type, fallback) => {
     let template;
-    let templateMap = new Map(templates);
-    for (let [key, value] of templateMap) {
+    for (let [key, value] of templates) {
       if (Array.isArray(key)) {
         if(utils.inArray(type, key)) {
           template = value;
@@ -823,7 +822,7 @@ import {config} from './config';
     let fieldLabel = utils.makeLabel(data, label, description);
 
     let templates = [
-      [['autocomplete'],
+      ['autocomplete',
         () => {
           let autocomplete = utils.autocompleteTemplate(data);
           let template = {
@@ -832,7 +831,7 @@ import {config} from './config';
           };
           return template;
         }],
-      [config.subtypes.text.concat(['number', 'file']),
+      [defaultSubtypes.text.concat(['number', 'file']),
         () => {
           let template = {
             field: [fieldLabel, m('input', null, data)],
@@ -840,7 +839,7 @@ import {config} from './config';
           };
           return template;
         }],
-      [config.subtypes.button,
+      [defaultSubtypes.button,
         () => {
           let template = {
             field: m('button', label, data),
