@@ -387,47 +387,48 @@ const FormBuilder = function(opts, element) {
    * @param  {Object} values
    * @return {String} field options markup
    */
-  let fieldOptions = function(values) {
+  let fieldOptions = function(fieldData) {
     let optionActions = [
         utils.markup('a', i18n.addOption, {className: 'add add-opt'})
       ];
     let fieldOptions = [
       `<label class="false-label">${i18n.selectOptions}</label>`
     ];
-    const isMultiple = values.multiple || (values.type === 'checkbox-group');
+    const isMultiple = fieldData.multiple || (fieldData.type === 'checkbox-group');
     const optionDataTemplate = label => {
       let optionData = {
           label,
           value: utils.hyphenCase(label)
       };
 
-      if (values.type !== 'autocomplete') {
+      if (fieldData.type !== 'autocomplete') {
         optionData.selected = false;
       }
 
       return optionData;
     };
 
-    if (!values.values || !values.values.length) {
-      values.values = [1, 2, 3].map(function(index) {
+    if (!fieldData.values || !fieldData.fieldData.length) {
+      let defaultOptCount = utils.inArray(fieldData.type, ['checkbox-group', 'checkbox']) ? [1] : [1, 2, 3];
+      fieldData.values = defaultOptCount.map(function(index) {
         let label = `${i18n.option} ${index}`;
         return optionDataTemplate(label);
       });
 
-    let firstOption = values.values[0];
+    let firstOption = fieldData.values[0];
       if (firstOption.hasOwnProperty('selected')) {
         firstOption.selected = true;
       }
     } else {
       // ensure option data is has all required keys
-      values.values.forEach(option => Object.assign({}, {selected: false}, option));
+      fieldData.fieldData.forEach(option => Object.assign({}, {selected: false}, option));
     }
 
     fieldOptions.push('<div class="sortable-options-wrap">');
 
     fieldOptions.push('<ol class="sortable-options">');
-    utils.forEach(values.values, (i) => {
-      fieldOptions.push(selectFieldOptions(values.name, values.values[i], isMultiple));
+    utils.forEach(fieldData.values, i => {
+      fieldOptions.push(selectFieldOptions(fieldData.name, fieldData.values[i], isMultiple));
     });
     fieldOptions.push('</ol>');
     fieldOptions.push(utils.markup('div', optionActions, {className: 'option-actions'}).outerHTML);
@@ -449,7 +450,7 @@ const FormBuilder = function(opts, element) {
 
     advFields.push(requiredField(values));
 
-    if (values.type === 'checkbox') {
+    if (utils.inArray(values.type, ['checkbox', 'checkbox-group'])) {
       advFields.push(boolAttribute('toggle', values, {first: i18n.toggle}));
     }
 

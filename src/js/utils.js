@@ -615,7 +615,7 @@ import {config} from './config';
     const templates = [
       ['select',
         () => m(optionType, options, data)],
-      [['checkbox-group', 'radio-group'],
+      [['checkbox-group', 'radio-group', 'checkbox'],
         () => m('div', options, {className: type})]
     ];
 
@@ -847,7 +847,7 @@ import {config} from './config';
           };
           return template;
         }],
-      [['select', 'checkbox-group', 'radio-group'],
+      [['select', 'checkbox-group', 'radio-group', 'checkbox'],
         () => {
           let field = utils.selectTemplate(data);
           let template = {
@@ -856,24 +856,24 @@ import {config} from './config';
           };
           return template;
         }],
-      ['checkbox',
-        () => {
-          let field = [m('input', null, data)];
-          if (labelPosition === 'beforeInput') {
-            field.unshift(fieldLabel, ' ');
-          } else {
-            field.push(' ', fieldLabel);
-          }
-          let template = {
-            field,
-            onRender: () => {
-              if (data.toggle) {
-                $(document.getElementById(data.id)).kcToggle();
-              }
-            }
-          };
-          return template;
-        }],
+      // ['checkbox',
+      //   () => {
+      //     let field = [m('input', null, data)];
+      //     if (labelPosition === 'beforeInput') {
+      //       field.unshift(fieldLabel, ' ');
+      //     } else {
+      //       field.push(' ', fieldLabel);
+      //     }
+      //     let template = {
+      //       field,
+      //       onRender: () => {
+      //         if (data.toggle) {
+      //           $(document.getElementById(data.id)).kcToggle();
+      //         }
+      //       }
+      //     };
+      //     return template;
+      //   }],
       [['textarea', 'tinymce', 'quill'],
         () => {
           let field = utils.longTextTemplate(data);

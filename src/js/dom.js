@@ -40,6 +40,7 @@ export const filter = (elems, term, show = true) => {
 export const optionFields = [
       'select',
       'checkbox-group',
+      'checkbox',
       'radio-group',
       'autocomplete'
     ];

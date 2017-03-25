@@ -217,9 +217,10 @@
         min-height: 150px;
       }
     }
-    &.checkbox-field{
-      .field-label{
-        display:none;
+
+    &.checkbox-field {
+      .field-label {
+        display: none;
       }
     }
   }
@@ -328,7 +329,7 @@
     margin-bottom: 5px;
     line-height: 27px;
     font-size: 16px;
-    font-weight:normal;
+    font-weight: normal;
   }
 
   .disabled-field .field-label {
@@ -355,6 +356,7 @@
 
     .btn {
       display: inline-block;
+
       // width: 32px;
       height: 32px;
       padding: 0 6px;
@@ -380,6 +382,7 @@
 
     .copy-button {
       font-size: 14px;
+
       &:hover {
         background-color: $copy;
         color: $white;
@@ -387,8 +390,9 @@
     }
 
     .del-button {
-      font-size:20px;
-      line-height:30px;
+      font-size: 20px;
+      line-height: 30px;
+
       &:hover {
         background-color: $remove;
         color: $white;
@@ -441,9 +445,14 @@
       cursor: move;
       margin: 1px;
 
-      &:nth-child(1) .remove,
-      &:nth-child(2) .remove {
+      &:nth-child(1) .remove {
         display: none;
+      }
+
+      .radio-group-field & {
+        &:nth-child(2) .remove {
+          display: none;
+        }
       }
 
       .remove {
