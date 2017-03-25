@@ -49,7 +49,7 @@ export const defaultOptions = {
         success: message => console.log(message),
         warning: message => console.warn(message)
       },
-      onSave: () => null,
+      onSave: formData => null,
       onClearAll: () => null,
       sortableControls: false,
       stickyControls: {
