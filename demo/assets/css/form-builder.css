@@ -720,8 +720,9 @@ textarea.form-control {
     .frmb .sortable-options > li {
       cursor: move;
       margin: 1px; }
-      .frmb .sortable-options > li:nth-child(1) .remove,
-      .frmb .sortable-options > li:nth-child(2) .remove {
+      .frmb .sortable-options > li:nth-child(1) .remove {
+        display: none; }
+      .radio-group-field .frmb .sortable-options > li:nth-child(2) .remove {
         display: none; }
       .frmb .sortable-options > li .remove {
         position: absolute;
