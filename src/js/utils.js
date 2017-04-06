@@ -1020,7 +1020,7 @@ utils.makeClassName = str => {
  * @return {String}     converter string
  */
 utils.safename = str => {
-  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\-]/g, '').toLowerCase();
+  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\_-]/g, '').toLowerCase();
 };
 
 /**
