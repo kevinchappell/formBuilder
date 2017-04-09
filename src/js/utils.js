@@ -382,7 +382,7 @@ import {config} from './config';
     let labelText = utils.parsedHtml(label);
     let labelContents = [labelText];
 
-    if (data.hasOwnProperty('required')) {
+    if (data.required) {
       labelContents.push(m('span', '*', {className: 'required'}));
     }
 
@@ -791,6 +791,8 @@ import {config} from './config';
     return {field: template.field, onRender};
   };
 
+  utils.templates = [];
+
   utils.getTemplate = (fieldData, isPreview = false) => {
     let {
       label,
@@ -821,7 +823,7 @@ import {config} from './config';
 
     let fieldLabel = utils.makeLabel(data, label, description);
 
-    let templates = [
+    let templates = utils.templates.concat([
       ['autocomplete',
         () => {
           let autocomplete = utils.autocompleteTemplate(data);
@@ -831,7 +833,7 @@ import {config} from './config';
           };
           return template;
         }],
-      [defaultSubtypes.text.concat(['number', 'file']),
+      [defaultSubtypes.text.concat(['number', 'file', 'date']),
         () => {
           let template = {
             field: [fieldLabel, m('input', null, data)],
@@ -856,24 +858,6 @@ import {config} from './config';
           };
           return template;
         }],
-      // ['checkbox',
-      //   () => {
-      //     let field = [m('input', null, data)];
-      //     if (labelPosition === 'beforeInput') {
-      //       field.unshift(fieldLabel, ' ');
-      //     } else {
-      //       field.push(' ', fieldLabel);
-      //     }
-      //     let template = {
-      //       field,
-      //       onRender: () => {
-      //         if (data.toggle) {
-      //           $(document.getElementById(data.id)).kcToggle();
-      //         }
-      //       }
-      //     };
-      //     return template;
-      //   }],
       [['textarea', 'tinymce', 'quill'],
         () => {
           let field = utils.longTextTemplate(data);
@@ -883,7 +867,7 @@ import {config} from './config';
           };
           return template;
         }]
-      ];
+      ]);
 
       template = utils.templateMap(
         templates,

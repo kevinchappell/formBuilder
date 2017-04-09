@@ -35,80 +35,7 @@ const FormBuilder = function(opts, element) {
   data.formID = formID;
   data.lastID = `${data.formID}-fld-1`;
 
-  // create array of field objects to cycle through
-  let frmbFields = [{
-    label: i18n['autocomplete'],
-    attrs: {
-      type: 'autocomplete'
-    }
-  }, {
-    label: i18n['button'],
-    attrs: {
-      type: 'button',
-    }
-  }, {
-    label: i18n['checkbox'],
-    attrs: {
-      type: 'checkbox',
-    }
-  }, {
-    label: i18n['checkboxGroup'],
-    attrs: {
-      type: 'checkbox-group',
-    }
-  }, {
-    label: i18n['dateField'],
-    attrs: {
-      type: 'date',
-    }
-  }, {
-    label: i18n['fileUpload'],
-    attrs: {
-      type: 'file',
-    }
-  }, {
-    label: i18n['header'],
-    attrs: {
-      type: 'header',
-    }
-  }, {
-    label: i18n['hidden'],
-    attrs: {
-      type: 'hidden',
-    }
-  }, {
-    label: i18n['number'],
-    attrs: {
-      type: 'number',
-    }
-  }, {
-    label: i18n['paragraph'],
-    attrs: {
-      type: 'paragraph',
-    }
-  }, {
-    label: i18n['radioGroup'],
-    attrs: {
-      type: 'radio-group',
-    }
-  }, {
-    label: i18n['select'],
-    attrs: {
-      type: 'select',
-    }
-  }, {
-    label: i18n['text'],
-    attrs: {
-      type: 'text',
-    }
-  }, {
-    label: i18n['textArea'],
-    attrs: {
-      type: 'textarea'
-    }
-  }];
-
-  frmbFields = helpers.orderFields(frmbFields);
+  let frmbFields = helpers.orderFields(opts.fields);
 
   if (opts.disableFields) {
     // remove disabledFields
@@ -408,7 +335,7 @@ const FormBuilder = function(opts, element) {
       return optionData;
     };
 
-    if (!fieldData.values || !fieldData.fieldData.length) {
+    if (!fieldData.values || !fieldData.values.length) {
       let defaultOptCount = utils.inArray(fieldData.type, ['checkbox-group', 'checkbox']) ? [1] : [1, 2, 3];
       fieldData.values = defaultOptCount.map(function(index) {
         let label = `${i18n.option} ${index}`;
@@ -421,7 +348,7 @@ const FormBuilder = function(opts, element) {
       }
     } else {
       // ensure option data is has all required keys
-      fieldData.fieldData.forEach(option => Object.assign({}, {selected: false}, option));
+      fieldData.values.forEach(option => Object.assign({}, {selected: false}, option));
     }
 
     fieldOptions.push('<div class="sortable-options-wrap">');
@@ -1291,7 +1218,7 @@ const FormBuilder = function(opts, element) {
     showData: () => helpers.showData.call(helpers),
     save: helpers.save,
     addField: (field, index) => {
-      helpers.stopIndex = d.stage.children.length ? index : undefined;
+      helpers.stopIndex = data.formData.length ? index : undefined;
       prepFieldVars(field);
       document.dispatchEvent(events.fieldAdded);
     },
@@ -1312,10 +1239,10 @@ const FormBuilder = function(opts, element) {
       loadFields(formData);
     },
     setLang: async locale => {
-      let newLang = await mi18n.setCurrent.call(mi18n, locale);
-      // defaultI18n.langs.unshift(locale);
-      // defaultI18n.preloaded[locale] = newLang;
-      console.log(locale, newLang, defaultI18n);
+
+      const newLang = await mi18n.setCurrent.call(mi18n, locale);
+      console.log(newLang);
+      helpers.editorUI(formID);
     }
   };
 

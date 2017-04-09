@@ -11,6 +11,24 @@ jQuery(function($) {
     stickyControls: {
       enable: true
     },
+    fields: [
+      {
+        label: 'Custom field',
+        attrs: {
+          type: 'customField'
+        }
+      }
+    ],
+    templates: {
+      customField: function() {
+        return {
+          field: '<h1>Custom field output</h1>',
+          onRender: function() {
+            console.log('Custom field');
+          }
+        };
+      }
+    },
     // i18n: {
       // locale: 'es-ES',
       // langs: [

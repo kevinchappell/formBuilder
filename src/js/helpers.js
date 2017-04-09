@@ -927,7 +927,10 @@ export default class Helpers {
       return subtypes;
   }
 
-
+  /**
+   * Generate stage and controls dom elements
+   * @param  {String} formID [description]
+   */
   editorUI(formID) {
     let d = this.d;
     let data = this.data;
@@ -945,11 +948,12 @@ export default class Helpers {
 
   /**
    * Process user options for actionButtons
-   * @param  {Object} opts
+   * @param  {Object} options
    * @return {Object} processedOptions
    */
-  processOptions(opts) {
+  processOptions(options) {
     const _this = this;
+    let {fields = [], templates, ...opts} = options;
     let actionButtons = [{
       id: 'clear',
       className: 'clear-all btn btn-danger',
@@ -971,8 +975,81 @@ export default class Helpers {
         click: evt => config.opts.onSave(evt, _this.data.formData)
       }
     }];
+    console.log(mi18n);
+    let defaultFields = [
+      {
+        label: mi18n.get('autocomplete'),
+        attrs: {
+          type: 'autocomplete'
+        }
+      }, {
+        label: mi18n.get('button'),
+        attrs: {
+          type: 'button',
+        }
+      }, {
+        label: mi18n.get('checkboxGroup'),
+        attrs: {
+          type: 'checkbox-group',
+        }
+      }, {
+        label: mi18n.get('dateField'),
+        attrs: {
+          type: 'date',
+        }
+      }, {
+        label: mi18n.get('fileUpload'),
+        attrs: {
+          type: 'file',
+        }
+      }, {
+        label: mi18n.get('header'),
+        attrs: {
+          type: 'header',
+        }
+      }, {
+        label: mi18n.get('hidden'),
+        attrs: {
+          type: 'hidden',
+        }
+      }, {
+        label: mi18n.get('number'),
+        attrs: {
+          type: 'number',
+        }
+      }, {
+        label: mi18n.get('paragraph'),
+        attrs: {
+          type: 'paragraph',
+        }
+      }, {
+        label: mi18n.get('radioGroup'),
+        attrs: {
+          type: 'radio-group',
+        }
+      }, {
+        label: mi18n.get('select'),
+        attrs: {
+          type: 'select',
+        }
+      }, {
+        label: mi18n.get('text'),
+        attrs: {
+          type: 'text',
+        }
+      }, {
+        label: mi18n.get('textArea'),
+        attrs: {
+          type: 'textarea'
+        }
+      }
+    ];
 
-    config.opts = Object.assign({}, {actionButtons}, opts);
+    opts.fields = fields.concat(defaultFields);
+    config.opts = Object.assign({}, {actionButtons, templates, fields}, opts);
+    utils.templates = Object.keys(config.opts.templates).map(key => {
+      return [key, config.opts.templates[key]];
+    });
 
     return config.opts;
   }
