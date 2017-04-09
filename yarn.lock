@@ -3545,9 +3545,9 @@ meow@^3.3.0, meow@^3.7.0:
     redent "^1.0.0"
     trim-newlines "^1.0.0"
 
-mi18n@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/mi18n/-/mi18n-0.3.2.tgz#97cbf189e1fd30039e0c32cb3e02bae28f0db9fb"
+mi18n@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/mi18n/-/mi18n-0.3.3.tgz#7a6d03916a7901b84ab2ad5b52c9d1dfedddae54"
 
 micromatch@2.3.11, micromatch@^2.1.5, micromatch@^2.3.7, micromatch@^2.3.8:
   version "2.3.11"
