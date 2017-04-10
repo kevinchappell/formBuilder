@@ -1254,7 +1254,7 @@
       }
     });
 
-    $sortableFields.on('change', '.prev-holder input, .prev-holder select', e => {
+    $sortableFields.on('change', '.prev-holder input, .prev-holder select, textarea', e => {
       if (e.target.classList.contains('other-option')) {
         return;
       }
