@@ -1021,7 +1021,7 @@ const FormBuilder = function(opts, element) {
     $valWrap.toggle(e.target.value !== 'quill');
   });
 
-  $stage.on('change', '.prev-holder input, .prev-holder select', e => {
+  $stage.on('change', '.prev-holder input, .prev-holder select, textarea', e => {
     let prevOptions;
     if (e.target.classList.contains('other-option')) {
       return;
