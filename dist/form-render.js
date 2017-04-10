@@ -95,9 +95,6 @@ if (typeof Object.assign != 'function') {
   };
 })(jQuery);
 'use strict';
-/**
- *
- */
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -585,9 +582,10 @@ fbUtils.capitalize = function (str) {
 };
 'use strict';
 
+/*global fbUtils*/
 // render the formBuilder XML into html
-
 function FormRenderFn(options, element) {
+  'use strict';
 
   var utils = fbUtils;
 
@@ -719,6 +717,7 @@ function FormRenderFn(options, element) {
 }
 
 (function ($) {
+  'use strict';
 
   $.fn.formRender = function (options) {
     this.each(function () {

@@ -50,9 +50,6 @@ if (typeof Object.assign != 'function') {
   };
 }
 'use strict';
-/**
- *
- */
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -540,6 +537,7 @@ fbUtils.capitalize = function (str) {
 };
 'use strict';
 
+/*global formBuilderEventsFn, fbUtils*/
 function formBuilderHelpersFn(opts, formBuilder) {
   'use strict';
 
@@ -1446,7 +1444,10 @@ function formBuilderEventsFn() {
 })(jQuery);
 'use strict';
 
+/*global fbUtils, formBuilderHelpersFn*/
 (function ($) {
+  'use strict';
+
   var FormBuilder = function FormBuilder(options, element) {
     var formBuilder = this;
 
@@ -2671,7 +2672,7 @@ function formBuilderEventsFn() {
       }
     });
 
-    $sortableFields.on('change', '.prev-holder input, .prev-holder select', function (e) {
+    $sortableFields.on('change', '.prev-holder input, .prev-holder select, textarea', function (e) {
       if (e.target.classList.contains('other-option')) {
         return;
       }
