@@ -139,6 +139,8 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
 .cb-wrap {
   float: right;
+  position: fixed;
+  right: 5px;
   width: 26%;
   -webkit-transition: -webkit-transform 250ms;
   transition: -webkit-transform 250ms;
