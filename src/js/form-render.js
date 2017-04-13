@@ -37,7 +37,11 @@ function FormRender(options, element) {
       }
     };
 
-  let opts = $.extend(true, defaults, options);
+  let opts = config.opts = $.extend(true, defaults, options);
+
+  utils.templates = Object.keys(opts.templates).map(key => {
+    return [key, config.opts.templates[key]];
+  });
 
   (function() {
     if (!opts.formData) {

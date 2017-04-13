@@ -1,35 +1,39 @@
 jQuery(function($) {
+  var fields = [
+    {
+      label: 'Custom field',
+      attrs: {
+        type: 'customField'
+      }
+    }
+  ];
+
+  var templates = {
+    customField: function() {
+      return {
+        field: '<h1>Custom field output</h1>',
+        onRender: function() {
+          console.log('Custom field');
+        }
+      };
+    }
+  };
+
   const fbOptions = {
     subtypes: {
       text: ['datetime-local']
     },
     onSave: function(e, formData) {
       toggleEdit();
-      $('.render-wrap').formRender({formData});
+      $('.render-wrap').formRender({formData, templates});
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
     },
     stickyControls: {
       enable: true
     },
     sortableControls: true,
-    fields: [
-      {
-        label: 'Custom field',
-        attrs: {
-          type: 'customField'
-        }
-      }
-    ],
-    templates: {
-      customField: function() {
-        return {
-          field: '<h1>Custom field output</h1>',
-          onRender: function() {
-            console.log('Custom field');
-          }
-        };
-      }
-    },
+    fields,
+    templates,
     // i18n: {
       // locale: 'es-ES',
       // langs: [

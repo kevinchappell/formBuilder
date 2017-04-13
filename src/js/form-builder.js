@@ -873,7 +873,7 @@ const FormBuilder = function(opts, element) {
     if (opts.editOnAdd && isNew) {
       helpers.closeAllEdit();
       helpers.toggleEdit(data.lastID, false);
-      field.scrollIntoView();
+      // field.scrollIntoView();
     }
 
     data.lastID = helpers.incrementId(data.lastID);

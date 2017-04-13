@@ -288,6 +288,25 @@ textarea.form-control {
 .pull-left {
   float: left; }
 
+.fb-autocomplete-list {
+  background-color: #fff;
+  display: none;
+  list-style: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-width: 0 1px 1px;
+  position: absolute;
+  z-index: 20; }
+  .fb-autocomplete-list li {
+    display: none;
+    cursor: default;
+    padding: 5px;
+    margin: 0;
+    -webkit-transition: background-color 200ms ease-in-out;
+    transition: background-color 200ms ease-in-out; }
+    .fb-autocomplete-list li:hover, .fb-autocomplete-list li.active-option {
+      background-color: rgba(0, 0, 0, 0.075); }
+
 /*
   Animations
 */
@@ -842,23 +861,6 @@ textarea.form-control {
 
 .autocomplete-field .sortable-options .option-selected {
   display: none; }
-
-.fb-autocomplete-list {
-  background-color: #fff;
-  display: none;
-  list-style: none;
-  padding: 0;
-  border: 1px solid #ccc;
-  border-width: 0 1px 1px; }
-  .fb-autocomplete-list li {
-    display: none;
-    cursor: default;
-    padding: 5px;
-    margin: 0;
-    -webkit-transition: background-color 200ms ease-in-out;
-    transition: background-color 200ms ease-in-out; }
-    .fb-autocomplete-list li:hover, .fb-autocomplete-list li.active-option {
-      background-color: rgba(0, 0, 0, 0.075); }
 
 .fb-mobile .field-actions {
   opacity: 1; }

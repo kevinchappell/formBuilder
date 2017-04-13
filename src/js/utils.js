@@ -469,8 +469,10 @@ import {config} from './config';
     };
     const fauxEvents = {
       focus: evt => {
+        let list = evt.target.nextSibling.nextSibling;
         evt.target.addEventListener('keydown', keyboardNav);
-        evt.target.nextSibling.nextSibling.style.display = 'block';
+        list.style.display = 'block';
+        list.style.width = list.parentElement.offsetWidth + 'px';
       },
       blur: evt => {
         evt.target.removeEventListener('keydown', keyboardNav);
@@ -848,7 +850,7 @@ import {config} from './config';
       [defaultSubtypes.text.concat(['number', 'file', 'date']),
         () => {
           let template = {
-            field: [m(data.type, null, data)],
+            field: [fieldLabel, m('input', null, data)],
           };
           return template;
         }],

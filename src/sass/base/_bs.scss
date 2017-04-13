@@ -213,3 +213,27 @@ textarea.form-control {
 .pull-left {
   float: left;
 }
+
+.fb-autocomplete-list {
+  background-color: $white;
+  display: none;
+  list-style: none;
+  padding: 0;
+  border: 1px solid $grey-light;
+  border-width: 0 1px 1px;
+  position: absolute;
+  z-index: 20;
+
+  li {
+    display: none;
+    cursor: default;
+    padding: 5px;
+    margin: 0;
+    transition: background-color 200ms ease-in-out;
+
+    &:hover,
+    &.active-option {
+      background-color: $input-box-shadow-color;
+    }
+  }
+}

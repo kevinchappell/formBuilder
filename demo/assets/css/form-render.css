@@ -227,6 +227,25 @@
 .rendered-form .pull-left {
   float: left; }
 
+.rendered-form .fb-autocomplete-list {
+  background-color: #fff;
+  display: none;
+  list-style: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-width: 0 1px 1px;
+  position: absolute;
+  z-index: 20; }
+  .rendered-form .fb-autocomplete-list li {
+    display: none;
+    cursor: default;
+    padding: 5px;
+    margin: 0;
+    -webkit-transition: background-color 200ms ease-in-out;
+    transition: background-color 200ms ease-in-out; }
+    .rendered-form .fb-autocomplete-list li:hover, .rendered-form .fb-autocomplete-list li.active-option {
+      background-color: rgba(0, 0, 0, 0.075); }
+
 .form-group .required {
   color: #c10000; }
 
