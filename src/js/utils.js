@@ -401,7 +401,7 @@ import {config} from './config';
     });
   };
 
-  utils.templateMap = (templates, type, fallback) => {
+  utils.templateMap = (templates, type) => {
     let template;
     for (let [key, value] of templates) {
       if (Array.isArray(key)) {
@@ -415,11 +415,7 @@ import {config} from './config';
       }
     }
 
-    if (!template) {
-      template = fallback;
-    }
-
-    return template();
+    return template;
   };
 
   utils.autocompleteTemplate = fieldData => {
@@ -626,7 +622,11 @@ import {config} from './config';
     let {label, description, subtype, type, id, isPreview, ...data} = fieldData;
     if (id) {
       if (isPreview) {
-        data.name = data.name + '-preview';
+        if (data.name) {
+          data.name = data.name + '-preview';
+        } else {
+          data.name = utils.nameAttr(fieldData) + '-preview';
+        }
       }
       data.id = data.name;
     }
@@ -804,7 +804,11 @@ import {config} from './config';
     let field;
 
     if (isPreview) {
-      data.name = data.name + '-preview';
+      if (data.name) {
+        data.name = data.name + '-preview';
+      } else {
+        data.name = utils.nameAttr(fieldData) + '-preview';
+      }
     }
     data.id = data.name;
 
@@ -836,7 +840,17 @@ import {config} from './config';
       [defaultSubtypes.text.concat(['number', 'file', 'date']),
         () => {
           let template = {
-            field: [fieldLabel, m('input', null, data)],
+            field: [m(data.type, null, data)],
+            onRender: utils.noop
+          };
+          return template;
+        }],
+      [['paragraph'].concat(defaultSubtypes.paragraph),
+        () => {
+          let {type, ...attrs} = data;
+          console.log(label);
+          let template = {
+            field: [m(type, utils.parsedHtml(label), attrs)],
             onRender: utils.noop
           };
           return template;
@@ -869,11 +883,13 @@ import {config} from './config';
         }]
       ]);
 
-      template = utils.templateMap(
-        templates,
-        data.type,
-        utils.defaultField(fieldData) // fallback
-      );
+      template = utils.templateMap(templates, data.type);
+
+      if (template) {
+        template = template();
+      } else {
+        template = utils.defaultField(fieldData)();
+      }
 
       if (data.type !== 'hidden') {
         let wrapperAttrs = {};
