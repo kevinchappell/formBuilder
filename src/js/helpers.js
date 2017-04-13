@@ -751,6 +751,7 @@ export default class Helpers {
       $('.prev-holder', field).toggle();
       editPanel.toggle();
     }
+    this.updatePreview($(field));
   }
 
   /**

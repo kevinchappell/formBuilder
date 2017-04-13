@@ -156,9 +156,9 @@ const FormBuilder = function(opts, element) {
 
   if (opts.showActionButtons) {
     const buttons = opts.actionButtons.map(btnData => {
-        if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
-          return helpers.processActionButtons(btnData);
-        }
+      if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
+        return helpers.processActionButtons(btnData);
+      }
     });
     const formActions = d.formActions = m('div', buttons, {
       className: 'form-actions btn-group'
