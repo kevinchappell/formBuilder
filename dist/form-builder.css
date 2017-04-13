@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 1.24.7
+Version: 2.0.0-beta
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -665,9 +665,8 @@ textarea.form-control {
       color: #000; }
     .frmb .field-actions .btn {
       display: inline-block;
-      width: 32px;
       height: 32px;
-      padding: 0;
+      padding: 0 6px;
       border-radius: 0;
       border-color: #c5c5c5;
       background-color: #fff;
@@ -726,8 +725,9 @@ textarea.form-control {
     .frmb .sortable-options > li {
       cursor: move;
       margin: 1px; }
-      .frmb .sortable-options > li:nth-child(1) .remove,
-      .frmb .sortable-options > li:nth-child(2) .remove {
+      .frmb .sortable-options > li:nth-child(1) .remove {
+        display: none; }
+      .radio-group-field .frmb .sortable-options > li:nth-child(2) .remove {
         display: none; }
       .frmb .sortable-options > li .remove {
         position: absolute;

@@ -87,4 +87,5 @@ textArea = Casetă de text
 toggle = Comutator
 warning = Avertisment!
 viewXML = </>
+viewJSON = { }
 yes = Da

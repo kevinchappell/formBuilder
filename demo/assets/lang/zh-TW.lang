@@ -87,4 +87,5 @@ textArea = 文字區塊
 toggle = 彈出提示
 warning = 警告!
 viewXML = 顯示 XML
+viewJSON = { }
 yes = 是

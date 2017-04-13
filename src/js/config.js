@@ -69,7 +69,7 @@ export const defaultOptions = {
 
 
 export const defaultI18n = {
-      location: 'assets/lang/',
+      location: 'https://kevinchappell.github.io/formBuilder/assets/lang/',
       langs: [
         'en-US'
       ],

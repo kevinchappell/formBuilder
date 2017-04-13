@@ -88,4 +88,5 @@ toggle = Переключатель
 value = Значение
 warning = Внимание!
 viewXML = &lt;/&gt;
+viewJSON = { }
 yes = Да

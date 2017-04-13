@@ -89,4 +89,5 @@ toggle = Alternar
 warning = Aviso!
 value = Valor
 viewXML = </>
+viewJSON = { }
 yes = Sim
