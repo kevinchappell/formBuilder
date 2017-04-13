@@ -649,7 +649,7 @@ const FormBuilder = function(opts, element) {
 
     let attrVal = values[attribute];
     let attrLabel = i18n[attribute] || attribute;
-    let placeholder = i18n[`placeholders.${attribute}`];
+    let placeholder = i18n[`placeholder.${attribute}`];
     let inputConfig = {
       type: 'number',
       value: attrVal,
@@ -733,7 +733,7 @@ const FormBuilder = function(opts, element) {
       noName = noName.concat(subtypes.header);
     }
 
-    let placeholder = i18n[`placeholders.${attribute}`] || '';
+    let placeholder = i18n[`placeholder.${attribute}`] || '';
     let attributefield = '';
     let noMakeAttr = [];
 
@@ -901,7 +901,7 @@ const FormBuilder = function(opts, element) {
           name: name + '-option'
         };
 
-        attrs.placeholder = i18n[`placeholders.${prop}`] || '';
+        attrs.placeholder = i18n[`placeholder.${prop}`] || '';
 
         if (prop === 'selected' && optionData.selected === true) {
           attrs.checked = optionData.selected;
@@ -1239,9 +1239,7 @@ const FormBuilder = function(opts, element) {
       loadFields(formData);
     },
     setLang: async locale => {
-
       const newLang = await mi18n.setCurrent.call(mi18n, locale);
-      console.log(newLang);
       helpers.editorUI(formID);
     }
   };

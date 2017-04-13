@@ -975,7 +975,7 @@ export default class Helpers {
         click: evt => config.opts.onSave(evt, _this.data.formData)
       }
     }];
-    console.log(mi18n);
+
     let defaultFields = [
       {
         label: mi18n.get('autocomplete'),
