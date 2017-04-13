@@ -60,6 +60,8 @@ export const defaultOptions = {
           right: 'auto'
         }
       },
+      fields: [],
+      templates: {},
       disabledActionButtons: [],
       showActionButtons: true,
       typeUserAttrs: {},

@@ -10,7 +10,6 @@ import events from './events';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
 
-require('./kc-toggle.js');
 require('./polyfills.js').default;
 
 let instanceTime = new Date().getTime();

@@ -534,7 +534,7 @@ import {config} from './config';
    */
   utils.selectTemplate = fieldData => {
     let options = [];
-    let {values, placeholder, type, inline, other, ...data} = fieldData;
+    let {values, placeholder, type, inline, other, toggle, ...data} = fieldData;
     let optionType = type.replace('-group', '');
     let isSelect = type === 'select';
 
@@ -564,11 +564,19 @@ import {config} from './config';
           }
           optionAttrs.type = optionType;
           if (optionAttrs.selected) {
-            optionAttrs.checked = null;
+            optionAttrs.checked = 'checked';
             delete optionAttrs.selected;
           }
           let input = m('input', null, Object.assign({}, data, optionAttrs));
-          let inputLabel = m('label', [input, label], {for: optionAttrs.id});
+          let labelAttrs = {for: optionAttrs.id};
+          let labelContent = [input, label];
+          if (toggle) {
+            let kcToggle = m('span');
+            labelContent = [input, kcToggle, label];
+            labelAttrs.className = 'kc-toggle';
+          }
+
+          let inputLabel = m('label', labelContent, labelAttrs);
           let wrapper = m('div', inputLabel, {className: wrapperClass});
           options.push(wrapper);
         }
@@ -841,7 +849,6 @@ import {config} from './config';
         () => {
           let template = {
             field: [m(data.type, null, data)],
-            onRender: utils.noop
           };
           return template;
         }],
@@ -850,7 +857,6 @@ import {config} from './config';
           let {type, ...attrs} = data;
           let template = {
             field: [m(type, utils.parsedHtml(label), attrs)],
-            onRender: utils.noop
           };
           return template;
         }],
@@ -858,7 +864,6 @@ import {config} from './config';
         () => {
           let template = {
             field: m('button', label, data),
-            onRender: utils.noop
           };
           return template;
         }],
@@ -866,8 +871,7 @@ import {config} from './config';
         () => {
           let field = utils.selectTemplate(data);
           let template = {
-            field: [fieldLabel, field],
-            onRender: utils.noop
+            field: [fieldLabel, field]
           };
           return template;
         }],
@@ -901,7 +905,9 @@ import {config} from './config';
         field = utils.markup('input', null, data);
       }
 
-      field.addEventListener('fieldRendered', template.onRender);
+      if (template.onRender) {
+        field.addEventListener('fieldRendered', template.onRender);
+      }
 
       return field;
   };
