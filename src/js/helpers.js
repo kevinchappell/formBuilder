@@ -828,7 +828,6 @@ export default class Helpers {
   removeField(fieldID) {
     let fieldRemoved = false;
     let _this = this;
-    console.log(this);
     const form = this.d.stage;
     const fields = form.getElementsByClassName('form-field');
 
@@ -959,14 +958,14 @@ export default class Helpers {
       id: 'clear',
       className: 'clear-all btn btn-danger',
       events: {
-        click: _this.confirmRemoveAll
+        click: _this.confirmRemoveAll.bind(_this)
       }
     }, {
       label: 'viewJSON',
       id: 'data',
       className: 'btn btn-default',
       events: {
-        click: () => _this.showData.call(_this)
+        click: _this.showData.bind(_this)
       }
     }, {
       id: 'save',

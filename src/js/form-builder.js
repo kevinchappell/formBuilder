@@ -24,6 +24,8 @@ const FormBuilder = function(opts, element) {
   const helpers = new Helpers(formID);
   const m = utils.markup;
 
+  const originalOpts = opts;
+
   opts = helpers.processOptions(opts);
 
   const subtypes = config.subtypes = helpers.processSubtypes(opts.subtypes);
@@ -1239,8 +1241,10 @@ const FormBuilder = function(opts, element) {
       loadFields(formData);
     },
     setLang: async locale => {
-      const newLang = await mi18n.setCurrent.call(mi18n, locale);
-      helpers.editorUI(formID);
+      await mi18n.setCurrent.call(mi18n, locale);
+      d.empty(element);
+      let formBuilder = new FormBuilder(originalOpts, element);
+      $(element).data('formBuilder', formBuilder);
     }
   };
 

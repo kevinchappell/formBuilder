@@ -87,4 +87,5 @@ textArea = Textbereich
 toggle = Umschalten
 warning = Warnung!
 viewXML = </>
+viewJSON = { }
 yes = Ja

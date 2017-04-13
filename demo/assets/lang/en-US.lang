@@ -99,6 +99,6 @@ textArea = Text Area
 toggle = Toggle
 warning = Warning!
 value = Value
-viewJSON = {  }
+viewJSON = { }
 viewXML = &lt;/&gt;
 yes = Yes

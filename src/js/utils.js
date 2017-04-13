@@ -848,7 +848,6 @@ import {config} from './config';
       [['paragraph'].concat(defaultSubtypes.paragraph),
         () => {
           let {type, ...attrs} = data;
-          console.log(label);
           let template = {
             field: [m(type, utils.parsedHtml(label), attrs)],
             onRender: utils.noop

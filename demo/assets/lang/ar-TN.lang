@@ -1,4 +1,4 @@
-addOption = إضافة خيار 
+addOption = إضافة خيار
 allFieldsRemoved = تمّت إزالة جميع المجالات..
 allowSelect = السماح بالإختيار
 autocomplete = الإكمال التلقائي
@@ -87,4 +87,5 @@ textArea = تيكستاريا
 toggle = نوع التبديل
 warning = تحذير!
 viewXML = </>
+viewJSON = { }
 yes = نعم
