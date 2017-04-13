@@ -11,6 +11,7 @@ jQuery(function($) {
     stickyControls: {
       enable: true
     },
+    sortableControls: true,
     fields: [
       {
         label: 'Custom field',

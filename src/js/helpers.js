@@ -31,7 +31,8 @@ export default class Helpers {
    */
   startMoving(event, ui) {
     ui.item.show().addClass('moving');
-    // this.d.startIndex = $('li', this).index(ui.item);
+    this.doCancel = true;
+    this.from = ui.item.parent();
   }
 
   /**
@@ -47,7 +48,7 @@ export default class Helpers {
       if (ui.sender) {
         $(ui.sender).sortable('cancel');
       }
-      ui.item.parent().sortable('cancel');
+      this.from.sortable('cancel');
     }
     _this.save();
     _this.doCancel = false;
@@ -64,7 +65,7 @@ export default class Helpers {
     let _this = this;
     const opts = config.opts;
     const form = _this.d.stage;
-    let lastIndex = form.children.length - 1;
+    let lastIndex = form.childNodes.length - 1;
     let cancelArray = [];
     _this.stopIndex = ui.placeholder.index() - 1;
 
@@ -664,13 +665,16 @@ export default class Helpers {
    * @param {Object} $cbUL our list of elements
    */
   setFieldOrder($cbUL) {
-    if (!opts.sortableControls) {
+    if (!config.opts.sortableControls) {
       return false;
     }
+
     let fieldOrder = {};
+
     $cbUL.children().each(function(index, element) {
-      fieldOrder[index] = $(element).data('attrs').type;
+      fieldOrder[index] = $(element).data('type');
     });
+
     if (window.sessionStorage) {
       window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
     }

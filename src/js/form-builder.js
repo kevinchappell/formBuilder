@@ -86,7 +86,7 @@ const FormBuilder = function(opts, element) {
     start: (evt, ui) => helpers.startMoving.call(helpers, evt, ui),
     stop: (evt, ui) => helpers.stopMoving.call(helpers, evt, ui),
     cancel: 'input, select, .disabled-field, .form-group, .btn',
-    placeholder: 'frmb-placeholder'
+    placeholder: 'frmb-placeholder',
   });
 
   // ControlBox with different fields
@@ -107,9 +107,10 @@ const FormBuilder = function(opts, element) {
       if (helpers.doCancel) {
         return false;
       }
-      if (ui.item.parent()[0] === $stage[0]) {
-        processControl(ui.item);
+
+      if (ui.item.parent()[0] === d.stage) {
         helpers.doCancel = true;
+        processControl(ui.item);
       } else {
         helpers.setFieldOrder($cbUL);
         helpers.doCancel = !opts.sortableControls;
@@ -872,6 +873,7 @@ const FormBuilder = function(opts, element) {
     if (opts.editOnAdd && isNew) {
       helpers.closeAllEdit();
       helpers.toggleEdit(data.lastID, false);
+      field.scrollIntoView();
     }
 
     data.lastID = helpers.incrementId(data.lastID);
@@ -1216,14 +1218,14 @@ const FormBuilder = function(opts, element) {
   // Make actions accessible
   formBuilder.actions = {
     clearFields: animate => helpers.removeAllFields(d.stage, animate),
-    showData: () => helpers.showData.call(helpers),
-    save: helpers.save,
+    showData: helpers.showData.bind(helpers),
+    save: helpers.save.bind(helpers),
     addField: (field, index) => {
       helpers.stopIndex = data.formData.length ? index : undefined;
       prepFieldVars(field);
       document.dispatchEvent(events.fieldAdded);
     },
-    removeField: helpers.removeField,
+    removeField: helpers.removeField.bind(helpers),
     getData: (type = 'js') => {
       const stage = d.stage;
       const h = helpers;

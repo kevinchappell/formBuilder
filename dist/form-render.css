@@ -5,19 +5,22 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 .kc-toggle span {
   position: relative;
-  width: 60px;
+  width: 48px;
   height: 24px;
   background: #e6e6e6;
   display: inline-block;
   border-radius: 4px;
-  border: 1px solid #b3b3b3;
+  border: 1px solid #cccccc;
   padding: 2px;
-  overflow: hidden; }
+  overflow: hidden;
+  float: left;
+  margin-right: 5px; }
   .kc-toggle span::after, .kc-toggle span::before {
     position: absolute;
     display: inline-block;
     top: 0; }
   .kc-toggle span::after {
+    position: relative;
     content: '';
     width: 50%;
     height: 100%;
@@ -33,13 +36,13 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     -webkit-transform: translateX(0);
             transform: translateX(0); }
   .kc-toggle span::before {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    top: 0;
-    left: 0;
+    border-radius: 4px;
+    top: 2px;
+    left: 2px;
     content: '';
-    width: 40%;
-    height: 100%;
+    width: calc(100% - 4px);
+    height: 18px;
+    box-shadow: 0 0 1px 1px #b3b3b3 inset;
     background-color: transparent; }
 
 .kc-toggle input {
@@ -47,12 +50,12 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
   overflow: hidden;
   width: 0;
   opacity: 0;
-  pointer-events: none; }
+  pointer-events: none;
+  margin: 0; }
   .kc-toggle input:checked + span::after {
     -webkit-transform: translateX(100%);
             transform: translateX(100%); }
   .kc-toggle input:checked + span::before {
-    width: 60%;
     background-color: #6fc665; }
 
 .rendered-form * {
