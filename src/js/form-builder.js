@@ -291,7 +291,8 @@ const FormBuilder = function(opts, element) {
     formData = helpers.getData(formData);
     if (formData && formData.length) {
       for (let i = 0; i < formData.length; i++) {
-        prepFieldVars(formData[i]);
+        let fieldData = utils.trimObj(formData[i]);
+        prepFieldVars(fieldData);
       }
       stageWrap.classList.remove('empty');
     } else if (opts.defaultFields && opts.defaultFields.length) {

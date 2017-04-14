@@ -20,13 +20,12 @@ jQuery(function($) {
   };
 
   const fbOptions = {
-    dataType: 'xml',
     subtypes: {
       text: ['datetime-local']
     },
     onSave: function(e, formData) {
       toggleEdit();
-      $('.render-wrap').formRender({formData, templates, dataType: 'xml'});
+      $('.render-wrap').formRender({formData, templates});
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
     },
     stickyControls: {
