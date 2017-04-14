@@ -268,20 +268,17 @@ import {config} from './config';
 
   /**
    * Convert field options to optionData
-   * @param  {Object} field  DOM element
-   * @return {Array}         optionData array
+   * @param  {NodeList} options  DOM elements
+   * @return {Array} optionData array
    */
-  utils.parseOptions = function(field) {
-    const options = field.getElementsByTagName('option');
+  utils.parseOptions = function(options) {
     let optionData = {};
     let data = [];
 
-    if (options.length) {
-      for (let i = 0; i < options.length; i++) {
-        optionData = utils.parseAttrs(options[i]);
-        optionData.label = options[i].textContent;
-        data.push(optionData);
-      }
+    for (let i = 0; i < options.length; i++) {
+      optionData = utils.parseAttrs(options[i]);
+      optionData.label = options[i].textContent;
+      data.push(optionData);
     }
 
     return data;
@@ -301,9 +298,10 @@ import {config} from './config';
       let fields = xml.getElementsByTagName('field');
       for (let i = 0; i < fields.length; i++) {
         let fieldData = utils.parseAttrs(fields[i]);
+        const options = fields[i].getElementsByTagName('option');
 
-        if (fields[i].children && fields[i].children.length) {
-          fieldData.values = utils.parseOptions(fields[i]);
+        if (options && options.length) {
+          fieldData.values = utils.parseOptions(options);
         }
 
         formData.push(fieldData);

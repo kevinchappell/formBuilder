@@ -271,7 +271,7 @@ export default class Helpers {
       stage = this.d.stage;
     }
     let doSave = {
-      xml: _this.xmlSave,
+      xml: () => _this.xmlSave(stage),
       json: () =>
       window.JSON.stringify(_this.prepData(stage), null, '\t')
     };
