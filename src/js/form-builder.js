@@ -727,8 +727,13 @@ const FormBuilder = function(opts, element) {
 
     let attrVal = values[attribute] || '';
     let attrLabel = i18n[attribute];
-    if (attribute === 'label' && utils.inArray(values.type, textArea)) {
-      attrLabel = i18n.content;
+
+    if (attribute === 'label') {
+      if (utils.inArray(values.type, textArea)) {
+        attrLabel = i18n.content;
+      } else {
+        attrVal = utils.parsedHtml(values[attribute]);
+      }
     }
 
     if (subtypes.header) {

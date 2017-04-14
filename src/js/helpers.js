@@ -979,7 +979,10 @@ export default class Helpers {
       type: 'button',
       className: 'btn btn-primary save-template',
       events: {
-        click: evt => config.opts.onSave(evt, _this.data.formData)
+        click: evt => {
+          _this.save();
+          config.opts.onSave(evt, _this.data.formData);
+        }
       }
     }];
 
