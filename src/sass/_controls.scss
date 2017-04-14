@@ -28,6 +28,82 @@
 }
 
 .frmb-control {
+  margin: 0;
+  padding: 0;
+  padding: 1px;
+  border-radius: 5px;
+
+  li {
+    cursor: move;
+    list-style: none;
+    margin: 0 0 -1px 0;
+    padding: 10px;
+    text-align: left;
+    background: $white;
+    user-select: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    box-shadow: inset 0 0 0 1px $input-border-color;
+
+    &:first-child {
+      border-radius: 5px 5px 0 0;
+      margin-top: 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 5px 5px;
+    }
+
+    &::before {
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    &:hover {
+      background-color: darken($white, 5%);
+    }
+
+    &.ui-sortable-helper {
+      border-radius: 5px;
+      transition: box-shadow 250ms;
+      box-shadow: 2px 2px 6px 0 $grey;
+      border: 1px solid $white;
+    }
+
+    &.ui-state-highlight {
+      width: 0;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+      border: 0 none;
+    }
+
+    &.moving {
+      opacity: .6;
+    }
+
+    &.fb-separator {
+      background-color: transparent;
+      box-shadow: none;
+      padding: 0;
+      cursor: default;
+      hr {
+        margin: 10px 0;
+      }
+    }
+
+    @include breakpoint('phone-lrg') {
+      &::before {
+        font-size: 30px;
+      }
+
+      span {
+        display: none;
+      }
+    }
+  }
+
   &.sort-enabled {
     li.ui-state-highlight {
       box-shadow: none;
@@ -42,78 +118,10 @@
       animation: PLACEHOLDER 250ms forwards;
     }
   }
-}
 
-.frmb-control li {
-  cursor: move;
-  list-style: none;
-  margin: -1px 0 0;
-  box-shadow: 0 0 1px 0 inset;
-  padding: 10px;
-  text-align: left;
-  background: $white;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  &:first-child {
+  .input-set-0 {
     border-radius: 5px 5px 0 0;
   }
-
-  &:last-child {
-    border-radius: 0 0 5px 5px;
-  }
-
-  &:before {
-    margin-right: 10px;
-    font-size: 16px;
-  }
-
-  &:hover {
-    background-color: darken($white, 5%);
-  }
-
-  &.ui-sortable-helper {
-    border-radius: 5px;
-    transition: box-shadow 250ms;
-    box-shadow: 2px 2px 6px 0 $grey;
-    border: 1px solid $white;
-  }
-
-  &.ui-state-highlight {
-    width: 0;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    border: 0 none;
-  }
-
-  &.moving {
-    opacity: 0.6;
-  }
-
-  &.fb-separator {
-    background-color: transparent;
-    box-shadow: none;
-    padding: 0;
-    cursor: default;
-  }
-
-  @include breakpoint('phone-lrg') {
-    &:before {
-      font-size: 30px;
-    }
-
-    span {
-      display: none;
-    }
-  }
-}
-
-.frmb-control {
-  margin: 0;
-  padding: 0;
 }
 
 .fb-mobile {
@@ -144,14 +152,7 @@
 .form-actions {
   float: right;
   margin-top: 5px;
-
-  .clear-all {
-    &:hover {
-      color: #fff !important;
-
-      @extend .btn-danger:hover;
-    }
+  button {
+    border: 0 none;
   }
-
-  @include breakpoint('phone-lrg') {}
 }

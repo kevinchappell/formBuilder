@@ -1,12 +1,29 @@
 # stickyControls
-When the option `stickyControls` is set to true, the controls will follow the user's scroll to the end of the available space within the editor.
+When the option `stickyControls` is set to true, the controls will follow the user's scroll to the end of the available space within the editor. Note the updated syntax to handle custom positioning.
 
 ## Usage
 ```javascript
 var options = {
-      stickyControls: true
+      stickyControls: {
+        enable: true
+      }
     };
 $(container).formBuilder(options);
+```
+
+## Positioning
+By default the controls should stick to the top when scrolling however this can be adjusted with the `stockyControls.offset` option.
+```javascript
+var options = {
+      stickyControls: {
+        enable: true,
+        offset: {
+            top: 20,
+            right: 20,
+            left: 'auto'
+        }
+      }
+    };
 ```
 
 ## See it in Action

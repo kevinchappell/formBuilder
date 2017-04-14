@@ -86,7 +86,6 @@ textarea {
 }
 
 .btn {
-  color: #fff;
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -96,22 +95,11 @@ textarea {
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  -ms-touch-action: manipulation;
   touch-action: manipulation;
   cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   background-image: none;
-  border: 1px solid transparent;
   border-radius: 4px;
-
-  &.btn-default {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-  }
 
   &.btn-lg {
     padding: 10px 16px;
@@ -138,64 +126,6 @@ textarea {
   &.btn-active,
   &:active {
     background-image: none;
-  }
-}
-
-.btn-primary {
-  background-color: $primary;
-  border-color: darken($primary, 4.85%);
-
-  &:hover,
-  &:active,
-  &.active,
-  &.btn-active {
-    background-color: darken($primary, 9.7%);
-    border-color: #204d74;
-  }
-}
-
-.btn-danger {
-  background-color: #d9534f;
-  border-color: #d43f3a;
-
-  &:hover {
-    background-color: #c9302c;
-    border-color: #ac2925;
-  }
-}
-
-.btn-default {
-  background-color: #fff;
-  border-color: #ccc;
-}
-
-.btn-success {
-  background-color: #5cb85c;
-  border-color: #4cae4c;
-
-  &:hover {
-    background-color: #449d44;
-    border-color: #398439;
-  }
-}
-
-.btn-info {
-  background-color: #5bc0de;
-  border-color: #46b8da;
-
-  &:hover {
-    background-color: #31b0d5;
-    border-color: #269abc;
-  }
-}
-
-.btn-warning {
-  background-color: #f0ad4e;
-  border-color: #eea236;
-
-  &:hover {
-    background-color: #ec971f;
-    border-color: #d58512;
   }
 }
 
@@ -226,25 +156,24 @@ textarea {
   border-radius: 6px;
 }
 
-.input-group .form-control {
-  position: relative;
-  z-index: 2;
-  float: left;
-  width: 100%;
-  margin-bottom: 0;
-}
-
 .input-group {
   position: relative;
   display: table;
   border-collapse: separate;
+
+  .form-control {
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    margin-bottom: 0;
+  }
 }
 
 .form-control,
 output {
   font-size: 14px;
   line-height: 1.42857143;
-  color: #555;
   display: block;
 }
 
@@ -259,16 +188,9 @@ textarea.form-control {
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857143;
-  color: #555;
-  background-color: #fff;
-  background-image: none;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 
   &:focus {
-    border-color: #66afe9;
     outline: 0;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
   }
@@ -285,9 +207,40 @@ textarea.form-control {
 }
 
 .pull-right {
-  float: right !important;
+  float: right;
 }
 
 .pull-left {
-  float: left !important;
+  float: left;
+}
+
+.required,
+.required-asterisk {
+  color: $error;
+}
+
+.fb-autocomplete-list {
+  background-color: $white;
+  display: none;
+  list-style: none;
+  padding: 0;
+  border: 1px solid $grey-light;
+  border-width: 0 1px 1px;
+  position: absolute;
+  z-index: 20;
+  max-height: 200px;
+  overflow-y: auto;
+
+  li {
+    display: none;
+    cursor: default;
+    padding: 5px;
+    margin: 0;
+    transition: background-color 200ms ease-in-out;
+
+    &:hover,
+    &.active-option {
+      background-color: $input-box-shadow-color;
+    }
+  }
 }

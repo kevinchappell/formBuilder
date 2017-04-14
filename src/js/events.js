@@ -1,7 +1,9 @@
-function formBuilderEventsFn() {
-  'use strict';
-
-  var events = {};
+/**
+ * Form Builder events
+ * @return {Object} various events to be trigger
+ */
+// function fbEvents(){
+  const events = {};
 
   events.loaded = new Event('loaded');
   events.viewData = new Event('viewData');
@@ -11,6 +13,9 @@ function formBuilderEventsFn() {
   events.formSaved = new Event('formSaved');
   events.fieldAdded = new Event('fieldAdded');
   events.fieldRemoved = new Event('fieldRemoved');
+  events.fieldRendered = new Event('fieldRendered');
 
-  return events;
-}
+//   return events;
+// }
+
+export default events;
