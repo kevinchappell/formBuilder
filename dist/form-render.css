@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 2.0.0-beta
+Version: 1.24.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 .kc-toggle {
@@ -232,6 +232,10 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 
 .rendered-form .pull-left {
   float: left; }
+
+.rendered-form .required,
+.rendered-form .required-asterisk {
+  color: #c10000; }
 
 .rendered-form .fb-autocomplete-list {
   background-color: #fff;

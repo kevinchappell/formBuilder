@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 2.0.0-beta
+Version: 1.24.7
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 @charset "UTF-8";
@@ -292,6 +292,10 @@ textarea.form-control {
 
 .pull-left {
   float: left; }
+
+.required,
+.required-asterisk {
+  color: #c10000; }
 
 .fb-autocomplete-list {
   background-color: #fff;
@@ -1110,10 +1114,6 @@ textarea {
   height: 24px;
   background: #b3b3b3;
   text-indent: -9999px; }
-
-.required-asterisk {
-  display: none;
-  color: #c10000; }
 
 .ui-button .ui-button-text {
   line-height: 0; }
