@@ -85,7 +85,7 @@ const FormBuilder = function(opts, element) {
     beforeStop: (evt, ui) => helpers.beforeStop.call(helpers, evt, ui),
     start: (evt, ui) => helpers.startMoving.call(helpers, evt, ui),
     stop: (evt, ui) => helpers.stopMoving.call(helpers, evt, ui),
-    cancel: 'input, select, .disabled-field, .form-group, .btn',
+    cancel: 'input, select, .disabled-field, .form-elements, .btn, button',
     placeholder: 'frmb-placeholder',
   });
 
