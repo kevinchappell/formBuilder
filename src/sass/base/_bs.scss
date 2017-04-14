@@ -214,6 +214,11 @@ textarea.form-control {
   float: left;
 }
 
+.required,
+.required-asterisk {
+  color: $error;
+}
+
 .fb-autocomplete-list {
   background-color: $white;
   display: none;

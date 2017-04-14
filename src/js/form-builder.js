@@ -822,9 +822,7 @@ const FormBuilder = function(opts, element) {
       'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
     ).outerHTML;
 
-    // Field preview Label
     liContents += `<label class="field-label">${utils.parsedHtml(label)}</label>`;
-
     let requiredDisplay = values.required ? 'style="display:inline"' : '';
     liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 

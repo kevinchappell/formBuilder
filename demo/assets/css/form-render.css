@@ -228,6 +228,10 @@
 .rendered-form .pull-left {
   float: left; }
 
+.rendered-form .required,
+.rendered-form .required-asterisk {
+  color: #c10000; }
+
 .rendered-form .fb-autocomplete-list {
   background-color: #fff;
   display: none;
