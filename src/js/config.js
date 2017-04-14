@@ -71,7 +71,7 @@ export const defaultOptions = {
 
 
 export const defaultI18n = {
-      location: 'https://kevinchappell.github.io/formBuilder/assets/lang/',
+      location: 'https://formbuilder.online/assets/lang/',
       langs: [
         'en-US'
       ],
@@ -88,7 +88,7 @@ export const defaultI18n = {
           checkboxes: 'Checkboxes',
           className: 'Class',
           clearAllMessage: 'Are you sure you want to clear all fields?',
-          clearAll: 'Clear',
+          clear: 'Clear',
           close: 'Close',
           content: 'Content',
           copy: 'Copy To Clipboard',

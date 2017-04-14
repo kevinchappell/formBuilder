@@ -880,9 +880,12 @@ export default class Helpers {
   processActionButtons(buttonData) {
     let {label, events, ...attrs} = buttonData;
     let data = this.data;
-
     if (!label) {
-      label = attrs.id ? utils.capitalize(attrs.id) : '';
+      if (attrs.id) {
+        label = mi18n.current[attrs.id] || utils.capitalize(attrs.id);
+      } else {
+        label = '';
+      }
     } else {
       label = mi18n.current[label] || '';
     }

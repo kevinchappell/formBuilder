@@ -381,7 +381,7 @@ import {config} from './config';
   utils.makeLabel = (data, label = '', description = '') => {
     let labelText = utils.parsedHtml(label);
     let labelContents = [labelText];
-console.log(data);
+
     if (data.required) {
       labelContents.push(m('span', ' *', {className: 'required'}));
     }
