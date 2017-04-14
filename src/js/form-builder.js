@@ -825,6 +825,9 @@ const FormBuilder = function(opts, element) {
     // Field preview Label
     liContents += `<label class="field-label">${utils.parsedHtml(label)}</label>`;
 
+    let requiredDisplay = values.required ? 'style="display:inline"' : '';
+    liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
+
     if (values.description) {
       let attrs = {
         className: 'tooltip-element',
@@ -832,9 +835,6 @@ const FormBuilder = function(opts, element) {
       };
       liContents += `<span ${utils.attrString(attrs)}>?</span>`;
     }
-
-    let requiredDisplay = values.required ? 'style="display:inline"' : '';
-    liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
     liContents += m('div', '', {className: 'prev-holder'}).outerHTML;
     liContents += `<div id="${data.lastID}-holder" class="frm-holder">`;
@@ -1249,8 +1249,6 @@ const FormBuilder = function(opts, element) {
     }
   };
 
-  formBuilder.formData = data.formData;
-
   return formBuilder;
 };
 
@@ -1275,16 +1273,16 @@ const FormBuilder = function(opts, element) {
         removeField: null,
         clearFields: null
       },
-      formData: [],
+      get formData() {
+        return instance.actions.getData('json');
+      },
       promise: new Promise(function(resolve, reject) {
         mi18n.init(i18nOpts).then(() => {
           elems.each(i => {
             let formBuilder = new FormBuilder(opts, elems[i]);
             $(elems[i]).data('formBuilder', formBuilder);
+            instance.actions = formBuilder.actions;
           });
-          let fbInstance = $(elems[0]).data('formBuilder');
-          instance.actions = fbInstance.actions;
-          instance.formData = fbInstance.formData;
           delete instance.promise;
           resolve(instance);
         }).catch(reject);

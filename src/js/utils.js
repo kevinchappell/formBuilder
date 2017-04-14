@@ -381,9 +381,9 @@ import {config} from './config';
   utils.makeLabel = (data, label = '', description = '') => {
     let labelText = utils.parsedHtml(label);
     let labelContents = [labelText];
-
+console.log(data);
     if (data.required) {
-      labelContents.push(m('span', '*', {className: 'required'}));
+      labelContents.push(m('span', ' *', {className: 'required'}));
     }
 
     if (data.type !== 'hidden') {
@@ -830,12 +830,13 @@ import {config} from './config';
       data.name = data.name + '[]';
     }
 
+    let fieldLabel = utils.makeLabel(data, label, description);
+
     if (data.required) {
       data.required = null;
       data['aria-required'] = 'true';
     }
 
-    let fieldLabel = utils.makeLabel(data, label, description);
 
     let templates = utils.templates.concat([
       ['autocomplete',

@@ -24,6 +24,7 @@ function FormRender(options, element) {
       },
       onRender: () => {},
       render: true,
+      templates: {},
       notify: {
         error: function(message) {
           return console.error(message);

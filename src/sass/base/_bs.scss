@@ -223,6 +223,8 @@ textarea.form-control {
   border-width: 0 1px 1px;
   position: absolute;
   z-index: 20;
+  max-height: 200px;
+  overflow-y: auto;
 
   li {
     display: none;
