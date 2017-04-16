@@ -103,8 +103,6 @@ export const defaultI18n = {
           editXML: 'Edit XML',
           enableOther: 'Enable &quot;Other&quot;',
           enableOtherMsg: 'Let users to enter an unlisted option',
-          fieldDeleteWarning: false,
-          fieldVars: 'Field Variables',
           fieldNonEditable: 'This field cannot be edited.',
           fieldRemoveWarning: 'Are you sure you want to remove this field?',
           fileUpload: 'File Upload',
