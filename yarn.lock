@@ -1064,9 +1064,9 @@ browserify-zlib@~0.1.2:
   dependencies:
     pako "~0.2.0"
 
-browserify@^14.1.0:
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/browserify/-/browserify-14.1.0.tgz#0508cc1e7bf4c152312c2fa523e676c0b0b92311"
+browserify@^14.3.0:
+  version "14.3.0"
+  resolved "https://registry.yarnpkg.com/browserify/-/browserify-14.3.0.tgz#fd003a2386ac1aec127f097885a3cc6373b745c4"
   dependencies:
     JSONStream "^1.0.3"
     assert "^1.4.0"
@@ -1087,7 +1087,7 @@ browserify@^14.1.0:
     glob "^7.1.0"
     has "^1.0.0"
     htmlescape "^1.1.0"
-    https-browserify "~0.0.0"
+    https-browserify "^1.0.0"
     inherits "~2.0.1"
     insert-module-globals "^7.0.0"
     labeled-stream-splicer "^2.0.0"
@@ -2771,9 +2771,9 @@ http-signature@~1.1.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-https-browserify@~0.0.0:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-0.0.1.tgz#3f91365cabe60b77ed0ebba24b454e3e09d95a82"
+https-browserify@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
 ieee754@^1.1.4:
   version "1.1.8"
