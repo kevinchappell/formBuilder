@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.0.0 - ✨ Custom Controls, Automatic i18n, WYSIWYG Editor, HTML Labels ✨ [#414](https://github.com/kevinchappell/formBuilder/pull/414)
 - v1.24.7 - Fix textarea value not saving when preview changed [#408](https://github.com/kevinchappell/formBuilder/pull/408)
 - v1.24.6 - Bugfix: XMLParser children in ie #369, date form-control class #351 [#373](https://github.com/kevinchappell/formBuilder/pull/373)
 - v1.24.5 - Code cleanup, alignment issues, check select required fix
