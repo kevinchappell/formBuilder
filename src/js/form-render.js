@@ -1,16 +1,21 @@
-/*global fbUtils*/
-// render the formBuilder XML into html
-function FormRenderFn(options, element) {
-  'use strict';
-
-  var utils = fbUtils;
-
-  var formRender = this,
-    defaults = {
+import utils from './utils';
+import events from './events';
+import {config} from './config';
+import {defaultSubtypes} from './dom';
+/**
+ * render the formBuilder XML into html
+ * @param  {Object} options
+ * @param  {Object} element html element where form will be rendered (optional)
+ * @return {Object} formRender instance
+ */
+function FormRender(options, element) {
+  const formRender = this;
+  const defaults = {
       destroyTemplate: true, // @todo
       container: false,
-      dataType: 'xml',
+      dataType: 'json',
       formData: false,
+      subtypes: defaultSubtypes,
       messages: {
         formRendered: 'Form Rendered',
         noFormData: 'No form data.',
@@ -19,6 +24,7 @@ function FormRenderFn(options, element) {
       },
       onRender: () => {},
       render: true,
+      templates: {},
       notify: {
         error: function(message) {
           return console.error(message);
@@ -32,7 +38,11 @@ function FormRenderFn(options, element) {
       }
     };
 
-  var opts = $.extend(true, defaults, options);
+  let opts = config.opts = $.extend(true, defaults, options);
+
+  utils.templates = Object.keys(opts.templates).map(key => {
+    return [key, config.opts.templates[key]];
+  });
 
   (function() {
     if (!opts.formData) {
@@ -53,27 +63,30 @@ function FormRenderFn(options, element) {
    * @param  {Object} fields Node elements
    */
   Element.prototype.appendFormFields = function(fields) {
-    var element = this;
-    fields.forEach(field => element.appendChild(field));
+    let element = this;
+    fields.forEach(field => {
+      element.appendChild(field);
+      field.dispatchEvent(events.fieldRendered);
+    });
   };
 
   /**
    * Extend Element prototype to remove content
    */
   Element.prototype.emptyContainer = function() {
-    var element = this;
+    let element = this;
     while (element.lastChild) {
       element.removeChild(element.lastChild);
     }
   };
 
-  var runCallbacks = function() {
+  let runCallbacks = function() {
     if (opts.onRender) {
       opts.onRender();
     }
   };
 
-  var santizeField = (field) => {
+  let santizeField = (field) => {
     let sanitizedField = Object.assign({}, field);
     sanitizedField.className = field.className || field.class || null;
     delete sanitizedField.class;
@@ -85,20 +98,26 @@ function FormRenderFn(options, element) {
     return utils.trimObj(sanitizedField);
   };
 
+  let exportMarkup = fields => fields.map(elem => elem.innerHTML).join('');
+
   // Begin the core plugin
-  var rendered = [];
+  let rendered = [];
 
   // generate field markup if we have fields
   if (opts.formData) {
-    for (var i = 0; i < opts.formData.length; i++) {
+    for (let i = 0; i < opts.formData.length; i++) {
       let sanitizedField = santizeField(opts.formData[i]);
-      rendered.push(utils.fieldRender(sanitizedField, opts));
+      rendered.push(utils.getTemplate(sanitizedField));
     }
 
     if (opts.render) {
       if (opts.container) {
-        let renderedFormWrap = utils.markup('div', rendered, {className: 'rendered-form'});
-        opts.container = (opts.container instanceof jQuery) ? opts.container[0] : opts.container;
+        let renderedFormWrap = utils.markup('div', rendered, {
+          className: 'rendered-form'
+        });
+        if (opts.container instanceof jQuery) {
+          opts.container = opts.container[0];
+        }
         opts.container.emptyContainer();
         opts.container.appendChild(renderedFormWrap);
       } else if (element) {
@@ -109,9 +128,7 @@ function FormRenderFn(options, element) {
       runCallbacks();
       opts.notify.success(opts.messages.formRendered);
     } else {
-      formRender.markup = rendered.map(function(elem) {
-        return elem.innerHTML;
-      }).join('');
+      formRender.markup = exportMarkup(rendered);
     }
   } else {
     let noData = utils.markup('div', opts.messages.noFormData, {
@@ -125,13 +142,16 @@ function FormRenderFn(options, element) {
 }
 
 (function($) {
-  'use strict';
-
   $.fn.formRender = function(options) {
-    this.each(function() {
-      let formRender = new FormRenderFn(options, this);
+    let elems = this;
+    elems.each(function(i) {
+      let formRender = new FormRender(options, elems[i]);
+      elems[i].dataset.formRender = formRender;
       return formRender;
     });
   };
-
 })(jQuery);
+
+window.FormRender = FormRender;
+
+export default FormRender;
