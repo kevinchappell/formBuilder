@@ -1,6 +1,6 @@
 /*
 formBuilder - https://formbuilder.online/
-Version: 2.0.0
+Version: 2.1.0
 Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 */
 .kc-toggle {
@@ -233,9 +233,19 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 .rendered-form .pull-left {
   float: left; }
 
-.rendered-form .required,
+.rendered-form .fb-required,
 .rendered-form .required-asterisk {
   color: #c10000; }
+
+.rendered-form .fb-checkbox-inline,
+.rendered-form .fb-radio-inline {
+  display: inline-block;
+  padding-left: 20px;
+  vertical-align: middle; }
+
+.rendered-form .fb-checkbox-inline:first-child,
+.rendered-form .fb-radio-inline:first-child {
+  padding-left: 0; }
 
 .rendered-form .fb-autocomplete-list {
   background-color: #fff;
@@ -258,7 +268,7 @@ Author: Kevin Chappell <kevin.b.chappell@gmail.com>
     .rendered-form .fb-autocomplete-list li:hover, .rendered-form .fb-autocomplete-list li.active-option {
       background-color: rgba(0, 0, 0, 0.075); }
 
-.form-group .required {
+.form-group .fb-required {
   color: #c10000; }
 
 *[tooltip] {
