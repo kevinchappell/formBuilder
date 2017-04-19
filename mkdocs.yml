@@ -17,6 +17,7 @@ pages:
   - Translating: formBuilder/demos/translation.md
   - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
   - Data: formBuilder/demos/data.md
+  - Custom Elements: formBuilder/options/templates.md
 - formBuilder Options:
   - append/prepend: formBuilder/options/appendPrepend.md
   - controlOrder: formBuilder/options/controlOrder.md
@@ -26,17 +27,27 @@ pages:
   - disableFields: formBuilder/options/disableFields.md
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
   - editOnAdd: formBuilder/options/editOnAdd.md
+  - fields: formBuilder/options/fields.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
   - formData: formBuilder/options/formData.md
   - inputSets: formBuilder/options/inputSets.md
-  - messages: formBuilder/options/messages.md
+  - i18n: formBuilder/options/i18n.md
   - notify: formBuilder/options/notify.md
   - Overview: formBuilder/options.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
   - typeUserAttrs: formBuilder/options/typeUserAttrs.md
+  - templates: formBuilder/options/templates.md
   - typeUserEvents: formBuilder/options/typeUserEvents.md
+- formBuilder Actions:
+  - setLang: formBuilder/actions/setLang.md
+  - getData: formBuilder/actions/getData.md
+  - showData: formBuilder/actions/showData.md
+  - clearFields: formBuilder/actions/clearFields.md
+  - setData: formBuilder/actions/setData.md
+  - addField: formBuilder/actions/addField.md
+  - removeField: formBuilder/actions/removeField.md
 - formRender Demos:
   - Basic: formRender/demos/basic.md
   - Preview popup: formRender/demos/preview-popup.md

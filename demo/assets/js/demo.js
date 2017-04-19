@@ -14,9 +14,7 @@ jQuery(function($) {
       return {
         field: '<span id="'+fieldData.name+'">',
         onRender: function() {
-          $(document.getElementById(fieldData.name)).rateYo({
-            rating: 3.6
-          });
+          $(document.getElementById(fieldData.name)).rateYo({rating: 3.6});
         }
       };
     }
