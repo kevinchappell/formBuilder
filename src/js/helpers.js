@@ -2,8 +2,7 @@ import {instanceDom, defaultSubtypes, empty, optionFieldsRegEx} from './dom';
 import {instanceData} from './data';
 import utils from './utils';
 import events from './events';
-// import mi18n from 'mi18n';
-import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
+import mi18n from 'mi18n';
 import {config} from './config';
 
 const opts = config.opts;
@@ -1057,9 +1056,10 @@ export default class Helpers {
 
     opts.fields = fields.concat(defaultFields);
     config.opts = Object.assign({}, {actionButtons, templates, fields}, opts);
-    utils.templates = Object.keys(config.opts.templates).map(key => {
+    let userTemplates = Object.keys(config.opts.templates).map(key => {
       return [key, config.opts.templates[key]];
     });
+    utils.templates = utils.templates.concat(userTemplates);
 
     return config.opts;
   }

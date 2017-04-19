@@ -1,4 +1,4 @@
-site_name: formBuilder
+site_name: formBuilder v2.0
 site_url: https://formbuilder.online
 repo_url: https://github.com/kevinchappell/formBuilder.git
 repo_name: 'GitHub'
@@ -18,19 +18,20 @@ pages:
   - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
   - Data: formBuilder/demos/data.md
 - formBuilder Options:
-  - Overview: formBuilder/options.md
   - append/prepend: formBuilder/options/appendPrepend.md
-  - controlPosition: formBuilder/options/controlPosition.md
   - controlOrder: formBuilder/options/controlOrder.md
+  - controlPosition: formBuilder/options/controlPosition.md
   - dataType: formBuilder/options/dataType.md
-  - disableFields: formBuilder/options/disableFields.md
   - defaultFields: formBuilder/options/defaultFields.md
+  - disableFields: formBuilder/options/disableFields.md
+  - disabledActionButtons: formBuilder/options/disabledActionButtons.md
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
   - formData: formBuilder/options/formData.md
   - inputSets: formBuilder/options/inputSets.md
   - messages: formBuilder/options/messages.md
   - notify: formBuilder/options/notify.md
+  - Overview: formBuilder/options.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md

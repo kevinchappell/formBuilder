@@ -40,9 +40,11 @@ function FormRender(options, element) {
 
   let opts = config.opts = $.extend(true, defaults, options);
 
-  utils.templates = Object.keys(opts.templates).map(key => {
+  const userTemplates = Object.keys(opts.templates).map(key => {
     return [key, config.opts.templates[key]];
   });
+
+  utils.templates = userTemplates.concat(utils.templates);
 
   (function() {
     if (!opts.formData) {

@@ -1,5 +1,6 @@
 export const defaultOptions = {
   controlPosition: 'right',
+      append: false,
       controlOrder: [
         'autocomplete',
         'button',
@@ -19,11 +20,10 @@ export const defaultOptions = {
       dataType: 'json',
       // Array of fields to disable
       disableFields: [],
+      disabledActionButtons: [],
       editOnAdd: false,
       // Uneditable fields or other content you would like to appear
       // before and after regular fields:
-      append: false,
-      prepend: false,
       // array of objects with fields values
       // ex:
       // defaultFields: [{
@@ -39,8 +39,9 @@ export const defaultOptions = {
       //   type: 'text'
       // }],
       defaultFields: [],
-      inputSets: [],
+      fields: [],
       fieldRemoveWarn: false,
+      inputSets: [],
       roles: {
         1: 'Administrator'
       },
@@ -51,6 +52,7 @@ export const defaultOptions = {
       },
       onSave: (evt, formData) => null,
       onClearAll: () => null,
+      prepend: false,
       sortableControls: false,
       stickyControls: {
         enable: true,
@@ -60,9 +62,7 @@ export const defaultOptions = {
           right: 'auto'
         }
       },
-      fields: [],
       templates: {},
-      disabledActionButtons: [],
       showActionButtons: true,
       typeUserAttrs: {},
       typeUserEvents: {},

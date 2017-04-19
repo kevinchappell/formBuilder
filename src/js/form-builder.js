@@ -3,8 +3,7 @@ import {
   Data,
   availablefields as aFields
 } from './data';
-// import mi18n from 'mi18n';
-import mi18n from '../../../../../../Draggable/mI18N/mi18n/src/mi18n.js';
+import mi18n from 'mi18n';
 import utils from './utils';
 import events from './events';
 import Helpers from './helpers';
@@ -68,7 +67,7 @@ const FormBuilder = function(opts, element) {
   if (opts.inputSets.length) {
     $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
     opts.inputSets.forEach((set, i) => {
-      set.name = set.name || helpers.makeClassName(set.label);
+      set.name = set.name || utils.makeClassName(set.label);
       let inputSet = m('li', set.label, {
         className: `input-set-control input-set-${i}`,
         type: set.name
@@ -85,7 +84,7 @@ const FormBuilder = function(opts, element) {
     beforeStop: (evt, ui) => helpers.beforeStop.call(helpers, evt, ui),
     start: (evt, ui) => helpers.startMoving.call(helpers, evt, ui),
     stop: (evt, ui) => helpers.stopMoving.call(helpers, evt, ui),
-    cancel: 'input, select, .disabled-field, .form-elements, .btn, button',
+    cancel: 'input, select, textarea, .disabled-field, .form-elements, .btn, button',
     placeholder: 'frmb-placeholder',
   });
 
@@ -119,6 +118,7 @@ const FormBuilder = function(opts, element) {
   });
 
   let processControl = control => {
+    console.log(control);
     if (control[0].classList.contains('input-set-control')) {
       let inputSets = [];
       let inputSet = opts.inputSets.filter(set =>
@@ -198,7 +198,7 @@ const FormBuilder = function(opts, element) {
   $stage.on('change blur keyup', '.form-elements input, .form-elements select, .form-elements textarea', saveAndUpdate);
 
   $('li', d.controls).click(evt => {
-    let $control = $(evt.target).closest('.input-control');
+    let $control = $(evt.target).closest('li');
     helpers.stopIndex = undefined;
     processControl($control);
     helpers.save.call(helpers);
@@ -229,10 +229,10 @@ const FormBuilder = function(opts, element) {
   let prepFieldVars = function($field, isNew = false) {
     let field = {};
     if ($field instanceof jQuery) {
-      let fieldData = aFields[$field[0].dataset.type];
-      if (fieldData) {
-        field = fieldData.attrs;
-        field.label = fieldData.label;
+      let {attrs, label} = aFields[$field[0].dataset.type];
+      if (aFields[$field[0].dataset.type]) {
+        field = Object.assign({}, attrs);
+        field.label = label;
       } else { // is dataType XML
         let attrs = $field[0].attributes;
         if (!isNew) {
@@ -832,13 +832,12 @@ const FormBuilder = function(opts, element) {
     let requiredDisplay = values.required ? 'style="display:inline"' : '';
     liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
-    if (values.description) {
-      let attrs = {
-        className: 'tooltip-element',
-        tooltip: values.description
-      };
-      liContents += `<span ${utils.attrString(attrs)}>?</span>`;
-    }
+    let descAttrs = {
+      className: 'tooltip-element',
+      tooltip: values.description,
+      style: values.description ? 'display:inline-block' : 'display:none'
+    };
+    liContents += `<span ${utils.attrString(descAttrs)}>?</span>`;
 
     liContents += m('div', '', {className: 'prev-holder'}).outerHTML;
     liContents += `<div id="${data.lastID}-holder" class="frm-holder">`;
