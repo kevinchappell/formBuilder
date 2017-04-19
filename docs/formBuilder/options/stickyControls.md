@@ -1,5 +1,5 @@
 # stickyControls
-When the option `stickyControls` is set to true, the controls will follow the user's scroll to the end of the available space within the editor. Note the updated syntax to handle custom positioning.
+When the option `stickyControls` is set to enabled:true, the controls will follow the user's scroll to the end of the available space within the editor. Note the updated syntax to handle custom positioning.
 
 ## Usage
 ```javascript

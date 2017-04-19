@@ -23,9 +23,6 @@ formRender is the companion plugin to formBuilder that lets you render the resul
     src/              # Source files for editing the plugin
     .fontello         # Fontello session token used for editing the icon font
     .gitignore
-    .jsbeautifyrc     # Config file for jsbeautify
-    .jscsrc           # Config file for JSCS to maintain code quality and style
-    .jshintrc         # Config file for jsHint linter
     .sass-lint.yml    # Config file for sass-lint to maintain css quality and style
     CHANGELOG.md
     CONTRIBUTING.md   # Contributor guidelines

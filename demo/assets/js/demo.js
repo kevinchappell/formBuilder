@@ -1,23 +1,90 @@
 jQuery(function($) {
-  var fields = [
+  let fields = [
     {
-      label: 'Custom field',
+      label: 'Star Rating',
       attrs: {
-        type: 'customField'
-      }
+        type: 'starRating'
+      },
+      icon: '🌟'
     }
   ];
 
-  var templates = {
-    customField: function() {
+  let templates = {
+    starRating: function(fieldData) {
       return {
-        field: '<h1>Custom field output</h1>',
+        field: '<span id="'+fieldData.name+'">',
         onRender: function() {
-          console.log('Custom field');
+          $(document.getElementById(fieldData.name)).rateYo({rating: 3.6});
         }
       };
     }
   };
+
+  let inputSets = [{
+        label: 'User Details',
+        name: 'user-details', // optional
+        showHeader: true, // optional
+        fields: [{
+          type: 'text',
+          label: 'First Name',
+          className: 'form-control'
+        }, {
+          type: 'select',
+          label: 'Profession',
+          className: 'form-control',
+          values: [{
+            label: 'Street Sweeper',
+            value: 'option-2',
+            selected: false
+          }, {
+            label: 'Brain Surgeon',
+            value: 'option-3',
+            selected: false
+          }]
+        }, {
+          type: 'textarea',
+          label: 'Short Bio:',
+          className: 'form-control'
+        }]
+      }, {
+        label: 'User Agreement',
+        fields: [{
+          type: 'header',
+          subtype: 'h3',
+          label: 'Terms & Conditions',
+          className: 'header'
+        }, {
+          type: 'paragraph',
+          label: 'Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.',
+        }, {
+          type: 'paragraph',
+          label: 'Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.',
+        }, {
+          type: 'checkbox',
+          label: 'Do you agree to the terms and conditions?',
+        }]
+      }];
+
+  var typeUserDisabledAttrs = {
+    autocomplete: ['access']
+  };
+
+  var typeUserAttrs = {
+    text: {
+      className: {
+        label: 'Class',
+        options: {
+          'red form-control': 'Red',
+          'green form-control': 'Green',
+          'blue form-control': 'Blue'
+        },
+        style: 'border: 1px solid red'
+      }
+    }
+  };
+
+  // test disabledAttrs
+  let disabledAttrs = ['placeholder'];
 
   const fbOptions = {
     subtypes: {
@@ -25,7 +92,10 @@ jQuery(function($) {
     },
     onSave: function(e, formData) {
       toggleEdit();
-      $('.render-wrap').formRender({formData, templates});
+      $('.render-wrap').formRender({
+        formData,
+        templates
+      });
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
     },
     stickyControls: {
@@ -34,6 +104,10 @@ jQuery(function($) {
     sortableControls: true,
     fields,
     templates,
+    inputSets,
+    typeUserDisabledAttrs,
+    typeUserAttrs,
+    // disabledAttrs
   };
   let formData = window.sessionStorage.getItem('formData');
   let editing = true;

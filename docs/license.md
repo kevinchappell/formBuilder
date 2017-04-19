@@ -1,7 +1,7 @@
 The MIT License (MIT)
 =====================
 
-**Copyright © 2016 Kevin Chappell**
+**Copyright © 2013-present Kevin Chappell**
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

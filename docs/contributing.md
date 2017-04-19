@@ -13,8 +13,7 @@ To develop for formBuilder you'll need:
 ## Recommended Tooling
 While not required, the following tools are recommended to maintain code quality and consistency in style.
 
-- [JSCS](http://jscs.info/)
-- [jsHint](http://jshint.com/)
+- [eslint](http://eslint.org/)
 - [SASS-lint](https://www.npmjs.com/package/sass-lint)
 
 ## Installation
@@ -24,7 +23,7 @@ Navigate to the directory you'll be working from and run:
 $ git clone https://github.com/kevinchappell/formBuilder.git form-builder
 $ cd form-builder
 $ npm install
-$ gulp
+$ npm start
 ```
 
 The above code will clone the repo, install the required `node_modules` and run the default `gulp` task. You should now have a locally running version of the demo page.

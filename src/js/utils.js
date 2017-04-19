@@ -1,5 +1,4 @@
 import {defaultSubtypes, filter} from './dom';
-import {config} from './config';
 
 /**
  * Cross file utilities for working with arrays,
@@ -376,15 +375,30 @@ import {config} from './config';
     });
   };
 
-  utils.makeLabel = (data, label = '', description = '') => {
+  /**
+   * Removes a value from an array
+   * @param  {Array} arr
+   * @param  {String|Number} val
+   */
+  utils.remove = (val, arr) => {
+    let index = arr.indexOf(val);
+
+    if (index > -1) {
+       arr.splice(index, 1);
+    }
+  };
+
+
+  utils.makeLabel = fieldData => {
+    let {label = '', description = '', ...attrs} = fieldData;
     let labelText = utils.parsedHtml(label);
     let labelContents = [labelText];
 
-    if (data.required) {
-      labelContents.push(m('span', ' *', {className: 'required'}));
+    if (attrs.required) {
+      labelContents.push(m('span', ' *', {className: 'fb-required'}));
     }
 
-    if (data.type !== 'hidden') {
+    if (attrs.type !== 'hidden') {
       if (description) {
         labelContents.push(m('span', '?', {
           className: 'tooltip-element',
@@ -393,14 +407,20 @@ import {config} from './config';
       }
     }
 
-    return m('label', labelContents, {
-      for: data.id,
-      className: `fb-${data.type}-label`
-    });
+    let labelAttrs = {
+      className: `fb-${attrs.type}-label`
+    };
+
+    if (attrs.id) {
+      labelAttrs.for = attrs.id;
+    }
+
+    return m('label', labelContents, labelAttrs);
   };
 
-  utils.templateMap = (templates, type) => {
+  utils.templateMap = type => {
     let template;
+    let templates = utils.templates;
     for (let [key, value] of templates) {
       if (Array.isArray(key)) {
         if(utils.inArray(type, key)) {
@@ -532,15 +552,16 @@ import {config} from './config';
    * @param  {Object} fieldData
    * @return {Object}           DOM elements
    */
-  utils.selectTemplate = fieldData => {
+  utils.selectTemplate = (fieldData, isPreview) => {
     let options = [];
-    let {values, placeholder, type, inline, other, toggle, ...data} = fieldData;
+    let {values, type, inline, other, toggle, ...data} = fieldData;
+    let attrs = utils.processFieldDataAttrs(data, isPreview);
     let optionType = type.replace('-group', '');
     let isSelect = type === 'select';
 
     if (values) {
-      if (placeholder && isSelect) {
-        options.push(m('option', placeholder, {
+      if (attrs.placeholder && isSelect) {
+        options.push(m('option', attrs.placeholder, {
           disabled: null,
           selected: null
         }));
@@ -549,8 +570,8 @@ import {config} from './config';
       for (let i = 0; i < values.length; i++) {
         let {label = '', ...optionAttrs} = values[i];
 
-        optionAttrs.id = `${data.id}-${i}`;
-        if (!optionAttrs.selected || placeholder) {
+        optionAttrs.id = `${attrs.id}-${i}`;
+        if (!optionAttrs.selected || attrs.placeholder) {
           delete optionAttrs.selected;
         }
 
@@ -560,14 +581,14 @@ import {config} from './config';
         } else {
           let wrapperClass = optionType;
           if (inline) {
-            wrapperClass += '-inline';
+            wrapperClass = `fb-${optionType}-inline`;
           }
           optionAttrs.type = optionType;
           if (optionAttrs.selected) {
             optionAttrs.checked = 'checked';
             delete optionAttrs.selected;
           }
-          let input = m('input', null, Object.assign({}, data, optionAttrs));
+          let input = m('input', null, Object.assign({}, attrs, optionAttrs));
           let labelAttrs = {for: optionAttrs.id};
           let labelContent = [input, label];
           if (toggle) {
@@ -584,8 +605,8 @@ import {config} from './config';
 
       if (!isSelect && other) {
         let otherOptionAttrs = {
-          id: `${data.id}-other`,
-          className: `${data.className} other-option`,
+          id: `${attrs.id}-other`,
+          className: `${attrs.className} other-option`,
           events: {
             click: () => utils.otherOptionCB(otherOptionAttrs.id)
           }
@@ -616,14 +637,15 @@ import {config} from './config';
       }
     }
 
-    const templates = [
-      ['select',
-        () => m(optionType, options, data)],
-      [['checkbox-group', 'radio-group', 'checkbox'],
-        () => m('div', options, {className: type})]
-    ];
+    let template;
 
-    return utils.templateMap(templates, type);
+    if (type === 'select') {
+      template = m(optionType, options, data);
+    } else {
+      template = m('div', options, {className: type});
+    }
+
+    return template;
   };
 
   utils.defaultField = fieldData => {
@@ -799,118 +821,126 @@ import {config} from './config';
     return {field: template.field, onRender};
   };
 
-  utils.templates = [];
+  utils.templates = [
+    ['autocomplete',
+      fieldData => {
+      let attrs = utils.processFieldDataAttrs(fieldData);
+        let fieldLabel = utils.makeLabel(fieldData);
+        let autocomplete = utils.autocompleteTemplate(attrs);
+        let template = {
+          field: [fieldLabel, autocomplete.field],
+          onRender: autocomplete.onRender
+        };
+        return template;
+      }],
+    [defaultSubtypes.text.concat(['number', 'file', 'date']),
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let fieldLabel = utils.makeLabel(fieldData);
+        let template = {
+          field: [fieldLabel, m('input', null, attrs)],
+        };
+        return template;
+      }],
+    [['paragraph'].concat(defaultSubtypes.paragraph),
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let template = {
+          field: [m(fieldData.type, utils.parsedHtml(fieldData.label), attrs)],
+        };
+        return template;
+      }],
+    [defaultSubtypes.button,
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let template = {
+          field: m('button', fieldData.label, attrs),
+        };
+        return template;
+      }],
+    [['select', 'checkbox-group', 'radio-group', 'checkbox'],
+      fieldData => {
+        let fieldLabel = utils.makeLabel(fieldData);
+        let field = utils.selectTemplate(fieldData);
+        let template = {
+          field: [fieldLabel, field]
+        };
+        return template;
+      }],
+    [['textarea', 'tinymce', 'quill'],
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let field = utils.longTextTemplate(attrs);
+        let fieldLabel = utils.makeLabel(fieldData);
+        let template = {
+          field: [fieldLabel, field.field],
+          onRender: field.onRender
+        };
+        return template;
+      }]
+    ];
 
-  utils.getTemplate = (fieldData, isPreview = false) => {
+  utils.processFieldDataAttrs = fieldData => {
     let {
       label,
       description,
       subtype,
-      labelPosition,
-      ...data} = fieldData;
-    let template;
-    let field;
+      ...attrs} = fieldData;
 
-    if (isPreview) {
-      if (data.name) {
-        data.name = data.name + '-preview';
-      } else {
-        data.name = utils.nameAttr(fieldData) + '-preview';
-      }
+    if (!attrs.id) {
+      attrs.id = attrs.name;
     }
-    data.id = data.name;
 
     if (subtype) {
-      data.type = subtype;
+      attrs.type = subtype;
     }
 
-    if (data.multiple || data.type === 'checkbox-group') {
-      data.name = data.name + '[]';
+    if (attrs.multiple || attrs.type === 'checkbox-group') {
+      attrs.name = attrs.name + '[]';
     }
 
-    let fieldLabel = utils.makeLabel(data, label, description);
-
-    if (data.required) {
-      data.required = null;
-      data['aria-required'] = 'true';
+    if (attrs.required) {
+      attrs.required = true;
+      attrs['aria-required'] = 'true';
     }
 
+    return attrs;
+  };
 
-    let templates = utils.templates.concat([
-      ['autocomplete',
-        () => {
-          let autocomplete = utils.autocompleteTemplate(data);
-          let template = {
-            field: [fieldLabel, autocomplete.field],
-            onRender: autocomplete.onRender
-          };
-          return template;
-        }],
-      [defaultSubtypes.text.concat(['number', 'file', 'date']),
-        () => {
-          let template = {
-            field: [fieldLabel, m('input', null, data)],
-          };
-          return template;
-        }],
-      [['paragraph'].concat(defaultSubtypes.paragraph),
-        () => {
-          let {type, ...attrs} = data;
-          let template = {
-            field: [m(type, utils.parsedHtml(label), attrs)],
-          };
-          return template;
-        }],
-      [defaultSubtypes.button,
-        () => {
-          let template = {
-            field: m('button', label, data),
-          };
-          return template;
-        }],
-      [['select', 'checkbox-group', 'radio-group', 'checkbox'],
-        () => {
-          let field = utils.selectTemplate(data);
-          let template = {
-            field: [fieldLabel, field]
-          };
-          return template;
-        }],
-      [['textarea', 'tinymce', 'quill'],
-        () => {
-          let field = utils.longTextTemplate(data);
-          let template = {
-            field: [fieldLabel, field.field],
-            onRender: field.onRender
-          };
-          return template;
-        }]
-      ]);
-
-      template = utils.templateMap(templates, data.type);
-
-      if (template) {
-        template = template();
+  utils.getTemplate = (fieldData, isPreview = false) => {
+    let field;
+    if (isPreview) {
+      if (fieldData.name) {
+        fieldData.name = fieldData.name + '-preview';
       } else {
-        template = utils.defaultField(fieldData)();
+        fieldData.name = utils.nameAttr(fieldData) + '-preview';
       }
+    }
+    let template = utils.templateMap(fieldData.type);
 
-      if (data.type !== 'hidden') {
-        let wrapperAttrs = {};
-        if (data.id) {
-          wrapperAttrs.className =
-          `fb-${data.type} form-group field-${data.id}`;
-        }
-        field = utils.markup('div', template.field, wrapperAttrs);
-      } else {
-        field = utils.markup('input', null, data);
+    if (template) {
+      template = template(fieldData, isPreview);
+    } else {
+      template = utils.defaultField(fieldData, isPreview)();
+    }
+
+    if (fieldData.type !== 'hidden') {
+      let wrapperAttrs = {};
+      if (fieldData.name) {
+        wrapperAttrs.className =
+        `fb-${fieldData.type} form-group field-${fieldData.name}`;
       }
+      field = utils.markup('div', template.field, wrapperAttrs);
+    } else {
+      let attrs = utils.processFieldDataAttrs(fieldData);
+      field = utils.markup('input', null, attrs);
+    }
 
-      if (template.onRender) {
-        field.addEventListener('fieldRendered', template.onRender);
-      }
+    if (template.onRender) {
+      field.addEventListener('fieldRendered', template.onRender);
+    }
 
-      return field;
+    return field;
   };
 
 /**
@@ -1026,7 +1056,7 @@ utils.makeClassName = str => {
  * @return {String}     converter string
  */
 utils.safename = str => {
-  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\_-]/g, '').toLowerCase();
+  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\[\]\_-]/g, '').toLowerCase();
 };
 
 /**
