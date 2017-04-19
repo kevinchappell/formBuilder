@@ -375,13 +375,27 @@ import {defaultSubtypes, filter} from './dom';
     });
   };
 
+  /**
+   * Removes a value from an array
+   * @param  {Array} arr
+   * @param  {String|Number} val
+   */
+  utils.remove = (val, arr) => {
+    let index = arr.indexOf(val);
+
+    if (index > -1) {
+       arr.splice(index, 1);
+    }
+  };
+
+
   utils.makeLabel = fieldData => {
     let {label = '', description = '', ...attrs} = fieldData;
     let labelText = utils.parsedHtml(label);
     let labelContents = [labelText];
 
     if (attrs.required) {
-      labelContents.push(m('span', ' *', {className: 'required'}));
+      labelContents.push(m('span', ' *', {className: 'fb-required'}));
     }
 
     if (attrs.type !== 'hidden') {
@@ -538,16 +552,16 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {Object} fieldData
    * @return {Object}           DOM elements
    */
-  utils.selectTemplate = fieldData => {
+  utils.selectTemplate = (fieldData, isPreview) => {
     let options = [];
-    let {values, placeholder, type, inline, other, toggle, ...data} = fieldData;
-    let attrs = utils.processfieldDataAttrs(data);
+    let {values, type, inline, other, toggle, ...data} = fieldData;
+    let attrs = utils.processFieldDataAttrs(data, isPreview);
     let optionType = type.replace('-group', '');
     let isSelect = type === 'select';
 
     if (values) {
-      if (placeholder && isSelect) {
-        options.push(m('option', placeholder, {
+      if (attrs.placeholder && isSelect) {
+        options.push(m('option', attrs.placeholder, {
           disabled: null,
           selected: null
         }));
@@ -557,7 +571,7 @@ import {defaultSubtypes, filter} from './dom';
         let {label = '', ...optionAttrs} = values[i];
 
         optionAttrs.id = `${attrs.id}-${i}`;
-        if (!optionAttrs.selected || placeholder) {
+        if (!optionAttrs.selected || attrs.placeholder) {
           delete optionAttrs.selected;
         }
 
@@ -567,7 +581,7 @@ import {defaultSubtypes, filter} from './dom';
         } else {
           let wrapperClass = optionType;
           if (inline) {
-            wrapperClass += '-inline';
+            wrapperClass = `fb-${optionType}-inline`;
           }
           optionAttrs.type = optionType;
           if (optionAttrs.selected) {
@@ -809,8 +823,8 @@ import {defaultSubtypes, filter} from './dom';
 
   utils.templates = [
     ['autocomplete',
-      (fieldData, isPreview) => {
-      let attrs = utils.processfieldDataAttrs(fieldData, isPreview);
+      fieldData => {
+      let attrs = utils.processFieldDataAttrs(fieldData);
         let fieldLabel = utils.makeLabel(fieldData);
         let autocomplete = utils.autocompleteTemplate(attrs);
         let template = {
@@ -820,8 +834,8 @@ import {defaultSubtypes, filter} from './dom';
         return template;
       }],
     [defaultSubtypes.text.concat(['number', 'file', 'date']),
-      (fieldData, isPreview) => {
-        let attrs = utils.processfieldDataAttrs(fieldData, isPreview);
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
         let fieldLabel = utils.makeLabel(fieldData);
         let template = {
           field: [fieldLabel, m('input', null, attrs)],
@@ -829,23 +843,23 @@ import {defaultSubtypes, filter} from './dom';
         return template;
       }],
     [['paragraph'].concat(defaultSubtypes.paragraph),
-      (fieldData, isPreview) => {
-        let attrs = utils.processfieldDataAttrs(fieldData, isPreview);
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
         let template = {
           field: [m(fieldData.type, utils.parsedHtml(fieldData.label), attrs)],
         };
         return template;
       }],
     [defaultSubtypes.button,
-      (fieldData, isPreview) => {
-        let attrs = utils.processfieldDataAttrs(fieldData, isPreview);
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
         let template = {
           field: m('button', fieldData.label, attrs),
         };
         return template;
       }],
     [['select', 'checkbox-group', 'radio-group', 'checkbox'],
-      (fieldData, isPreview) => {
+      fieldData => {
         let fieldLabel = utils.makeLabel(fieldData);
         let field = utils.selectTemplate(fieldData);
         let template = {
@@ -854,8 +868,8 @@ import {defaultSubtypes, filter} from './dom';
         return template;
       }],
     [['textarea', 'tinymce', 'quill'],
-      (fieldData, isPreview) => {
-        let attrs = utils.processfieldDataAttrs(fieldData, isPreview);
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
         let field = utils.longTextTemplate(attrs);
         let fieldLabel = utils.makeLabel(fieldData);
         let template = {
@@ -866,22 +880,16 @@ import {defaultSubtypes, filter} from './dom';
       }]
     ];
 
-  utils.processfieldDataAttrs = (fieldData, isPreview = false) => {
+  utils.processFieldDataAttrs = fieldData => {
     let {
       label,
       description,
       subtype,
       ...attrs} = fieldData;
 
-    if (isPreview) {
-      if (attrs.name) {
-        attrs.name = attrs.name + '-preview';
-      } else {
-        attrs.name = utils.nameAttr(fieldData) + '-preview';
-      }
+    if (!attrs.id) {
+      attrs.id = attrs.name;
     }
-
-    attrs.id = attrs.name;
 
     if (subtype) {
       attrs.type = subtype;
@@ -901,12 +909,19 @@ import {defaultSubtypes, filter} from './dom';
 
   utils.getTemplate = (fieldData, isPreview = false) => {
     let field;
+    if (isPreview) {
+      if (fieldData.name) {
+        fieldData.name = fieldData.name + '-preview';
+      } else {
+        fieldData.name = utils.nameAttr(fieldData) + '-preview';
+      }
+    }
     let template = utils.templateMap(fieldData.type);
 
     if (template) {
-      template = template(fieldData);
+      template = template(fieldData, isPreview);
     } else {
-      template = utils.defaultField(fieldData)();
+      template = utils.defaultField(fieldData, isPreview)();
     }
 
     if (fieldData.type !== 'hidden') {
@@ -917,7 +932,7 @@ import {defaultSubtypes, filter} from './dom';
       }
       field = utils.markup('div', template.field, wrapperAttrs);
     } else {
-      let attrs = utils.processfieldDataAttrs(fieldData, isPreview);
+      let attrs = utils.processFieldDataAttrs(fieldData);
       field = utils.markup('input', null, attrs);
     }
 

@@ -20,6 +20,7 @@ export const defaultOptions = {
       dataType: 'json',
       // Array of fields to disable
       disableFields: [],
+      disabledAttrs: [],
       disabledActionButtons: [],
       editOnAdd: false,
       // Uneditable fields or other content you would like to appear
@@ -64,6 +65,7 @@ export const defaultOptions = {
       },
       templates: {},
       showActionButtons: true,
+      typeUserDisabledAttrs: {},
       typeUserAttrs: {},
       typeUserEvents: {},
       prefix: 'form-builder-'

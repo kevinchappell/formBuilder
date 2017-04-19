@@ -214,9 +214,21 @@ textarea.form-control {
   float: left;
 }
 
-.required,
+.fb-required,
 .required-asterisk {
   color: $error;
+}
+
+.fb-checkbox-inline,
+.fb-radio-inline {
+  display: inline-block;
+  padding-left: 20px;
+  vertical-align: middle;
+}
+
+.fb-checkbox-inline:first-child,
+.fb-radio-inline:first-child {
+  padding-left: 0;
 }
 
 .fb-autocomplete-list {

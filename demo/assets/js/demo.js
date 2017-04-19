@@ -1,28 +1,22 @@
 jQuery(function($) {
   let fields = [
     {
-      label: 'Custom field',
+      label: 'Star Rating',
       attrs: {
-        type: 'customField'
-      }
+        type: 'starRating'
+      },
+      icon: '🌟'
     }
   ];
 
   let templates = {
-    customField: function() {
+    starRating: function(fieldData) {
       return {
-        field: '<h1>Custom field output</h1>',
+        field: '<span id="'+fieldData.name+'">',
         onRender: function() {
-          console.log('Custom field');
-        }
-      };
-    },
-    header: function(fieldData, isPreview) {
-      console.log(fieldData, isPreview);
-      return {
-        field: '<h1>Custom Header</h1>',
-        onRender: function() {
-          console.log('Custom field');
+          $(document.getElementById(fieldData.name)).rateYo({
+            rating: 3.6
+          });
         }
       };
     }
@@ -73,6 +67,27 @@ jQuery(function($) {
         }]
       }];
 
+  var typeUserDisabledAttrs = {
+    autocomplete: ['access']
+  };
+
+  var typeUserAttrs = {
+    text: {
+      className: {
+        label: 'Class',
+        options: {
+          'red form-control': 'Red',
+          'green form-control': 'Green',
+          'blue form-control': 'Blue'
+        },
+        style: 'border: 1px solid red'
+      }
+    }
+  };
+
+  // test disabledAttrs
+  let disabledAttrs = ['placeholder'];
+
   const fbOptions = {
     subtypes: {
       text: ['datetime-local']
@@ -91,7 +106,10 @@ jQuery(function($) {
     sortableControls: true,
     fields,
     templates,
-    inputSets
+    inputSets,
+    typeUserDisabledAttrs,
+    typeUserAttrs,
+    // disabledAttrs
   };
   let formData = window.sessionStorage.getItem('formData');
   let editing = true;

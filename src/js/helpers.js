@@ -402,11 +402,14 @@ export default class Helpers {
    * @return {String} classNames
    */
   classNames(field, previewData) {
+    let className = field.querySelector('.fld-className');
+    if (!className) {
+      return;
+    }
     let i;
     let type = previewData.type;
     let style = previewData.style;
-    let className = field.querySelector('.fld-className').value;
-    let classes = className.split(' ');
+    let classes = className.value.split(' ');
     let types = {
       button: 'btn',
       submit: 'btn'

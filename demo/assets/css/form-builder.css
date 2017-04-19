@@ -288,9 +288,19 @@ textarea.form-control {
 .pull-left {
   float: left; }
 
-.required,
+.fb-required,
 .required-asterisk {
   color: #c10000; }
+
+.fb-checkbox-inline,
+.fb-radio-inline {
+  display: inline-block;
+  padding-left: 20px;
+  vertical-align: middle; }
+
+.fb-checkbox-inline:first-child,
+.fb-radio-inline:first-child {
+  padding-left: 0; }
 
 .fb-autocomplete-list {
   background-color: #fff;
@@ -369,6 +379,16 @@ textarea.form-control {
     overflow: hidden;
     box-shadow: inset 0 0 0 1px #c5c5c5;
     /* smartphones, Android phones, landscape iPhone */ }
+    .frmb-control li .control-icon {
+      width: 16px;
+      height: auto;
+      margin-right: 10px;
+      margin-left: 0.2em;
+      display: inline-block; }
+      .frmb-control li .control-icon img,
+      .frmb-control li .control-icon svg {
+        max-width: 100%;
+        height: auto; }
     .frmb-control li:first-child {
       border-radius: 5px 5px 0 0;
       margin-top: 0; }
@@ -475,7 +495,7 @@ textarea.form-control {
   padding: 0;
   -webkit-transition: background-color 500ms ease-in-out;
   transition: background-color 500ms ease-in-out; }
-  .frmb .required {
+  .frmb .fb-required {
     color: #c10000; }
   .frmb.removing {
     overflow: hidden; }

@@ -52,11 +52,15 @@ const FormBuilder = function(opts, element) {
 
   // Loop through fmrbFields
   utils.forEach(frmbFields, (i) => {
-    let {attrs, ...field} = frmbFields[i];
-    let icon = attrs.icon || `icon-${attrs.name || attrs.type}`;
+    let {attrs, icon, ...field} = frmbFields[i];
+    let controlLabel = field.label;
+    let iconClassName = !icon ? `icon-${attrs.name || attrs.type}` : '';
+    if (icon) {
+      controlLabel = `<span class="control-icon">${icon}</span>${field.label}`;
+    }
     let newFieldControl = m('li',
-      m('span', field.label),
-      {className: `${icon} input-control input-control-${i}`}
+      m('span', controlLabel),
+      {className: `${iconClassName} input-control input-control-${i}`}
     );
 
     aFields[attrs.type] = frmbFields[i];
@@ -118,7 +122,6 @@ const FormBuilder = function(opts, element) {
   });
 
   let processControl = control => {
-    console.log(control);
     if (control[0].classList.contains('input-set-control')) {
       let inputSets = [];
       let inputSet = opts.inputSets.filter(set =>
@@ -367,117 +370,205 @@ const FormBuilder = function(opts, element) {
     return utils.markup('div', fieldOptions.join(''), {className: 'form-group field-options'}).outerHTML;
   };
 
+  const defaultFieldAttrs = type => {
+    const defaultAttrs = [
+      'required',
+      'label',
+      'description',
+      'placeholder',
+      'className',
+      'name',
+      'access',
+      'value'
+    ];
+    let noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(d.optionFields);
+    let valueField = !utils.inArray(type, noValFields);
+
+    const typeAttrsMap = {
+      autocomplete: defaultAttrs.concat([
+        'options',
+      ]),
+      button: [
+        'label',
+        'subtype',
+        'style',
+        'className',
+        'name',
+        'value',
+        'access',
+      ],
+      checkbox: [
+        'required',
+        'label',
+        'description',
+        'toggle',
+        'inline',
+        'className',
+        'name',
+        'access',
+        'other',
+        'options',
+      ],
+      text: defaultAttrs.concat([
+        'subtype',
+        'maxlength',
+      ]),
+      date: defaultAttrs,
+      file: defaultAttrs.concat([
+        'multiple'
+      ]),
+      header: [
+        'label',
+        'subtype',
+        'className',
+        'access',
+      ],
+      hidden: [
+        'name',
+        'value',
+        'access',
+      ],
+      paragraph: [
+        'label',
+        'subtype',
+        'className',
+        'access',
+      ],
+      number: defaultAttrs.concat([
+        'min',
+        'max',
+        'step',
+      ]),
+      select: defaultAttrs.concat([
+        'multiple',
+        'options',
+      ]),
+      textarea: defaultAttrs.concat([
+        'subtype',
+        'maxlength',
+        'rows',
+      ]),
+
+    };
+
+    typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox;
+    typeAttrsMap['radio-group'] = typeAttrsMap.checkbox;
+
+    let typeAttrs = typeAttrsMap[type];
+
+    if (type === 'radio-group') {
+      utils.remove('toggle', typeAttrs);
+    }
+
+    // Help Text / Description Field
+    if (utils.inArray(type, ['header', 'paragraph', 'button'])) {
+      utils.remove('description', typeAttrs);
+    }
+
+    if (!valueField) {
+      utils.remove('value', typeAttrs);
+    }
+
+    return typeAttrs || defaultAttrs;
+  };
+
   /**
    * Build the editable properties for the field
    * @param  {object} values configuration object for advanced fields
    * @return {String}        markup for advanced fields
    */
-  let advFields = function(values) {
+  let advFields = values => {
     let advFields = [];
+    let fieldAttrs = defaultFieldAttrs(values.type);
+    const advFieldMap = {
+      required: () => requiredField(values),
+      toggle: () => boolAttribute('toggle', values, {first: i18n.toggle}),
+      inline: () => {
+        let labels = {
+          first: i18n.inline,
+          second: mi18n.get('inlineDesc', values.type.replace('-group', ''))
+        };
+
+        return boolAttribute('inline', values, labels);
+      },
+      label: () => textAttribute('label', values),
+      description: () => textAttribute('description', values),
+      subtype: () => selectAttribute('subtype', values, subtypes[values.type]),
+      style: () => btnStyles(values.style),
+      placeholder: () => textAttribute('placeholder', values),
+      rows: () => numberAttribute('rows', values),
+      className: () => textAttribute('className', values),
+      name: () => textAttribute('name', values),
+      value: () => textAttribute('value', values),
+      maxlength: () => numberAttribute('maxlength', values),
+      access: () => {
+        let rolesDisplay = values.role !== undefined ? 'style="display:block"' : '';
+        let availableRoles = [
+          `<div class="available-roles" ${rolesDisplay}>`
+        ];
+        for (key in opts.roles) {
+          if (opts.roles.hasOwnProperty(key)) {
+            let checked = utils.inArray(key, roles) ? 'checked' : '';
+            let roleId = `fld-${data.lastID}-roles-${key}`;
+            availableRoles.push(`<input type="checkbox" name="roles[]" value="${key}" id="${roleId}" ${checked} class="roles-field" /> <label for="${roleId}">${opts.roles[key]}</label><br/>`);
+          }
+        }
+        availableRoles.push('</div>');
+        let accessLabels = {first: i18n.roles, second: i18n.limitRole, content: availableRoles.join('')};
+
+        return boolAttribute('access', values, accessLabels);
+      },
+      other: () => boolAttribute('other', values, {first: i18n.enableOther, second: i18n.enableOtherMsg}),
+      options: () => fieldOptions(values)
+    };
     let key;
-    let valueField = !utils.inArray(values.type, ['header', 'paragraph', 'file'].concat(d.optionFields));
     let roles = values.role !== undefined ? values.role.split(',') : [];
-
-    advFields.push(requiredField(values));
-
-    if (utils.inArray(values.type, ['checkbox', 'checkbox-group'])) {
-      advFields.push(boolAttribute('toggle', values, {first: i18n.toggle}));
-    }
-
-    // Inline options
-    if (utils.inArray(values.type, ['checkbox-group', 'radio-group'])) {
-      let labels = {
-        first: i18n.inline,
-        second: mi18n.get('inlineDesc', values.type.replace('-group', ''))
-      };
-
-      advFields.push(boolAttribute('inline', values, labels));
-    }
-
-    advFields.push(textAttribute('label', values));
-
-    values.size = values.size || 'm';
-    values.style = values.style || 'default';
-
-    // Help Text / Description Field
-    if (!utils.inArray(values.type, ['header', 'paragraph', 'button'])) {
-      advFields.push(textAttribute('description', values));
-    }
-
-    if (subtypes[values.type]) {
-      let optionData = subtypes[values.type];
-      advFields.push(selectAttribute('subtype', values, optionData));
-    }
-
-
-    if (values.type === 'button') {
-      advFields.push(btnStyles(values.style));
-    }
+    let numAttrs = ['min', 'max', 'step'];
 
     if (values.type === 'number') {
-      advFields.push(numberAttribute('min', values));
-      advFields.push(numberAttribute('max', values));
-      advFields.push(numberAttribute('step', values));
-    }
-
-    // Placeholder
-    advFields.push(textAttribute('placeholder', values));
-
-    // TextArea Rows Attribute
-    if (values.type === 'textarea') {
-      advFields.push(numberAttribute('rows', values));
-    }
-
-    // Class
-    advFields.push(textAttribute('className', values));
-
-    advFields.push(textAttribute('name', values));
-
-    if (valueField) {
-      advFields.push(textAttribute('value', values));
+      numAttrs.forEach(numAttr => {
+        advFieldMap[numAttr] = () => numberAttribute(numAttr, values);
+      });
     }
 
     if (values.type === 'file') {
-      let labels = {
-        first: i18n.multipleFiles,
-        second: i18n.allowMultipleFiles
+      advFieldMap['multiple'] = () => {
+        let labels = {
+          first: i18n.multipleFiles,
+          second: i18n.allowMultipleFiles
+        };
+        return boolAttribute('multiple', values, labels);
       };
-      advFields.push(boolAttribute('multiple', values, labels));
-    }
-
-    let rolesDisplay = values.role !== undefined ? 'style="display:block"' : '';
-    let availableRoles = [
-      `<div class="available-roles" ${rolesDisplay}>`
-    ];
-    for (key in opts.roles) {
-      if (opts.roles.hasOwnProperty(key)) {
-        let checked = utils.inArray(key, roles) ? 'checked' : '';
-        let roleId = `fld-${data.lastID}-roles-${key}`;
-        availableRoles.push(`<input type="checkbox" name="roles[]" value="${key}" id="${roleId}" ${checked} class="roles-field" /> <label for="${roleId}">${opts.roles[key]}</label><br/>`);
-      }
-    }
-
-    availableRoles.push('</div>');
-
-    let accessLabels = {first: i18n.roles, second: i18n.limitRole, content: availableRoles.join('')};
-
-    advFields.push(boolAttribute('access', values, accessLabels));
-
-    if (values.type.match(/(checkbox-group|radio-group)/)) {
-      advFields.push(boolAttribute('other', values, {first: i18n.enableOther, second: i18n.enableOtherMsg}));
     }
 
     if (values.type === 'select') {
-      advFields.push(boolAttribute('multiple', values, {first: ' ', second: i18n.selectionsMessage}));
+      advFieldMap['multiple'] = () => {
+        return boolAttribute('multiple', values, {first: ' ', second: i18n.selectionsMessage});
+      };
     }
 
-    if (values.type.match(d.optionFieldsRegEx)) {
-      advFields.push(fieldOptions(values));
-    }
+    Object.keys(fieldAttrs).forEach(index => {
+      let attr = fieldAttrs[index];
+      let useDefaultAttr = [true];
 
-    if (utils.inArray(values.type, ['text', 'textarea'])) {
-      advFields.push(numberAttribute('maxlength', values));
-    }
+      if (opts.typeUserDisabledAttrs[values.type]) {
+        let typeDisabledAttrs = opts.typeUserDisabledAttrs[values.type];
+        useDefaultAttr.push(!utils.inArray(attr, typeDisabledAttrs));
+      }
+
+      if (opts.typeUserAttrs[values.type]) {
+        let userAttrs = Object.keys(opts.typeUserAttrs[values.type]);
+        useDefaultAttr.push(!utils.inArray(attr, userAttrs));
+      }
+
+      if (utils.inArray(attr, opts.disabledAttrs)) {
+        useDefaultAttr.push(false);
+      }
+
+      if (useDefaultAttr.every(use => use === true)) {
+        advFields.push(advFieldMap[attr]());
+      }
+    });
 
     // Append custom attributes as defined in typeUserAttrs option
     if (opts.typeUserAttrs[values.type]) {
@@ -1027,7 +1118,8 @@ const FormBuilder = function(opts, element) {
     $valWrap.toggle(e.target.value !== 'quill');
   });
 
-  $stage.on('change', '.prev-holder input, .prev-holder select, textarea', e => {
+
+  $stage.on('change', '.prev-holder input, .prev-holder select, .prev-holder textarea', e => {
     let prevOptions;
     if (e.target.classList.contains('other-option')) {
       return;
