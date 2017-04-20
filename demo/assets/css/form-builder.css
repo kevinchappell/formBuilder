@@ -795,7 +795,8 @@ textarea.form-control {
   .frmb .form-field .form-group {
     width: 100%;
     clear: left;
-    float: none; }
+    float: none;
+    margin: 0; }
   .frmb .col-md-6 .form-elements,
   .frmb .col-md-8 .form-elements {
     width: 100%; }
