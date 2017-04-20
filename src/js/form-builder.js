@@ -679,7 +679,7 @@ const FormBuilder = function(opts, element) {
     let label = (txt) => {
       return `<label for="${name}-${data.lastID}">${txt}</label>`;
     };
-    let checked = (values[name] !== undefined ? 'checked' : '');
+    let checked = (values[name] ? 'checked' : '');
     let input = `<input type="checkbox" class="fld-${name}" name="${name}" value="true" ${checked} id="${name}-${data.lastID}"/> `;
     let left = [];
     let right = [
