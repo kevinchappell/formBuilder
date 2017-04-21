@@ -110,7 +110,8 @@
     "test": "gulp test",
     "start": "node ./node_modules/gulp/bin/gulp.js",
     "deploy": "node ./node_modules/gulp/bin/gulp.js deploy",
-    "release:patch": "git checkout master && git fetch origin master && git rebase origin/master && ./node_modules/gulp/bin/gulp.js tag patch && ./node_modules/gulp/bin/gulp.js deploy",
+    "tag": "node ./node_modules/gulp/bin/gulp.js tag",
+    "release:patch": "git checkout master && git fetch origin master && git rebase origin/master && npm run tag patch && npm run deploy",
     "release:minor": "git checkout master && git fetch origin master && git rebase origin/master && ./node_modules/gulp/bin/gulp.js tag minor && ./node_modules/gulp/bin/gulp.js deploy",
     "build": "node ./node_modules/gulp/bin/gulp.js build"
   },
