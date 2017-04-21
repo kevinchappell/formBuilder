@@ -66,7 +66,6 @@ function FormRender(options, element) {
    */
   Element.prototype.appendFormFields = function(fields) {
     let element = this;
-    console.log(fields);
     fields.forEach(field => {
       element.appendChild(field);
       field.dispatchEvent(events.fieldRendered);

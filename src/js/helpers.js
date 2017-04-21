@@ -179,7 +179,7 @@ export default class Helpers {
 
     if (form.childNodes.length !== 0) {
       // build data object
-      utils.forEach(form.childNodes, async function(index, field) {
+      utils.forEach(form.childNodes, function(index, field) {
         let $field = $(field);
 
         if (!($field.hasClass('disabled-field'))) {
@@ -625,7 +625,6 @@ export default class Helpers {
    * @return {void}
    */
   removeAllFields(stage, animate = true) {
-    let _this = this;
     let i18n = mi18n.current;
     let opts = config.opts;
     let fields = stage.querySelectorAll('li.form-field');
@@ -651,18 +650,14 @@ export default class Helpers {
     if (animate) {
       stage.classList.add('removing');
       let outerHeight = 0;
-      utils.forEach(fields, index => {
-        let field = fields[index];
-        outerHeight += field.offsetHeight + 3
-      });
+      utils.forEach(fields, index =>
+        outerHeight += fields[index].offsetHeight + 3);
       fields[0].style.marginTop = `${-outerHeight}px`;
       setTimeout(() => {
         empty(stage).classList.remove('removing');
-        _this.save(stage);
       }, 400);
     } else {
       empty(stage);
-      _this.save(stage);
     }
   }
 

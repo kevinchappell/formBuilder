@@ -306,7 +306,6 @@ const FormBuilder = function(opts, element) {
       stageWrap.classList.add('empty');
       stageWrap.dataset.content = i18n.getStarted;
     }
-    helpers.save.call(helpers);
 
     if (nonEditableFields()) {
       stageWrap.classList.remove('empty');
@@ -1333,8 +1332,10 @@ const FormBuilder = function(opts, element) {
       return data[type]();
     },
     setData: formData => {
+      helpers.stopIndex = undefined;
       helpers.removeAllFields(d.stage, false);
       loadFields(formData);
+      helpers.save.call(helpers);
     },
     setLang: async locale => {
       await mi18n.setCurrent.call(mi18n, locale);
