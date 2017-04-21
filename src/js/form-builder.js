@@ -124,16 +124,16 @@ const FormBuilder = function(opts, element) {
   let processControl = control => {
     if (control[0].classList.contains('input-set-control')) {
       let inputSets = [];
-      let inputSet = opts.inputSets.filter(set =>
-        set.name === control[0].type)[0];
-      if (inputSet.showHeader) {
+      let inputSet = opts.inputSets.find(set =>
+        (set.name === control[0].getAttribute('type')));
+      if (inputSet && inputSet.showHeader) {
         let header = {
-            type: 'header',
-            subtype: 'h2',
-            id: inputSet.name,
-            label: inputSet.label
-          };
-          inputSets.push(header);
+          type: 'header',
+          subtype: 'h2',
+          id: inputSet.name,
+          label: inputSet.label
+        };
+        inputSets.push(header);
       }
       inputSets.push(...inputSet.fields);
       inputSets.forEach(field => {
@@ -1380,7 +1380,7 @@ const FormBuilder = function(opts, element) {
           });
           delete instance.promise;
           resolve(instance);
-        }).catch(reject);
+        }).catch(console.error);
       })
     };
 

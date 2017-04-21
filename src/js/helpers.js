@@ -303,7 +303,8 @@ export default class Helpers {
    */
   setAttrVals(field, fieldData) {
     let attrs = field.querySelectorAll('[class*="fld-"]');
-    attrs.forEach(attr => {
+    utils.forEach(attrs, index => {
+      let attr = attrs[index];
       let value;
       let name = utils.camelCase(attr.getAttribute('name'));
       if (attr.attributes['contenteditable']) {
@@ -383,16 +384,17 @@ export default class Helpers {
       elem.tt.style.transform = `translate(${x}px, ${y}px)`;
     };
 
-    stage.querySelectorAll('.disabled-field').forEach(
-      field => {
-        let title = opts.messages.fieldNonEditable;
+    const disabledFields = stage.querySelectorAll('.disabled-field');
+    utils.forEach(disabledFields, index => {
+      let field = disabledFields[index];
+      let title = opts.messages.fieldNonEditable;
 
-        if (title) {
-          let tt = utils.markup('p', title, {className: 'frmb-tt'});
-          field.appendChild(tt);
-          field.addEventListener('mousemove', e => move(e, {tt, field}));
-        }
-      });
+      if (title) {
+        let tt = utils.markup('p', title, {className: 'frmb-tt'});
+        field.appendChild(tt);
+        field.addEventListener('mousemove', e => move(e, {tt, field}));
+      }
+    });
   }
 
   /**
@@ -649,7 +651,10 @@ export default class Helpers {
     if (animate) {
       stage.classList.add('removing');
       let outerHeight = 0;
-      fields.forEach(field => outerHeight += field.offsetHeight + 3);
+      utils.forEach(fields, index => {
+        let field = fields[index];
+        outerHeight += field.offsetHeight + 3
+      });
       fields[0].style.marginTop = `${-outerHeight}px`;
       setTimeout(() => {
         empty(stage).classList.remove('removing');
