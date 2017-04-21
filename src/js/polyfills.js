@@ -73,7 +73,6 @@ function polyfills() {
       }
     };
   }
-
 }
 
 export default polyfills();
