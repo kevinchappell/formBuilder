@@ -278,8 +278,6 @@ const FormBuilder = function(opts, element) {
       field.style = match[1];
     }
 
-    utils.escapeAttrs(field);
-
     appendNewField(field, isNew);
 
     if (isNew) {
