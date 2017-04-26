@@ -16,9 +16,10 @@ export class controlQuill extends controlTextarea {
 
   /**
    * build a div DOM element to be later replaced with the quill editor
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
+    // eslint-disable-next-line no-unused-vars
     let {value = '', ...attrs} = this.config;
     this.field = this.markup('div', null, attrs);
     return this.field;
@@ -26,7 +27,7 @@ export class controlQuill extends controlTextarea {
 
   /**
    * When the element is rendered into the DOM, execute the following code to initialise it
-   * @param evt - event
+   * @param {Object} evt - event
    */
   onRender(evt) {
     let value = this.config.value || '';

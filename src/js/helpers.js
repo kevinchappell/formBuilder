@@ -1,6 +1,5 @@
 import {
   instanceDom,
-  defaultSubtypes,
   empty,
   optionFieldsRegEx,
   remove
@@ -708,7 +707,8 @@ export default class Helpers {
    */
   orderFields(controls) {
     const opts = config.opts;
-    let fieldOrder = false;
+    let controlOrder = opts.controlOrder.concat(controls);
+    let fieldOrder;
 
     // retrieve any saved ordering from the session
     if (window.sessionStorage) {
@@ -721,10 +721,10 @@ export default class Helpers {
 
     // if we have a saved order, use it. Otherwise build the order ourselves
     if (!fieldOrder) {
-      let controlOrder = opts.controlOrder.concat(controls);
       fieldOrder = utils.unique(controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
+      fieldOrder = utils.unique(fieldOrder.concat(controls));
       fieldOrder = Object.keys(fieldOrder).map(function(i) {
         return fieldOrder[i];
       });
@@ -934,32 +934,34 @@ export default class Helpers {
    * @return {Array} subtypes
    */
   processSubtypes(subtypeOpts) {
-
     // first register any passed subtype options against the appropriate type control class
     for (let type in subtypeOpts) {
-      let controlClass = control.getClass(type);
-      control.register(subtypeOpts[type], controlClass, type);
+      if (subtypeOpts.hasOwnProperty(type)) {
+        let controlClass = control.getClass(type);
+        control.register(subtypeOpts[type], controlClass, type);
+      }
     }
 
     // retrieve a list of all subtypes
     let subtypeDef = control.getRegisteredSubtypes();
-    console.log('Subtypes are', subtypes);
 
     // reformat the subtypes for each type
     let subtypes = {};
     for (let type in subtypeDef) {
-
-      // loop through each define subtype & build the formatted data structure
-      let formatted = new Array();
-      for (let subtype of subtypeDef[type]) {
-        let controlClass = control.getClass(type, subtype);
-        formatted.push({
-          label: controlClass.mi18n(subtype),
-          value: subtype
-        });
+      if (subtypeDef.hasOwnProperty(type)) {
+        // loop through each defined subtype & build the formatted data structure
+        let formatted = [];
+        for (let subtype of subtypeDef[type]) {
+          let controlClass = control.getClass(type, subtype);
+          formatted.push({
+            label: controlClass.mi18n(subtype),
+            value: subtype
+          });
+        }
+        subtypes[type] = formatted;
       }
-      subtypes[type] = formatted;
     }
+
     return subtypes;
   }
 

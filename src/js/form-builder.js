@@ -11,7 +11,7 @@ import {layout} from './layout';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
 import {control} from './control';
-import {controlClasses} from './control/index';
+import './control/index';
 import {controlCustom} from './control/custom';
 
 let instanceTime = new Date().getTime();
@@ -331,8 +331,6 @@ const FormBuilder = function(opts, element) {
     if (match) {
       field.style = match[1];
     }
-
-    utils.escapeAttrs(field);
 
     appendNewField(field, isNew);
 
