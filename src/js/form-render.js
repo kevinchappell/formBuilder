@@ -1,3 +1,4 @@
+import '../sass/form-render.scss';
 import utils from './utils';
 import events from './events';
 import {config} from './config';
