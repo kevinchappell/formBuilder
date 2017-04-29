@@ -616,6 +616,58 @@
         width: calc(81.3333% - 23px);
       }
     }
+
+    input {
+      &.error {
+        border: 1px solid $error;
+      }
+
+      &.fld-maxlength {
+        width: 75px;
+      }
+
+      &.field-error {
+        background: $off-white;
+        border: 1px solid $input-border-color;
+      }
+    }
+
+    label {
+      em {
+        display: block;
+        font-weight: 400;
+        font-size: .75em;
+      }
+
+      &.maxlength-label {
+        line-height: 1em;
+      }
+    }
+
+    .available-roles {
+      display: none;
+      padding: 10px;
+      margin: 10px 0;
+      background: darken($white, 10%);
+      box-shadow: inset 0 0 2px 0 $grey-light-30;
+
+      @include breakpoint('phone-lrg') {
+        margin-left: 0;
+      }
+
+
+      label {
+        font-weight: 400;
+        width: auto;
+        float: none;
+        display: inline;
+      }
+
+      input {
+        display: inline;
+        top: auto;
+      }
+    }
   }
 }
 

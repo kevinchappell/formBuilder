@@ -144,7 +144,15 @@ jQuery(function($) {
           };
         fb.actions.addField(field);
       },
-      removeField: () => fb.actions.removeField()
+      removeField: () => fb.actions.removeField(),
+      testSubmit: () => {
+        console.log(document.forms[0].checkValidity());
+        // document.forms[0].submit()
+      },
+      resetDemo: () => {
+        window.sessionStorage.removeItem('formData');
+        location.reload();
+      }
     };
 
     Object.keys(apiBtns).forEach(action => {

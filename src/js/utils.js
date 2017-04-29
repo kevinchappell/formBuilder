@@ -1,4 +1,4 @@
-import {defaultSubtypes, filter} from './dom';
+import {defaultSubtypes, filter, remove} from './dom';
 
 /**
  * Cross file utilities for working with arrays,
@@ -562,8 +562,9 @@ import {defaultSubtypes, filter} from './dom';
     if (values) {
       if (attrs.placeholder && isSelect) {
         options.push(m('option', attrs.placeholder, {
-          disabled: null,
-          selected: null
+          disabled: 'disabled',
+          selected: 'selected',
+          value: ''
         }));
       }
 
@@ -753,7 +754,7 @@ import {defaultSubtypes, filter} from './dom';
         js: ['//cdn.tinymce.com/4/tinymce.min.js'],
         onRender: evt => {
           if (window.tinymce.editors[data.id]) {
-            window.tinymce.editors[data.id].remove();
+            remove(window.tinymce.editors[data.id]);
           }
           window.tinymce.init({
             target: template.field,
@@ -763,8 +764,30 @@ import {defaultSubtypes, filter} from './dom';
               'searchreplace visualblocks code fullscreen',
               'insertdatetime media table contextmenu paste code'
             ],
-            toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
-          });
+            toolbar: [
+              'insertfile',
+              'undo',
+              'redo',
+              '|',
+              'styleselect',
+              '|',
+              'bold',
+              'italic',
+              '|',
+              'alignleft',
+              'aligncenter',
+              'alignright',
+              'alignjustify',
+              '|',
+              'bullist',
+              'numlist',
+              'outdent',
+              'indent',
+              '|',
+              'link',
+              'image'
+              ].join(' ')
+         });
         }
       },
       quill: {
@@ -882,11 +905,10 @@ import {defaultSubtypes, filter} from './dom';
     ];
 
   utils.processFieldDataAttrs = fieldData => {
-    let {
-      label,
-      description,
-      subtype,
-      ...attrs} = fieldData;
+    let {subtype, ...attrs} = fieldData;
+
+    delete attrs.label;
+    delete attrs.description;
 
     if (!attrs.id) {
       attrs.id = attrs.name;
@@ -977,7 +999,11 @@ utils.merge = (obj1, obj2) => {
   for (let prop in obj2) {
     if (mergedObj.hasOwnProperty(prop)) {
       if (Array.isArray(obj2[prop])) {
-        mergedObj[prop] = Array.isArray(obj1[prop]) ? utils.unique(obj1[prop].concat(obj2[prop])) : obj2[prop];
+        if (Array.isArray(obj1[prop])) {
+          mergedObj[prop] = utils.unique(obj1[prop].concat(obj2[prop]));
+        } else {
+          mergedObj[prop] = obj2[prop];
+        }
       } else if (typeof obj2[prop] === 'object') {
         mergedObj[prop] = utils.merge(obj1[prop], obj2[prop]);
       } else {
@@ -1006,10 +1032,10 @@ utils.closest = (el, cls) => {
 
 utils.noop = () => null;
 
-utils.debounce = (func, wait = 250, immediate = false) => {
+utils.debounce = function(func, wait = 250, immediate = false) {
   let timeout;
+  let context = this;
   return function(...args) {
-    let context = this;
     let later = function() {
       timeout = null;
       if (!immediate) {
