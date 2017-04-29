@@ -1,463 +1,459 @@
-import {defaultSubtypes, filter} from './dom';
-
 /**
  * Cross file utilities for working with arrays,
  * sorting and other fun stuff
  * @return {Object} utils
  */
-// function utils() {
-  const utils = {};
-  window.fbLoaded = {
-    js: [],
-    css: []
-  };
-  window.fbEditors = {
-    quill: {},
-    tinymce: {}
-  };
+const utils = {};
+window.fbLoaded = {
+  js: [],
+  css: []
+};
+window.fbEditors = {
+  quill: {},
+  tinymce: {}
+};
 
-  // cleaner syntax for testing indexOf element
-  utils.inArray = function(needle, haystack) {
-    return haystack.indexOf(needle) !== -1;
-  };
-
-  /**
-   * Remove null or undefined values
-   * @param  {Object} attrs {attrName: attrValue}
-   * @return {Object}       Object trimmed of null or undefined values
-   */
-  utils.trimObj = function(attrs) {
-    let xmlRemove = [
-      null,
-      undefined,
-      '',
-      false,
-      'false'
-    ];
-    for (let attr in attrs) {
-      if (utils.inArray(attrs[attr], xmlRemove)) {
-        delete attrs[attr];
-      } else if (Array.isArray(attrs[attr])) {
-        if (!attrs[attr].length) {
-          delete attrs[attr];
-        }
-      }
-    }
-
-    return attrs;
-  };
-
-  /**
-   * Test if attribute is a valid HTML attribute
-   * @param  {String} attr
-   * @return {Boolean}
-   */
-  utils.validAttr = function(attr) {
-    let invalid = [
-      'values',
-      'enableOther',
-      'other',
-      'label',
-      // 'style',
-      'subtype'
-    ];
-    return !utils.inArray(attr, invalid);
-  };
-
-  /**
-   * Convert an attrs object into a string
-   *
-   * @param  {Object} attrs object of attributes for markup
-   * @return {string}
-   */
-  utils.attrString = function(attrs) {
-    let attributes = [];
-
-    for (let attr in attrs) {
-      if (attrs.hasOwnProperty(attr) && utils.validAttr(attr)) {
-        attr = utils.safeAttr(attr, attrs[attr]);
-        attributes.push(attr.name + attr.value);
-      }
-    }
-    return attributes.join(' ');
-  };
-
-  /**
-   * Convert attributes to markup safe strings
-   * @param  {String} name  attribute name
-   * @param  {String} value attribute value
-   * @return {Object}       {attrName: attrValue}
-   */
-  utils.safeAttr = function(name, value) {
-    name = utils.safeAttrName(name);
-    let valString;
-
-    if (value) {
-      if (Array.isArray(value)) {
-        valString = utils.escapeAttr(value.join(' '));
-      } else {
-        if (typeof(value) === 'boolean') {
-          value = value.toString();
-        }
-        valString = utils.escapeAttr(value.replace(',', ' ').trim());
-      }
-    }
-
-    value = value ? `="${valString}"` : '';
-    return {
-      name,
-      value
-    };
-  };
-
-  utils.safeAttrName = function(name) {
-    let safeAttr = {
-      className: 'class'
-    };
-
-    return safeAttr[name] || utils.hyphenCase(name);
-  };
-
-  /**
-   * Convert strings into lowercase-hyphen
-   *
-   * @param  {String} str
-   * @return {String}
-   */
-  utils.hyphenCase = (str) => {
-    str = str.replace(/[^\w\s\-]/gi, '');
-    str = str.replace(/([A-Z])/g, function($1) {
-      return '-' + $1.toLowerCase();
-    });
-
-    return str.replace(/\s/g, '-').replace(/^-+/g, '');
-  };
-
-  /**
-   * convert a hyphenated string to camelCase
-   * @param  {String} str
-   * @return {String}
-   */
-  utils.camelCase = str => str.replace(/-([a-z])/g, (m, w) =>
-    w.toUpperCase());
-
-  /**
-   * Determine content type
-   * @param  {Node | String | Array | Object} content
-   * @return {String}                         contentType for mapping
-   */
-  utils.contentType = content => {
-    let type = typeof content;
-    if (content instanceof Node || content instanceof HTMLElement) {
-      type = 'node';
-    } else if (Array.isArray(content)) {
-      type = 'array';
-    }
-
-    return type;
-  };
-
-  /**
-   * Bind events to an element
-   * @param  {Object} element DOM element
-   * @param  {Object} events  object full of events eg. {click: evt => callback}
-   * @return {void}
-   */
-  utils.bindEvents = (element, events) => {
-    if (events) {
-      for (let event in events) {
-        if (events.hasOwnProperty(event)) {
-          element.addEventListener(event, evt => events[event](evt));
-        }
-      }
-    }
-  };
+// cleaner syntax for testing indexOf element
+utils.inArray = function(needle, haystack) {
+  return haystack.indexOf(needle) !== -1;
+};
 
 /**
- * Generate a unique name attribute
- * @param  {Object} field
- * @return {String}       name
+ * Remove null or undefined values
+ * @param  {Object} attrs {attrName: attrValue}
+ * @return {Object}       Object trimmed of null or undefined values
  */
-  utils.nameAttr = function(field) {
-    let epoch = new Date().getTime();
-    let prefix = field.type || utils.hyphenCase(field.label);
-    return prefix + '-' + epoch;
-  };
-
-  /**
-   * Generate markup wrapper where needed
-   *
-   * @param  {string}              tag
-   * @param  {String|Array|Object} content we wrap this
-   * @param  {Object}              attrs
-   * @return {Object} DOM Element
-   */
-  utils.markup = function(tag, content = '', attributes = {}) {
-    let contentType = utils.contentType(content);
-    let {events, ...attrs} = attributes;
-    const field = document.createElement(tag);
-
-    const appendContent = {
-      string: (content) => {
-        field.innerHTML += content;
-      },
-      object: (config) => {
-        let {tag, content, ...data} = config;
-        return field.appendChild(utils.markup(tag, content, data));
-      },
-      node: (content) => {
-        return field.appendChild(content);
-      },
-      array: (content) => {
-        for (let i = 0; i < content.length; i++) {
-          contentType = utils.contentType(content[i]);
-          appendContent[contentType](content[i]);
-        }
-      },
-      function: content => {
-        content = content();
-        contentType = utils.contentType(content);
-        appendContent[contentType](content);
-      },
-      undefined: () => {
-        // console.error(tag, content, attributes);
-      },
-    };
-
-    for (let attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        let name = utils.safeAttrName(attr);
-        field.setAttribute(name, attrs[attr]);
+utils.trimObj = function(attrs) {
+  let xmlRemove = [
+    null,
+    undefined,
+    '',
+    false,
+    'false'
+  ];
+  for (let attr in attrs) {
+    if (utils.inArray(attrs[attr], xmlRemove)) {
+      delete attrs[attr];
+    } else if (Array.isArray(attrs[attr])) {
+      if (!attrs[attr].length) {
+        delete attrs[attr];
       }
     }
+  }
 
-    if (content) {
-      appendContent[contentType].call(this, content);
+  return attrs;
+};
+
+/**
+ * Test if attribute is a valid HTML attribute
+ * @param  {String} attr
+ * @return {Boolean}
+ */
+utils.validAttr = function(attr) {
+  let invalid = [
+    'values',
+    'enableOther',
+    'other',
+    'label',
+    // 'style',
+    'subtype'
+  ];
+  return !utils.inArray(attr, invalid);
+};
+
+/**
+ * Convert an attrs object into a string
+ *
+ * @param  {Object} attrs object of attributes for markup
+ * @return {string}
+ */
+utils.attrString = function(attrs) {
+  let attributes = [];
+
+  for (let attr in attrs) {
+    if (attrs.hasOwnProperty(attr) && utils.validAttr(attr)) {
+      attr = utils.safeAttr(attr, attrs[attr]);
+      attributes.push(attr.name + attr.value);
     }
+  }
+  return attributes.join(' ');
+};
 
-    utils.bindEvents(field, events);
+/**
+ * Convert attributes to markup safe strings
+ * @param  {String} name  attribute name
+ * @param  {String} value attribute value
+ * @return {Object}       {attrName: attrValue}
+ */
+utils.safeAttr = function(name, value) {
+  name = utils.safeAttrName(name);
+  let valString;
 
-    return field;
-  };
-  const m = utils.markup;
-
-  /**
-   * Convert html element attributes to key/value object
-   * @param  {Object} elem DOM element
-   * @return {Object} ex: {attrName: attrValue}
-   */
-  utils.parseAttrs = function(elem) {
-    let attrs = elem.attributes;
-    let data = {};
-    utils.forEach(attrs, attr => {
-      let attrVal = attrs[attr].value;
-      if (attrVal.match(/false|true/g)) {
-        attrVal = (attrVal === 'true');
-      } else if (attrVal.match(/undefined/g)) {
-        attrVal = undefined;
-      }
-
-      if (attrVal) {
-        data[attrs[attr].name] = attrVal;
-      }
-    });
-
-    return data;
-  };
-
-  /**
-   * Convert field options to optionData
-   * @param  {NodeList} options  DOM elements
-   * @return {Array} optionData array
-   */
-  utils.parseOptions = function(options) {
-    let optionData = {};
-    let data = [];
-
-    for (let i = 0; i < options.length; i++) {
-      optionData = utils.parseAttrs(options[i]);
-      optionData.label = options[i].textContent;
-      data.push(optionData);
-    }
-
-    return data;
-  };
-
-  /**
-   * Parse XML formData
-   * @param  {String} xmlString
-   * @return {Array}            formData array
-   */
-  utils.parseXML = function(xmlString) {
-    const parser = new window.DOMParser();
-    let xml = parser.parseFromString(xmlString, 'text/xml');
-    let formData = [];
-
-    if (xml) {
-      let fields = xml.getElementsByTagName('field');
-      for (let i = 0; i < fields.length; i++) {
-        let fieldData = utils.parseAttrs(fields[i]);
-        const options = fields[i].getElementsByTagName('option');
-
-        if (options && options.length) {
-          fieldData.values = utils.parseOptions(options);
-        }
-
-        formData.push(fieldData);
-      }
-    }
-
-    return formData;
-  };
-
-  /**
-   * Converts escaped HTML into usable HTML
-   * @param  {String} html escaped HTML
-   * @return {String}      parsed HTML
-   */
-  utils.parsedHtml = function(html) {
-    let escapeElement = document.createElement('textarea');
-    escapeElement.innerHTML = html;
-    return escapeElement.textContent;
-  };
-
-  /**
-   * Escape markup so it can be displayed rather than rendered
-   * @param  {String} html markup
-   * @return {String}      escaped html
-   */
-  utils.escapeHtml = function(html) {
-    let escapeElement = document.createElement('textarea');
-    escapeElement.textContent = html;
-    return escapeElement.innerHTML;
-  };
-
-  // Escape an attribute
-  utils.escapeAttr = function(str) {
-    let match = {
-      '"': '&quot;',
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;'
-    };
-
-    const replaceTag = tag => match[tag] || tag;
-
-    return (typeof str === 'string') ? str.replace(/["&<>]/g, replaceTag) : str;
-  };
-
-  // Escape attributes
-  utils.escapeAttrs = function(attrs) {
-    for (let attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
-        attrs[attr] = utils.escapeAttr(attrs[attr]);
-      }
-    }
-
-    return attrs;
-  };
-
-  // forEach that can be used on nodeList
-  utils.forEach = function(array, callback, scope) {
-    for (let i = 0; i < array.length; i++) {
-      callback.call(scope, i, array[i]); // passes back stuff we need
-    }
-  };
-
-  /**
-   * Remove duplicates from an array of elements
-   * @param  {Array} array  array with possible duplicates
-   * @return {Array}        array with only unique values
-   */
-  utils.unique = function(array) {
-    return array.filter((elem, pos, arr) => {
-      return arr.indexOf(elem) === pos;
-    });
-  };
-
-  /**
-   * Removes a value from an array
-   * @param  {Array} arr
-   * @param  {String|Number} val
-   */
-  utils.remove = (val, arr) => {
-    let index = arr.indexOf(val);
-
-    if (index > -1) {
-       arr.splice(index, 1);
-    }
-  };
-
-  /**
-   * Loads an array of scripts using jQuery's `getScript`
-   * @param  {Array|String}  scriptScr    scripts
-   * @param  {String} path   optional to load form
-   * @return {Promise}       a promise
-   */
-  utils.getScripts = (scriptScr, path) => {
-    const $ = jQuery;
-    let _arr = [];
-
-    if (!Array.isArray(scriptScr)) {
-      scriptScr = [scriptScr];
-    }
-
-    if (!utils.isCached(scriptScr)) {
-      _arr = $.map(scriptScr, src => {
-        let options = {
-          dataType: 'script',
-          cache: true,
-          url: (path || '') + src
-        };
-        return $.ajax(options).done(() => window.fbLoaded.js.push(src));
-      });
-    }
-
-    _arr.push($.Deferred( deferred => $( deferred.resolve )));
-
-    return $.when(..._arr);
-  };
-
-  /**
-   * Checks if remote resource is already loaded
-   * @param  {String|Array} src  url of remote script or css
-   * @param  {String}       type       'js' or 'css'
-   * @return {Boolean}      isCached
-   */
-  utils.isCached = (src, type = 'js') => {
-    let isCached = false;
-    const cache = window.fbLoaded[type];
-    if (Array.isArray(src)) {
-      isCached = src.every(s => utils.inArray(s, cache));
+  if (value) {
+    if (Array.isArray(value)) {
+      valString = utils.escapeAttr(value.join(' '));
     } else {
-      isCached = utils.inArray(src, cache);
+      if (typeof(value) === 'boolean') {
+        value = value.toString();
+      }
+      valString = utils.escapeAttr(value.replace(',', ' ').trim());
     }
-    return isCached;
+  }
+
+  value = value ? `="${valString}"` : '';
+  return {
+    name,
+    value
+  };
+};
+
+utils.safeAttrName = function(name) {
+  let safeAttr = {
+    className: 'class'
   };
 
-  /**
-   * Appends stylesheets to the head
-   * @param  {Array} scriptScr
-   * @param  {String} path
-   * @return {void}
-   */
-  utils.getStyles = (scriptScr, path) => {
-    if (!Array.isArray(scriptScr)) {
-      scriptScr = [scriptScr];
+  return safeAttr[name] || utils.hyphenCase(name);
+};
+
+/**
+ * Convert strings into lowercase-hyphen
+ *
+ * @param  {String} str
+ * @return {String}
+ */
+utils.hyphenCase = (str) => {
+  str = str.replace(/[^\w\s\-]/gi, '');
+  str = str.replace(/([A-Z])/g, function($1) {
+    return '-' + $1.toLowerCase();
+  });
+
+  return str.replace(/\s/g, '-').replace(/^-+/g, '');
+};
+
+/**
+ * convert a hyphenated string to camelCase
+ * @param  {String} str
+ * @return {String}
+ */
+utils.camelCase = str => str.replace(/-([a-z])/g, (m, w) =>
+  w.toUpperCase());
+
+/**
+ * Determine content type
+ * @param  {Node | String | Array | Object} content
+ * @return {String}                         contentType for mapping
+ */
+utils.contentType = content => {
+  let type = typeof content;
+  if (content instanceof Node || content instanceof HTMLElement) {
+    type = 'node';
+  } else if (Array.isArray(content)) {
+    type = 'array';
+  }
+
+  return type;
+};
+
+/**
+ * Bind events to an element
+ * @param  {Object} element DOM element
+ * @param  {Object} events  object full of events eg. {click: evt => callback}
+ * @return {void}
+ */
+utils.bindEvents = (element, events) => {
+  if (events) {
+    for (let event in events) {
+      if (events.hasOwnProperty(event)) {
+        element.addEventListener(event, evt => events[event](evt));
+      }
     }
-    if (utils.isCached(scriptScr, 'css')) {
-      return;
-    }
-    const appendStyle = (href) => {
-      const link = document.createElement('link');
-      link.type = 'text/css';
-      link.rel = 'stylesheet';
-      link.href = href;
-      document.head.appendChild(link);
-      window.fbLoaded.css.push(href);
-    };
-    scriptScr.forEach(src => appendStyle((path || '') + src));
+  }
+};
+
+/**
+* Generate a unique name attribute
+* @param  {Object} field
+* @return {String}       name
+*/
+utils.nameAttr = function(field) {
+  let epoch = new Date().getTime();
+  let prefix = field.type || utils.hyphenCase(field.label);
+  return prefix + '-' + epoch;
+};
+
+/**
+ * Generate markup wrapper where needed
+ *
+ * @param  {string}              tag
+ * @param  {String|Array|Object} content we wrap this
+ * @param  {Object}              attrs
+ * @return {Object} DOM Element
+ */
+utils.markup = function(tag, content = '', attributes = {}) {
+  let contentType = utils.contentType(content);
+  let {events, ...attrs} = attributes;
+  const field = document.createElement(tag);
+
+  const appendContent = {
+    string: (content) => {
+      field.innerHTML += content;
+    },
+    object: (config) => {
+      let {tag, content, ...data} = config;
+      return field.appendChild(utils.markup(tag, content, data));
+    },
+    node: (content) => {
+      return field.appendChild(content);
+    },
+    array: (content) => {
+      for (let i = 0; i < content.length; i++) {
+        contentType = utils.contentType(content[i]);
+        appendContent[contentType](content[i]);
+      }
+    },
+    function: content => {
+      content = content();
+      contentType = utils.contentType(content);
+      appendContent[contentType](content);
+    },
+    undefined: () => {
+      // console.error(tag, content, attributes);
+    },
   };
+
+  for (let attr in attrs) {
+    if (attrs.hasOwnProperty(attr)) {
+      let name = utils.safeAttrName(attr);
+      field.setAttribute(name, attrs[attr]);
+    }
+  }
+
+  if (content) {
+    appendContent[contentType].call(this, content);
+  }
+
+  utils.bindEvents(field, events);
+
+  return field;
+};
+
+/**
+ * Convert html element attributes to key/value object
+ * @param  {Object} elem DOM element
+ * @return {Object} ex: {attrName: attrValue}
+ */
+utils.parseAttrs = function(elem) {
+  let attrs = elem.attributes;
+  let data = {};
+  utils.forEach(attrs, attr => {
+    let attrVal = attrs[attr].value;
+    if (attrVal.match(/false|true/g)) {
+      attrVal = (attrVal === 'true');
+    } else if (attrVal.match(/undefined/g)) {
+      attrVal = undefined;
+    }
+
+    if (attrVal) {
+      data[attrs[attr].name] = attrVal;
+    }
+  });
+
+  return data;
+};
+
+/**
+ * Convert field options to optionData
+ * @param  {NodeList} options  DOM elements
+ * @return {Array} optionData array
+ */
+utils.parseOptions = function(options) {
+  let optionData = {};
+  let data = [];
+
+  for (let i = 0; i < options.length; i++) {
+    optionData = utils.parseAttrs(options[i]);
+    optionData.label = options[i].textContent;
+    data.push(optionData);
+  }
+
+  return data;
+};
+
+/**
+ * Parse XML formData
+ * @param  {String} xmlString
+ * @return {Array}            formData array
+ */
+utils.parseXML = function(xmlString) {
+  const parser = new window.DOMParser();
+  let xml = parser.parseFromString(xmlString, 'text/xml');
+  let formData = [];
+
+  if (xml) {
+    let fields = xml.getElementsByTagName('field');
+    for (let i = 0; i < fields.length; i++) {
+      let fieldData = utils.parseAttrs(fields[i]);
+      const options = fields[i].getElementsByTagName('option');
+
+      if (options && options.length) {
+        fieldData.values = utils.parseOptions(options);
+      }
+
+      formData.push(fieldData);
+    }
+  }
+
+  return formData;
+};
+
+/**
+ * Converts escaped HTML into usable HTML
+ * @param  {String} html escaped HTML
+ * @return {String}      parsed HTML
+ */
+utils.parsedHtml = function(html) {
+  let escapeElement = document.createElement('textarea');
+  escapeElement.innerHTML = html;
+  return escapeElement.textContent;
+};
+
+/**
+ * Escape markup so it can be displayed rather than rendered
+ * @param  {String} html markup
+ * @return {String}      escaped html
+ */
+utils.escapeHtml = function(html) {
+  let escapeElement = document.createElement('textarea');
+  escapeElement.textContent = html;
+  return escapeElement.innerHTML;
+};
+
+// Escape an attribute
+utils.escapeAttr = function(str) {
+  let match = {
+    '"': '&quot;',
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;'
+  };
+
+  const replaceTag = tag => match[tag] || tag;
+
+  return (typeof str === 'string') ? str.replace(/["&<>]/g, replaceTag) : str;
+};
+
+// Escape attributes
+utils.escapeAttrs = function(attrs) {
+  for (let attr in attrs) {
+    if (attrs.hasOwnProperty(attr)) {
+      attrs[attr] = utils.escapeAttr(attrs[attr]);
+    }
+  }
+
+  return attrs;
+};
+
+// forEach that can be used on nodeList
+utils.forEach = function(array, callback, scope) {
+  for (let i = 0; i < array.length; i++) {
+    callback.call(scope, i, array[i]); // passes back stuff we need
+  }
+};
+
+/**
+ * Remove duplicates from an array of elements
+ * @param  {Array} array  array with possible duplicates
+ * @return {Array}        array with only unique values
+ */
+utils.unique = function(array) {
+  return array.filter((elem, pos, arr) => {
+    return arr.indexOf(elem) === pos;
+  });
+};
+
+/**
+ * Removes a value from an array
+ * @param  {Array} arr
+ * @param  {String|Number} val
+ */
+utils.remove = (val, arr) => {
+  let index = arr.indexOf(val);
+
+  if (index > -1) {
+     arr.splice(index, 1);
+  }
+};
+
+/**
+ * Loads an array of scripts using jQuery's `getScript`
+ * @param  {Array|String}  scriptScr    scripts
+ * @param  {String} path   optional to load form
+ * @return {Promise}       a promise
+ */
+utils.getScripts = (scriptScr, path) => {
+  const $ = jQuery;
+  let _arr = [];
+
+  if (!Array.isArray(scriptScr)) {
+    scriptScr = [scriptScr];
+  }
+
+  if (!utils.isCached(scriptScr)) {
+    _arr = $.map(scriptScr, src => {
+      let options = {
+        dataType: 'script',
+        cache: true,
+        url: (path || '') + src
+      };
+      return $.ajax(options).done(() => window.fbLoaded.js.push(src));
+    });
+  }
+
+  _arr.push($.Deferred( deferred => $( deferred.resolve )));
+
+  return $.when(..._arr);
+};
+
+/**
+ * Checks if remote resource is already loaded
+ * @param  {String|Array} src  url of remote script or css
+ * @param  {String}       type       'js' or 'css'
+ * @return {Boolean}      isCached
+ */
+utils.isCached = (src, type = 'js') => {
+  let isCached = false;
+  const cache = window.fbLoaded[type];
+  if (Array.isArray(src)) {
+    isCached = src.every(s => utils.inArray(s, cache));
+  } else {
+    isCached = utils.inArray(src, cache);
+  }
+  return isCached;
+};
+
+/**
+ * Appends stylesheets to the head
+ * @param  {Array} scriptScr
+ * @param  {String} path
+ * @return {void}
+ */
+utils.getStyles = (scriptScr, path) => {
+  if (!Array.isArray(scriptScr)) {
+    scriptScr = [scriptScr];
+  }
+  if (utils.isCached(scriptScr, 'css')) {
+    return;
+  }
+  const appendStyle = (href) => {
+    const link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+    window.fbLoaded.css.push(href);
+  };
+  scriptScr.forEach(src => appendStyle((path || '') + src));
+};
 
 /**
  * Capitalizes a string
@@ -475,7 +471,11 @@ utils.merge = (obj1, obj2) => {
   for (let prop in obj2) {
     if (mergedObj.hasOwnProperty(prop)) {
       if (Array.isArray(obj2[prop])) {
-        mergedObj[prop] = Array.isArray(obj1[prop]) ? utils.unique(obj1[prop].concat(obj2[prop])) : obj2[prop];
+        if (Array.isArray(obj1[prop])) {
+          mergedObj[prop] = utils.unique(obj1[prop].concat(obj2[prop]));
+        } else {
+          mergedObj[prop] = obj2[prop];
+        }
       } else if (typeof obj2[prop] === 'object') {
         mergedObj[prop] = utils.merge(obj1[prop], obj2[prop]);
       } else {
@@ -504,10 +504,10 @@ utils.closest = (el, cls) => {
 
 utils.noop = () => null;
 
-utils.debounce = (func, wait = 250, immediate = false) => {
+utils.debounce = function(func, wait = 250, immediate = false) {
   let timeout;
+  let context = this;
   return function(...args) {
-    let context = this;
     let later = function() {
       timeout = null;
       if (!immediate) {

@@ -1,4 +1,10 @@
-import {instanceDom, defaultSubtypes, empty, optionFieldsRegEx} from './dom';
+import {
+  instanceDom,
+  defaultSubtypes,
+  empty,
+  optionFieldsRegEx,
+  remove
+} from './dom';
 import {instanceData} from './data';
 import utils from './utils';
 import events from './events';
@@ -113,9 +119,10 @@ export default class Helpers {
    */
   fieldOptionData(field) {
     let options = [];
+    const $options = $('.sortable-options li', field);
 
-    $('.sortable-options li', field).each(function() {
-      let $option = $(this);
+    $options.each(i => {
+      let $option = $($options[i]);
       const selected = $('.option-selected', $option).is(':checked');
       let attrs = {
           label: $('.option-label', $option).val(),
@@ -148,11 +155,12 @@ export default class Helpers {
 
       // Handle options
       if (field.type.match(optionFields)) {
-        let optionData = field.values;
+        let fieldOptions = field.values;
         let options = [];
 
-        for (let i = 0; i < optionData.length; i++) {
-          let option = m('option', optionData[i].label, optionData[i]).outerHTML;
+        for (let i = 0; i < fieldOptions.length; i++) {
+          let oData = fieldOptions[i];
+          let option = m('option', oData.label, oData).outerHTML;
           options.push('\n\t\t\t' + option);
         }
         options.push('\n\t\t');
@@ -187,7 +195,9 @@ export default class Helpers {
 
         if (!($field.hasClass('disabled-field'))) {
           let fieldData = _this.getTypes($field);
-          let roleVals = $('.roles-field:checked', field).map(elem => elem.value).get();
+          let $roleInputs = $('.roles-field:checked', field);
+          let roleVals = $roleInputs
+          .map(index => $roleInputs[index].value).get();
 
           _this.setAttrVals(field, fieldData);
 
@@ -380,7 +390,7 @@ export default class Helpers {
   /**
    * Display a custom tooltip for disabled fields.
    *
-   * @param  {Object} field
+   * @param  {Object} stage
    */
   disabledTT(stage) {
     const move = (e, elem) => {
@@ -458,8 +468,8 @@ export default class Helpers {
       dialog = document.getElementsByClassName('form-builder-dialog')[0];
     }
     overlay.classList.remove('visible');
-    dialog.remove();
-    overlay.remove();
+    remove(dialog);
+    remove(overlay);
     document.dispatchEvent(events.modalClosed);
   }
 
@@ -559,8 +569,7 @@ export default class Helpers {
   /**
    * Popup dialog the does not require confirmation.
    * @param  {String|DOM|Array}  content
-   * @param  {Boolean} coords    false if no coords are provided. Without coordinates
-   *                             the popup will appear center screen.
+   * @param  {Boolean} coords    screen coordinates to position dialog
    * @param  {String}  className classname to be added to the dialog
    * @return {Object}            dom
    */
@@ -627,6 +636,7 @@ export default class Helpers {
 
   /**
    * Removes all fields from the form
+   * @param {Object} stage to remove fields form
    * @param {Boolean} animate whether to animate or not
    * @return {void}
    */
@@ -669,23 +679,25 @@ export default class Helpers {
 
   /**
    * If user re-orders the elements their order should be saved.
-   *
    * @param {Object} $cbUL our list of elements
+   * @return {Array} fieldOrder
    */
   setFieldOrder($cbUL) {
     if (!config.opts.sortableControls) {
       return false;
     }
+    const {sessionStorage, JSON} = window;
 
-    let fieldOrder = {};
+    let fieldOrder = [];
 
-    $cbUL.children().each(function(index, element) {
-      fieldOrder[index] = $(element).data('type');
+    $cbUL.children().each((index, element) => {
+      fieldOrder.push($(element).data('type'));
     });
 
-    if (window.sessionStorage) {
-      window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
+    if (sessionStorage) {
+      sessionStorage.setItem('fieldOrder', JSON.stringify(fieldOrder));
     }
+    return fieldOrder;
   }
 
   /**
@@ -777,7 +789,11 @@ export default class Helpers {
         left: cbPosition.left
       };
 
-      let offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset);
+      let offset = Object.assign(
+        {},
+        offsetDefaults,
+        config.opts.stickyControls.offset
+      );
 
       if (scrollTop > $stageWrap.offset().top) {
         const style = {
@@ -791,6 +807,7 @@ export default class Helpers {
         let stageOffset = $stageWrap.offset();
         let cbBottom = cbOffset.top + $cbWrap.height();
         let stageBottom = stageOffset.top + $stageWrap.height();
+        let atBottom = (cbBottom === stageBottom && cbOffset.top > scrollTop);
 
         if (cbBottom > stageBottom && (cbOffset.top !== stageOffset.top)) {
           $cbWrap.css({
@@ -802,7 +819,7 @@ export default class Helpers {
           });
         }
 
-        if (cbBottom < stageBottom || (cbBottom === stageBottom && cbOffset.top > scrollTop)) {
+        if (cbBottom < stageBottom || atBottom) {
           $cbWrap.css(cbStyle);
         }
       } else {
@@ -814,7 +831,7 @@ export default class Helpers {
   /**
    * Open a dialog with the form's data
    */
-  showData(e) {
+  showData() {
     const data = this.data;
     const formData = utils.escapeHtml(data.formData);
     const code = m('code', formData, {
@@ -844,7 +861,8 @@ export default class Helpers {
       let availableIds = [].slice.call(fields).map((field) => {
         return field.id;
       });
-      console.warn('fieldID required to remove specific fields. Removing last field since no ID was supplied.');
+      console.warn('fieldID required to remove specific fields.');
+      console.warn('Removing last field since no ID was supplied.');
       console.warn('Available IDs: ' + availableIds.join(', '));
       fieldID = form.lastChild.id;
     }
@@ -1000,6 +1018,14 @@ export default class Helpers {
     return config.opts;
   }
 
+  /**
+   * Small wrapper for input markup
+   * @param  {Object} attrs [description]
+   * @return {Object} DOM element
+   */
+  input(attrs = {}) {
+    return m('input', null, attrs);
+  }
 
   // end class
 }
