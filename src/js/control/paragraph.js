@@ -15,7 +15,8 @@ export class controlParagraph extends control {
 
     // some types use an element of a different name
     let typeMap = {
-      'paragraph': 'p'
+      'paragraph': 'p',
+      'header': this.subtype
     };
     if (typeMap[type]) {
       type = typeMap[type];
@@ -28,5 +29,5 @@ export class controlParagraph extends control {
 }
 
 // register the following controls
-control.register('paragraph', controlParagraph);
+control.register(['paragraph', 'header'], controlParagraph);
 control.register(['p', 'address', 'blockquote', 'canvas', 'output'], controlParagraph, 'paragraph');

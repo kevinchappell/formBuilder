@@ -7,6 +7,19 @@ import {control} from '../control';
 export class controlTextarea extends control {
 
   /**
+   * class configuration
+   */
+  static get definition() {
+    return {
+
+      // mi18n custom mappings (defaults to camelCase type)
+      mi18n: {
+        textarea: 'textArea'
+      }
+    };
+  }
+
+  /**
    * build a text DOM element, supporting other jquery text form-control's
    * @return DOM Element to be injected into the form.
    */

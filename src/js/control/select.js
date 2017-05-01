@@ -6,6 +6,12 @@ import {control} from '../control';
  */
 export class controlSelect extends control {
 
+  static get definition() {
+    return {
+      inactive: ['checkbox']
+    };
+  }
+
   /**
    * build a text DOM element, supporting other jquery text form-control's
    * @return DOM Element to be injected into the form.

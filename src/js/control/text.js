@@ -6,13 +6,19 @@ import {control} from '../control';
  */
 export class controlText extends control {
 
-  // class definition used in the builder interface & rendering this control
-  // static get definition() {
-  //   return {
-  //     id: 'text',
-  //     label: 'Text'
-  //   }
-  // }
+  /**
+   * class configuration
+   */
+  static get definition() {
+    return {
+
+      // mi18n custom mappings (defaults to camelCase type)
+      mi18n: {
+        date: 'dateField',
+        file: 'fileUpload'
+      }
+    }
+  }
 
   /**
    * build a text DOM element, supporting other jquery text form-control's
@@ -24,5 +30,5 @@ export class controlText extends control {
 }
 
 // register this control for the following types & text subtypes
-control.register(['text','file', 'date'], controlText);
-control.register(['password', 'email', 'color', 'tel', 'number'], controlText, 'text');
+control.register(['text','file', 'date', 'number'], controlText);
+control.register(['password', 'email', 'color', 'tel'], controlText, 'text');
