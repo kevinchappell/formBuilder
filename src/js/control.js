@@ -158,6 +158,8 @@ export class control {
 
   /**
    * Retrieve a translated string
+   * By default looks for translations defined against the class (for plugin controls)
+   * Expects {locale1: {type: label}, locale2: {type: label}}, or {default: label}, or {local1: label, local2: label2}
    * @param {String} string to retrieve the label / translated string for
    * @return {String} the translated label
    */
@@ -165,11 +167,11 @@ export class control {
     let def = this.definition;
     let i18n = def.i18n || {};
     let locale = mi18n.locale;
-    i18n = i18n[locale] || i18n.default || {};
+    i18n = i18n[locale] || i18n.default || i18n;
     let lookupCamel = this.camelCase(lookup);
 
     // if translation is defined in the control, return it
-    let value = i18n[lookupCamel] || i18n[lookup];
+    let value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[lookup] : i18n;
     if (value) {
       return value;
     }
