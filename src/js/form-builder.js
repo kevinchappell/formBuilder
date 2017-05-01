@@ -6,8 +6,12 @@ import {
 import mi18n from 'mi18n';
 import utils from './utils';
 import events from './events';
+import {layout} from './layout';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
+import {control} from './control';
+import {controlClasses} from './control/index';
+import {controlCustom} from './control/custom';
 
 require('./polyfills.js').default;
 
@@ -24,6 +28,14 @@ const FormBuilder = function(opts, element) {
 
   const originalOpts = opts;
 
+  // load in any custom specified controls, or preloaded plugin controls
+  control.loadCustom(opts.controls);
+
+  // register any passed custom templates & fields
+  if (Object.keys(opts.fields).length) {
+    controlCustom.register(opts.templates, opts.fields);
+  }
+
   opts = helpers.processOptions(opts);
 
   const subtypes = config.subtypes = helpers.processSubtypes(opts.subtypes);
@@ -35,38 +47,80 @@ const FormBuilder = function(opts, element) {
   data.formID = formID;
   data.lastID = `${data.formID}-fld-1`;
 
-  let frmbFields = helpers.orderFields(opts.fields);
+  // retrieve a full list of loaded controls
+  let controls = control.getRegistered();
+  controls = helpers.orderFields(controls);
 
-  if (opts.disableFields) {
-    // remove disabledFields
-    frmbFields = frmbFields.filter(function(field) {
-      return !utils.inArray(field.attrs.type, opts.disableFields);
-    });
+  // let frmbFields = helpers.orderFields(opts.fields);
+  // backwards compatibility - reproduce aFields mapping
+  for (let field of opts.fields) {
+    let attrs = field.attrs || {};
+    aFields[attrs.type] = field;
   }
 
+  // remove disableFields
+  opts.disableFields = ['text','textarea'];
+  if (opts.disableFields) {
+    controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
+  }
+
+  // if we support rearranging control order, add classes to support this
   if (opts.sortableControls) {
     d.controls.classList.add('sort-enabled');
   }
 
+  // DOM element to hold the list of controls
   let $cbUL = $(d.controls);
 
-  // Loop through fmrbFields
-  utils.forEach(frmbFields, (i) => {
-    let {attrs, icon, ...field} = frmbFields[i];
-    let controlLabel = field.label;
-    let iconClassName = !icon ? `icon-${attrs.name || attrs.type}` : '';
-    if (icon) {
-      controlLabel = `<span class="control-icon">${icon}</span>${field.label}`;
-    }
-    let newFieldControl = m('li',
-      m('span', controlLabel),
-      {className: `${iconClassName} input-control input-control-${i}`}
-    );
+  // add each control to the interface
+  let controlIndex = 0;
+  let controlMap = {};
+  for (let type of controls) {
 
-    aFields[attrs.type] = frmbFields[i];
-    newFieldControl.dataset.type = attrs.type;
+    // determine the class, icon & label for this control
+    let controlClass = control.getClass(type);
+    if (!controlClass || !controlClass.active(type)) {
+      continue;
+    }
+    let icon = controlClass.icon(type);
+    let label = controlClass.label(type);
+    let iconClassName = !icon ? `icon-${type}` : ''; // @todo ${attrs.name} ?? what is this for, what sets it? It appears unused
+
+    // if the class has specified a custom icon, inject it into the label
+    if (icon) {
+      label = `<span class="control-icon">${icon}</span>${label}`;
+    }
+
+    // build & insert the new list item to represent this control
+    let newFieldControl = m('li',
+      m('span', label),
+      {className: `${iconClassName} input-control input-control-${controlIndex}`}
+    );
+    newFieldControl.dataset.type = type;
     d.controls.appendChild(newFieldControl);
-  });
+
+    // map for later access
+    controlMap[type] = controlClass; // should be able to replace aFields
+    controlIndex++;
+  }
+
+  //   // Loop through fmrbFields
+  // utils.forEach(frmbFields, (i) => {
+  //   let {attrs, icon, ...field} = frmbFields[i];
+  //   let controlLabel = field.label;
+  //   let iconClassName = !icon ? `icon-${attrs.name || attrs.type}` : '';
+  //   if (icon) {
+  //     controlLabel = `<span class="control-icon">${icon}</span>${field.label}`;
+  //   }
+  //   let newFieldControl = m('li',
+  //     m('span', controlLabel),
+  //     {className: `${iconClassName} input-control input-control-${i}`}
+  //   );
+  //
+  //   aFields[attrs.type] = frmbFields[i];
+  //   newFieldControl.dataset.type = attrs.type;
+  //   d.controls.appendChild(newFieldControl);
+  // });
 
   if (opts.inputSets.length) {
     $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);

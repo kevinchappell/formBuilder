@@ -685,14 +685,15 @@ export default class Helpers {
   /**
    * Reorder the controls if the user has previously ordered them.
    *
-   * @param  {Array} frmbFields
+   * @param  {Array} controls - an array of control types
    * @return {Array} ordered fields
    */
-  orderFields(frmbFields) {
+  orderFields(controls) {
     const opts = config.opts;
     let fieldOrder = false;
     let newOrderFields = [];
 
+    // retrieve any saved ordering from the session
     if (window.sessionStorage) {
       if (opts.sortableControls) {
         fieldOrder = window.sessionStorage.getItem('fieldOrder');
@@ -701,9 +702,11 @@ export default class Helpers {
       }
     }
 
+    // if we have a saved order, use it. Otherwise build the order ourselves
     if (!fieldOrder) {
-      let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
-        field.attrs.type));
+      // let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
+      //   field.attrs.type));
+      let controlOrder = opts.controlOrder.concat(controls);
       fieldOrder = utils.unique(controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
@@ -711,17 +714,49 @@ export default class Helpers {
         return fieldOrder[i];
       });
     }
-
-
-    fieldOrder.forEach((fieldType) => {
-      let field = frmbFields.filter(function(field) {
-        return field.attrs.type === fieldType;
-      })[0];
-      newOrderFields.push(field);
-    });
-
-    return newOrderFields.filter(Boolean);
+    return fieldOrder;
   }
+
+  // /**
+  //  * Reorder the controls if the user has previously ordered them.
+  //  *
+  //  * @param  {Array} frmbFields
+  //  * @return {Array} ordered fields
+  //  */
+  // orderFields(frmbFields) {
+  //   const opts = config.opts;
+  //   let fieldOrder = false;
+  //   let newOrderFields = [];
+  //
+  //   if (window.sessionStorage) {
+  //     if (opts.sortableControls) {
+  //       fieldOrder = window.sessionStorage.getItem('fieldOrder');
+  //     } else {
+  //       window.sessionStorage.removeItem('fieldOrder');
+  //     }
+  //   }
+  //
+  //   if (!fieldOrder) {
+  //     let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
+  //       field.attrs.type));
+  //     fieldOrder = utils.unique(controlOrder);
+  //   } else {
+  //     fieldOrder = window.JSON.parse(fieldOrder);
+  //     fieldOrder = Object.keys(fieldOrder).map(function(i) {
+  //       return fieldOrder[i];
+  //     });
+  //   }
+  //
+  //
+  //   fieldOrder.forEach((fieldType) => {
+  //     let field = frmbFields.filter(function(field) {
+  //       return field.attrs.type === fieldType;
+  //     })[0];
+  //     newOrderFields.push(field);
+  //   });
+  //
+  //   return newOrderFields.filter(Boolean);
+  // }
 
   /**
    * Close fields being editing

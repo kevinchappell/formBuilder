@@ -1,5 +1,7 @@
 // CONTROL.JS
 import utils from './utils';
+import mi18n from 'mi18n';
+
 /**
  * Base class for all control classes
  * Defines the structure of a control class and some standard control methods
@@ -49,6 +51,19 @@ export class control {
   }
 
   /**
+   * Getter to retrieve class configuration.
+   * Supports properties:
+   *  - mi18n - a mi18n lookup, (or object of type: lookup for classes supporting multiple types)
+   *  - i18n - for custom / plugin controls, translations for labels can be specified here as an object of locale: label (or an object of type: label for classes supporting multiple types).
+   *  - icon - icon, or object of type: icon for defined types
+   *  - inactive - array of inactive types that shouldn't appear in formBuilder interface (but still be supported for rendering purposes)
+   * @returns object of configuration
+   */
+  static get definition() {
+    return {};
+  }
+
+  /**
    * Class method to register supported controls and their associated classes
    * @param types - control type (or array of control types) to register against the specifed class
    * @param controlClass - class to map against the types
@@ -67,8 +82,34 @@ export class control {
 
     // associate the controlClass with each passed control type
     for (let type of types) {
+
+      // '.' is a restricted character for type names
+      if (type.indexOf('.') > -1) {
+        control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`);
+        continue;
+      }
       control.classRegister[prefix + type] = controlClass;
     }
+  }
+
+  /**
+   * Looks up the classRegister & returns registered types or subtypes
+   * @param type optional type of control we want to look up subtypes of. If not specified will return all types
+   * @return an array of registered types (or subtypes)
+   */
+  static getRegistered(type=false) {
+    let types = Object.keys(control.classRegister);
+    if (!types.length) {
+      return types;
+    }
+    return types.filter(key => {
+
+      // if type is specified, then we want to return all subtypes of that type (registered with the key <type>.<subtype>)
+      if (type) {
+        return key.indexOf(type + '.') > -1;
+      }
+      return key.indexOf('.') == -1;
+    });
   }
 
   /**
@@ -82,7 +123,7 @@ export class control {
     let controlClass = control.classRegister[lookup] || control.classRegister[type];
     if (!controlClass) {
       //this.options.notify.error(this.options.messages.invalidControl);
-      return control.error('Invalid control type. Please ensure you have registered it, and imported it correctly.');
+      return control.error('Invalid control type. (Type: ' + type + ', Subtype: ' + subtype + '). Please ensure you have registered it, and imported it correctly.');
     }
 
     // set the _type field on the control class so we never lose it
@@ -113,6 +154,63 @@ export class control {
       }
       window.fbControlsLoaded = true;
     }
+  }
+
+  /**
+   * Retrieve a translated string
+   * @param {String} string to retrieve the label / translated string for
+   * @return {String} the translated label
+   */
+  static mi18n(lookup) {
+    let def = this.definition;
+    let i18n = def.i18n || {};
+    let locale = mi18n.locale;
+    i18n = i18n[locale] || i18n.default || {};
+    let lookupCamel = this.camelCase(lookup);
+
+    // if translation is defined in the control, return it
+    let value = i18n[lookupCamel] || i18n[lookup];
+    if (value) {
+      return value;
+    }
+
+    // otherwise check the mi18n object - allow for mapping a lookup to a custom mi18n lookup
+    let mapped = def.mi18n;
+    if (typeof mapped === 'object') {
+      mapped = mapped[lookupCamel] || mapped[lookup];
+    }
+    if (!mapped) {
+      mapped = lookupCamel;
+    }
+    return mi18n.get(mapped);
+  }
+
+  /**
+   * Should this control type appear in the list of form controls
+   * @param type
+   */
+  static active(type) {
+    return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) == -1;
+  }
+
+  /**
+   * Retrieve the translated control label for a control type
+   */
+  static label(type) {
+    return this.mi18n(type);
+  }
+
+  /**
+   * Retrieve the icon for a control type
+   */
+  static icon(type) {
+    // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
+    // http://formbuilder.readthedocs.io/en/latest/formBuilder/options/inputSets/
+    let def = this.definition;
+    if (def && typeof def.icon === 'object') {
+      return def.icon[type];
+    }
+    return def.icon;
   }
 
   /**
@@ -173,6 +271,7 @@ export class control {
    */
   static error(message) {
     throw new Error(message);
+    return false;
   }
 
   /**
@@ -190,5 +289,14 @@ export class control {
    */
   parsedHtml(html) {
     return utils.parsedHtml(html);
+  }
+
+  /**
+   * convert a hyphenated string to camelCase
+   * @param  {String} str
+   * @return {String}
+   */
+  static camelCase(str) {
+    return utils.camelCase(str);
   }
 }
