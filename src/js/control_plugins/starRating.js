@@ -11,6 +11,22 @@ window.fbControls.push(function (controlClass) {
    */
   class controlStarRating extends controlClass {
 
+    /**
+     * Class configuration - return the icons & label related to this control
+     * @returns definition object
+     */
+    static get definition() {
+      return {
+        icon: '🌟',
+        i18n: {
+          default: 'Star Rating'
+        }
+      }
+    }
+
+    /**
+     * javascript & css to load
+     */
     configure() {
       this.js = '//cdnjs.cloudflare.com/ajax/libs/rateYo/2.2.0/jquery.rateyo.min.js';
       this.css = '//cdnjs.cloudflare.com/ajax/libs/rateYo/2.2.0/jquery.rateyo.min.css';

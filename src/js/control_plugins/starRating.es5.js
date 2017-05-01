@@ -9,11 +9,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Star rating class - show 5 stars with the ability to select a rating
+ */
+
+// configure the class for runtime loading
 if (!window.fbControls) window.fbControls = new Array();
 window.fbControls.push(function (controlClass) {
 
   /**
-   * Starz rating class
+   * Star rating class
    */
   var controlStarRating = function (_controlClass) {
     _inherits(controlStarRating, _controlClass);
@@ -46,6 +51,16 @@ window.fbControls.push(function (controlClass) {
       value: function onRender() {
         var value = this.config.value || 3.6;
         $('#' + this.config.name).rateYo({ rating: value });
+      }
+    }], [{
+      key: 'definition',
+      get: function get() {
+        return {
+          icon: '🌟',
+          i18n: {
+            default: 'Star Rating'
+          }
+        };
       }
     }]);
 

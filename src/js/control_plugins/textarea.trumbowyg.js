@@ -12,6 +12,18 @@ window.fbControls.push(function (controlClass, allControlClasses) {
   class controlTrumbowyg extends controlTextarea {
 
     /**
+     * Class configuration - return the icons & label related to this control
+     * @returns definition object
+     */
+    static get definition() {
+      return {
+        i18n: {
+          default: 'Trumbowyg'
+        }
+      }
+    }
+
+    /**
      * configure the trumbowyg editor requirements
      */
     configure() {
