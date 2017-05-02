@@ -59,7 +59,6 @@ const FormBuilder = function(opts, element) {
   }
 
   // remove disableFields
-  opts.disableFields = ['text','textarea'];
   if (opts.disableFields) {
     controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
   }
