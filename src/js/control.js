@@ -270,7 +270,7 @@ export class control {
     let events = {
 
       // executed just prior to the row being returned by the layout class. Receives the DOMelement about to be passed back
-      prerender: (element) => {console.log('prerender',element);},
+      prerender: (element) => {},
 
       // onRender event to execute code each time an instance of this control is injected into the DOM
       render: (evt) => {
