@@ -25,7 +25,27 @@ export class controlTextarea extends control {
    */
   build() {
     let {value = '', ...attrs} = this.config;
-    return this.markup('textarea', this.parsedHtml(value), attrs);
+    this.field = this.markup('textarea', this.parsedHtml(value), attrs);
+    return this.field;
+  }
+
+  /**
+   * extend the default events to add a prerender for textareas
+   */
+  on(eventType) {
+    if (eventType == 'prerender' && this.preview) {
+      return (element) => {
+        if (this.field) {
+          element = this.field;
+        }
+
+        // if this is a preview, stop events bubbling up so the editor preview is clickable (and not draggable)
+        $(element).on('mousedown', (e) => {
+          e.stopPropagation();
+        });
+      };
+    }
+    return super.on(eventType);
   }
 }
 

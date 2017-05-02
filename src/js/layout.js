@@ -12,8 +12,11 @@ export class layout {
   /**
    * Prepare the templates for layout
    * @param templates object containing custom or overwrite templates
+   * @param preview - are we rendering a preview for the formBuilder stage
+   *
    */
-  constructor(templates) {
+  constructor(templates, preview) {
+    this.preview = preview;
 
     // supported templates for outputting a field
     // preferred layout template can be indicated by specifying a 'layout' in the return object of control::build
@@ -75,7 +78,7 @@ export class layout {
   build(renderControl, data) {
 
     // prepare the data
-    if (data.isPreview) {
+    if (this.preview) {
       if (data.name) {
         data.name = data.name + '-preview';
       } else {
@@ -86,7 +89,7 @@ export class layout {
     this.data = $.extend({}, data);
 
     // build the control
-    let control = new renderControl(data);
+    let control = new renderControl(data, this.preview);
     let field = control.build();
     if (typeof field !== 'object' || !field.field) {
       field = {field: field};
@@ -104,6 +107,9 @@ export class layout {
     if (element.jquery) {
       element = element[0];
     }
+
+    // execute prerender events
+    control.on('prerender')(element);
 
     // bind control on render events
     element.addEventListener('fieldRendered', control.on('render'));

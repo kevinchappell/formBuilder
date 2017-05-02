@@ -12,13 +12,15 @@ export class control {
    * initialse the control object
    * @param config each control class receives a control configuration object ({name, label, etc})
    */
-  constructor(config) {
+  constructor(config, preview) {
 
     // make a copy of config so we don't change the object reference
     config = $.extend({}, config);
+    this.preview = preview;
+    delete config.isPreview;
 
     // process config - extract standard properties
-    let properties = ['label', 'description', 'subtype', 'isPreview', 'required'];
+    let properties = ['label', 'description', 'subtype', 'required'];
     for (let prop of properties) {
       this[prop] = config[prop];
       delete config[prop];
@@ -35,6 +37,9 @@ export class control {
     }
 
     // check for global class configuration
+    if (!control.controlConfig) {
+      control.controlConfig = {};
+    }
     let classId = this.subtype ? this.type + '.' + this.subtype : this.type;
     this.classConfig = control.controlConfig[classId] || {};
 
@@ -251,16 +256,21 @@ export class control {
    * @return DOM Element to be injected into the form, or an object/hash of configuration as above
    */
   build() {
-    var {label, type, ...attrs} = this.config;
-    return this.markup(type, utils.parsedHtml(label), attrs);
+    var {label, type, ...data} = this.config;
+    return this.markup(type, utils.parsedHtml(label), data);
   }
 
   /**
    * code to execute for supported events
    * to implement an onRender event in a child class, simply define an onRender method
+   * @param {String} eventType - optional type of event to retrieve an event function for. If not specified all events returned
+   * @return {Function/Object} - function to execute for specified event, or all events of no eventType is specified
    */
   on(eventType) {
     let events = {
+
+      // executed just prior to the row being returned by the layout class. Receives the DOMelement about to be passed back
+      prerender: (element) => {console.log('prerender',element);},
 
       // onRender event to execute code each time an instance of this control is injected into the DOM
       render: (evt) => {
@@ -283,7 +293,7 @@ export class control {
         }
       }
     };
-    return events[eventType];
+    return eventType ? events[eventType] : events;
   }
 
   /**

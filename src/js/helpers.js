@@ -16,11 +16,13 @@ export default class Helpers {
   /**
    * Setup defaults, get instance data and dom
    * @param  {String} formID [description]
+   * @param {layout} layout object instance used by various helpers
    */
-  constructor(formID) {
+  constructor(formID, layout) {
     this.data = instanceData[formID];
     this.d = instanceDom[formID];
     this.doCancel = false;
+    this.layout = layout;
   }
 
   /**
@@ -365,7 +367,10 @@ export default class Helpers {
     $('.fld-className', field).val(previewData.className);
 
     $field.data('fieldData', previewData);
-    preview = utils.getTemplate(previewData, true);
+
+    // determine the control class for this type, and then process it through the layout engine
+    let controlClass = control.getClass(previewData.type, previewData.subtype);
+    preview = this.layout.build(controlClass, previewData);
 
     empty($prevHolder[0]);
     $prevHolder[0].appendChild(preview);

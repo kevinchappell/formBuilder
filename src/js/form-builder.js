@@ -23,7 +23,11 @@ const FormBuilder = function(opts, element) {
   const formID = 'frmb-' + instanceTime++;
   const data = new Data(formID);
   const d = new Dom(formID);
-  const helpers = new Helpers(formID);
+
+  // prepare a new layout object with appropriate templates
+  const layoutEngine = new layout(opts.layoutTemplates, true);
+
+  const helpers = new Helpers(formID, layoutEngine);
   const m = utils.markup;
 
   const originalOpts = opts;
@@ -971,10 +975,12 @@ const FormBuilder = function(opts, element) {
       'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
     ).outerHTML;
 
+    // add the label
     liContents += `<label class="field-label">${utils.parsedHtml(label)}</label>`;
     let requiredDisplay = values.required ? 'style="display:inline"' : '';
     liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
+    // add the help icon
     let descAttrs = {
       className: 'tooltip-element',
       tooltip: values.description,
@@ -1010,6 +1016,7 @@ const FormBuilder = function(opts, element) {
     $('.sortable-options', $li)
     .sortable({update: () => helpers.updatePreview($li)});
 
+    // generate the control, insert it into the list item & add it to the stage
     helpers.updatePreview($li);
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
