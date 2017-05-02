@@ -729,6 +729,9 @@ import {defaultSubtypes, filter} from './dom';
    * @return {void}
    */
   utils.getStyles = (scriptScr, path) => {
+    if (!Array.isArray(scriptScr)) {
+      scriptScr = [scriptScr];
+    }
     if (utils.isCached(scriptScr, 'css')) {
       return;
     }
