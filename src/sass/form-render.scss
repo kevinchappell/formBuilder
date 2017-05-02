@@ -10,6 +10,11 @@
   color: $error;
 }
 
+.other-val {
+  margin-left: 5px;
+  display: none;
+}
+
 // TOOLTIP   ------------
 *[tooltip] {
   position: relative;
