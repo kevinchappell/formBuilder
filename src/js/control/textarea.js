@@ -31,3 +31,4 @@ export class controlTextarea extends control {
 
 // register the following controls
 control.register('textarea', controlTextarea);
+control.register('textarea', controlTextarea, 'textarea');

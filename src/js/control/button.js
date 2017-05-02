@@ -20,4 +20,4 @@ export class controlButton extends control {
 
 // register the following controls
 control.register('button', controlButton);
-control.register(['submit', 'reset'], controlButton, 'button');
+control.register(['button', 'submit', 'reset'], controlButton, 'button');

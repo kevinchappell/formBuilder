@@ -4,6 +4,7 @@ import utils from './utils';
 import events from './events';
 import mi18n from 'mi18n';
 import {config} from './config';
+import {control} from './control';
 
 const opts = config.opts;
 const m = utils.markup;
@@ -947,28 +948,39 @@ export default class Helpers {
   }
 
   /**
-   * Cross link subtypes and define markup config
+   * Register any subtype controls specified in the 'subtypes' option, retrieve
+   * all defined subtypes & build the export subtype format
    * @param  {Array} subtypeOpts
    * @return {Array} subtypes
    */
   processSubtypes(subtypeOpts) {
+
+    // first register any passed subtype options against the appropriate type control class
+    for (let type in subtypeOpts) {
+      let controlClass = control.getClass(type);
+      control.register(subtypeOpts[type], controlClass, type);
+    }
+
+    // retrieve a list of all subtypes
+    let subtypeDef = control.getRegisteredSubtypes();
+    console.log('Subtypes are', subtypes);
+
+    // reformat the subtypes for each type
     let subtypes = {};
-    const subtypeFormat = subtype => {
-        return {
-          label: mi18n.get(subtype),
+    for (let type in subtypeDef) {
+
+      // loop through each define subtype & build the formatted data structure
+      let formatted = new Array();
+      for (let subtype of subtypeDef[type]) {
+        let controlClass = control.getClass(type, subtype);
+        formatted.push({
+          label: controlClass.mi18n(subtype),
           value: subtype
-        };
-      };
-
-      config.subtypes = utils.merge(defaultSubtypes, subtypeOpts);
-
-      for (let subtype in config.subtypes) {
-        if (config.subtypes.hasOwnProperty(subtype)) {
-          subtypes[subtype] = config.subtypes[subtype].map(subtypeFormat);
-        }
+        });
       }
-
-      return subtypes;
+      subtypes[type] = formatted;
+    }
+    return subtypes;
   }
 
   /**

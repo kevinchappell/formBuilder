@@ -113,6 +113,25 @@ export class control {
   }
 
   /**
+   * Looks up the classRegister & returns all registered subtypes
+   * @return an object containing {type: array of subtypes}.
+   */
+  static getRegisteredSubtypes() {
+    let types = {};
+    for (let key in control.classRegister) {
+      let [type, subtype] = key.split('.');
+      if (!subtype) {
+        continue;
+      }
+      if (!types[type]) {
+        types[type] = new Array();
+      }
+      types[type].push(subtype);
+    }
+    return types;
+  }
+
+  /**
    * Retrieve the class for a specified control type
    * @param type type of control we are looking up
    * @param subtype if specified we'll try to find a class mapped to this subtype. If none found, fall back to the type.
