@@ -8,11 +8,18 @@ import events from './events';
  * Controls things like the label, help text, and how they fit together with the control itself
  */
 export class layout {
-  constructor() {
+
+  /**
+   * Prepare the templates for layout
+   * @param templates object containing custom or overwrite templates
+   */
+  constructor(templates) {
 
     // supported templates for outputting a field
     // preferred layout template can be indicated by specifying a 'layout' in the return object of control::build
     this.templates = {
+      label: null, // can be overridden with a function(labelDOMElements, data) to generate the label element - returns a DOM element
+      help: null, // can be overridden with a function(helpText, data) to generate the help element - returns a DOM element
       default: (field, label, help, data) => {
 
         // append help into the label
@@ -40,6 +47,11 @@ export class layout {
         return field;
       }
     };
+
+    // merge in any custom templates
+    if (templates) {
+      this.templates = $.extend(this.templates, templates);
+    }
     this.configure();
   }
 
@@ -88,6 +100,11 @@ export class layout {
     let template = this.templates[field.layout] || this.templates.default;
     let element = template(field.field, label, help, this.data);
 
+    // handle templates returning jQuery elements
+    if (element.jquery) {
+      element = element[0];
+    }
+
     // bind control on render events
     element.addEventListener('fieldRendered', control.on('render'));
     return element;
@@ -105,6 +122,11 @@ export class layout {
       labelContents.push(this.markup('span', '*', {className: 'required'}));
     }
 
+    // support an override template for labels
+    if (typeof this.templates.label === 'function') {
+      return this.templates.label(labelContents, this.data);
+    }
+
     // generate a label element
     return this.markup('label', labelContents, {
       for: this.data.id,
@@ -120,6 +142,13 @@ export class layout {
     if (!this.data.description) {
       return null;
     }
+
+    // support an override template for labels
+    if (typeof this.templates.help === 'function') {
+      return this.templates.help(this.data.description, this.data);
+    }
+
+    // generate the default help element
     return this.markup('span', '?', {
       className: 'tooltip-element',
       tooltip: this.data.description

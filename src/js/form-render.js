@@ -5,6 +5,7 @@ import {config} from './config';
 import {defaultSubtypes} from './dom';
 import {control} from './control';
 import {controlClasses} from './control/index';
+import {controlCustom} from './control/custom';
 
 // @todo: prototype.js compatibility
 class FormRender {
@@ -18,6 +19,9 @@ class FormRender {
     // initialise defaults & options
     let defaults = {
       layout: layout, // by default use the layout class, but support a child class being defined & passed as an option
+      layoutTemplates: {}, // allow custom override layout templates to be defined
+      controls: {}, // custom controls
+      controlConfig: {}, // additional configuration for controls
       destroyTemplate: true, // @todo - still needed?
       container: false,
       dataType: 'json',
@@ -143,7 +147,7 @@ class FormRender {
     if (opts.formData) {
 
       // instantiate the layout class & loop through the field configuration
-      let engine = new opts.layout(element, opts.render);
+      let engine = new opts.layout(opts.layoutTemplates);
       for (var i = 0; i < opts.formData.length; i++) {
         let fieldData = opts.formData[i];
         let sanitizedField = santizeField(fieldData);
