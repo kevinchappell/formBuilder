@@ -1,7 +1,6 @@
 import Dom from './dom';
 import {
-  Data,
-  availablefields as aFields
+  Data
 } from './data';
 import mi18n from 'mi18n';
 import utils from './utils';
@@ -55,13 +54,6 @@ const FormBuilder = function(opts, element) {
   let controls = control.getRegistered();
   controls = helpers.orderFields(controls);
 
-  // let frmbFields = helpers.orderFields(opts.fields);
-  // backwards compatibility - reproduce aFields mapping
-  for (let field of opts.fields) {
-    let attrs = field.attrs || {};
-    aFields[attrs.type] = field;
-  }
-
   // remove disableFields
   if (opts.disableFields) {
     controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
@@ -77,7 +69,6 @@ const FormBuilder = function(opts, element) {
 
   // add each control to the interface
   let controlIndex = 0;
-  let controlMap = {};
   for (let type of controls) {
 
     // determine the class, icon & label for this control
@@ -103,27 +94,8 @@ const FormBuilder = function(opts, element) {
     d.controls.appendChild(newFieldControl);
 
     // map for later access
-    controlMap[type] = controlClass; // should be able to replace aFields
     controlIndex++;
   }
-
-  //   // Loop through fmrbFields
-  // utils.forEach(frmbFields, (i) => {
-  //   let {attrs, icon, ...field} = frmbFields[i];
-  //   let controlLabel = field.label;
-  //   let iconClassName = !icon ? `icon-${attrs.name || attrs.type}` : '';
-  //   if (icon) {
-  //     controlLabel = `<span class="control-icon">${icon}</span>${field.label}`;
-  //   }
-  //   let newFieldControl = m('li',
-  //     m('span', controlLabel),
-  //     {className: `${iconClassName} input-control input-control-${i}`}
-  //   );
-  //
-  //   aFields[attrs.type] = frmbFields[i];
-  //   newFieldControl.dataset.type = attrs.type;
-  //   d.controls.appendChild(newFieldControl);
-  // });
 
   if (opts.inputSets.length) {
     $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
@@ -286,13 +258,18 @@ const FormBuilder = function(opts, element) {
     return cancelArray.some(elem => elem === true);
   };
 
+  // builds the standard formbuilder datastructure for a feild definition
   let prepFieldVars = function($field, isNew = false) {
     let field = {};
     if ($field instanceof jQuery) {
-      let {attrs, label} = aFields[$field[0].dataset.type];
-      if (aFields[$field[0].dataset.type]) {
-        field = Object.assign({}, attrs);
-        field.label = label;
+
+      // get the default type etc & label for this field
+      field.type = $field[0].dataset.type;
+      if (field.type) {
+        let controlClass = control.getClass(field.type);
+        field.label = controlClass.label(field.type);
+        // @todo: any other attrs ever set in aFields? value or selected?
+
       } else { // is dataType XML
         let attrs = $field[0].attributes;
         if (!isNew) {
