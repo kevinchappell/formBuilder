@@ -77,7 +77,6 @@ const FormBuilder = function(opts, element) {
   // add each control to the interface
   let controlIndex = 0;
   for (let type of controls) {
-
     // determine the class, icon & label for this control
     let controlClass = control.getClass(type);
     if (!controlClass || !controlClass.active(type)) {
@@ -85,7 +84,7 @@ const FormBuilder = function(opts, element) {
     }
     let icon = controlClass.icon(type);
     let label = controlClass.label(type);
-    let iconClassName = !icon ? `icon-${type}` : ''; // @todo ${attrs.name} ?? what is this for, what sets it? It appears unused
+    let iconClassName = !icon ? `icon-${type}` : '';
 
     // if the class has specified a custom icon, inject it into the label
     if (icon) {

@@ -709,7 +709,6 @@ export default class Helpers {
   orderFields(controls) {
     const opts = config.opts;
     let fieldOrder = false;
-    let newOrderFields = [];
 
     // retrieve any saved ordering from the session
     if (window.sessionStorage) {
@@ -730,7 +729,8 @@ export default class Helpers {
         return fieldOrder[i];
       });
     }
-    return fieldOrder;
+
+    return fieldOrder.filter(Boolean);
   }
 
   /**
@@ -989,7 +989,6 @@ export default class Helpers {
    */
   processOptions(options) {
     const _this = this;
-    let {fields = [], templates, ...opts} = options;
     let actionButtons = [{
       id: 'clear',
       className: 'clear-all btn btn-danger',
@@ -1014,7 +1013,7 @@ export default class Helpers {
         }
       }
     }];
-    config.opts = Object.assign({}, {actionButtons}, opts);
+    config.opts = Object.assign({}, {actionButtons}, options);
     return config.opts;
   }
 

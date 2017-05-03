@@ -29,7 +29,7 @@ export class control {
     // default fields
     if (!config.id) {
       config.id = config.name || 'control-' + Math.floor((Math.random() * 10000000) + 1);
-    };
+    }
     this.id = config.id;
     this.type = config.type;
     if (this.description) {
@@ -159,7 +159,7 @@ export class control {
    * @param controls
    */
   static loadCustom(controls) {
-    let controlClasses = new Array();
+    let controlClasses = [];
     if (controls) {
       controlClasses = controlClasses.concat(controls);
     }
