@@ -95,6 +95,34 @@ It is possible to override a layout template by passing an object of overriding 
 
 For more control, it is possible to create a class that inherits from the `layout` class and pass this class as a `layout` option to `formBuilder` of `formRender`. 
 
+## Customising main layouts
+```javascript
+layoutTemplates: {
+  default: function(field, label, help) {
+    help = $('<div/>')
+      .addClass('helpme')
+      .append(help);
+    return $('<div/>').append(label, field, help);
+  }
+}
+```
+
+## Customising label & help layouts
+```javascript
+layoutTemplates: {
+  help: function(helpText) {
+    
+    // cheeky styling
+    return $('<div class="bright" style="margin-bottom:15px;color:#999;font-style:italic;"/>').append(helpText);
+  },
+  label: function(label) {
+    return $('<div/>')
+      .addClass('bright')
+      .append(label);
+  }
+}
+```
+
 ## Key methods
 
   * `constructor` - defines the default templates, merges in override templates, default configuration
