@@ -18,7 +18,7 @@ Key files / folders:
  
  For an example in of how to [**create a new control**](control/), check out the Readme.md in the `control/` directory. 
  
- For an example in of how to [**create a new control plugin**](control/), check out the Readme.md in the `control/` directory.
+ For an example in of how to [**create a new control plugin**](control_plugins/), check out the Readme.md in the `control/` directory.
  
  The parent class defined in `control.js` has two types of methods:
    * object level methods which are used to manipulate and create an instance of that control on a form
@@ -31,8 +31,8 @@ The following methods are static methods designed to be called on the class. E.g
   * `getClass` - retrieve the registered `control` class for a specified `type`
   * `getRegistered` - used to retrieve an array of registered `types` (or `subtypes` of a specified `type`)
   * Child methods - these class level methods only rea lly make sense being called on individual child control classes. Those are grouped below. E.g. `let textLabel = control.getClass('text').label('text');`
-    * `get definition` - child method - a getter method to define a static property for each `control` class. This method returns an object containing information about that types it represents, accessible through the `controlClass.definition` property. See '[Control definitions](#Control-definitions)' below for more detail. 
-    * `mi18n` - child method - a wrapper to the `mi18n` that retrieves the translation for a specified lookup key - but checks i18n overrides or mi18n lookup key mapping in the class definition. (See [Control definitions](#Control-definitions) below for more details).
+    * `get definition` - child method - a getter method to define a static property for each `control` class. This method returns an object containing information about that types it represents, accessible through the `controlClass.definition` property. See '[Control definitions](#control-definitions)' below for more detail. 
+    * `mi18n` - child method - a wrapper to the `mi18n` that retrieves the translation for a specified lookup key - but checks i18n overrides or mi18n lookup key mapping in the class definition. (See [Control definitions](#control-definitions) below for more details).
     * `label` - retrieves the label for a specified type
     * `active` - ensure the specified type is not defined as inactive
     * `icon` - retrieve the icon for this type
