@@ -29,7 +29,8 @@ const FormBuilder = function(opts, element) {
   }
   const layoutEngine = new opts.layout(opts.layoutTemplates, true);
 
-  // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
+  // ability for controls to have their own configuration / options
+  // of the format control identifier (type, or type.subtype): {options}
   control.controlConfig = opts.controlConfig || {};
 
   const h = new Helpers(formID, layoutEngine);
