@@ -118,7 +118,7 @@ export class control {
   }
 
   /**
-   * Looks up the classRegister & returns all registered subtypes
+   * Retrieves an object of types mapped to an array of subtypes. Only returns types that have subtypes
    * @return an object containing {type: array of subtypes}.
    */
   static getRegisteredSubtypes() {
