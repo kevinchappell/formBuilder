@@ -111,13 +111,14 @@ layoutTemplates: {
 ```javascript
 layoutTemplates: {
   help: function(helpText) {
-    
-    // cheeky styling
-    return $('<div class="bright" style="margin-bottom:15px;color:#999;font-style:italic;"/>').append(helpText);
+    return $('<div/>')
+      .addClass('help')
+      .append(helpText);
   },
   label: function(label) {
-    return $('<div/>')
-      .addClass('bright')
+    
+    // cheeky styling
+    return $('<div class="bright" style="margin-top:15px;"/>')
       .append(label);
   }
 }
