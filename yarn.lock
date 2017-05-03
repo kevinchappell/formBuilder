@@ -3155,6 +3155,15 @@ gulp-header@^1.8.8:
     object-assign "*"
     through2 "^2.0.0"
 
+gulp-iife@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/gulp-iife/-/gulp-iife-0.3.0.tgz#8a748c8e973dd0c674e8c5739d917d477371485b"
+  dependencies:
+    lodash "^3.6.0"
+    source-map "^0.5.3"
+    through2 "^2.0.0"
+    vinyl-sourcemaps-apply "^0.2.1"
+
 gulp-load-plugins@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/gulp-load-plugins/-/gulp-load-plugins-1.5.0.tgz#4c419f7e5764d9a0e33061bab9618f81b73d4171"
@@ -3173,6 +3182,13 @@ gulp-plumber@^1.1.0:
   dependencies:
     gulp-util "^3"
     through2 "^2"
+
+gulp-regex-rename@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/gulp-regex-rename/-/gulp-regex-rename-0.1.0.tgz#25ab98f79a03d9d67a5dab6baafb35d34187a044"
+  dependencies:
+    gulp-util "^3.0.4"
+    through2 "^0.6.3"
 
 gulp-rename@~1.1.0:
   version "1.1.0"
@@ -3226,7 +3242,7 @@ gulp-uglify@^2.0.1:
     uglify-save-license "^0.4.1"
     vinyl-sourcemaps-apply "^0.2.0"
 
-gulp-util@*, gulp-util@^3, gulp-util@^3.0, gulp-util@^3.0.0, gulp-util@^3.0.6:
+gulp-util@*, gulp-util@^3, gulp-util@^3.0, gulp-util@^3.0.0, gulp-util@^3.0.4, gulp-util@^3.0.6:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
@@ -4320,7 +4336,7 @@ lodash.values@~2.4.1:
   dependencies:
     lodash.keys "~2.4.1"
 
-lodash@^3.10.1:
+lodash@^3.10.1, lodash@^3.6.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
@@ -6363,7 +6379,7 @@ subarg@^1.0.0:
   dependencies:
     minimist "^1.1.0"
 
-supports-color@3.1.2:
+supports-color@3.1.2, supports-color@^3.1.0, supports-color@^3.1.1:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.1.2.tgz#72a262894d9d408b956ca05ff37b2ed8a6e2a2d5"
   dependencies:
@@ -6377,7 +6393,7 @@ supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
-supports-color@^3.1.0, supports-color@^3.1.1, supports-color@^3.2.3:
+supports-color@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.2.3.tgz#65ac0504b3954171d8a64946b2ae3cbb8a5f54f6"
   dependencies:
@@ -6479,7 +6495,7 @@ through2@^0.5.0:
     readable-stream "~1.0.17"
     xtend "~3.0.0"
 
-through2@^0.6.1:
+through2@^0.6.1, through2@^0.6.3:
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/through2/-/through2-0.6.5.tgz#41ab9c67b29d57209071410e1d7a7a968cd3ad48"
   dependencies:
@@ -6777,7 +6793,7 @@ vinyl-source-stream@^1.1.0:
     through2 "^0.6.1"
     vinyl "^0.4.3"
 
-vinyl-sourcemaps-apply@^0.2.0:
+vinyl-sourcemaps-apply@^0.2.0, vinyl-sourcemaps-apply@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/vinyl-sourcemaps-apply/-/vinyl-sourcemaps-apply-0.2.1.tgz#ab6549d61d172c2b1b87be5c508d239c8ef87705"
   dependencies:
