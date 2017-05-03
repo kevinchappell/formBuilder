@@ -24,7 +24,10 @@ const FormBuilder = function(opts, element) {
   const d = new Dom(formID);
 
   // prepare a new layout object with appropriate templates
-  const layoutEngine = new layout(opts.layoutTemplates, true);
+  if (!opts.layout) {
+    opts.layout = layout;
+  }
+  const layoutEngine = new opts.layout(opts.layoutTemplates, true);
 
   const helpers = new Helpers(formID, layoutEngine);
   const m = utils.markup;
