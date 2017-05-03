@@ -710,8 +710,6 @@ export default class Helpers {
 
     // if we have a saved order, use it. Otherwise build the order ourselves
     if (!fieldOrder) {
-      // let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
-      //   field.attrs.type));
       let controlOrder = opts.controlOrder.concat(controls);
       fieldOrder = utils.unique(controlOrder);
     } else {
@@ -722,47 +720,6 @@ export default class Helpers {
     }
     return fieldOrder;
   }
-
-  // /**
-  //  * Reorder the controls if the user has previously ordered them.
-  //  *
-  //  * @param  {Array} frmbFields
-  //  * @return {Array} ordered fields
-  //  */
-  // orderFields(frmbFields) {
-  //   const opts = config.opts;
-  //   let fieldOrder = false;
-  //   let newOrderFields = [];
-  //
-  //   if (window.sessionStorage) {
-  //     if (opts.sortableControls) {
-  //       fieldOrder = window.sessionStorage.getItem('fieldOrder');
-  //     } else {
-  //       window.sessionStorage.removeItem('fieldOrder');
-  //     }
-  //   }
-  //
-  //   if (!fieldOrder) {
-  //     let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
-  //       field.attrs.type));
-  //     fieldOrder = utils.unique(controlOrder);
-  //   } else {
-  //     fieldOrder = window.JSON.parse(fieldOrder);
-  //     fieldOrder = Object.keys(fieldOrder).map(function(i) {
-  //       return fieldOrder[i];
-  //     });
-  //   }
-  //
-  //
-  //   fieldOrder.forEach((fieldType) => {
-  //     let field = frmbFields.filter(function(field) {
-  //       return field.attrs.type === fieldType;
-  //     })[0];
-  //     newOrderFields.push(field);
-  //   });
-  //
-  //   return newOrderFields.filter(Boolean);
-  // }
 
   /**
    * Close fields being editing
@@ -1039,83 +996,7 @@ export default class Helpers {
         }
       }
     }];
-
-    let defaultFields = [
-      {
-        label: mi18n.get('autocomplete'),
-        attrs: {
-          type: 'autocomplete'
-        }
-      }, {
-        label: mi18n.get('button'),
-        attrs: {
-          type: 'button',
-        }
-      }, {
-        label: mi18n.get('checkboxGroup'),
-        attrs: {
-          type: 'checkbox-group',
-        }
-      }, {
-        label: mi18n.get('dateField'),
-        attrs: {
-          type: 'date',
-        }
-      }, {
-        label: mi18n.get('fileUpload'),
-        attrs: {
-          type: 'file',
-        }
-      }, {
-        label: mi18n.get('header'),
-        attrs: {
-          type: 'header',
-        }
-      }, {
-        label: mi18n.get('hidden'),
-        attrs: {
-          type: 'hidden',
-        }
-      }, {
-        label: mi18n.get('number'),
-        attrs: {
-          type: 'number',
-        }
-      }, {
-        label: mi18n.get('paragraph'),
-        attrs: {
-          type: 'paragraph',
-        }
-      }, {
-        label: mi18n.get('radioGroup'),
-        attrs: {
-          type: 'radio-group',
-        }
-      }, {
-        label: mi18n.get('select'),
-        attrs: {
-          type: 'select',
-        }
-      }, {
-        label: mi18n.get('text'),
-        attrs: {
-          type: 'text',
-        }
-      }, {
-        label: mi18n.get('textArea'),
-        attrs: {
-          type: 'textarea'
-        }
-      }
-    ];
-
-    opts.fields = fields.concat(defaultFields);
-    config.opts = Object.assign({}, {actionButtons, templates, fields}, opts);
-    let userTemplates = Object.keys(config.opts.templates).map(key => {
-      return [key, config.opts.templates[key]];
-    });
-    utils.templates = utils.templates.concat(userTemplates);
-
+    config.opts = Object.assign({}, {actionButtons}, opts);
     return config.opts;
   }
 
