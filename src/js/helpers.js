@@ -4,6 +4,7 @@ import utils from './utils';
 import events from './events';
 import mi18n from 'mi18n';
 import {config} from './config';
+import {control} from './control';
 
 const opts = config.opts;
 const m = utils.markup;
@@ -15,11 +16,13 @@ export default class Helpers {
   /**
    * Setup defaults, get instance data and dom
    * @param  {String} formID [description]
+   * @param {layout} layout object instance used by various helpers
    */
-  constructor(formID) {
+  constructor(formID, layout) {
     this.data = instanceData[formID];
     this.d = instanceDom[formID];
     this.doCancel = false;
+    this.layout = layout;
   }
 
   /**
@@ -364,7 +367,10 @@ export default class Helpers {
     $('.fld-className', field).val(previewData.className);
 
     $field.data('fieldData', previewData);
-    preview = utils.getTemplate(previewData, true);
+
+    // determine the control class for this type, and then process it through the layout engine
+    let controlClass = control.getClass(previewData.type, previewData.subtype);
+    preview = this.layout.build(controlClass, previewData);
 
     empty($prevHolder[0]);
     $prevHolder[0].appendChild(preview);
@@ -685,14 +691,15 @@ export default class Helpers {
   /**
    * Reorder the controls if the user has previously ordered them.
    *
-   * @param  {Array} frmbFields
+   * @param  {Array} controls - an array of control types
    * @return {Array} ordered fields
    */
-  orderFields(frmbFields) {
+  orderFields(controls) {
     const opts = config.opts;
     let fieldOrder = false;
     let newOrderFields = [];
 
+    // retrieve any saved ordering from the session
     if (window.sessionStorage) {
       if (opts.sortableControls) {
         fieldOrder = window.sessionStorage.getItem('fieldOrder');
@@ -701,9 +708,9 @@ export default class Helpers {
       }
     }
 
+    // if we have a saved order, use it. Otherwise build the order ourselves
     if (!fieldOrder) {
-      let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
-        field.attrs.type));
+      let controlOrder = opts.controlOrder.concat(controls);
       fieldOrder = utils.unique(controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
@@ -711,16 +718,7 @@ export default class Helpers {
         return fieldOrder[i];
       });
     }
-
-
-    fieldOrder.forEach((fieldType) => {
-      let field = frmbFields.filter(function(field) {
-        return field.attrs.type === fieldType;
-      })[0];
-      newOrderFields.push(field);
-    });
-
-    return newOrderFields.filter(Boolean);
+    return fieldOrder;
   }
 
   /**
@@ -912,28 +910,39 @@ export default class Helpers {
   }
 
   /**
-   * Cross link subtypes and define markup config
+   * Register any subtype controls specified in the 'subtypes' option, retrieve
+   * all defined subtypes & build the export subtype format
    * @param  {Array} subtypeOpts
    * @return {Array} subtypes
    */
   processSubtypes(subtypeOpts) {
+
+    // first register any passed subtype options against the appropriate type control class
+    for (let type in subtypeOpts) {
+      let controlClass = control.getClass(type);
+      control.register(subtypeOpts[type], controlClass, type);
+    }
+
+    // retrieve a list of all subtypes
+    let subtypeDef = control.getRegisteredSubtypes();
+    console.log('Subtypes are', subtypes);
+
+    // reformat the subtypes for each type
     let subtypes = {};
-    const subtypeFormat = subtype => {
-        return {
-          label: mi18n.get(subtype),
+    for (let type in subtypeDef) {
+
+      // loop through each define subtype & build the formatted data structure
+      let formatted = new Array();
+      for (let subtype of subtypeDef[type]) {
+        let controlClass = control.getClass(type, subtype);
+        formatted.push({
+          label: controlClass.mi18n(subtype),
           value: subtype
-        };
-      };
-
-      config.subtypes = utils.merge(defaultSubtypes, subtypeOpts);
-
-      for (let subtype in config.subtypes) {
-        if (config.subtypes.hasOwnProperty(subtype)) {
-          subtypes[subtype] = config.subtypes[subtype].map(subtypeFormat);
-        }
+        });
       }
-
-      return subtypes;
+      subtypes[type] = formatted;
+    }
+    return subtypes;
   }
 
   /**
@@ -987,83 +996,7 @@ export default class Helpers {
         }
       }
     }];
-
-    let defaultFields = [
-      {
-        label: mi18n.get('autocomplete'),
-        attrs: {
-          type: 'autocomplete'
-        }
-      }, {
-        label: mi18n.get('button'),
-        attrs: {
-          type: 'button',
-        }
-      }, {
-        label: mi18n.get('checkboxGroup'),
-        attrs: {
-          type: 'checkbox-group',
-        }
-      }, {
-        label: mi18n.get('dateField'),
-        attrs: {
-          type: 'date',
-        }
-      }, {
-        label: mi18n.get('fileUpload'),
-        attrs: {
-          type: 'file',
-        }
-      }, {
-        label: mi18n.get('header'),
-        attrs: {
-          type: 'header',
-        }
-      }, {
-        label: mi18n.get('hidden'),
-        attrs: {
-          type: 'hidden',
-        }
-      }, {
-        label: mi18n.get('number'),
-        attrs: {
-          type: 'number',
-        }
-      }, {
-        label: mi18n.get('paragraph'),
-        attrs: {
-          type: 'paragraph',
-        }
-      }, {
-        label: mi18n.get('radioGroup'),
-        attrs: {
-          type: 'radio-group',
-        }
-      }, {
-        label: mi18n.get('select'),
-        attrs: {
-          type: 'select',
-        }
-      }, {
-        label: mi18n.get('text'),
-        attrs: {
-          type: 'text',
-        }
-      }, {
-        label: mi18n.get('textArea'),
-        attrs: {
-          type: 'textarea'
-        }
-      }
-    ];
-
-    opts.fields = fields.concat(defaultFields);
-    config.opts = Object.assign({}, {actionButtons, templates, fields}, opts);
-    let userTemplates = Object.keys(config.opts.templates).map(key => {
-      return [key, config.opts.templates[key]];
-    });
-    utils.templates = utils.templates.concat(userTemplates);
-
+    config.opts = Object.assign({}, {actionButtons}, opts);
     return config.opts;
   }
 

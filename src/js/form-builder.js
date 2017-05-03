@@ -1,13 +1,16 @@
 import Dom from './dom';
 import {
-  Data,
-  availablefields as aFields
+  Data
 } from './data';
 import mi18n from 'mi18n';
 import utils from './utils';
 import events from './events';
+import {layout} from './layout';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
+import {control} from './control';
+import {controlClasses} from './control/index';
+import {controlCustom} from './control/custom';
 
 require('./polyfills.js').default;
 
@@ -19,10 +22,28 @@ const FormBuilder = function(opts, element) {
   const formID = 'frmb-' + instanceTime++;
   const data = new Data(formID);
   const d = new Dom(formID);
-  const helpers = new Helpers(formID);
+
+  // prepare a new layout object with appropriate templates
+  if (!opts.layout) {
+    opts.layout = layout;
+  }
+  const layoutEngine = new opts.layout(opts.layoutTemplates, true);
+
+  // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
+  control.controlConfig = opts.controlConfig || {};
+
+  const helpers = new Helpers(formID, layoutEngine);
   const m = utils.markup;
 
   const originalOpts = opts;
+
+  // load in any custom specified controls, or preloaded plugin controls
+  control.loadCustom(opts.controls);
+
+  // register any passed custom templates & fields
+  if (Object.keys(opts.fields).length) {
+    controlCustom.register(opts.templates, opts.fields);
+  }
 
   opts = helpers.processOptions(opts);
 
@@ -35,38 +56,52 @@ const FormBuilder = function(opts, element) {
   data.formID = formID;
   data.lastID = `${data.formID}-fld-1`;
 
-  let frmbFields = helpers.orderFields(opts.fields);
+  // retrieve a full list of loaded controls
+  let controls = control.getRegistered();
+  controls = helpers.orderFields(controls);
 
+  // remove disableFields
   if (opts.disableFields) {
-    // remove disabledFields
-    frmbFields = frmbFields.filter(function(field) {
-      return !utils.inArray(field.attrs.type, opts.disableFields);
-    });
+    controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
   }
 
+  // if we support rearranging control order, add classes to support this
   if (opts.sortableControls) {
     d.controls.classList.add('sort-enabled');
   }
 
+  // DOM element to hold the list of controls
   let $cbUL = $(d.controls);
 
-  // Loop through fmrbFields
-  utils.forEach(frmbFields, (i) => {
-    let {attrs, icon, ...field} = frmbFields[i];
-    let controlLabel = field.label;
-    let iconClassName = !icon ? `icon-${attrs.name || attrs.type}` : '';
-    if (icon) {
-      controlLabel = `<span class="control-icon">${icon}</span>${field.label}`;
-    }
-    let newFieldControl = m('li',
-      m('span', controlLabel),
-      {className: `${iconClassName} input-control input-control-${i}`}
-    );
+  // add each control to the interface
+  let controlIndex = 0;
+  for (let type of controls) {
 
-    aFields[attrs.type] = frmbFields[i];
-    newFieldControl.dataset.type = attrs.type;
+    // determine the class, icon & label for this control
+    let controlClass = control.getClass(type);
+    if (!controlClass || !controlClass.active(type)) {
+      continue;
+    }
+    let icon = controlClass.icon(type);
+    let label = controlClass.label(type);
+    let iconClassName = !icon ? `icon-${type}` : ''; // @todo ${attrs.name} ?? what is this for, what sets it? It appears unused
+
+    // if the class has specified a custom icon, inject it into the label
+    if (icon) {
+      label = `<span class="control-icon">${icon}</span>${label}`;
+    }
+
+    // build & insert the new list item to represent this control
+    let newFieldControl = m('li',
+      m('span', label),
+      {className: `${iconClassName} input-control input-control-${controlIndex}`}
+    );
+    newFieldControl.dataset.type = type;
     d.controls.appendChild(newFieldControl);
-  });
+
+    // map for later access
+    controlIndex++;
+  }
 
   if (opts.inputSets.length) {
     $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
@@ -229,13 +264,18 @@ const FormBuilder = function(opts, element) {
     return cancelArray.some(elem => elem === true);
   };
 
+  // builds the standard formbuilder datastructure for a feild definition
   let prepFieldVars = function($field, isNew = false) {
     let field = {};
     if ($field instanceof jQuery) {
-      let {attrs, label} = aFields[$field[0].dataset.type];
-      if (aFields[$field[0].dataset.type]) {
-        field = Object.assign({}, attrs);
-        field.label = label;
+
+      // get the default type etc & label for this field
+      field.type = $field[0].dataset.type;
+      if (field.type) {
+        let controlClass = control.getClass(field.type);
+        field.label = controlClass.label(field.type);
+        // @todo: any other attrs ever set in aFields? value or selected?
+
       } else { // is dataType XML
         let attrs = $field[0].attributes;
         if (!isNew) {
@@ -918,10 +958,12 @@ const FormBuilder = function(opts, element) {
       'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
     ).outerHTML;
 
+    // add the label
     liContents += `<label class="field-label">${utils.parsedHtml(label)}</label>`;
     let requiredDisplay = values.required ? 'style="display:inline"' : '';
     liContents += `<span class="required-asterisk" ${requiredDisplay}> *</span>`;
 
+    // add the help icon
     let descAttrs = {
       className: 'tooltip-element',
       tooltip: values.description,
@@ -957,6 +999,7 @@ const FormBuilder = function(opts, element) {
     $('.sortable-options', $li)
     .sortable({update: () => helpers.updatePreview($li)});
 
+    // generate the control, insert it into the list item & add it to the stage
     helpers.updatePreview($li);
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {

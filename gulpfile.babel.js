@@ -178,6 +178,19 @@ gulp.task('js', function() {
   jsFiles.set('formBuilder', files.formBuilder.js);
   jsFiles.set('formRender', files.formRender.js);
 
+  // plugins
+  gulp.src('src/js/control_plugins/*.es5.js')
+    .pipe(plugins.regexRename(/\.es5\.js$/, '.js'))
+    .pipe(plugins.iife({
+      useStrict: false,
+      params: ['$'],
+      args: ['jQuery']
+    }))
+    .pipe(plugins.uglify())
+    .pipe(gulp.dest('demo/assets/js/control_plugins'))
+    .pipe(gulp.dest('dist/control_plugins'));
+
+
   return jsFiles.forEach(function(jsFileGlob, key) {
     const fileName = rename(key);
     return browserified(jsFileGlob)
@@ -187,6 +200,11 @@ gulp.task('js', function() {
     .pipe(plugins.plumber())
     .pipe(banner())
     .pipe(plugins.concat(fileName + '.js'))
+    .pipe(plugins.iife({
+      useStrict: false,
+      params: ['$'],
+      args: ['jQuery']
+    }))
     .pipe(gulp.dest('demo/assets/js/'))
     .pipe(gulp.dest('dist/'))
     .pipe(plugins.uglify())
@@ -206,6 +224,23 @@ gulp.task('devJS', function() {
   jsFiles.set('formBuilder', files.formBuilder.js);
   jsFiles.set('formRender', files.formRender.js);
 
+  // plugins
+  gulp.src('src/js/control_plugins/*.es5.js')
+    .pipe(plugins.regexRename(/\.es5\.js$/, '.js'))
+    .pipe(plugins.plumber())
+    .pipe(plugins.sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(plugins.iife({
+      useStrict: false,
+      params: ['$'],
+      args: ['jQuery']
+    }))
+    .pipe(plugins.uglify())
+    .on('control plugin error', console.log)
+    .pipe(plugins.sourcemaps.write('/'))
+    .pipe(gulp.dest('demo/assets/js/control_plugins'));
+
   return jsFiles.forEach(function(jsFileGlob, key) {
     const fileName = rename(key);
     // Demo scripts minified
@@ -216,6 +251,11 @@ gulp.task('devJS', function() {
       .pipe(plugins.plumber())
       .pipe(plugins.sourcemaps.init({
         loadMaps: true
+      }))
+      .pipe(plugins.iife({
+        useStrict: false,
+        params: ['$'],
+        args: ['jQuery']
       }))
       .pipe(plugins.uglify())
       .on('error', console.log)
