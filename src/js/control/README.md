@@ -14,7 +14,7 @@ Key steps to creating a new control:
   * define a `onRender` method. Receives an `event` parameter, and is called when the `DOMElement` from `build` is inserted into the interface. This method is especially useful for controls that require javascript to render correctly - e.g. rich text editors.
   * call `control.register` to register your new control types.
     
-## Loading external javascript & CSS
+# Loading external javascript & CSS
 
 To load in external javascript & CSS set `this.js` or `this.css` as appropriate to a file, or an array of files. 
 
@@ -33,6 +33,27 @@ To register new subtypes, call the `register` method with 3 args:
 
 If your new class inherits from another child class, you should conform to the naming scheme <parentFile>.<thisClass>.js. E.g check out textarea.tinymce.js which extends the `controlTextarea` control class. In this situation, it is often easier to simply call the register method on the parent class - e.g. in this case `controlTextarea.register(subtypes, controlNewClass, 'textarea');` - however this makes no tangible difference aside from not having to import the `control` class.
 
-## Examples
+# Supporting user configuration of controls
+
+For a lot of controls, it is entirely feasible that the user will want to customise that control on a case by case basis. Rather than forcing them to create a whole new control, you can allow you control to be configured by using the `controlConfig` option with formBuilder or formRender.
+
+This option expects an object with keys for the names of controls to specify an object of configuration for. This configuration is then exposed to the control in `this.classConfig`.
+
+Have a look at `src/js/control/textarea.tinymce.js` for an example of a control that supports configuring. Rich text editors regularly require this type of configuration - customising toolbars, adding in plugins etc.
+
+```javascript
+var renderOpts = {
+  controlConfig: {
+    'textarea.tinymce': {
+      paste_data_images: false
+    }
+  }
+};
+
+// inside the tinymce control class this is available as this.classConfig.paste_data_images
+
+```
+
+# Examples
 
 For an example just look at any of the controls in this directory.
