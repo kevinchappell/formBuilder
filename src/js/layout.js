@@ -95,13 +95,8 @@ export class layout {
     let help = this.help();
 
     // process the relevant layout template
-    let template = this.templates[field.layout] || this.templates.default;
-    let element = template(field.field, label, help, this.data);
-
-    // handle templates returning jQuery elements
-    if (element.jquery) {
-      element = element[0];
-    }
+    let elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default';
+    let element = this.processTemplate(elementTemplate, field.field, label, help);
 
     // execute prerender events
     control.on('prerender')(element);
@@ -124,8 +119,8 @@ export class layout {
     }
 
     // support an override template for labels
-    if (typeof this.templates.label === 'function') {
-      return this.templates.label(labelContents, this.data);
+    if (this.isTemplate('label')) {
+      return this.processTemplate('label', labelContents);
     }
 
     // generate a label element
@@ -145,8 +140,8 @@ export class layout {
     }
 
     // support an override template for labels
-    if (typeof this.templates.help === 'function') {
-      return this.templates.help(this.data.description, this.data);
+    if (this.isTemplate('help')) {
+      return this.processTemplate('help', this.data.description);
     }
 
     // generate the default help element
@@ -154,6 +149,29 @@ export class layout {
       className: 'tooltip-element',
       tooltip: this.data.description
     });
+  }
+
+  /**
+   * Determines if a template is defined for the specified key
+   * @param template string template key to check for
+   * @return {Boolean}
+   */
+  isTemplate(template) {
+    return typeof this.templates[template] === 'function';
+  }
+
+  /**
+   * Process a template & prepare the results
+   * @param template - template key to execute
+   * @param args - any number of args that should be passed to the template. this.data is sent as the last parameter to any template.
+   * @return {DOMElement}
+   */
+  processTemplate(template, ...args) {
+    let processed = this.templates[template](...args, this.data);
+    if (processed.jquery) {
+      processed = processed[0];
+    }
+    return processed;
   }
 
   /**
