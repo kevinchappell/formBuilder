@@ -1192,6 +1192,15 @@ const FormBuilder = function(opts, element) {
       return false;
     }
   });
+  $stage.on('dblclick', 'li.form-field, .field-label', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (e.handled !== true) {
+      let targetID = e.target.tagName == 'li' ? $(e.target).attr('id') : $(e.target).closest('li.form-field').attr('id');
+      helpers.toggleEdit(targetID);
+      e.handled = true;
+    }
+  });
 
   $stage.on('change', '[name="subtype"]', (e) => {
     const $field = $(e.target).closest('li.form-field');
