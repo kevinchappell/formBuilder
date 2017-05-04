@@ -91,16 +91,17 @@ The default layout puts an help text into a '?' tooltip, and embeds this within 
 
 The layout class defines multiple `templates` which are used to render different types of controls. The primary predefined templates are  `default` (typical control), `noLabel` (controls only the control should be returned), or `hidden` where the 'naked' control should be output (with no wrapping divs). The `build` method of a `control` can indicate which template should be used to render that particular control. E.g. `control/hidden.js` defines the `hidden` template to be used. 
 
-It is possible to override a layout template by passing an object of overriding `templates` to the constructor. Both `formBuilder.js` and `formRender.js` support an option `layoutTemplates` which achieves this.
+It is possible to override a layout template by passing an object of overriding `templates` to the constructor. Both `formBuilder.js` and `formRender.js` support an option `layoutTemplates` which achieves this. Each layout template should be a function that receives a variety of parameters (by default templates receive field, label, help and data). The last parameter for any template will be the object of data for this 'row' of the form.
 
 For more control, it is possible to create a class that inherits from the `layout` class and pass this class as a `layout` option to `formBuilder` of `formRender`. 
 
 ## Customising main layouts
 ```javascript
 layoutTemplates: {
-  default: function(field, label, help) {
+  default: function(field, label, help, data) {
     help = $('<div/>')
       .addClass('helpme')
+      .attr('id', 'row-' + data.id)
       .append(help);
     return $('<div/>').append(label, field, help);
   }
@@ -115,10 +116,11 @@ layoutTemplates: {
       .addClass('help')
       .append(helpText);
   },
-  label: function(label) {
+  label: function(label, data) {
     
     // cheeky styling
-    return $('<div class="bright" style="margin-top:15px;"/>')
+    return $('<label class="bright" style="margin-top:15px;"/>')
+      .attr('for', data.id)
       .append(label);
   }
 }
