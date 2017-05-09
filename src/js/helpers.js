@@ -1,9 +1,15 @@
-import {instanceDom, defaultSubtypes, empty, optionFieldsRegEx} from './dom';
+import {
+  instanceDom,
+  empty,
+  optionFieldsRegEx,
+  remove
+} from './dom';
 import {instanceData} from './data';
 import utils from './utils';
 import events from './events';
 import mi18n from 'mi18n';
 import {config} from './config';
+import control from './control';
 
 const opts = config.opts;
 const m = utils.markup;
@@ -15,11 +21,13 @@ export default class Helpers {
   /**
    * Setup defaults, get instance data and dom
    * @param  {String} formID [description]
+   * @param {layout} layout object instance used by various helpers
    */
-  constructor(formID) {
+  constructor(formID, layout) {
     this.data = instanceData[formID];
     this.d = instanceDom[formID];
     this.doCancel = false;
+    this.layout = layout;
   }
 
   /**
@@ -110,9 +118,10 @@ export default class Helpers {
    */
   fieldOptionData(field) {
     let options = [];
+    const $options = $('.sortable-options li', field);
 
-    $('.sortable-options li', field).each(function() {
-      let $option = $(this);
+    $options.each(i => {
+      let $option = $($options[i]);
       const selected = $('.option-selected', $option).is(':checked');
       let attrs = {
           label: $('.option-label', $option).val(),
@@ -145,11 +154,12 @@ export default class Helpers {
 
       // Handle options
       if (field.type.match(optionFields)) {
-        let optionData = field.values;
+        let fieldOptions = field.values;
         let options = [];
 
-        for (let i = 0; i < optionData.length; i++) {
-          let option = m('option', optionData[i].label, optionData[i]).outerHTML;
+        for (let i = 0; i < fieldOptions.length; i++) {
+          let oData = fieldOptions[i];
+          let option = m('option', oData.label, oData).outerHTML;
           options.push('\n\t\t\t' + option);
         }
         options.push('\n\t\t');
@@ -184,7 +194,9 @@ export default class Helpers {
 
         if (!($field.hasClass('disabled-field'))) {
           let fieldData = _this.getTypes($field);
-          let roleVals = $('.roles-field:checked', field).map(elem => elem.value).get();
+          let $roleInputs = $('.roles-field:checked', field);
+          let roleVals = $roleInputs
+          .map(index => $roleInputs[index].value).get();
 
           _this.setAttrVals(field, fieldData);
 
@@ -364,7 +376,10 @@ export default class Helpers {
     $('.fld-className', field).val(previewData.className);
 
     $field.data('fieldData', previewData);
-    preview = utils.getTemplate(previewData, true);
+
+    // determine the control class for this type, and then process it through the layout engine
+    let controlClass = control.getClass(previewData.type, previewData.subtype);
+    preview = this.layout.build(controlClass, previewData);
 
     empty($prevHolder[0]);
     $prevHolder[0].appendChild(preview);
@@ -374,7 +389,7 @@ export default class Helpers {
   /**
    * Display a custom tooltip for disabled fields.
    *
-   * @param  {Object} field
+   * @param  {Object} stage
    */
   disabledTT(stage) {
     const move = (e, elem) => {
@@ -452,8 +467,8 @@ export default class Helpers {
       dialog = document.getElementsByClassName('form-builder-dialog')[0];
     }
     overlay.classList.remove('visible');
-    dialog.remove();
-    overlay.remove();
+    remove(dialog);
+    remove(overlay);
     document.dispatchEvent(events.modalClosed);
   }
 
@@ -553,8 +568,7 @@ export default class Helpers {
   /**
    * Popup dialog the does not require confirmation.
    * @param  {String|DOM|Array}  content
-   * @param  {Boolean} coords    false if no coords are provided. Without coordinates
-   *                             the popup will appear center screen.
+   * @param  {Boolean} coords    screen coordinates to position dialog
    * @param  {String}  className classname to be added to the dialog
    * @return {Object}            dom
    */
@@ -621,6 +635,7 @@ export default class Helpers {
 
   /**
    * Removes all fields from the form
+   * @param {Object} stage to remove fields form
    * @param {Boolean} animate whether to animate or not
    * @return {void}
    */
@@ -663,36 +678,39 @@ export default class Helpers {
 
   /**
    * If user re-orders the elements their order should be saved.
-   *
    * @param {Object} $cbUL our list of elements
+   * @return {Array} fieldOrder
    */
   setFieldOrder($cbUL) {
     if (!config.opts.sortableControls) {
       return false;
     }
+    const {sessionStorage, JSON} = window;
 
-    let fieldOrder = {};
+    let fieldOrder = [];
 
-    $cbUL.children().each(function(index, element) {
-      fieldOrder[index] = $(element).data('type');
+    $cbUL.children().each((index, element) => {
+      fieldOrder.push($(element).data('type'));
     });
 
-    if (window.sessionStorage) {
-      window.sessionStorage.setItem('fieldOrder', window.JSON.stringify(fieldOrder));
+    if (sessionStorage) {
+      sessionStorage.setItem('fieldOrder', JSON.stringify(fieldOrder));
     }
+    return fieldOrder;
   }
 
   /**
    * Reorder the controls if the user has previously ordered them.
    *
-   * @param  {Array} frmbFields
+   * @param  {Array} controls - an array of control types
    * @return {Array} ordered fields
    */
-  orderFields(frmbFields) {
+  orderFields(controls) {
     const opts = config.opts;
-    let fieldOrder = false;
-    let newOrderFields = [];
+    let controlOrder = opts.controlOrder.concat(controls);
+    let fieldOrder;
 
+    // retrieve any saved ordering from the session
     if (window.sessionStorage) {
       if (opts.sortableControls) {
         fieldOrder = window.sessionStorage.getItem('fieldOrder');
@@ -701,26 +719,18 @@ export default class Helpers {
       }
     }
 
+    // if we have a saved order, use it. Otherwise build the order ourselves
     if (!fieldOrder) {
-      let controlOrder = opts.controlOrder.concat(frmbFields.map(field =>
-        field.attrs.type));
       fieldOrder = utils.unique(controlOrder);
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
+      fieldOrder = utils.unique(fieldOrder.concat(controls));
       fieldOrder = Object.keys(fieldOrder).map(function(i) {
         return fieldOrder[i];
       });
     }
 
-
-    fieldOrder.forEach((fieldType) => {
-      let field = frmbFields.filter(function(field) {
-        return field.attrs.type === fieldType;
-      })[0];
-      newOrderFields.push(field);
-    });
-
-    return newOrderFields.filter(Boolean);
+    return fieldOrder.filter(Boolean);
   }
 
   /**
@@ -779,7 +789,11 @@ export default class Helpers {
         left: cbPosition.left
       };
 
-      let offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset);
+      let offset = Object.assign(
+        {},
+        offsetDefaults,
+        config.opts.stickyControls.offset
+      );
 
       if (scrollTop > $stageWrap.offset().top) {
         const style = {
@@ -793,6 +807,7 @@ export default class Helpers {
         let stageOffset = $stageWrap.offset();
         let cbBottom = cbOffset.top + $cbWrap.height();
         let stageBottom = stageOffset.top + $stageWrap.height();
+        let atBottom = (cbBottom === stageBottom && cbOffset.top > scrollTop);
 
         if (cbBottom > stageBottom && (cbOffset.top !== stageOffset.top)) {
           $cbWrap.css({
@@ -804,7 +819,7 @@ export default class Helpers {
           });
         }
 
-        if (cbBottom < stageBottom || (cbBottom === stageBottom && cbOffset.top > scrollTop)) {
+        if (cbBottom < stageBottom || atBottom) {
           $cbWrap.css(cbStyle);
         }
       } else {
@@ -816,7 +831,7 @@ export default class Helpers {
   /**
    * Open a dialog with the form's data
    */
-  showData(e) {
+  showData() {
     const data = this.data;
     const formData = utils.escapeHtml(data.formData);
     const code = m('code', formData, {
@@ -846,7 +861,8 @@ export default class Helpers {
       let availableIds = [].slice.call(fields).map((field) => {
         return field.id;
       });
-      console.warn('fieldID required to remove specific fields. Removing last field since no ID was supplied.');
+      console.warn('fieldID required to remove specific fields.');
+      console.warn('Removing last field since no ID was supplied.');
       console.warn('Available IDs: ' + availableIds.join(', '));
       fieldID = form.lastChild.id;
     }
@@ -912,28 +928,41 @@ export default class Helpers {
   }
 
   /**
-   * Cross link subtypes and define markup config
+   * Register any subtype controls specified in the 'subtypes' option, retrieve
+   * all defined subtypes & build the export subtype format
    * @param  {Array} subtypeOpts
    * @return {Array} subtypes
    */
   processSubtypes(subtypeOpts) {
-    let subtypes = {};
-    const subtypeFormat = subtype => {
-        return {
-          label: mi18n.get(subtype),
-          value: subtype
-        };
-      };
-
-      config.subtypes = utils.merge(defaultSubtypes, subtypeOpts);
-
-      for (let subtype in config.subtypes) {
-        if (config.subtypes.hasOwnProperty(subtype)) {
-          subtypes[subtype] = config.subtypes[subtype].map(subtypeFormat);
-        }
+    // first register any passed subtype options against the appropriate type control class
+    for (let type in subtypeOpts) {
+      if (subtypeOpts.hasOwnProperty(type)) {
+        let controlClass = control.getClass(type);
+        control.register(subtypeOpts[type], controlClass, type);
       }
+    }
 
-      return subtypes;
+    // retrieve a list of all subtypes
+    let subtypeDef = control.getRegisteredSubtypes();
+
+    // reformat the subtypes for each type
+    let subtypes = {};
+    for (let type in subtypeDef) {
+      if (subtypeDef.hasOwnProperty(type)) {
+        // loop through each defined subtype & build the formatted data structure
+        let formatted = [];
+        for (let subtype of subtypeDef[type]) {
+          let controlClass = control.getClass(type, subtype);
+          formatted.push({
+            label: controlClass.mi18n(subtype),
+            value: subtype
+          });
+        }
+        subtypes[type] = formatted;
+      }
+    }
+
+    return subtypes;
   }
 
   /**
@@ -962,7 +991,6 @@ export default class Helpers {
    */
   processOptions(options) {
     const _this = this;
-    let {fields = [], templates, ...opts} = options;
     let actionButtons = [{
       id: 'clear',
       className: 'clear-all btn btn-danger',
@@ -987,86 +1015,18 @@ export default class Helpers {
         }
       }
     }];
-
-    let defaultFields = [
-      {
-        label: mi18n.get('autocomplete'),
-        attrs: {
-          type: 'autocomplete'
-        }
-      }, {
-        label: mi18n.get('button'),
-        attrs: {
-          type: 'button',
-        }
-      }, {
-        label: mi18n.get('checkboxGroup'),
-        attrs: {
-          type: 'checkbox-group',
-        }
-      }, {
-        label: mi18n.get('dateField'),
-        attrs: {
-          type: 'date',
-        }
-      }, {
-        label: mi18n.get('fileUpload'),
-        attrs: {
-          type: 'file',
-        }
-      }, {
-        label: mi18n.get('header'),
-        attrs: {
-          type: 'header',
-        }
-      }, {
-        label: mi18n.get('hidden'),
-        attrs: {
-          type: 'hidden',
-        }
-      }, {
-        label: mi18n.get('number'),
-        attrs: {
-          type: 'number',
-        }
-      }, {
-        label: mi18n.get('paragraph'),
-        attrs: {
-          type: 'paragraph',
-        }
-      }, {
-        label: mi18n.get('radioGroup'),
-        attrs: {
-          type: 'radio-group',
-        }
-      }, {
-        label: mi18n.get('select'),
-        attrs: {
-          type: 'select',
-        }
-      }, {
-        label: mi18n.get('text'),
-        attrs: {
-          type: 'text',
-        }
-      }, {
-        label: mi18n.get('textArea'),
-        attrs: {
-          type: 'textarea'
-        }
-      }
-    ];
-
-    opts.fields = fields.concat(defaultFields);
-    config.opts = Object.assign({}, {actionButtons, templates, fields}, opts);
-    let userTemplates = Object.keys(config.opts.templates).map(key => {
-      return [key, config.opts.templates[key]];
-    });
-    utils.templates = utils.templates.concat(userTemplates);
-
+    config.opts = Object.assign({}, {actionButtons}, options);
     return config.opts;
   }
 
+  /**
+   * Small wrapper for input markup
+   * @param  {Object} attrs [description]
+   * @return {Object} DOM element
+   */
+  input(attrs = {}) {
+    return m('input', null, attrs);
+  }
 
   // end class
 }

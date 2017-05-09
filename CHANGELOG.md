@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.1.2 - Update npm scripts
 - v2.1.1 - Required checkbox fix, form-horizontal css alignment fix [#422](https://github.com/kevinchappell/formBuilder/pull/422)
 - v2.1.0 - Update docs & Critical fixes [#420](https://github.com/kevinchappell/formBuilder/pull/420)
 - v2.0.0 - ✨ Custom Controls, Automatic i18n, WYSIWYG Editor, HTML Labels ✨ [#414](https://github.com/kevinchappell/formBuilder/pull/414)
