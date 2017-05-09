@@ -2,11 +2,9 @@ import '../sass/form-render.scss';
 import utils from './utils';
 import events from './events';
 import {layout} from './layout';
-import {config} from './config';
-import {defaultSubtypes} from './dom';
-import {control} from './control';
-import {controlClasses} from './control/index';
-import {controlCustom} from './control/custom';
+import control from './control';
+import './control/index';
+import controlCustom from './control/custom';
 
 /**
  * FormRender Class

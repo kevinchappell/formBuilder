@@ -1,10 +1,10 @@
-import {control} from '../control';
+import control from '../control';
 
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
-export class controlTextarea extends control {
+export default class controlTextarea extends control {
 
   /**
    * class configuration

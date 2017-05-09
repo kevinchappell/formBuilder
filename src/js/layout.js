@@ -1,6 +1,5 @@
 // LAYOUT.JS
 import utils from './utils';
-import events from './events';
 
 /**
  * Base class for controlling the layout of each 'row' on the form

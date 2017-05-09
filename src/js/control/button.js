@@ -1,10 +1,10 @@
-import {control} from '../control';
+import control from '../control';
 
 /**
- * Text input class
- * Output a <input type="text" ... /> form element
+ * Button class
+ * Output a <button>Label</button> form element
  */
-export class controlButton extends control {
+export default class controlButton extends control {
 
   /**
    * build a text DOM element, supporting other jquery text form-control's

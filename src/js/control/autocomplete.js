@@ -1,10 +1,10 @@
-import {control} from '../control';
+import control from '../control';
 import {filter} from '../dom';
 /**
  * Autocomplete class
  * Output an autocomplete form element
  */
-export class controlAutocomplete extends control {
+export default class controlAutocomplete extends control {
 
   /**
    * build a text DOM element, supporting other jquery text form-control's

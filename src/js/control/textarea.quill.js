@@ -1,10 +1,10 @@
-import {controlTextarea} from './textarea';
+import controlTextarea from './textarea';
 
 /**
  * Quill rich text editor element
  * See https://quilljs.com/ for more info
  */
-export class controlQuill extends controlTextarea {
+export default class controlQuill extends controlTextarea {
 
   /**
    * configure the quill editor requirements

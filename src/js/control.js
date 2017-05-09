@@ -6,7 +6,7 @@ import mi18n from 'mi18n';
  * Base class for all control classes
  * Defines the structure of a control class and some standard control methods
  */
-export class control {
+export default class control {
 
   /**
    * initialise the control object

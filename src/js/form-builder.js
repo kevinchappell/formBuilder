@@ -10,9 +10,9 @@ import events from './events';
 import {layout} from './layout';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
-import {control} from './control';
+import control from './control';
 import './control/index';
-import {controlCustom} from './control/custom';
+import controlCustom from './control/custom';
 
 let instanceTime = new Date().getTime();
 

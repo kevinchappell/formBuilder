@@ -1,10 +1,10 @@
-import {control} from '../control';
+import control from '../control';
 import utils from '../utils';
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
-export class controlParagraph extends control {
+export default class controlParagraph extends control {
 
   /**
    * build a paragraph DOM element

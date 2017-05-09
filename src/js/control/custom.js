@@ -1,11 +1,11 @@
-import {control} from '../control';
+import control from '../control';
 import mi18n from 'mi18n';
 
 /**
  * Support for custom controls
  * Implementing support for custom templates being passed as options to formBuilder/Render
  */
-export class controlCustom extends control {
+export default class controlCustom extends control {
 
   /**
    * Override the register method to allow passing 'templates' configuration data

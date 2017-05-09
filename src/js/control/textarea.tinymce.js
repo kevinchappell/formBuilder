@@ -1,4 +1,4 @@
-import {controlTextarea} from './textarea';
+import controlTextarea from './textarea';
 
 /**
  * TinyMCE editor element
@@ -16,7 +16,7 @@ import {controlTextarea} from './textarea';
  * };
  * ```
  */
-export class controlTinymce extends controlTextarea {
+export default class controlTinymce extends controlTextarea {
 
   /**
    * configure the tinymce editor requirements

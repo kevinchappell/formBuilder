@@ -6,7 +6,7 @@ All control classes should inherit from `src/js/control.js`. Each class can supp
 
 Key steps to creating a new control:
 
-  * `import {control} from '../control'`
+  * `import control from '../control'`
   * define a new class extending `control` (or any other child control class)
   * define a static get definition class if you wish to have a custom icon, or any mi18n mappings. This is not always required - you can simply ensure that your types & subtypes have definitions in the mi18n translation file and by default your new control will use an the css class `icon-${type}`.
   * define a configure method if required - used to specify external javascript & css files and perform any additional configuration 

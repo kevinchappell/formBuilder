@@ -9,7 +9,7 @@ import utils from './utils';
 import events from './events';
 import mi18n from 'mi18n';
 import {config} from './config';
-import {control} from './control';
+import control from './control';
 
 const opts = config.opts;
 const m = utils.markup;
