@@ -3,9 +3,8 @@
  */
 
 // configure the class for runtime loading
-if (!window.fbControls) window.fbControls = new Array();
-window.fbControls.push(function (controlClass) {
-
+if (!window.fbControls) window.fbControls = [];
+window.fbControls.push(function(controlClass) {
   /**
    * Star rating class
    */
@@ -13,7 +12,7 @@ window.fbControls.push(function (controlClass) {
 
     /**
      * Class configuration - return the icons & label related to this control
-     * @returns definition object
+     * @returndefinition object
      */
     static get definition() {
       return {
@@ -21,7 +20,7 @@ window.fbControls.push(function (controlClass) {
         i18n: {
           default: 'Star Rating'
         }
-      }
+      };
     }
 
     /**
@@ -34,12 +33,15 @@ window.fbControls.push(function (controlClass) {
 
     /**
      * build a text DOM element, supporting other jquery text form-control's
-     * @return DOM Element to be injected into the form.
+     * @return {Object} DOM Element to be injected into the form.
      */
     build() {
       return this.markup('span', null, {id: this.config.name});
     }
 
+    /**
+     * onRender callback
+     */
     onRender() {
       let value = this.config.value || 3.6;
       $('#'+this.config.name).rateYo({rating: value});

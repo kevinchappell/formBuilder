@@ -1,6 +1,5 @@
 // LAYOUT.JS
 import utils from './utils';
-import events from './events';
 
 /**
  * Base class for controlling the layout of each 'row' on the form
@@ -11,9 +10,8 @@ export class layout {
 
   /**
    * Prepare the templates for layout
-   * @param templates object containing custom or overwrite templates
-   * @param preview - are we rendering a preview for the formBuilder stage
-   *
+   * @param {Object} templates object containing custom or overwrite templates
+   * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
    */
   constructor(templates, preview) {
     this.preview = preview;
@@ -24,7 +22,6 @@ export class layout {
       label: null, // can be overridden with a function(labelDOMElements, data) to generate the label element - returns a DOM element
       help: null, // can be overridden with a function(helpText, data) to generate the help element - returns a DOM element
       default: (field, label, help, data) => {
-
         // append help into the label
         if (help) {
           label.append(help);
@@ -37,7 +34,6 @@ export class layout {
         });
       },
       noLabel: (field, label, help, data) => {
-
         // wrap the output in a form-group div & return without a label element
         let className = data.id ? `fb-${data.type} form-group field-${data.id}` : '';
         return this.markup('div', field, {
@@ -45,7 +41,6 @@ export class layout {
         });
       },
       hidden: (field, label, help, data) => {
-
         // no wrapper any any visible elements
         return field;
       }
@@ -72,11 +67,11 @@ export class layout {
    *   - field - the DOM element
    *   - noLabel - this control shouldn't have a label (nor a space for a label)
    *   - hidden - this control shouldn't render anything visible to the page
-   * @param control - the relevant control class
-   * @param data - configuration data passed through formData for this control
+   * @param {Object} renderControl - the relevant control class
+   * @param {Object} data - configuration data passed through formData for this control
+   * @return {Object} element
    */
   build(renderControl, data) {
-
     // prepare the data
     if (this.preview) {
       if (data.name) {
@@ -118,7 +113,7 @@ export class layout {
 
   /**
    * Build a label element
-   * @returns dom element to render the label
+   * @return {Object} dom element to render the label
    */
   label() {
     let label = this.data.label || '';
@@ -142,7 +137,7 @@ export class layout {
 
   /**
    * Build a help element
-   * @returns dom element to render the help text
+   * @return {Object} dom element to render the help text
    */
   help() {
     if (!this.data.description) {
@@ -164,6 +159,10 @@ export class layout {
   /**
    * link to the utils.markup method
    * ideally this would be inherited from a parent 'dom' type element supporting dom helper type methods
+   * @param {String} tag
+   * @param {Object|String|Array} content
+   * @param {Object} attributes
+   * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
     return utils.markup(tag, content, attributes);

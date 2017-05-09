@@ -1,11 +1,15 @@
-import {control} from '../control';
+import control from '../control';
 
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
-export class controlSelect extends control {
+export default class controlSelect extends control {
 
+  /**
+   * definition
+   * @return {[type]} [description]
+   */
   static get definition() {
     return {
       inactive: ['checkbox']
@@ -14,7 +18,7 @@ export class controlSelect extends control {
 
   /**
    * build a text DOM element, supporting other jquery text form-control's
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     let options = [];
@@ -27,7 +31,6 @@ export class controlSelect extends control {
     delete data.title;
 
     if (values) {
-
       // if a placeholder is specified, add it to the top of the option list
       if (placeholder && isSelect) {
         options.push(this.markup('option', placeholder, {
@@ -130,7 +133,7 @@ export class controlSelect extends control {
     } else {
       otherInputValue.style.display = 'none';
     }
-  };
+  }
 }
 
 // register this control for the following types & text subtypes

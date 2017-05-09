@@ -8,6 +8,15 @@ export const defaultSubtypes = {
       textarea: ['textarea', 'quill']
     };
 
+/**
+ * Removes a dom node
+ * @param  {Object} element
+ */
+export const remove = element => {
+  if (element.parentNode) {
+    element.parentNode.removeChild(element);
+  }
+};
 
 export const empty = element => {
   while (element.firstChild) {
@@ -46,7 +55,15 @@ export const optionFields = [
     ];
 
 export const optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`);
+/**
+ * Dom class.
+ */
 export default class Dom {
+  /**
+   * Set defaults
+   * @param  {String} formID [description]
+   * @return {Object} Dom Instance
+   */
   constructor(formID) {
     this.optionFields = optionFields;
     this.optionFieldsRegEx = optionFieldsRegEx;
