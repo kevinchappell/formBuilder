@@ -43,7 +43,7 @@ export class controlTinymce extends controlTextarea {
 
   /**
    * build a textarea DOM element, to be later replaced by the TinyMCE editor
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     let {value = '', ...attrs} = this.config;
@@ -53,7 +53,7 @@ export class controlTinymce extends controlTextarea {
 
   /**
    * When the element is rendered into the DOM, execute the following code to initialise it
-   * @param evt - event
+   * @param {Object} evt - event
    */
   onRender(evt) {
     if (window.tinymce.editors[this.id]) {

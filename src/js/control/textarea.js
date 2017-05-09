@@ -21,7 +21,7 @@ export class controlTextarea extends control {
 
   /**
    * build a text DOM element, supporting other jquery text form-control's
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     let {value = '', ...attrs} = this.config;
@@ -31,6 +31,8 @@ export class controlTextarea extends control {
 
   /**
    * extend the default events to add a prerender for textareas
+   * @param {String} eventType
+   * @return {Function} prerender function
    */
   on(eventType) {
     if (eventType == 'prerender' && this.preview) {

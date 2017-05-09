@@ -17,12 +17,12 @@ export class controlText extends control {
         date: 'dateField',
         file: 'fileUpload'
       }
-    }
+    };
   }
 
   /**
    * build a text DOM element, supporting other jquery text form-control's
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     return this.markup('input', null, this.config);
@@ -30,5 +30,5 @@ export class controlText extends control {
 }
 
 // register this control for the following types & text subtypes
-control.register(['text','file', 'date', 'number'], controlText);
-control.register(['text','password', 'email', 'color', 'tel'], controlText, 'text');
+control.register(['text', 'file', 'date', 'number'], controlText);
+control.register(['text', 'password', 'email', 'color', 'tel'], controlText, 'text');

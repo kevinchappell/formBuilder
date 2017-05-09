@@ -8,15 +8,17 @@ import {control} from './control';
 import {controlClasses} from './control/index';
 import {controlCustom} from './control/custom';
 
-// @todo: prototype.js compatibility
+/**
+ * FormRender Class
+ * @todo: prototype.js compatibility
+ */
 class FormRender {
 
   /**
    * Create & configure a new FormRender instance
-   * @param options - an object hash of supported options
+   * @param {Object} options - an object hash of supported options
    */
   constructor(options = {}) {
-
     // initialise defaults & options
     let defaults = {
       layout: layout, // by default use the layout class, but support a child class being defined & passed as an option
@@ -40,13 +42,13 @@ class FormRender {
       render: true,
       templates: {}, // custom inline defined templates
       notify: {
-        error: function (message) {
+        error: function(message) {
           return console.error(message);
         },
-        success: function (message) {
+        success: function(message) {
           return console.log(message);
         },
-        warning: function (message) {
+        warning: function(message) {
           return console.warn(message);
         }
       }
@@ -81,9 +83,8 @@ class FormRender {
 
   /**
    * Main render method which produces the form from passed configuration
-   * @param options - an object hash of supported options
-   * @param element - an html element to render the form into (optional)
-   * @returns {FormRender}
+   * @param {Object} element - an html element to render the form into (optional)
+   * @return {Object} FormRender
    */
   render(element = null) {
     const formRender = this;
@@ -94,7 +95,7 @@ class FormRender {
      *
      * @param  {Object} fields Node elements
      */
-    Element.prototype.appendFormFields = function (fields) {
+    Element.prototype.appendFormFields = function(fields) {
       let element = this;
       fields.forEach(field => {
         element.appendChild(field);
@@ -105,14 +106,14 @@ class FormRender {
     /**
      * Extend Element prototype to remove content
      */
-    Element.prototype.emptyContainer = function () {
+    Element.prototype.emptyContainer = function() {
       let element = this;
       while (element.lastChild) {
         element.removeChild(element.lastChild);
       }
     };
 
-    let runCallbacks = function () {
+    let runCallbacks = function() {
       if (opts.onRender) {
         opts.onRender();
       }
@@ -120,10 +121,10 @@ class FormRender {
 
     /**
      * Clean up passed object configuration to prepare for use with the markup function
-     * @param field - object of field configuration
-     * @returns sanitized field object
+     * @param {Object} field - object of field configuration
+     * @return {Object} sanitized field object
      */
-    let santizeField = (field) => {
+    let santizeField = field => {
       let sanitizedField = Object.assign({}, field);
       sanitizedField.className = field.className || field.class || null;
       delete sanitizedField.class;
@@ -137,7 +138,8 @@ class FormRender {
 
     /**
      * Retrieve the html markup for a passed array of DomElements
-     * @param fields - array of dom elements
+     * @param {Array} fields - array of dom elements
+     * @return {String} fields html
      */
     let exportMarkup = fields => fields.map(elem => elem.innerHTML).join('');
 
@@ -146,10 +148,9 @@ class FormRender {
 
     // generate field markup if we have fields
     if (opts.formData) {
-
       // instantiate the layout class & loop through the field configuration
       let engine = new opts.layout(opts.layoutTemplates);
-      for (var i = 0; i < opts.formData.length; i++) {
+      for (let i = 0; i < opts.formData.length; i++) {
         let fieldData = opts.formData[i];
         let sanitizedField = santizeField(fieldData);
         // let type = fieldData.subtype || fieldData.type;
@@ -205,5 +206,4 @@ class FormRender {
       return formRender.render(elems[i]);
     });
   };
-
 })(jQuery);

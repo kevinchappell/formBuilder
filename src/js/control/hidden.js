@@ -8,7 +8,7 @@ export class controlHidden extends control {
 
   /**
    * build a hidden input dom element
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     return {

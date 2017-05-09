@@ -8,7 +8,7 @@ export class controlParagraph extends control {
 
   /**
    * build a paragraph DOM element
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     let {type, ...attrs} = this.config;

@@ -882,11 +882,10 @@ import {defaultSubtypes, filter} from './dom';
     ];
 
   utils.processFieldDataAttrs = fieldData => {
-    let {
-      label,
-      description,
-      subtype,
-      ...attrs} = fieldData;
+    let {subtype, ...attrs} = fieldData;
+
+    delete attrs.label;
+    delete attrs.description;
 
     if (!attrs.id) {
       attrs.id = attrs.name;
@@ -1006,9 +1005,17 @@ utils.closest = (el, cls) => {
 
 utils.noop = () => null;
 
+/**
+ * Debounce often called functions, like save
+ * @param  {Function}  func
+ * @param  {Number}  wait
+ * @param  {Boolean} immediate
+ * @return {Function} debounce
+ */
 utils.debounce = (func, wait = 250, immediate = false) => {
   let timeout;
   return function(...args) {
+    // eslint-disable-next-line no-invalid-this
     let context = this;
     let later = function() {
       timeout = null;

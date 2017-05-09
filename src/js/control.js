@@ -197,7 +197,7 @@ export class control {
    * Retrieve a translated string
    * By default looks for translations defined against the class (for plugin controls)
    * Expects {locale1: {type: label}, locale2: {type: label}}, or {default: label}, or {local1: label, local2: label2}
-   * @param {String} string to retrieve the label / translated string for
+   * @param {String} lookup string to retrieve the label / translated string for
    * @return {String} the translated label
    */
   static mi18n(lookup) {
@@ -226,7 +226,8 @@ export class control {
 
   /**
    * Should this control type appear in the list of form controls
-   * @param type
+   * @param {String} type
+   * @return {Boolean} isActive
    */
   static active(type) {
     return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) == -1;
@@ -234,6 +235,8 @@ export class control {
 
   /**
    * Retrieve the translated control label for a control type
+   * @param {String} type
+   * @return {String} translated control
    */
   static label(type) {
     return this.mi18n(type);
@@ -241,6 +244,8 @@ export class control {
 
   /**
    * Retrieve the icon for a control type
+   * @param {String} type
+   * @return {String} icon
    */
   static icon(type) {
     // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
@@ -266,7 +271,7 @@ export class control {
    *   - field - the DOM element
    *   - noLabel - this control shouldn't have a label (nor a space for a label)
    *   - hidden - this control shouldn't render anything visible to the page
-   * @return DOM Element to be injected into the form, or an object/hash of configuration as above
+   * @return {Object} DOM Element to be injected into the form, or an object/hash of configuration as above
    */
   build() {
     let {label, type, ...data} = this.config;
@@ -287,7 +292,6 @@ export class control {
 
       // onRender event to execute code each time an instance of this control is injected into the DOM
       render: (evt) => {
-
         // check for a class render event - default to an empty function
         let onRender = () => {
           if (this.onRender) {
@@ -311,7 +315,7 @@ export class control {
 
   /**
    * centralised error handling
-   * @param message message to output to the console
+   * @param {String} message message to output to the console
    */
   static error(message) {
     throw new Error(message);
@@ -320,6 +324,10 @@ export class control {
   /**
    * link to the utils.markup method
    * ideally this would be inherited from a parent 'dom' type element supporting dom helper type methods
+   * @param  {String} tag
+   * @param  {Object|String|Array} content
+   * @param  {Object} attributes
+   * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
     return utils.markup(tag, content, attributes);

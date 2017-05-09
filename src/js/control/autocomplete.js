@@ -118,7 +118,7 @@ export class controlAutocomplete extends control {
 
   /**
    * When the element is rendered into the DOM, execute the following code to initialise it
-   * @param evt - event
+   * @param {Object} evt - event
    */
   onRender(evt) {
   }

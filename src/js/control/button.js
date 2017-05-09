@@ -8,7 +8,7 @@ export class controlButton extends control {
 
   /**
    * build a text DOM element, supporting other jquery text form-control's
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     return {
