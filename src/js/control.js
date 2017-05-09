@@ -6,14 +6,15 @@ import mi18n from 'mi18n';
  * Base class for all control classes
  * Defines the structure of a control class and some standard control methods
  */
-export class control {
+export default class control {
 
   /**
-   * initialse the control object
-   * @param config each control class receives a control configuration object ({name, label, etc})
+   * initialise the control object
+   * @param {Object} config each control class receives a control configuration
+   * object ({name, label, etc})
+   * @param {Boolean} preview isPreview
    */
   constructor(config, preview) {
-
     // make a copy of config so we don't change the object reference
     config = $.extend({}, config);
     this.preview = preview;
@@ -28,8 +29,12 @@ export class control {
 
     // default fields
     if (!config.id) {
-      config.id = config.name || 'control-' + Math.floor((Math.random() * 10000000) + 1);
-    };
+      if (config.name) {
+        config.id = config.name;
+      } else {
+        config.id = 'control-' + Math.floor((Math.random() * 10000000) + 1);
+      }
+    }
     this.id = config.id;
     this.type = config.type;
     if (this.description) {
@@ -43,7 +48,7 @@ export class control {
     let classId = this.subtype ? this.type + '.' + this.subtype : this.type;
     this.classConfig = control.controlConfig[classId] || {};
 
-    // if there is a subtype, update the config type for injecting into DOM elements
+    // if subtype, update the config type for injecting into DOM elements
     if (this.subtype) {
       config.type = this.subtype;
     }
@@ -62,7 +67,7 @@ export class control {
    *  - i18n - for custom / plugin controls, translations for labels can be specified here as an object of locale: label (or an object of type: label for classes supporting multiple types).
    *  - icon - icon, or object of type: icon for defined types
    *  - inactive - array of inactive types that shouldn't appear in formBuilder interface (but still be supported for rendering purposes)
-   * @returns object of configuration
+   * @return {Object} configuration
    */
   static get definition() {
     return {};
@@ -70,12 +75,15 @@ export class control {
 
   /**
    * Class method to register supported controls and their associated classes
-   * @param types - control type (or array of control types) to register against the specifed class
-   * @param controlClass - class to map against the types
-   * @param parentType - optional - if defined, any classes registered will be registered as subtypes of this parent
+   * @param {Array} types - control type (or array of control types) to register
+   * against the specifed class
+   * @param {Class} controlClass - class to map against the types
+   * @param {String} parentType - optional - if defined, any classes registered
+   * will be registered as subtypes of this parent
    */
   static register(types, controlClass, parentType) {
-    let prefix = parentType ? parentType + '.' : ''; // store subtypes as <type>.<subtype> in the register
+    // store subtypes as <type>.<subtype> in the register
+    let prefix = parentType ? parentType + '.' : '';
 
     // initialise the register
     if (!control.classRegister) {
@@ -87,9 +95,9 @@ export class control {
 
     // associate the controlClass with each passed control type
     for (let type of types) {
-
       // '.' is a restricted character for type names
       if (type.indexOf('.') > -1) {
+        // eslint-disable-next-line max-len
         control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`);
         continue;
       }
@@ -99,8 +107,9 @@ export class control {
 
   /**
    * Looks up the classRegister & returns registered types or subtypes
-   * @param type optional type of control we want to look up subtypes of. If not specified will return all types
-   * @return an array of registered types (or subtypes)
+   * @param  {String} type optional type of control we want to look up
+   * subtypes of. If not specified will return all types
+   * @return {Array} registered types (or subtypes)
    */
   static getRegistered(type=false) {
     let types = Object.keys(control.classRegister);
@@ -108,8 +117,8 @@ export class control {
       return types;
     }
     return types.filter(key => {
-
-      // if type is specified, then we want to return all subtypes of that type (registered with the key <type>.<subtype>)
+      // if type is specified, then we want to return all subtypes
+      // of that type (registered with the key <type>.<subtype>)
       if (type) {
         return key.indexOf(type + '.') > -1;
       }
@@ -118,35 +127,39 @@ export class control {
   }
 
   /**
-   * Retrieves an object of types mapped to an array of subtypes. Only returns types that have subtypes
-   * @return an object containing {type: array of subtypes}.
+   * Retrieves an object of types mapped to an array of subtypes.
+   * Only returns types that have subtypes
+   * @return {Object} an object containing {type: array of subtypes}.
    */
   static getRegisteredSubtypes() {
     let types = {};
     for (let key in control.classRegister) {
-      let [type, subtype] = key.split('.');
-      if (!subtype) {
-        continue;
+      if (control.classRegister.hasOwnProperty(key)) {
+        let [type, subtype] = key.split('.');
+        if (!subtype) {
+          continue;
+        }
+        if (!types[type]) {
+          types[type] = [];
+        }
+        types[type].push(subtype);
       }
-      if (!types[type]) {
-        types[type] = new Array();
-      }
-      types[type].push(subtype);
     }
+
     return types;
   }
 
   /**
    * Retrieve the class for a specified control type
-   * @param type type of control we are looking up
-   * @param subtype if specified we'll try to find a class mapped to this subtype. If none found, fall back to the type.
-   * @return control subclass as defined in the call to register
+   * @param {String} type type of control we are looking up
+   * @param {String} subtype if specified we'll try to find
+   * a class mapped to this subtype. If none found, fall back to the type.
+   * @return {Class} control subclass as defined in the call to register
    */
   static getClass(type, subtype) {
     let lookup = subtype ? type + '.' + subtype : type;
     let controlClass = control.classRegister[lookup] || control.classRegister[type];
     if (!controlClass) {
-      //this.options.notify.error(this.options.messages.invalidControl);
       return control.error('Invalid control type. (Type: ' + type + ', Subtype: ' + subtype + '). Please ensure you have registered it, and imported it correctly.');
     }
 
@@ -156,10 +169,10 @@ export class control {
 
   /**
    * support dynamic loading of custom control classes
-   * @param controls
+   * @param {Array} controls
    */
   static loadCustom(controls) {
-    let controlClasses = new Array();
+    let controlClasses = [];
     if (controls) {
       controlClasses = controlClasses.concat(controls);
     }
@@ -184,7 +197,7 @@ export class control {
    * Retrieve a translated string
    * By default looks for translations defined against the class (for plugin controls)
    * Expects {locale1: {type: label}, locale2: {type: label}}, or {default: label}, or {local1: label, local2: label2}
-   * @param {String} string to retrieve the label / translated string for
+   * @param {String} lookup string to retrieve the label / translated string for
    * @return {String} the translated label
    */
   static mi18n(lookup) {
@@ -213,7 +226,8 @@ export class control {
 
   /**
    * Should this control type appear in the list of form controls
-   * @param type
+   * @param {String} type
+   * @return {Boolean} isActive
    */
   static active(type) {
     return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) == -1;
@@ -221,6 +235,8 @@ export class control {
 
   /**
    * Retrieve the translated control label for a control type
+   * @param {String} type
+   * @return {String} translated control
    */
   static label(type) {
     return this.mi18n(type);
@@ -228,6 +244,8 @@ export class control {
 
   /**
    * Retrieve the icon for a control type
+   * @param {String} type
+   * @return {String} icon
    */
   static icon(type) {
     // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
@@ -253,10 +271,10 @@ export class control {
    *   - field - the DOM element
    *   - noLabel - this control shouldn't have a label (nor a space for a label)
    *   - hidden - this control shouldn't render anything visible to the page
-   * @return DOM Element to be injected into the form, or an object/hash of configuration as above
+   * @return {Object} DOM Element to be injected into the form, or an object/hash of configuration as above
    */
   build() {
-    var {label, type, ...data} = this.config;
+    let {label, type, ...data} = this.config;
     return this.markup(type, utils.parsedHtml(label), data);
   }
 
@@ -274,7 +292,6 @@ export class control {
 
       // onRender event to execute code each time an instance of this control is injected into the DOM
       render: (evt) => {
-
         // check for a class render event - default to an empty function
         let onRender = () => {
           if (this.onRender) {
@@ -298,16 +315,19 @@ export class control {
 
   /**
    * centralised error handling
-   * @param message message to output to the console
+   * @param {String} message message to output to the console
    */
   static error(message) {
     throw new Error(message);
-    return false;
   }
 
   /**
    * link to the utils.markup method
    * ideally this would be inherited from a parent 'dom' type element supporting dom helper type methods
+   * @param  {String} tag
+   * @param  {Object|String|Array} content
+   * @param  {Object} attributes
+   * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
     return utils.markup(tag, content, attributes);

@@ -1,14 +1,14 @@
-import {control} from '../control';
+import control from '../control';
 import {filter} from '../dom';
 /**
- * Text input class
- * Output a <input type="text" ... /> form element
+ * Autocomplete class
+ * Output an autocomplete form element
  */
-export class controlAutocomplete extends control {
+export default class controlAutocomplete extends control {
 
   /**
    * build a text DOM element, supporting other jquery text form-control's
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     let {values, type, ...data} = this.config;
@@ -118,7 +118,7 @@ export class controlAutocomplete extends control {
 
   /**
    * When the element is rendered into the DOM, execute the following code to initialise it
-   * @param evt - event
+   * @param {Object} evt - event
    */
   onRender(evt) {
   }

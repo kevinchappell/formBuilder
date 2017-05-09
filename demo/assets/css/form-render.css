@@ -266,6 +266,10 @@
 .form-group .fb-required {
   color: #c10000; }
 
+.other-val {
+  margin-left: 5px;
+  display: none; }
+
 *[tooltip] {
   position: relative; }
 

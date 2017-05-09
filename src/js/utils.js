@@ -5,7 +5,6 @@ import {defaultSubtypes, filter} from './dom';
  * sorting and other fun stuff
  * @return {Object} utils
  */
-// function utils() {
   const utils = {};
   window.fbLoaded = {
     js: [],
@@ -189,7 +188,7 @@ import {defaultSubtypes, filter} from './dom';
    *
    * @param  {string}              tag
    * @param  {String|Array|Object} content we wrap this
-   * @param  {Object}              attrs
+   * @param  {Object}              attributes
    * @return {Object} DOM Element
    */
   utils.markup = function(tag, content = '', attributes = {}) {
@@ -198,17 +197,17 @@ import {defaultSubtypes, filter} from './dom';
     const field = document.createElement(tag);
 
     const appendContent = {
-      string: (content) => {
+      string: content => {
         field.innerHTML += content;
       },
-      object: (config) => {
+      object: config => {
         let {tag, content, ...data} = config;
         return field.appendChild(utils.markup(tag, content, data));
       },
-      node: (content) => {
+      node: content => {
         return field.appendChild(content);
       },
-      array: (content) => {
+      array: content => {
         for (let i = 0; i < content.length; i++) {
           contentType = utils.contentType(content[i]);
           appendContent[contentType](content[i]);
@@ -246,7 +245,7 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {Object} elem DOM element
    * @return {Object} ex: {attrName: attrValue}
    */
-  utils.parseAttrs = function(elem) {
+  utils.parseAttrs = elem => {
     let attrs = elem.attributes;
     let data = {};
     utils.forEach(attrs, attr => {
@@ -270,7 +269,7 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {NodeList} options  DOM elements
    * @return {Array} optionData array
    */
-  utils.parseOptions = function(options) {
+  utils.parseOptions = options => {
     let optionData = {};
     let data = [];
 
@@ -288,7 +287,7 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {String} xmlString
    * @return {Array}            formData array
    */
-  utils.parseXML = function(xmlString) {
+  utils.parseXML = xmlString => {
     const parser = new window.DOMParser();
     let xml = parser.parseFromString(xmlString, 'text/xml');
     let formData = [];
@@ -315,7 +314,7 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {String} html escaped HTML
    * @return {String}      parsed HTML
    */
-  utils.parsedHtml = function(html) {
+  utils.parsedHtml = html => {
     let escapeElement = document.createElement('textarea');
     escapeElement.innerHTML = html;
     return escapeElement.textContent;
@@ -326,14 +325,14 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {String} html markup
    * @return {String}      escaped html
    */
-  utils.escapeHtml = function(html) {
+  utils.escapeHtml = html => {
     let escapeElement = document.createElement('textarea');
     escapeElement.textContent = html;
     return escapeElement.innerHTML;
   };
 
   // Escape an attribute
-  utils.escapeAttr = function(str) {
+  utils.escapeAttr = str => {
     let match = {
       '"': '&quot;',
       '&': '&amp;',
@@ -347,7 +346,7 @@ import {defaultSubtypes, filter} from './dom';
   };
 
   // Escape attributes
-  utils.escapeAttrs = function(attrs) {
+  utils.escapeAttrs = attrs => {
     for (let attr in attrs) {
       if (attrs.hasOwnProperty(attr)) {
         attrs[attr] = utils.escapeAttr(attrs[attr]);
@@ -369,16 +368,16 @@ import {defaultSubtypes, filter} from './dom';
    * @param  {Array} array  array with possible duplicates
    * @return {Array}        array with only unique values
    */
-  utils.unique = function(array) {
-    return array.filter((elem, pos, arr) => {
-      return arr.indexOf(elem) === pos;
-    });
+  utils.unique = array => {
+    return array.filter((elem, pos, arr) =>
+      (arr.indexOf(elem) === pos)
+    );
   };
 
   /**
    * Removes a value from an array
-   * @param  {Array} arr
    * @param  {String|Number} val
+   * @param  {Array} arr
    */
   utils.remove = (val, arr) => {
     let index = arr.indexOf(val);
@@ -386,6 +385,294 @@ import {defaultSubtypes, filter} from './dom';
     if (index > -1) {
        arr.splice(index, 1);
     }
+  };
+
+
+  utils.makeLabel = fieldData => {
+    let {label = '', description = '', ...attrs} = fieldData;
+    let labelText = utils.parsedHtml(label);
+    let labelContents = [labelText];
+
+    if (attrs.required) {
+      labelContents.push(m('span', ' *', {className: 'fb-required'}));
+    }
+
+    if (attrs.type !== 'hidden') {
+      if (description) {
+        labelContents.push(m('span', '?', {
+          className: 'tooltip-element',
+          tooltip: description
+        }));
+      }
+    }
+
+    let labelAttrs = {
+      className: `fb-${attrs.type}-label`
+    };
+
+    if (attrs.id) {
+      labelAttrs.for = attrs.id;
+    }
+
+    return m('label', labelContents, labelAttrs);
+  };
+
+  utils.templateMap = type => {
+    let template;
+    let templates = utils.templates;
+    for (let [key, value] of templates) {
+      if (Array.isArray(key)) {
+        if(utils.inArray(type, key)) {
+          template = value;
+          break;
+        }
+      } else if (type === key) {
+        template = value;
+        break;
+      }
+    }
+
+    return template;
+  };
+
+  utils.autocompleteTemplate = fieldData => {
+    let {values, type, ...data} = fieldData;
+    const keyboardNav = (e) => {
+      const list = e.target.nextSibling.nextSibling;
+      let activeOption = list.getElementsByClassName('active-option')[0];
+      const keyCodeMapVals = [
+        // up
+        [38, () => {
+          if (activeOption) {
+            if (activeOption.previousSibling) {
+              activeOption.classList.remove('active-option');
+              activeOption = activeOption.previousSibling;
+              activeOption.classList.add('active-option');
+            }
+          }
+        }],
+        // down
+        [40, () => {
+          if (activeOption) {
+            if (activeOption.nextSibling) {
+              activeOption.classList.remove('active-option');
+              activeOption = activeOption.nextSibling;
+              activeOption.classList.add('active-option');
+            }
+          } else {
+            activeOption = list.firstChild;
+            activeOption.classList.add('active-option');
+          }
+        }],
+        [13, () => {
+          if (activeOption) {
+            e.target.value = activeOption.innerHTML;
+            if (list.style.display === 'none') {
+              list.style.display = 'block';
+            } else {
+              list.style.display = 'none';
+            }
+          }
+        }]
+      ];
+      let keyCodeMap = new Map(keyCodeMapVals);
+
+      let direction = keyCodeMap.get(e.keyCode);
+      if(!direction) {
+        direction = () => false;
+      }
+
+      return direction();
+    };
+    const fauxEvents = {
+      focus: evt => {
+        let list = evt.target.nextSibling.nextSibling;
+        evt.target.addEventListener('keydown', keyboardNav);
+        list.style.display = 'block';
+        list.style.width = list.parentElement.offsetWidth + 'px';
+      },
+      blur: evt => {
+        evt.target.removeEventListener('keydown', keyboardNav);
+        setTimeout(() => {
+          evt.target.nextSibling.nextSibling.style.display = 'none';
+        }, 200);
+      },
+      input: (evt) => {
+        const list = evt.target.nextSibling.nextSibling;
+        filter(list.querySelectorAll('li'), evt.target.value);
+        if (!evt.target.value) {
+          list.style.display = 'none';
+        } else {
+          list.style.display = 'block';
+        }
+      }
+    };
+    let fauxAttrs = Object.assign({}, data,
+      {
+        id: `${data.id}-input`,
+        events: fauxEvents
+      });
+    let hiddenAttrs = Object.assign({}, data, {type: 'hidden'});
+    delete fauxAttrs.name;
+    const field = [
+      m('input', null, fauxAttrs),
+      m('input', null, hiddenAttrs)
+    ];
+
+    const options = values.map(optionData => {
+      let label = optionData.label;
+      let config = {
+        events: {
+          click: evt => {
+            const list = evt.target.parentElement;
+            const field = list.previousSibling.previousSibling;
+            field.value = optionData.label;
+            field.previousSibling.value = optionData.value;
+            list.style.display = 'none';
+          }
+        },
+        value: optionData.value
+      };
+      return m('li', label, config);
+    });
+
+    field.push(m('ul', options,
+      {id: `${data.id}-list`, className: `fb-${type}-list`}));
+
+    const onRender = (evt) => {
+
+    };
+
+    return {field, onRender};
+  };
+
+  /**
+   * Generate DOM elements for select, checkbox-group and radio-group.
+   * @param  {Object} fieldData
+   * @param  {Boolean} isPreview
+   * @return {Object}           DOM elements
+   */
+  utils.selectTemplate = (fieldData, isPreview) => {
+    let options = [];
+    let {values, type, inline, other, toggle, ...data} = fieldData;
+    let attrs = utils.processFieldDataAttrs(data, isPreview);
+    let optionType = type.replace('-group', '');
+    let isSelect = type === 'select';
+
+    if (values) {
+      if (attrs.placeholder && isSelect) {
+        options.push(m('option', attrs.placeholder, {
+          disabled: null,
+          selected: null
+        }));
+      }
+
+      for (let i = 0; i < values.length; i++) {
+        let {label = '', ...optionAttrs} = values[i];
+
+        optionAttrs.id = `${attrs.id}-${i}`;
+        if (!optionAttrs.selected || attrs.placeholder) {
+          delete optionAttrs.selected;
+        }
+
+        if (isSelect) {
+          let o = m('option', document.createTextNode(label), optionAttrs);
+          options.push(o);
+        } else {
+          let wrapperClass = optionType;
+          if (inline) {
+            wrapperClass = `fb-${optionType}-inline`;
+          }
+          optionAttrs.type = optionType;
+          if (optionAttrs.selected) {
+            optionAttrs.checked = 'checked';
+            delete optionAttrs.selected;
+          }
+          let input = m('input', null, Object.assign({}, attrs, optionAttrs));
+          let labelAttrs = {for: optionAttrs.id};
+          let labelContent = [input, label];
+          if (toggle) {
+            let kcToggle = m('span');
+            labelContent = [input, kcToggle, label];
+            labelAttrs.className = 'kc-toggle';
+          }
+
+          let inputLabel = m('label', labelContent, labelAttrs);
+          let wrapper = m('div', inputLabel, {className: wrapperClass});
+          options.push(wrapper);
+        }
+      }
+
+      if (!isSelect && other) {
+        let otherOptionAttrs = {
+          id: `${attrs.id}-other`,
+          className: `${attrs.className} other-option`,
+          events: {
+            click: () => utils.otherOptionCB(otherOptionAttrs.id)
+          }
+        };
+        // let label = mi18n.current.other;
+        let wrapperClass = optionType;
+        if (inline) {
+          wrapperClass += '-inline';
+        }
+
+        let optionAttrs = Object.assign({}, data, otherOptionAttrs);
+        optionAttrs.type = optionType;
+
+        let otherValAttrs = {
+          type: 'text',
+          name: data.name,
+          id: `${otherOptionAttrs.id}-value`,
+          className: 'other-val'
+        };
+        let otherInputs = [
+          m('input', null, optionAttrs),
+          document.createTextNode('Other'),
+          m('input', null, otherValAttrs)
+        ];
+        let inputLabel = m('label', otherInputs, {for: optionAttrs.id});
+        let wrapper = m('div', inputLabel, {className: wrapperClass});
+        options.push(wrapper);
+      }
+    }
+
+    let template;
+
+    if (type === 'select') {
+      template = m(optionType, options, data);
+    } else {
+      template = m('div', options, {className: type});
+    }
+
+    return template;
+  };
+
+  utils.defaultField = fieldData => {
+    let {label, description, subtype, type, id, isPreview, ...data} = fieldData;
+    if (id) {
+      if (isPreview) {
+        if (data.name) {
+          data.name = data.name + '-preview';
+        } else {
+          data.name = utils.nameAttr(fieldData) + '-preview';
+        }
+      }
+      data.id = data.name;
+    }
+    if (description) {
+      data.title = description;
+    }
+    if (subtype) {
+      type = subtype;
+    }
+
+    let field = {
+      field: m(type, utils.parsedHtml(label), data),
+      onRender: utils.noop
+    };
+
+    return () => field;
   };
 
   /**
@@ -442,9 +729,6 @@ import {defaultSubtypes, filter} from './dom';
    * @return {void}
    */
   utils.getStyles = (scriptScr, path) => {
-    if (!Array.isArray(scriptScr)) {
-      scriptScr = [scriptScr];
-    }
     if (utils.isCached(scriptScr, 'css')) {
       return;
     }
@@ -459,6 +743,222 @@ import {defaultSubtypes, filter} from './dom';
     scriptScr.forEach(src => appendStyle((path || '') + src));
   };
 
+  utils.longTextTemplate = data => {
+    let {value = '', ...attrs} = data;
+    let template = {
+      field: m('textarea', utils.parsedHtml(value), attrs)
+    };
+    let editors = {
+      tinymce: {
+        js: ['//cdn.tinymce.com/4/tinymce.min.js'],
+        onRender: evt => {
+          if (window.tinymce.editors[data.id]) {
+            window.tinymce.editors[data.id].remove();
+          }
+          window.tinymce.init({
+            target: template.field,
+            height: 250,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table contextmenu paste code'
+            ],
+            toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
+          });
+        }
+      },
+      quill: {
+        js: ['//cdn.quilljs.com/1.1.3/quill.js'],
+        css: ['//cdn.quilljs.com/1.1.3/quill.snow.css'],
+        onRender: evt => {
+          const Delta = window.Quill.import('delta');
+          window.fbEditors.quill[data.id] = {};
+          let editor = window.fbEditors.quill[data.id];
+          editor.instance = new window.Quill(template.field, {
+            modules: {
+              toolbar: [
+                [{'header': [1, 2, false]}],
+                ['bold', 'italic', 'underline'],
+                ['code-block']
+              ]
+            },
+            placeholder: attrs.placeholder || '',
+            theme: 'snow'
+          });
+          editor.data = new Delta();
+          if (value) {
+            editor.instance
+            .setContents(window.JSON.parse(utils.parsedHtml(value)));
+          }
+          editor.instance.on('text-change', function(delta) {
+            editor.data = editor.data.compose(delta);
+          });
+        }
+      }
+    };
+
+    if (data.type !== 'textarea') {
+      template.onRender = editors[data.type].onRender;
+    }
+    if (data.type === 'quill') {
+      template.field = m('div', null, attrs);
+    }
+
+    const onRender = () => {
+      if (editors[data.type]) {
+        document.removeEventListener('fieldRendered', onRender);
+
+        if (editors[data.type].css) {
+          utils.getStyles(editors[data.type].css);
+        }
+        if (editors[data.type].js && !utils.isCached(editors[data.type].js)) {
+          utils.getScripts(editors[data.type].js).done(template.onRender);
+        } else {
+          template.onRender();
+        }
+      }
+    };
+
+    return {field: template.field, onRender};
+  };
+
+  utils.templates = [
+    ['autocomplete',
+      fieldData => {
+      let attrs = utils.processFieldDataAttrs(fieldData);
+        let fieldLabel = utils.makeLabel(fieldData);
+        let autocomplete = utils.autocompleteTemplate(attrs);
+        let template = {
+          field: [fieldLabel, autocomplete.field],
+          onRender: autocomplete.onRender
+        };
+        return template;
+      }],
+    [defaultSubtypes.text.concat(['number', 'file', 'date']),
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let fieldLabel = utils.makeLabel(fieldData);
+        let template = {
+          field: [fieldLabel, m('input', null, attrs)],
+        };
+        return template;
+      }],
+    [['paragraph'].concat(defaultSubtypes.paragraph),
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let template = {
+          field: [m(fieldData.type, utils.parsedHtml(fieldData.label), attrs)],
+        };
+        return template;
+      }],
+    [defaultSubtypes.button,
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let template = {
+          field: m('button', fieldData.label, attrs),
+        };
+        return template;
+      }],
+    [['select', 'checkbox-group', 'radio-group', 'checkbox'],
+      fieldData => {
+        let fieldLabel = utils.makeLabel(fieldData);
+        let field = utils.selectTemplate(fieldData);
+        let template = {
+          field: [fieldLabel, field]
+        };
+        return template;
+      }],
+    [['textarea', 'tinymce', 'quill'],
+      fieldData => {
+        let attrs = utils.processFieldDataAttrs(fieldData);
+        let field = utils.longTextTemplate(attrs);
+        let fieldLabel = utils.makeLabel(fieldData);
+        let template = {
+          field: [fieldLabel, field.field],
+          onRender: field.onRender
+        };
+        return template;
+      }]
+    ];
+
+  utils.processFieldDataAttrs = fieldData => {
+    let {subtype, ...attrs} = fieldData;
+
+    delete attrs.label;
+    delete attrs.description;
+
+    if (!attrs.id) {
+      attrs.id = attrs.name;
+    }
+
+    if (subtype) {
+      attrs.type = subtype;
+    }
+
+    if (attrs.multiple || attrs.type === 'checkbox-group') {
+      attrs.name = attrs.name + '[]';
+    }
+
+    if (attrs.required) {
+      attrs.required = true;
+      attrs['aria-required'] = 'true';
+    }
+
+    return attrs;
+  };
+
+  utils.getTemplate = (fieldData, isPreview = false) => {
+    let field;
+    if (isPreview) {
+      if (fieldData.name) {
+        fieldData.name = fieldData.name + '-preview';
+      } else {
+        fieldData.name = utils.nameAttr(fieldData) + '-preview';
+      }
+    }
+    let template = utils.templateMap(fieldData.type);
+
+    if (template) {
+      template = template(fieldData, isPreview);
+    } else {
+      template = utils.defaultField(fieldData, isPreview)();
+    }
+
+    if (fieldData.type !== 'hidden') {
+      let wrapperAttrs = {};
+      if (fieldData.name) {
+        wrapperAttrs.className =
+        `fb-${fieldData.type} form-group field-${fieldData.name}`;
+      }
+      field = utils.markup('div', template.field, wrapperAttrs);
+    } else {
+      let attrs = utils.processFieldDataAttrs(fieldData);
+      field = utils.markup('input', null, attrs);
+    }
+
+    if (template.onRender) {
+      field.addEventListener('fieldRendered', template.onRender);
+    }
+
+    return field;
+  };
+
+/**
+ * Callback for other option.
+ * Toggles the hidden text area for "other" option.
+ * @param  {String} otherId id of the "other" option input
+ */
+utils.otherOptionCB = otherId => {
+  const otherInput = document.getElementById(otherId);
+  const otherInputValue = document.getElementById(`${otherId}-value`);
+
+  if (otherInput.checked) {
+    otherInputValue.style.display = 'inline-block';
+  } else {
+    otherInputValue.style.display = 'none';
+  }
+};
+
 /**
  * Capitalizes a string
  * @param  {String} str uncapitalized string
@@ -469,6 +969,7 @@ utils.capitalize = str => {
       return m.toUpperCase();
     });
 };
+
 
 utils.merge = (obj1, obj2) => {
   let mergedObj = Object.assign({}, obj1, obj2);
@@ -504,9 +1005,17 @@ utils.closest = (el, cls) => {
 
 utils.noop = () => null;
 
+/**
+ * Debounce often called functions, like save
+ * @param  {Function}  func
+ * @param  {Number}  wait
+ * @param  {Boolean} immediate
+ * @return {Function} debounce
+ */
 utils.debounce = (func, wait = 250, immediate = false) => {
   let timeout;
   return function(...args) {
+    // eslint-disable-next-line no-invalid-this
     let context = this;
     let later = function() {
       timeout = null;
@@ -530,7 +1039,8 @@ utils.debounce = (func, wait = 250, immediate = false) => {
  */
 utils.mobileClass = () => {
   let mobileClass = '';
-  (function(a) {
+  (a => {
+    // eslint-disable-next-line
     if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
       mobileClass = ' fb-mobile';
     }
@@ -555,7 +1065,8 @@ utils.makeClassName = str => {
  * @return {String}     converter string
  */
 utils.safename = str => {
-  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\[\]\_-]/g, '').toLowerCase();
+  return str.replace(/\s/g, '-')
+  .replace(/[^a-zA-Z0-9\[\]\_-]/g, '').toLowerCase();
 };
 
 /**

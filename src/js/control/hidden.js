@@ -1,14 +1,14 @@
-import {control} from '../control';
+import control from '../control';
 
 /**
  * Hidden input class
  * Output a <input type="hidden" ... /> form element
  */
-export class controlHidden extends control {
+export default class controlHidden extends control {
 
   /**
    * build a hidden input dom element
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     return {

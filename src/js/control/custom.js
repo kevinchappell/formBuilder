@@ -1,17 +1,18 @@
-import {control} from '../control';
+import control from '../control';
 import mi18n from 'mi18n';
 
 /**
  * Support for custom controls
  * Implementing support for custom templates being passed as options to formBuilder/Render
  */
-export class controlCustom extends control {
+export default class controlCustom extends control {
 
   /**
    * Override the register method to allow passing 'templates' configuration data
-   * @param templates an object/hash of template data as defined http://formbuilder.readthedocs.io/en/latest/formBuilder/options/templates/
+   * @param {Object} templates an object/hash of template data as defined http://formbuilder.readthedocs.io/en/latest/formBuilder/options/templates/
+   * @param {Array} fields
    */
-  static register(templates, fields=[]) {
+  static register(templates, fields = []) {
     if (!controlCustom.def) {
       controlCustom.def = {
         icon: {},
@@ -56,7 +57,7 @@ export class controlCustom extends control {
 
   /**
    * Class configuration - return the icons & label translations defined in register
-   * @returns definition object
+   * @return {Class} definition object
    */
   static get definition() {
     return controlCustom.def;
@@ -64,7 +65,7 @@ export class controlCustom extends control {
 
   /**
    * build a custom control defined in the templates option
-   * @return DOM Element to be injected into the form.
+   * @return {Object} DOM Element to be injected into the form.
    */
   build() {
     let custom = controlCustom.templates[this.type];
