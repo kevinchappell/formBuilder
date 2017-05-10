@@ -18,7 +18,7 @@ export class controlSelect extends control {
    */
   build() {
     let options = [];
-    let {values, placeholder, type, inline, other, toggle, ...data} = this.config;
+    let {values, value, placeholder, type, inline, other, toggle, ...data} = this.config;
     let optionType = type.replace('-group', '');
     let isSelect = type === 'select';
     if (data.multiple || type === 'checkbox-group') {
@@ -38,11 +38,21 @@ export class controlSelect extends control {
 
       // process the rest of the options
       for (let i = 0; i < values.length; i++) {
-        let {label = '', ...optionAttrs} = values[i];
-
+        let option = values[i];
+        if (typeof option === 'string') {
+          option = {'label': option, 'value': option};
+        }
+        let {label = '', ...optionAttrs} = option;
         optionAttrs.id = `${data.id}-${i}`;
+
+        // don't select this option if a placeholder is defined
         if (!optionAttrs.selected || placeholder) {
           delete optionAttrs.selected;
+        }
+
+        // if a value is defined at select level, select this attribute
+        if (typeof value !== 'undefined' && optionAttrs.value === value) {
+          optionAttrs.selected = true;
         }
 
         if (isSelect) {

@@ -180,7 +180,7 @@ gulp.task('js', function() {
 
   // plugins
   gulp.src('src/js/control_plugins/*.es5.js')
-    .pipe(plugins.regexRename(/\.es5\.js$/, '.js'))
+    .pipe(plugins.regexRename(/\.es5\.js$/, '.min.js'))
     .pipe(plugins.iife({
       useStrict: false,
       params: ['$'],
@@ -226,7 +226,7 @@ gulp.task('devJS', function() {
 
   // plugins
   gulp.src('src/js/control_plugins/*.es5.js')
-    .pipe(plugins.regexRename(/\.es5\.js$/, '.js'))
+    .pipe(plugins.regexRename(/\.es5\.js$/, '.min.js'))
     .pipe(plugins.plumber())
     .pipe(plugins.sourcemaps.init({
       loadMaps: true
