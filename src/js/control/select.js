@@ -44,6 +44,7 @@ export default class controlSelect extends control {
         let {label = '', ...optionAttrs} = values[i];
 
         optionAttrs.id = `${data.id}-${i}`;
+        optionAttrs.name = `${data.id}-${i}`;
         if (!optionAttrs.selected || placeholder) {
           delete optionAttrs.selected;
         }
