@@ -6,7 +6,7 @@ import utils from './utils';
  * Can be extended & customised with the new object being passed to FormRender as the new layout object
  * Controls things like the label, help text, and how they fit together with the control itself
  */
-export class layout {
+export default class layout {
 
   /**
    * Prepare the templates for layout
@@ -153,7 +153,7 @@ export class layout {
 
   /**
    * Determines if a template is defined for the specified key
-   * @param template string template key to check for
+   * @param {String} template string template key to check for
    * @return {Boolean}
    */
   isTemplate(template) {
@@ -162,8 +162,8 @@ export class layout {
 
   /**
    * Process a template & prepare the results
-   * @param template - template key to execute
-   * @param args - any number of args that should be passed to the template. this.data is sent as the last parameter to any template.
+   * @param {String} template - template key to execute
+   * @param {Array} args - any number of args that should be passed to the template. this.data is sent as the last parameter to any template.
    * @return {DOMElement}
    */
   processTemplate(template, ...args) {
