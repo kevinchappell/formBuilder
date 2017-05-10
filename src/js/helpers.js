@@ -21,7 +21,7 @@ export default class Helpers {
   /**
    * Setup defaults, get instance data and dom
    * @param  {String} formID [description]
-   * @param {layout} layout object instance used by various helpers
+   * @param {Object} layout object instance used by various helpers
    */
   constructor(formID, layout) {
     this.data = instanceData[formID];
