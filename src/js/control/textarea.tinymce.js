@@ -38,6 +38,18 @@ export class controlTinymce extends controlTextarea {
     if (this.classConfig.css) {
       this.css = this.classConfig.css;
     }
+
+    // configure the tinyMCE editor defaults
+    this.editorOptions = {
+      height: 250,
+      paste_data_images: true,
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table contextmenu paste code'
+      ],
+      toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table'
+    };
   }
 
 
@@ -61,18 +73,8 @@ export class controlTinymce extends controlTextarea {
     }
 
     // define options & allow them to be overwritten in the class config
-    let options = {
-      target: this.field,
-      height: 250,
-      paste_data_images: true,
-      plugins: [
-        'advlist autolink lists link image charmap print preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table contextmenu paste code'
-      ],
-      toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table'
-    };
-    options = $.extend(options, this.classConfig);
+    let options = $.extend(this.editorOptions, this.classConfig);
+    options.target = this.field;
 
     // initialise the editor
     window.tinymce.init(options);
