@@ -7,7 +7,7 @@ import {
 import mi18n from 'mi18n';
 import utils from './utils';
 import events from './events';
-import {layout} from './layout';
+import layout from './layout';
 import Helpers from './helpers';
 import {defaultOptions, defaultI18n, config} from './config';
 import control from './control';
@@ -1197,7 +1197,7 @@ const FormBuilder = function(opts, element) {
     e.preventDefault();
     if (e.handled !== true) {
       let targetID = e.target.tagName == 'li' ? $(e.target).attr('id') : $(e.target).closest('li.form-field').attr('id');
-      helpers.toggleEdit(targetID);
+      h.toggleEdit(targetID);
       e.handled = true;
     }
   });

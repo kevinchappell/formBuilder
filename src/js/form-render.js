@@ -1,7 +1,7 @@
 import '../sass/form-render.scss';
 import utils from './utils';
 import events from './events';
-import {layout} from './layout';
+import layout from './layout';
 import control from './control';
 import './control/index';
 import controlCustom from './control/custom';
