@@ -97,6 +97,7 @@
               "last 1 version"
             ]
           },
+          "useBuiltIns": true,
           "loose": true,
           "modules": false,
           "debug": true
