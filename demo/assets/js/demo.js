@@ -173,7 +173,6 @@ jQuery(function($) {
     });
   });
 
-
   document.getElementById('edit-form').onclick = function() {
     toggleEdit();
   };
