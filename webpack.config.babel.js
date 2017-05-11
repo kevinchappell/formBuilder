@@ -6,6 +6,13 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const {BannerPlugin} = require('webpack');
 const BabiliPlugin = require('babili-webpack-plugin');
 
+// hack for Ubuntu on Windows
+try {
+  require('os').networkInterfaces();
+} catch (e) {
+  require('os').networkInterfaces = () => ({});
+}
+
 const PRODUCTION = process.argv.includes('-p');
 
 const bannerTemplate = [
@@ -18,11 +25,11 @@ let plugins = [
   new ExtractTextPlugin({
     filename: 'form-builder.min.css'
   }),
-  new BabiliPlugin({
-    removeDebugger: true
-  }, {
-    comments: false
-  }),
+  // new BabiliPlugin({
+  //   removeDebugger: true
+  // }, {
+  //   comments: false
+  // }),
   new BannerPlugin(bannerTemplate),
   new CompressionPlugin({
       asset: '[path].gz[query]',
