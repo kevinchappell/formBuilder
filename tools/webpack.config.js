@@ -7,6 +7,7 @@ const {BannerPlugin} = require('webpack');
 const BabiliPlugin = require('babili-webpack-plugin');
 
 const PRODUCTION = process.argv.includes('-p');
+const outputDir = resolve(__dirname, '../', 'demo/assets/js/');
 
 const bannerTemplate = [
   `${pkg.name} - ${pkg.homepage}`,
@@ -40,13 +41,13 @@ const extractSass = new ExtractTextPlugin({
 const devtool = PRODUCTION ? false : 'source-map';
 
 const webpackConfig = {
-  context: resolve(__dirname, 'demo/assets/js/'),
+  context: outputDir,
   entry: {
-    'form-builder': resolve(__dirname, pkg.config.files.formBuilder.js),
-    'form-render': resolve(__dirname, pkg.config.files.formRender.js)
+    'form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
+    'form-render': resolve(__dirname, '../', pkg.config.files.formRender.js)
   },
   output: {
-    path: resolve(__dirname, 'demo/assets/js/'),
+    path: outputDir,
     publicPath: '/assets/js/',
     filename: '[name].min.js'
   },
