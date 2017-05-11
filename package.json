@@ -119,7 +119,10 @@
     "build": "babel-node node_modules/webpack/bin/webpack.js --config tools/webpack.config && cp demo/assets/js/form-* dist/",
     "build:plugins": "webpack -p --progress && cp demo/assets/js/form-* dist/"
   },
-  "dependencies": {},
+  "dependencies": {
+    "jquery-ui-sortable": "*",
+    "jquery": "^3.1.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
