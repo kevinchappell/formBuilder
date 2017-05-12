@@ -1,4 +1,3 @@
-import 'babel-regenerator-runtime';
 import '../sass/form-builder.scss';
 import Dom from './dom';
 import {

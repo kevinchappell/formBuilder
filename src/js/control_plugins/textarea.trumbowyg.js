@@ -47,11 +47,10 @@ window.fbControls.push(function(controlClass, allControlClasses) {
 
     /**
      * build a div DOM element & convert to a trumbowyg editor
-     * @return DOM Element to be injected into the form.
+     * @return {DOMElement} DOM Element to be injected into the form.
      */
     build() {
       let attrs = Object.assign(this.config);
-      let value = attrs.value || '';
       let name = attrs.name || '';
       delete attrs.value;
       delete attrs.name;
@@ -83,7 +82,7 @@ window.fbControls.push(function(controlClass, allControlClasses) {
 
     /**
      * When the element is rendered into the DOM, execute the following code to initialise it
-     * @param evt - event
+     * @param {Object} evt - event
      */
     onRender(evt) {
       let value = this.config.value || '';

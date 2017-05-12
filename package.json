@@ -39,6 +39,7 @@
       "test": [
         "test/**/*.spec.js"
       ],
+      "pluginsDir": "src/js/control_plugins/",
       "formBuilder": {
         "js": "src/js/form-builder.js",
         "fonts": "src/fonts/fontello",
@@ -58,8 +59,7 @@
       "demo": {
         "vendor": {
           "js": [
-            "bower_components/jquery/dist/jquery.js",
-            "bower_components/jquery-ui-sortable/jquery-ui-sortable.js"
+            "node_modules/jquery-ui-sortable/jquery-ui.min.js"
           ]
         }
       }
@@ -97,7 +97,10 @@
               "last 1 version"
             ]
           },
-          "useBuiltIns": true,
+          "include": [
+            "es6.promise",
+            "es6.object.assign"
+          ],
           "loose": true,
           "modules": false,
           "debug": true
@@ -116,10 +119,15 @@
     "tag": "node ./node_modules/gulp/bin/gulp.js tag",
     "release:patch": "git checkout master && git fetch origin master && git rebase origin/master && npm run tag patch && npm run deploy",
     "release:minor": "git checkout master && git fetch origin master && git rebase origin/master && ./node_modules/gulp/bin/gulp.js tag minor && ./node_modules/gulp/bin/gulp.js deploy",
-    "start": "webpack -d --progress | webpack-dev-server",
-    "build": "webpack -p --progress && cp demo/assets/js/form-* dist/"
+    "start": "babel-node -- node_modules/webpack/bin/webpack.js -d --progress --config tools/webpack.config.js | babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server.js --config tools/webpack.config.js",
+    "build": "babel-node -- node_modules/webpack/bin/webpack.js -p --progress --config tools/webpack.config.js && cp demo/assets/js/form-* dist/",
+    "build:vendor": "babel-node -- node_modules/webpack/bin/webpack.js -p --progress --config tools/webpack.vendor.config",
+    "build:plugins": "babel-node -- node_modules/webpack/bin/webpack.js -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
-  "dependencies": {},
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "jquery-ui-sortable": "^1.0.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
@@ -142,6 +150,8 @@
     "browserify": "^14.3.0",
     "chai": "^3.5.0",
     "compression-webpack-plugin": "^0.4.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "cross-env": "^4.0.0",
     "css-loader": "^0.28.0",
     "eslint": "^3.15.0",
     "eslint-config-google": "^0.7.1",

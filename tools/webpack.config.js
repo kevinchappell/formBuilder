@@ -1,4 +1,4 @@
-const pkg = require('./package.json');
+import pkg from '../package.json';
 const {resolve} = require('path');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -6,14 +6,8 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const {BannerPlugin} = require('webpack');
 const BabiliPlugin = require('babili-webpack-plugin');
 
-// hack for Ubuntu on Windows
-try {
-  require('os').networkInterfaces();
-} catch (e) {
-  require('os').networkInterfaces = () => ({});
-}
-
 const PRODUCTION = process.argv.includes('-p');
+const outputDir = resolve(__dirname, '../', 'demo/assets/js/');
 
 const bannerTemplate = [
   `${pkg.name} - ${pkg.homepage}`,
@@ -25,11 +19,11 @@ let plugins = [
   new ExtractTextPlugin({
     filename: 'form-builder.min.css'
   }),
-  // new BabiliPlugin({
-  //   removeDebugger: true
-  // }, {
-  //   comments: false
-  // }),
+  new BabiliPlugin({
+    removeDebugger: true
+  }, {
+    comments: false
+  }),
   new BannerPlugin(bannerTemplate),
   new CompressionPlugin({
       asset: '[path].gz[query]',
@@ -47,13 +41,16 @@ const extractSass = new ExtractTextPlugin({
 const devtool = PRODUCTION ? false : 'source-map';
 
 const webpackConfig = {
-  context: resolve(__dirname, 'demo/assets/js/'),
+  context: outputDir,
   entry: {
-    'form-builder': resolve(__dirname, pkg.config.files.formBuilder.js),
-    'form-render': resolve(__dirname, pkg.config.files.formRender.js)
+    'form-builder': [
+      'babel-regenerator-runtime',
+      resolve(__dirname, '../', pkg.config.files.formBuilder.js)
+    ],
+    'form-render': resolve(__dirname, '../', pkg.config.files.formRender.js)
   },
   output: {
-    path: resolve(__dirname, 'demo/assets/js/'),
+    path: outputDir,
     publicPath: '/assets/js/',
     filename: '[name].min.js'
   },
