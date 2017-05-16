@@ -1,6 +1,7 @@
 import 'babel-regenerator-runtime';
 import '../sass/form-builder.scss';
 import Dom from './dom';
+import {remove} from './dom';
 import {
   Data
 } from './data';
@@ -1407,7 +1408,7 @@ let stageOnChangeSelectors = [
 
   if (opts.disableInjectedStyle) {
     const styleTags = document.getElementsByClassName('formBuilder-injected-style');
-    utils.forEach(styleTags, tag => d.remove(tag));
+    utils.forEach(styleTags, i => remove(styleTags[i]));
   }
 
   document.dispatchEvent(events.loaded);
