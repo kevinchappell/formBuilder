@@ -106,7 +106,8 @@ jQuery(function($) {
     templates: templates,
     inputSets: inputSets,
     typeUserDisabledAttrs: typeUserDisabledAttrs,
-    typeUserAttrs: typeUserAttrs
+    typeUserAttrs: typeUserAttrs,
+    disableInjectedStyle: false,
     // disabledAttrs
   };
   var formData = window.sessionStorage.getItem('formData');
