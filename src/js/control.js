@@ -54,6 +54,7 @@ export default class control {
     }
 
     if (this.required) {
+      config['required'] = 'required';
       config['aria-required'] = 'true';
     }
     this.config = config;
