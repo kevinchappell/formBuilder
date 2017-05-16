@@ -76,7 +76,14 @@ const webpackConfig = {
       test: /\.scss$/,
       use: extractSass
       .extract({
-        fallback: 'style-loader',
+        fallback: {
+          loader: 'style-loader',
+          options: {
+            attrs: {
+              class: 'formBuilder-injected-style'
+            }
+          }
+        },
         use: [
           {
             loader: 'css-loader',

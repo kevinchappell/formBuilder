@@ -199,9 +199,10 @@ export default class control {
    * By default looks for translations defined against the class (for plugin controls)
    * Expects {locale1: {type: label}, locale2: {type: label}}, or {default: label}, or {local1: label, local2: label2}
    * @param {String} lookup string to retrieve the label / translated string for
+   * @param {Object|Number|String} args - string or key/val pairs for string lookups with variables
    * @return {String} the translated label
    */
-  static mi18n(lookup) {
+  static mi18n(lookup, args) {
     let def = this.definition;
     let i18n = def.i18n || {};
     let locale = mi18n.locale;
@@ -222,7 +223,7 @@ export default class control {
     if (!mapped) {
       mapped = lookupCamel;
     }
-    return mi18n.get(mapped);
+    return mi18n.get(mapped, args);
   }
 
   /**
@@ -331,7 +332,8 @@ export default class control {
    * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
-    return utils.markup(tag, content, attributes);
+    this.element = utils.markup(tag, content, attributes);
+    return this.element;
   }
 
   /**

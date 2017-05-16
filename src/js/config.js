@@ -121,6 +121,7 @@ export const defaultI18n = {
           mandatory: 'Mandatory',
           maxlength: 'Max Length',
           minOptionMessage: 'This field requires a minimum of 2 options',
+          minSelectionRequired: 'Minimum {min} selections required',
           multipleFiles: 'Multiple Files',
           name: 'Name',
           no: 'No',
