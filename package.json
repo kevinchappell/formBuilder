@@ -118,10 +118,10 @@
     "tag": "node ./node_modules/gulp/bin/gulp.js tag",
     "release:patch": "git checkout master && git fetch origin master && git rebase origin/master && npm run tag patch && npm run deploy",
     "release:minor": "git checkout master && git fetch origin master && git rebase origin/master && ./node_modules/gulp/bin/gulp.js tag minor && ./node_modules/gulp/bin/gulp.js deploy",
-    "start": "babel-node -- node_modules/webpack/bin/webpack --config tools/webpack.config -d --progress | babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server --config tools/webpack.config",
-    "build": "babel-node -- node_modules/webpack/bin/webpack --config tools/webpack.config -p --progress && cp demo/assets/js/form-* dist/",
-    "build:plugins": "babel-node -- node_modules/webpack/bin/webpack --config tools/webpack.plugins.config -p --progress && cp demo/assets/js/form-* dist/",
-    "build:vendor": "babel-node -- node_modules/webpack/bin/webpack.js -p --progress --config tools/webpack.vendor.config"
+    "start": "babel-node -- node_modules/webpack/bin/webpack -d --progress --config tools/webpack.config | babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server --config tools/webpack.config",
+    "build": "babel-node -- node_modules/webpack/bin/webpack -p --progress --config tools/webpack.config && cp demo/assets/js/form-* dist/",
+    "build:vendor": "babel-node -- node_modules/webpack/bin/webpack.js -p --progress --config tools/webpack.vendor.config",
+    "build:plugins": "babel-node -- node_modules/webpack/bin/webpack.js -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
   "dependencies": {
     "jquery-ui-sortable": "*",
