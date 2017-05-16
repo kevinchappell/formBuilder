@@ -13,7 +13,7 @@ webpackConfig.entry = {};
 webpackConfig.plugins = [
   new BabiliPlugin(),
   new CopyWebpackPlugin([
-    { 
+    {
       from: outputDir,
       to: resolve(__dirname, '../', 'dist/control_plugins')
     }
@@ -32,7 +32,7 @@ webpackConfig.entry = () => new Promise((resolve) => {
   let entry = {};
   fs.readdir(pluginsDir, (error, files) => {
     files.forEach(file => {
-      if (file.indexOf('.js') !== -1){
+      if (file.indexOf('.js') !== -1) {
         let pluginName = file.replace('.js', '');
         entry[pluginName] = `${pluginsDir}/${file}`;
       }
