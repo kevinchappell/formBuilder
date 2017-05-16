@@ -489,7 +489,7 @@ export default class Helpers {
       }
     };
 
-    return layoutMap[controlPosition] ? layoutMap[controlPosition] : '';
+    return layoutMap[controlPosition] || '';
   }
 
   /**
