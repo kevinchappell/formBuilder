@@ -24,6 +24,7 @@ webpackConfig.plugins = [
   })
 ];
 
+<<<<<<< 8f7e42bd0e6477588f1a00081849bff6a64d0f9e
 // webpackConfig.module = {
 //   rules: [{
 //     test: /\.js$/,
@@ -46,4 +47,6 @@ webpackConfig.plugins = [
 //   }]
 // };
 
+=======
+>>>>>>> rebase from chore/build-process
 module.exports = webpackConfig;

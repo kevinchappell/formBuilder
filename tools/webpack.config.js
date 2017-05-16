@@ -24,13 +24,13 @@ const bannerTemplate = [
 
 let plugins = [
   new ExtractTextPlugin({
-    filename: 'form-builder.min.css'
+    filename: '[name].[contenthash].css'
   }),
-  // new BabiliPlugin({
-  //   removeDebugger: true
-  // }, {
-  //   comments: false
-  // }),
+  new BabiliPlugin({
+    removeDebugger: true
+  }, {
+    comments: false
+  }),
   new BannerPlugin(bannerTemplate),
   new CompressionPlugin({
       asset: '[path].gz[query]',
