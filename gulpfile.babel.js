@@ -302,7 +302,7 @@ gulp.task('deploy', () => {
 gulp.task('tag', (done) => {
   const args = process.argv.slice(2);
   const releaseArg = args[1] || '--patch';
-  const releaseType = releaseArg.substring(2, releaseArg.length);
+  const releaseType = releaseArg.replace('--', '');
   const oldVer = pkg.version;
   const newVer = semver.inc(oldVer, releaseType);
   const lastLog = fs.readFileSync('./CHANGELOG.md', 'utf8').split('\n')[2];
@@ -321,7 +321,7 @@ gulp.task('tag', (done) => {
       .pipe(gulp.dest('./'));
 
       updateMD.on('end', function() {
-        exec(`gulp build && git commit -am "v${newVer}" && git tag v${newVer} && git push origin master --tags && npm publish`, function(err, stdout) {
+        exec(`npm run build && git commit -am "v${newVer}" && git tag v${newVer} && git push origin master --tags && npm publish`, function(err, stdout) {
           if (!err) {
             console.log(stdout);
             console.log(`Tag v${newVer} successfully pushed.`);
