@@ -20,6 +20,16 @@ function createNewEvent(eventName) {
   return event;
 }
 
-const events = {};
+const events = {
+  loaded: createNewEvent('loaded'),
+  viewData: createNewEvent('viewData'),
+  userDeclined: createNewEvent('userDeclined'),
+  modalClosed: createNewEvent('modalClosed'),
+  modalOpened: createNewEvent('modalOpened'),
+  formSaved: createNewEvent('formSaved'),
+  fieldAdded: createNewEvent('fieldAdded'),
+  fieldRemoved: createNewEvent('fieldRemoved'),
+  fieldRendered: createNewEvent('fieldRendered')
+};
 
 export default events;
