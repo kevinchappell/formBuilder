@@ -99,6 +99,7 @@ export default class controlSelect extends control {
         let otherOptionAttrs = {
           id: `${data.id}-other`,
           className: `${data.className} other-option`,
+          name: `${data.name}[other]`,
           events: {
             click: () => this.otherOptionCB(otherOptionAttrs.id)
           }
