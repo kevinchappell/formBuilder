@@ -134,7 +134,7 @@ jQuery(function($) {
     var apiBtns = {
       showData: fb.actions.showData,
       clearFields: fb.actions.clearFields,
-      getData: function() { 
+      getData: function() {
         console.log(fb.actions.getData());
       },
       setData: function() {
@@ -152,7 +152,7 @@ jQuery(function($) {
         fb.actions.removeField();
       },
       testSubmit: function() {
-        console.log(document.forms[0].checkValidity());
+        console.log('Can submit: ', document.forms[0].checkValidity());
       },
       resetDemo: function() {
         window.sessionStorage.removeItem('formData');
@@ -162,7 +162,7 @@ jQuery(function($) {
 
     Object.keys(apiBtns).forEach(function(action) {
       document.getElementById(action)
-      .addEventListener('click', function(e) { 
+      .addEventListener('click', function(e) {
         apiBtns[action]();
       });
     });

@@ -28,6 +28,11 @@ export default class controlSelect extends control {
     if (data.multiple || type === 'checkbox-group') {
       data.name = data.name + '[]';
     }
+
+    if (type === 'checkbox-group') {
+      delete data.required;
+    }
+
     delete data.title;
 
     if (values) {
