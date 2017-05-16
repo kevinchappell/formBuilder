@@ -6,13 +6,6 @@ import CompressionPlugin from 'compression-webpack-plugin';
 import {BannerPlugin} from 'webpack';
 import BabiliPlugin from 'babili-webpack-plugin';
 
-// hack for Ubuntu on Windows
-try {
-  require('os').networkInterfaces();
-} catch (e) {
-  require('os').networkInterfaces = () => ({});
-}
-
 const PRODUCTION = process.argv.includes('-p');
 const outputDir = resolve(__dirname, '../', 'demo/assets/js/');
 
@@ -26,11 +19,11 @@ let plugins = [
   new ExtractTextPlugin({
     filename: 'form-builder.min.css'
   }),
-  // new BabiliPlugin({
-  //   removeDebugger: true
-  // }, {
-  //   comments: false
-  // }),
+  new BabiliPlugin({
+    removeDebugger: true
+  }, {
+    comments: false
+  }),
   new BannerPlugin(bannerTemplate),
   new CompressionPlugin({
       asset: '[path].gz[query]',
@@ -50,10 +43,7 @@ const devtool = PRODUCTION ? false : 'source-map';
 const webpackConfig = {
   context: outputDir,
   entry: {
-    'form-builder': [
-      'babel-regenerator-runtime',
-      resolve(__dirname, '../', pkg.config.files.formBuilder.js)
-    ],
+    'form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
     'form-render': resolve(__dirname, '../', pkg.config.files.formRender.js)
   },
   output: {
