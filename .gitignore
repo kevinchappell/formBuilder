@@ -2,5 +2,6 @@ node_modules
 bower_components
 npm-debug.log
 demo/assets/**/*.map
+dist/*.map
 site
 .DS_Store

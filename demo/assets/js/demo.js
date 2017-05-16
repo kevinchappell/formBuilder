@@ -1,5 +1,5 @@
 jQuery(function($) {
-  let fields = [
+  var fields = [
     {
       label: 'Star Rating',
       attrs: {
@@ -9,7 +9,7 @@ jQuery(function($) {
     }
   ];
 
-  let templates = {
+  var templates = {
     starRating: function(fieldData) {
       return {
         field: '<span id="'+fieldData.name+'">',
@@ -20,7 +20,7 @@ jQuery(function($) {
     }
   };
 
-  let inputSets = [{
+  var inputSets = [{
         label: 'User Details',
         name: 'user-details', // optional
         showHeader: true, // optional
@@ -84,17 +84,17 @@ jQuery(function($) {
   };
 
   // test disabledAttrs
-  let disabledAttrs = ['placeholder'];
+  var disabledAttrs = ['placeholder'];
 
-  const fbOptions = {
+  var fbOptions = {
     subtypes: {
       text: ['datetime-local']
     },
     onSave: function(e, formData) {
       toggleEdit();
       $('.render-wrap').formRender({
-        formData,
-        templates
+        formData: formData,
+        templates: templates
       });
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
     },
@@ -102,15 +102,16 @@ jQuery(function($) {
       enable: true
     },
     sortableControls: true,
-    fields,
-    templates,
-    inputSets,
-    typeUserDisabledAttrs,
-    typeUserAttrs,
+    fields: fields,
+    templates: templates,
+    inputSets: inputSets,
+    typeUserDisabledAttrs: typeUserDisabledAttrs,
+    typeUserAttrs: typeUserAttrs,
+    disableInjectedStyle: false,
     // disabledAttrs
   };
-  let formData = window.sessionStorage.getItem('formData');
-  let editing = true;
+  var formData = window.sessionStorage.getItem('formData');
+  var editing = true;
 
   if (formData) {
     fbOptions.formData = JSON.parse(formData);
@@ -125,45 +126,53 @@ jQuery(function($) {
     return editing = !editing;
   }
 
-  const setFormData = '[{"type":"text","label":"Full Name","subtype":"text","className":"form-control","name":"text-1476748004559"},{"type":"select","label":"Occupation","className":"form-control","name":"select-1476748006618","values":[{"label":"Street Sweeper","value":"option-1","selected":true},{"label":"Moth Man","value":"option-2"},{"label":"Chemist","value":"option-3"}]},{"type":"textarea","label":"Short Bio","rows":"5","className":"form-control","name":"textarea-1476748007461"}]';
+  var setFormData = '[{"type":"text","label":"Full Name","subtype":"text","className":"form-control","name":"text-1476748004559"},{"type":"select","label":"Occupation","className":"form-control","name":"select-1476748006618","values":[{"label":"Street Sweeper","value":"option-1","selected":true},{"label":"Moth Man","value":"option-2"},{"label":"Chemist","value":"option-3"}]},{"type":"textarea","label":"Short Bio","rows":"5","className":"form-control","name":"textarea-1476748007461"}]';
 
-  const formBuilder = $('.build-wrap').formBuilder(fbOptions);
-  const fbPromise = formBuilder.promise;
+  var formBuilder = $('.build-wrap').formBuilder(fbOptions);
+  var fbPromise = formBuilder.promise;
 
   fbPromise.then(function(fb) {
-    let apiBtns = {
+    var apiBtns = {
       showData: fb.actions.showData,
       clearFields: fb.actions.clearFields,
-      getData: () => console.log(fb.actions.getData()),
-      setData: () => fb.actions.setData(setFormData),
-      addField: () => {
-        let field = {
+      getData: function() {
+        console.log(fb.actions.getData());
+      },
+      setData: function() {
+        fb.actions.setData(setFormData);
+      },
+      addField: function() {
+        var field = {
             type: 'text',
             class: 'form-control',
             label: 'Text Field added at: ' + new Date().getTime()
           };
         fb.actions.addField(field);
       },
-      removeField: () => fb.actions.removeField(),
-      testSubmit: () => {
-        console.log(document.forms[0].checkValidity());
-        // document.forms[0].submit()
+      removeField: function() {
+        fb.actions.removeField();
       },
-      resetDemo: () => {
+      testSubmit: function() {
+        console.log('Can submit: ', document.forms[0].checkValidity());
+      },
+      resetDemo: function() {
         window.sessionStorage.removeItem('formData');
         location.reload();
       }
     };
 
-    Object.keys(apiBtns).forEach(action => {
+    Object.keys(apiBtns).forEach(function(action) {
       document.getElementById(action)
-      .addEventListener('click', e => apiBtns[action]());
+      .addEventListener('click', function(e) {
+        apiBtns[action]();
+      });
     });
 
     document.getElementById('setLanguage')
-    .addEventListener('change', e => fb.actions.setLang(e.target.value));
+    .addEventListener('change', function(e) {
+      fb.actions.setLang(e.target.value);
+    });
   });
-
 
   document.getElementById('edit-form').onclick = function() {
     toggleEdit();

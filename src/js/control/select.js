@@ -12,7 +12,10 @@ export default class controlSelect extends control {
    */
   static get definition() {
     return {
-      inactive: ['checkbox']
+      inactive: ['checkbox'],
+      mi18n: {
+        minSelectionRequired: 'minSelectionRequired'
+      }
     };
   }
 
@@ -28,6 +31,11 @@ export default class controlSelect extends control {
     if (data.multiple || type === 'checkbox-group') {
       data.name = data.name + '[]';
     }
+
+    if (type === 'checkbox-group' && data.required) {
+      this.onRender = this.groupRequired;
+    }
+
     delete data.title;
 
     if (values) {
@@ -91,6 +99,7 @@ export default class controlSelect extends control {
         let otherOptionAttrs = {
           id: `${data.id}-other`,
           className: `${data.className} other-option`,
+          name: `${data.name}[other]`,
           events: {
             click: () => this.otherOptionCB(otherOptionAttrs.id)
           }
@@ -127,6 +136,38 @@ export default class controlSelect extends control {
     } else {
       return this.markup('div', options, {className: type});
     }
+  }
+
+  /**
+   * setCustomValidity for checkbox-group
+   */
+  groupRequired() {
+    const checkboxes = this.element.getElementsByTagName('input');
+    let minReq = control.mi18n('minSelectionRequired', 1);
+    const setValidity = (checkbox, isValid) => {
+      if (!isValid) {
+        checkbox.setCustomValidity(minReq);
+      } else {
+        checkbox.setCustomValidity('');
+      }
+    };
+    const toggleRequired = (checkboxes, isValid) => {
+      [].forEach.call(checkboxes, cb => {
+        if (isValid) {
+          cb.removeAttribute('required');
+        } else {
+          cb.setAttribute('required', 'required');
+        }
+        setValidity(cb, isValid);
+      });
+    };
+
+    this.element.addEventListener('click', evt => {
+      if (evt.target.type === 'checkbox') {
+        let isValid = [].some.call(checkboxes, cb => cb.checked);
+        toggleRequired(checkboxes, isValid);
+      }
+    });
   }
 
   /**

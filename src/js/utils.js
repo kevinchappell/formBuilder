@@ -249,7 +249,7 @@ import {defaultSubtypes, filter} from './dom';
     let attrs = elem.attributes;
     let data = {};
     utils.forEach(attrs, attr => {
-      let attrVal = attrs[attr].value;
+      let attrVal = attrs[attr].value || '';
       if (attrVal.match(/false|true/g)) {
         attrVal = (attrVal === 'true');
       } else if (attrVal.match(/undefined/g)) {

@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+import 'babel-regenerator-runtime';
 import '../sass/form-render.scss';
 import utils from './utils';
 import events from './events';

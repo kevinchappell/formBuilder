@@ -115,7 +115,7 @@ export default class layout {
     let labelText = utils.parsedHtml(label);
     let labelContents = [labelText];
     if (this.data.required) {
-      labelContents.push(this.markup('span', '*', {className: 'required'}));
+      labelContents.push(this.markup('span', '*', {className: 'fb-required'}));
     }
 
     // support an override template for labels
