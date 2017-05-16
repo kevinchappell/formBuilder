@@ -171,6 +171,8 @@ jQuery(function($) {
     .addEventListener('change', function(e) {
       fb.actions.setLang(e.target.value);
     });
+
+    console.log('#formBuilder-style ', $('#formBuilder-style'));
   });
 
   document.getElementById('edit-form').onclick = function() {
