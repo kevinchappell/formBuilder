@@ -1,10 +1,10 @@
 import pkg from '../package.json';
-const {resolve} = require('path');
-const autoprefixer = require('autoprefixer');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
-const {BannerPlugin} = require('webpack');
-const BabiliPlugin = require('babili-webpack-plugin');
+import {resolve} from 'path';
+import autoprefixer from 'autoprefixer';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import CompressionPlugin from 'compression-webpack-plugin';
+import {BannerPlugin} from 'webpack';
+import BabiliPlugin from 'babili-webpack-plugin';
 
 const PRODUCTION = process.argv.includes('-p');
 const outputDir = resolve(__dirname, '../', 'demo/assets/js/');

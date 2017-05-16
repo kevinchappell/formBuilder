@@ -420,7 +420,7 @@ export default class Helpers {
    */
   classNames(field, previewData) {
     let className = field.querySelector('.fld-className');
-    if (className === undefined) {
+    if (!className) {
       return;
     }
     let i;
