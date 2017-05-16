@@ -1,3 +1,4 @@
+import 'babel-regenerator-runtime';
 import '../sass/form-builder.scss';
 import Dom from './dom';
 import {
@@ -1402,6 +1403,11 @@ let stageOnChangeSelectors = [
   // If option set, controls will remain in view in editor
   if (opts.stickyControls.enable) {
     h.stickyControls($stage);
+  }
+
+  if (opts.disableInjectedStyle) {
+    const styleTags = document.getElementsByClassName('formBuilder-injected-style');
+    utils.forEach(styleTags, tag => d.remove(tag));
   }
 
   document.dispatchEvent(events.loaded);
