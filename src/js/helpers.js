@@ -670,9 +670,11 @@ export default class Helpers {
       fields[0].style.marginTop = `${-outerHeight}px`;
       setTimeout(() => {
         empty(stage).classList.remove('removing');
+        this.save();
       }, 400);
     } else {
       empty(stage);
+      this.save();
     }
   }
 
@@ -1026,6 +1028,22 @@ export default class Helpers {
    */
   input(attrs = {}) {
     return m('input', null, attrs);
+  }
+
+  /**
+   * Gets the data for current instance of formBuilder
+   * @param  {String} type
+   * @return {Array|String} formData
+   */
+  getFormData(type = 'js') {
+    const h = this;
+    const data = {
+      js: () => h.prepData(h.d.stage),
+      xml: () => h.xmlSave(h.d.stage),
+      json: () => window.JSON.stringify(h.prepData(h.d.stage), null, '\t')
+    };
+
+    return data[type]();
   }
 
   // end class

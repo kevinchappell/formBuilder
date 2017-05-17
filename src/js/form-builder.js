@@ -1424,17 +1424,7 @@ let stageOnChangeSelectors = [
       document.dispatchEvent(events.fieldAdded);
     },
     removeField: h.removeField.bind(h),
-    getData: (type = 'js') => {
-      const stage = d.stage;
-      const h = h;
-      const data = {
-        js: () => h.prepData(stage),
-        xml: () => h.xmlSave(stage),
-        json: () => window.JSON.stringify(h.prepData(stage), null, '\t')
-      };
-
-      return data[type]();
-    },
+    getData: h.getFormData.bind(h),
     setData: formData => {
       h.stopIndex = undefined;
       h.removeAllFields(d.stage, false);
