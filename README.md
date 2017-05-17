@@ -28,6 +28,7 @@ jQuery(function($) {
 | [controlPosition](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlPosition/) | {String} | `'left'` \| `'right'`  | `'right'` |
 | [dataType](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/dataType/) | {String} | `json` \| `xml` | `json` |
 | [defaultFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/defaultFields/) | {Array} | `[{type: 'text', name: 'first-name'}]` | `[]` |
+| [disabledAttrs](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disabledAttrs/) | {Array} | array of attributes to disable for all fields | `[]` |
 | [disabledActionButtons](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disabledActionButtons/) | {Array} | array of form action buttons to disable | `[]` |
 | [disableFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableFields/) | {Array} | array of field types to disable | `['autocomplete', 'hidden', 'number']` |
 | [disableInjectedStyle](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableInjectedStyle/) | {Bool} | `true` \| `false` | `false` |
@@ -45,6 +46,7 @@ jQuery(function($) {
 | [stickyControls](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/stickyControls/) | {Object} | `stickyControls: {enable:true, offset: { top: 5, bottom: 'auto', right: 'auto' }}` | `stickyControls: {enable:true}` |
 | [templates](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/templates/) | {Object} | Additional field templates | `{}` |
 | [typeUserAttrs](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/typeUserAttrs/) | {Object} | typeUserAttrs config | null |
+| [typeUserDisabledAttrs](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/typeUserDisabledAttrs/) | {Object} | typeUserDisabledAttrs config | null |
 | [typeUserEvents](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/typeUserEvents/) | {Object} | typeUserEvents config | null |
 
 ### i18n
