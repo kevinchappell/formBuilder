@@ -1,6 +1,8 @@
 # templates
 Often used in conjunction with the `fields` option, `templates` allows you to define a custom output for new or existing fields.
 
+For total control in creating not only custom controls but also custom output see: [Controls](http://formbuilder.readthedocs.io/en/latest/formBuilder/controls/), [Control Plugins](http://formbuilder.readthedocs.io/en/latest/formBuilder/control-plugins/) and [Layout](http://formbuilder.readthedocs.io/en/latest/formBuilder/overview/#layouts)
+
 ## Usage
 ```javascript
 let fields = [{

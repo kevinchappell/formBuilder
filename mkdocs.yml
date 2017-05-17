@@ -28,6 +28,7 @@ pages:
   - dataType: formBuilder/options/dataType.md
   - defaultFields: formBuilder/options/defaultFields.md
   - disableFields: formBuilder/options/disableFields.md
+  - disabledAttrs: formBuilder/options/disabledAttrs.md
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
   - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
@@ -41,9 +42,10 @@ pages:
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
-  - typeUserAttrs: formBuilder/options/typeUserAttrs.md
   - templates: formBuilder/options/templates.md
+  - typeUserAttrs: formBuilder/options/typeUserAttrs.md
   - typeUserEvents: formBuilder/options/typeUserEvents.md
+  - typeUserDisabledAttrs: formBuilder/options/typeUserDisabledAttrs.md
 - formBuilder Actions:
   - setLang: formBuilder/actions/setLang.md
   - getData: formBuilder/actions/getData.md
