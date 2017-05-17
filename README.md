@@ -30,6 +30,7 @@ jQuery(function($) {
 | [defaultFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/defaultFields/) | {Array} | `[{type: 'text', name: 'first-name'}]` | `[]` |
 | [disabledActionButtons](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disabledActionButtons/) | {Array} | array of form action buttons to disable | `[]` |
 | [disableFields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableFields/) | {Array} | array of field types to disable | `['autocomplete', 'hidden', 'number']` |
+| [disableInjectedStyle](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/disableInjectedStyle/) | {Bool} | `true` \| `false` | `false` |
 | [editOnAdd](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/editOnAdd/) | {Bool} | `true` \| `false` | `false` |
 | [fieldRemoveWarn](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/fieldRemoveWarn/) | {Bool} | `true` | `false` |
 | [fields](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/fields/) | {Array} | array of additional field definitions | `[]` |
