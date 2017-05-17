@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.2.2 - Hotfix: getData [#464](https://github.com/kevinchappell/formBuilder/pull/464)
 - v2.2.1 - Update documentation
 - v2.2.0 - Update gulp tag
 - v2.1.2 - Update npm scripts
