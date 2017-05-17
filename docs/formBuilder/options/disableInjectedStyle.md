@@ -1,5 +1,5 @@
 # disableInjectedStyle
-`disableInjectedStyle` allows you to define and array of fields that should *not* be made available to users.
+I'm not sure why anyone would want to do this but it's been requested a couple times so here it is... `disableInjectedStyle` enables you to disabled the injeted style that ships with the plugin.
 
 ## Usage
 ```javascript
