@@ -2,9 +2,26 @@
 
 Here we'll cover a few common tasks developers might face when setting up formBuilder.
 
+## Install Dependencies
+```bash
+$ npm install
+```
+or
+```bash
+$ yarn install
+```
+
 ## Local development
-Once you've installed the dependencies in [Contributing](http://formbuilder.online/contributing) you can get a local version running by running the default gulp task in terminal.
+Once you've installed the project and [development](http://formbuilder.online/contributing) dependencies you can get a local version running by running:
 ```bash
 $ npm start
 ```
-This will run `gulp build watch serve` which as you might guess, builds the js and scss files, watches them for changes, then opens a new browser tab and serves a running version of the plugin. We are using BrowserSync to inject style changes and automatically reload for JavaScript changes.
+
+This will run webpack and open a new browser tab and that serves a running version of the plugin.
+
+## Custom Controls
+See the Control and Control Plugin Architecture Documentation
+
+ - [Overview](/formBuilder/overview)
+ - [Control](/formBuilder/controls)
+ - [Control Plugins](/formBuilder/control-plugins)

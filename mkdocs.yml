@@ -1,4 +1,4 @@
-site_name: formBuilder v2.0
+site_name: formBuilder
 site_url: https://formbuilder.online
 repo_url: https://github.com/kevinchappell/formBuilder.git
 repo_name: 'GitHub'
@@ -9,7 +9,10 @@ pages:
 - Introduction: index.md
 - Getting Started: getting-started.md
 - Development:
-  - Overview: development.md
+  - Summary: development.md
+  - Overview: formBuilder/overview.md
+  - Controls: formBuilder/controls.md
+  - Control Plugins: formBuilder/control-plugins.md
   - Icon Font: editing-fonts.md
 - formBuilder Demos:
   - Basic: formBuilder/demos/basic.md
@@ -26,6 +29,7 @@ pages:
   - defaultFields: formBuilder/options/defaultFields.md
   - disableFields: formBuilder/options/disableFields.md
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
+  - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fields: formBuilder/options/fields.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md

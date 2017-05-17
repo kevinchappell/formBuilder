@@ -14,8 +14,7 @@ Once you have the JavaScript and stylesheet, include it in your build process fo
 <!DOCTYPE html>
 <html>
 <head>
-<title>Example formBuilder</title>
-<link rel="stylesheet" type="text/css" media="screen" href="http://formbuilder.online/assets/css/form-builder.min.css">
+    <title>Example formBuilder</title>
 </head>
 <body>
   <div id="fb-editor"></div>
