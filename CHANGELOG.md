@@ -1,8 +1,8 @@
 # Changelog
 
 - v2.2.2 - Hotfix: getData [#464](https://github.com/kevinchappell/formBuilder/pull/464)
-- v2.2.1 - Update documentation
-- v2.2.0 - Update gulp tag
+- v2.2.1 - Hotfix: bootstrap addon style, Update documentation
+- v2.2.0 - Feature: Controls API, see: http://formbuilder.readthedocs.io/en/latest/formBuilder/overview/
 - v2.1.2 - Update npm scripts
 - v2.1.1 - Required checkbox fix, form-horizontal css alignment fix [#422](https://github.com/kevinchappell/formBuilder/pull/422)
 - v2.1.0 - Update docs & Critical fixes [#420](https://github.com/kevinchappell/formBuilder/pull/420)
