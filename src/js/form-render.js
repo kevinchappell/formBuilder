@@ -79,6 +79,51 @@ class FormRender {
     if (Object.keys(this.options.templates).length) {
       controlCustom.register(this.options.templates);
     }
+
+    /**
+     * Extend Element prototype to allow us to append fields
+     *
+     * @param  {Object} fields Node elements
+     */
+    if (typeof Element.prototype.appendFormFields !== 'function') {
+      Element.prototype.appendFormFields = function (fields) {
+        let element = this;
+        if (!Array.isArray(fields)) {
+          fields = [fields];
+        }
+        fields.forEach(field => {
+          element.appendChild(field);
+          field.dispatchEvent(events.fieldRendered);
+        });
+      };
+    }
+
+    /**
+     * Extend Element prototype to remove content
+     */
+    if (typeof Element.prototype.emptyContainer !== 'function') {
+      Element.prototype.emptyContainer = function () {
+        let element = this;
+        while (element.lastChild) {
+          element.removeChild(element.lastChild);
+        }
+      };
+    }
+  }
+
+  /**
+   * Clean up passed object configuration to prepare for use with the markup function
+   * @param field - object of field configuration
+   * @returns sanitized field object
+   */
+  santizeField(field) {
+    let sanitizedField = Object.assign({}, field);
+    sanitizedField.className = field.className || field.class || null;
+    delete sanitizedField.class;
+    if (field.values) {
+      field.values = field.values.map(option => utils.trimObj(option));
+    }
+    return utils.trimObj(sanitizedField);
   }
 
   /**
@@ -90,50 +135,10 @@ class FormRender {
     const formRender = this;
     let opts = this.options;
 
-    /**
-     * Extend Element prototype to allow us to append fields
-     *
-     * @param  {Object} fields Node elements
-     */
-    Element.prototype.appendFormFields = function(fields) {
-      let element = this;
-      fields.forEach(field => {
-        element.appendChild(field);
-        field.dispatchEvent(events.fieldRendered);
-      });
-    };
-
-    /**
-     * Extend Element prototype to remove content
-     */
-    Element.prototype.emptyContainer = function() {
-      let element = this;
-      while (element.lastChild) {
-        element.removeChild(element.lastChild);
-      }
-    };
-
     let runCallbacks = function() {
       if (opts.onRender) {
         opts.onRender();
       }
-    };
-
-    /**
-     * Clean up passed object configuration to prepare for use with the markup function
-     * @param {Object} field - object of field configuration
-     * @return {Object} sanitized field object
-     */
-    let santizeField = field => {
-      let sanitizedField = Object.assign({}, field);
-      sanitizedField.className = field.className || field.class || null;
-      delete sanitizedField.class;
-
-      if (field.values) {
-        field.values = field.values.map(option => utils.trimObj(option));
-      }
-
-      return utils.trimObj(sanitizedField);
     };
 
     /**
@@ -152,8 +157,7 @@ class FormRender {
       let engine = new opts.layout(opts.layoutTemplates);
       for (let i = 0; i < opts.formData.length; i++) {
         let fieldData = opts.formData[i];
-        let sanitizedField = santizeField(fieldData);
-        // let type = fieldData.subtype || fieldData.type;
+        let sanitizedField = this.santizeField(fieldData);
 
         // determine the control class for this type, and then process it through the layout engine
         let controlClass = control.getClass(fieldData.type, fieldData.subtype);
@@ -195,6 +199,28 @@ class FormRender {
 
     return formRender;
   }
+
+  /**
+   * Render a single control / field
+   * Expects only a single field configuration to be set in opt.formData
+   * @param element {jQuery Element} an optional element to render the field into - if not specified will just return the rendered field - note if you do this you will need to manually call element.dispatchEvent('fieldRendered') on the returned element when it is rendered into the DOM
+   * @returns {DOMElement} the rendered field
+   */
+  renderSingle(element = null) {
+    let opts = this.options;
+    let fieldData = opts.formData;
+    if (!fieldData || Array.isArray(fieldData)) {
+      throw new Error('To render a single element, please specify a single object of formData for the field in question');
+    }
+    let sanitizedField = this.santizeField(fieldData);
+
+    // determine the control class for this type, and then build it
+    let engine = new opts.layout();
+    let controlClass = control.getClass(fieldData.type, fieldData.subtype);
+    let field = engine.build(controlClass, sanitizedField, true);
+    element.appendFormFields(field);
+    opts.notify.success(opts.messages.formRendered);
+  }
 }
 
 (function($) {
@@ -205,5 +231,23 @@ class FormRender {
       elems[i].dataset.formRender = formRender;
       return formRender.render(elems[i]);
     });
+  };
+
+  /**
+   * renders an individual field into the current element
+   * @param data - data structure for a single field output from formBuilder
+   * @param options - optional subset of formRender options - doesn't support container or other form rendering based options.
+   * @returns {DOMElement} the rendered field
+   */
+  $.fn.fieldRender = function(data, options = {}) {
+    options.formData = data;
+    options.dataType = typeof data === 'string' ? 'json' : 'xml';
+    let formRender = new FormRender(options);
+    let elems = this;
+    elems.each(function(i) {
+      elems[i].dataset.formRender = formRender;
+      return formRender.renderSingle(elems[i]);
+    });
+    return elems;
   };
 })(jQuery);
