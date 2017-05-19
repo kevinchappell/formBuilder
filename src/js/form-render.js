@@ -10,7 +10,6 @@ import controlCustom from './control/custom';
 
 /**
  * FormRender Class
- * @todo: prototype.js compatibility
  */
 class FormRender {
 
@@ -86,7 +85,7 @@ class FormRender {
      * @param  {Object} fields Node elements
      */
     if (typeof Element.prototype.appendFormFields !== 'function') {
-      Element.prototype.appendFormFields = function (fields) {
+      Element.prototype.appendFormFields = function(fields) {
         let element = this;
         if (!Array.isArray(fields)) {
           fields = [fields];
@@ -102,7 +101,7 @@ class FormRender {
      * Extend Element prototype to remove content
      */
     if (typeof Element.prototype.emptyContainer !== 'function') {
-      Element.prototype.emptyContainer = function () {
+      Element.prototype.emptyContainer = function() {
         let element = this;
         while (element.lastChild) {
           element.removeChild(element.lastChild);
@@ -113,8 +112,8 @@ class FormRender {
 
   /**
    * Clean up passed object configuration to prepare for use with the markup function
-   * @param field - object of field configuration
-   * @returns sanitized field object
+   * @param {Object} field - object of field configuration
+   * @return {Object} sanitized field object
    */
   santizeField(field) {
     let sanitizedField = Object.assign({}, field);
@@ -203,8 +202,8 @@ class FormRender {
   /**
    * Render a single control / field
    * Expects only a single field configuration to be set in opt.formData
-   * @param element {jQuery Element} an optional element to render the field into - if not specified will just return the rendered field - note if you do this you will need to manually call element.dispatchEvent('fieldRendered') on the returned element when it is rendered into the DOM
-   * @returns {DOMElement} the rendered field
+   * @param {Object} element - an optional DOM element to render the field into - if not specified will just return the rendered field - note if you do this you will need to manually call element.dispatchEvent('fieldRendered') on the returned element when it is rendered into the DOM
+   * @return {Object} the formRender object
    */
   renderSingle(element = null) {
     let opts = this.options;
@@ -220,6 +219,7 @@ class FormRender {
     let field = engine.build(controlClass, sanitizedField, true);
     element.appendFormFields(field);
     opts.notify.success(opts.messages.formRendered);
+    return this;
   }
 }
 
@@ -235,9 +235,9 @@ class FormRender {
 
   /**
    * renders an individual field into the current element
-   * @param data - data structure for a single field output from formBuilder
-   * @param options - optional subset of formRender options - doesn't support container or other form rendering based options.
-   * @returns {DOMElement} the rendered field
+   * @param {Object} data - data structure for a single field output from formBuilder
+   * @param {Object} options - optional subset of formRender options - doesn't support container or other form rendering based options.
+   * @return {DOMElement} the rendered field
    */
   $.fn.fieldRender = function(data, options = {}) {
     options.formData = data;
