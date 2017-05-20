@@ -732,6 +732,9 @@ import {defaultSubtypes, filter} from './dom';
     if (utils.isCached(scriptScr, 'css')) {
       return;
     }
+    if (!Array.isArray(scriptScr)) {
+      scriptScr = [scriptScr];
+    }
     const appendStyle = (href) => {
       const link = document.createElement('link');
       link.type = 'text/css';
