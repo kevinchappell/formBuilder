@@ -69,9 +69,10 @@ export default class layout {
    *   - hidden - this control shouldn't render anything visible to the page
    * @param {Object} renderControl - the relevant control class
    * @param {Object} data - configuration data passed through formData for this control
+   * @param {String} forceTemplate - programatically force the template with which this control to be rendered
    * @return {Object} element
    */
-  build(renderControl, data) {
+  build(renderControl, data, forceTemplate) {
     // prepare the data
     if (this.preview) {
       if (data.name) {
@@ -95,7 +96,12 @@ export default class layout {
     let help = this.help();
 
     // process the relevant layout template
-    let elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default';
+    let elementTemplate;
+    if (forceTemplate && this.isTemplate(forceTemplate)) {
+        elementTemplate = forceTemplate;
+    } else {
+		elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default';
+    }
     let element = this.processTemplate(elementTemplate, field.field, label, help);
 
     // execute prerender events
