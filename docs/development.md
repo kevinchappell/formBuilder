@@ -2,25 +2,30 @@
 
 Here we'll cover a few common tasks developers might face when setting up formBuilder.
 
-## Install Dependencies
+## Clone the repo
 ```bash
-$ npm install
+$ git clone git@github.com:kevinchappell/formBuilder.git form-builder && cd form-builder
 ```
-or
+
+## Install Dependencies
 ```bash
 $ yarn install
 ```
-
-## Local development
-Once you've installed the project and [development](http://formbuilder.online/contributing) dependencies you can get a local version running by running:
+or
 ```bash
-$ npm start
+$ npm install
 ```
 
-This will run webpack and open a new browser tab and that serves a running version of the plugin.
+## Local development
+Once you've cloned the project and installed it's dependencies you can get a local version running by running:
+```bash
+$ yarn start
+```
+
+This will run the default webpack config and open a new browser tab and that serves a demo of the plugin. This demo can be used to test features and bugs.
 
 ## Custom Controls
-See the Control and Control Plugin Architecture Documentation
+See the Control and Control Plugin Architecture Documentation to learn about how to create custom controls.
 
  - [Overview](/formBuilder/overview)
  - [Control](/formBuilder/controls)

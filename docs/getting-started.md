@@ -1,13 +1,18 @@
 # Getting Started
 
 ## Download and install
-formBuilder and formRender are available directly from [GitHub](https://github.com/kevinchappell/formBuilder/tree/master/dist), Bower or NPM.
-To install as a Bower component with:
+formBuilder and formRender are available directly from [GitHub](https://github.com/kevinchappell/formBuilder/tree/master/dist) and through yarn/npm.
+
+Install module from package manager:
 ```bash
-$ bower install formBuilder
+$ yarn add formBuilder
+```
+or
+```bash
+$ npm i --save formBuilder
 ```
 
-Once you have the JavaScript and stylesheet, include it in your build process for vendor dependencies, add to html, or `wp_enqueue_style` and `wp_enqueue_script` for a WordPress website.
+Once you have the module/plugin installed, include it in your build process for vendor dependencies, add to html via <script> tag, or `wp_enqueue_script` for a WordPress website.
 
 ## Basic Example
 ```html
