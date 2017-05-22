@@ -65,7 +65,10 @@ class FormRender {
         json: formData => window.JSON.parse(formData)
       };
 
-      this.options.formData = setData[this.options.dataType](this.options.formData) || false;
+      // if the user hasn't passed a pre-parsed formData object, parse it according to the specified dataType
+      if (typeof this.options.formData !== 'object') {
+        this.options.formData = setData[this.options.dataType](this.options.formData) || false;
+      }
     })();
 
     // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
