@@ -8,7 +8,7 @@ time.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
 
 const run = (fn, options) => {
   const task = typeof fn.default === 'undefined' ? fn : fn.default;
-  const optsString = options ? `(${options})` : '';
+  const optsString = options ? `(${options})` : task.name;
   const start = new Date();
   console.log(
     `[${format(start)}] Starting '${optsString}'...`
@@ -17,7 +17,7 @@ const run = (fn, options) => {
     const end = new Date();
     const time = end.getTime() - start.getTime();
     console.log(
-      `[${format(end)}] Finished '${task.name}${optsString}' after ${time} ms`
+      `[${format(end)}] Finished '${task.name}' after ${time} ms`
     );
     return resolution;
   });
