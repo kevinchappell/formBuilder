@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.2.3 - Return unformatted JSON by default [#481](https://github.com/kevinchappell/formBuilder/pull/481)
 - v2.2.2 - Hotfix: getData [#464](https://github.com/kevinchappell/formBuilder/pull/464)
 - v2.2.1 - Hotfix: bootstrap addon style, Update documentation
 - v2.2.0 - Feature: Controls API, see: http://formbuilder.readthedocs.io/en/latest/formBuilder/overview/
