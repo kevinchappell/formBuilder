@@ -1033,17 +1033,26 @@ export default class Helpers {
   /**
    * Gets the data for current instance of formBuilder
    * @param  {String} type
+   * @param  {Boolean} formatted
    * @return {Array|String} formData
    */
-  getFormData(type = 'js') {
+  getFormData(type = 'js', formatted = false) {
     const h = this;
     const data = {
       js: () => h.prepData(h.d.stage),
       xml: () => h.xmlSave(h.d.stage),
-      json: () => window.JSON.stringify(h.prepData(h.d.stage), null, '\t')
+      json: formatted => {
+        let formData;
+        if (formatted) {
+          formData = window.JSON.stringify(h.prepData(h.d.stage), null, '\t');
+        } else {
+          formData = window.JSON.stringify(h.prepData(h.d.stage));
+        }
+        return formData;
+      }
     };
 
-    return data[type]();
+    return data[type](formatted);
   }
 
   // end class
