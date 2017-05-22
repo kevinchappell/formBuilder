@@ -5,14 +5,14 @@ Start a new form with existing fields that are editable by users.
 ```javascript
 var options = {
       defaultFields: [{
-        class: "form-control",
+        className: "form-control",
         label: "First Name",
         placeholder: "Enter your first name",
         name: "first-name",
         required: true,
         type: "text"
       }, {
-        class: "form-control",
+        className: "form-control",
         label: "Select",
         name: "select-1454862249997",
         type: "select",
