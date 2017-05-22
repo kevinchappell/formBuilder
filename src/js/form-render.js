@@ -208,7 +208,7 @@ class FormRender {
    * @param {Object} element - an optional DOM element to render the field into - if not specified will just return the rendered field - note if you do this you will need to manually call element.dispatchEvent('fieldRendered') on the returned element when it is rendered into the DOM
    * @return {Object} the formRender object
    */
-  renderSingle(element = null) {
+  renderControl(element = null) {
     let opts = this.options;
     let fieldData = opts.formData;
     if (!fieldData || Array.isArray(fieldData)) {
@@ -219,7 +219,8 @@ class FormRender {
     // determine the control class for this type, and then build it
     let engine = new opts.layout();
     let controlClass = control.getClass(fieldData.type, fieldData.subtype);
-    let field = engine.build(controlClass, sanitizedField, true);
+    let forceTemplate = opts.forceTemplate || 'hidden'; // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
+    let field = engine.build(controlClass, sanitizedField, forceTemplate);
     element.appendFormFields(field);
     opts.notify.success(opts.messages.formRendered);
     return this;
@@ -242,14 +243,14 @@ class FormRender {
    * @param {Object} options - optional subset of formRender options - doesn't support container or other form rendering based options.
    * @return {DOMElement} the rendered field
    */
-  $.fn.fieldRender = function(data, options = {}) {
+  $.fn.controlRender = function(data, options = {}) {
     options.formData = data;
     options.dataType = typeof data === 'string' ? 'json' : 'xml';
     let formRender = new FormRender(options);
     let elems = this;
     elems.each(function(i) {
       elems[i].dataset.formRender = formRender;
-      return formRender.renderSingle(elems[i]);
+      return formRender.renderControl(elems[i]);
     });
     return elems;
   };
