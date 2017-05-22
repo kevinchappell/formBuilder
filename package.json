@@ -55,14 +55,7 @@
       },
       "site": [
         "demo/assets/sass/site.scss"
-      ],
-      "demo": {
-        "vendor": {
-          "js": [
-            "node_modules/jquery-ui-sortable/jquery-ui.min.js"
-          ]
-        }
-      }
+      ]
     },
     "fontServer": "http://fontello.com"
   },
@@ -120,12 +113,12 @@
     "release:minor": "npm run tag --minor && npm run deploy",
     "start": "babel-node -- node_modules/webpack/bin/webpack -d --progress --config tools/webpack.config | babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server --config tools/webpack.config",
     "build": "babel-node -- node_modules/webpack/bin/webpack -p --progress --config tools/webpack.config && cp demo/assets/js/form-* dist/",
-    "build:vendor": "babel-node -- node_modules/webpack/bin/webpack -p --progress --config tools/webpack.vendor.config",
+    "build:vendor": "babel-node -- tools/run build-vendor",
     "build:plugins": "babel-node -- node_modules/webpack/bin/webpack -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
   "dependencies": {
-    "jquery-ui-sortable": "*",
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "jquery-ui-sortable": "*"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
@@ -149,6 +142,7 @@
     "browserify": "^14.3.0",
     "chai": "^3.5.0",
     "compression-webpack-plugin": "^0.4.0",
+    "concat-files": "^0.1.1",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.0",
     "eslint": "^3.15.0",
