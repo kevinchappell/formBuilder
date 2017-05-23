@@ -1,15 +1,9 @@
 {
   "name": "formBuilder",
   "version": "2.2.4",
-  "main": "dist/form-builder.js",
+  "main": "dist/form-builder.min.js",
   "files": [
-    "dist/form-builder.js",
     "dist/form-builder.min.js",
-    "dist/form-builder.css",
-    "dist/form-builder.min.css",
-    "dist/form-render.css",
-    "dist/form-render.js",
-    "dist/form-render.min.css",
     "dist/form-render.min.js"
   ],
   "homepage": "https://formbuilder.online/",
