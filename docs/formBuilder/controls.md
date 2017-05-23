@@ -1,6 +1,6 @@
 # Control architecture
 
-Controls defined in this directory will be transpiled into the core `formBuilder` & `formRender` plugins. Only 'core' regularly used plugins should be included here. Plugins that have less common use-cases should be added as [control plugins](../control_plugins) which are only loaded as required. 
+Controls defined in this directory will be transpiled into the core `formBuilder` & `formRender` plugins. Only 'core' regularly used plugins should be included here. Plugins that have less common use-cases should be added as [control plugins](control-plugins) which are only loaded as required. 
 
 All control classes should inherit from `src/js/control.js`. Each class can support one or more `types` or `subtypes`.
 
