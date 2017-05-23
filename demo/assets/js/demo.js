@@ -108,6 +108,7 @@ jQuery(function($) {
     typeUserDisabledAttrs: typeUserDisabledAttrs,
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
+    // controlPosition: 'left'
     // disabledAttrs
   };
   var formData = window.sessionStorage.getItem('formData');
