@@ -178,6 +178,17 @@ jQuery(function($) {
     .addEventListener('change', function(e) {
       fb.actions.setLang(e.target.value);
     });
+
+    document.getElementById('getXML').addEventListener('click', function() {
+      alert(formBuilder.actions.getData('xml'));
+    });
+    document.getElementById('getJSON').addEventListener('click', function() {
+      alert(formBuilder.actions.getData('json', true));
+    });
+    document.getElementById('getJS').addEventListener('click', function() {
+      alert('check console');
+      console.log(formBuilder.actions.getData());
+    });
   });
 
   document.getElementById('edit-form').onclick = function() {
