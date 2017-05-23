@@ -1,6 +1,7 @@
 export const defaultOptions = {
   controlPosition: 'right',
       append: false,
+      actionButtons: [],
       controlOrder: [
         'autocomplete',
         'button',
