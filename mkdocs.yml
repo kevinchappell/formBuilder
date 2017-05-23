@@ -39,7 +39,7 @@ pages:
   - i18n: formBuilder/options/i18n.md
   - notify: formBuilder/options/notify.md
   - Overview: formBuilder/options.md
-  - roles: formBuilder/options/roles.md 
+  - roles: formBuilder/options/roles.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
@@ -55,6 +55,7 @@ pages:
   - setData: formBuilder/actions/setData.md
   - addField: formBuilder/actions/addField.md
   - removeField: formBuilder/actions/removeField.md
+- formBuilder Promise: formBuilder/promise.md
 - formRender Demos:
   - Basic: formRender/demos/basic.md
   - Preview popup: formRender/demos/preview-popup.md
