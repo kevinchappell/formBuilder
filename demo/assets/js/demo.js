@@ -153,7 +153,13 @@ jQuery(function($) {
         fb.actions.removeField();
       },
       testSubmit: function() {
+        var formData = new FormData(document.forms[0]);
         console.log('Can submit: ', document.forms[0].checkValidity());
+        // Display the key/value pairs
+        console.log('FormData: ', );
+        for(var pair of formData.entries()) {
+           console.log(pair[0]+ ': '+ pair[1]);
+        }
       },
       resetDemo: function() {
         window.sessionStorage.removeItem('formData');
