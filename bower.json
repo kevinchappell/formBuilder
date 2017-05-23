@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "main": "dist/form-builder.min.js",
   "description": "A jQuery plugin for drag and drop form building",
   "authors": [
