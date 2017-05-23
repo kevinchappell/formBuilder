@@ -38,7 +38,6 @@ pages:
   - inputSets: formBuilder/options/inputSets.md
   - i18n: formBuilder/options/i18n.md
   - notify: formBuilder/options/notify.md
-  - Overview: formBuilder/options.md
   - roles: formBuilder/options/roles.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
