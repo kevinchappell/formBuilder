@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.2.6 - Remove outdated unminified files [#488](https://github.com/kevinchappell/formBuilder/pull/488)
 - v2.2.5 - Update package manager files to serve correct- updated version [#487](https://github.com/kevinchappell/formBuilder/pull/487)
 - v2.2.4 - Fix Other input behavior [#485](https://github.com/kevinchappell/formBuilder/pull/485)
 - v2.2.3 - Return unformatted JSON by default [#481](https://github.com/kevinchappell/formBuilder/pull/481)
