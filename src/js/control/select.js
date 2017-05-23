@@ -99,7 +99,7 @@ export default class controlSelect extends control {
         let otherOptionAttrs = {
           id: `${data.id}-other`,
           className: `${data.className} other-option`,
-          name: `${data.name}[other]`,
+          value: '',
           events: {
             click: () => this.otherOptionCB(otherOptionAttrs.id)
           }
@@ -115,7 +115,13 @@ export default class controlSelect extends control {
 
         let otherValAttrs = {
           type: 'text',
-          name: data.name,
+          events: {
+            input: evt => {
+              const otherInput = evt.target;
+              const other = otherInput.previousElementSibling;
+              other.value = otherInput.value;
+            }
+          },
           id: `${otherOptionAttrs.id}-value`,
           className: 'other-val'
         };
