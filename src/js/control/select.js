@@ -149,9 +149,9 @@ export default class controlSelect extends control {
    */
   groupRequired() {
     const checkboxes = this.element.getElementsByTagName('input');
-    let minReq = control.mi18n('minSelectionRequired', 1);
     const setValidity = (checkbox, isValid) => {
       if (!isValid) {
+        let minReq = control.mi18n('minSelectionRequired', 1);
         checkbox.setCustomValidity(minReq);
       } else {
         checkbox.setCustomValidity('');
@@ -168,12 +168,15 @@ export default class controlSelect extends control {
       });
     };
 
-    this.element.addEventListener('click', evt => {
-      if (evt.target.type === 'checkbox') {
-        let isValid = [].some.call(checkboxes, cb => cb.checked);
-        toggleRequired(checkboxes, isValid);
-      }
-    });
+    const toggleValid = () => {
+      let isValid = [].some.call(checkboxes, cb => cb.checked);
+      toggleRequired(checkboxes, isValid);
+    };
+
+    for (let i = checkboxes.length - 1; i >= 0; i--) {
+      checkboxes[i].addEventListener('change', toggleValid);
+    }
+    toggleValid();
   }
 
   /**
