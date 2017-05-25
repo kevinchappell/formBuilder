@@ -20,6 +20,14 @@
 .cb-wrap,
 .stage-wrap {
   vertical-align: top;
+
+  &.pull-right {
+    float: right;
+  }
+
+  &.pull-left {
+    float: left;
+  }
 }
 
 .stage-wrap h4 {

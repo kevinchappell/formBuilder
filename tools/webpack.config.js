@@ -14,6 +14,7 @@ try {
 }
 
 const PRODUCTION = process.argv.includes('-p');
+const devtool = PRODUCTION ? false : 'cheap-module-eval-source-map';
 const outputDir = resolve(__dirname, '../', 'demo/assets/js/');
 
 const bannerTemplate = [
@@ -22,30 +23,9 @@ const bannerTemplate = [
   `Author: ${pkg.author}`
 ].join('\n');
 
-let plugins = [
-  new ExtractTextPlugin({
-    filename: '[name].[contenthash].css'
-  }),
-  new BabiliPlugin({
-    removeDebugger: true
-  }, {
-    comments: false
-  }),
-  new BannerPlugin(bannerTemplate),
-  new CompressionPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: /\.(js)$/,
-      threshold: 10240,
-      minRatio: 0.8
-    })
-];
-
 const extractSass = new ExtractTextPlugin({
   filename: '[name].[contenthash].css'
 });
-
-const devtool = PRODUCTION ? false : 'eval';
 
 const webpackConfig = {
   context: outputDir,
@@ -114,7 +94,24 @@ const webpackConfig = {
       })
     }]
   },
-  plugins,
+  plugins: [
+    new ExtractTextPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+    new BabiliPlugin({
+      removeDebugger: PRODUCTION
+    }, {
+      comments: !PRODUCTION
+    }),
+    new BannerPlugin(bannerTemplate),
+    new CompressionPlugin({
+        asset: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: /\.(js)$/,
+        threshold: 10240,
+        minRatio: 0.8
+      })
+  ],
   devtool,
   resolve: {
     modules: [
