@@ -23,9 +23,6 @@ export default class controlCustom extends control {
     // store the template data against a static property
     controlCustom.templates = templates;
 
-    // store class mappings (for type/subtype combos that are already registered) against a static register
-    controlCustom.customRegister = {};
-
     // prepare i18n locale definition
     let locale = mi18n.locale;
     if (!controlCustom.def.i18n[locale]) {
@@ -52,13 +49,6 @@ export default class controlCustom extends control {
 
       // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
-        // can only define a new subtype for existing controls
-        if (!field.subtype) {
-          // ensure we aren't overriding an existing core type
-          this.error('Error while registering custom field: ' + type + '. A control of this type is already registered. If you wish to use the existing control, please specify a supported subtype, or define a new template.');
-          continue;
-        }
-
         // check that this type is already registered
         let controlClass = control.getClass(type, field.subtype);
         if (!controlClass) {
@@ -66,26 +56,40 @@ export default class controlCustom extends control {
           continue;
         }
 
-        // map the control class against this type/subtype
-        let registerKey = type + '-' + field.subtype;
-        if (!controlCustom.customRegister) {
-          controlCustom.customRegister = {};
-        }
-        controlCustom.customRegister[registerKey] = {
+        // generate a random key & map the settings against it
+        lookup = type + Math.floor((Math.random() * 100000));
+        controlCustom.customRegister[lookup] = $.extend(field, {
           type: type,
-          subtype: field.subtype,
           class: controlClass
-        };
-
-        // now register a new type against this controlCustom class so that it renders in
-        lookup = registerKey;
-        control.register(registerKey, controlCustom);
+        });
       }
 
       // map label & icon
       controlCustom.def.i18n[locale][lookup] = field.label;
       controlCustom.def.icon[lookup] = field.icon;
     }
+  }
+
+  /**
+   * Returns any custom fields that map to an existing type/subtype combination
+   * @param  {String} type optional type of control we want to look up
+   * subtypes of. If not specified will return all types
+   * @return {Array} registered custom lookup keys
+   */
+  static getRegistered(type=false) {
+    if (type) {
+      return control.getRegistered(type);
+    }
+    return Object.keys(controlCustom.customRegister);
+  }
+
+  /**
+   * Retrieve the class for a specified control type
+   * @param {String} lookup - custom control lookup to check for
+   * @return {Class} control subclass as defined in the call to register
+   */
+  static lookup(lookup) {
+    return controlCustom.customRegister[lookup];
   }
 
   /**
@@ -103,18 +107,7 @@ export default class controlCustom extends control {
   build() {
     let custom = controlCustom.templates[this.type];
     if (!custom) {
-      // if there isn't a custom template defined, check if this type is registered against another control type/subtype combo
-      let registered = controlCustom.customRegister[this.type];
-      if (registered) {
-        // create & build the registered control
-        let config = this.rawConfig;
-        config.type = registered.type;
-        config.subtype = registered.subtype;
-        let controlObj = new registered.class(config, this.preview);
-        return controlObj.build();
-      } else {
-        new Error('Invalid custom control type. Please ensure you have registered it correctly as a template option.');
-      }
+      return this.error('Invalid custom control type. Please ensure you have registered it correctly as a template option.');
     }
 
     // render the custom template
@@ -145,3 +138,4 @@ export default class controlCustom extends control {
     };
   }
 }
+controlCustom.customRegister = {};
