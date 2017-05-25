@@ -12,7 +12,6 @@ import {config} from './config';
 import control from './control';
 import controlCustom from './control/custom';
 
-const opts = config.opts;
 const m = utils.markup;
 
 /**
@@ -404,7 +403,7 @@ export default class Helpers {
     const disabledFields = stage.querySelectorAll('.disabled-field');
     utils.forEach(disabledFields, index => {
       let field = disabledFields[index];
-      let title = opts.messages.fieldNonEditable;
+      let title = mi18n.get('fieldNonEditable');
 
       if (title) {
         let tt = utils.markup('p', title, {className: 'frmb-tt'});
