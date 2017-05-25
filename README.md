@@ -5,9 +5,6 @@ formBuilder v2.3.1
 
 A jQuery plugin for drag and drop form creation, formBuilder has many options and is translatable.
 
-## Usage
-To start building forms with this plugin call `formBuilder()` on the block element you would like to make your editor.
-
 **Example**
 ```
 jQuery(function($) {
@@ -23,6 +20,7 @@ jQuery(function($) {
 ### General
 | Option  | Type | Value(s) | Default |
 | ------------- | ------------- |------------- |------------- |
+| [actionButtons](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/actionButtons/) | {Array} | `[{...}]` | `[]` |
 | [append / prepend](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/appendPrepend/) | {Object, Array, String} | `DOM Object` \| `[]` \| `'<h1></h1>'` | `false` |
 | [controlOrder](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlOrder/) | {Array} | `['autocomplete', 'button', 'checkbox', ...]` | |
 | [controlPosition](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/controlPosition/) | {String} | `'left'` \| `'right'`  | `'right'` |
