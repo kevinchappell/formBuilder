@@ -10,7 +10,7 @@ import utils from './utils';
 import events from './events';
 import layout from './layout';
 import Helpers from './helpers';
-import {defaultOptions, defaultI18n, config} from './config';
+import {defaultOptions, defaultI18n, config, styles} from './config';
 import control from './control';
 import './control/index';
 import controlCustom from './control/custom';
@@ -344,8 +344,6 @@ const FormBuilder = function(opts, element) {
        'textarea',
        'autocomplete'])) {
       field.className = field.className || 'form-control';
-    } else {
-      field.className = field.className;
     }
 
     let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className);
@@ -822,39 +820,40 @@ const FormBuilder = function(opts, element) {
   };
 
   const btnStyles = style => {
-    let styles = i18n.styles.btn;
     let styleField = '';
 
-    if (styles) {
-      let styleLabel = `<label>${i18n.style}</label>`;
-      styleField += h.input({
-        value: style,
-        name: style,
-        type: 'hidden',
-        className: 'btn-style'
-      }).outerHTML;
-      styleField += '<div class="btn-group" role="group">';
-
-      Object.keys(styles).forEach(element => {
-        let classList = ['btn-xs', 'btn', `btn-${element}`];
-        if (style === element) {
-          classList.push('selected');
-        }
-        let btn = m('button', i18n.styles.btn[element], {
-          value: element,
-          type: 'button',
-          className: classList.join(' ')
-        }).outerHTML;
-
-        styleField += btn;
-      });
-
-      styleField += '</div>';
-
-      styleField = m('div', [styleLabel, styleField], {
-        className: 'form-group style-wrap'
-      });
+    // corrects issue where 'undefined' was saved to formData
+    if (style === 'undefined') {
+      style = 'default';
     }
+
+    let styleLabel = `<label>${i18n.style}</label>`;
+    styleField += h.input({
+      value: style || 'default',
+      type: 'hidden',
+      className: 'btn-style'
+    }).outerHTML;
+    styleField += '<div class="btn-group" role="group">';
+
+    styles.btn.forEach(btnStyle => {
+      let classList = ['btn-xs', 'btn', `btn-${btnStyle}`];
+      if (style === btnStyle) {
+        classList.push('selected');
+      }
+      let btn = m('button', mi18n.get(`styles.btn.${btnStyle}`), {
+        value: btnStyle,
+        type: 'button',
+        className: classList.join(' ')
+      }).outerHTML;
+
+      styleField += btn;
+    });
+
+    styleField += '</div>';
+
+    styleField = m('div', [styleLabel, styleField], {
+      className: 'form-group style-wrap'
+    });
 
     return styleField.outerHTML;
   };

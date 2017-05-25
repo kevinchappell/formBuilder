@@ -238,10 +238,7 @@ class FormRender {
   $.fn.formRender = function(options) {
     let elems = this;
     let formRender = new FormRender(options);
-    elems.each(function(i) {
-      elems[i].dataset.formRender = formRender;
-      return formRender.render(elems[i]);
-    });
+    elems.each(i => formRender.render(elems[i]));
   };
 
   /**
@@ -255,10 +252,7 @@ class FormRender {
     options.dataType = typeof data === 'string' ? 'json' : 'xml';
     let formRender = new FormRender(options);
     let elems = this;
-    elems.each(function(i) {
-      elems[i].dataset.formRender = formRender;
-      return formRender.renderControl(elems[i]);
-    });
+    elems.each(i => formRender.renderControl(elems[i]));
     return elems;
   };
 })(jQuery);

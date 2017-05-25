@@ -73,6 +73,17 @@ export const defaultOptions = {
     };
 
 
+export const styles = {
+  btn: [
+    'default',
+    'danger',
+    'info',
+    'primary',
+    'success',
+    'warning'
+  ]
+};
+
 export const defaultI18n = {
       location: 'https://formbuilder.online/assets/lang/',
       langs: [
@@ -168,16 +179,12 @@ export const defaultI18n = {
           'size.m': 'Default',
           'size.lg': 'Large',
           style: 'Style',
-          styles: {
-            btn: {
-              'default': 'Default',
-              danger: 'Danger',
-              info: 'Info',
-              primary: 'Primary',
-              success: 'Success',
-              warning: 'Warning'
-            }
-          },
+          'styles.btn.default': 'Default',
+          'styles.btn.danger': 'Danger',
+          'styles.btn.info': 'Info',
+          'styles.btn.primary': 'Primary',
+          'styles.btn.success': 'Success',
+          'styles.btn.warning': 'Warning',
           subtype: 'Type',
           text: 'Text Field',
           textArea: 'Text Area',
