@@ -1,12 +1,14 @@
 import 'babel-polyfill';
 import 'babel-regenerator-runtime';
 import '../sass/form-render.scss';
+import mi18n from 'mi18n';
 import utils from './utils';
 import events from './events';
 import layout from './layout';
 import control from './control';
 import './control/index';
 import controlCustom from './control/custom';
+import {defaultI18n} from './config';
 
 /**
  * FormRender Class
@@ -28,6 +30,7 @@ class FormRender {
       container: false,
       dataType: 'json',
       formData: false,
+      i18n: Object.assign({}, defaultI18n),
       // subtypes: defaultSubtypes, // @todo - removed this - is it needed now?
       messages: {
         formRendered: 'Form Rendered',
@@ -53,6 +56,10 @@ class FormRender {
       }
     };
     this.options = $.extend(true, defaults, options);
+
+    if (!mi18n.current) {
+      mi18n.init(this.options.i18n);
+    }
 
     // parse any passed formData
     (() => {

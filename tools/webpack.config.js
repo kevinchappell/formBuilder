@@ -45,7 +45,7 @@ const extractSass = new ExtractTextPlugin({
   filename: '[name].[contenthash].css'
 });
 
-const devtool = PRODUCTION ? false : 'source-map';
+const devtool = PRODUCTION ? false : 'eval';
 
 const webpackConfig = {
   context: outputDir,

@@ -150,8 +150,8 @@ export default class controlSelect extends control {
   groupRequired() {
     const checkboxes = this.element.getElementsByTagName('input');
     const setValidity = (checkbox, isValid) => {
+      let minReq = control.mi18n('minSelectionRequired', 1);
       if (!isValid) {
-        let minReq = control.mi18n('minSelectionRequired', 1);
         checkbox.setCustomValidity(minReq);
       } else {
         checkbox.setCustomValidity('');
