@@ -9,6 +9,18 @@ jQuery(function($) {
     }
   ];
 
+  var actionButtons = [{
+    id: 'smile',
+    className: 'btn btn-success',
+    label: '😁',
+    type: 'button',
+    events: {
+      click: function() {
+        alert('😁😁😁 !SMILE! 😁😁😁');
+      }
+    }
+  }];
+
   var templates = {
     starRating: function(fieldData) {
       return {
@@ -108,6 +120,8 @@ jQuery(function($) {
     typeUserDisabledAttrs: typeUserDisabledAttrs,
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
+    actionButtons: actionButtons
+    // controlPosition: 'left'
     // disabledAttrs
   };
   var formData = window.sessionStorage.getItem('formData');

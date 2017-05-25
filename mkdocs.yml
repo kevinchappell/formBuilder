@@ -22,6 +22,7 @@ pages:
   - Data: formBuilder/demos/data.md
   - Custom Elements: formBuilder/options/templates.md
 - formBuilder Options:
+  - actionButtons: formBuilder/options/actionButtons.md
   - append/prepend: formBuilder/options/appendPrepend.md
   - controlOrder: formBuilder/options/controlOrder.md
   - controlPosition: formBuilder/options/controlPosition.md
@@ -38,7 +39,6 @@ pages:
   - inputSets: formBuilder/options/inputSets.md
   - i18n: formBuilder/options/i18n.md
   - notify: formBuilder/options/notify.md
-  - Overview: formBuilder/options.md
   - roles: formBuilder/options/roles.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
