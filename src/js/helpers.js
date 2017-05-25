@@ -998,12 +998,14 @@ export default class Helpers {
     const _this = this;
     let {actionButtons, ...opts} = options;
     actionButtons = [{
+      type: 'button',
       id: 'clear',
       className: 'clear-all btn btn-danger',
       events: {
         click: _this.confirmRemoveAll.bind(_this)
       }
     }, {
+      type: 'button',
       label: 'viewJSON',
       id: 'data',
       className: 'btn btn-default',
@@ -1011,8 +1013,8 @@ export default class Helpers {
         click: _this.showData.bind(_this)
       }
     }, {
-      id: 'save',
       type: 'button',
+      id: 'save',
       className: 'btn btn-primary save-template',
       events: {
         click: evt => {
