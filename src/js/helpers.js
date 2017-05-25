@@ -695,7 +695,10 @@ export default class Helpers {
     let fieldOrder = [];
 
     $cbUL.children().each((index, element) => {
-      fieldOrder.push($(element).data('type'));
+      let type = $(element).data('type');
+      if (type) {
+        fieldOrder.push(type);
+      }
     });
 
     if (sessionStorage) {
@@ -730,10 +733,22 @@ export default class Helpers {
     } else {
       fieldOrder = window.JSON.parse(fieldOrder);
       fieldOrder = utils.unique(fieldOrder.concat(controls));
-      fieldOrder = Object.keys(fieldOrder).map(function(i) {
-        return fieldOrder[i];
-      });
+      fieldOrder = Object.keys(fieldOrder).map(i => fieldOrder[i]);
     }
+
+    // order custom fields
+    fieldOrder.forEach(field => {
+      // identify custom field
+      const randomKey = new RegExp('-[\\d]{4}$');
+
+      if (field.match(randomKey)) {
+        let baseFieldIndex = fieldOrder.indexOf(field.replace(randomKey, ''));
+        if (baseFieldIndex !== -1) {
+          fieldOrder.splice(fieldOrder.indexOf(field), 1);
+          fieldOrder.splice(baseFieldIndex + 1, fieldOrder.indexOf(field), field);
+        }
+      }
+    });
 
     return fieldOrder.filter(Boolean);
   }
