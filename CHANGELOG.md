@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.3.3 - Hotfix: actionButtons are submitting forms [#498](https://github.com/kevinchappell/formBuilder/pull/498)
 - v2.3.2 - Hotfix: btn-undefined [#496](https://github.com/kevinchappell/formBuilder/pull/496)
 - v2.3.1 - Hotfix: opts.messages, sourcemaps [#495](https://github.com/kevinchappell/formBuilder/pull/495)
 - v2.3.0 - General cleanup, actionButtons option [#494](https://github.com/kevinchappell/formBuilder/pull/494)
