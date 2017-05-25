@@ -15,6 +15,8 @@ export default class control {
    * @param {Boolean} preview isPreview
    */
   constructor(config, preview) {
+    this.rawConfig = $.extend({}, config);
+
     // make a copy of config so we don't change the object reference
     config = $.extend({}, config);
     this.preview = preview;
@@ -146,7 +148,6 @@ export default class control {
         types[type].push(subtype);
       }
     }
-
     return types;
   }
 
