@@ -177,6 +177,8 @@ textarea {
   padding: 10px;
   box-shadow: 0 3px 10px $black;
   min-width: 166px;
+  max-height: 80%;
+  overflow-y: scroll;
 
   h3 {
     margin-top: 0;
