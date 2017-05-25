@@ -3,9 +3,10 @@
 formBuilder is open source to the core and contributions are always welcome. In this document we'll cover some dependencies and installation process to get your local development environment up and running.
 
 ## Submitting an Issue
-<img width="298" align="left" src="https://cloud.githubusercontent.com/assets/1457540/26318680/dfcf092a-3f13-11e7-83bf-f9a2dd1fb8f1.png"> When submitting an Issue, be sure to includes details to help others get on the same page as your usage. Details can include the options used in calling formBuilder, environment details such as browser and plugin version and steps to reproduce if you are reporting a bug.
+When submitting an Issue, be sure to includes details to help others get on the same page as your usage. Details can include the options used in calling formBuilder, environment details such as browser and plugin version and steps to reproduce if you are reporting a bug.
 
-Labeling your Issue helps project maintainers triage. Whether you're submitting a bug, feature request or just have a question, please label your issue accordingly.
+### Maintaining Issues
+<img width="298" align="left" src="https://cloud.githubusercontent.com/assets/1457540/26318680/dfcf092a-3f13-11e7-83bf-f9a2dd1fb8f1.png"> Maintainers are encouraged to label issues. Labeling helps triage issues so developers have an idea of priority.
 <br clear="left">
 
 ## Development
