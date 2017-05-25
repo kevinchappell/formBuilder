@@ -217,7 +217,6 @@ const FormBuilder = function(opts, element) {
   });
 
   if (opts.showActionButtons) {
-    console.log('opts.actionButtons => ', opts.actionButtons);
     const buttons = opts.actionButtons.map(btnData => {
       if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
         return h.processActionButtons(btnData);

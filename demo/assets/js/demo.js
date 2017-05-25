@@ -11,7 +11,7 @@ jQuery(function($) {
 
   var actionButtons = [{
     id: 'smile',
-    className: 'btn',
+    className: 'btn btn-success',
     label: '😁',
     type: 'button',
     events: {

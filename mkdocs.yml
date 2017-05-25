@@ -22,6 +22,7 @@ pages:
   - Data: formBuilder/demos/data.md
   - Custom Elements: formBuilder/options/templates.md
 - formBuilder Options:
+  - actionButtons: formBuilder/options/actionButtons.md
   - append/prepend: formBuilder/options/appendPrepend.md
   - controlOrder: formBuilder/options/controlOrder.md
   - controlPosition: formBuilder/options/controlPosition.md
