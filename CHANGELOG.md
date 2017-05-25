@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.3.0 - General cleanup, actionButtons option [#494](https://github.com/kevinchappell/formBuilder/pull/494)
 - v2.2.8 - Bug/extend fields [#493](https://github.com/kevinchappell/formBuilder/pull/493)
 - v2.2.7 - Make checkbox valid when at least one checkbox is checked [#490](https://github.com/kevinchappell/formBuilder/pull/490)
 - v2.2.6 - Remove outdated unminified files [#488](https://github.com/kevinchappell/formBuilder/pull/488)
