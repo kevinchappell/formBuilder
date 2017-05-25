@@ -60,6 +60,10 @@ const FormBuilder = function(opts, element) {
 
   // retrieve a full list of loaded controls
   let controls = control.getRegistered();
+  let customFields = controlCustom.getRegistered();
+  if (customFields) {
+    $.merge(controls, customFields);
+  }
   controls = h.orderFields(controls);
 
   // remove disableFields
@@ -78,14 +82,23 @@ const FormBuilder = function(opts, element) {
   // add each control to the interface
   let controlIndex = 0;
   for (let type of controls) {
-    // determine the class, icon & label for this control
-    let controlClass = control.getClass(type);
-    if (!controlClass || !controlClass.active(type)) {
-      continue;
+    // first check if this is a custom control
+    let custom = controlCustom.lookup(type);
+    let controlClass;
+    if (custom) {
+      controlClass = custom.class;
+    } else {
+      custom = {};
+
+      // determine the class, icon & label for this control
+      controlClass = control.getClass(type);
+      if (!controlClass || !controlClass.active(type)) {
+        continue;
+      }
     }
-    let icon = controlClass.icon(type);
-    let label = controlClass.label(type);
-    let iconClassName = !icon ? `icon-${type}` : '';
+    let icon = custom.icon || controlClass.icon(type);
+    let label = custom.label || controlClass.label(type);
+    let iconClassName = !icon ? custom.iconClassName || `icon-${type}` : '';
 
     // if the class has specified a custom icon, inject it into the label
     if (icon) {
@@ -286,8 +299,17 @@ const FormBuilder = function(opts, element) {
       // get the default type etc & label for this field
       field.type = $field[0].dataset.type;
       if (field.type) {
-        let controlClass = control.getClass(field.type);
-        field.label = controlClass.label(field.type);
+        // check for a custom type
+        let custom = controlCustom.lookup(field.type);
+        if (custom) {
+          field.label = custom.label;
+          field.type = custom.type;
+          field.subtype = custom.subtype;
+        } else {
+          let controlClass = control.getClass(field.type);
+          field.label = controlClass.label(field.type);
+        }
+
         // @todo: any other attrs ever set in aFields? value or selected?
       } else { // is dataType XML
         let attrs = $field[0].attributes;

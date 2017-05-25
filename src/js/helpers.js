@@ -10,6 +10,7 @@ import events from './events';
 import mi18n from 'mi18n';
 import {config} from './config';
 import control from './control';
+import controlCustom from './control/custom';
 
 const opts = config.opts;
 const m = utils.markup;
@@ -378,7 +379,8 @@ export default class Helpers {
     $field.data('fieldData', previewData);
 
     // determine the control class for this type, and then process it through the layout engine
-    let controlClass = control.getClass(previewData.type, previewData.subtype);
+    let custom = controlCustom.lookup(previewData.type);
+    let controlClass = custom ? custom.class : control.getClass(previewData.type, previewData.subtype);
     preview = this.layout.build(controlClass, previewData);
 
     empty($prevHolder[0]);

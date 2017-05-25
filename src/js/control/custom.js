@@ -12,7 +12,7 @@ export default class controlCustom extends control {
    * @param {Object} templates an object/hash of template data as defined http://formbuilder.readthedocs.io/en/latest/formBuilder/options/templates/
    * @param {Array} fields
    */
-  static register(templates, fields = []) {
+  static register(templates = {}, fields = []) {
     if (!controlCustom.def) {
       controlCustom.def = {
         icon: {},
@@ -29,6 +29,9 @@ export default class controlCustom extends control {
       controlCustom.def.i18n[locale] = {};
     }
 
+    // register each defined template against this class
+    control.register(Object.keys(templates), controlCustom);
+
     // build the control label & icon definitions
     for (let field of fields) {
       let type = field.type;
@@ -41,18 +44,52 @@ export default class controlCustom extends control {
         type = field.attrs.type;
       }
 
-      // ensure there is a template defined for this field
+      // default icon & label lookup
+      let lookup = field.subtype || type;
+
+      // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
-        this.error('Error while registering custom field: ' + field + '. Unable to find a related defined template.');
+        // check that this type is already registered
+        let controlClass = control.getClass(type, field.subtype);
+        if (!controlClass) {
+          this.error('Error while registering custom field: ' + type + (field.subtype ? ':' + field.subtype : '') + '. Unable to find any existing defined control or template for rendering.');
+          continue;
+        }
+
+        // generate a random key & map the settings against it
+        lookup = type + Math.floor((Math.random() * 100000));
+        controlCustom.customRegister[lookup] = $.extend(field, {
+          type: type,
+          class: controlClass
+        });
       }
 
       // map label & icon
-      controlCustom.def.i18n[locale][type] = field.label;
-      controlCustom.def.icon[type] = field.icon;
+      controlCustom.def.i18n[locale][lookup] = field.label;
+      controlCustom.def.icon[lookup] = field.icon;
     }
+  }
 
-    // register each defined template against this class
-    control.register(Object.keys(templates), controlCustom);
+  /**
+   * Returns any custom fields that map to an existing type/subtype combination
+   * @param  {String} type optional type of control we want to look up
+   * subtypes of. If not specified will return all types
+   * @return {Array} registered custom lookup keys
+   */
+  static getRegistered(type=false) {
+    if (type) {
+      return control.getRegistered(type);
+    }
+    return Object.keys(controlCustom.customRegister);
+  }
+
+  /**
+   * Retrieve the class for a specified control type
+   * @param {String} lookup - custom control lookup to check for
+   * @return {Class} control subclass as defined in the call to register
+   */
+  static lookup(lookup) {
+    return controlCustom.customRegister[lookup];
   }
 
   /**
@@ -70,9 +107,10 @@ export default class controlCustom extends control {
   build() {
     let custom = controlCustom.templates[this.type];
     if (!custom) {
-      new Error('Invalid custom control type. Please ensure you have registered it correctly as a template option.');
+      return this.error('Invalid custom control type. Please ensure you have registered it correctly as a template option.');
     }
 
+    // render the custom template
     // restore fieldData config structure for backwards compatibility
     let fieldData = Object.assign(this.config);
     let properties = ['label', 'description', 'subtype', 'id', 'isPreview', 'required', 'title', 'aria-required', 'type'];
@@ -100,3 +138,4 @@ export default class controlCustom extends control {
     };
   }
 }
+controlCustom.customRegister = {};
