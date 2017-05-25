@@ -223,9 +223,11 @@ export default class Helpers {
 
           fieldData.className = fieldData.className || fieldData.class;
 
-          let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className);
-          if (match) {
-            fieldData.style = match[1];
+          if (fieldData.className) {
+            let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className);
+            if (match) {
+              fieldData.style = match[1];
+            }
           }
 
           fieldData = utils.trimObj(fieldData);
