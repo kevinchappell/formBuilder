@@ -64,12 +64,7 @@ const FormBuilder = function(opts, element) {
   if (customFields) {
     $.merge(controls, customFields);
   }
-  controls = h.orderFields(controls);
 
-  // remove disableFields
-  if (opts.disableFields) {
-    controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
-  }
 
   // if we support rearranging control order, add classes to support this
   if (opts.sortableControls) {
@@ -80,8 +75,11 @@ const FormBuilder = function(opts, element) {
   let $cbUL = $(d.controls);
 
   // add each control to the interface
-  let controlIndex = 0;
-  for (let type of controls) {
+  let controlList = [];
+  const allControls = {};
+
+  for (let i = 0; i < controls.length; i++) {
+    let type = controls[i];
     // first check if this is a custom control
     let custom = controlCustom.lookup(type);
     let controlClass;
@@ -98,7 +96,7 @@ const FormBuilder = function(opts, element) {
     }
     let icon = custom.icon || controlClass.icon(type);
     let label = custom.label || controlClass.label(type);
-    let iconClassName = !icon ? custom.iconClassName || `icon-${type}` : '';
+    let iconClassName = !icon ? custom.iconClassName || `icon-${type.replace(/-[\d]{4}$/, '')}` : '';
 
     // if the class has specified a custom icon, inject it into the label
     if (icon) {
@@ -108,26 +106,36 @@ const FormBuilder = function(opts, element) {
     // build & insert the new list item to represent this control
     let newFieldControl = m('li',
       m('span', label),
-      {className: `${iconClassName} input-control input-control-${controlIndex}`}
+      {className: `${iconClassName} input-control input-control-${i}`}
     );
     newFieldControl.dataset.type = type;
-    d.controls.appendChild(newFieldControl);
-
-    // map for later access
-    controlIndex++;
+    controlList.push(type);
+    allControls[type] = newFieldControl;
   }
 
   if (opts.inputSets.length) {
-    $('<li/>', {'class': 'fb-separator'}).html('<hr>').appendTo($cbUL);
     opts.inputSets.forEach((set, i) => {
       set.name = set.name || utils.makeClassName(set.label);
       let inputSet = m('li', set.label, {
-        className: `input-set-control input-set-${i}`,
-        type: set.name
+        className: `input-set-control input-set-${i}`
       });
-      $(inputSet).appendTo($cbUL);
+      inputSet.dataset.type = set.name;
+      controlList.push(set.name);
+      allControls[set.name] = inputSet;
     });
   }
+
+  // remove disableFields
+  if (opts.disableFields) {
+    controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
+  }
+
+  // append controls to list
+  h.orderFields(controlList).forEach(control => {
+    if (allControls[control]) {
+      d.controls.appendChild(allControls[control]);
+    }
+  });
 
   // Sortable fields
   $stage.sortable({
@@ -181,8 +189,7 @@ const FormBuilder = function(opts, element) {
   let processControl = control => {
     if (control[0].classList.contains('input-set-control')) {
       let inputSets = [];
-      let inputSet = opts.inputSets.find(set =>
-        (set.name === control[0].getAttribute('type')));
+      let inputSet = opts.inputSets.find(set => (set.name === control[0].dataset.type));
       if (inputSet && inputSet.showHeader) {
         let header = {
           type: 'header',
@@ -302,9 +309,7 @@ const FormBuilder = function(opts, element) {
         // check for a custom type
         let custom = controlCustom.lookup(field.type);
         if (custom) {
-          field.label = custom.label;
-          field.type = custom.type;
-          field.subtype = custom.subtype;
+          field = Object.assign({}, custom);
         } else {
           let controlClass = control.getClass(field.type);
           field.label = controlClass.label(field.type);
