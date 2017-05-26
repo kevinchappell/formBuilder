@@ -12,7 +12,7 @@ or
 $ npm i --save formBuilder
 ```
 
-Once you have the module/plugin installed, include it in your build process for vendor dependencies, add to html via <script> tag, or `wp_enqueue_script` for a WordPress website.
+Once you have the module/plugin installed, include it in your build process for vendor dependencies, add to html via `<script>` tag, or `wp_enqueue_script` for a WordPress website.
 
 ## Basic Example
 ```html
