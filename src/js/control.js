@@ -21,6 +21,9 @@ export default class control {
     config = $.extend({}, config);
     this.preview = preview;
     delete config.isPreview;
+    if (this.preview) {
+      delete config.required;
+    }
 
     // process config - extract standard properties
     let properties = ['label', 'description', 'subtype', 'required'];
