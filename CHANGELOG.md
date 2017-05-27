@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.3.5 - Hotfix: Constraint API [#505](https://github.com/kevinchappell/formBuilder/pull/505)
 - v2.3.4 - Hotfix: preload values to exisitng field types, fix fieldOrder [#501](https://github.com/kevinchappell/formBuilder/pull/501)
 - v2.3.3 - Hotfix: actionButtons are submitting forms [#498](https://github.com/kevinchappell/formBuilder/pull/498)
 - v2.3.2 - Hotfix: btn-undefined [#496](https://github.com/kevinchappell/formBuilder/pull/496)
