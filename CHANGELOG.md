@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.4.1 - Hotfix: disableFields option [#508](https://github.com/kevinchappell/formBuilder/pull/508)
 - v2.4.0 - New control plugin to replace the default file upload type [#506](https://github.com/kevinchappell/formBuilder/pull/506)
 - v2.3.5 - Hotfix: Constraint API [#505](https://github.com/kevinchappell/formBuilder/pull/505)
 - v2.3.4 - Hotfix: preload values to exisitng field types, fix fieldOrder [#501](https://github.com/kevinchappell/formBuilder/pull/501)
