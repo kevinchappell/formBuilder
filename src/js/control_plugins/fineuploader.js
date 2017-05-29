@@ -1,5 +1,33 @@
 /**
  * Fineuploader class - render the fineuploader tool (https://fineuploader.com) in place of the traditional file upload widget
+ * For assistance with further configuring Fine Uploader in your application, please refer to:
+ * https://docs.fineuploader.com/branch/master/api/options-ui.html
+ *
+ * If you wish to use your own installation of fineuploader, refer to here:
+ *   - https://docs.fineuploader.com/quickstart/01-getting-started.html
+ *   - You can download from here: https://fineuploader.com/customize
+ *   - You can specify the location of your javascript & css in opts.controlConfig.file
+ *   - The 'js' option should point to the jquery.fine-uploader.min.js file (note this is the jQuery plugin version)
+ *
+ *   E.g. var opts = {
+ *    // other formbuilder options here
+ *
+ *    controlConfig: {
+ *      file: {
+ *        js: '/path/to/jquery.fine-uploader.min.js',
+ *        css: '/path/to.css',
+ *        handler: '/path/to/handler.php',
+ *
+ *        // other fine uploader configuration options here
+ *      }
+ *    }
+ *  };
+ *
+ * This plugin is by default configured to use the 'Traditional' build, but you can easily reconfigure by passing appropriate Fine Uploader configuration options to controlConfig.file.
+ * A simple php upload handler endpoint can be found here: https://github.com/FineUploader/php-traditional-server. To use this for your handler, simply set the controlConfig.fineuploader.handler option to be '/path/to/php-traditional-server/endpoint.php'
+ *
+ * If you wish to define a custom uploader handler URL, define controlConfig.file.handler in the formbuilder options. Defaults to /upload
+ * If you wish to define a custom template for the interface, this can be defined in controlConfig.file.template. It defaults to the gallery template provided by the Fineuploader project
  */
 
 // configure the class for runtime loading
@@ -26,38 +54,12 @@ window.fbControls.push(function(controlClass) {
      * javascript & css to load
      */
     configure() {
-      this.js = this.classConfig.js;
-      this.css = this.classConfig.css;
-      if (!this.js || !this.css) {
-        let message = `Error intializing the Fine Uploader control. It does not appear to have been configured.
-To do this correctly, please specify formbuilder/formrender options under controlConfig.file.
-  
-E.g. var opts = {
-  // other formbuilder options here
-  
-  controlConfig: {
-    file: {
-      js: '/path/to.js',
-      css: '/path/to.css',
-      handler: '/path/to/handler.php',
-      
-      // other fine uploader configuration options here  
-    }
-  }
-};
-
-For assistance with setting up Fine Uploader in your application, please refer to:
-  * https://docs.fineuploader.com/quickstart/01-getting-started.html
-  * You can download from here: https://fineuploader.com/customize
-  * Your 'js' option should point to the jquery.fine-uploader.min.js file (note this is the jQuery plugin version)
-  * This plugin is by default configured to use the 'Traditional' build, but you can easily reconfigure by passing appropriate Fine Uploader configuration options to controlConfig.file.
-  * A simple php upload handler endpoint can be found here: https://github.com/FineUploader/php-traditional-server. To use this for your handler, simply set the controlConfig.fineuploader.handler option to be '/path/to/php-traditional-server/endpoint.php'
-`;
-        throw new Error(message);
-      }
+      this.js = this.classConfig.js || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/jquery.fine-uploader.min.js';
+      this.css = this.classConfig.css || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/fine-uploader-gallery.min.css';
+      this.handler = this.classConfig.handler || '/upload';
 
       // fineuploader template that needs to be defined for the UI
-      let template = `
+      let template = this.classConfig.template || `
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
           <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
             <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
@@ -154,15 +156,14 @@ For assistance with setting up Fine Uploader in your application, please refer t
       // we need to know where the server handler file located. I.e. where to we send the upload POST to?
       // to set this, define controlConfig.file.handler in the formbuilder options
       // defaults to '/upload'
-      var handler = this.classConfig.handler || '/upload';
       delete this.classConfig.endpoint;
       let config = $.extend({
         request: {
-          endpoint: handler
+          endpoint: this.handler
         },
         deleteFile: {
           enabled: true,
-          endpoint: handler
+          endpoint: this.handler
         },
         chunking: {
           enabled: true,
@@ -170,7 +171,7 @@ For assistance with setting up Fine Uploader in your application, please refer t
             enabled: true
           },
           success: {
-            endpoint: handler + '?done'
+            endpoint: this.handler + '?done'
           }
         },
         resume: {
