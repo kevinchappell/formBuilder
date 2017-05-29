@@ -750,6 +750,11 @@ export default class Helpers {
       }
     });
 
+    // remove disableFields
+    if (opts.disableFields.length) {
+      fieldOrder = fieldOrder.filter(type => opts.disableFields.indexOf(type) == -1);
+    }
+
     return fieldOrder.filter(Boolean);
   }
 
