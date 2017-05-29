@@ -49,6 +49,7 @@ E.g. var opts = {
 For assistance with setting up Fine Uploader in your application, please refer to:
   * https://docs.fineuploader.com/quickstart/01-getting-started.html
   * You can download from here: https://fineuploader.com/customize
+  * Your 'js' option should point to the jquery.fine-uploader.min.js file (note this is the jQuery plugin version)
   * This plugin is by default configured to use the 'Traditional' build, but you can easily reconfigure by passing appropriate Fine Uploader configuration options to controlConfig.file.
   * A simple php upload handler endpoint can be found here: https://github.com/FineUploader/php-traditional-server. To use this for your handler, simply set the controlConfig.fineuploader.handler option to be '/path/to/php-traditional-server/endpoint.php'
 `;
