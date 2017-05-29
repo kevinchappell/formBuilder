@@ -136,7 +136,8 @@ jQuery(function($) {
     typeUserDisabledAttrs: typeUserDisabledAttrs,
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
-    actionButtons: actionButtons
+    actionButtons: actionButtons,
+    disableFields: ['autocomplete']
     // controlPosition: 'left'
     // disabledAttrs
   };

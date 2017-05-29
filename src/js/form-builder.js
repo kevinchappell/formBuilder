@@ -125,11 +125,6 @@ const FormBuilder = function(opts, element) {
     });
   }
 
-  // remove disableFields
-  if (opts.disableFields) {
-    controls = controls.filter(type => opts.disableFields.indexOf(type) == -1);
-  }
-
   // append controls to list
   h.orderFields(controlList).forEach(control => {
     if (allControls[control]) {
