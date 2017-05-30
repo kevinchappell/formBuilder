@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.5.0 - upgraded fineuploader plugin to use cdnjs by default so it no longer … [#509](https://github.com/kevinchappell/formBuilder/pull/509)
 - v2.4.1 - Hotfix: disableFields option [#508](https://github.com/kevinchappell/formBuilder/pull/508)
 - v2.4.0 - New control plugin to replace the default file upload type [#506](https://github.com/kevinchappell/formBuilder/pull/506)
 - v2.3.5 - Hotfix: Constraint API [#505](https://github.com/kevinchappell/formBuilder/pull/505)
