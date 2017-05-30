@@ -1,3 +1,5 @@
+import controlText from './text';
+
 /**
  * Fineuploader class - render the fineuploader tool (https://fineuploader.com) in place of the traditional file upload widget
  * For assistance with further configuring Fine Uploader in your application, please refer to:
@@ -13,7 +15,7 @@
  *    // other formbuilder options here
  *
  *    controlConfig: {
- *      file: {
+ *      'file.fineuploader': {
  *        js: '/path/to/jquery.fine-uploader.min.js',
  *        css: '/path/to.css',
  *        handler: '/path/to/handler.php',
@@ -29,37 +31,30 @@
  * If you wish to define a custom uploader handler URL, define controlConfig.file.handler in the formbuilder options. Defaults to /upload
  * If you wish to define a custom template for the interface, this can be defined in controlConfig.file.template. It defaults to the gallery template provided by the Fineuploader project
  */
+export default class controlFineUploader extends controlText {
 
-// configure the class for runtime loading
-if (!window.fbControls) window.fbControls = [];
-window.fbControls.push(function(controlClass) {
   /**
-   * Fine uploader class
+   * Class configuration - return the icons & label related to this control
+   * @return {Object} definition object
    */
-  class controlFineUpload extends controlClass {
+  static get definition() {
+    return {
+      i18n: {
+        default: 'Fine Uploader'
+      }
+    };
+  }
 
-    /**
-     * Class configuration - return the icons & label related to this control
-     * @return definition object
-     */
-    static get definition() {
-      return {
-        i18n: {
-          default: 'File Upload'
-        }
-      };
-    }
+  /**
+   * configure the fineupload default settings & allow for controlConfig options
+   */
+  configure() {
+    this.js = this.classConfig.js || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/jquery.fine-uploader.min.js';
+    this.css = this.classConfig.css || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/fine-uploader-gallery.min.css';
+    this.handler = this.classConfig.handler || '/upload';
 
-    /**
-     * javascript & css to load
-     */
-    configure() {
-      this.js = this.classConfig.js || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/jquery.fine-uploader.min.js';
-      this.css = this.classConfig.css || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/fine-uploader-gallery.min.css';
-      this.handler = this.classConfig.handler || '/upload';
-
-      // fineuploader template that needs to be defined for the UI
-      let template = this.classConfig.template || `
+    // fineuploader template that needs to be defined for the UI
+    let template = this.classConfig.template || `
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
           <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
             <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
@@ -135,59 +130,58 @@ window.fbControls.push(function(controlClass) {
           </dialog>
         </div>
       </div>`;
-      this.fineTemplate = $('<div/>')
-          .attr('id', 'qq-template')
-          .html(template);
-    }
-
-    /**
-     * build a div DOM element with id
-     * @return {Object} DOM Element to be injected into the form.
-     */
-    build() {
-      return this.markup('div', '', {id: this.config.name});
-    }
-
-    /**
-     * onRender callback
-     */
-    onRender() {
-
-      // we need to know where the server handler file located. I.e. where to we send the upload POST to?
-      // to set this, define controlConfig.file.handler in the formbuilder options
-      // defaults to '/upload'
-      delete this.classConfig.endpoint;
-      let config = $.extend({
-        request: {
-          endpoint: this.handler
-        },
-        deleteFile: {
-          enabled: true,
-          endpoint: this.handler
-        },
-        chunking: {
-          enabled: true,
-          concurrent: {
-            enabled: true
-          },
-          success: {
-            endpoint: this.handler + '?done'
-          }
-        },
-        resume: {
-          enabled: true
-        },
-        retry: {
-          enableAuto: true,
-          showButton: true
-        },
-        template: this.fineTemplate
-      }, this.classConfig);
-      $('#' + this.config.name).fineUploader(config);
-    }
+    this.fineTemplate = $('<div/>')
+      .attr('id', 'qq-template')
+      .html(template);
   }
 
-  // overload the file 'type' to use this uploader instead
-  controlClass.register('file', controlFineUpload);
-  return controlFineUpload;
-});
+  /**
+   * build a div DOM element with id
+   * @return {Object} DOM Element to be injected into the form.
+   */
+  build() {
+    return this.markup('div', '', {id: this.config.name});
+  }
+
+  /**
+   * onRender callback
+   */
+  onRender() {
+    // we need to know where the server handler file located. I.e. where to we send the upload POST to?
+    // to set this, define controlConfig.file.handler in the formbuilder options
+    // defaults to '/upload'
+    delete this.classConfig.endpoint;
+    let config = $.extend({
+      request: {
+        endpoint: this.handler
+      },
+      deleteFile: {
+        enabled: true,
+        endpoint: this.handler
+      },
+      chunking: {
+        enabled: true,
+        concurrent: {
+          enabled: true
+        },
+        success: {
+          endpoint: this.handler + '?done'
+        }
+      },
+      resume: {
+        enabled: true
+      },
+      retry: {
+        enableAuto: true,
+        showButton: true
+      },
+      template: this.fineTemplate
+    }, this.classConfig);
+    $('#' + this.config.name).fineUploader(config);
+  }
+}
+
+// register fineuploader as a subtype to the 'file' type control (defined in text.js)
+// also register the default file uploader as a subtype too so it appears in the dropdown
+controlText.register('file', controlText, 'file');
+controlText.register('fineuploader', controlFineUploader, 'file');
