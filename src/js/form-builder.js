@@ -48,7 +48,6 @@ const FormBuilder = function(opts, element) {
   }
 
   opts = h.processOptions(opts);
-
   const subtypes = config.subtypes = h.processSubtypes(opts.subtypes);
   h.editorUI(formID);
 
@@ -497,6 +496,7 @@ const FormBuilder = function(opts, element) {
       ]),
       date: defaultAttrs,
       file: defaultAttrs.concat([
+        'subtype',
         'multiple'
       ]),
       header: [
