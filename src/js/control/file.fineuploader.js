@@ -52,6 +52,7 @@ export default class controlFineUploader extends controlText {
     this.js = this.classConfig.js || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/jquery.fine-uploader.min.js';
     this.css = this.classConfig.css || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/fine-uploader-gallery.min.css';
     this.handler = this.classConfig.handler || '/upload';
+    ['js', 'css', 'handler'].forEach(key => delete this.classConfig[key]);
 
     // fineuploader template that needs to be defined for the UI
     let template = this.classConfig.template || `
@@ -150,8 +151,9 @@ export default class controlFineUploader extends controlText {
     // we need to know where the server handler file located. I.e. where to we send the upload POST to?
     // to set this, define controlConfig.file.handler in the formbuilder options
     // defaults to '/upload'
-    delete this.classConfig.endpoint;
-    let config = $.extend({
+
+    // deep copy merge in passed class configuration over any conflicting defaults
+    let config = $.extend(true, {
       request: {
         endpoint: this.handler
       },
@@ -165,7 +167,7 @@ export default class controlFineUploader extends controlText {
           enabled: true
         },
         success: {
-          endpoint: this.handler + '?done'
+          endpoint: this.handler + (this.handler.indexOf('?') == -1 ? '?' : '&') + 'done'
         }
       },
       resume: {
