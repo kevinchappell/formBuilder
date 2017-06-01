@@ -57,6 +57,24 @@ export default class controlFineUploader extends controlText {
     // fineuploader template that needs to be defined for the UI
     let template = this.classConfig.template || `
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
+          <style type="text/css">
+            .qq-uploader .qq-error-message {
+              position: absolute;
+              left: 20%;
+              top: 20px;
+              width: 60%;
+              color: #a94442;
+              background: #f2dede;
+              border: solid 1px #ebccd1;
+              padding: 15px;
+              line-height: 1.5em;
+              text-align: center;
+            }
+            .qq-uploader .qq-error-message span {
+              display: inline-block;
+              text-align: left;
+            }
+          </style>
           <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
             <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
           </div>
@@ -141,13 +159,16 @@ export default class controlFineUploader extends controlText {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    return this.markup('div', '', {id: this.config.name});
+    this.wrapper = this.markup('div', '', {id: this.config.name});
+    return this.wrapper;
   }
 
   /**
    * onRender callback
    */
   onRender() {
+    let wrapper = $(this.wrapper);
+
     // we need to know where the server handler file located. I.e. where to we send the upload POST to?
     // to set this, define controlConfig.file.handler in the formbuilder options
     // defaults to '/upload'
@@ -176,6 +197,19 @@ export default class controlFineUploader extends controlText {
       retry: {
         enableAuto: true,
         showButton: true
+      },
+      callbacks: {
+        onError: (id, name, errorReason, xhrOrXdr) => {
+          let error = $('<div />')
+            .addClass('qq-error-message')
+            .html(`<span>Error processing upload: <b>${name}</b>.<br />Reason: ${errorReason}.</span>`)
+            .prependTo(wrapper.find('.qq-uploader'));
+          setTimeout(() => {
+            error.fadeOut(() => {
+              error.remove();
+            });
+          }, 5000);
+        }
       },
       template: this.fineTemplate
     }, this.classConfig);
