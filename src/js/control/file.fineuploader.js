@@ -69,6 +69,7 @@ export default class controlFineUploader extends controlText {
               padding: 15px;
               line-height: 1.5em;
               text-align: center;
+              z-index: 99999;
             }
             .qq-uploader .qq-error-message span {
               display: inline-block;
@@ -200,15 +201,18 @@ export default class controlFineUploader extends controlText {
       },
       callbacks: {
         onError: (id, name, errorReason, xhrOrXdr) => {
+          if (errorReason.slice(-1) != '.') {
+            errorReason += '.';
+          }
           let error = $('<div />')
             .addClass('qq-error-message')
-            .html(`<span>Error processing upload: <b>${name}</b>.<br />Reason: ${errorReason}.</span>`)
+            .html(`<span>Error processing upload: <b>${name}</b>.<br />Reason: ${errorReason}</span>`)
             .prependTo(wrapper.find('.qq-uploader'));
           setTimeout(() => {
             error.fadeOut(() => {
               error.remove();
             });
-          }, 5000);
+          }, 6000);
         }
       },
       template: this.fineTemplate
