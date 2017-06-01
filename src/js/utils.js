@@ -438,21 +438,44 @@
    * @return {void}
    */
   utils.getStyles = (scriptScr, path) => {
-    if (utils.isCached(scriptScr, 'css')) {
-      return;
-    }
     if (!Array.isArray(scriptScr)) {
       scriptScr = [scriptScr];
     }
-    const appendStyle = (href) => {
-      const link = document.createElement('link');
-      link.type = 'text/css';
-      link.rel = 'stylesheet';
-      link.href = href;
-      document.head.appendChild(link);
-      window.fbLoaded.css.push(href);
-    };
-    scriptScr.forEach(src => appendStyle((path || '') + src));
+    scriptScr.forEach(src => {
+      // if a string is passed, assume a href URL
+      let type = 'href';
+      let key = src;
+      let id = '';
+
+      // if an object is passed, work out details from it's properties
+      if (typeof src == 'object') {
+        type = src.type || (src.style ? 'inline' : 'href');
+        id = src.id;
+        src = type == 'inline' ? src.style : src.href;
+        key = id || src.href || src.style;
+      }
+
+      // check we haven't already loaded this css
+      if (utils.isCached(key, 'css')) {
+        return;
+      }
+
+      // append the style into the head
+      if (type == 'href') {
+        let link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = (path || '') + src;
+        document.head.appendChild(link);
+      } else {
+        $(`<style type="text/css">${src}</style>`)
+          .attr('id', id)
+          .appendTo($(document.head));
+      }
+
+      // record this is cached
+      window.fbLoaded.css.push(key);
+    });
   };
 
 /**
