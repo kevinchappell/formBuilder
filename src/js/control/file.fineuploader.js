@@ -160,8 +160,9 @@ export default class controlFineUploader extends controlText {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    this.wrapper = this.markup('div', '', {id: this.config.name});
-    return this.wrapper;
+    this.input = this.markup('input', null, {type: 'hidden', name: this.config.name, id: this.config.name});
+    this.wrapper = this.markup('div', '', {id: this.config.name + '-wrapper'});
+    return [this.input, this.wrapper];
   }
 
   /**
@@ -169,6 +170,7 @@ export default class controlFineUploader extends controlText {
    */
   onRender() {
     let wrapper = $(this.wrapper);
+    let input = $(this.input);
 
     // we need to know where the server handler file located. I.e. where to we send the upload POST to?
     // to set this, define controlConfig.file.handler in the formbuilder options
@@ -213,11 +215,24 @@ export default class controlFineUploader extends controlText {
               error.remove();
             });
           }, 6000);
+        },
+        onStatusChange: (id, oldStatus, newStatus) => {
+          let uploads = wrapper.fineUploader('getUploads');
+
+          // retrieve an array of successfully uploaded filenames
+          let successful = [];
+          for (let upload of uploads) {
+            if (upload.status != 'upload successful') {
+              continue;
+            }
+            successful.push(upload.name);
+          }
+          input.val(successful.join(', '));
         }
       },
       template: this.fineTemplate
     }, this.classConfig);
-    $('#' + this.config.name).fineUploader(config);
+    wrapper.fineUploader(config);
   }
 }
 
