@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.5.2 - Fineuploader error handling & reporting [#516](https://github.com/kevinchappell/formBuilder/pull/516)
 - v2.5.1 - copy in control config rather than reference it so any alterations arent global. support fineuploader handler having querystring args. fix bug in applying fineuploader config to defaults. [#513](https://github.com/kevinchappell/formBuilder/pull/513)
 - v2.5.0 - upgraded fineuploader plugin to use cdnjs by default so it no longer … [#509](https://github.com/kevinchappell/formBuilder/pull/509)
 - v2.4.1 - Hotfix: disableFields option [#508](https://github.com/kevinchappell/formBuilder/pull/508)
