@@ -215,6 +215,7 @@
     &.paragraph-field {
       .fld-label {
         min-height: 150px;
+        overflow-y: auto;
       }
     }
 
