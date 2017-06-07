@@ -14,40 +14,39 @@ export default class controlAutocomplete extends control {
     let {values, type, ...data} = this.config;
     const keyboardNav = (e) => {
       const list = e.target.nextSibling.nextSibling;
-      let activeOption = list.getElementsByClassName('active-option')[0];
+      const hiddenField = e.target.nextSibling;
+      let activeOption = this.getActiveOption(list);
       const keyCodeMapVals = [
         // up
         [38, () => {
-          if (activeOption) {
-            if (activeOption.previousSibling) {
-              activeOption.classList.remove('active-option');
-              activeOption = activeOption.previousSibling;
-              activeOption.classList.add('active-option');
-            }
+          const previous = this.getPreviousOption(activeOption);
+          if (previous) {
+              this.selectOption(list, previous);
           }
         }],
         // down
         [40, () => {
-          if (activeOption) {
-            if (activeOption.nextSibling) {
-              activeOption.classList.remove('active-option');
-              activeOption = activeOption.nextSibling;
-              activeOption.classList.add('active-option');
-            }
-          } else {
-            activeOption = list.firstChild;
-            activeOption.classList.add('active-option');
+          const next = this.getNextOption(activeOption);
+          if (next) {
+              this.selectOption(list, next);
           }
         }],
+        // enter
         [13, () => {
           if (activeOption) {
-            e.target.value = activeOption.innerHTML;
+              e.target.value = activeOption.innerHTML;
+              hiddenField.value = activeOption.getAttribute('value');
             if (list.style.display === 'none') {
-              list.style.display = 'block';
+              this.showList(list, activeOption);
             } else {
-              list.style.display = 'none';
+              this.hideList(list);
             }
           }
+          e.preventDefault();
+        }],
+        // escape
+        [27, () => {
+          this.hideList(list);
         }]
       ];
       let keyCodeMap = new Map(keyCodeMapVals);
@@ -61,10 +60,13 @@ export default class controlAutocomplete extends control {
     };
     const fauxEvents = {
       focus: evt => {
-        let list = evt.target.nextSibling.nextSibling;
+        const list = evt.target.nextSibling.nextSibling;
+        const filteredOptions = filter(list.querySelectorAll('li'), evt.target.value);
         evt.target.addEventListener('keydown', keyboardNav);
-        list.style.display = 'block';
-        list.style.width = list.parentElement.offsetWidth + 'px';
+        if ( evt.target.value.length > 0 ) {
+            const selectedOption = filteredOptions.length > 0 ? filteredOptions[filteredOptions.length-1] : null;
+            this.showList(list, selectedOption);
+        }
       },
       blur: evt => {
         evt.target.removeEventListener('keydown', keyboardNav);
@@ -74,17 +76,24 @@ export default class controlAutocomplete extends control {
       },
       input: (evt) => {
         const list = evt.target.nextSibling.nextSibling;
-        filter(list.querySelectorAll('li'), evt.target.value);
-        if (!evt.target.value) {
-          list.style.display = 'none';
+        const hiddenField = evt.target.nextSibling;
+        hiddenField.value = evt.target.value;
+        const filteredOptions = filter(list.querySelectorAll('li'), evt.target.value);
+        if (filteredOptions.length == 0) {
+          this.hideList(list);
         } else {
-          list.style.display = 'block';
+         let activeOption = this.getActiveOption(list);
+         if (!activeOption) {
+            activeOption = filteredOptions[filteredOptions.length - 1];
+         }
+         this.showList(list, activeOption);
         }
       }
     };
     let fauxAttrs = Object.assign({}, data,
       {
         id: `${data.id}-input`,
+        autocomplete: 'off',
         events: fauxEvents
       });
     let hiddenAttrs = Object.assign({}, data, {type: 'hidden'});
@@ -102,8 +111,8 @@ export default class controlAutocomplete extends control {
             const list = evt.target.parentElement;
             const field = list.previousSibling.previousSibling;
             field.value = optionData.label;
-            field.previousSibling.value = optionData.value;
-            list.style.display = 'none';
+            field.nextSibling.value = optionData.value;
+            this.hideList(list);
           }
         },
         value: optionData.value
@@ -114,6 +123,82 @@ export default class controlAutocomplete extends control {
     field.push(this.markup('ul', options,
       {id: `${data.id}-list`, className: `fb-${type}-list`}));
     return field;
+  }
+
+
+  /**
+   * Hides autocomplete list and deselects all the options
+   * @param {Object} list - list of autocomplete options
+   */
+  hideList(list) {
+    this.selectOption(list, null);
+    list.style.display = 'none';
+  }
+
+  /**
+   * Shows autocomplete list. Automatically selects 'selectedOption'
+   * @param {Object} list - list of autocomplete options
+   * @param {Object} selectedOption - option to be selected
+  */
+  showList(list, selectedOption) {
+    this.selectOption(list, selectedOption);
+    list.style.display = 'block';
+    list.style.width = list.parentElement.offsetWidth + 'px';
+  }
+
+  /**
+   * Returns first option from autocomplete list with 'active-option' class
+   * @param {Object} list - list of autocomplete options
+   * @return {Object} first list option with 'active-option' class
+  */
+  getActiveOption(list) {
+    const activeOption = list.getElementsByClassName('active-option')[0];
+    if (activeOption && activeOption.style.display !== 'none') {
+      return activeOption;
+    }
+    return null;
+  }
+
+  /**
+   * Previous next option to the current option
+   * @param {Object} current - currently selected option
+   * @return {Object} previous option to the current option or null if previous doesn't exist
+  */
+  getPreviousOption(current) {
+    let previous = current;
+    do {
+      previous = previous ? previous.previousSibling : null;
+    } while (previous != null && previous.style.display === 'none');
+    return previous;
+  }
+
+  /**
+   * Returns next option to the current option
+   * @param {Object} current - currently selected option
+   * @return {Object} next option to the current option or null if next doesn't exist
+  */
+  getNextOption(current) {
+    let next = current;
+    do {
+      next = next ? next.nextSibling: null;
+    } while (next != null && next.style.display === 'none');
+    return next;
+  }
+
+  /**
+   * Selects option in autocomplete list. Removes class 'active-option' from all options
+   * and then adds that class to 'selected' option. If 'selected' is null then no option is selected
+   * @param {Object} list - list of autocomplete options
+   * @param {Object} selectedOption - option - 'li' element - to be selected in autocomplete list
+   */
+  selectOption(list, selectedOption) {
+    const options = list.querySelectorAll('li');
+    options.forEach((option)=>{
+      option.classList.remove('active-option');
+    });
+    if (selectedOption) {
+      selectedOption.classList.add('active-option');
+    }
   }
 
   /**
