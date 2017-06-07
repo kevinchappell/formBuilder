@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.5.3 - Hotfix: paragraph label overflow resolves #517 [#525](https://github.com/kevinchappell/formBuilder/pull/525)
 - v2.5.2 - Fineuploader error handling & reporting [#516](https://github.com/kevinchappell/formBuilder/pull/516)
   + fixed autocomplete control behaviour [#521](https://github.com/kevinchappell/formBuilder/pull/521)
 - v2.5.1 - copy in control config rather than reference it so any alterations arent global. support fineuploader handler having querystring args. fix bug in applying fineuploader config to defaults. [#513](https://github.com/kevinchappell/formBuilder/pull/513)
