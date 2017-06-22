@@ -10,6 +10,25 @@ Key files / folders:
   * `layout.js` - the layout engine that produces each row of the form, and determines how the label, help text, and control widget will each fit together.
   * `utils.js` - resuable methods thare are used in both `form-builder.js` and `form-render.js`
   
+# Utils
+`utils.markup` is quite widely used throughout the code for generate DOM elements to inject into the page. It is a general purpose 'create some DOM elements' method that supports being passed a wide range of content types. It receives 3 parameters:
+  * `tag` - a wrapper or parent tag name - e.g. `'div'`. An element of this type will be created.
+  * `content` - content to be appended into the element. This parameterd can handle being passed be nearly anything sensible (see below) that could be injected as the content of the created element. Supported types are outlined below.
+  * `attributes` - an object contain any key: value pairs for html attributes you want to set on the created element. E.g. `{id: 'myid', 'class': 'hilight'}`
+
+Supported data types for the `content` include:
+  * `string` - if the content parameter is a string, it will be treated as HTML that will be set as the innerHTML for the tag - e.g. `utils.markup('div', '<b class="hilight">Hello world</b>', {id: 'world'});` will create an return a div element: `<div id="world"><b class="hilight">Hello world</b></div>`.
+  * `object` - if the content parameter is an object, it will be assumed that object will contain `tag` and `content` properties for a sub-element, along with key: value pairs for any other attributes to set on that element. The method will then recurse - creating a new node of the specified type & injecting that as a child node to the created element. E.g. `utils.markup('div', { tag: 'b', 'Hello World', class: 'hilight'}, {id: 'world'});` will create exactly the same element as the string example. Because of the recursive nature of this method, you can nest as many elements as you want (by passing objects as the value of the `content` property) to create a whole DOM tree using this approach.
+  * `DOM element/node` - if the content parameter is a DOM node, it will simply attach that node tree to the parent. E.g. `let hello = $('<b/>').html('Hello world').addClass('hilight'); utils.markup('div', hello[0], {id: 'world'});` again would create exactly the same output as the string example.
+  * `array` - if the content parameter is an array, it will loop through each item in the array and append it into the element. Each item of the array can be any of the types listed here. So the array can contain strings, object, dom elements or even other arrays.
+  * `function` - if the content parameter is a function, it will be executed, and its return type will be appended to the element - as per the supported methods above. So:
+  ```
+  utils.markup('div', () => {
+   return '<b class="hilight">Hello world</b>';
+  }, {id: 'world'});
+ ```
+ ... would again create the same element. That function could return any of the above examples to create that element.
+ 
 # Controls
 
  A 'control' in formbuilder parlance is a 'widget' or form input on the form. It allows the user to interact with the form.
