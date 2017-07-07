@@ -782,6 +782,7 @@ export default class Helpers {
   toggleEdit(fieldId, animate = true) {
     const field = document.getElementById(fieldId);
     const toggleBtn = $('.toggle-form', field);
+    if (!toggleBtn.length) return;
     const editPanel = $('.frm-holder', field);
     field.classList.toggle('editing');
     toggleBtn.toggleClass('open');
