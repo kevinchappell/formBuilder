@@ -187,7 +187,7 @@ jQuery(function($) {
         var formData = new FormData(document.forms[0]);
         console.log('Can submit: ', document.forms[0].checkValidity());
         // Display the key/value pairs
-        console.log('FormData: ', );
+        console.log('FormData:', formData);
         for(var pair of formData.entries()) {
            console.log(pair[0]+ ': '+ pair[1]);
         }
