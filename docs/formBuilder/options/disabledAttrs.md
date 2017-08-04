@@ -1,6 +1,32 @@
 # disabledAttrs
 Disable attributes for all field types.
 
+List of default attributes:
+```javascript
+const attrs = [
+  'access',
+  'className',
+  'description',
+  'inline',
+  'label',
+  'max',
+  'maxlength',
+  'min',
+  'multiple',
+  'name',
+  'options',
+  'other',
+  'placeholder',
+  'required',
+  'rows',
+  'step',
+  'style',
+  'subtype',
+  'toggle',
+  'value'
+]
+```
+
 ## Usage
 ```javascript
 var options = {
