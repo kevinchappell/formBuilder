@@ -55,7 +55,9 @@ jQuery(function($) {
 | [extension](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/i18n/#extension) | {String} | '.ext' | '.lang' |
 | [preloaded](http://formbuilder.readthedocs.io/en/latest/formBuilder/options/i18n/#preloaded) | {Object} | `{}` | `{'en-US': {...}}` |
 
+## [Angular 2/4 Version](https://github.com/KhaledSMQ/Ng2FormBuilder)
+
 ## [Changelog](https://github.com/kevinchappell/formBuilder/blob/master/CHANGELOG.md) ##
 
 ## Translators Needed!
-As formBuilder usage grows so does it's need to be available in multiple languages. Additional and updates to existing languages are always welcome, see [Contributing Languages](https://github.com/kevinchappell/formBuilder-languages/blob/master/CONTRIBUTING.md) for details.
+As formBuilder usage grows so does it's need to be available in multiple languages. Additions and updates to existing languages are always welcome, see [Contributing Languages](https://github.com/kevinchappell/formBuilder-languages/blob/master/CONTRIBUTING.md) for details.
