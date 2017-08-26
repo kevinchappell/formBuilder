@@ -106,7 +106,7 @@
     "tag:minor": "babel-node -- node_modules/gulp/bin/gulp tag --minor",
     "release:patch": "npm run tag:patch --patch && npm run deploy",
     "release:minor": "npm run tag:minor --minor && npm run deploy",
-    "start": "babel-node -- node_modules/webpack/bin/webpack -d --progress --config tools/webpack.config | babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server --config tools/webpack.config",
+    "start": "babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server --config tools/webpack.config",
     "build": "babel-node -- node_modules/webpack/bin/webpack -p --progress --config tools/webpack.config && cp demo/assets/js/form-* dist/",
     "build:vendor": "babel-node -- tools/run build-vendor",
     "build:plugins": "babel-node -- node_modules/webpack/bin/webpack -p --display-entrypoints --progress --config tools/webpack.plugins.config"

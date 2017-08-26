@@ -71,6 +71,7 @@ export default class controlSelect extends control {
           options.push(o);
         } else {
           let wrapperClass = optionType;
+          let labelContents = [label];
           if (inline) {
             wrapperClass += '-inline';
           }
@@ -81,15 +82,16 @@ export default class controlSelect extends control {
           }
           let input = this.markup('input', null, Object.assign({}, data, optionAttrs));
           let labelAttrs = {for: optionAttrs.id};
-          let labelContent = [input, label];
+          label = this.markup('label', labelContents, labelAttrs);
+          let output = [input, label];
           if (toggle) {
-            let kcToggle = this.markup('span');
-            labelContent = [input, kcToggle, label];
             labelAttrs.className = 'kc-toggle';
+            // output.splice(1, 0, this.markup('span'));
+            labelContents.unshift(input, this.markup('span'));
+            output = this.markup('label', labelContents, labelAttrs);
           }
 
-          let inputLabel = this.markup('label', labelContent, labelAttrs);
-          let wrapper = this.markup('div', inputLabel, {className: wrapperClass});
+          let wrapper = this.markup('div', output, {className: wrapperClass});
           options.push(wrapper);
         }
       }
