@@ -1404,7 +1404,7 @@ let stageOnChangeSelectors = [
     let enableRolesCB = $(e.target);
     roles.slideToggle(250, function() {
       if (!enableRolesCB.is(':checked')) {
-        $('input[type="checkbox"]', roles).removeAttr('checked');
+        $('input[type=checkbox]', roles).removeAttr('checked');
       }
     });
   });

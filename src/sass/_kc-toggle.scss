@@ -13,6 +13,7 @@
     overflow: hidden;
     float: left;
     margin-right: 5px;
+    will-change: transform;
 
     &::after,
     &::before {
@@ -30,7 +31,7 @@
       border-radius: 3px;
       background: linear-gradient(to bottom, lighten($grey-light-30, 30%) 0%, $grey-light 100%);
       border: 1px solid lighten($grey, 20%);
-      transition: transform 50ms;
+      transition: transform 100ms;
       transform: translateX(0);
     }
 
