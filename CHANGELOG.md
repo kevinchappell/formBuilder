@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.6.0 - Add support for disabling form action buttons (copy, edit, remove) [#550](https://github.com/kevinchappell/formBuilder/pull/550)
 - v2.5.3 - Hotfix: paragraph label overflow resolves #517 [#525](https://github.com/kevinchappell/formBuilder/pull/525)
 - v2.5.2 - Fineuploader error handling & reporting [#516](https://github.com/kevinchappell/formBuilder/pull/516)
   + fixed autocomplete control behaviour [#521](https://github.com/kevinchappell/formBuilder/pull/521)
