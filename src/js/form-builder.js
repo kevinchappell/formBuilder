@@ -1007,24 +1007,38 @@ const FormBuilder = function(opts, element) {
   let appendNewField = function(values, isNew = true) {
     let type = values.type || 'text';
     let label = values.label || i18n[type] || i18n.label;
-    let delBtn = m('a', i18n.remove, {
+    let fieldButtons = [
+      m('a', i18n.remove, {
+        type: 'remove',
         id: 'del_' + data.lastID,
         className: 'del-button btn delete-confirm',
         title: i18n.removeMessage
+      }),
+      m('a', null, {
+        type: 'edit',
+        id: data.lastID + '-edit',
+        className: 'toggle-form btn icon-pencil',
+        title: i18n.hide
+      }),
+      m('a', null, {
+        type: 'copy',
+        id: data.lastID + '-copy',
+        className: 'copy-button btn icon-copy',
+        title: i18n.copyButtonTooltip
+      })
+    ];
+
+    let disabledFieldButtons = values.disabledFieldButtons;
+    if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
+      fieldButtons = fieldButtons.map(btnData => {
+        if (btnData && disabledFieldButtons.indexOf(btnData.type) === -1) {
+          return btnData;
+        }
       });
-    let toggleBtn = m('a', null, {
-      id: data.lastID + '-edit',
-      className: 'toggle-form btn icon-pencil',
-      title: i18n.hide
-    });
-    let copyBtn = m('a', null, {
-      id: data.lastID + '-copy',
-      className: 'copy-button btn icon-copy',
-      title: i18n.copyButtonTooltip
-    });
+    }
 
     let liContents = m(
-      'div', [toggleBtn, copyBtn, delBtn], {className: 'field-actions'}
+      'div', fieldButtons, {className: 'field-actions'}
     ).outerHTML;
 
     liContents += m('label', utils.parsedHtml(label), {
