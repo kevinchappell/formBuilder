@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.8.0 - improvement(checkbox): markup change [#585](https://github.com/kevinchappell/formBuilder/pull/585)
 - v2.7.0 - v2.6.0
 - v2.6.0 - Add support for disabling form action buttons (copy, edit, remove) [#550](https://github.com/kevinchappell/formBuilder/pull/550)
 - v2.5.3 - Hotfix: paragraph label overflow resolves #517 [#525](https://github.com/kevinchappell/formBuilder/pull/525)

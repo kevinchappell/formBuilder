@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "main": "dist/form-builder.min.js",
   "files": [
     "dist/form-builder.min.js",
