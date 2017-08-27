@@ -870,9 +870,10 @@ export default class Helpers {
   /**
    * Remove a field from the stage
    * @param  {String}  fieldID ID of the field to be removed
+   * @param  {Number}  animationSpeed
    * @return {Boolean} fieldRemoved returns true if field is removed
    */
-  removeField(fieldID) {
+  removeField(fieldID, animationSpeed = 250) {
     let fieldRemoved = false;
     let _this = this;
     const form = this.d.stage;
@@ -900,7 +901,7 @@ export default class Helpers {
       return false;
     }
 
-    $field.slideUp(250, function() {
+    $field.slideUp(animationSpeed, function() {
       $field.removeClass('deleting');
       $field.remove();
       fieldRemoved = true;
