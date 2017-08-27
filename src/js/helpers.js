@@ -1018,7 +1018,7 @@ export default class Helpers {
    */
   processOptions(options) {
     const _this = this;
-    let {actionButtons, ...opts} = options;
+    let {actionButtons, replaceFields, ...opts} = options;
     actionButtons = [{
       type: 'button',
       id: 'clear',
@@ -1045,6 +1045,8 @@ export default class Helpers {
         }
       }
     }].concat(options.actionButtons);
+    opts.fields = opts.fields.concat(replaceFields);
+    opts.disableFields = opts.disableFields.concat(replaceFields.map(({type}) => type && type));
     config.opts = Object.assign({}, {actionButtons}, opts);
     return config.opts;
   }

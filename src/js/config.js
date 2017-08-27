@@ -44,6 +44,7 @@ export const defaultOptions = {
       fields: [],
       fieldRemoveWarn: false,
       inputSets: [],
+      replaceFields: [],
       roles: {
         1: 'Administrator'
       },

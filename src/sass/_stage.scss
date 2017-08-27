@@ -344,6 +344,9 @@
     opacity: 0;
 
     a {
+      &::before {
+        margin: 0;
+      }
       &:hover {
         text-decoration: none;
         color: #000;
@@ -377,8 +380,6 @@
     }
 
     .copy-button {
-      font-size: 14px;
-
       &:hover {
         background-color: $copy;
         color: $white;
@@ -386,9 +387,6 @@
     }
 
     .del-button {
-      font-size: 20px;
-      line-height: 30px;
-
       &:hover {
         background-color: $remove;
         color: $white;

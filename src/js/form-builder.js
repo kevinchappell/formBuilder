@@ -42,12 +42,12 @@ const FormBuilder = function(opts, element) {
   // load in any custom specified controls, or preloaded plugin controls
   control.loadCustom(opts.controls);
 
+  opts = h.processOptions(opts);
   // register any passed custom templates & fields
   if (Object.keys(opts.fields).length) {
     controlCustom.register(opts.templates, opts.fields);
   }
 
-  opts = h.processOptions(opts);
   const subtypes = config.subtypes = h.processSubtypes(opts.subtypes);
   h.editorUI(formID);
 
@@ -1008,10 +1008,10 @@ const FormBuilder = function(opts, element) {
     let type = values.type || 'text';
     let label = values.label || i18n[type] || i18n.label;
     let fieldButtons = [
-      m('a', i18n.remove, {
+      m('a', null, {
         type: 'remove',
         id: 'del_' + data.lastID,
-        className: 'del-button btn delete-confirm',
+        className: 'del-button btn icon-cancel delete-confirm',
         title: i18n.removeMessage
       }),
       m('a', null, {
