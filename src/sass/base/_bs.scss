@@ -219,21 +219,35 @@ textarea.form-control {
 }
 
 .fb-checkbox-group {
-  .checkbox > input {
-    margin-left: 0;
+  .checkbox,
+  .checkbox-inline{
+    padding-left: 0;
+    input {
+      position:relative;
+      margin: 4px 0 0;
+    }
+    label {
+      padding-left: 4px;
+    }
   }
 }
 
 .fb-radio-group {
-  .radio > input {
-    margin-left: 0;
+  .radio, .radio-inline{
+    padding-left: 0;
+    input {
+      position:relative;
+      margin: 4px 0 0;
+    }
+    label {
+      padding-left: 4px;
+    }
   }
 }
 
 .fb-checkbox-inline,
 .fb-radio-inline {
   display: inline-block;
-  padding-left: 20px;
   vertical-align: middle;
 }
 
