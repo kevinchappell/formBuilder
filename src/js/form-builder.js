@@ -1222,7 +1222,10 @@ const FormBuilder = function(opts, element) {
       return false;
     }
   });
-  $stage.on('dblclick', 'li.form-field, .field-label', (e) => {
+  $stage.on('dblclick', 'li.form-field, .field-label', e => {
+    if (e.target.tagName.toLowerCase() === 'input' || e.target.contentEditable) {
+      return;
+    }
     e.stopPropagation();
     e.preventDefault();
     if (e.handled !== true) {
