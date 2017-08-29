@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.9.0 - feature(option) replaceFields [#593](https://github.com/kevinchappell/formBuilder/pull/593)
 - v2.8.0 - improvement(checkbox): markup change [#585](https://github.com/kevinchappell/formBuilder/pull/585)
 - v2.7.0 - v2.6.0
 - v2.6.0 - Add support for disabling form action buttons (copy, edit, remove) [#550](https://github.com/kevinchappell/formBuilder/pull/550)
