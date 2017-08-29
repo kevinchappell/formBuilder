@@ -42,12 +42,12 @@ const FormBuilder = function(opts, element) {
   // load in any custom specified controls, or preloaded plugin controls
   control.loadCustom(opts.controls);
 
+  opts = h.processOptions(opts);
   // register any passed custom templates & fields
   if (Object.keys(opts.fields).length) {
     controlCustom.register(opts.templates, opts.fields);
   }
 
-  opts = h.processOptions(opts);
   const subtypes = config.subtypes = h.processSubtypes(opts.subtypes);
   h.editorUI(formID);
 
@@ -386,17 +386,16 @@ const FormBuilder = function(opts, element) {
   /**
    * Add data for field with options [select, checkbox-group, radio-group]
    *
-   * @todo   refactor this nasty ~crap~ code, its actually painful to look at
    * @param  {Object} fieldData
    * @return {String} field options markup
    */
   let fieldOptions = function(fieldData) {
     let {type, values, name} = fieldData;
     let optionActions = [
-        utils.markup('a', i18n.addOption, {className: 'add add-opt'})
+        m('a', i18n.addOption, {className: 'add add-opt'})
       ];
     let fieldOptions = [
-      `<label class="false-label">${i18n.selectOptions}</label>`
+      m('label', i18n.selectOptions, {className: 'false-label'})
     ];
     const isMultiple = fieldData.multiple || (type === 'checkbox-group');
     const optionDataTemplate = label => {
@@ -431,18 +430,13 @@ const FormBuilder = function(opts, element) {
       values.forEach(option => Object.assign({}, {selected: false}, option));
     }
 
-    fieldOptions.push('<div class="sortable-options-wrap">');
-      fieldOptions.push('<ol class="sortable-options">');
-      utils.forEach(values, i => {
-        fieldOptions.push(selectFieldOptions(name, values[i], isMultiple));
-      });
-      fieldOptions.push('</ol>');
-      fieldOptions.push(utils.markup('div', optionActions, {
-        className: 'option-actions'}).outerHTML);
-    fieldOptions.push('</div>');
+    const optionActionsWrap = m('div', optionActions, {className: 'option-actions'});
+    const options = m('ol', values.map(option => selectFieldOptions(name, option, isMultiple)), {className: 'sortable-options'});
+    const optionsWrap = m('div', [options, optionActionsWrap], {className: 'sortable-options-wrap'});
 
-    return utils.markup('div', fieldOptions.join(''), {
-      className: 'form-group field-options'}).outerHTML;
+    fieldOptions.push(optionsWrap);
+
+    return m('div', fieldOptions, {className: 'form-group field-options'}).outerHTML;
   };
 
   const defaultFieldAttrs = type => {
@@ -1008,10 +1002,10 @@ const FormBuilder = function(opts, element) {
     let type = values.type || 'text';
     let label = values.label || i18n[type] || i18n.label;
     let fieldButtons = [
-      m('a', i18n.remove, {
+      m('a', null, {
         type: 'remove',
         id: 'del_' + data.lastID,
-        className: 'del-button btn delete-confirm',
+        className: 'del-button btn icon-cancel delete-confirm',
         title: i18n.removeMessage
       }),
       m('a', null, {
@@ -1228,7 +1222,10 @@ const FormBuilder = function(opts, element) {
       return false;
     }
   });
-  $stage.on('dblclick', 'li.form-field, .field-label', (e) => {
+  $stage.on('dblclick', 'li.form-field, .field-label', e => {
+    if (e.target.tagName.toLowerCase() === 'input' || e.target.contentEditable) {
+      return;
+    }
     e.stopPropagation();
     e.preventDefault();
     if (e.handled !== true) {

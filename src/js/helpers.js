@@ -870,9 +870,10 @@ export default class Helpers {
   /**
    * Remove a field from the stage
    * @param  {String}  fieldID ID of the field to be removed
+   * @param  {Number}  animationSpeed
    * @return {Boolean} fieldRemoved returns true if field is removed
    */
-  removeField(fieldID) {
+  removeField(fieldID, animationSpeed = 250) {
     let fieldRemoved = false;
     let _this = this;
     const form = this.d.stage;
@@ -900,7 +901,7 @@ export default class Helpers {
       return false;
     }
 
-    $field.slideUp(250, function() {
+    $field.slideUp(animationSpeed, function() {
       $field.removeClass('deleting');
       $field.remove();
       fieldRemoved = true;
@@ -1017,7 +1018,7 @@ export default class Helpers {
    */
   processOptions(options) {
     const _this = this;
-    let {actionButtons, ...opts} = options;
+    let {actionButtons, replaceFields, ...opts} = options;
     actionButtons = [{
       type: 'button',
       id: 'clear',
@@ -1044,6 +1045,8 @@ export default class Helpers {
         }
       }
     }].concat(options.actionButtons);
+    opts.fields = opts.fields.concat(replaceFields);
+    opts.disableFields = opts.disableFields.concat(replaceFields.map(({type}) => type && type));
     config.opts = Object.assign({}, {actionButtons}, opts);
     return config.opts;
   }

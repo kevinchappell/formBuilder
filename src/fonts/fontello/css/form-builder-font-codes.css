@@ -11,6 +11,7 @@
 .icon-pencil:before { content: '\e809'; } /* '' */
 .icon-file:before { content: '\e80a'; } /* '' */
 .icon-hidden:before { content: '\e80b'; } /* '' */
+.icon-cancel:before { content: '\e80c'; } /* '' */
 .icon-button:before { content: '\e80d'; } /* '' */
 .icon-header:before { content: '\e80f'; } /* '' */
 .icon-paragraph:before { content: '\e810'; } /* '' */

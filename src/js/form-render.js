@@ -27,7 +27,7 @@ class FormRender {
       controls: {}, // custom controls
       controlConfig: {}, // additional configuration for controls
       destroyTemplate: true, // @todo - still needed?
-      container: false,
+      container: false, // string selector or Node element
       dataType: 'json',
       formData: false,
       i18n: Object.assign({}, defaultI18n),
@@ -92,16 +92,19 @@ class FormRender {
     /**
      * Extend Element prototype to allow us to append fields
      *
-     * @param  {Object} fields Node elements
+     * @param  {fields} fields array of elements
      */
     if (typeof Element.prototype.appendFormFields !== 'function') {
       Element.prototype.appendFormFields = function(fields) {
-        let element = this;
         if (!Array.isArray(fields)) {
           fields = [fields];
         }
+        let renderedFormWrap = utils.markup('div', fields, {
+          className: 'rendered-form'
+        });
+        this.appendChild(renderedFormWrap);
         fields.forEach(field => {
-          element.appendChild(field);
+          renderedFormWrap.appendChild(field);
           field.dispatchEvent(events.fieldRendered);
         });
       };
@@ -136,6 +139,21 @@ class FormRender {
   }
 
   /**
+   * parses `container` option or returns element
+   * @param  {Object} element
+   * @return {Object} parsedElement
+   */
+  getElement(element) {
+    element = this.options.container || element;
+    if (element instanceof jQuery) {
+      element = element[0];
+    } else if (typeof element === 'string') {
+      element = document.querySelector(element);
+    }
+    return element;
+  }
+
+  /**
    * Main render method which produces the form from passed configuration
    * @param {Object} element - an html element to render the form into (optional)
    * @return {Object} FormRender
@@ -143,6 +161,7 @@ class FormRender {
   render(element = null) {
     const formRender = this;
     let opts = this.options;
+    element = this.getElement(element);
 
     let runCallbacks = function() {
       if (opts.onRender) {
@@ -175,23 +194,9 @@ class FormRender {
       }
 
       // if rendering, inject the fields into the specified wrapper container/element
-      if (opts.render) {
-        if (opts.container) {
-          // isn't this going to fail to dispatch the events.fieldRendered event as per appendFormFields?
-          // perhaps a better approach is to create an empty wrapper div, append it to the container, and set the new wrapper as the element
-          // then remove the 'else if' & empty the element + appendFormFields.
-          let renderedFormWrap = utils.markup('div', rendered, {
-            className: 'rendered-form'
-          });
-          if (opts.container instanceof jQuery) {
-            opts.container = opts.container[0];
-          }
-          opts.container.emptyContainer();
-          opts.container.appendChild(renderedFormWrap);
-        } else if (element) {
-          element.emptyContainer();
-          element.appendFormFields(rendered);
-        }
+      if (opts.render && element) {
+        element.emptyContainer();
+        element.appendFormFields(rendered);
 
         runCallbacks();
         opts.notify.success(opts.messages.formRendered);

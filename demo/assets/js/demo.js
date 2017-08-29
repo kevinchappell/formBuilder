@@ -25,6 +25,15 @@ jQuery(function($) {
     }
   ];
 
+  var replaceFields = [
+    {
+      type: 'textarea',
+      subtype: 'tinymce',
+      label: 'tinyMCE',
+      required: true,
+    }
+  ];
+
   var actionButtons = [{
     id: 'smile',
     className: 'btn btn-success',
@@ -137,7 +146,8 @@ jQuery(function($) {
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
     actionButtons: actionButtons,
-    disableFields: ['autocomplete']
+    disableFields: ['autocomplete'],
+    replaceFields: replaceFields,
     // controlPosition: 'left'
     // disabledAttrs
   };
