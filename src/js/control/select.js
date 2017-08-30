@@ -127,13 +127,13 @@ export default class controlSelect extends control {
           id: `${otherOptionAttrs.id}-value`,
           className: 'other-val'
         };
+        let primaryInput = this.markup('input', null, optionAttrs);
         let otherInputs = [
-          this.markup('input', null, optionAttrs),
           document.createTextNode('Other'),
           this.markup('input', null, otherValAttrs)
         ];
         let inputLabel = this.markup('label', otherInputs, {for: optionAttrs.id});
-        let wrapper = this.markup('div', inputLabel, {className: wrapperClass});
+        let wrapper = this.markup('div', [primaryInput, inputLabel], {className: wrapperClass});
         options.push(wrapper);
       }
     }
