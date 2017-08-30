@@ -245,6 +245,12 @@ textarea.form-control {
   }
 }
 
+.fb-radio-group {
+  .radio > input {
+    margin-left: 0;
+  }
+}
+
 .fb-checkbox-inline,
 .fb-radio-inline {
   display: inline-block;

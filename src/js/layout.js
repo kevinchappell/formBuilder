@@ -24,7 +24,7 @@ export default class layout {
       default: (field, label, help, data) => {
         // append help into the label
         if (help) {
-          label.append(help);
+          label.appendChild(help);
         }
 
         // wrap the output in a form-group div & return
