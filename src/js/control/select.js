@@ -86,7 +86,6 @@ export default class controlSelect extends control {
           let output = [input, label];
           if (toggle) {
             labelAttrs.className = 'kc-toggle';
-            // output.splice(1, 0, this.markup('span'));
             labelContents.unshift(input, this.markup('span'));
             output = this.markup('label', labelContents, labelAttrs);
           }
