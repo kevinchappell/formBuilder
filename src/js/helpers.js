@@ -1026,7 +1026,7 @@ export default class Helpers {
         type: 'button',
         label: 'viewJSON',
         id: 'data',
-        className: 'btn btn-default',
+        className: 'btn btn-default get-data',
         events: {
           click: _this.showData.bind(_this),
         },
