@@ -9,15 +9,15 @@
  * @return {Event} event
  */
 function createNewEvent(eventName) {
-  let event;
+  let event
   if (typeof Event === 'function') {
-    event = new Event(eventName);
+    event = new Event(eventName)
   } else {
-    event = document.createEvent('Event');
-    event.initEvent(eventName, true, true);
+    event = document.createEvent('Event')
+    event.initEvent(eventName, true, true)
   }
 
-  return event;
+  return event
 }
 
 const events = {
@@ -29,7 +29,7 @@ const events = {
   formSaved: createNewEvent('formSaved'),
   fieldAdded: createNewEvent('fieldAdded'),
   fieldRemoved: createNewEvent('fieldRemoved'),
-  fieldRendered: createNewEvent('fieldRendered')
-};
+  fieldRendered: createNewEvent('fieldRendered'),
+}
 
-export default events;
+export default events

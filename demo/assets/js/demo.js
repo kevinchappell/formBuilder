@@ -148,6 +148,9 @@ jQuery(function($) {
     actionButtons: actionButtons,
     disableFields: ['autocomplete'],
     replaceFields: replaceFields,
+    disabledFieldButtons: {
+      text: ['copy']
+    }
     // controlPosition: 'left'
     // disabledAttrs
   };

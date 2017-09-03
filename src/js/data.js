@@ -1,4 +1,4 @@
-export const instanceData = {};
+export const instanceData = {}
 
 /**
  * Data Class
@@ -11,11 +11,11 @@ export class Data {
    * @param  {[type]} formID [description]
    */
   constructor(formID) {
-    this.formData = {};
-    this.formID = formID;
-    this.layout = '';
-    instanceData[formID] = this;
+    this.formData = {}
+    this.formID = formID
+    this.layout = ''
+    instanceData[formID] = this
   }
 }
 
-export const availablefields = {};
+export const availablefields = {}

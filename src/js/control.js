@@ -1,13 +1,12 @@
 // CONTROL.JS
-import utils from './utils';
-import mi18n from 'mi18n';
+import utils from './utils'
+import mi18n from 'mi18n'
 
 /**
  * Base class for all control classes
  * Defines the structure of a control class and some standard control methods
  */
 export default class control {
-
   /**
    * initialise the control object
    * @param {Object} config each control class receives a control configuration
@@ -15,55 +14,55 @@ export default class control {
    * @param {Boolean} preview isPreview
    */
   constructor(config, preview) {
-    this.rawConfig = $.extend({}, config);
+    this.rawConfig = $.extend({}, config)
 
     // make a copy of config so we don't change the object reference
-    config = $.extend({}, config);
-    this.preview = preview;
-    delete config.isPreview;
+    config = $.extend({}, config)
+    this.preview = preview
+    delete config.isPreview
     if (this.preview) {
-      delete config.required;
+      delete config.required
     }
 
     // process config - extract standard properties
-    let properties = ['label', 'description', 'subtype', 'required'];
+    let properties = ['label', 'description', 'subtype', 'required']
     for (let prop of properties) {
-      this[prop] = config[prop];
-      delete config[prop];
+      this[prop] = config[prop]
+      delete config[prop]
     }
 
     // default fields
     if (!config.id) {
       if (config.name) {
-        config.id = config.name;
+        config.id = config.name
       } else {
-        config.id = 'control-' + Math.floor((Math.random() * 10000000) + 1);
+        config.id = 'control-' + Math.floor(Math.random() * 10000000 + 1)
       }
     }
-    this.id = config.id;
-    this.type = config.type;
+    this.id = config.id
+    this.type = config.type
     if (this.description) {
-      config.title = this.description;
+      config.title = this.description
     }
 
     // check for global class configuration
     if (!control.controlConfig) {
-      control.controlConfig = {};
+      control.controlConfig = {}
     }
-    let classId = this.subtype ? this.type + '.' + this.subtype : this.type;
-    this.classConfig = $.extend({}, control.controlConfig[classId] || {});
+    let classId = this.subtype ? this.type + '.' + this.subtype : this.type
+    this.classConfig = $.extend({}, control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
     if (this.subtype) {
-      config.type = this.subtype;
+      config.type = this.subtype
     }
 
     if (this.required) {
-      config['required'] = 'required';
-      config['aria-required'] = 'true';
+      config['required'] = 'required'
+      config['aria-required'] = 'true'
     }
-    this.config = config;
-    this.configure();
+    this.config = config
+    this.configure()
   }
 
   /**
@@ -76,7 +75,7 @@ export default class control {
    * @return {Object} configuration
    */
   static get definition() {
-    return {};
+    return {}
   }
 
   /**
@@ -89,14 +88,14 @@ export default class control {
    */
   static register(types, controlClass, parentType) {
     // store subtypes as <type>.<subtype> in the register
-    let prefix = parentType ? parentType + '.' : '';
+    let prefix = parentType ? parentType + '.' : ''
 
     // initialise the register
     if (!control.classRegister) {
-      control.classRegister = {};
+      control.classRegister = {}
     }
     if (!Array.isArray(types)) {
-      types = [types];
+      types = [types]
     }
 
     // associate the controlClass with each passed control type
@@ -104,10 +103,10 @@ export default class control {
       // '.' is a restricted character for type names
       if (type.indexOf('.') > -1) {
         // eslint-disable-next-line max-len
-        control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`);
-        continue;
+        control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
+        continue
       }
-      control.classRegister[prefix + type] = controlClass;
+      control.classRegister[prefix + type] = controlClass
     }
   }
 
@@ -117,19 +116,19 @@ export default class control {
    * subtypes of. If not specified will return all types
    * @return {Array} registered types (or subtypes)
    */
-  static getRegistered(type=false) {
-    let types = Object.keys(control.classRegister);
+  static getRegistered(type = false) {
+    let types = Object.keys(control.classRegister)
     if (!types.length) {
-      return types;
+      return types
     }
     return types.filter(key => {
       // if type is specified, then we want to return all subtypes
       // of that type (registered with the key <type>.<subtype>)
       if (type) {
-        return key.indexOf(type + '.') > -1;
+        return key.indexOf(type + '.') > -1
       }
-      return key.indexOf('.') == -1;
-    });
+      return key.indexOf('.') == -1
+    })
   }
 
   /**
@@ -138,20 +137,20 @@ export default class control {
    * @return {Object} an object containing {type: array of subtypes}.
    */
   static getRegisteredSubtypes() {
-    let types = {};
+    let types = {}
     for (let key in control.classRegister) {
       if (control.classRegister.hasOwnProperty(key)) {
-        let [type, subtype] = key.split('.');
+        let [type, subtype] = key.split('.')
         if (!subtype) {
-          continue;
+          continue
         }
         if (!types[type]) {
-          types[type] = [];
+          types[type] = []
         }
-        types[type].push(subtype);
+        types[type].push(subtype)
       }
     }
-    return types;
+    return types
   }
 
   /**
@@ -162,14 +161,20 @@ export default class control {
    * @return {Class} control subclass as defined in the call to register
    */
   static getClass(type, subtype) {
-    let lookup = subtype ? type + '.' + subtype : type;
-    let controlClass = control.classRegister[lookup] || control.classRegister[type];
+    let lookup = subtype ? type + '.' + subtype : type
+    let controlClass = control.classRegister[lookup] || control.classRegister[type]
     if (!controlClass) {
-      return control.error('Invalid control type. (Type: ' + type + ', Subtype: ' + subtype + '). Please ensure you have registered it, and imported it correctly.');
+      return control.error(
+        'Invalid control type. (Type: ' +
+          type +
+          ', Subtype: ' +
+          subtype +
+          '). Please ensure you have registered it, and imported it correctly.'
+      )
     }
 
     // set the _type field on the control class so we never lose it
-    return controlClass;
+    return controlClass
   }
 
   /**
@@ -177,14 +182,14 @@ export default class control {
    * @param {Array} controls
    */
   static loadCustom(controls) {
-    let controlClasses = [];
+    let controlClasses = []
     if (controls) {
-      controlClasses = controlClasses.concat(controls);
+      controlClasses = controlClasses.concat(controls)
     }
 
     // support for user loaded plugin controls
     if (window.fbControls) {
-      controlClasses = controlClasses.concat(window.fbControls);
+      controlClasses = controlClasses.concat(window.fbControls)
     }
 
     // loop through each defined custom control.
@@ -192,9 +197,9 @@ export default class control {
     // see src/js/control_plugins/ for an example
     if (!window.fbControlsLoaded) {
       for (let loadControl of controlClasses) {
-        loadControl(control, control.classRegister);
+        loadControl(control, control.classRegister)
       }
-      window.fbControlsLoaded = true;
+      window.fbControlsLoaded = true
     }
   }
 
@@ -207,27 +212,27 @@ export default class control {
    * @return {String} the translated label
    */
   static mi18n(lookup, args) {
-    let def = this.definition;
-    let i18n = def.i18n || {};
-    let locale = mi18n.locale;
-    i18n = i18n[locale] || i18n.default || i18n;
-    let lookupCamel = this.camelCase(lookup);
+    let def = this.definition
+    let i18n = def.i18n || {}
+    let locale = mi18n.locale
+    i18n = i18n[locale] || i18n.default || i18n
+    let lookupCamel = this.camelCase(lookup)
 
     // if translation is defined in the control, return it
-    let value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[lookup] : i18n;
+    let value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[lookup] : i18n
     if (value) {
-      return value;
+      return value
     }
 
     // otherwise check the mi18n object - allow for mapping a lookup to a custom mi18n lookup
-    let mapped = def.mi18n;
+    let mapped = def.mi18n
     if (typeof mapped === 'object') {
-      mapped = mapped[lookupCamel] || mapped[lookup];
+      mapped = mapped[lookupCamel] || mapped[lookup]
     }
     if (!mapped) {
-      mapped = lookupCamel;
+      mapped = lookupCamel
     }
-    return mi18n.get(mapped, args);
+    return mi18n.get(mapped, args)
   }
 
   /**
@@ -236,7 +241,7 @@ export default class control {
    * @return {Boolean} isActive
    */
   static active(type) {
-    return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) == -1;
+    return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) == -1
   }
 
   /**
@@ -245,7 +250,7 @@ export default class control {
    * @return {String} translated control
    */
   static label(type) {
-    return this.mi18n(type);
+    return this.mi18n(type)
   }
 
   /**
@@ -256,19 +261,18 @@ export default class control {
   static icon(type) {
     // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
     // http://formbuilder.readthedocs.io/en/latest/formBuilder/options/inputSets/
-    let def = this.definition;
+    let def = this.definition
     if (def && typeof def.icon === 'object') {
-      return def.icon[type];
+      return def.icon[type]
     }
-    return def.icon;
+    return def.icon
   }
 
   /**
    * this method is called by the constructor and should be overwritten for controls that need to
    * process the configuration arguments prior to rendering
    */
-  configure() {
-  }
+  configure() {}
 
   /**
    * this is the core method for all controls to produce the form elements to be injected into the dom
@@ -280,8 +284,8 @@ export default class control {
    * @return {Object} DOM Element to be injected into the form, or an object/hash of configuration as above
    */
   build() {
-    let {label, type, ...data} = this.config;
-    return this.markup(type, utils.parsedHtml(label), data);
+    let { label, type, ...data } = this.config
+    return this.markup(type, utils.parsedHtml(label), data)
   }
 
   /**
@@ -292,31 +296,30 @@ export default class control {
    */
   on(eventType) {
     let events = {
-
       // executed just prior to the row being returned by the layout class. Receives the DOMelement about to be passed back
-      prerender: (element) => {},
+      prerender: element => {},
 
       // onRender event to execute code each time an instance of this control is injected into the DOM
-      render: (evt) => {
+      render: evt => {
         // check for a class render event - default to an empty function
         let onRender = () => {
           if (this.onRender) {
-            this.onRender();
+            this.onRender()
           }
-        };
+        }
 
         // check for any css & javascript to include
         if (this.css) {
-          utils.getStyles(this.css);
+          utils.getStyles(this.css)
         }
         if (this.js && !utils.isCached(this.js)) {
-          utils.getScripts(this.js).done(onRender);
+          utils.getScripts(this.js).done(onRender)
         } else {
-          onRender();
+          onRender()
         }
-      }
-    };
-    return eventType ? events[eventType] : events;
+      },
+    }
+    return eventType ? events[eventType] : events
   }
 
   /**
@@ -324,7 +327,7 @@ export default class control {
    * @param {String} message message to output to the console
    */
   static error(message) {
-    throw new Error(message);
+    throw new Error(message)
   }
 
   /**
@@ -336,8 +339,8 @@ export default class control {
    * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
-    this.element = utils.markup(tag, content, attributes);
-    return this.element;
+    this.element = utils.markup(tag, content, attributes)
+    return this.element
   }
 
   /**
@@ -346,7 +349,7 @@ export default class control {
    * @return {String}      parsed HTML
    */
   parsedHtml(html) {
-    return utils.parsedHtml(html);
+    return utils.parsedHtml(html)
   }
 
   /**
@@ -355,6 +358,6 @@ export default class control {
    * @return {String}
    */
   static camelCase(str) {
-    return utils.camelCase(str);
+    return utils.camelCase(str)
   }
 }

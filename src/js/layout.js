@@ -1,5 +1,5 @@
 // LAYOUT.JS
-import utils from './utils';
+import utils from './utils'
 
 /**
  * Base class for controlling the layout of each 'row' on the form
@@ -7,14 +7,13 @@ import utils from './utils';
  * Controls things like the label, help text, and how they fit together with the control itself
  */
 export default class layout {
-
   /**
    * Prepare the templates for layout
    * @param {Object} templates object containing custom or overwrite templates
    * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
    */
   constructor(templates, preview) {
-    this.preview = preview;
+    this.preview = preview
 
     // supported templates for outputting a field
     // preferred layout template can be indicated by specifying a 'layout' in the return object of control::build
@@ -24,33 +23,33 @@ export default class layout {
       default: (field, label, help, data) => {
         // append help into the label
         if (help) {
-          label.appendChild(help);
+          label.appendChild(help)
         }
 
         // wrap the output in a form-group div & return
-        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : '';
+        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
         return this.markup('div', [label, field], {
-          className: className
-        });
+          className: className,
+        })
       },
       noLabel: (field, label, help, data) => {
         // wrap the output in a form-group div & return without a label element
-        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : '';
+        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
         return this.markup('div', field, {
-          className: className
-        });
+          className: className,
+        })
       },
       hidden: (field, label, help, data) => {
         // no wrapper any any visible elements
-        return field;
-      }
-    };
+        return field
+      },
+    }
 
     // merge in any custom templates
     if (templates) {
-      this.templates = $.extend(this.templates, templates);
+      this.templates = $.extend(this.templates, templates)
     }
-    this.configure();
+    this.configure()
   }
 
   /**
@@ -76,40 +75,40 @@ export default class layout {
     // prepare the data
     if (this.preview) {
       if (data.name) {
-        data.name = data.name + '-preview';
+        data.name = data.name + '-preview'
       } else {
-        data.name = utils.nameAttr(data) + '-preview';
+        data.name = utils.nameAttr(data) + '-preview'
       }
     }
-    data.id = data.name;
-    this.data = $.extend({}, data);
+    data.id = data.name
+    this.data = $.extend({}, data)
 
     // build the control
-    let control = new renderControl(data, this.preview);
-    let field = control.build();
+    let control = new renderControl(data, this.preview)
+    let field = control.build()
     if (typeof field !== 'object' || !field.field) {
-      field = {field: field};
+      field = { field: field }
     }
 
     // build the label & help text
-    let label = this.label();
-    let help = this.help();
+    let label = this.label()
+    let help = this.help()
 
     // process the relevant layout template
-    let elementTemplate;
+    let elementTemplate
     if (forceTemplate && this.isTemplate(forceTemplate)) {
-        elementTemplate = forceTemplate;
+      elementTemplate = forceTemplate
     } else {
-		elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default';
+      elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default'
     }
-    let element = this.processTemplate(elementTemplate, field.field, label, help);
+    let element = this.processTemplate(elementTemplate, field.field, label, help)
 
     // execute prerender events
-    control.on('prerender')(element);
+    control.on('prerender')(element)
 
     // bind control on render events
-    element.addEventListener('fieldRendered', control.on('render'));
-    return element;
+    element.addEventListener('fieldRendered', control.on('render'))
+    return element
   }
 
   /**
@@ -117,23 +116,23 @@ export default class layout {
    * @return {Object} dom element to render the label
    */
   label() {
-    let label = this.data.label || '';
-    let labelText = utils.parsedHtml(label);
-    let labelContents = [labelText];
+    let label = this.data.label || ''
+    let labelText = utils.parsedHtml(label)
+    let labelContents = [labelText]
     if (this.data.required) {
-      labelContents.push(this.markup('span', '*', {className: 'fb-required'}));
+      labelContents.push(this.markup('span', '*', { className: 'fb-required' }))
     }
 
     // support an override template for labels
     if (this.isTemplate('label')) {
-      return this.processTemplate('label', labelContents);
+      return this.processTemplate('label', labelContents)
     }
 
     // generate a label element
     return this.markup('label', labelContents, {
       for: this.data.id,
-      className: `fb-${this.data.type}-label`
-    });
+      className: `fb-${this.data.type}-label`,
+    })
   }
 
   /**
@@ -142,19 +141,19 @@ export default class layout {
    */
   help() {
     if (!this.data.description) {
-      return null;
+      return null
     }
 
     // support an override template for labels
     if (this.isTemplate('help')) {
-      return this.processTemplate('help', this.data.description);
+      return this.processTemplate('help', this.data.description)
     }
 
     // generate the default help element
     return this.markup('span', '?', {
       className: 'tooltip-element',
-      tooltip: this.data.description
-    });
+      tooltip: this.data.description,
+    })
   }
 
   /**
@@ -163,7 +162,7 @@ export default class layout {
    * @return {Boolean}
    */
   isTemplate(template) {
-    return typeof this.templates[template] === 'function';
+    return typeof this.templates[template] === 'function'
   }
 
   /**
@@ -173,11 +172,11 @@ export default class layout {
    * @return {DOMElement}
    */
   processTemplate(template, ...args) {
-    let processed = this.templates[template](...args, this.data);
+    let processed = this.templates[template](...args, this.data)
     if (processed.jquery) {
-      processed = processed[0];
+      processed = processed[0]
     }
-    return processed;
+    return processed
   }
 
   /**
@@ -189,6 +188,6 @@ export default class layout {
    * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
-    return utils.markup(tag, content, attributes);
+    return utils.markup(tag, content, attributes)
   }
 }
