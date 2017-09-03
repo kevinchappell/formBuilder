@@ -1001,6 +1001,7 @@ const FormBuilder = function(opts, element) {
   let appendNewField = function(values, isNew = true) {
     let type = values.type || 'text';
     let label = values.label || i18n[type] || i18n.label;
+    let disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons;
     let fieldButtons = [
       m('a', null, {
         type: 'remove',
@@ -1022,27 +1023,22 @@ const FormBuilder = function(opts, element) {
       })
     ];
 
-    let disabledFieldButtons = values.disabledFieldButtons;
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
-      fieldButtons = fieldButtons.map(btnData => {
-        if (btnData && disabledFieldButtons.indexOf(btnData.type) === -1) {
-          return btnData;
-        }
-      });
+      fieldButtons = fieldButtons.filter(btnData => !utils.inArray(btnData.type, disabledFieldButtons));
     }
 
-    let liContents = m(
+    let liContents = [m(
       'div', fieldButtons, {className: 'field-actions'}
-    ).outerHTML;
+    )];
 
-    liContents += m('label', utils.parsedHtml(label), {
+    liContents.push(m('label', utils.parsedHtml(label), {
       className: 'field-label'
-    }).outerHTML;
-    let requiredDisplay = values.required ? 'display:inline' : '';
-    liContents += m('span', ' *', {
+    }));
+
+    liContents.push(m('span', ' *', {
       className: 'required-asterisk',
-      style: requiredDisplay
-    }).outerHTML;
+      style: values.required ? 'display:inline' : ''
+    }));
 
     // add the help icon
     let descAttrs = {
@@ -1050,17 +1046,11 @@ const FormBuilder = function(opts, element) {
       tooltip: values.description,
       style: values.description ? 'display:inline-block' : 'display:none'
     };
-    liContents += `<span ${utils.attrString(descAttrs)}>?</span>`;
+    liContents.push(m('span', '?', descAttrs));
 
-    liContents += m('div', '', {className: 'prev-holder'}).outerHTML;
-    liContents += `<div id="${data.lastID}-holder" class="frm-holder">`;
-    liContents += '<div class="form-elements">';
-
-    liContents += advFields(values);
-    liContents += m('a', i18n.close, {className: 'close-field'}).outerHTML;
-
-    liContents += '</div>';
-    liContents += '</div>';
+    liContents.push(m('div', '', {className: 'prev-holder'}));
+    const formElements = m('div', [advFields(values), m('a', i18n.close, {className: 'close-field'})], {className: 'form-elements'});
+    liContents.push(m('div', formElements, {id: `${data.lastID}-holder`, className: 'frm-holder'}));
 
     let field = m('li', liContents, {
         'class': type + '-field form-field',

@@ -23,6 +23,7 @@ export const defaultOptions = {
       disableFields: [],
       disabledAttrs: [],
       disabledActionButtons: [],
+      disabledFieldButtons: {},
       editOnAdd: false,
       // Uneditable fields or other content you would like to appear
       // before and after regular fields:
