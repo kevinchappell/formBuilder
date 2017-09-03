@@ -14,10 +14,6 @@
     color: $grey;
   }
 
-  .save:hover {
-    color: $success;
-  }
-
   @include breakpoint('phone-lrg') {
     width: 64px;
 
