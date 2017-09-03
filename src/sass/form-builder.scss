@@ -1,13 +1,13 @@
 @import 'base/variables';
 @import 'base/font';
 @import 'base/mixins';
-@import 'base/bs';
-@import 'base/animation';
-@import 'controls';
-@import 'stage';
-@import 'kc-toggle';
 
-.form-wrap {
+.form-wrap.form-builder {
+  @import 'base/bs';
+  @import 'base/animation';
+  @import 'controls';
+  @import 'stage';
+  @import 'kc-toggle';
   position: relative;
 
   &::after {
