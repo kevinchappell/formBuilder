@@ -422,7 +422,7 @@ const FormBuilder = function(opts, element) {
       });
 
     let firstOption = values[0];
-      if (firstOption.hasOwnProperty('selected')) {
+      if (firstOption.hasOwnProperty('selected') && type !== 'radio-group') {
         firstOption.selected = true;
       }
     } else {
