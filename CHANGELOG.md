@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.9.4 - Pull primary input outside of label for "other" option [#598](https://github.com/kevinchappell/formBuilder/pull/598)
 - v2.9.3 - Fix Edge "Help Text" issue #560 [#596](https://github.com/kevinchappell/formBuilder/pull/596)
 - v2.9.2 - Do not default select radio [#603](https://github.com/kevinchappell/formBuilder/pull/603)
 - v2.9.1 - Move bootstrap stuff inside .formbuilder selector [#602](https://github.com/kevinchappell/formBuilder/pull/602)
