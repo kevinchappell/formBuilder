@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.9.1 - Move bootstrap stuff inside .formbuilder selector [#602](https://github.com/kevinchappell/formBuilder/pull/602)
 - v2.9.0 - feature(option) replaceFields [#593](https://github.com/kevinchappell/formBuilder/pull/593)
 - v2.8.0 - improvement(checkbox): markup change [#585](https://github.com/kevinchappell/formBuilder/pull/585)
 - v2.7.0 - v2.6.0
