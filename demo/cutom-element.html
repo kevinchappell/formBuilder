@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="assets/css/demo.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.1/jquery.rateyo.min.css">
+
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <title>jQuery formBuilder/formRender Demo</title>
+</head>
+
+<body>
+  <div class="content">
+    <h1>jQuery formBuilder- Custom Control</h1>
+    <div class='sel-box'>
+		<select name="form_type" id="form_type">
+		<option value="1">Type 1</option>
+		<option value="2" selected="selected">Type 2</option>
+		</select>
+	</div>
+
+	<div id="fb-editor"></div>
+  </div>
+  <script src="assets/js/vendor.js"></script>
+  <script src="assets/js/form-builder.min.js"></script>
+  <script src="assets/js/form-render.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.1/jquery.rateyo.min.js"></script>
+  <script>
+	jQuery(function($) {
+		initializeFormBuilder();
+		$('#form_type').on('change', function () {
+				var formTypeData = $(this).val();
+				initializeFormBuilder();
+				
+		});
+	});
+	var customControlElement =  {datatype: "custom-element", label: "Custom Control",type: "select",subtype: "select",values:[{"label": "PI01","value": "1","selected": true},{"label": "PI02","value": "2"},{"label": "PI03","value": "3"}]};
+	function initializeFormBuilder() {
+			options = {           
+				fields: [customControlElement]
+			};
+			$("#fb-editor").html('');
+			var container = (document.getElementById('fb-editor'));
+			$(container).formBuilder(options);
+	 }
+  </script>
+</body>
+
+</html>
