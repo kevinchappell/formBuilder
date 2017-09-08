@@ -1,9 +1,9 @@
 @import 'base/variables';
 
-@import 'kc-toggle';
 
 .rendered-form {
   @import 'base/bs';
+  @import 'kc-toggle';
 }
 
 .form-group .fb-required {

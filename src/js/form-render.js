@@ -1,20 +1,19 @@
-import 'babel-polyfill';
-import 'babel-regenerator-runtime';
-import '../sass/form-render.scss';
-import mi18n from 'mi18n';
-import utils from './utils';
-import events from './events';
-import layout from './layout';
-import control from './control';
-import './control/index';
-import controlCustom from './control/custom';
-import {defaultI18n} from './config';
+import 'babel-polyfill'
+import 'babel-regenerator-runtime'
+import '../sass/form-render.scss'
+import mi18n from 'mi18n'
+import utils from './utils'
+import events from './events'
+import layout from './layout'
+import control from './control'
+import './control/index'
+import controlCustom from './control/custom'
+import { defaultI18n } from './config'
 
 /**
  * FormRender Class
  */
 class FormRender {
-
   /**
    * Create & configure a new FormRender instance
    * @param {Object} options - an object hash of supported options
@@ -39,54 +38,53 @@ class FormRender {
         selectColor: 'Select Color',
         invalidControl: 'Invalid control',
       },
-      onRender: () => {
-      },
+      onRender: () => {},
       render: true,
       templates: {}, // custom inline defined templates
       notify: {
         error: function(message) {
-          return console.error(message);
+          return console.error(message)
         },
         success: function(message) {
-          return console.log(message);
+          return console.log(message)
         },
         warning: function(message) {
-          return console.warn(message);
-        }
-      }
-    };
-    this.options = $.extend(true, defaults, options);
+          return console.warn(message)
+        },
+      },
+    }
+    this.options = $.extend(true, defaults, options)
 
     if (!mi18n.current) {
-      mi18n.init(this.options.i18n);
+      mi18n.init(this.options.i18n)
     }
 
     // parse any passed formData
-    (() => {
+    ;(() => {
       if (!this.options.formData) {
-        return false;
+        return false
       }
 
       let setData = {
         xml: formData => utils.parseXML(formData),
-        json: formData => window.JSON.parse(formData)
-      };
+        json: formData => window.JSON.parse(formData),
+      }
 
       // if the user hasn't passed a pre-parsed formData object, parse it according to the specified dataType
       if (typeof this.options.formData !== 'object') {
-        this.options.formData = setData[this.options.dataType](this.options.formData) || false;
+        this.options.formData = setData[this.options.dataType](this.options.formData) || false
       }
-    })();
+    })()
 
     // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
-    control.controlConfig = options.controlConfig || {};
+    control.controlConfig = options.controlConfig || {}
 
     // load in any custom specified controls, or preloaded plugin controls
-    control.loadCustom(options.controls);
+    control.loadCustom(options.controls)
 
     // register any passed custom templates
     if (Object.keys(this.options.templates).length) {
-      controlCustom.register(this.options.templates);
+      controlCustom.register(this.options.templates)
     }
 
     /**
@@ -97,17 +95,17 @@ class FormRender {
     if (typeof Element.prototype.appendFormFields !== 'function') {
       Element.prototype.appendFormFields = function(fields) {
         if (!Array.isArray(fields)) {
-          fields = [fields];
+          fields = [fields]
         }
         let renderedFormWrap = utils.markup('div', fields, {
-          className: 'rendered-form'
-        });
-        this.appendChild(renderedFormWrap);
+          className: 'rendered-form',
+        })
+        this.appendChild(renderedFormWrap)
         fields.forEach(field => {
-          renderedFormWrap.appendChild(field);
-          field.dispatchEvent(events.fieldRendered);
-        });
-      };
+          renderedFormWrap.appendChild(field)
+          field.dispatchEvent(events.fieldRendered)
+        })
+      }
     }
 
     /**
@@ -115,11 +113,11 @@ class FormRender {
      */
     if (typeof Element.prototype.emptyContainer !== 'function') {
       Element.prototype.emptyContainer = function() {
-        let element = this;
+        let element = this
         while (element.lastChild) {
-          element.removeChild(element.lastChild);
+          element.removeChild(element.lastChild)
         }
-      };
+      }
     }
   }
 
@@ -129,13 +127,13 @@ class FormRender {
    * @return {Object} sanitized field object
    */
   santizeField(field) {
-    let sanitizedField = Object.assign({}, field);
-    sanitizedField.className = field.className || field.class || null;
-    delete sanitizedField.class;
+    let sanitizedField = Object.assign({}, field)
+    sanitizedField.className = field.className || field.class || null
+    delete sanitizedField.class
     if (field.values) {
-      field.values = field.values.map(option => utils.trimObj(option));
+      field.values = field.values.map(option => utils.trimObj(option))
     }
-    return utils.trimObj(sanitizedField);
+    return utils.trimObj(sanitizedField)
   }
 
   /**
@@ -144,13 +142,13 @@ class FormRender {
    * @return {Object} parsedElement
    */
   getElement(element) {
-    element = this.options.container || element;
+    element = this.options.container || element
     if (element instanceof jQuery) {
-      element = element[0];
+      element = element[0]
     } else if (typeof element === 'string') {
-      element = document.querySelector(element);
+      element = document.querySelector(element)
     }
-    return element;
+    return element
   }
 
   /**
@@ -159,59 +157,59 @@ class FormRender {
    * @return {Object} FormRender
    */
   render(element = null) {
-    const formRender = this;
-    let opts = this.options;
-    element = this.getElement(element);
+    const formRender = this
+    let opts = this.options
+    element = this.getElement(element)
 
     let runCallbacks = function() {
       if (opts.onRender) {
-        opts.onRender();
+        opts.onRender()
       }
-    };
+    }
 
     /**
      * Retrieve the html markup for a passed array of DomElements
      * @param {Array} fields - array of dom elements
      * @return {String} fields html
      */
-    let exportMarkup = fields => fields.map(elem => elem.innerHTML).join('');
+    let exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
 
     // Begin the core plugin
-    let rendered = [];
+    let rendered = []
 
     // generate field markup if we have fields
     if (opts.formData) {
       // instantiate the layout class & loop through the field configuration
-      let engine = new opts.layout(opts.layoutTemplates);
+      let engine = new opts.layout(opts.layoutTemplates)
       for (let i = 0; i < opts.formData.length; i++) {
-        let fieldData = opts.formData[i];
-        let sanitizedField = this.santizeField(fieldData);
+        let fieldData = opts.formData[i]
+        let sanitizedField = this.santizeField(fieldData)
 
         // determine the control class for this type, and then process it through the layout engine
-        let controlClass = control.getClass(fieldData.type, fieldData.subtype);
-        let field = engine.build(controlClass, sanitizedField);
-        rendered.push(field);
+        let controlClass = control.getClass(fieldData.type, fieldData.subtype)
+        let field = engine.build(controlClass, sanitizedField)
+        rendered.push(field)
       }
 
       // if rendering, inject the fields into the specified wrapper container/element
       if (opts.render && element) {
-        element.emptyContainer();
-        element.appendFormFields(rendered);
+        element.emptyContainer()
+        element.appendFormFields(rendered)
 
-        runCallbacks();
-        opts.notify.success(opts.messages.formRendered);
+        runCallbacks()
+        opts.notify.success(opts.messages.formRendered)
       } else {
-        formRender.markup = exportMarkup(rendered);
+        formRender.markup = exportMarkup(rendered)
       }
     } else {
       let noData = utils.markup('div', opts.messages.noFormData, {
-        className: 'no-form-data'
-      });
-      rendered.push(noData);
-      opts.notify.error(opts.messages.noFormData);
+        className: 'no-form-data',
+      })
+      rendered.push(noData)
+      opts.notify.error(opts.messages.noFormData)
     }
 
-    return formRender;
+    return formRender
   }
 
   /**
@@ -221,30 +219,32 @@ class FormRender {
    * @return {Object} the formRender object
    */
   renderControl(element = null) {
-    let opts = this.options;
-    let fieldData = opts.formData;
+    let opts = this.options
+    let fieldData = opts.formData
     if (!fieldData || Array.isArray(fieldData)) {
-      throw new Error('To render a single element, please specify a single object of formData for the field in question');
+      throw new Error(
+        'To render a single element, please specify a single object of formData for the field in question'
+      )
     }
-    let sanitizedField = this.santizeField(fieldData);
+    let sanitizedField = this.santizeField(fieldData)
 
     // determine the control class for this type, and then build it
-    let engine = new opts.layout();
-    let controlClass = control.getClass(fieldData.type, fieldData.subtype);
-    let forceTemplate = opts.forceTemplate || 'hidden'; // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
-    let field = engine.build(controlClass, sanitizedField, forceTemplate);
-    element.appendFormFields(field);
-    opts.notify.success(opts.messages.formRendered);
-    return this;
+    let engine = new opts.layout()
+    let controlClass = control.getClass(fieldData.type, fieldData.subtype)
+    let forceTemplate = opts.forceTemplate || 'hidden' // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
+    let field = engine.build(controlClass, sanitizedField, forceTemplate)
+    element.appendFormFields(field)
+    opts.notify.success(opts.messages.formRendered)
+    return this
   }
 }
 
-(function($) {
+;(function($) {
   $.fn.formRender = function(options) {
-    let elems = this;
-    let formRender = new FormRender(options);
-    elems.each(i => formRender.render(elems[i]));
-  };
+    let elems = this
+    let formRender = new FormRender(options)
+    elems.each(i => formRender.render(elems[i]))
+  }
 
   /**
    * renders an individual field into the current element
@@ -253,11 +253,11 @@ class FormRender {
    * @return {DOMElement} the rendered field
    */
   $.fn.controlRender = function(data, options = {}) {
-    options.formData = data;
-    options.dataType = typeof data === 'string' ? 'json' : 'xml';
-    let formRender = new FormRender(options);
-    let elems = this;
-    elems.each(i => formRender.renderControl(elems[i]));
-    return elems;
-  };
-})(jQuery);
+    options.formData = data
+    options.dataType = typeof data === 'string' ? 'json' : 'xml'
+    let formRender = new FormRender(options)
+    let elems = this
+    elems.each(i => formRender.renderControl(elems[i]))
+    return elems
+  }
+})(jQuery)
