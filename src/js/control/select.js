@@ -119,7 +119,7 @@ export default class controlSelect extends control {
           events: {
             input: evt => {
               const otherInput = evt.target;
-              const other = otherInput.previousElementSibling;
+              const other = otherInput.parentElement.previousElementSibling;
               other.value = otherInput.value;
             }
           },
