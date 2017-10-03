@@ -225,7 +225,7 @@ export default class Helpers {
 
           fieldData = utils.trimObj(fieldData)
 
-          let multipleField = fieldData.type.match(d.optionFieldsRegEx)
+          let multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
 
           if (multipleField) {
             fieldData.values = _this.fieldOptionData($field)

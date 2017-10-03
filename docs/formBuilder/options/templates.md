@@ -22,7 +22,7 @@ let templates = {
     };
   }
 };
-$(container).formBuilder({templates});
+$(container).formBuilder({fields, templates});
 ```
 ## See it in Action
 <p data-height="525" data-theme-id="22927" data-embed-version="2" data-slug-hash="PmPByP" data-default-tab="result" data-user="kevinchappell" class="codepen"></p>
