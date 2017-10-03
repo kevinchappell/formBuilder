@@ -329,7 +329,7 @@ const FormBuilder = function(opts, element) {
     appendNewField(field, isNew)
 
     if (isNew) {
-      document.dispatchEvent(events.fieldAdded)
+      setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
     }
 
     stageWrap.classList.remove('empty')
@@ -1373,7 +1373,6 @@ const FormBuilder = function(opts, element) {
     addField: (field, index) => {
       h.stopIndex = data.formData.length ? index : undefined
       prepFieldVars(field)
-      document.dispatchEvent(events.fieldAdded)
     },
     removeField: h.removeField.bind(h),
     getData: h.getFormData.bind(h),
