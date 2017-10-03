@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.9.7 - Merge branch 'hotfix/2.9.7'
 - v2.9.6 - Removed unused style, add get-data class to data button [#605](https://github.com/kevinchappell/formBuilder/pull/605)
 - v2.9.5 - Improvements(options) disabledFieldButtons option [#604](https://github.com/kevinchappell/formBuilder/pull/604)
 - v2.9.4 - Pull primary input outside of label for "other" option [#598](https://github.com/kevinchappell/formBuilder/pull/598)
