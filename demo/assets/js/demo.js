@@ -59,6 +59,7 @@ jQuery(function($) {
 
   var inputSets = [{
         label: 'User Details',
+        icon: '👨',
         name: 'user-details', // optional
         showHeader: true, // optional
         fields: [{
