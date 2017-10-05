@@ -108,12 +108,16 @@ const FormBuilder = function(opts, element) {
 
   if (opts.inputSets.length) {
     opts.inputSets.forEach((set, i) => {
-      set.name = set.name || utils.makeClassName(set.label)
-      let inputSet = m('li', set.label, {
+      let { name, label, icon } = set
+      name = name || utils.makeClassName(label)
+      if (icon) {
+        label = `<span class="control-icon">${icon}</span>${label}`
+      }
+      let inputSet = m('li', label, {
         className: `input-set-control input-set-${i}`,
       })
-      inputSet.dataset.type = set.name
-      controlList.push(set.name)
+      inputSet.dataset.type = name
+      controlList.push(name)
       allControls[set.name] = inputSet
     })
   }
@@ -1392,7 +1396,6 @@ const FormBuilder = function(opts, element) {
 
   return formBuilder
 }
-
 ;(function($) {
   $.fn.formBuilder = function(options) {
     if (!options) {
