@@ -71,7 +71,7 @@ jQuery(function($) {
 
       //textarea
   document.getElementById('set-textarea').addEventListener('click', function() {
-    setFormData = '[{"type":"textarea","label":"Text Area","className":"form-control","name":"textarea-1526099273610","subtype":"textarea","userData":["Tennessee Welcomes You"]}]';
+    setFormData = '[{"type":"textarea","label":"Text Area","className":"form-control","name":"textarea-1526099273610","subtype":"textarea","userData":["Tennessee Welcomes You!"]}]';
     resetFR();  
   });
 
