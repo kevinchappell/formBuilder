@@ -1,0 +1,34 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/tools":true,
+        "**/node_modules":true,
+        "**/*.yml":true,
+        "**/.lock":true,
+        "**/.fontello":true  ,
+        "**/src/fonts":true  ,
+        "**/src/sass":true,  
+        "**/bower.json":true, 
+        "**/.gitignore":true,   
+        "**/LICENSE":true,
+        "**/composer.json":true,
+        "**/CHANGELOG.md":true,
+        "**/CONTRIBUTING.md":true,
+        "**/gulp*":true,
+        "**/ISSUE_TEMPLATE.md":true,
+        "**/package-lock.json":true,
+        "**/README.md":true,
+        "**/yarn*":true,
+        "**/docs":true,
+        "**/demo/assets/js/vendor.js":true,
+        "**/*.gz":true,
+        "**/*min.js":true
+        
+        
+    }
+
+}

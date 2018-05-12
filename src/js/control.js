@@ -25,7 +25,7 @@ export default class control {
     }
 
     // process config - extract standard properties
-    let properties = ['label', 'description', 'subtype', 'required']
+    let properties = ['label', 'description', 'subtype', 'required','disabled']
     for (let prop of properties) {
       this[prop] = config[prop]
       delete config[prop]
@@ -61,6 +61,12 @@ export default class control {
       config['required'] = 'required'
       config['aria-required'] = 'true'
     }
+
+    //--Allow setting disabled flag
+    if(this.disabled){
+      config['disabled'] = 'disabled' 
+    }
+
     this.config = config
     this.configure()
   }
@@ -338,7 +344,7 @@ export default class control {
    * @param  {Object} attributes
    * @return {Object} DOM element
    */
-  markup(tag, content = '', attributes = {}) {
+  markup(tag, content = '', attributes = {}) {   
     this.element = utils.markup(tag, content, attributes)
     return this.element
   }

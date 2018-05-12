@@ -12,7 +12,7 @@ export default class controlAutocomplete extends control {
    */
   build() {
     let {values, type, ...data} = this.config;
-    const keyboardNav = (e) => {
+    const keyboardNav = (e) => {     
       const list = e.target.nextSibling.nextSibling;
       const hiddenField = e.target.nextSibling;
       let activeOption = this.getActiveOption(list);
@@ -40,6 +40,16 @@ export default class controlAutocomplete extends control {
               this.showList(list, activeOption);
             } else {
               this.hideList(list);
+            }
+          }
+          else{    
+            //Don't allow a value not in the list   
+            if(this.config.requireValidOption)  
+            {
+              if(!this.isOptionValid(list,e.target.value)){
+                e.target.value = ''; 
+                e.target.nextSibling.value = '';  
+              }
             }
           }
           e.preventDefault();
@@ -73,6 +83,15 @@ export default class controlAutocomplete extends control {
         setTimeout(() => {
           evt.target.nextSibling.nextSibling.style.display = 'none';
         }, 200);
+        //Validate the option entered exists
+        if(this.config.requireValidOption)  
+        {
+          const list = evt.target.nextSibling.nextSibling;    
+          if(!this.isOptionValid(list,evt.target.value)){
+            evt.target.value = ''; 
+            evt.target.nextSibling.value = '';   
+          }
+        }   
       },
       input: (evt) => {
         const list = evt.target.nextSibling.nextSibling;
@@ -192,22 +211,69 @@ export default class controlAutocomplete extends control {
    * @param {Object} selectedOption - option - 'li' element - to be selected in autocomplete list
    */
   selectOption(list, selectedOption) {
-    const options = list.querySelectorAll('li');
-    options.forEach((option)=>{
-      option.classList.remove('active-option');
-    });
+    const options = list.querySelectorAll('li'); 
+    //--Fix for IE11
+    for (var i = 0; i < options.length; i++) {
+      options[i].classList.remove('active-option');
+    }
     if (selectedOption) {
       selectedOption.classList.add('active-option');
     }
   }
-
+   
+  //Is the value in the autocomplete field in the pre-defined Options list?
+  isOptionValid(list,value){
+    const options = list.querySelectorAll('li'); 
+    let validValue = false;
+    for (var i = 0; i < options.length; i++) {
+      if(options[i].innerHTML == value){
+        validValue = true;
+        break;
+      }
+    }
+    return validValue;  
+  }
+  
   /**
-   * When the element is rendered into the DOM, execute the following code to initialise it
-   * @param {Object} evt - event
+   * onRender callback
    */
   onRender(evt) {
+    //Set userData if available
+    if(this.config.userData){  
+      var id = $('#'+this.config.name).attr('id');
+      var preSelectedOption = this.config.userData[0];
+ 
+      const list = document.getElementById(id).nextSibling;
+      let selectedOption;
+
+      $('#' +id + '-list' + ' li').each(function(){        
+        if($(this).attr('value') == preSelectedOption){
+          selectedOption = $(this).get(0);                             
+        }
+      }); 
+     //If the option was not defined, and configuration says it doesn't have to be pre-defined, set the value
+     if(selectedOption == undefined){
+       if(this.config.requireValidOption){
+         //Don't allow
+         return;
+       }else{
+         //Set it to whatever the value is
+        $('#' + id).prev().val(this.config.userData[0]);
+        return;         
+       }
+     }     
+
+      $('#' + id).prev().val(selectedOption.innerHTML);
+      $('#' + id).val(selectedOption.getAttribute('value'));
+      
+      if (list.style.display === 'none') {
+        this.showList(list, selectedOption);
+      } else {
+        this.hideList(list);
+      }    
+         
+    }
   }
 }
 
-// register tinymce as a richtext control
 control.register('autocomplete', controlAutocomplete);

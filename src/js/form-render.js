@@ -188,6 +188,8 @@ class FormRender {
         // determine the control class for this type, and then process it through the layout engine
         let controlClass = control.getClass(fieldData.type, fieldData.subtype)
         let field = engine.build(controlClass, sanitizedField)
+        
+   
         rendered.push(field)
       }
 
@@ -240,10 +242,79 @@ class FormRender {
 }
 
 ;(function($) {
-  $.fn.formRender = function(options) {
-    let elems = this
+  $.fn.formRender = function(options) {    
+    let $elems = this
     let formRender = new FormRender(options)
-    elems.each(i => formRender.render(elems[i]))
+    $elems.each(i => formRender.render($elems[i]))   
+    
+    let instance = {     
+      get userData() {
+        let mergedData = new Array();
+
+        var definitionFields = JSON.parse(options.formData);
+        //Check if tinyMCE needs to save data into textarea first
+        for (var i = 0; i < definitionFields.length; i++){
+          if(definitionFields[i].subtype == "tinymce"){
+            tinyMCE.triggerSave();
+            break;
+          }
+        }        
+
+        //Serialize the user data
+        let userDataFields = $('#' + $elems.attr('id') + ' :input').serializeArray();
+        //Replace ending [] to match names
+        for (var i = 0; i < userDataFields.length; i++){
+          userDataFields[i].name = userDataFields[i].name.replace(/[\[\]']+/g,'');
+        }                 
+        // console.log("Definition");
+        // console.log(definitionFields);
+        // console.log("User Data");
+        // console.log(userDataFields);
+
+        for (var i = 0; i < definitionFields.length; i++){
+          let definitionField = definitionFields[i];           
+          //Skip fields that have no name--Likely these are fields that do not hold data(h1,p)
+          if(definitionField.name == undefined)
+            continue;
+          //Skip disabled fields -- This will not have user data available
+          if(definitionField.disabled)
+            continue;
+          
+          //Pull all data for the definition
+          var userData = new Array();        
+          var foundData = false;
+          for (var j = 0; j < userDataFields.length; j++){            
+            if(definitionField.name == userDataFields[j].name){
+              foundData = true;
+              //var test = userDataFields[j].value.replace(/'/g, "&#x27;").replace(/"/g, '&#x22;').replace(/\n/g, "\\n").replace(/\r/g, "\\r");
+              userData.push(userDataFields[j].value); 
+            }else{
+              //We started finding data but now we moved into another element
+              if(foundData)
+                break;
+            }
+          }
+             
+          if(userData.length == 0){
+            //console.log('No data for ' + definitionField.name);
+            continue;
+          }           
+          
+          //console.log("Data found for " + definitionField.name);
+          //console.log(userData);
+          definitionField.userData = userData;
+          //console.log("Merged data:");
+          //console.log(mergedField);     
+          mergedData.push(definitionField);    
+        }      
+      
+        //console.log(options.formData);
+        //console.log('Merged Data');  
+        return mergedData;
+      }
+    }
+
+    return instance
   }
 
   /**
@@ -256,8 +327,8 @@ class FormRender {
     options.formData = data
     options.dataType = typeof data === 'string' ? 'json' : 'xml'
     let formRender = new FormRender(options)
-    let elems = this
-    elems.each(i => formRender.renderControl(elems[i]))
-    return elems
+    let $elems = this
+    $elems.each(i => formRender.renderControl($elems[i]))
+    return $elems
   }
 })(jQuery)

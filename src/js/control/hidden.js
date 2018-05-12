@@ -16,6 +16,16 @@ export default class controlHidden extends control {
       layout: 'hidden'
     };
   }
+
+    /**
+   * onRender callback
+   */
+  onRender() {
+    //Set userData if available
+    if(this.config.userData){       
+      $('#'+this.config.name).val(this.config.userData[0]);        
+    }
+  }
 }
 
 // register the following controls

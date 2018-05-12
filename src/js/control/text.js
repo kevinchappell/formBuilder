@@ -24,8 +24,18 @@ export default class controlText extends control {
    * build a text DOM element, supporting other jquery text form-control's
    * @return {Object} DOM Element to be injected into the form.
    */
-  build() {
+  build() { 
     return this.markup('input', null, this.config);
+  }
+
+  /**
+   * onRender callback
+   */
+  onRender() {
+    //Set userData if available
+    if(this.config.userData){       
+      $('#'+this.config.name).val(this.config.userData[0]);        
+    }
   }
 }
 
