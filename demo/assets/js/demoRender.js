@@ -57,6 +57,30 @@ jQuery(function($) {
       resetFR();  
     });
 
+      //password
+    document.getElementById('set-password').addEventListener('click', function() {
+      setFormData = '[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"password","userData":["Text"]}]';  
+      resetFR();  
+    });
+   
+    //email
+    document.getElementById('set-email').addEventListener('click', function() {
+      setFormData = '[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"email","userData":["a@a.com"]}]';  
+      resetFR();  
+    });
+
+    //color
+    document.getElementById('set-color').addEventListener('click', function() {
+      setFormData = '[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"color","userData":["#00ff00"]}]';  
+      resetFR();  
+    });
+
+    //tel
+    document.getElementById('set-tel').addEventListener('click', function() {
+      setFormData = '[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"tel","userData":["123-456-7890"]}]';  
+      resetFR();  
+    });
+
       //date
   document.getElementById('set-date').addEventListener('click', function() {
     setFormData = '[{"type":"date","label":"Date Field","className":"form-control","name":"date-1526096579821","userData":["2018-01-01"]}]'; 
