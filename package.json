@@ -107,7 +107,7 @@
     "release:patch": "npm run tag:patch --patch && npm run deploy",
     "release:minor": "npm run tag:minor --minor && npm run deploy",
     "start": "babel-node -- node_modules/webpack-dev-server/bin/webpack-dev-server --config tools/webpack.config",
-    "build": "babel-node -- node_modules/webpack/bin/webpack -p --progress --config tools/webpack.config && cp demo/assets/js/form-* dist/",
+    "build": "babel-node -- node_modules/webpack/bin/webpack -p --progress --config tools/webpack.config && copy demo\\assets\\js\\form-* dist\\",
     "build:vendor": "babel-node -- tools/run build-vendor",
     "build:plugins": "babel-node -- node_modules/webpack/bin/webpack -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
@@ -141,11 +141,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.0",
-    "eslint": "^3.15.0",
-    "eslint-config-google": "^0.7.1",
-    "eslint-config-prettier": "^2.4.0",
-    "eslint-loader": "^1.7.1",
-    "eslint-plugin-prettier": "^2.2.0",
+   
     "extract-text-webpack-plugin": "^2.1.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
@@ -174,49 +170,12 @@
     "style-loader": "^0.16.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "^2.4.1",
+    "webpack": "^2.7.0",
     "webpack-dev-server": "^2.4.5"
   },
   "prettierOptions": {
     "singleQuote": true,
     "trailingComma": "none"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "eslint:recommended",
-      "google",
-      "prettier"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "globals": {
-      "jQuery": true,
-      "$": true
-    },
-    "env": {
-      "es6": true,
-      "browser": true,
-      "node": true
-    },
-    "rules": {
-      "quote-props": 0,
-      "no-unused-vars": 1,
-      "no-console": 0,
-      "new-cap": 0,
-      "strict": 0,
-      "arrow-parens": 0,
-      "max-len": 0,
-      "no-underscore-dangle": 0,
-      "comma-dangle": 0,
-      "no-use-before-define": 0,
-      "eol-last": 0,
-      "quotes": [
-        2,
-        "single"
-      ]
-    }
-  },
+  }, 
   "engines": {}
 }
