@@ -424,7 +424,7 @@ const FormBuilder = function(opts, element) {
     let valueField = !utils.inArray(type, noValFields)
 
     const typeAttrsMap = {
-      autocomplete: defaultAttrs.concat(['options']),
+      autocomplete: defaultAttrs.concat(['options','requireValidOption']),
       button: ['label', 'subtype', 'style', 'className', 'name', 'value', 'access'],
       checkbox: [
         'required',
@@ -564,8 +564,19 @@ const FormBuilder = function(opts, element) {
           first: ' ',
           second: i18n.selectionsMessage,
         })
+      }     
+    }
+
+    if(type === 'autocomplete'){     
+      advFieldMap['requireValidOption'] = () => {
+        return boolAttribute('requireValidOption', values, {
+          first: ' ',
+          second: i18n.requireValidOption,
+        })
       }
     }
+
+
 
     Object.keys(fieldAttrs).forEach(index => {
       let attr = fieldAttrs[index]

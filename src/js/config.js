@@ -7,12 +7,12 @@ export const defaultOptions = {
     'button',
     'checkbox',
     'checkbox-group',
-    'date',
+    'date',    
     'file',
     'header',
     'hidden',
+    'number',    
     'paragraph',
-    'number',
     'radio-group',
     'select',
     'text',
@@ -22,7 +22,7 @@ export const defaultOptions = {
   // Array of fields to disable
   disableFields: [],
   disabledAttrs: [],
-  disabledActionButtons: [],
+  disabledActionButtons: [], // save,data,clear
   disabledFieldButtons: {},
   editOnAdd: false,
   // Uneditable fields or other content you would like to appear
@@ -47,8 +47,8 @@ export const defaultOptions = {
   inputSets: [],
   replaceFields: [],
   roles: {
-    1: 'Administrator',
-  },
+    1: 'Administrator'  
+  },  
   notify: {
     error: message => console.error(message),
     success: message => console.log(message),
@@ -111,9 +111,9 @@ export const defaultI18n = {
       enableOtherMsg: 'Let users to enter an unlisted option',
       fieldNonEditable: 'This field cannot be edited.',
       fieldRemoveWarning: 'Are you sure you want to remove this field?',
-      fileUpload: 'File Upload',
+      fileUpload: 'File Upload',         
       formUpdated: 'Form Updated',
-      getStarted: 'Drag a field from the right to this area',
+      getStarted: 'Drag or click a field from the right to this area',
       header: 'Header',
       hide: 'Edit',
       hidden: 'Hidden Input',
@@ -121,7 +121,7 @@ export const defaultI18n = {
       inlineDesc: 'Display {type} inline',
       label: 'Label',
       labelEmpty: 'Field Label cannot be empty',
-      limitRole: 'Limit access to one or more of the following roles:',
+      limitRole: 'Limit access to one or more of the following roles:',      
       mandatory: 'Mandatory',
       maxlength: 'Max Length',
       minOptionMessage: 'This field requires a minimum of 2 options',
@@ -157,6 +157,7 @@ export const defaultI18n = {
       removeOption: 'Remove Option',
       remove: '&#215;',
       required: 'Required',
+      requireValidOption: 'Only accept a pre-defined Option',     
       richText: 'Rich Text Editor',
       roles: 'Access',
       rows: 'Rows',

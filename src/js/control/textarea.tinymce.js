@@ -22,7 +22,7 @@ export default class controlTinymce extends controlTextarea {
    * configure the tinymce editor requirements
    */
   configure() {
-    this.js = ['//cdn.tinymce.com/4/tinymce.min.js'];
+    // this.js = ['//cdn.tinymce.com/4/tinymce.min.js'];
 
     // additional javascript config
     if (this.classConfig.js) {
@@ -60,6 +60,10 @@ export default class controlTinymce extends controlTextarea {
   build() {
     let {value = '', ...attrs} = this.config;
     this.field = this.markup('textarea', this.parsedHtml(value), attrs);
+    // Make the editor read only if disabled is set on the textarea
+    if(attrs.disabled){
+      this.editorOptions.readonly = true;    
+    }
     return this.field;
   }
 
@@ -74,10 +78,14 @@ export default class controlTinymce extends controlTextarea {
 
     // define options & allow them to be overwritten in the class config
     let options = $.extend(this.editorOptions, this.classConfig);
-    options.target = this.field;
-
+    options.target = this.field;  
+   
     // initialise the editor
     window.tinymce.init(options);
+    
+    // Set userData
+    if(this.config.userData)
+      window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]));
   }
 }
 
