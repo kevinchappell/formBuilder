@@ -25,7 +25,7 @@ export default class control {
     }
 
     // process config - extract standard properties
-    let properties = ['label', 'description', 'subtype', 'required']
+    let properties = ['label', 'description', 'subtype', 'required','disabled']
     for (let prop of properties) {
       this[prop] = config[prop]
       delete config[prop]
@@ -60,6 +60,11 @@ export default class control {
     if (this.required) {
       config['required'] = 'required'
       config['aria-required'] = 'true'
+    }
+
+    // Allow setting disabled flag
+    if(this.disabled){
+      config['disabled'] = 'disabled' 
     }
     this.config = config
     this.configure()
