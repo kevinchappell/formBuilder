@@ -84,8 +84,9 @@ export default class controlTinymce extends controlTextarea {
     window.tinymce.init(options);
     
     // Set userData
-    if(this.config.userData)
+    if(this.config.userData){
       window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]));
+    }
   }
 }
 

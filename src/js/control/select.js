@@ -208,20 +208,22 @@ export default class controlSelect extends control {
         selectedOptions.push(this.config.userData[i]);
       } 
 
-      if(this.config.type == 'select')
+      if(this.config.type === 'select')
       {
          $('#'+this.config.name).val(selectedOptions).prop('selected',true);  
       }
-      else if(this.config.type == 'checkbox-group' || this.config.type == 'radio-group'){
+      else if(this.config.type === 'checkbox-group' || this.config.type === 'radio-group'){
         $('.field-' + this.config.name + ' :input').each(function(){
           // eslint-disable-next-line no-invalid-this          
           if($(this).hasClass('other-val'))
+          {
             return;
+          } 
 
           let foundMatch = false;
           for(let i = 0 ; i < selectedOptions.length ; i++){
             // eslint-disable-next-line no-invalid-this            
-            if($(this).val() == selectedOptions[i]){
+            if($(this).val() === selectedOptions[i]){
             // eslint-disable-next-line no-invalid-this      
               $(this).val(selectedOptions[i]).prop('checked',true);
               foundMatch = true;
@@ -236,8 +238,10 @@ export default class controlSelect extends control {
             let id = $(this).attr('id');            
             if(id.indexOf('-other') !== -1){
               // If there is no value to set, don't check the other option
-              if(selectedOptions.length == 0)
-                return;
+              if(selectedOptions.length === 0)
+             {
+               return;
+             }
               // eslint-disable-next-line no-invalid-this  
               $(this).val(selectedOptions[0]);
               // eslint-disable-next-line no-invalid-this    

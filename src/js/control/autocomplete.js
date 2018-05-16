@@ -232,7 +232,7 @@ export default class controlAutocomplete extends control {
     const options = list.querySelectorAll('li'); 
     let validValue = false;
     for (let i = 0; i < options.length; i++) {
-      if(options[i].innerHTML == value){
+      if(options[i].innerHTML === value){
         validValue = true;
         break;
       }
@@ -251,17 +251,17 @@ export default class controlAutocomplete extends control {
       let preSelectedOption = this.config.userData[0];
  
       const list = document.getElementById(id).nextSibling;
-      let selectedOption;
+      let selectedOption= null;
 
       $('#' +id + '-list' + ' li').each(function(){   
       // eslint-disable-next-line no-invalid-this             
-        if($(this).attr('value') == preSelectedOption){
+        if($(this).attr('value') === preSelectedOption){
        // eslint-disable-next-line no-invalid-this          
           selectedOption = $(this).get(0);                             
         }
       }); 
-     // If the option was not defined, and configuration says it doesn't have to be pre-defined, set the value
-     if(selectedOption == undefined){
+     // If the option was not set, and configuration says it doesn't have to be pre-defined, set the value
+     if(selectedOption === null){
        if(this.config.requireValidOption){
          // Don't allow
          return;
