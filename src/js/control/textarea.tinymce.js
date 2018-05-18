@@ -78,8 +78,7 @@ export default class controlTinymce extends controlTextarea {
 
     // define options & allow them to be overwritten in the class config
     let options = $.extend(this.editorOptions, this.classConfig);
-    options.target = this.field;  
-   
+    options.target = this.field;
     // initialise the editor
     window.tinymce.init(options);
     

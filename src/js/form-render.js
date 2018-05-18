@@ -240,7 +240,7 @@ class FormRender {
 }
 
 ;(function($) {
-  $.fn.formRender = function(options) {    
+  $.fn.formRender = function(options) {
     let $elems = this
     let formRender = new FormRender(options)
     $elems.each(i => formRender.render($elems[i]))   

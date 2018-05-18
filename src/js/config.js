@@ -7,7 +7,7 @@ export const defaultOptions = {
     'button',
     'checkbox',
     'checkbox-group',
-    'date',    
+    'date',
     'file',
     'header',
     'hidden',
@@ -47,8 +47,8 @@ export const defaultOptions = {
   inputSets: [],
   replaceFields: [],
   roles: {
-    1: 'Administrator'  
-  },  
+    1: 'Administrator'
+  },
   notify: {
     error: message => console.error(message),
     success: message => console.log(message),
@@ -121,7 +121,7 @@ export const defaultI18n = {
       inlineDesc: 'Display {type} inline',
       label: 'Label',
       labelEmpty: 'Field Label cannot be empty',
-      limitRole: 'Limit access to one or more of the following roles:',      
+      limitRole: 'Limit access to one or more of the following roles:',   
       mandatory: 'Mandatory',
       maxlength: 'Max Length',
       minOptionMessage: 'This field requires a minimum of 2 options',

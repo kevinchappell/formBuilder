@@ -12,7 +12,7 @@ export default class controlAutocomplete extends control {
    */
   build() {
     let {values, type, ...data} = this.config;
-    const keyboardNav = (e) => {     
+    const keyboardNav = (e) => {
       const list = e.target.nextSibling.nextSibling;
       const hiddenField = e.target.nextSibling;
       let activeOption = this.getActiveOption(list);
