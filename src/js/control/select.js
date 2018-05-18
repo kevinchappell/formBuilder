@@ -204,10 +204,8 @@ export default class controlSelect extends control {
     // Set userData if available
     if(this.config.userData){ 
       let selectedOptions = [];
-      for (let i = 0; i < this.config.userData.length; i++) {
-        selectedOptions.push(this.config.userData[i]);
-      } 
-
+      selectedOptions = this.config.userData.slice(0);
+      
       if(this.config.type === 'select')
       {
          $('#'+this.config.name).val(selectedOptions).prop('selected',true);  

@@ -264,10 +264,6 @@ class FormRender {
         for (let i = 0; i < userDataFields.length; i++){
           userDataFields[i].name = userDataFields[i].name.replace(/[\[\]']+/g,'');
         }                 
-        // console.log("Definition");
-        // console.log(definitionFields);
-        // console.log("User Data");
-        // console.log(userDataFields);
 
         for (let i = 0; i < definitionFields.length; i++){
           let definitionField = definitionFields[i];           
@@ -284,30 +280,19 @@ class FormRender {
           for (let j = 0; j < userDataFields.length; j++){            
             if(definitionField.name == userDataFields[j].name){
               foundData = true;
-              // var test = userDataFields[j].value.replace(/'/g, "&#x27;").replace(/"/g, '&#x22;').replace(/\n/g, "\\n").replace(/\r/g, "\\r");
               userData.push(userDataFields[j].value); 
             }else{
               // We started finding data but now we moved into another element
               if(foundData)
                 break;
             }
-          }
-             
+          }             
           if(userData.length == 0){
-            // console.log('No data for ' + definitionField.name);
             continue;
           }           
-          
-          // console.log("Data found for " + definitionField.name);
-          // console.log(userData);
           definitionField.userData = userData;
-          // console.log("Merged data:");
-          // console.log(mergedField);     
           mergedData.push(definitionField);    
         }      
-      
-        // console.log(options.formData);
-        // console.log('Merged Data');  
         return mergedData;
       }
     }

@@ -22,7 +22,7 @@ export default class controlTinymce extends controlTextarea {
    * configure the tinymce editor requirements
    */
   configure() {
-    // this.js = ['//cdn.tinymce.com/4/tinymce.min.js'];
+    this.js = ['//cdn.tinymce.com/4/tinymce.min.js'];
 
     // additional javascript config
     if (this.classConfig.js) {

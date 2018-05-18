@@ -229,7 +229,7 @@ export default class controlAutocomplete extends control {
    * @return {Object} - is the option in the pre defined list
    */
   isOptionValid(list,value){
-    const options = list.querySelectorAll('li'); 
+    const options = list.querySelectorAll('li');  
     let validValue = false;
     for (let i = 0; i < options.length; i++) {
       if(options[i].innerHTML === value){
@@ -247,19 +247,21 @@ export default class controlAutocomplete extends control {
   onRender(evt) {
     // Set userData if available
     if(this.config.userData){  
-      let id = $('#'+this.config.name).attr('id');
+      let $el = $('#'+this.config.name);
+      let $options = $el.next();
+            
       let preSelectedOption = this.config.userData[0];
- 
-      const list = document.getElementById(id).nextSibling;
-      let selectedOption= null;
+      let selectedOption = null;
 
-      $('#' +id + '-list' + ' li').each(function(){   
-      // eslint-disable-next-line no-invalid-this             
+      $options.find('li').each(function(){   
+      // eslint-disable-next-line no-invalid-this
         if($(this).attr('value') === preSelectedOption){
-       // eslint-disable-next-line no-invalid-this          
+          // eslint-disable-next-line no-invalid-this          
           selectedOption = $(this).get(0);                             
+          return;
         }
-      }); 
+      });      
+           
      // If the option was not set, and configuration says it doesn't have to be pre-defined, set the value
      if(selectedOption === null){
        if(this.config.requireValidOption){
@@ -267,14 +269,16 @@ export default class controlAutocomplete extends control {
          return;
        }else{
          // Set it to whatever the value is
-        $('#' + id).prev().val(this.config.userData[0]);
+        $el.prev().val(this.config.userData[0]);
         return;         
        }
      }     
 
-      $('#' + id).prev().val(selectedOption.innerHTML);
-      $('#' + id).val(selectedOption.getAttribute('value'));
-      
+      $el.prev().val(selectedOption.innerHTML);
+      $el.val(selectedOption.getAttribute('value'));
+                
+      const list =  $el.next().get(0);
+
       if (list.style.display === 'none') {
         this.showList(list, selectedOption);
       } else {

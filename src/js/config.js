@@ -111,7 +111,7 @@ export const defaultI18n = {
       enableOtherMsg: 'Let users to enter an unlisted option',
       fieldNonEditable: 'This field cannot be edited.',
       fieldRemoveWarning: 'Are you sure you want to remove this field?',
-      fileUpload: 'File Upload',         
+      fileUpload: 'File Upload',
       formUpdated: 'Form Updated',
       getStarted: 'Drag or click a field from the right to this area',
       header: 'Header',
