@@ -46,7 +46,7 @@ A common use case for userData would be to create a form, save the input data fr
 </code>
 </pre>
 
-2. Re-render
+2. Send the saved JSON data back into formRender to display data
 <pre>
 <code>
   var fbOptions.formData = {SavedJsonFromDatabase};
