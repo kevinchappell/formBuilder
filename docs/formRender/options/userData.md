@@ -24,6 +24,14 @@ userData works for autocomplete, select, checkbox-group, radio-group, text, emai
 
 For fields that have an "other" option, a value that is not in the pre-defined values is assumed to be the "other" value.
 
+<pre>
+<code>
+   var setFormData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1526095813035","other":true,"values":[{"label":"Option 1","value":"option-1"},{"label":"2","value":"2"}],"userData":["option-1","Bilbo \\\"baggins\\\""]}]';
+
+    var fbOptions.formData = setFormData;
+    var frInstance = $('#renderMe').formRender(fbOptions);
+</code>
+</pre>
 
 
 
