@@ -27,6 +27,16 @@ export default class controlText extends control {
   build() {
     return this.markup('input', null, this.config);
   }
+
+  /**
+   * onRender callback
+   */
+  onRender() {
+    // Set userData if available
+    if(this.config.userData){       
+      $('#'+this.config.name).val(this.config.userData[0]);        
+    }
+  }
 }
 
 // register this control for the following types & text subtypes

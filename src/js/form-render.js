@@ -241,9 +241,63 @@ class FormRender {
 
 ;(function($) {
   $.fn.formRender = function(options) {
-    let elems = this
+    let $elems = this
     let formRender = new FormRender(options)
-    elems.each(i => formRender.render(elems[i]))
+    $elems.each(i => formRender.render($elems[i]))   
+    
+    let instance = {     
+      get userData() {
+        let mergedData = [];
+
+        let definitionFields = JSON.parse(options.formData);
+        // Check if tinyMCE needs to save data into textarea first
+        for (let i = 0; i < definitionFields.length; i++){
+          if(definitionFields[i].subtype == 'tinymce'){
+            window.tinyMCE.triggerSave();
+            break;
+          }
+        }        
+
+        // Serialize the user data
+        let userDataFields = $('#' + $elems.attr('id') + ' :input').serializeArray();
+        // Replace ending [] to match names
+        for (let i = 0; i < userDataFields.length; i++){
+          userDataFields[i].name = userDataFields[i].name.replace(/[\[\]']+/g,'');
+        }                 
+
+        for (let i = 0; i < definitionFields.length; i++){
+          let definitionField = definitionFields[i];           
+          // Skip fields that have no name--Likely these are fields that do not hold data(h1,p)
+          if(definitionField.name == undefined)
+            continue;
+          // Skip disabled fields -- This will not have user data available
+          if(definitionField.disabled)
+            continue;
+          
+          // Pull all data for the definition
+          let userData = [];        
+          let foundData = false;
+          for (let j = 0; j < userDataFields.length; j++){            
+            if(definitionField.name == userDataFields[j].name){
+              foundData = true;
+              userData.push(userDataFields[j].value); 
+            }else{
+              // We started finding data but now we moved into another element
+              if(foundData)
+                break;
+            }
+          }             
+          if(userData.length == 0){
+            continue;
+          }           
+          definitionField.userData = userData;
+          mergedData.push(definitionField);    
+        }      
+        return mergedData;
+      }
+    }
+
+    return instance
   }
 
   /**
@@ -256,8 +310,8 @@ class FormRender {
     options.formData = data
     options.dataType = typeof data === 'string' ? 'json' : 'xml'
     let formRender = new FormRender(options)
-    let elems = this
-    elems.each(i => formRender.renderControl(elems[i]))
-    return elems
+    let $elems = this
+    $elems.each(i => formRender.renderControl($elems[i]))
+    return $elems
   }
 })(jQuery)
