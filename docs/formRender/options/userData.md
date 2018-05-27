@@ -16,7 +16,7 @@ var frInstance = $('#renderMe').formRender(fbOptions);
 <pre>
 <code>
 console.log(frInstance.userData);
-//Result: "[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"text","userData":[" My Text"]}]"
+//  "[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"text","userData":[" My Text"]}]"
 </code>
 </pre>
 
