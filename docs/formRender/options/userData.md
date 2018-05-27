@@ -25,7 +25,7 @@ userData works for autocomplete, select, checkbox-group, radio-group, text, emai
 For fields that have an "other" option, a value that is not in the pre-defined values is assumed to be the "other" value.
 
 
-A common use case for userData would be to create a form, save the input data from the form into a database, and then refresh the page with the saved data. Simply stringify userData 
+A common use case for userData would be to create a form, save the input data from the form into a database, and then refresh the page with the saved data. Simply stringify userData when posting.
 
 1. Capture form data
 <pre>
