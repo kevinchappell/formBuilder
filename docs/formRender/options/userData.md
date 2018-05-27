@@ -33,6 +33,8 @@ For fields that have an "other" option, a value that is not in the pre-defined v
 </code>
 </pre>
 
+
+
 A common use case for userData would be to create a form, save the input data from the form into a database, and then refresh the page with the saved data. Simply stringify userData when posting.
 
 1. Capture form data
