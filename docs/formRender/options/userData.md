@@ -2,7 +2,7 @@
 
 The UserData option aims to enable formRender to both capture the form data before posting to the server and as well as inject the data into the controls. 
 
-1. Setup formRender with definition 
+1. Setup formRender with base definition 
 <pre>
 <code>
 var setFormData = '[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"text"}]';  
