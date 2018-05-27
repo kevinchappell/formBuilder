@@ -20,7 +20,7 @@ console.log(frInstance.userData);
 </code>
 </pre>
 
-userData works for autocomplete, select, checkbox-group, radio-group, text, email, color, tel, number, hidden,date, textarea, textarea-tinymce.
+UserData works for autocomplete, select, checkbox-group, radio-group, text, email, color, tel, number, hidden,date, textarea, textarea-tinymce.
 
 For fields that have an "other" option, a value that is not in the pre-defined values is assumed to be the "other" value.
 
