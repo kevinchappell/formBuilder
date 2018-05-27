@@ -1,6 +1,6 @@
 # formRender `userData` option
 
-The UserData option aims to enable formRender to both capture the form data before posting to the server and as well as inject the data into the controls. A common use case would be to save the form data to a database and then re-render the form with the filled data.
+The UserData option aims to enable formRender to both capture the form data before posting to the server and as well as inject the data into the controls. 
 
 1. Setup formRender with definition 
 <pre>
@@ -23,6 +23,8 @@ console.log(frInstance.userData);
 userData works for autocomplete, select, checkbox-group, radio-group, text, email, color, tel, number, hidden,date, textarea, textarea-tinymce.
 
 For fields that have an "other" option, a value that is not in the pre-defined values is assumed to be the "other" value.
+
+
 
 
 A common use case for userData would be to create a form, save the input data from the form into a database, and then refresh the page with the saved data. Simply stringify userData when posting.
