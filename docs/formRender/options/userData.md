@@ -20,5 +20,30 @@ console.log(frInstance.userData);
 </code>
 </pre>
 
+userData works for autocomplete, select, checkbox-group, radio-group, text, email, color, tel, number, hidden,date, textarea, textarea-tinymce.
+
+For fields that have an "other" option, a value that is not in the pre-defined values is assumed to be the "other" value.
+
+
+A common use case for userData would be to create a form, save the input data from the form into a database, and then refresh the page with the saved data. Simply stringify userData 
+
+1. Capture form data
+<pre>
+<code>
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: JSON.stringify(frInstance.userData)
+    });
+</code>
+</pre>
+
+2. Re-render
+<pre>
+<code>
+  var fbOptions.formData = {SavedJsonFromDatabase};
+  var frInstance = $('#renderMe').formRender(fbOptions);
+</code>
+</pre>
 
 
