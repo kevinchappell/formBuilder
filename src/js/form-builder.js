@@ -220,7 +220,7 @@ const FormBuilder = function(opts, element) {
     cbWrap.appendChild(formActions)
   }
 
-  let stageWrap = m('div', [d.stage, cbWrap], {
+  const stageWrap = m('div', [d.stage, cbWrap], {
     id: `${data.formID}-stage-wrap`,
     className: 'stage-wrap ' + data.layout.stage,
   })
@@ -233,33 +233,32 @@ const FormBuilder = function(opts, element) {
     $(element).replaceWith($editorWrap)
   }
 
-  let saveAndUpdate = utils.debounce(evt => {
+  const saveAndUpdate = utils.debounce(evt => {
     if (evt) {
       if (evt.type === 'keyup' && evt.target.name === 'className') {
         return false
       }
 
-      let $field = $(evt.target).closest('.form-field')
-      h.updatePreview($field)
+      h.updatePreview($(evt.target).closest('.form-field'))
       h.save.call(h)
     }
   })
 
-  let previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
+  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
 
   // Save field on change
   $stage.on('change blur keyup', previewSelectors, saveAndUpdate)
 
   $('li', d.controls).click(evt => {
-    let $control = $(evt.target).closest('li')
+    const $control = $(evt.target).closest('li')
     h.stopIndex = undefined
     processControl($control)
     h.save.call(h)
   })
 
   // Add append and prepend options if necessary
-  let nonEditableFields = () => {
-    let cancelArray = []
+  const nonEditableFields = () => {
+    const cancelArray = []
     const disabledField = type =>
       utils.markup('li', opts[type], {
         className: `disabled-field form-${type}`,
@@ -280,25 +279,25 @@ const FormBuilder = function(opts, element) {
   }
 
   // builds the standard formbuilder datastructure for a feild definition
-  let prepFieldVars = function($field, isNew = false) {
+  const prepFieldVars = function($field, isNew = false) {
     let field = {}
     if ($field instanceof jQuery) {
       // get the default type etc & label for this field
       field.type = $field[0].dataset.type
       if (field.type) {
         // check for a custom type
-        let custom = controlCustom.lookup(field.type)
+        const custom = controlCustom.lookup(field.type)
         if (custom) {
           field = Object.assign({}, custom)
         } else {
-          let controlClass = control.getClass(field.type)
+          const controlClass = control.getClass(field.type)
           field.label = controlClass.label(field.type)
         }
 
         // @todo: any other attrs ever set in aFields? value or selected?
       } else {
         // is dataType XML
-        let attrs = $field[0].attributes
+        const attrs = $field[0].attributes
         if (!isNew) {
           field.values = $field.children().map((index, elem) => {
             return {
@@ -325,7 +324,7 @@ const FormBuilder = function(opts, element) {
       field.className = field.className || 'form-control'
     }
 
-    let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className)
+    const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(field.className)
     if (match) {
       field.style = match[1]
     }
@@ -340,13 +339,10 @@ const FormBuilder = function(opts, element) {
   }
 
   // Parse saved XML template data
-  let loadFields = function(formData) {
+  const loadFields = function(formData) {
     formData = h.getData(formData)
     if (formData && formData.length) {
-      for (let i = 0; i < formData.length; i++) {
-        let fieldData = utils.trimObj(formData[i])
-        prepFieldVars(fieldData)
-      }
+      formData.forEach(fieldData => prepFieldVars(utils.trimObj(fieldData)))
       stageWrap.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
       // Load default fields if none are set
@@ -360,6 +356,7 @@ const FormBuilder = function(opts, element) {
     if (nonEditableFields()) {
       stageWrap.classList.remove('empty')
     }
+
     h.save()
   }
 
@@ -369,13 +366,14 @@ const FormBuilder = function(opts, element) {
    * @param  {Object} fieldData
    * @return {String} field options markup
    */
-  let fieldOptions = function(fieldData) {
-    let { type, values, name } = fieldData
-    let optionActions = [m('a', i18n.addOption, { className: 'add add-opt' })]
-    let fieldOptions = [m('label', i18n.selectOptions, { className: 'false-label' })]
+  const fieldOptions = function(fieldData) {
+    const { type, values, name } = fieldData
+    let fieldValues
+    const optionActions = [m('a', i18n.addOption, { className: 'add add-opt' })]
+    const fieldOptions = [m('label', i18n.selectOptions, { className: 'false-label' })]
     const isMultiple = fieldData.multiple || type === 'checkbox-group'
     const optionDataTemplate = label => {
-      let optionData = {
+      const optionData = {
         label,
         value: utils.hyphenCase(label),
       }
@@ -392,22 +390,19 @@ const FormBuilder = function(opts, element) {
       if (utils.inArray(type, ['checkbox-group', 'checkbox'])) {
         defaultOptCount = [1]
       }
-      values = defaultOptCount.map(function(index) {
-        let label = `${i18n.option} ${index}`
-        return optionDataTemplate(label)
-      })
+      fieldValues = defaultOptCount.map(index => optionDataTemplate(`${i18n.option} ${index}`))
 
-      let firstOption = values[0]
+      const firstOption = fieldValues[0]
       if (firstOption.hasOwnProperty('selected') && type !== 'radio-group') {
         firstOption.selected = true
       }
     } else {
       // ensure option data is has all required keys
-      values.forEach(option => Object.assign({}, { selected: false }, option))
+      fieldValues.forEach(option => Object.assign({}, { selected: false }, option))
     }
 
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
-    const options = m('ol', values.map(option => selectFieldOptions(name, option, isMultiple)), {
+    const options = m('ol', fieldValues.map(option => selectFieldOptions(name, option, isMultiple)), {
       className: 'sortable-options',
     })
     const optionsWrap = m('div', [options, optionActionsWrap], { className: 'sortable-options-wrap' })
@@ -564,10 +559,10 @@ const FormBuilder = function(opts, element) {
           first: ' ',
           second: i18n.selectionsMessage,
         })
-      }     
+      }
     }
 
-    if(type === 'autocomplete'){     
+    if(type === 'autocomplete'){
       advFieldMap['requireValidOption'] = () => {
         return boolAttribute('requireValidOption', values, {
           first: ' ',

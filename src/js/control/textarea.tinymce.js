@@ -1,4 +1,4 @@
-import controlTextarea from './textarea';
+import controlTextarea from './textarea'
 
 /**
  * TinyMCE editor element
@@ -17,26 +17,25 @@ import controlTextarea from './textarea';
  * ```
  */
 export default class controlTinymce extends controlTextarea {
-
   /**
    * configure the tinymce editor requirements
    */
   configure() {
-    this.js = ['//cdn.tinymce.com/4/tinymce.min.js'];
+    this.js = ['//cdn.tinymce.com/4/tinymce.min.js']
 
     // additional javascript config
     if (this.classConfig.js) {
-      let js = this.classConfig.js;
+      let js = this.classConfig.js
       if (!Array.isArray(js)) {
-        js = new Array(js);
+        js = new Array(js)
       }
-      this.js.concat(js);
-      delete this.classConfig.js;
+      this.js.concat(js)
+      delete this.classConfig.js
     }
 
     // additional css config
     if (this.classConfig.css) {
-      this.css = this.classConfig.css;
+      this.css = this.classConfig.css
     }
 
     // configure the tinyMCE editor defaults
@@ -46,25 +45,25 @@ export default class controlTinymce extends controlTextarea {
       plugins: [
         'advlist autolink lists link image charmap print preview anchor',
         'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table contextmenu paste code'
+        'insertdatetime media table contextmenu paste code',
       ],
-      toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table'
-    };
+      toolbar:
+        'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | table',
+    }
   }
-
 
   /**
    * build a textarea DOM element, to be later replaced by the TinyMCE editor
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    let {value = '', ...attrs} = this.config;
-    this.field = this.markup('textarea', this.parsedHtml(value), attrs);
+    const { value = '', ...attrs } = this.config
+    this.field = this.markup('textarea', this.parsedHtml(value), attrs)
     // Make the editor read only if disabled is set on the textarea
-    if(attrs.disabled){
-      this.editorOptions.readonly = true;    
+    if (attrs.disabled) {
+      this.editorOptions.readonly = true
     }
-    return this.field;
+    return this.field
   }
 
   /**
@@ -73,21 +72,21 @@ export default class controlTinymce extends controlTextarea {
    */
   onRender(evt) {
     if (window.tinymce.editors[this.id]) {
-      window.tinymce.editors[this.id].remove();
+      window.tinymce.editors[this.id].remove()
     }
 
     // define options & allow them to be overwritten in the class config
-    let options = $.extend(this.editorOptions, this.classConfig);
-    options.target = this.field;
+    const options = $.extend(this.editorOptions, this.classConfig)
+    options.target = this.field
     // initialise the editor
-    window.tinymce.init(options);
-    
+    window.tinymce.init(options)
+
     // Set userData
-    if(this.config.userData){
-      window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]));
+    if (this.config.userData) {
+      window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]))
     }
   }
 }
 
 // register tinymce as a richtext control
-controlTextarea.register('tinymce', controlTinymce, 'textarea');
+controlTextarea.register('tinymce', controlTinymce, 'textarea')

@@ -201,7 +201,6 @@
       "node": true
     },
     "rules": {
-      "quote-props": 0,
       "no-unused-vars": 1,
       "no-console": 0,
       "new-cap": 0,
@@ -215,7 +214,8 @@
       "quotes": [
         2,
         "single"
-      ]
+      ],
+      "prefer-const": 1
     }
   },
   "engines": {}

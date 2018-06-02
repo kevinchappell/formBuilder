@@ -1,14 +1,14 @@
 import 'babel-polyfill'
 import 'babel-regenerator-runtime'
-import '../sass/form-render.scss'
 import mi18n from 'mi18n'
 import utils from './utils'
 import events from './events'
 import layout from './layout'
 import control from './control'
-import './control/index'
 import controlCustom from './control/custom'
 import { defaultI18n } from './config'
+import '../sass/form-render.scss'
+import './control/index'
 
 /**
  * FormRender Class
@@ -20,7 +20,7 @@ class FormRender {
    */
   constructor(options = {}) {
     // initialise defaults & options
-    let defaults = {
+    const defaults = {
       layout: layout, // by default use the layout class, but support a child class being defined & passed as an option
       layoutTemplates: {}, // allow custom override layout templates to be defined
       controls: {}, // custom controls
@@ -54,27 +54,26 @@ class FormRender {
       },
     }
     this.options = $.extend(true, defaults, options)
+    this.instanceContainers = []
 
     if (!mi18n.current) {
       mi18n.init(this.options.i18n)
     }
 
     // parse any passed formData
-    ;(() => {
-      if (!this.options.formData) {
-        return false
-      }
+    if (!this.options.formData) {
+      return false
+    }
 
-      let setData = {
-        xml: formData => utils.parseXML(formData),
-        json: formData => window.JSON.parse(formData),
-      }
+    const setData = {
+      xml: formData => utils.parseXML(formData),
+      json: formData => window.JSON.parse(formData),
+    }
 
-      // if the user hasn't passed a pre-parsed formData object, parse it according to the specified dataType
-      if (typeof this.options.formData !== 'object') {
-        this.options.formData = setData[this.options.dataType](this.options.formData) || false
-      }
-    })()
+    // if the user hasn't passed a pre-parsed formData object, parse it according to the specified dataType
+    if (typeof this.options.formData !== 'object') {
+      this.options.formData = setData[this.options.dataType](this.options.formData) || false
+    }
 
     // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
     control.controlConfig = options.controlConfig || {}
@@ -90,14 +89,14 @@ class FormRender {
     /**
      * Extend Element prototype to allow us to append fields
      *
-     * @param  {fields} fields array of elements
+     * @param {Array} fields array of elements
      */
     if (typeof Element.prototype.appendFormFields !== 'function') {
       Element.prototype.appendFormFields = function(fields) {
         if (!Array.isArray(fields)) {
           fields = [fields]
         }
-        let renderedFormWrap = utils.markup('div', fields, {
+        const renderedFormWrap = utils.markup('div', fields, {
           className: 'rendered-form',
         })
         this.appendChild(renderedFormWrap)
@@ -113,7 +112,7 @@ class FormRender {
      */
     if (typeof Element.prototype.emptyContainer !== 'function') {
       Element.prototype.emptyContainer = function() {
-        let element = this
+        const element = this
         while (element.lastChild) {
           element.removeChild(element.lastChild)
         }
@@ -124,10 +123,15 @@ class FormRender {
   /**
    * Clean up passed object configuration to prepare for use with the markup function
    * @param {Object} field - object of field configuration
+   * @param {Number} instanceIndex - instance index
    * @return {Object} sanitized field object
    */
-  santizeField(field) {
-    let sanitizedField = Object.assign({}, field)
+  santizeField(field, instanceIndex) {
+    const sanitizedField = Object.assign({}, field)
+    if (instanceIndex) {
+      sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
+      sanitizedField.name = field.name && `${field.name}-${instanceIndex}`
+    }
     sanitizedField.className = field.className || field.class || null
     delete sanitizedField.class
     if (field.values) {
@@ -154,14 +158,15 @@ class FormRender {
   /**
    * Main render method which produces the form from passed configuration
    * @param {Object} element - an html element to render the form into (optional)
+   * @param {Number} instanceIndex - instance index
    * @return {Object} FormRender
    */
-  render(element = null) {
+  render(element = null, instanceIndex = 0) {
     const formRender = this
-    let opts = this.options
+    const opts = this.options
     element = this.getElement(element)
 
-    let runCallbacks = function() {
+    const runCallbacks = function() {
       if (opts.onRender) {
         opts.onRender()
       }
@@ -172,23 +177,27 @@ class FormRender {
      * @param {Array} fields - array of dom elements
      * @return {String} fields html
      */
-    let exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
+    const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
 
     // Begin the core plugin
-    let rendered = []
+    const rendered = []
 
     // generate field markup if we have fields
     if (opts.formData) {
       // instantiate the layout class & loop through the field configuration
-      let engine = new opts.layout(opts.layoutTemplates)
+      const engine = new opts.layout(opts.layoutTemplates)
       for (let i = 0; i < opts.formData.length; i++) {
-        let fieldData = opts.formData[i]
-        let sanitizedField = this.santizeField(fieldData)
+        const fieldData = opts.formData[i]
+        const sanitizedField = this.santizeField(fieldData, instanceIndex)
 
         // determine the control class for this type, and then process it through the layout engine
-        let controlClass = control.getClass(fieldData.type, fieldData.subtype)
-        let field = engine.build(controlClass, sanitizedField)
+        const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+        const field = engine.build(controlClass, sanitizedField)
         rendered.push(field)
+      }
+
+      if (element) {
+        this.instanceContainers[instanceIndex] = element
       }
 
       // if rendering, inject the fields into the specified wrapper container/element
@@ -202,7 +211,7 @@ class FormRender {
         formRender.markup = exportMarkup(rendered)
       }
     } else {
-      let noData = utils.markup('div', opts.messages.noFormData, {
+      const noData = utils.markup('div', opts.messages.noFormData, {
         className: 'no-form-data',
       })
       rendered.push(noData)
@@ -219,85 +228,97 @@ class FormRender {
    * @return {Object} the formRender object
    */
   renderControl(element = null) {
-    let opts = this.options
-    let fieldData = opts.formData
+    const opts = this.options
+    const fieldData = opts.formData
     if (!fieldData || Array.isArray(fieldData)) {
       throw new Error(
         'To render a single element, please specify a single object of formData for the field in question'
       )
     }
-    let sanitizedField = this.santizeField(fieldData)
+    const sanitizedField = this.santizeField(fieldData)
 
     // determine the control class for this type, and then build it
-    let engine = new opts.layout()
-    let controlClass = control.getClass(fieldData.type, fieldData.subtype)
-    let forceTemplate = opts.forceTemplate || 'hidden' // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
-    let field = engine.build(controlClass, sanitizedField, forceTemplate)
+    const engine = new opts.layout()
+    const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+    const forceTemplate = opts.forceTemplate || 'hidden' // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
+    const field = engine.build(controlClass, sanitizedField, forceTemplate)
     element.appendFormFields(field)
     opts.notify.success(opts.messages.formRendered)
     return this
   }
+
+  /**
+   * Return user entered data
+   */
+  get userData() {
+    const options = this.options
+    const definedFields = options.formData.slice()
+
+    // save tinyMCE editors
+    definedFields
+      .filter(fieldData => fieldData.subtype === 'tinymce')
+      .forEach(fieldData => window.tinymce.get(fieldData.name).save())
+
+    this.instanceContainers.forEach((container, index) => {
+      const userDataMap = $('select, input, textarea', container)
+        .serializeArray()
+        .reduce((acc, { name, value }) => {
+          name = name.replace('[]', '')
+          if (acc[name]) {
+            acc[name].push(value)
+          } else {
+            acc[name] = [value]
+          }
+          return acc
+        }, {})
+
+      const definedFieldsLength = definedFields.length
+      for (let i = 0; i < definedFieldsLength; i++) {
+        const definedField = definedFields[i]
+        // Skip fields that have no name--Likely these are fields that do not hold data(h1,p)
+        if (definedField.name === undefined) continue
+        // Skip disabled fields -- This will not have user data available
+        if (definedField.disabled) continue
+
+        definedField.userData = userDataMap[definedField.name]
+      }
+    })
+
+    return definedFields
+  }
+
+  /** Clear all rendered fields */
+  clear() {
+    this.instanceContainers.forEach(container => {
+      console.log(container)
+      container.querySelectorAll('input, select, textarea').forEach(input => {
+        input.value = ''
+        input.checked = false
+      })
+    })
+  }
 }
 
 ;(function($) {
-  $.fn.formRender = function(options) {
-    let $elems = this
-    let formRender = new FormRender(options)
-    $elems.each(i => formRender.render($elems[i]))   
-    
-    let instance = {     
-      get userData() {
-        let mergedData = [];
+  const methods = {
+    init: (options, forms) => {
+      methods.instance = new FormRender(options)
+      forms.each(index => methods.instance.render(forms[index], index))
+      return methods.instance
+    },
+    userData: () => methods.instance.userData,
+    clear: () => methods.instance.clear(),
+  }
 
-        let definitionFields = JSON.parse(options.formData);
-        // Check if tinyMCE needs to save data into textarea first
-        for (let i = 0; i < definitionFields.length; i++){
-          if(definitionFields[i].subtype == 'tinymce'){
-            window.tinyMCE.triggerSave();
-            break;
-          }
-        }        
-
-        // Serialize the user data
-        let userDataFields = $('#' + $elems.attr('id') + ' :input').serializeArray();
-        // Replace ending [] to match names
-        for (let i = 0; i < userDataFields.length; i++){
-          userDataFields[i].name = userDataFields[i].name.replace(/[\[\]']+/g,'');
-        }                 
-
-        for (let i = 0; i < definitionFields.length; i++){
-          let definitionField = definitionFields[i];           
-          // Skip fields that have no name--Likely these are fields that do not hold data(h1,p)
-          if(definitionField.name == undefined)
-            continue;
-          // Skip disabled fields -- This will not have user data available
-          if(definitionField.disabled)
-            continue;
-          
-          // Pull all data for the definition
-          let userData = [];        
-          let foundData = false;
-          for (let j = 0; j < userDataFields.length; j++){            
-            if(definitionField.name == userDataFields[j].name){
-              foundData = true;
-              userData.push(userDataFields[j].value); 
-            }else{
-              // We started finding data but now we moved into another element
-              if(foundData)
-                break;
-            }
-          }             
-          if(userData.length == 0){
-            continue;
-          }           
-          definitionField.userData = userData;
-          mergedData.push(definitionField);    
-        }      
-        return mergedData;
-      }
+  $.fn.formRender = function(methodOrOptions = {}, ...args) {
+    const forms = this
+    if (methods[methodOrOptions]) {
+      return methods[methodOrOptions].apply(this, args)
+    } else {
+      const instance = methods.init(methodOrOptions, forms)
+      Object.assign(methods, instance)
+      return instance
     }
-
-    return instance
   }
 
   /**
@@ -309,8 +330,8 @@ class FormRender {
   $.fn.controlRender = function(data, options = {}) {
     options.formData = data
     options.dataType = typeof data === 'string' ? 'json' : 'xml'
-    let formRender = new FormRender(options)
-    let $elems = this
+    const formRender = new FormRender(options)
+    const $elems = this
     $elems.each(i => formRender.renderControl($elems[i]))
     return $elems
   }
