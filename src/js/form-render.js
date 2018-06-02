@@ -290,7 +290,6 @@ class FormRender {
   /** Clear all rendered fields */
   clear() {
     this.instanceContainers.forEach(container => {
-      console.log(container)
       container.querySelectorAll('input, select, textarea').forEach(input => {
         input.value = ''
         input.checked = false

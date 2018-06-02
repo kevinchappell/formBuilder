@@ -414,12 +414,12 @@ const FormBuilder = function(opts, element) {
 
   const defaultFieldAttrs = type => {
     const defaultAttrs = ['required', 'label', 'description', 'placeholder', 'className', 'name', 'access', 'value']
-    let noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(d.optionFields)
+    const noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(d.optionFields)
 
-    let valueField = !utils.inArray(type, noValFields)
+    const valueField = !utils.inArray(type, noValFields)
 
     const typeAttrsMap = {
-      autocomplete: defaultAttrs.concat(['options','requireValidOption']),
+      autocomplete: defaultAttrs.concat(['options', 'requireValidOption']),
       button: ['label', 'subtype', 'style', 'className', 'name', 'value', 'access'],
       checkbox: [
         'required',
@@ -470,15 +470,15 @@ const FormBuilder = function(opts, element) {
    * @param  {object} values configuration object for advanced fields
    * @return {String}        markup for advanced fields
    */
-  let advFields = values => {
-    let { type } = values
-    let advFields = []
-    let fieldAttrs = defaultFieldAttrs(type)
+  const advFields = values => {
+    const { type } = values
+    const advFields = []
+    const fieldAttrs = defaultFieldAttrs(type)
     const advFieldMap = {
       required: () => requiredField(values),
       toggle: () => boolAttribute('toggle', values, { first: i18n.toggle }),
       inline: () => {
-        let labels = {
+        const labels = {
           first: i18n.inline,
           second: mi18n.get('inlineDesc', type.replace('-group', '')),
         }
@@ -562,7 +562,7 @@ const FormBuilder = function(opts, element) {
       }
     }
 
-    if(type === 'autocomplete'){
+    if (type === 'autocomplete') {
       advFieldMap['requireValidOption'] = () => {
         return boolAttribute('requireValidOption', values, {
           first: ' ',
@@ -570,8 +570,6 @@ const FormBuilder = function(opts, element) {
         })
       }
     }
-
-
 
     Object.keys(fieldAttrs).forEach(index => {
       let attr = fieldAttrs[index]
@@ -783,10 +781,10 @@ const FormBuilder = function(opts, element) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    let attrVal = values[attribute]
-    let attrLabel = i18n[attribute] || attribute
-    let placeholder = i18n[`placeholder.${attribute}`]
-    let inputConfig = {
+    const attrVal = values[attribute]
+    const attrLabel = i18n[attribute] || attribute
+    const placeholder = i18n[`placeholder.${attribute}`]
+    const inputConfig = {
       type: 'number',
       value: attrVal,
       name: attribute,
@@ -795,9 +793,9 @@ const FormBuilder = function(opts, element) {
       className: `fld-${attribute} form-control`,
       id: `${attribute}-${data.lastID}`,
     }
-    let numberAttribute = h.input(utils.trimObj(inputConfig)).outerHTML
-    let inputWrap = `<div class="input-wrap">${numberAttribute}</div>`
-    let inputLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`
+    const numberAttribute = h.input(utils.trimObj(inputConfig)).outerHTML
+    const inputWrap = `<div class="input-wrap">${numberAttribute}</div>`
+    const inputLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`
 
     return m('div', [inputLabel, inputWrap], {
       className: `form-group ${attribute}-wrap`,
