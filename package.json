@@ -88,8 +88,9 @@
     "release:minor": "npm run tag:minor --minor && npm run deploy",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
     "build": "webpack --mode production -p --progress --config tools/webpack.config && cp demo/assets/js/form-* dist/",
+    "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:vendor": "babel-node -- tools/run build-vendor",
-    "build:plugins": "babel-node -- node_modules/webpack/bin/webpack -p --display-entrypoints --progress --config tools/webpack.plugins.config"
+    "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
   "dependencies": {
     "jquery": "^3.1.1",
@@ -100,7 +101,6 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
-    "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -127,6 +127,7 @@
     "semver": "^5.5.0",
     "style-loader": "^0.21.0",
     "webpack": "^4.10.2",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.0.1",
     "webpack-dev-server": "^3.1.4"
   },

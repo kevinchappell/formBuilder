@@ -4,8 +4,7 @@ const autoprefixer = require('autoprefixer')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const { BannerPlugin } = require('webpack')
-// const MinifyPlugin = require('babel-minify-webpack-plugin')
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 // hack for Ubuntu on Windows
 try {
@@ -14,11 +13,12 @@ try {
   require('os').networkInterfaces = () => ({})
 }
 
-const PRODUCTION = process.argv.includes('-p')
+const PRODUCTION = process.argv.includes('production')
+const ANALYZE = process.argv.includes('--analyze')
 const devtool = PRODUCTION ? false : 'inline-source-map'
 const outputDir = resolve(__dirname, '../', 'demo/assets/js/')
 
-const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`].join('\n')
+const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`, ''].join('\n')
 
 const extractSass = new ExtractTextPlugin({
   filename: '[name].[contenthash].css',
@@ -76,9 +76,7 @@ const webpackConfig = {
               options: {
                 plugins: [
                   autoprefixer({
-                    browsers: ['last 2 versions'],
-                    cascade: true,
-                    remove: true,
+                    browsers: ['> 1%']
                   }),
                 ],
               },
@@ -98,14 +96,6 @@ const webpackConfig = {
     new ExtractTextPlugin({
       filename: '[name].[contenthash].css',
     }),
-    // new MinifyPlugin(
-    //   {
-    //     removeDebugger: PRODUCTION,
-    //   },
-    //   {
-    //     comments: !PRODUCTION,
-    //   }
-    // ),
     new BannerPlugin(bannerTemplate),
     new CompressionPlugin({
       asset: '[path].gz[query]',
@@ -125,6 +115,10 @@ const webpackConfig = {
     contentBase: 'demo/',
     noInfo: true,
   },
+}
+
+if (ANALYZE) {
+  webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
 module.exports = webpackConfig
