@@ -53,29 +53,8 @@
     },
     "fontServer": "http://fontello.com"
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015",
-            "node6",
-            "stage-3"
-          ],
-          "plugins": [
-            "transform-object-rest-spread",
-            "transform-es2015-destructuring",
-            "syntax-object-rest-spread",
-            "transform-runtime"
-          ]
-        }
-      ]
-    ]
-  },
   "babel": {
     "presets": [
-      "es2015",
       [
         "env",
         {
@@ -88,8 +67,7 @@
             "es6.promise",
             "es6.object.assign"
           ],
-          "loose": true,
-          "modules": false
+          "loose": true
         }
       ]
     ],
@@ -163,7 +141,7 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-uglify": "^2.0.1",
-    "mi18n": "^0.3.4",
+    "mi18n": "0.3.4-beta.1",
     "mocha": "^3.3.0",
     "node-sass": "^4.5.0",
     "opener": "^1.4.3",

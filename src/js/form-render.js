@@ -1,5 +1,3 @@
-import 'babel-polyfill'
-import 'babel-regenerator-runtime'
 import mi18n from 'mi18n'
 import utils from './utils'
 import events from './events'
