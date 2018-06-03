@@ -173,7 +173,8 @@ jQuery(function($) {
     } else {
       var formRenderData = $('.build-wrap').formBuilder('getData')
       $('.render-wrap').formRender({
-        formData: formRenderData
+        formData: formRenderData,
+        templates: templates
       });
       window.sessionStorage.setItem('formData', JSON.stringify(formRenderData));
     }
