@@ -453,14 +453,15 @@
         position: absolute;
         opacity: 1;
         right: 14px;
-        height: 17px;
-        width: 17px;
-        line-height: 17px;
-        text-align: center;
+        height: 18px;
+        width: 18px;
         top: 14px;
-        font-size: 18px;
+        font-size: 12px;
         padding: 0;
         color: $error;
+        &::before {
+          margin:0;
+        }
 
         &:hover {
           background-color: $error;

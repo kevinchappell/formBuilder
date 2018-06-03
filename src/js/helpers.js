@@ -335,16 +335,16 @@ export default class Helpers {
    * @param  {Object} $field jQuery DOM element
    */
   updatePreview($field) {
-    let _this = this
-    let d = this.d
+    const _this = this
+    const d = this.d
     const fieldClass = $field.attr('class')
-    let field = $field[0]
-    if (fieldClass.indexOf('input-control') !== -1) {
+    const field = $field[0]
+    if (fieldClass.includes('input-control')) {
       return
     }
 
-    let fieldType = $field.attr('type')
-    let $prevHolder = $('.prev-holder', field)
+    const fieldType = $field.attr('type')
+    const $prevHolder = $('.prev-holder', field)
     let previewData = {
       type: fieldType,
     }
@@ -352,7 +352,7 @@ export default class Helpers {
 
     _this.setAttrVals(field, previewData)
 
-    let style = $('.btn-style', field).val()
+    const style = $('.btn-style', field).val()
     if (style) {
       previewData.style = style
     }
@@ -362,10 +362,11 @@ export default class Helpers {
       previewData.multiple = $('[name="multiple"]', field).is(':checked')
 
       $('.sortable-options li', field).each(function(i, $option) {
-        let option = {}
-        option.selected = $('.option-selected', $option).is(':checked')
-        option.value = $('.option-value', $option).val()
-        option.label = $('.option-label', $option).val()
+        const option = {
+          selected: $('.option-selected', $option).is(':checked'),
+          value: $('.option-value', $option).val(),
+          label: $('.option-label', $option).val()
+        }
         previewData.values.push(option)
       })
     }
@@ -438,7 +439,7 @@ export default class Helpers {
     if (primaryType) {
       if (style) {
         for (i = 0; i < classes.length; i++) {
-          let re = new RegExp(`(?:^|\s)${primaryType}-(.*?)(?:\s|$)+`, 'g')
+          let re = new RegExp(`(?:^|\\s)${primaryType}-(.*?)(?:\\s|$)+`, 'g')
           let match = classes[i].match(re)
           if (match) {
             classes.splice(i, 1)

@@ -5,3 +5,4 @@ demo/assets/**/*.map
 dist/*.map
 site
 .DS_Store
+yarn-error.log

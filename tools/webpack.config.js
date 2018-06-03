@@ -1,10 +1,11 @@
-import pkg from '../package.json'
-import { resolve } from 'path'
-import autoprefixer from 'autoprefixer'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import CompressionPlugin from 'compression-webpack-plugin'
-import { BannerPlugin } from 'webpack'
-import MinifyPlugin from 'babel-minify-webpack-plugin'
+const pkg = require('../package.json')
+const { resolve } = require('path')
+const autoprefixer = require('autoprefixer')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+const { BannerPlugin } = require('webpack')
+// const MinifyPlugin = require('babel-minify-webpack-plugin')
+
 
 // hack for Ubuntu on Windows
 try {
@@ -14,7 +15,7 @@ try {
 }
 
 const PRODUCTION = process.argv.includes('-p')
-const devtool = PRODUCTION ? false : 'cheap-module-eval-source-map'
+const devtool = PRODUCTION ? false : 'inline-source-map'
 const outputDir = resolve(__dirname, '../', 'demo/assets/js/')
 
 const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`].join('\n')
@@ -97,14 +98,14 @@ const webpackConfig = {
     new ExtractTextPlugin({
       filename: '[name].[contenthash].css',
     }),
-    new MinifyPlugin(
-      {
-        removeDebugger: PRODUCTION,
-      },
-      {
-        comments: !PRODUCTION,
-      }
-    ),
+    // new MinifyPlugin(
+    //   {
+    //     removeDebugger: PRODUCTION,
+    //   },
+    //   {
+    //     comments: !PRODUCTION,
+    //   }
+    // ),
     new BannerPlugin(bannerTemplate),
     new CompressionPlugin({
       asset: '[path].gz[query]',

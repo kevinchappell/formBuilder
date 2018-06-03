@@ -108,7 +108,7 @@ const FormBuilder = function(opts, element) {
   if (opts.inputSets.length) {
     opts.inputSets.forEach((set, i) => {
       let { name, label, icon } = set
-      name = name || utils.makeClassName(label)
+      name = name || utils.hyphenCase(label)
       if (icon) {
         label = `<span class="control-icon">${icon}</span>${label}`
       }
@@ -918,10 +918,10 @@ const FormBuilder = function(opts, element) {
   }
 
   // Append the new field to the editor
-  let appendNewField = function(values, isNew = true) {
-    let type = values.type || 'text'
-    let label = values.label || i18n[type] || i18n.label
-    let disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
+  const appendNewField = function(values, isNew = true) {
+    const type = values.type || 'text'
+    const label = values.label || i18n[type] || i18n.label
+    const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
     let fieldButtons = [
       m('a', null, {
         type: 'remove',
@@ -1042,15 +1042,13 @@ const FormBuilder = function(opts, element) {
       }
     }
 
-    let removeAttrs = {
-      className: 'remove btn',
+    const removeAttrs = {
+      className: 'remove btn icon-cancel',
       title: i18n.removeMessage,
     }
-    optionInputs.push(utils.markup('a', i18n.remove, removeAttrs))
+    optionInputs.push(utils.markup('a', null, removeAttrs))
 
-    let field = utils.markup('li', optionInputs)
-
-    return field.outerHTML
+    return utils.markup('li', optionInputs).outerHTML
   }
 
   let cloneItem = function cloneItem(currentItem) {
