@@ -12,11 +12,12 @@
 
 <body>
   <div class="content">
-    <h1>jQuery formBuilder</h1>
+    <h1 class="formbuilder-title">jQuery formBuilder</h1>
+    <h1 class="formrender-title">jQuery formRender</h1>
     <div id="stage1" class="build-wrap"></div>
     <form class="render-wrap"></form>
-    <button id="edit-form">Edit Form</button>
-    <div class="action-buttons">
+    <button id="editForm">Edit Form</button>
+    <div class="action-buttons formbuilder-actions">
       <h2>Actions</h2>
       <button id="showData" type="button">Show Data</button>
       <button id="clearFields" type="button">Clear All Fields</button>
@@ -33,7 +34,7 @@
       <select id="setLanguage">
         <option value="ar-TN" dir="rtl">تونسي</option>
         <option value="de-DE">Deutsch</option>
-        <option value="en-US">English</option>
+        <option value="en-US" selected>English</option>
         <option value="es-ES">español</option>
         <option value="fa-IR" dir="rtl">فارسى</option>
         <option value="fr-FR">français</option>
@@ -48,6 +49,13 @@
       </select>
     </div>
   </div>
+  <div class="action-buttons formrender-actions">
+    <h2>Actions</h2>
+    <button id="loadUserForm" type="button">Load User Form</button>
+    <button id="showUserData" type="button">Show User Data</button>
+    <button id="clearUserForm" type="button">Clear Form</button>
+  </div>
+</div>
   <script src="assets/js/vendor.js"></script>
   <script src="assets/js/form-builder.min.js"></script>
   <script src="assets/js/form-render.min.js"></script>

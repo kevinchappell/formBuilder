@@ -11,7 +11,7 @@ export const defaultOptions = {
     'file',
     'header',
     'hidden',
-    'number',    
+    'number',
     'paragraph',
     'radio-group',
     'select',
@@ -22,7 +22,7 @@ export const defaultOptions = {
   // Array of fields to disable
   disableFields: [],
   disabledAttrs: [],
-  disabledActionButtons: [], // save,data,clear
+  disabledActionButtons: [], // save, data, clear
   disabledFieldButtons: {},
   editOnAdd: false,
   // Uneditable fields or other content you would like to appear
@@ -47,12 +47,12 @@ export const defaultOptions = {
   inputSets: [],
   replaceFields: [],
   roles: {
-    1: 'Administrator'
+    1: 'Administrator',
   },
   notify: {
-    error: message => console.error(message),
-    success: message => console.log(message),
-    warning: message => console.warn(message),
+    error: console.error,
+    success: console.log,
+    warning: console.warn,
   },
   onSave: (evt, formData) => null,
   onClearAll: () => null,
@@ -121,7 +121,7 @@ export const defaultI18n = {
       inlineDesc: 'Display {type} inline',
       label: 'Label',
       labelEmpty: 'Field Label cannot be empty',
-      limitRole: 'Limit access to one or more of the following roles:',  
+      limitRole: 'Limit access to one or more of the following roles:',
       mandatory: 'Mandatory',
       maxlength: 'Max Length',
       minOptionMessage: 'This field requires a minimum of 2 options',
@@ -157,7 +157,7 @@ export const defaultI18n = {
       removeOption: 'Remove Option',
       remove: '&#215;',
       required: 'Required',
-      requireValidOption: 'Only accept a pre-defined Option',     
+      requireValidOption: 'Only accept a pre-defined Option',
       richText: 'Rich Text Editor',
       roles: 'Access',
       rows: 'Rows',

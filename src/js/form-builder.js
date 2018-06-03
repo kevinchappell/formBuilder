@@ -398,7 +398,7 @@ const FormBuilder = function(opts, element) {
       }
     } else {
       // ensure option data is has all required keys
-      fieldValues.forEach(option => Object.assign({}, { selected: false }, option))
+      fieldValues = values.map(option => Object.assign({}, { selected: false }, option))
     }
 
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
@@ -1335,9 +1335,9 @@ const FormBuilder = function(opts, element) {
   // Attach a callback to add new options
   $stage.on('click', '.add-opt', function(e) {
     e.preventDefault()
-    let $optionWrap = $(e.target).closest('.field-options')
-    let $multiple = $('[name="multiple"]', $optionWrap)
-    let $firstOption = $('.option-selected:eq(0)', $optionWrap)
+    const $optionWrap = $(e.target).closest('.field-options')
+    const $multiple = $('[name="multiple"]', $optionWrap)
+    const $firstOption = $('.option-selected:eq(0)', $optionWrap)
     let isMultiple = false
 
     if ($multiple.length) {
@@ -1393,7 +1393,7 @@ const FormBuilder = function(opts, element) {
     setLang: async locale => {
       await mi18n.setCurrent.call(mi18n, locale)
       d.empty(element)
-      let formBuilder = new FormBuilder(originalOpts, element)
+      const formBuilder = new FormBuilder(originalOpts, element)
       $(element).data('formBuilder', formBuilder)
     },
   }
@@ -1401,44 +1401,53 @@ const FormBuilder = function(opts, element) {
   return formBuilder
 }
 ;(function($) {
-  $.fn.formBuilder = function(options) {
-    if (!options) {
-      options = {}
-    }
-    let elems = this
-    let { i18n, ...opts } = $.extend({}, defaultOptions, options, true)
-    config.opts = opts
-    let i18nOpts = $.extend({}, defaultI18n, i18n, true)
-    let instance = {
-      actions: {
-        getData: null,
-        setData: null,
-        save: null,
-        showData: null,
-        setLang: null,
-        addField: null,
-        removeField: null,
-        clearFields: null,
-      },
-      get formData() {
-        return instance.actions.getData('json')
-      },
-      promise: new Promise(function(resolve, reject) {
-        mi18n
-          .init(i18nOpts)
-          .then(() => {
-            elems.each(i => {
-              let formBuilder = new FormBuilder(opts, elems[i])
-              $(elems[i]).data('formBuilder', formBuilder)
-              instance.actions = formBuilder.actions
+  const methods = {
+    init: (options, elems) => {
+      const { i18n, ...opts } = $.extend({}, defaultOptions, options, true)
+      config.opts = opts
+      const i18nOpts = $.extend({}, defaultI18n, i18n, true)
+      methods.instance = {
+        actions: {
+          getData: null,
+          setData: null,
+          save: null,
+          showData: null,
+          setLang: null,
+          addField: null,
+          removeField: null,
+          clearFields: null,
+        },
+        get formData() {
+          return methods.getData && methods.getData('json')
+        },
+        promise: new Promise(function(resolve, reject) {
+          mi18n
+            .init(i18nOpts)
+            .then(() => {
+              elems.each(i => {
+                const formBuilder = new FormBuilder(opts, elems[i])
+                $(elems[i]).data('formBuilder', formBuilder)
+                Object.assign(methods, formBuilder.actions)
+                methods.instance.actions = formBuilder.actions
+              })
+              delete methods.instance.promise
+              resolve(methods.instance)
             })
-            delete instance.promise
-            resolve(instance)
-          })
-          .catch(console.error)
-      }),
-    }
+            .catch(console.error)
+        }),
+      }
 
-    return instance
+      return methods.instance
+    },
+  }
+
+  $.fn.formBuilder = function(methodOrOptions = {}, ...args) {
+    if (methods[methodOrOptions]) {
+      return methods[methodOrOptions].apply(this, args)
+    } else {
+      const instance = methods.init(methodOrOptions, this)
+      Object.assign(methods, instance)
+      return instance
+    }
   }
 })(jQuery)

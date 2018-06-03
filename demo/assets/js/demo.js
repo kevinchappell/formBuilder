@@ -129,12 +129,12 @@ jQuery(function($) {
       text: ['datetime-local']
     },
     onSave: function(e, formData) {
-      toggleEdit();
       $('.render-wrap').formRender({
         formData: formData,
         templates: templates
       });
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
+      toggleEdit();
     },
     stickyControls: {
       enable: true
@@ -168,6 +168,9 @@ jQuery(function($) {
    */
   function toggleEdit() {
     document.body.classList.toggle('form-rendered', editing);
+    if (!editing) {
+      $('.build-wrap').formBuilder('setData', $('.render-wrap').formRender('userData'))
+    }
     return editing = !editing;
   }
 
@@ -208,7 +211,40 @@ jQuery(function($) {
       resetDemo: function() {
         window.sessionStorage.removeItem('formData');
         location.reload();
-      }
+      },
+      loadUserForm: function() {
+        var formRenderOptions = {
+          controlConfig: {
+            'textarea.tinymce': {
+              branding: false,
+              encoding: 'xml',
+              menubar: 'edit insert format table',
+              plugins: 'preview searchreplace autolink link table lists textcolor colorpicker',
+              toolbar:
+                'formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | preview'
+            },
+          },
+          formData: '[{"type":"autocomplete","label":"Autocomplete","className":"form-control","name":"autocomplete-1526094918549","requireValidOption":true,"values":[{"label":"Option 1","value":"option-1"},{"label":"Option 2","value":"option-2"},{"label":"Option 3","value":"option-3"}],"userData":["option-1"]},{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1526095813035","other":true,"values":[{"label":"Option 1","value":"option-1"},{"label":"Option 2","value":"option-2"}],"userData":["option-1","Bilbo \\"baggins\\""]},{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"color","userData":["#00ff00"]},{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"tel","userData":["123-456-7890"]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1526096579821","userData":["2018-01-01"]},{"type":"number","label":"Number","className":"form-control","name":"number-1526099204594","min":"1","max":"3","step":".2","userData":["1.1"]},{"type":"textarea","label":"Text Area","className":"form-control","name":"textarea-1526099273610","subtype":"textarea","userData":["Tennessee Welcomes You!"]},{"type":"textarea","subtype":"tinymce","label":"Text Area","className":"form-control","name":"textarea-1526099273610","userData":["&lt;p&gt;&lt;span style=&quot;color: #339966;&quot;&gt;It&#39;s a great place&lt;/span&gt;&lt;/p&gt;"]}]'
+        }
+        $('.render-wrap').formRender(formRenderOptions)
+      },
+      clearUserForm: function() {
+        $('.render-wrap').formRender('clear')
+      },
+      showUserData: function() {
+        alert(JSON.stringify($('.render-wrap').formRender('userData')))
+      },
+      getXML: function() {
+        alert(formBuilder.actions.getData('xml'));
+      },
+      getJSON: function() {
+        alert(formBuilder.actions.getData('json', true));
+      },
+      getJS: function() {
+        alert('check console');
+        console.log(formBuilder.actions.getData());
+      },
+      editForm: toggleEdit
     };
 
     Object.keys(apiBtns).forEach(function(action) {
@@ -222,20 +258,5 @@ jQuery(function($) {
     .addEventListener('change', function(e) {
       fb.actions.setLang(e.target.value);
     });
-
-    document.getElementById('getXML').addEventListener('click', function() {
-      alert(formBuilder.actions.getData('xml'));
-    });
-    document.getElementById('getJSON').addEventListener('click', function() {
-      alert(formBuilder.actions.getData('json', true));
-    });
-    document.getElementById('getJS').addEventListener('click', function() {
-      alert('check console');
-      console.log(formBuilder.actions.getData());
-    });
   });
-
-  document.getElementById('edit-form').onclick = function() {
-    toggleEdit();
-  };
 });

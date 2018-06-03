@@ -246,7 +246,8 @@ export default class Helpers {
    * @return {Object} formData
    */
   getData(formData) {
-    let data = this.data
+    const data = this.data
+
     if (!formData) {
       formData = config.opts.formData
     }
@@ -255,9 +256,14 @@ export default class Helpers {
       return false
     }
 
-    let setData = {
+    const setData = {
       xml: formData => utils.parseXML(formData),
-      json: formData => window.JSON.parse(formData),
+      json: formData => {
+        if (typeof formData === 'string') {
+          return window.JSON.parse(formData)
+        }
+        return formData
+      },
     }
 
     data.formData = setData[config.opts.dataType](formData) || []

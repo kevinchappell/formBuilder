@@ -5,10 +5,10 @@ import utils from './utils'
 import events from './events'
 import layout from './layout'
 import control from './control'
+import './control/index'
 import controlCustom from './control/custom'
 import { defaultI18n } from './config'
 import '../sass/form-render.scss'
-import './control/index'
 
 /**
  * FormRender Class
@@ -305,16 +305,15 @@ class FormRender {
       forms.each(index => methods.instance.render(forms[index], index))
       return methods.instance
     },
-    userData: () => methods.instance.userData,
-    clear: () => methods.instance.clear(),
+    userData: () => methods.instance && methods.instance.userData,
+    clear: () => methods.instance && methods.instance.clear(),
   }
 
   $.fn.formRender = function(methodOrOptions = {}, ...args) {
-    const forms = this
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
-      const instance = methods.init(methodOrOptions, forms)
+      const instance = methods.init(methodOrOptions, this)
       Object.assign(methods, instance)
       return instance
     }
