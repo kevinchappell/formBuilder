@@ -811,7 +811,7 @@ export default class Helpers {
     const cbPosition = d.controls.getBoundingClientRect()
 
     $(window).scroll(function(evt) {
-      let scrollTop = $(evt.target).scrollTop()
+      const scrollTop = $(evt.target).scrollTop()
       const offsetDefaults = {
         top: 5,
         bottom: 'auto',
@@ -819,21 +819,21 @@ export default class Helpers {
         left: cbPosition.left,
       }
 
-      let offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset)
+      const offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset)
 
       if (scrollTop > $stageWrap.offset().top) {
         const style = {
-          position: 'fixed',
+          position: 'sticky',
           width: cbWidth,
         }
 
         const cbStyle = Object.assign(style, offset)
 
-        let cbOffset = $cbWrap.offset()
-        let stageOffset = $stageWrap.offset()
-        let cbBottom = cbOffset.top + $cbWrap.height()
-        let stageBottom = stageOffset.top + $stageWrap.height()
-        let atBottom = cbBottom === stageBottom && cbOffset.top > scrollTop
+        const cbOffset = $cbWrap.offset()
+        const stageOffset = $stageWrap.offset()
+        const cbBottom = cbOffset.top + $cbWrap.height()
+        const stageBottom = stageOffset.top + $stageWrap.height()
+        const atBottom = cbBottom === stageBottom && cbOffset.top > scrollTop
 
         if (cbBottom > stageBottom && cbOffset.top !== stageOffset.top) {
           $cbWrap.css({

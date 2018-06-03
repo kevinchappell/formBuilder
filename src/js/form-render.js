@@ -290,6 +290,11 @@ class FormRender {
   /** Clear all rendered fields */
   clear() {
     this.instanceContainers.forEach(container => {
+      // clear tinyMCE editors
+      this.options.formData
+        .slice()
+        .filter(fieldData => fieldData.subtype === 'tinymce')
+        .forEach(fieldData => window.tinymce.get(fieldData.name).setContent(''))
       container.querySelectorAll('input, select, textarea').forEach(input => {
         input.value = ''
         input.checked = false

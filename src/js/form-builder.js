@@ -1230,8 +1230,8 @@ const FormBuilder = function(opts, element) {
    * @return {String} newType
    */
   $stage.on('change', '.fld-multiple', e => {
-    let newType = e.target.checked ? 'checkbox' : 'radio'
-    let $options = $('.option-selected', $(e.target).closest('.form-elements'))
+    const newType = e.target.checked ? 'checkbox' : 'radio'
+    const $options = $('.option-selected', $(e.target).closest('.form-elements'))
     $options.each(i => ($options[i].type = newType))
     return newType
   })
@@ -1255,10 +1255,10 @@ const FormBuilder = function(opts, element) {
   // Copy field
   $stage.on('click touchstart', '.icon-copy', function(e) {
     e.preventDefault()
-    let currentItem = $(e.target)
+    const currentItem = $(e.target)
       .parent()
       .parent('li')
-    let $clone = cloneItem(currentItem)
+    const $clone = cloneItem(currentItem)
     $clone.insertAfter(currentItem)
     h.updatePreview($clone)
     h.save.call(h)
@@ -1275,7 +1275,7 @@ const FormBuilder = function(opts, element) {
       pageY: buttonPosition.top - bodyRect.top - 12,
     }
 
-    let deleteID = $(e.target)
+    const deleteID = $(e.target)
       .parents('.form-field:eq(0)')
       .attr('id')
     const $field = $(document.getElementById(deleteID))
@@ -1290,8 +1290,8 @@ const FormBuilder = function(opts, element) {
 
     // Check if user is sure they want to remove the field
     if (opts.fieldRemoveWarn) {
-      let warnH3 = utils.markup('h3', i18n.warning)
-      let warnMessage = utils.markup('p', i18n.fieldRemoveWarning)
+      const warnH3 = utils.markup('h3', i18n.warning)
+      const warnMessage = utils.markup('p', i18n.fieldRemoveWarning)
       h.confirm([warnH3, warnMessage], () => h.removeField(deleteID), coords)
       $field.addClass('deleting')
     } else {
@@ -1390,11 +1390,12 @@ const FormBuilder = function(opts, element) {
       loadFields(formData)
       h.save.call(h)
     },
-    setLang: async locale => {
-      await mi18n.setCurrent.call(mi18n, locale)
-      d.empty(element)
-      const formBuilder = new FormBuilder(originalOpts, element)
-      $(element).data('formBuilder', formBuilder)
+    setLang: locale => {
+      mi18n.setCurrent.call(mi18n, locale).then(() => {
+        d.empty(element)
+        const formBuilder = new FormBuilder(originalOpts, element)
+        $(element).data('formBuilder', formBuilder)
+      })
     },
   }
 

@@ -33,12 +33,3 @@ body {
 .form-rendered .formrender-actions {
   display: block;
 }
-
-#editForm {
-  display: none;
-  float: right;
-}
-
-.form-rendered #editForm {
-  display: block;
-}

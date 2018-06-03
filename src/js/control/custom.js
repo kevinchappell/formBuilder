@@ -13,6 +13,8 @@ export default class controlCustom extends control {
    * @param {Array} fields
    */
   static register(templates = {}, fields = []) {
+    controlCustom.customRegister = {}
+
     if (!controlCustom.def) {
       controlCustom.def = {
         icon: {},
@@ -58,6 +60,7 @@ export default class controlCustom extends control {
 
         // generate a random key & map the settings against it
         lookup = field.datatype ? field.datatype : `${type}-${Math.floor((Math.random() * 9000) + 1000)}`;
+
         controlCustom.customRegister[lookup] = $.extend(field, {
           type: type,
           class: controlClass
