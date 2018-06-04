@@ -34,6 +34,10 @@ jQuery(function($) {
     }
   ];
 
+  var disabledFieldButtons = {
+    'text': ['remove', 'copy']
+  }
+
   var actionButtons = [{
     id: 'smile',
     className: 'btn btn-success',
@@ -149,9 +153,7 @@ jQuery(function($) {
     actionButtons: actionButtons,
     disableFields: ['autocomplete'],
     replaceFields: replaceFields,
-    disabledFieldButtons: {
-      text: ['copy']
-    }
+    disabledFieldButtons,
     // controlPosition: 'left'
     // disabledAttrs
   };

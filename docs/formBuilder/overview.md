@@ -23,6 +23,23 @@ Key files / folders:
  The parent class defined in `control.js` has two types of methods:
    * object level methods which are used to manipulate and create an instance of that control on a form
    * static class level methods which are used to define and interact with that type of control.
+
+### Built-in Controls
+  *Type* - *Description*
+  * `autocomplete` - Select field that looks like a text input. Has options that filter while the user types.
+  * `button` - A simple button with `submit`, `button` and `cancel` types. Configurable style.
+  * `checkbox-group` - Add a group or single checkbox to your form.
+  * `date` - input field with date type. (note, may require polyfill)
+  * `file` - File input field that support native browser file attachment and [fine-uploader](https://fineuploader.com/).
+  * `header` - A simple header tag `<h1>`, `<h2>` etc.
+  * `hidden` - Add a hidden field to your form with this input.
+  * `paragraph` - `<p>` tag with support for `address`, `blockquote`, `canvas`, `output` subtypes.
+  * `number` - Native input with `number` type.
+  * `radio-group` - Radio group for required multiple choice questions.
+  * `select` - Select tag that support multiple selections
+  * `text` - Simple text input with support for `text`, `password`, `email`, `color`, `tel` subtypes.
+  * `textarea` - Textarea with support for [Quill](https://quilljs.com/) and [tinyMCE](https://www.tinymce.com/) text editors
+
    
 ## Key class level methods
 The following methods are static methods designed to be called on the class. E.g. `let controlClass = control.getClass(type);` 

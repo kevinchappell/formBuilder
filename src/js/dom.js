@@ -4,7 +4,7 @@ export const defaultSubtypes = {
   header: ['h1', 'h2', 'h3'],
   button: ['button', 'submit', 'reset'],
   paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
-  textarea: ['textarea', 'quill'],
+  textarea: ['textarea', 'quill', 'tinymce'],
 }
 
 /**
