@@ -31,6 +31,7 @@ pages:
   - disableFields: formBuilder/options/disableFields.md
   - disabledAttrs: formBuilder/options/disabledAttrs.md
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
+  - disabledFieldButtons: formBuilder/options/disabledFieldButtons.md
   - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fields: formBuilder/options/fields.md
@@ -73,6 +74,7 @@ extra_css:
   - 'css/site.css'
   - '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css'
 extra_javascript:
+  - '//cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js'
   - 'js/scripts.js'
   - '//production-assets.codepen.io/assets/embed/ei.js'
   - '//sidecar.gitter.im/dist/sidecar.v1.js'
