@@ -4,7 +4,6 @@ import semver from 'semver'
 import open from 'opener'
 import 'colors'
 import replace from 'replace-in-file'
-import { isValidCdnConfig } from './validators'
 import pkg from '../package.json'
 
 /* eslint-disable no-console */
@@ -352,29 +351,4 @@ export const removeLog = version => fs.unlinkSync(`.git/${version}`)
 export const orderedValues = (obj, order) => {
   const newOrder = order.map(key => obj[key] || null).filter(Boolean)
   return uniqueArray(newOrder.concat(Object.values(obj)))
-}
-
-/**
- * Generate `cdnPath` where assets will reside
- * @return {String} cndPath
- */
-export const getCdnPath = () => {
-  const { CI_BUILD_REF, CI_COMMIT_REF_SLUG, ASSET_ENVIRONMENT } = process.env
-  const { version, config: { cdn } } = pkg
-  const cdnPathSegments = {
-    'pkg.version': version,
-    'pkg.config.cdn.project': cdn.project,
-    'process.env.ASSET_ENVIRONMENT': ASSET_ENVIRONMENT,
-    'process.env.CI_BUILD_REF': CI_BUILD_REF,
-  }
-  const order = ['pkg.config.cdn.project', 'process.env.ASSET_ENVIRONMENT', 'pkg.version', 'process.env.CI_BUILD_REF']
-
-  // Adds an extra path segment to include CI_COMMIT_REF_SLUG for parallel QA
-  if (ASSET_ENVIRONMENT === 'qa') {
-    const commitRefSlugKey = 'process.env.CI_COMMIT_REF_SLUG'
-    cdnPathSegments[commitRefSlugKey] = CI_COMMIT_REF_SLUG
-    order.splice(3, 0, commitRefSlugKey)
-  }
-
-  return isValidCdnConfig(cdnPathSegments) && orderedValues(cdnPathSegments, order).join('/')
 }

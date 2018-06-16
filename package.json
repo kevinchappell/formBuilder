@@ -34,9 +34,10 @@
         "test/**/*.spec.js"
       ],
       "pluginsDir": "src/js/control_plugins/",
+      "fonts": "src/fonts",
+      "sass": "src/sass",
       "formBuilder": {
         "js": "src/js/form-builder.js",
-        "fonts": "src/fonts/fontello",
         "sass": [
           "src/sass/form-builder.scss"
         ]
@@ -51,7 +52,8 @@
         "demo/assets/sass/site.scss"
       ]
     },
-    "fontServer": "http://fontello.com"
+    "fontServer": "http://fontello.com",
+    "fontelloToken": "c87fefd1a6fb70d86e828e86c655c178"
   },
   "babel": {
     "presets": [
@@ -81,6 +83,7 @@
   "scripts": {
     "test": "npm test",
     "test:watch": "npm test -- --reporter min --watch",
+    "font": "node tools/run icon-font",
     "deploy": "babel-node -- node_modules/gulp/bin/gulp deploy",
     "tag:patch": "babel-node -- node_modules/gulp/bin/gulp tag --patch",
     "tag:minor": "babel-node -- node_modules/gulp/bin/gulp tag --minor",
@@ -106,6 +109,8 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "clui": "^0.3.6",
     "compression-webpack-plugin": "^1.1.11",
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.2.0",
@@ -115,15 +120,18 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-prettier": "^2.6.0",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "inquirer": "^6.0.0",
     "mi18n": "^0.3.5",
     "node-sass": "^4.9.0",
     "opener": "^1.4.3",
     "postcss-loader": "^2.1.5",
     "prettier": "^1.13.5",
+    "replace-in-file": "^3.4.0",
+    "request": "^2.87.0",
     "sass-loader": "^7.0.3",
     "semver": "^5.5.0",
     "style-loader": "^0.21.0",
+    "unzip": "^0.1.11",
     "webpack": "^4.12.0",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.0.8",
@@ -131,7 +139,8 @@
   },
   "prettierOptions": {
     "singleQuote": true,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "printWidth": 120
   },
   "eslintConfig": {
     "parser": "babel-eslint",

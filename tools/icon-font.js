@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import http from 'http'
 import { Spinner } from 'clui'
 import unzip from 'unzip'
@@ -9,9 +10,12 @@ import request from 'request'
 import { updatePackageJSON, spinner } from './utils'
 import pkg from '../package.json'
 
+const {
+  config: { files, fontServer },
+} = pkg
+
 // Fetch current session token from fontServer
 const getFontelloToken = () => {
-  const { config: { files, fontServer } } = pkg
   return new Promise((resolve, reject) => {
     const req = request.post(fontServer, (err, resp, body) => {
       if (err) {
@@ -21,7 +25,7 @@ const getFontelloToken = () => {
       }
     })
     const form = req.form()
-    form.append('config', fs.createReadStream(`${files.fonts}/iconfonts/config.json`))
+    form.append('config', fs.createReadStream(`${files.fonts}/config.json`))
   })
 }
 
@@ -29,15 +33,16 @@ const getFontelloToken = () => {
 const processEntry = entry => {
   const splitPath = entry.path.split('/')
   const baseName = splitPath.shift()
-  const paths = [
-    `${baseName}/config.json`,
-    `${baseName}/css/quiqup-icons-embedded.css`,
-    `${baseName}/font/quiqup-icons.eot`,
-    `${baseName}/font/quiqup-icons.svg`,
-  ]
-  if (paths.includes(entry.path)) {
-    const targetDir = `${__dirname}/../${pkg.config.files.fonts}/iconfonts`
-    const targetFile = `${targetDir}/${splitPath.pop()}`
+  const fileName = splitPath.pop()
+  const fonts = [`${baseName}/config.json`, `${baseName}/font/fb-icons.woff`]
+  const css = [`${baseName}/css/fb-icons-embedded.css`]
+  if (fonts.includes(entry.path)) {
+    const targetDir = `${__dirname}/../${files.fonts}`
+    const targetFile = `${targetDir}/${fileName}`
+    entry.pipe(fs.createWriteStream(targetFile))
+  } else if (css.includes(entry.path)) {
+    const targetDir = `${__dirname}/../${files.sass}`
+    const targetFile = `${targetDir}/base/_font.scss`
     entry.pipe(fs.createWriteStream(targetFile))
   } else {
     entry.autodrain()
@@ -48,7 +53,6 @@ const processEntry = entry => {
 const fontSave = async fontelloToken => {
   const token = fontelloToken || (await getFontelloToken())
 
-  const { config: { fontServer, files } } = pkg
   const status = new Spinner('Importing Font', spinner)
   status.start()
 
@@ -61,18 +65,25 @@ const fontSave = async fontelloToken => {
       let count = 0
       res.on('data', data => {
         count += data.length
-        const progressPercent = parseInt(count / total * 100, 10)
+        const progressPercent = parseInt((count / total) * 100, 10)
         status.message(`Importing Font ${progressPercent}%`)
       })
     })
     .on('close', async () => {
       status.message('Fixing CSS files...')
       // Fixed the path of the imported font files
+      const targetFile = path.resolve(files.sass, 'base', '_font.scss')
+      // remove truetype definition
       await replace({
-        files: `${files.fonts}/iconfonts/quiqup-icons-embedded.css`,
-        from: /url\('..\/font\//g,
-        to: "url('",
+        files: targetFile,
+        from: [
+          /,\n.*url\('.*\('.*truetype'\)/gm,
+          /\('[\s\S]*?format\('embedded-opentype'\),[\s\S]*?url/m,
+          /^@font-face[\s\S]*?}\n/m,
+        ],
+        to: '',
       })
+
       status.message('CSS Files Fixed')
       status.stop()
     })
@@ -106,12 +117,12 @@ const fontEdit = async () => {
 }
 
 const iconFont = () => {
-  const [action] = process.argv.slice(2)
+  const [action] = process.argv.slice(3)
   const fontActions = {
     edit: fontEdit,
     save: fontSave,
   }
-  return fontActions[action]()
+  return fontActions[action] ? fontActions[action]() : fontActions['edit']()
 }
 
-export default iconFont()
+export default iconFont

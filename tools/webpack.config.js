@@ -1,10 +1,10 @@
 const pkg = require('../package.json')
-const { resolve } = require('path')
+const { resolve, join } = require('path')
 const autoprefixer = require('autoprefixer')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const { BannerPlugin } = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 // hack for Ubuntu on Windows
 try {
@@ -18,11 +18,9 @@ const ANALYZE = process.argv.includes('--analyze')
 const devtool = PRODUCTION ? false : 'inline-source-map'
 const outputDir = resolve(__dirname, '../', 'demo/assets/js/')
 
-const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`, ''].join('\n')
-
-const extractSass = new ExtractTextPlugin({
-  filename: '[name].[contenthash].css',
-})
+const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`, ''].join(
+  '\n'
+)
 
 const webpackConfig = {
   context: outputDir,
@@ -54,47 +52,48 @@ const webpackConfig = {
       },
       {
         test: /\.scss$/,
-        use: extractSass.extract({
-          fallback: {
+        use: [
+          {
             loader: 'style-loader',
             options: {
               attrs: {
                 class: 'formBuilder-injected-style',
               },
+              sourceMap: !PRODUCTION,
             },
           },
-          use: [
-            {
-              loader: 'css-loader',
-              query: {
-                minimize: true,
-                sourceMaps: !PRODUCTION,
-              },
+          {
+            loader: 'css-loader',
+            options: {
+              camelCase: true,
+              minimize: true,
+              sourceMap: !PRODUCTION,
             },
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: [
-                  autoprefixer({
-                    browsers: ['> 1%']
-                  }),
-                ],
-              },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [
+                autoprefixer({
+                  browsers: ['> 1%'],
+                }),
+              ],
+              sourceMap: !PRODUCTION,
             },
-            {
-              loader: 'sass-loader',
-              query: {
-                sourceMaps: !PRODUCTION,
-              },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: !PRODUCTION,
             },
-          ],
-        }),
+          },
+        ],
       },
     ],
   },
   plugins: [
-    new ExtractTextPlugin({
-      filename: '[name].[contenthash].css',
+    new CleanWebpackPlugin(['dist/*', 'demo/assets/js/form-*'], {
+      root: join(__dirname, '..'),
     }),
     new BannerPlugin(bannerTemplate),
     new CompressionPlugin({
