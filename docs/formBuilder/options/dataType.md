@@ -4,7 +4,7 @@ Use formBuilder with XML or JSON data
 ## Usage
 ```javascript
 var options = {
-      dataType: 'json' // default: 'xml' 
+      dataType: 'json' // json|xml default: 'json' 
     };
 $(container).formBuilder(options);
 ```
