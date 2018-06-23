@@ -1,28 +1,15 @@
-.empty {
-  .frmb {
-    border: 3px dashed $grey-light;
-    margin-right: 5px;
-    background-color: $empty-stage-color;
-  }
-}
-
 .stage-wrap {
   position: relative;
-  float: left;
-  width: 74%;
-
-  &.pull-right {
-    .frmb {
-      margin: 0 0 0 6px;
-    }
-  }
+  padding: 0;
+  width: calc(74% - 5px);
 
   @include breakpoint('phone-lrg') {
     width: calc(100% - 64px);
   }
 
-
   &.empty {
+    border: 3px dashed $grey-light;
+    background-color: $empty-stage-color;
     &::after {
       content: attr(data-content);
       position: absolute;
@@ -38,8 +25,6 @@
 .frmb {
   list-style-type: none;
   min-height: 200px;
-  margin: 0 6px 0 0;
-  padding: 0;
   transition: background-color 500ms ease-in-out;
 
   .fb-required {
@@ -143,7 +128,7 @@
         }
       }
 
-      [type=checkbox] {
+      [type='checkbox'] {
         float: left;
         margin-right: 10px;
       }
@@ -280,7 +265,10 @@
       display: none;
     }
 
-    select, input[type='text'], textarea, input[type='number'] {
+    select,
+    input[type='text'],
+    textarea,
+    input[type='number'] {
       background-color: $white;
       border: 1px solid $grey-light;
       box-shadow: inset 0 1px 1px $input-box-shadow-color;
@@ -460,7 +448,7 @@
         padding: 0;
         color: $error;
         &::before {
-          margin:0;
+          margin: 0;
         }
 
         &:hover {
@@ -526,7 +514,7 @@
       margin-left: 2%;
       float: left;
 
-      > input[type=checkbox] {
+      > input[type='checkbox'] {
         margin-top: 8px;
       }
     }
@@ -558,7 +546,6 @@
         float: none;
       }
     }
-
 
     input[type='number'] {
       width: auto;
@@ -631,7 +618,7 @@
       em {
         display: block;
         font-weight: 400;
-        font-size: .75em;
+        font-size: 0.75em;
       }
 
       &.maxlength-label {
@@ -649,7 +636,6 @@
       @include breakpoint('phone-lrg') {
         margin-left: 0;
       }
-
 
       label {
         font-weight: 400;

@@ -365,7 +365,7 @@ export default class Helpers {
         const option = {
           selected: $('.option-selected', $option).is(':checked'),
           value: $('.option-value', $option).val(),
-          label: $('.option-label', $option).val()
+          label: $('.option-label', $option).val(),
         }
         previewData.values.push(option)
       })
@@ -667,8 +667,8 @@ export default class Helpers {
     }
 
     if (!markEmptyArray.some(elem => elem === true)) {
-      stage.parentElement.classList.add('empty')
-      stage.parentElement.dataset.content = i18n.getStarted
+      stage.classList.add('empty')
+      stage.dataset.content = i18n.getStarted
     }
 
     if (animate) {
@@ -802,14 +802,30 @@ export default class Helpers {
   }
 
   /**
+   * Get the computed style for DOM element
+   * @param  {Object}  elem     dom element
+   * @param  {Boolean} property style eg. width, height, opacity
+   * @return {String}           computed style
+   */
+  getStyle(elem, property = false) {
+    let style
+    if (window.getComputedStyle) {
+      style = window.getComputedStyle(elem, null)
+    } else if (elem.currentStyle) {
+      style = elem.currentStyle
+    }
+
+    return property ? style[property] : style
+  }
+
+  /**
    * Controls follow scroll to the bottom of the editor
    */
   stickyControls() {
-    let d = this.d
-    const $cbWrap = $(d.controls).parent()
-    const $stageWrap = $(d.stage).parent()
-    const cbWidth = $cbWrap.width()
-    const cbPosition = d.controls.getBoundingClientRect()
+    const {controls, stage} = this.d
+    const $cbWrap = $(controls).parent()
+    const cbPosition = controls.getBoundingClientRect()
+    const {top: stageTop} = stage.getBoundingClientRect()
 
     $(window).scroll(function(evt) {
       const scrollTop = $(evt.target).scrollTop()
@@ -822,21 +838,20 @@ export default class Helpers {
 
       const offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset)
 
-      if (scrollTop > $stageWrap.offset().top) {
+      if (scrollTop > stageTop) {
         const style = {
           position: 'sticky',
-          width: cbWidth,
         }
 
         const cbStyle = Object.assign(style, offset)
 
-        const cbOffset = $cbWrap.offset()
-        const stageOffset = $stageWrap.offset()
-        const cbBottom = cbOffset.top + $cbWrap.height()
-        const stageBottom = stageOffset.top + $stageWrap.height()
-        const atBottom = cbBottom === stageBottom && cbOffset.top > scrollTop
+        const cbPosition = controls.getBoundingClientRect()
+        const stagePosition = stage.getBoundingClientRect()
+        const cbBottom = cbPosition.top + cbPosition.height
+        const stageBottom = stagePosition.top + stagePosition.height
+        const atBottom = cbBottom === stageBottom && cbPosition.top > scrollTop
 
-        if (cbBottom > stageBottom && cbOffset.top !== stageOffset.top) {
+        if (cbBottom > stageBottom && cbPosition.top !== stagePosition.top) {
           $cbWrap.css({
             position: 'absolute',
             top: 'auto',
@@ -850,7 +865,7 @@ export default class Helpers {
           $cbWrap.css(cbStyle)
         }
       } else {
-        d.controls.parentElement.removeAttribute('style')
+        controls.parentElement.removeAttribute('style')
       }
     })
   }
@@ -908,7 +923,7 @@ export default class Helpers {
       fieldRemoved = true
       _this.save()
       if (!form.childNodes.length) {
-        let stageWrap = form.parentElement
+        const stageWrap = form.parentElement
         stageWrap.classList.add('empty')
         stageWrap.dataset.content = mi18n.current.getStarted
       }
@@ -998,11 +1013,11 @@ export default class Helpers {
    * @param  {String} formID [description]
    */
   editorUI(formID) {
-    let d = this.d
-    let data = this.data
+    const d = this.d
+    const data = this.data
     d.stage = m('ul', null, {
       id: data.formID,
-      className: 'frmb',
+      className: `frmb stage-wrap ${data.layout.stage}`,
     })
 
     // Create draggable fields for formBuilder

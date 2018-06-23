@@ -33,6 +33,9 @@ const FormBuilder = function(opts, element) {
 
   const h = new Helpers(formID, layoutEngine)
   const m = utils.markup
+  data.layout = h.editorLayout(opts.controlPosition)
+  data.formID = formID
+  data.lastID = `${data.formID}-fld-1`
 
   const originalOpts = opts
 
@@ -49,10 +52,6 @@ const FormBuilder = function(opts, element) {
   h.editorUI(formID)
 
   let $stage = $(d.stage)
-
-  data.layout = h.editorLayout(opts.controlPosition)
-  data.formID = formID
-  data.lastID = `${data.formID}-fld-1`
 
   // retrieve a full list of loaded controls
   let controls = control.getRegistered()
@@ -219,12 +218,7 @@ const FormBuilder = function(opts, element) {
     cbWrap.appendChild(formActions)
   }
 
-  const stageWrap = m('div', [d.stage, cbWrap], {
-    id: `${data.formID}-stage-wrap`,
-    className: 'stage-wrap ' + data.layout.stage,
-  })
-
-  $editorWrap.append(stageWrap, cbWrap)
+  $editorWrap.append(d.stage, cbWrap)
 
   if (element.type !== 'textarea') {
     $(element).append($editorWrap)
@@ -334,7 +328,7 @@ const FormBuilder = function(opts, element) {
       setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
     }
 
-    stageWrap.classList.remove('empty')
+    d.stage.classList.remove('empty')
   }
 
   // Parse saved XML template data
@@ -342,18 +336,18 @@ const FormBuilder = function(opts, element) {
     formData = h.getData(formData)
     if (formData && formData.length) {
       formData.forEach(fieldData => prepFieldVars(utils.trimObj(fieldData)))
-      stageWrap.classList.remove('empty')
+      d.stage.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
       // Load default fields if none are set
       opts.defaultFields.forEach(field => prepFieldVars(field))
-      stageWrap.classList.remove('empty')
+      d.stage.classList.remove('empty')
     } else if (!opts.prepend && !opts.append) {
-      stageWrap.classList.add('empty')
-      stageWrap.dataset.content = i18n.getStarted
+      d.stage.classList.add('empty')
+      d.stage.dataset.content = i18n.getStarted
     }
 
     if (nonEditableFields()) {
-      stageWrap.classList.remove('empty')
+      d.stage.classList.remove('empty')
     }
 
     h.save()
@@ -1356,13 +1350,6 @@ const FormBuilder = function(opts, element) {
 
   loadFields()
 
-  $stage.css('min-height', $cbUL.height())
-
-  // If option set, controls will remain in view in editor
-  if (opts.stickyControls.enable) {
-    h.stickyControls($stage)
-  }
-
   if (opts.disableInjectedStyle) {
     const styleTags = document.getElementsByClassName('formBuilder-injected-style')
     utils.forEach(styleTags, i => remove(styleTags[i]))
@@ -1395,6 +1382,17 @@ const FormBuilder = function(opts, element) {
       })
     },
   }
+
+  // elements sometimes take too long to fully render,
+  // we must wait for them
+  setTimeout(() => {
+    $stage.css('min-height', $cbUL.height())
+
+    // If option set, controls will remain in view in editor
+    if (opts.stickyControls.enable) {
+      h.stickyControls($stage)
+    }
+  }, 100)
 
   return formBuilder
 }

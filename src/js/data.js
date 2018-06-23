@@ -8,7 +8,7 @@ export const instanceData = {}
 export class Data {
   /**
    * Set defaults
-   * @param  {[type]} formID [description]
+   * @param  {String} formID
    */
   constructor(formID) {
     this.formData = {}

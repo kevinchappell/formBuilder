@@ -211,10 +211,6 @@ jQuery(function($) {
         console.log('Can submit: ', document.forms[0].checkValidity());
         // Display the key/value pairs
         console.log('FormData:', formData);
-        for(var pair of formData.entries()) {
-          console.log(pair)
-           console.log(pair[0]+ ': '+ pair[1]);
-        }
       },
       resetDemo: function() {
         window.sessionStorage.removeItem('formData');
