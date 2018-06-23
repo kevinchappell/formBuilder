@@ -90,7 +90,7 @@
     "release:patch": "npm run tag:patch --patch && npm run deploy",
     "release:minor": "npm run tag:minor --minor && npm run deploy",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
-    "build": "webpack --mode production -p --progress --config tools/webpack.config && cp demo/assets/js/form-* dist/",
+    "build": "webpack --mode production -p --progress --config tools/webpack.config",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:vendor": "babel-node -- tools/run build-vendor",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config"

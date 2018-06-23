@@ -2,7 +2,7 @@ node_modules
 bower_components
 npm-debug.log
 demo/assets/**/*.map
-dist/*.map
+dist/
 site
 .DS_Store
 yarn-error.log

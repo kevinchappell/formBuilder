@@ -16,7 +16,7 @@ try {
 const PRODUCTION = process.argv.includes('production')
 const ANALYZE = process.argv.includes('--analyze')
 const devtool = PRODUCTION ? false : 'inline-source-map'
-const outputDir = resolve(__dirname, '../', 'demo/assets/js/')
+const outputDir = resolve(__dirname, '../', 'dist/')
 
 const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`, ''].join(
   '\n'
@@ -30,7 +30,7 @@ const webpackConfig = {
   },
   output: {
     path: outputDir,
-    publicPath: '/assets/js/',
+    publicPath: '/dist',
     filename: '[name].min.js',
   },
   module: {
