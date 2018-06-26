@@ -66,6 +66,7 @@ export const defaultOptions = {
       right: 'auto',
     },
   },
+  subtypes: {},
   templates: {},
   showActionButtons: true,
   typeUserDisabledAttrs: {},
