@@ -171,7 +171,8 @@ utils.bindEvents = (element, events) => {
 utils.nameAttr = function(field) {
   let epoch = new Date().getTime()
   let prefix = field.type || utils.hyphenCase(field.label)
-  return prefix + '-' + epoch
+  let fileMultiple = (field.multiple && field.type === 'file') ? '[]' : ''
+  return `${prefix}-${epoch}${fileMultiple}`
 }
 
 /**
