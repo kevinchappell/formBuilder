@@ -169,6 +169,7 @@ utils.bindEvents = (element, events) => {
  * @return {String}       name
  */
 utils.nameAttr = function(field) {
+  if (field.name) { return field.name }
   let epoch = new Date().getTime()
   let prefix = field.type || utils.hyphenCase(field.label)
   let fileMultiple = (field.multiple && field.type === 'file') ? '[]' : ''
