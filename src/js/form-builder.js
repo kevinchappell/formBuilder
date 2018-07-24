@@ -317,9 +317,7 @@ const FormBuilder = function(opts, element) {
       field = Object.assign({}, $field)
     }
 
-    if (!field.name) {
-      field.name = utils.nameAttr(field)
-    }
+    field.name = utils.nameAttr(field)
 
     if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'date', 'select', 'textarea', 'autocomplete'])) {
       field.className = field.className || 'form-control'
@@ -564,10 +562,10 @@ const FormBuilder = function(opts, element) {
           first: ' ',
           second: i18n.selectionsMessage,
         })
-      }     
+      }
     }
 
-    if(type === 'autocomplete'){     
+    if(type === 'autocomplete'){
       advFieldMap['requireValidOption'] = () => {
         return boolAttribute('requireValidOption', values, {
           first: ' ',
@@ -606,7 +604,6 @@ const FormBuilder = function(opts, element) {
       let customAttr = processTypeUserAttrs(opts.typeUserAttrs[type], values)
       advFields.push(customAttr)
     }
-
     return advFields.join('')
   }
 
@@ -1045,7 +1042,6 @@ const FormBuilder = function(opts, element) {
         if (prop === 'selected' && optionData.selected === true) {
           attrs.checked = optionData.selected
         }
-
         optionInputs.push(m('input', null, attrs))
       }
     }
