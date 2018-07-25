@@ -64,7 +64,7 @@ export default class control {
 
     // Allow setting disabled flag
     if(this.disabled){
-      config['disabled'] = 'disabled' 
+      config['disabled'] = 'disabled'
     }
     this.config = config
     this.configure()
@@ -93,7 +93,7 @@ export default class control {
    */
   static register(types, controlClass, parentType) {
     // store subtypes as <type>.<subtype> in the register
-    let prefix = parentType ? parentType + '.' : ''
+    const prefix = parentType ? parentType + '.' : ''
 
     // initialise the register
     if (!control.classRegister) {
@@ -106,7 +106,7 @@ export default class control {
     // associate the controlClass with each passed control type
     for (let type of types) {
       // '.' is a restricted character for type names
-      if (type.indexOf('.') > -1) {
+      if (type.indexOf('.') !== -1) {
         // eslint-disable-next-line max-len
         control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
         continue

@@ -117,6 +117,10 @@ jQuery(function($) {
           'blue form-control': 'Blue'
         },
         style: 'border: 1px solid red'
+      },
+      readonly: {
+        label: 'readonly',
+        value: false,
       }
     }
   };
@@ -151,6 +155,13 @@ jQuery(function($) {
     replaceFields: replaceFields,
     disabledFieldButtons: {
       text: ['copy']
+    },
+    i18n: {
+      override: {
+        'en-US': {
+          number: 'Big Numbers'
+        }
+      }
     }
     // controlPosition: 'left'
     // disabledAttrs

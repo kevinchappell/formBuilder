@@ -597,29 +597,47 @@ const FormBuilder = function(opts, element) {
   }
 
   /**
+   * Detects the type of user defined attribute
+   * @param {String} attr attribute name
+   * @param {Object} attrData attribute config
+   * @return {String} type of user attr
+   */
+  function userAttrType(attr, attrData) {
+    return (
+      [['array', ({ options }) => !!options], [typeof attrData.value, () => true]].find(typeCondition =>
+        typeCondition[1](attrData)
+      )[0] || 'string'
+    )
+  }
+
+  /**
    * Processes typeUserAttrs
    * @param  {Object} typeUserAttr option
    * @param  {Object} values       field attributes
    * @return {String}              markup for custom user attributes
    */
   function processTypeUserAttrs(typeUserAttr, values) {
-    let advField = []
+    const advField = []
+    const attrTypeMap = {
+      array: selectUserAttrs,
+      string: inputUserAttrs,
+      boolean: (attr, attrData) => boolAttribute(attr, attrData, { first: attrData.label }),
+    }
 
     for (let attribute in typeUserAttr) {
       if (typeUserAttr.hasOwnProperty(attribute)) {
-        let orig = i18n[attribute]
-        let tUA = typeUserAttr[attribute]
-        let origValue = tUA.value
-        tUA.value = values[attribute] || tUA.value || ''
+        const attrValType = userAttrType(attribute, typeUserAttr[attribute])
+        const orig = i18n[attribute]
+        const tUA = typeUserAttr[attribute]
+        const origValue = tUA.value
+        tUA.value = origValue === undefined ? '' : values[attribute] || tUA.value
 
         if (tUA.label) {
           i18n[attribute] = tUA.label
         }
 
-        if (tUA.options) {
-          advField.push(selectUserAttrs(attribute, tUA))
-        } else {
-          advField.push(inputUserAttrs(attribute, tUA))
+        if (attrTypeMap[attrValType]) {
+          advField.push(attrTypeMap[attrValType](attribute, tUA))
         }
 
         i18n[attribute] = orig
@@ -693,12 +711,12 @@ const FormBuilder = function(opts, element) {
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
   }
 
-  const boolAttribute = (name, values, labels) => {
-    let label = txt =>
+  const boolAttribute = (name, values, labels = {}) => {
+    const label = txt =>
       m('label', txt, {
         for: `${name}-${data.lastID}`,
       }).outerHTML
-    let cbAttrs = {
+    const cbAttrs = {
       type: 'checkbox',
       className: `fld-${name}`,
       name,
@@ -707,7 +725,7 @@ const FormBuilder = function(opts, element) {
     if (values[name]) {
       cbAttrs.checked = true
     }
-    let left = []
+    const left = []
     let right = [m('input', null, cbAttrs).outerHTML]
 
     if (labels.first) {

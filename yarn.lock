@@ -3927,9 +3927,9 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
-mi18n@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/mi18n/-/mi18n-0.3.5.tgz#36c5cb1adea776f1ff1075b913bf6b534af0006c"
+mi18n@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/mi18n/-/mi18n-0.4.1.tgz#b4acd3e045311d75e3d3f5a0d47614cbe0e6fbdb"
 
 micromatch@^2.1.5:
   version "2.3.11"

@@ -1,6 +1,6 @@
 {
-  "name": "formBuilder",
-  "version": "2.9.8",
+  "name": "formbuilder.js",
+  "version": "2.10.0",
   "main": "dist/form-builder.min.js",
   "files": [
     "dist/form-builder.min.js",
@@ -121,7 +121,7 @@
     "eslint-loader": "^2.0.0",
     "eslint-plugin-prettier": "^2.6.0",
     "inquirer": "^6.0.0",
-    "mi18n": "^0.3.5",
+    "mi18n": "0.4.1",
     "node-sass": "^4.9.0",
     "opener": "^1.4.3",
     "postcss-loader": "^2.1.5",
