@@ -918,9 +918,8 @@ export default class Helpers {
       fieldRemoved = true
       _this.save()
       if (!form.childNodes.length) {
-        const stageWrap = form.parentElement
-        stageWrap.classList.add('empty')
-        stageWrap.dataset.content = mi18n.current.getStarted
+        form.classList.add('empty')
+        form.dataset.content = mi18n.current.getStarted
       }
     })
 
