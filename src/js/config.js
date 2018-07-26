@@ -56,6 +56,7 @@ export const defaultOptions = {
     warning: console.warn,
   },
   onSave: (evt, formData) => null,
+  onAddField: (fieldData, fieldId) => fieldData,
   onClearAll: () => null,
   prepend: false,
   sortableControls: false,

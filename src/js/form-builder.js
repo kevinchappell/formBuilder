@@ -279,7 +279,7 @@ const FormBuilder = function(opts, element) {
     return cancelArray.some(elem => elem === true)
   }
 
-  // builds the standard formbuilder datastructure for a feild definition
+  // builds the standard formbuilder datastructure for a field definition
   const prepFieldVars = function($field, isNew = false) {
     let field = {}
     if ($field instanceof jQuery) {
@@ -330,11 +330,12 @@ const FormBuilder = function(opts, element) {
       field.style = match[1]
     }
 
-    appendNewField(field, isNew)
-
     if (isNew) {
+      field = Object.assign({}, field, opts.onFieldAdd(data.lastID, field))
       setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
     }
+
+    appendNewField(field, isNew)
 
     d.stage.classList.remove('empty')
   }
@@ -1410,6 +1411,20 @@ const FormBuilder = function(opts, element) {
         d.empty(element)
         const formBuilder = new FormBuilder(originalOpts, element)
         $(element).data('formBuilder', formBuilder)
+      })
+    },
+    toggleFieldEdit: fieldId => {
+      const fieldIds = Array.isArray(fieldId) ? fieldId : [fieldId]
+      fieldIds.forEach(fId => {
+        if (!utils.inArray(typeof fId, ['number', 'string'])) {
+          return
+        }
+        if (typeof fId === 'number') {
+          fId = d.stage.children[fId].id
+        } else if (!/^frmb-/.test(fId)) {
+          fId = d.stage.querySelector(fId).id
+        }
+        h.toggleEdit(fId)
       })
     },
   }

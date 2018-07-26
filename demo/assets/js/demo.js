@@ -143,6 +143,9 @@ jQuery(function($) {
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
       toggleEdit();
     },
+    onFieldAdd: function(fieldId) {
+      document.getElementById('currentFieldId').value = fieldId
+    },
     stickyControls: {
       enable: true
     },
@@ -261,6 +264,12 @@ jQuery(function($) {
       getJS: function() {
         alert('check console');
         console.log(formBuilder.actions.getData());
+      },
+      toggleEdit: function() {
+        // formBuilder.actions.toggleFieldEdit(document.getElementById('currentFieldId').value)
+        // $('.build-wrap').formBuilder('toggleFieldEdit', 0)
+        $('.build-wrap').formBuilder('toggleFieldEdit', '.header-field')
+        // $('.build-wrap').formBuilder('toggleFieldEdit', document.getElementById('currentFieldId').value)
       }
     };
 
