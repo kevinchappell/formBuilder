@@ -822,10 +822,10 @@ export default class Helpers {
    * Controls follow scroll to the bottom of the editor
    */
   stickyControls() {
-    const {controls, stage} = this.d
+    const { controls, stage } = this.d
     const $cbWrap = $(controls).parent()
     const cbPosition = controls.getBoundingClientRect()
-    const {top: stageTop} = stage.getBoundingClientRect()
+    const { top: stageTop } = stage.getBoundingClientRect()
 
     $(window).scroll(function(evt) {
       const scrollTop = $(evt.target).scrollTop()
@@ -980,24 +980,24 @@ export default class Helpers {
     // first register any passed subtype options against the appropriate type control class
     for (let fieldType in subtypeOpts) {
       if (subtypeOpts.hasOwnProperty(fieldType)) {
-        let controlClass = control.getClass(fieldType)
-        control.register(subtypeOpts[fieldType], controlClass, fieldType)
+        control.register(subtypeOpts[fieldType], control.getClass(fieldType), fieldType)
       }
     }
 
     // retrieve a list of all subtypes
-    let subtypeDef = control.getRegisteredSubtypes()
+    const subtypeDef = control.getRegisteredSubtypes()
 
     // reformat the subtypes for each fieldType
-    let subtypes = {}
+    const subtypes = {}
     for (let fieldType in subtypeDef) {
       if (subtypeDef.hasOwnProperty(fieldType)) {
         // loop through each defined subtype & build the formatted data structure
-        let formatted = []
+        const formatted = []
         for (let subtype of subtypeDef[fieldType]) {
-          let controlClass = control.getClass(fieldType, subtype)
+          const controlClass = control.getClass(fieldType, subtype)
+          const label = controlClass.mi18n(`subtype.${subtype}`) || controlClass.mi18n(subtype) || subtype
           formatted.push({
-            label: controlClass.mi18n(subtype),
+            label,
             value: subtype,
           })
         }

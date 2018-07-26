@@ -2,6 +2,7 @@ export const defaultOptions = {
   controlPosition: 'right',
   append: false,
   actionButtons: [],
+  allowStageSort: true,
   controlOrder: [
     'autocomplete',
     'button',

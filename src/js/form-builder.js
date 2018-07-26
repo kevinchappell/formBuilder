@@ -51,7 +51,7 @@ const FormBuilder = function(opts, element) {
   const subtypes = (config.subtypes = h.processSubtypes(opts.subtypes))
   h.editorUI(formID)
 
-  let $stage = $(d.stage)
+  const $stage = $(d.stage)
 
   // retrieve a full list of loaded controls
   let controls = control.getRegistered()
@@ -138,6 +138,10 @@ const FormBuilder = function(opts, element) {
     cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button'].join(', '),
     placeholder: 'frmb-placeholder',
   })
+
+  if (!opts.allowStageSort) {
+    $stage.sortable('disable')
+  }
 
   // ControlBox with different fields
   $cbUL.sortable({
@@ -821,7 +825,7 @@ const FormBuilder = function(opts, element) {
    * @return {String}            select input makrup
    */
   const selectAttribute = (attribute, values, optionData) => {
-    let selectOptions = optionData.map((option, i) => {
+    const selectOptions = optionData.map((option, i) => {
       let optionAttrs = Object.assign(
         {
           label: `${i18n.option} ${i}`,
