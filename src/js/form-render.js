@@ -61,15 +61,7 @@ class FormRender {
       return false
     }
 
-    const setData = {
-      xml: formData => utils.parseXML(formData),
-      json: formData => window.JSON.parse(formData),
-    }
-
-    // if the user hasn't passed a pre-parsed formData object, parse it according to the specified dataType
-    if (typeof this.options.formData !== 'object') {
-      this.options.formData = setData[this.options.dataType](this.options.formData) || false
-    }
+    this.options.formData = this.parseFormData(this.options.formData)
 
     // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
     control.controlConfig = options.controlConfig || {}
@@ -157,7 +149,7 @@ class FormRender {
    * Main render method which produces the form from passed configuration
    * @param {Object} element - an html element to render the form into (optional)
    * @param {Number} instanceIndex - instance index
-   * @return {Object} FormRender
+   * @return {Object} rendered form
    */
   render(element = null, instanceIndex = 0) {
     const formRender = this
@@ -169,13 +161,6 @@ class FormRender {
         opts.onRender()
       }
     }
-
-    /**
-     * Retrieve the html markup for a passed array of DomElements
-     * @param {Array} fields - array of dom elements
-     * @return {String} fields html
-     */
-    const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
 
     // Begin the core plugin
     const rendered = []
@@ -207,6 +192,12 @@ class FormRender {
         runCallbacks()
         opts.notify.success(opts.messages.formRendered)
       } else {
+        /**
+         * Retrieve the html markup for a passed array of DomElements
+         * @param {Array} fields - array of dom elements
+         * @return {String} fields html
+         */
+        const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
         formRender.markup = exportMarkup(rendered)
       }
     } else {
@@ -300,24 +291,54 @@ class FormRender {
       })
     })
   }
+  /**
+   * ensure formData is correct type
+   * @param {Object|String} formData
+   * @return {Object} formData
+   */
+  parseFormData(formData) {
+    const setData = {
+      xml: formData => utils.parseXML(formData),
+      json: formData => window.JSON.parse(formData),
+    }
+    if (typeof formData !== 'object') {
+      formData = setData[this.options.dataType](formData) || false
+    }
+    return formData
+  }
 }
 
 ;(function($) {
+  let formRenderForms
   const methods = {
-    init: (options, forms) => {
+    init: (forms, options = {}) => {
+      formRenderForms = forms
       methods.instance = new FormRender(options)
       forms.each(index => methods.instance.render(forms[index], index))
       return methods.instance
     },
     userData: () => methods.instance && methods.instance.userData,
     clear: () => methods.instance && methods.instance.clear(),
+    setData: formData => {
+      if (methods.instance) {
+        const instance = methods.instance
+        instance.options.formData = instance.parseFormData(formData)
+      }
+    },
+    render: (formData, options = {}) => {
+      if (methods.instance) {
+        const instance = methods.instance
+        instance.options = Object.assign({}, instance.options, options, { formData: instance.parseFormData(formData) })
+        formRenderForms.each(index => methods.instance.render(formRenderForms[index], index))
+      }
+    },
   }
 
   $.fn.formRender = function(methodOrOptions = {}, ...args) {
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
-      const instance = methods.init(methodOrOptions, this)
+      const instance = methods.init(this, methodOrOptions)
       Object.assign(methods, instance)
       return instance
     }

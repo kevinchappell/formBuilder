@@ -331,7 +331,7 @@ const FormBuilder = function(opts, element) {
     }
 
     if (isNew) {
-      field = Object.assign({}, field, opts.onFieldAdd(data.lastID, field))
+      field = Object.assign({}, field, opts.onAddField(data.lastID, field))
       setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
     }
 
