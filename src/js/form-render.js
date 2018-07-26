@@ -128,7 +128,9 @@ class FormRender {
       sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
       sanitizedField.name = field.name && `${field.name}-${instanceIndex}`
     }
-    sanitizedField.className = field.className || field.class || null
+    sanitizedField.className = Array.isArray(field.className)
+      ? utils.unique(field.className.join(' ').split(' ')).join(' ')
+      : field.className || field.class || null
     delete sanitizedField.class
     if (field.values) {
       field.values = field.values.map(option => utils.trimObj(option))
@@ -189,6 +191,7 @@ class FormRender {
         // determine the control class for this type, and then process it through the layout engine
         const controlClass = control.getClass(fieldData.type, fieldData.subtype)
         const field = engine.build(controlClass, sanitizedField)
+
         rendered.push(field)
       }
 

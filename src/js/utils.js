@@ -215,8 +215,9 @@ utils.markup = function(tag, content = '', attributes = {}) {
 
   for (let attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
-      let name = utils.safeAttrName(attr)
-      field.setAttribute(name, attrs[attr])
+      const name = utils.safeAttrName(attr)
+      const attrVal = Array.isArray(attrs[attr]) ? utils.unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
+      field.setAttribute(name, attrVal)
     }
   }
 

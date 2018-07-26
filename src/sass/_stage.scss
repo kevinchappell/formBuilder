@@ -527,8 +527,9 @@
       clear: both;
     }
 
-    [contenteditable]{
-      height:auto;
+    [contenteditable],
+    select[multiple] {
+      height: auto;
     }
 
     input[type='text'],

@@ -232,7 +232,11 @@ const FormBuilder = function(opts, element) {
 
   const saveAndUpdate = utils.debounce(evt => {
     if (evt) {
-      if (evt.type === 'keyup' && evt.target.name === 'className') {
+      const isDisabled = [
+        ({ type, target }) => type === 'keyup' && target.name === 'className',
+        // ({ type, originalEvent }) => type === 'click' && originalEvent.ctrlKey,
+      ].some(typeCondition => typeCondition(evt))
+      if (isDisabled) {
         return false
       }
 
@@ -244,7 +248,7 @@ const FormBuilder = function(opts, element) {
   const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
 
   // Save field on change
-  $stage.on('change blur keyup', previewSelectors, saveAndUpdate)
+  $stage.on('change blur keyup click', previewSelectors, saveAndUpdate)
 
   $('li', d.controls).click(evt => {
     const $control = $(evt.target).closest('li')
@@ -608,9 +612,10 @@ const FormBuilder = function(opts, element) {
    */
   function userAttrType(attr, attrData) {
     return (
-      [['array', ({ options }) => !!options], [typeof attrData.value, () => true]].find(typeCondition =>
-        typeCondition[1](attrData)
-      )[0] || 'string'
+      [
+        ['array', ({ options }) => !!options],
+        [typeof attrData.value, () => true], // string, number,
+      ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
     )
   }
 
@@ -625,7 +630,9 @@ const FormBuilder = function(opts, element) {
     const attrTypeMap = {
       array: selectUserAttrs,
       string: inputUserAttrs,
-      boolean: (attr, attrData) => boolAttribute(attr, attrData, { first: attrData.label }),
+      number: numberAttribute,
+      boolean: (attr, attrData) =>
+        boolAttribute(attr, { ...attrData, [attr]: values[attr] }, { first: attrData.label }),
     }
 
     for (let attribute in typeUserAttr) {
@@ -634,7 +641,7 @@ const FormBuilder = function(opts, element) {
         const orig = i18n[attribute]
         const tUA = typeUserAttr[attribute]
         const origValue = tUA.value
-        tUA.value = origValue === undefined ? '' : values[attribute] || tUA.value
+        tUA.value = values[attribute] || tUA.value || ''
 
         if (tUA.label) {
           i18n[attribute] = tUA.label
@@ -687,31 +694,33 @@ const FormBuilder = function(opts, element) {
    * @return {String}         select markup
    */
   function selectUserAttrs(name, fieldData) {
-    let optis = Object.keys(fieldData.options).map(val => {
-      let attrs = { value: val }
-      if (val === fieldData.value) {
+    const { multiple, options, label: labelText, value, ...restData } = fieldData
+    const optis = Object.keys(options).map(val => {
+      const attrs = { value: val }
+      if (Array.isArray(value) ? utils.inArray(val, value) : val === value) {
         attrs.selected = null
       }
-      return m('option', fieldData.options[val], attrs).outerHTML
+      return m('option', options[val], attrs).outerHTML
     })
-    let selectAttrs = {
-      id: name + '-' + data.lastID,
-      title: fieldData.description || fieldData.label || name.toUpperCase(),
-      name: name,
+    const selectAttrs = {
+      id: `${name}-${data.lastID}`,
+      title: restData.description || labelText || name.toUpperCase(),
+      name,
       className: `fld-${name} form-control`,
     }
-    let label = `<label for="${selectAttrs.id}">${i18n[name]}</label>`
 
-    Object.keys(fieldData)
-      .filter(prop => {
-        return !utils.inArray(prop, ['value', 'options', 'label'])
-      })
-      .forEach(function(attr) {
-        selectAttrs[attr] = fieldData[attr]
-      })
+    if (multiple) {
+      selectAttrs.multiple = true
+    }
 
-    let select = m('select', optis, selectAttrs).outerHTML
-    let inputWrap = `<div class="input-wrap">${select}</div>`
+    const label = `<label for="${selectAttrs.id}">${i18n[name]}</label>`
+
+    Object.keys(restData).forEach(function(attr) {
+      selectAttrs[attr] = restData[attr]
+    })
+
+    const select = m('select', optis, selectAttrs).outerHTML
+    const inputWrap = `<div class="input-wrap">${select}</div>`
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
   }
 

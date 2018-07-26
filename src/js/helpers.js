@@ -177,14 +177,14 @@ export default class Helpers {
    * @return {Object} formData
    */
   prepData(form) {
-    let formData = []
-    let d = this.d
-    let _this = this
+    const formData = []
+    const d = this.d
+    const _this = this
 
     if (form.childNodes.length !== 0) {
       // build data object
       utils.forEach(form.childNodes, function(index, field) {
-        let $field = $(field)
+        const $field = $(field)
 
         if (!$field.hasClass('disabled-field')) {
           let fieldData = _this.getTypes($field)
@@ -277,12 +277,12 @@ export default class Helpers {
    * @return {XML|JSON} formData
    */
   save(stage) {
-    let _this = this
-    let data = this.data
+    const _this = this
+    const data = this.data
     if (!stage) {
       stage = this.d.stage
     }
-    let doSave = {
+    const doSave = {
       xml: () => _this.xmlSave(stage),
       json: () => window.JSON.stringify(_this.prepData(stage), null, '\t'),
     }
@@ -314,18 +314,16 @@ export default class Helpers {
    * @param {Object} fieldData
    */
   setAttrVals(field, fieldData) {
-    let attrs = field.querySelectorAll('[class*="fld-"]')
+    const attrs = field.querySelectorAll('[class*="fld-"]')
     utils.forEach(attrs, index => {
-      let attr = attrs[index]
-      let value
-      let name = utils.camelCase(attr.getAttribute('name'))
-      if (attr.attributes['contenteditable']) {
-        value = attr.innerHTML
-      } else if (attr.type === 'checkbox') {
-        value = attr.checked
-      } else {
-        value = attr.value
-      }
+      const attr = attrs[index]
+      const name = utils.camelCase(attr.getAttribute('name'))
+      const value = [
+        [attr.attributes.contenteditable, attr.innerHTML],
+        [attr.type === 'checkbox', attr.checked],
+        [attr.attributes.multiple, $(attr).val()],
+        [true, attr.value],
+      ].find(([condition]) => condition)[1]
       fieldData[name] = value
     })
   }
@@ -374,7 +372,6 @@ export default class Helpers {
     previewData = utils.trimObj(previewData)
 
     previewData.className = _this.classNames(field, previewData)
-    $('.fld-className', field).val(previewData.className)
 
     $field.data('fieldData', previewData)
 
@@ -421,15 +418,13 @@ export default class Helpers {
    * @return {String} classNames
    */
   classNames(field, previewData) {
-    let className = field.querySelector('.fld-className')
+    const className = field.querySelector('.fld-className')
     if (!className) {
       return
     }
-    let i
-    let type = previewData.type
-    let style = previewData.style
-    let classes = className.value.split(' ')
-    let types = {
+    const {type, style } = previewData
+    const classes = className.multiple ? $(className).val() : className.value.split(' ')
+    const types = {
       button: 'btn',
       submit: 'btn',
     }
@@ -438,7 +433,7 @@ export default class Helpers {
 
     if (primaryType) {
       if (style) {
-        for (i = 0; i < classes.length; i++) {
+        for (let i = 0; i < classes.length; i++) {
           let re = new RegExp(`(?:^|\\s)${primaryType}-(.*?)(?:\\s|$)+`, 'g')
           let match = classes[i].match(re)
           if (match) {

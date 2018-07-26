@@ -109,8 +109,9 @@ jQuery(function($) {
 
   var typeUserAttrs = {
     text: {
-      className: {
+      shape: {
         label: 'Class',
+        multiple: true,
         options: {
           'red form-control': 'Red',
           'green form-control': 'Green',
@@ -129,7 +130,7 @@ jQuery(function($) {
   var disabledAttrs = ['placeholder'];
 
   var fbOptions = {
-    allowStageSort: false,
+    // allowStageSort: false,
     // dataType: 'xml',
     subtypes: {
       text: ['datetime-local']
