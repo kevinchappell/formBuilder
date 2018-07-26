@@ -129,6 +129,7 @@ jQuery(function($) {
   var disabledAttrs = ['placeholder'];
 
   var fbOptions = {
+    // dataType: 'xml',
     subtypes: {
       text: ['datetime-local']
     },

@@ -23,12 +23,10 @@ class FormRender {
       layoutTemplates: {}, // allow custom override layout templates to be defined
       controls: {}, // custom controls
       controlConfig: {}, // additional configuration for controls
-      destroyTemplate: true, // @todo - still needed?
       container: false, // string selector or Node element
       dataType: 'json',
       formData: false,
       i18n: Object.assign({}, defaultI18n),
-      // subtypes: defaultSubtypes, // @todo - removed this - is it needed now?
       messages: {
         formRendered: 'Form Rendered',
         noFormData: 'No form data.',

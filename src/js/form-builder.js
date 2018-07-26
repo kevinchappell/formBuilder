@@ -876,13 +876,13 @@ const FormBuilder = function(opts, element) {
     let noMakeAttr = []
 
     if (!noMakeAttr.some(elem => elem === true)) {
-      let inputConfig = {
+      const inputConfig = {
         name: attribute,
         placeholder: placeholder,
         className: `fld-${attribute} form-control`,
         id: `${attribute}-${data.lastID}`,
       }
-      let attributeLabel = m('label', attrLabel, {
+      const attributeLabel = m('label', attrLabel, {
         for: inputConfig.id,
       }).outerHTML
 
