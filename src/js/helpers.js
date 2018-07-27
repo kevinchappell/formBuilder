@@ -316,6 +316,7 @@ export default class Helpers {
   setAttrVals(field, fieldData) {
     const attrs = field.querySelectorAll('[class*="fld-"]')
     utils.forEach(attrs, index => {
+
       const attr = attrs[index]
       const name = utils.camelCase(attr.getAttribute('name'))
       const value = [
@@ -323,7 +324,7 @@ export default class Helpers {
         [attr.type === 'checkbox', attr.checked],
         [attr.attributes.multiple, $(attr).val()],
         [true, attr.value],
-      ].find(([condition]) => condition)[1]
+      ].find(([condition]) => !!condition)[1]
       if (attr.value !== undefined) {
         fieldData[name] = value
       }
