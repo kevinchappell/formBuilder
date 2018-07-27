@@ -1107,7 +1107,7 @@ const FormBuilder = function(opts, element) {
     return $clone
   }
 
-  // ---------------------- UTILITIES ---------------------- //
+  // ---------------------- Event listeners ---------------------- //
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {
@@ -1189,8 +1189,8 @@ const FormBuilder = function(opts, element) {
     if (e.target.classList.contains('other-option')) {
       return
     }
-    let field = utils.closest(e.target, '.form-field')
-    let optionTypes = ['select', 'checkbox-group', 'radio-group']
+    const field = utils.closest(e.target, '.form-field')
+    const optionTypes = ['select', 'checkbox-group', 'radio-group']
     if (utils.inArray(field.type, optionTypes)) {
       let options = field.getElementsByClassName('option-value')
       if (field.type === 'select') {
@@ -1216,17 +1216,15 @@ const FormBuilder = function(opts, element) {
   })
 
   // update preview to label
-  utils.addEventListeners(d.stage, 'keyup change', e => {
-    if (!e.target.classList.contains('fld-label')) return
-    let value = e.target.value || e.target.innerHTML
-    let label = utils.closest(e.target, '.form-field').querySelector('.field-label')
+  utils.addEventListeners(d.stage, 'keyup change', ({target}) => {
+    if (!target.classList.contains('fld-label')) return
+    let value = target.value || target.innerHTML
+    let label = utils.closest(target, '.form-field').querySelector('.field-label')
     label.innerHTML = utils.parsedHtml(value)
   })
 
   // remove error styling when users tries to correct mistake
-  $stage.on('keyup', 'input.error', function(e) {
-    $(e.target).removeClass('error')
-  })
+  $stage.on('keyup', 'input.error', ({ target }) => $(target).removeClass('error'))
 
   // update preview for description
   $stage.on('keyup', 'input[name="description"]', function(e) {
@@ -1458,6 +1456,7 @@ const FormBuilder = function(opts, element) {
           addField: null,
           removeField: null,
           clearFields: null,
+          toggleFieldEdit: null,
         },
         get formData() {
           return methods.getData && methods.getData('json')
