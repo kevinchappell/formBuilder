@@ -23,6 +23,7 @@ export default class Helpers {
     this.d = instanceDom[formID]
     this.doCancel = false
     this.layout = layout
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   /**
@@ -191,7 +192,7 @@ export default class Helpers {
           let $roleInputs = $('.roles-field:checked', field)
           let roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
 
-          _this.setAttrVals(field, fieldData)
+          fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
 
           if (fieldData.subtype) {
             if (fieldData.subtype === 'quill') {
@@ -311,24 +312,23 @@ export default class Helpers {
   /**
    * Set the values for field attributes in the editor
    * @param {Object} field
-   * @param {Object} fieldData
+   * @return {Object} fieldData
    */
-  setAttrVals(field, fieldData) {
+  getAttrVals(field) {
+    const fieldData = Object.create(null)
     const attrs = field.querySelectorAll('[class*="fld-"]')
     utils.forEach(attrs, index => {
-
       const attr = attrs[index]
       const name = utils.camelCase(attr.getAttribute('name'))
       const value = [
-        [attr.attributes.contenteditable, attr.innerHTML],
-        [attr.type === 'checkbox', attr.checked],
-        [attr.attributes.multiple, $(attr).val()],
-        [true, attr.value],
-      ].find(([condition]) => !!condition)[1]
-      if (attr.value !== undefined) {
-        fieldData[name] = value
-      }
+        [attr.attributes.contenteditable, () => attr.innerHTML],
+        [attr.type === 'checkbox', () => attr.checked],
+        [attr.attributes.multiple, () => $(attr).val()],
+        [true, () => attr.value],
+      ].find(([condition]) => !!condition)[1]()
+      fieldData[name] = value
     })
+    return fieldData
   }
 
   /**
@@ -346,12 +346,8 @@ export default class Helpers {
 
     const fieldType = $field.attr('type')
     const $prevHolder = $('.prev-holder', field)
-    let previewData = {
-      type: fieldType,
-    }
+    let previewData = Object.assign({}, _this.getAttrVals(field, previewData), { type: fieldType })
     let preview
-
-    _this.setAttrVals(field, previewData)
 
     const style = $('.btn-style', field).val()
     if (style) {
@@ -466,13 +462,26 @@ export default class Helpers {
     if (!overlay) {
       overlay = document.getElementsByClassName('form-builder-overlay')[0]
     }
+    overlay && remove(overlay)
     if (!dialog) {
       dialog = document.getElementsByClassName('form-builder-dialog')[0]
     }
-    overlay.classList.remove('visible')
-    remove(dialog)
-    remove(overlay)
+    dialog && remove(dialog)
+    document.removeEventListener('keydown', this.handleKeyDown, false)
     document.dispatchEvent(events.modalClosed)
+  }
+
+  /**
+   *
+   * @param {Object} e keydown event object
+   * @param {Function} cb callback
+   */
+  handleKeyDown(e) {
+    const keyCode = e.keyCode || e.which
+    if (keyCode === 27) {
+      e.preventDefault()
+      this.closeConfirm.call(this)
+    }
   }
 
   /**
@@ -500,16 +509,14 @@ export default class Helpers {
    * @return {Object} DOM Object
    */
   showOverlay() {
-    const _this = this
-    let overlay = utils.markup('div', null, {
+    const overlay = utils.markup('div', null, {
       className: 'form-builder-overlay',
     })
     document.body.appendChild(overlay)
     overlay.classList.add('visible')
 
-    overlay.onclick = function() {
-      _this.closeConfirm(overlay)
-    }
+    overlay.addEventListener('click', ({ target }) => this.closeConfirm(target), false)
+    document.addEventListener('keydown', this.handleKeyDown, false)
 
     return overlay
   }

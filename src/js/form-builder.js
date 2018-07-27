@@ -674,7 +674,7 @@ const FormBuilder = function(opts, element) {
       type: attrs.type || 'text',
       className: [`fld-${name}`],
     }
-    let label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
+    const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
     let optionInputs = ['checkbox', 'checkbox-group', 'radio-group']
     if (!utils.inArray(textAttrs.type, optionInputs)) {

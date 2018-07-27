@@ -270,10 +270,7 @@ jQuery(function($) {
         console.log(formBuilder.actions.getData());
       },
       toggleEdit: function() {
-        // formBuilder.actions.toggleFieldEdit(document.getElementById('currentFieldId').value)
-        // $('.build-wrap').formBuilder('toggleFieldEdit', 0)
-        $('.build-wrap').formBuilder('toggleFieldEdit', '.header-field')
-        // $('.build-wrap').formBuilder('toggleFieldEdit', document.getElementById('currentFieldId').value)
+        formBuilder.actions.toggleFieldEdit(document.getElementById('currentFieldId').value);
       }
     };
 
