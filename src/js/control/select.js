@@ -106,7 +106,7 @@ export default class controlSelect extends control {
             click: () => this.otherOptionCB(otherOptionAttrs.id),
           },
         }
-        // let label = mi18n.current.other;
+
         let wrapperClass = optionType
         if (inline) {
           wrapperClass += '-inline'

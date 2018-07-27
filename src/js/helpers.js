@@ -324,7 +324,9 @@ export default class Helpers {
         [attr.attributes.multiple, $(attr).val()],
         [true, attr.value],
       ].find(([condition]) => condition)[1]
-      fieldData[name] = value
+      if (attr.value !== undefined) {
+        fieldData[name] = value
+      }
     })
   }
 
@@ -422,7 +424,7 @@ export default class Helpers {
     if (!className) {
       return
     }
-    const {type, style } = previewData
+    const { type, style } = previewData
     const classes = className.multiple ? $(className).val() : className.value.split(' ')
     const types = {
       button: 'btn',

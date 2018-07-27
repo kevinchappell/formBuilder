@@ -674,7 +674,7 @@ const FormBuilder = function(opts, element) {
       type: attrs.type || 'text',
       className: [`fld-${name}`],
     }
-    let label = `<label for="${textAttrs.id}">${i18n[name]}</label>`
+    let label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
     let optionInputs = ['checkbox', 'checkbox-group', 'radio-group']
     if (!utils.inArray(textAttrs.type, optionInputs)) {
@@ -854,7 +854,7 @@ const FormBuilder = function(opts, element) {
       name: attribute,
       className: `fld-${attribute} form-control`,
     }
-    let labelText = i18n[attribute] || utils.capitalize(attribute)
+    let labelText = i18n[attribute] || utils.capitalize(attribute) || ''
     let label = m('label', labelText, { for: selectAttrs.id })
     let select = m('select', selectOptions, selectAttrs)
     let inputWrap = m('div', select, { className: 'input-wrap' })
@@ -881,18 +881,18 @@ const FormBuilder = function(opts, element) {
       if (utils.inArray(values.type, textArea)) {
         attrLabel = i18n.content
       } else {
-        attrVal = utils.parsedHtml(values[attribute])
+        attrVal = utils.parsedHtml(attrVal)
       }
     }
 
-    let placeholder = i18n[`placeholder.${attribute}`] || ''
+    let placeholder = i18n[`placeholders.${attribute}`] || ''
     let attributefield = ''
     let noMakeAttr = []
 
     if (!noMakeAttr.some(elem => elem === true)) {
       const inputConfig = {
         name: attribute,
-        placeholder: placeholder,
+        placeholder,
         className: `fld-${attribute} form-control`,
         id: `${attribute}-${data.lastID}`,
       }
@@ -946,7 +946,7 @@ const FormBuilder = function(opts, element) {
   // Append the new field to the editor
   const appendNewField = function(values, isNew = true) {
     const type = values.type || 'text'
-    const label = values.label || i18n[type] || i18n.label
+    const label = values.label || (isNew ? i18n[type] || i18n.label : '')
     const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
     let fieldButtons = [
       m('a', null, {
