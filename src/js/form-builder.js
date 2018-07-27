@@ -116,7 +116,7 @@ const FormBuilder = function(opts, element) {
       })
       inputSet.dataset.type = name
       controlList.push(name)
-      allControls[set.name] = inputSet
+      allControls[name] = inputSet
     })
   }
 
@@ -126,6 +126,8 @@ const FormBuilder = function(opts, element) {
       d.controls.appendChild(allControls[control])
     }
   })
+
+  console.log(controls, allControls)
 
   // Sortable fields
   $stage.sortable({
@@ -1216,7 +1218,7 @@ const FormBuilder = function(opts, element) {
   })
 
   // update preview to label
-  utils.addEventListeners(d.stage, 'keyup change', ({target}) => {
+  utils.addEventListeners(d.stage, 'keyup change', ({ target }) => {
     if (!target.classList.contains('fld-label')) return
     let value = target.value || target.innerHTML
     let label = utils.closest(target, '.form-field').querySelector('.field-label')
@@ -1425,6 +1427,11 @@ const FormBuilder = function(opts, element) {
         h.toggleEdit(fId)
       })
     },
+    toggleAllFieldEdit: () => {
+      utils.forEach(d.stage.children, index => {
+        h.toggleEdit(d.stage.children[index].id)
+      })
+    },
   }
 
   // elements sometimes take too long to fully render,
@@ -1457,6 +1464,7 @@ const FormBuilder = function(opts, element) {
           removeField: null,
           clearFields: null,
           toggleFieldEdit: null,
+          toggleAllFieldEdit: null,
         },
         get formData() {
           return methods.getData && methods.getData('json')

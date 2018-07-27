@@ -271,7 +271,8 @@ jQuery(function($) {
       },
       toggleEdit: function() {
         formBuilder.actions.toggleFieldEdit(document.getElementById('currentFieldId').value);
-      }
+      },
+      toggleAllEdit: formBuilder.actions.toggleAllFieldEdit
     };
 
     Object.keys(apiBtns).forEach(function(action) {
