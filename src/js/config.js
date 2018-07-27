@@ -45,6 +45,7 @@ export const defaultOptions = {
   defaultFields: [],
   fields: [],
   fieldRemoveWarn: false,
+  fieldEditContainer: null, // DOM node or selector
   inputSets: [],
   replaceFields: [],
   roles: {
@@ -58,8 +59,11 @@ export const defaultOptions = {
   onSave: (evt, formData) => null,
   onAddField: (fieldData, fieldId) => fieldData,
   onClearAll: () => null,
+  onOpenFieldEdit: () => null,
+  onCloseFieldEdit: () => null,
   prepend: false,
   sortableControls: false,
+  scrollToFieldOnAdd: true,
   stickyControls: {
     enable: true,
     offset: {

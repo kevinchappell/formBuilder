@@ -31,7 +31,7 @@ const FormBuilder = function(opts, element) {
   // of the format control identifier (type, or type.subtype): {options}
   control.controlConfig = opts.controlConfig || {}
 
-  const h = new Helpers(formID, layoutEngine)
+  const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = utils.markup
   data.layout = h.editorLayout(opts.controlPosition)
   data.formID = formID
@@ -126,8 +126,6 @@ const FormBuilder = function(opts, element) {
       d.controls.appendChild(allControls[control])
     }
   })
-
-  console.log(controls, allControls)
 
   // Sortable fields
   $stage.sortable({
@@ -231,26 +229,6 @@ const FormBuilder = function(opts, element) {
   } else {
     $(element).replaceWith($editorWrap)
   }
-
-  const saveAndUpdate = utils.debounce(evt => {
-    if (evt) {
-      const isDisabled = [
-        ({ type, target }) => type === 'keyup' && target.name === 'className',
-        // ({ type, originalEvent }) => type === 'click' && originalEvent.ctrlKey,
-      ].some(typeCondition => typeCondition(evt))
-      if (isDisabled) {
-        return false
-      }
-
-      h.updatePreview($(evt.target).closest('.form-field'))
-      h.save.call(h)
-    }
-  })
-
-  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
-
-  // Save field on change
-  $stage.on('change blur keyup click', previewSelectors, saveAndUpdate)
 
   $('li', d.controls).click(evt => {
     const $control = $(evt.target).closest('li')
@@ -1002,7 +980,16 @@ const FormBuilder = function(opts, element) {
     const formElements = m('div', [advFields(values), m('a', i18n.close, { className: 'close-field' })], {
       className: 'form-elements',
     })
-    liContents.push(m('div', formElements, { id: `${data.lastID}-holder`, className: 'frm-holder' }))
+
+    const editPanel = m('div', formElements, {
+      id: `${data.lastID}-holder`,
+      className: 'frm-holder',
+      dataFieldId: data.lastID,
+    })
+
+    formBuilder.currentEditPanel = editPanel
+
+    liContents.push(editPanel)
 
     let field = m('li', liContents, {
       class: type + '-field form-field',
@@ -1030,10 +1017,14 @@ const FormBuilder = function(opts, element) {
       opts.typeUserEvents[type].onadd(field)
     }
 
-    if (opts.editOnAdd && isNew) {
-      h.closeAllEdit()
-      h.toggleEdit(data.lastID, false)
-      // field.scrollIntoView();
+    if (isNew) {
+      if (opts.editOnAdd) {
+        h.closeAllEdit()
+        h.toggleEdit(data.lastID, false)
+      }
+      if (field.scrollIntoView && opts.scrollToFieldOnAdd) {
+        field.scrollIntoView({ behavior: 'smooth' })
+      }
     }
 
     data.lastID = h.incrementId(data.lastID)
@@ -1111,6 +1102,25 @@ const FormBuilder = function(opts, element) {
 
   // ---------------------- Event listeners ---------------------- //
 
+  const saveAndUpdate = utils.debounce(evt => {
+    if (evt) {
+      const isDisabled = [({ type, target }) => type === 'keyup' && target.name === 'className'].some(typeCondition =>
+        typeCondition(evt)
+      )
+      if (isDisabled) {
+        return false
+      }
+
+      h.updatePreview($(evt.target).closest('.form-field'))
+      h.save.call(h)
+    }
+  })
+
+  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
+
+  // Save field on change
+  $stage.on('change blur keyup click', previewSelectors, saveAndUpdate)
+
   // delete options
   $stage.on('click touchstart', '.remove', e => {
     let $field = $(e.target).parents('.form-field:eq(0)')
@@ -1161,6 +1171,7 @@ const FormBuilder = function(opts, element) {
       return false
     }
   })
+
   $stage.on('dblclick', 'li.form-field, .field-label', e => {
     if (e.target.tagName.toLowerCase() === 'input' || e.target.contentEditable) {
       return
@@ -1432,6 +1443,7 @@ const FormBuilder = function(opts, element) {
         h.toggleEdit(d.stage.children[index].id)
       })
     },
+    closeAllFieldEdit: h.closeAllEdit.bind(h),
   }
 
   // elements sometimes take too long to fully render,
@@ -1464,6 +1476,7 @@ const FormBuilder = function(opts, element) {
           removeField: null,
           clearFields: null,
           toggleFieldEdit: null,
+          closeAllFieldEdit: null,
           toggleAllFieldEdit: null,
         },
         get formData() {

@@ -15,15 +15,17 @@ const m = utils.markup
 export default class Helpers {
   /**
    * Setup defaults, get instance data and dom
-   * @param  {String} formID [description]
+   * @param  {String} formId
    * @param {Object} layout object instance used by various helpers
+   * @param {Object} formBuilder instance
    */
-  constructor(formID, layout) {
-    this.data = instanceData[formID]
-    this.d = instanceDom[formID]
+  constructor(formId, layout, formBuilder) {
+    this.data = instanceData[formId]
+    this.d = instanceDom[formId]
     this.doCancel = false
     this.layout = layout
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.formBuilder = formBuilder
   }
 
   /**
@@ -791,19 +793,26 @@ export default class Helpers {
    */
   toggleEdit(fieldId, animate = true) {
     const field = document.getElementById(fieldId)
-    const toggleBtn = $('.toggle-form', field)
-    if (!toggleBtn.length) return
-    const editPanel = $('.frm-holder', field)
+    const $editPanel = $('.frm-holder', field)
+    const $preview = $('.prev-holder', field)
     field.classList.toggle('editing')
-    toggleBtn.toggleClass('open')
+    $('.toggle-form', field).toggleClass('open')
     if (animate) {
-      $('.prev-holder', field).slideToggle(250)
-      editPanel.slideToggle(250)
+      $preview.slideToggle(250)
+      $editPanel.slideToggle(250)
     } else {
-      $('.prev-holder', field).toggle()
-      editPanel.toggle()
+      $preview.toggle()
+      $editPanel.toggle()
     }
     this.updatePreview($(field))
+    if (field.classList.contains('editing')) {
+      this.formBuilder.currentEditPanel = $editPanel[0]
+      config.opts.onOpenFieldEdit($editPanel[0])
+      document.dispatchEvent(events.fieldEditOpened)
+    } else {
+      config.opts.onCloseFieldEdit($editPanel[0])
+      document.dispatchEvent(events.fieldEditClosed)
+    }
   }
 
   /**
