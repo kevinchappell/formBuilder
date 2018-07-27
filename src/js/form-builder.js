@@ -116,6 +116,7 @@ const FormBuilder = function(opts, element) {
       })
       inputSet.dataset.type = name
       controlList.push(name)
+      console.log(name)
       allControls[name] = inputSet
     })
   }
@@ -172,12 +173,12 @@ const FormBuilder = function(opts, element) {
     },
   })
 
-  let processControl = control => {
+  const processControl = control => {
     if (control[0].classList.contains('input-set-control')) {
-      let inputSets = []
-      let inputSet = opts.inputSets.find(set => set.name === control[0].dataset.type)
+      const inputSets = []
+      const inputSet = opts.inputSets.find(set => utils.hyphenCase(set.name || set.label) === control[0].dataset.type)
       if (inputSet && inputSet.showHeader) {
-        let header = {
+        const header = {
           type: 'header',
           subtype: 'h2',
           id: inputSet.name,
@@ -185,6 +186,7 @@ const FormBuilder = function(opts, element) {
         }
         inputSets.push(header)
       }
+
       inputSets.push(...inputSet.fields)
       inputSets.forEach(field => {
         prepFieldVars(field, true)
@@ -992,7 +994,7 @@ const FormBuilder = function(opts, element) {
     liContents.push(editPanel)
 
     let field = m('li', liContents, {
-      class: type + '-field form-field',
+      class: `${type}-field form-field`,
       type: type,
       id: data.lastID,
     })
