@@ -1047,7 +1047,10 @@ export default class Helpers {
    */
   processOptions(options) {
     const _this = this
-    let { actionButtons, replaceFields, ...opts } = options
+    let { actionButtons, replaceFields, fieldEditContainer, ...opts } = options
+    if (typeof fieldEditContainer === 'string') {
+      fieldEditContainer = document.querySelector(fieldEditContainer)
+    }
     actionButtons = [
       {
         type: 'button',
@@ -1080,7 +1083,7 @@ export default class Helpers {
     ].concat(options.actionButtons)
     opts.fields = opts.fields.concat(replaceFields)
     opts.disableFields = opts.disableFields.concat(replaceFields.map(({ type }) => type && type))
-    config.opts = Object.assign({}, { actionButtons }, opts)
+    config.opts = Object.assign({}, { actionButtons }, { fieldEditContainer }, opts)
     return config.opts
   }
 

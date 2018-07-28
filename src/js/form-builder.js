@@ -66,7 +66,7 @@ const FormBuilder = function(opts, element) {
   }
 
   // DOM element to hold the list of controls
-  let $cbUL = $(d.controls)
+  const $cbUL = $(d.controls)
 
   // add each control to the interface
   let controlList = []
