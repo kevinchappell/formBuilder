@@ -38,15 +38,9 @@ class FormRender {
       render: true,
       templates: {}, // custom inline defined templates
       notify: {
-        error: function(message) {
-          return console.error(message)
-        },
-        success: function(message) {
-          return console.log(message)
-        },
-        warning: function(message) {
-          return console.warn(message)
-        },
+        error: console.error,
+        success: console.log,
+        warning: console.warn,
       },
     }
     this.options = $.extend(true, defaults, options)

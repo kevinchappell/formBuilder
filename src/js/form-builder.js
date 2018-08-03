@@ -116,7 +116,6 @@ const FormBuilder = function(opts, element) {
       })
       inputSet.dataset.type = name
       controlList.push(name)
-      console.log(name)
       allControls[name] = inputSet
     })
   }

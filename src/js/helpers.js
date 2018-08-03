@@ -143,35 +143,25 @@ export default class Helpers {
    */
   xmlSave(form) {
     let formData = this.prepData(form)
-    let xml = ['<form-template>\n\t<fields>']
+    const indent = (width = 1) => Array(width + 1).join('  ')
+    const xml = ['<form-template>', `${indent()}<fields>`]
 
     utils.forEach(formData, function(fieldIndex, field) {
       let fieldContent = null
+      const { values, ...fieldData } = field
       const optionFields = optionFieldsRegEx
 
       // Handle options
       if (field.type.match(optionFields)) {
-        let fieldOptions = field.values
-        let options = []
-
-        for (let i = 0; i < fieldOptions.length; i++) {
-          let oData = fieldOptions[i]
-          let option = m('option', oData.label, oData).outerHTML
-          options.push('\n\t\t\t' + option)
-        }
-        options.push('\n\t\t')
-
-        fieldContent = options.join('')
-        delete field.values
+        fieldContent = `\n${values.map(option => indent(4) + m('option', option.label, option).outerHTML).join('\n')}\n${indent(3)}`
       }
 
-      let xmlField = m('field', fieldContent, field)
-      xml.push('\n\t\t' + xmlField.outerHTML)
+      xml.push(indent(3) + m('field', fieldContent, fieldData).outerHTML)
     })
 
-    xml.push('\n\t</fields>\n</form-template>')
+    xml.push(`${indent()}</fields>`, '</form-template>')
 
-    return xml.join('')
+    return xml.join('\n')
   }
 
   /**
@@ -276,22 +266,20 @@ export default class Helpers {
 
   /**
    * Saves and returns formData
-   * @param {Object} stage DOM element
+   * @param {Boolean} minify whether to return formatted or minified data
    * @return {XML|JSON} formData
    */
-  save(stage) {
+  save(minify) {
     const _this = this
     const data = this.data
-    if (!stage) {
-      stage = this.d.stage
-    }
+    const stage = this.d.stage
     const doSave = {
-      xml: () => _this.xmlSave(stage),
-      json: () => window.JSON.stringify(_this.prepData(stage), null, '\t'),
+      xml: minify => _this.xmlSave(stage, minify),
+      json: minify => window.JSON.stringify(_this.prepData(stage), null, minify && '  '),
     }
 
     // save action for current `dataType`
-    data.formData = doSave[config.opts.dataType](stage)
+    data.formData = doSave[config.opts.dataType](minify)
 
     // trigger formSaved event
     document.dispatchEvent(events.formSaved)
@@ -1107,15 +1095,7 @@ export default class Helpers {
     const data = {
       js: () => h.prepData(h.d.stage),
       xml: () => h.xmlSave(h.d.stage),
-      json: formatted => {
-        let formData
-        if (formatted) {
-          formData = window.JSON.stringify(h.prepData(h.d.stage), null, '\t')
-        } else {
-          formData = window.JSON.stringify(h.prepData(h.d.stage))
-        }
-        return formData
-      },
+      json: formatted => window.JSON.stringify(h.prepData(h.d.stage), null, formatted && '  '),
     }
 
     return data[type](formatted)
