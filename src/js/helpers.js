@@ -145,6 +145,7 @@ export default class Helpers {
     let formData = this.prepData(form)
     const indent = (width = 1) => Array(width + 1).join('  ')
     const xml = ['<form-template>', `${indent()}<fields>`]
+    const xmlSerializer = new XMLSerializer()
 
     utils.forEach(formData, function(fieldIndex, field) {
       let fieldContent = null
@@ -156,7 +157,10 @@ export default class Helpers {
         fieldContent = `\n${values.map(option => indent(4) + m('option', option.label, option).outerHTML).join('\n')}\n${indent(3)}`
       }
 
-      xml.push(indent(3) + m('field', fieldContent, fieldData).outerHTML)
+      const s = m('field', fieldContent, fieldData)
+      const xmlString = xmlSerializer.serializeToString(s)
+
+      xml.push(indent(3) + xmlString)
     })
 
     xml.push(`${indent()}</fields>`, '</form-template>')
