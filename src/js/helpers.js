@@ -311,7 +311,7 @@ export default class Helpers {
       const attr = attrs[index]
       const name = utils.camelCase(attr.getAttribute('name'))
       const value = [
-        [attr.attributes.contenteditable, () => attr.innerHTML],
+        [attr.attributes.contenteditable, () => utils.escapeHtml(attr.innerHTML)],
         [attr.type === 'checkbox', () => attr.checked],
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
