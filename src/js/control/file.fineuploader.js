@@ -79,7 +79,7 @@ export default class controlFineUploader extends controlText {
     ['js', 'css', 'handler'].forEach(key => delete this.classConfig[key]);
 
     // fineuploader template that needs to be defined for the UI
-    let template = this.classConfig.template || `
+    const template = this.classConfig.template || `
       <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
         <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
           <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
@@ -169,15 +169,15 @@ export default class controlFineUploader extends controlText {
    * onRender callback
    */
   onRender() {
-    let wrapper = $(this.wrapper);
-    let input = $(this.input);
+    const wrapper = $(this.wrapper);
+    const input = $(this.input);
 
     // we need to know where the server handler file located. I.e. where to we send the upload POST to?
     // to set this, define controlConfig.file.handler in the formbuilder options
     // defaults to '/upload'
 
     // deep copy merge in passed class configuration over any conflicting defaults
-    let config = $.extend(true, {
+    const config = $.extend(true, {
       request: {
         endpoint: this.handler
       },
@@ -206,7 +206,7 @@ export default class controlFineUploader extends controlText {
           if (errorReason.slice(-1) != '.') {
             errorReason += '.';
           }
-          let error = $('<div />')
+          const error = $('<div />')
             .addClass('qq-error-message')
             .html(`<span>Error processing upload: <b>${name}</b>.<br />Reason: ${errorReason}</span>`)
             .prependTo(wrapper.find('.qq-uploader'));
@@ -217,11 +217,11 @@ export default class controlFineUploader extends controlText {
           }, 6000);
         },
         onStatusChange: (id, oldStatus, newStatus) => {
-          let uploads = wrapper.fineUploader('getUploads');
+          const uploads = wrapper.fineUploader('getUploads');
 
           // retrieve an array of successfully uploaded filenames
-          let successful = [];
-          for (let upload of uploads) {
+          const successful = [];
+          for (const upload of uploads) {
             if (upload.status != 'upload successful') {
               continue;
             }

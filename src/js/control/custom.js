@@ -26,7 +26,7 @@ export default class controlCustom extends control {
     controlCustom.templates = templates;
 
     // prepare i18n locale definition
-    let locale = mi18n.locale;
+    const locale = mi18n.locale;
     if (!controlCustom.def.i18n[locale]) {
       controlCustom.def.i18n[locale] = {};
     }
@@ -35,7 +35,7 @@ export default class controlCustom extends control {
     control.register(Object.keys(templates), controlCustom);
 
     // build the control label & icon definitions
-    for (let field of fields) {
+    for (const field of fields) {
       let type = field.type;
       field.attrs = field.attrs || {};
       if (!type) {
@@ -52,7 +52,7 @@ export default class controlCustom extends control {
       // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
         // check that this type is already registered
-        let controlClass = control.getClass(type, field.subtype);
+        const controlClass = control.getClass(type, field.subtype);
         if (!controlClass) {
           this.error('Error while registering custom field: ' + type + (field.subtype ? ':' + field.subtype : '') + '. Unable to find any existing defined control or template for rendering.');
           continue;
@@ -115,9 +115,9 @@ export default class controlCustom extends control {
 
     // render the custom template
     // restore fieldData config structure for backwards compatibility
-    let fieldData = Object.assign(this.config);
-    let properties = ['label', 'description', 'subtype', 'id', 'isPreview', 'required', 'title', 'aria-required', 'type'];
-    for (let prop of properties) {
+    const fieldData = Object.assign(this.config);
+    const properties = ['label', 'description', 'subtype', 'id', 'isPreview', 'required', 'title', 'aria-required', 'type'];
+    for (const prop of properties) {
       fieldData[prop] = this.config[prop] || this[prop];
     }
 

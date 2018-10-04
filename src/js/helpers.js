@@ -47,7 +47,7 @@ export default class Helpers {
    * @param  {Object} ui
    */
   stopMoving(event, ui) {
-    let _this = this
+    const _this = this
     ui.item.removeClass('moving')
     if (_this.doCancel) {
       if (ui.sender) {
@@ -67,11 +67,11 @@ export default class Helpers {
    * @return {void}
    */
   beforeStop(event, ui) {
-    let _this = this
+    const _this = this
     const opts = config.opts
     const form = _this.d.stage
-    let lastIndex = form.childNodes.length - 1
-    let cancelArray = []
+    const lastIndex = form.childNodes.length - 1
+    const cancelArray = []
     _this.stopIndex = ui.placeholder.index() - 1
 
     if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
@@ -96,10 +96,10 @@ export default class Helpers {
    * @return {Object} {type: 'fieldType', subtype: 'fieldSubType'}
    */
   getTypes($field) {
-    let types = {
+    const types = {
       type: $field.attr('type'),
     }
-    let subtype = $('.fld-subtype', $field).val()
+    const subtype = $('.fld-subtype', $field).val()
 
     if (subtype !== types.type) {
       types.subtype = subtype
@@ -114,13 +114,13 @@ export default class Helpers {
    * @return {Array}        Array of option values
    */
   fieldOptionData(field) {
-    let options = []
+    const options = []
     const $options = $('.sortable-options li', field)
 
     $options.each(i => {
-      let $option = $($options[i])
+      const $option = $($options[i])
       const selected = $('.option-selected', $option).is(':checked')
-      let attrs = {
+      const attrs = {
         label: $('.option-label', $option).val(),
         value: $('.option-value', $option).val(),
       }
@@ -142,7 +142,7 @@ export default class Helpers {
    * @return {String} xml in string
    */
   xmlSave(form) {
-    let formData = this.prepData(form)
+    const formData = this.prepData(form)
     const indent = (width = 1) => Array(width + 1).join('  ')
     const xml = ['<form-template>', `${indent()}<fields>`]
 
@@ -181,23 +181,23 @@ export default class Helpers {
 
         if (!$field.hasClass('disabled-field')) {
           let fieldData = _this.getTypes($field)
-          let $roleInputs = $('.roles-field:checked', field)
-          let roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
+          const $roleInputs = $('.roles-field:checked', field)
+          const roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
 
           fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
 
           if (fieldData.subtype) {
             if (fieldData.subtype === 'quill') {
-              let id = `${fieldData.name}-preview`
+              const id = `${fieldData.name}-preview`
               if (window.fbEditors.quill[id]) {
-                let instance = window.fbEditors.quill[id].instance
+                const instance = window.fbEditors.quill[id].instance
                 const data = instance.getContents()
                 fieldData.value = window.JSON.stringify(data.ops)
               }
             } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
-              let id = `${fieldData.name}-preview`
+              const id = `${fieldData.name}-preview`
               if (window.tinymce.editors[id]) {
-                let editor = window.tinymce.editors[id]
+                const editor = window.tinymce.editors[id]
                 fieldData.value = editor.getContent()
               }
             }
@@ -210,7 +210,7 @@ export default class Helpers {
           fieldData.className = fieldData.className || fieldData.class
 
           if (fieldData.className) {
-            let match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
+            const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
             if (match) {
               fieldData.style = match[1]
             }
@@ -218,7 +218,7 @@ export default class Helpers {
 
           fieldData = utils.trimObj(fieldData)
 
-          let multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
+          const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
 
           if (multipleField) {
             fieldData.values = _this.fieldOptionData($field)
@@ -292,9 +292,9 @@ export default class Helpers {
    * @return {String}    incremented field ID
    */
   incrementId(id) {
-    let split = id.lastIndexOf('-')
-    let newFieldNumber = parseInt(id.substring(split + 1)) + 1
-    let baseString = id.substring(0, split)
+    const split = id.lastIndexOf('-')
+    const newFieldNumber = parseInt(id.substring(split + 1)) + 1
+    const baseString = id.substring(0, split)
 
     return `${baseString}-${newFieldNumber}`
   }
@@ -337,7 +337,6 @@ export default class Helpers {
     const fieldType = $field.attr('type')
     const $prevHolder = $('.prev-holder', field)
     let previewData = Object.assign({}, _this.getAttrVals(field, previewData), { type: fieldType })
-    let preview
 
     const style = $('.btn-style', field).val()
     if (style) {
@@ -365,9 +364,9 @@ export default class Helpers {
     $field.data('fieldData', previewData)
 
     // determine the control class for this type, and then process it through the layout engine
-    let custom = controlCustom.lookup(previewData.type)
-    let controlClass = custom ? custom.class : control.getClass(previewData.type, previewData.subtype)
-    preview = this.layout.build(controlClass, previewData)
+    const custom = controlCustom.lookup(previewData.type)
+    const controlClass = custom ? custom.class : control.getClass(previewData.type, previewData.subtype)
+    const preview = this.layout.build(controlClass, previewData)
 
     empty($prevHolder[0])
     $prevHolder[0].appendChild(preview)
@@ -389,11 +388,11 @@ export default class Helpers {
 
     const disabledFields = stage.querySelectorAll('.disabled-field')
     utils.forEach(disabledFields, index => {
-      let field = disabledFields[index]
-      let title = mi18n.get('fieldNonEditable')
+      const field = disabledFields[index]
+      const title = mi18n.get('fieldNonEditable')
 
       if (title) {
-        let tt = utils.markup('p', title, { className: 'frmb-tt' })
+        const tt = utils.markup('p', title, { className: 'frmb-tt' })
         field.appendChild(tt)
         field.addEventListener('mousemove', e => move(e, { tt, field }))
       }
@@ -418,13 +417,13 @@ export default class Helpers {
       submit: 'btn',
     }
 
-    let primaryType = types[type]
+    const primaryType = types[type]
 
     if (primaryType) {
       if (style) {
         for (let i = 0; i < classes.length; i++) {
-          let re = new RegExp(`(?:^|\\s)${primaryType}-(.*?)(?:\\s|$)+`, 'g')
-          let match = classes[i].match(re)
+          const re = new RegExp(`(?:^|\\s)${primaryType}-(.*?)(?:\\s|$)+`, 'g')
+          const match = classes[i].match(re)
           if (match) {
             classes.splice(i, 1)
           }
@@ -480,7 +479,7 @@ export default class Helpers {
    * @return {Object} layout object
    */
   editorLayout(controlPosition) {
-    let layoutMap = {
+    const layoutMap = {
       left: {
         stage: 'pull-right',
         controls: 'pull-left',
@@ -522,12 +521,12 @@ export default class Helpers {
    */
   confirm(message, yesAction, coords = false, className = '') {
     const _this = this
-    let i18n = mi18n.current
-    let overlay = _this.showOverlay()
-    let yes = m('button', i18n.yes, {
+    const i18n = mi18n.current
+    const overlay = _this.showOverlay()
+    const yes = m('button', i18n.yes, {
       className: 'yes btn btn-success btn-sm',
     })
-    let no = m('button', i18n.no, {
+    const no = m('button', i18n.no, {
       className: 'no btn btn-danger btn-sm',
     })
 
@@ -540,11 +539,11 @@ export default class Helpers {
       _this.closeConfirm(overlay)
     }
 
-    let btnWrap = m('div', [no, yes], { className: 'button-wrap' })
+    const btnWrap = m('div', [no, yes], { className: 'button-wrap' })
 
     className = 'form-builder-dialog ' + className
 
-    let miniModal = m('div', [message, btnWrap], { className })
+    const miniModal = m('div', [message, btnWrap], { className })
     if (!coords) {
       const dE = document.documentElement
       coords = {
@@ -574,13 +573,13 @@ export default class Helpers {
    */
   dialog(content, coords = false, className = '') {
     const _this = this
-    let clientWidth = document.documentElement.clientWidth
-    let clientHeight = document.documentElement.clientHeight
+    const clientWidth = document.documentElement.clientWidth
+    const clientHeight = document.documentElement.clientHeight
     _this.showOverlay()
 
     className = 'form-builder-dialog ' + className
 
-    let miniModal = utils.markup('div', content, { className: className })
+    const miniModal = utils.markup('div', content, { className: className })
     if (!coords) {
       coords = {
         pageX: Math.max(clientWidth, window.innerWidth || 0) / 2,
@@ -610,14 +609,14 @@ export default class Helpers {
    * @param  {Object} e click event object
    */
   confirmRemoveAll(e) {
-    let _this = this
-    let formID = e.target.id.match(/frmb-\d{13}/)[0]
-    let stage = document.getElementById(formID)
-    let i18n = mi18n.current
-    let fields = $('li.form-field', stage)
-    let buttonPosition = e.target.getBoundingClientRect()
-    let bodyRect = document.body.getBoundingClientRect()
-    let coords = {
+    const _this = this
+    const formID = e.target.id.match(/frmb-\d{13}/)[0]
+    const stage = document.getElementById(formID)
+    const i18n = mi18n.current
+    const fields = $('li.form-field', stage)
+    const buttonPosition = e.target.getBoundingClientRect()
+    const bodyRect = document.body.getBoundingClientRect()
+    const coords = {
       pageX: buttonPosition.left + buttonPosition.width / 2,
       pageY: buttonPosition.top - bodyRect.top - 12,
     }
@@ -644,10 +643,10 @@ export default class Helpers {
    * @return {void}
    */
   removeAllFields(stage, animate = true) {
-    let i18n = mi18n.current
-    let opts = config.opts
-    let fields = stage.querySelectorAll('li.form-field')
-    let markEmptyArray = []
+    const i18n = mi18n.current
+    const opts = config.opts
+    const fields = stage.querySelectorAll('li.form-field')
+    const markEmptyArray = []
 
     if (!fields.length) {
       return false
@@ -692,10 +691,10 @@ export default class Helpers {
     }
     const { sessionStorage, JSON } = window
 
-    let fieldOrder = []
+    const fieldOrder = []
 
     $cbUL.children().each((index, element) => {
-      let type = $(element).data('type')
+      const type = $(element).data('type')
       if (type) {
         fieldOrder.push(type)
       }
@@ -715,7 +714,7 @@ export default class Helpers {
    */
   orderFields(controls) {
     const opts = config.opts
-    let controlOrder = opts.controlOrder.concat(controls)
+    const controlOrder = opts.controlOrder.concat(controls)
     let fieldOrder
 
     // retrieve any saved ordering from the session
@@ -742,7 +741,7 @@ export default class Helpers {
       const randomKey = new RegExp('-[\\d]{4}$')
 
       if (field.match(randomKey)) {
-        let baseFieldIndex = fieldOrder.indexOf(field.replace(randomKey, ''))
+        const baseFieldIndex = fieldOrder.indexOf(field.replace(randomKey, ''))
         if (baseFieldIndex !== -1) {
           fieldOrder.splice(fieldOrder.indexOf(field), 1)
           fieldOrder.splice(baseFieldIndex + 1, fieldOrder.indexOf(field), field)
@@ -893,7 +892,7 @@ export default class Helpers {
    */
   removeField(fieldID, animationSpeed = 250) {
     let fieldRemoved = false
-    let _this = this
+    const _this = this
     const form = this.d.stage
     const fields = form.getElementsByClassName('form-field')
 
@@ -903,7 +902,7 @@ export default class Helpers {
     }
 
     if (!fieldID) {
-      let availableIds = [].slice.call(fields).map(field => {
+      const availableIds = [].slice.call(fields).map(field => {
         return field.id
       })
       console.warn('fieldID required to remove specific fields.')
@@ -940,16 +939,17 @@ export default class Helpers {
    * @return {Object} DOM element for action button
    */
   processActionButtons(buttonData) {
-    let { label, events, ...attrs } = buttonData
-    let data = this.data
-    if (!label) {
+    const { label, events, ...attrs } = buttonData
+    let labelText = label
+    const data = this.data
+    if (!labelText) {
       if (attrs.id) {
-        label = mi18n.current[attrs.id] || utils.capitalize(attrs.id)
+        labelText = mi18n.current[attrs.id] || utils.capitalize(attrs.id)
       } else {
-        label = ''
+        labelText = ''
       }
     } else {
-      label = mi18n.current[label] || label
+      labelText = mi18n.current[labelText] || labelText
     }
 
     if (!attrs.id) {
@@ -958,10 +958,10 @@ export default class Helpers {
       attrs.id = `${data.formID}-${attrs.id}-action`
     }
 
-    const button = m('button', label, attrs)
+    const button = m('button', labelText, attrs)
 
     if (events) {
-      for (let event in events) {
+      for (const event in events) {
         if (events.hasOwnProperty(event)) {
           button.addEventListener(event, evt => events[event](evt))
         }
@@ -979,7 +979,7 @@ export default class Helpers {
    */
   processSubtypes(subtypeOpts) {
     // first register any passed subtype options against the appropriate type control class
-    for (let fieldType in subtypeOpts) {
+    for (const fieldType in subtypeOpts) {
       if (subtypeOpts.hasOwnProperty(fieldType)) {
         control.register(subtypeOpts[fieldType], control.getClass(fieldType), fieldType)
       }
@@ -990,11 +990,11 @@ export default class Helpers {
 
     // reformat the subtypes for each fieldType
     const subtypes = {}
-    for (let fieldType in subtypeDef) {
+    for (const fieldType in subtypeDef) {
       if (subtypeDef.hasOwnProperty(fieldType)) {
         // loop through each defined subtype & build the formatted data structure
         const formatted = []
-        for (let subtype of subtypeDef[fieldType]) {
+        for (const subtype of subtypeDef[fieldType]) {
           const controlClass = control.getClass(fieldType, subtype)
           const label = controlClass.mi18n(`subtype.${subtype}`) || controlClass.mi18n(subtype) || subtype
           formatted.push({
@@ -1035,11 +1035,12 @@ export default class Helpers {
    */
   processOptions(options) {
     const _this = this
-    let { actionButtons, replaceFields, fieldEditContainer, ...opts } = options
-    if (typeof fieldEditContainer === 'string') {
-      fieldEditContainer = document.querySelector(fieldEditContainer)
+    const { actionButtons, replaceFields, ...opts } = options
+    let fieldEditContainer = opts.fieldEditContainer
+    if (typeof opts.fieldEditContainer === 'string') {
+      fieldEditContainer = document.querySelector(opts.fieldEditContainer)
     }
-    actionButtons = [
+    const mergedActionButtons = [
       {
         type: 'button',
         id: 'clear',
@@ -1068,16 +1069,17 @@ export default class Helpers {
           },
         },
       },
-    ].concat(options.actionButtons)
+    ].concat(actionButtons)
+
     opts.fields = opts.fields.concat(replaceFields)
     opts.disableFields = opts.disableFields.concat(replaceFields.map(({ type }) => type && type))
-    config.opts = Object.assign({}, { actionButtons }, { fieldEditContainer }, opts)
+    config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
     return config.opts
   }
 
   /**
    * Small wrapper for input markup
-   * @param  {Object} attrs [description]
+   * @param  {Object} attrs
    * @return {Object} DOM element
    */
   input(attrs = {}) {

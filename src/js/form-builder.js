@@ -54,8 +54,8 @@ const FormBuilder = function(opts, element) {
   const $stage = $(d.stage)
 
   // retrieve a full list of loaded controls
-  let controls = control.getRegistered()
-  let customFields = controlCustom.getRegistered()
+  const controls = control.getRegistered()
+  const customFields = controlCustom.getRegistered()
   if (customFields) {
     $.merge(controls, customFields)
   }
@@ -69,11 +69,11 @@ const FormBuilder = function(opts, element) {
   const $cbUL = $(d.controls)
 
   // add each control to the interface
-  let controlList = []
+  const controlList = []
   const allControls = {}
 
   for (let i = 0; i < controls.length; i++) {
-    let type = controls[i]
+    const type = controls[i]
     // first check if this is a custom control
     let custom = controlCustom.lookup(type)
     let controlClass
@@ -88,9 +88,9 @@ const FormBuilder = function(opts, element) {
         continue
       }
     }
-    let icon = custom.icon || controlClass.icon(type)
+    const icon = custom.icon || controlClass.icon(type)
     let label = custom.label || controlClass.label(type)
-    let iconClassName = !icon ? custom.iconClassName || `icon-${type.replace(/-[\d]{4}$/, '')}` : ''
+    const iconClassName = !icon ? custom.iconClassName || `icon-${type.replace(/-[\d]{4}$/, '')}` : ''
 
     // if the class has specified a custom icon, inject it into the label
     if (icon) {
@@ -98,7 +98,7 @@ const FormBuilder = function(opts, element) {
     }
 
     // build & insert the new list item to represent this control
-    let newFieldControl = m('li', m('span', label), { className: `${iconClassName} input-control input-control-${i}` })
+    const newFieldControl = m('li', m('span', label), { className: `${iconClassName} input-control input-control-${i}` })
     newFieldControl.dataset.type = type
     controlList.push(type)
     allControls[type] = newFieldControl
@@ -106,12 +106,12 @@ const FormBuilder = function(opts, element) {
 
   if (opts.inputSets.length) {
     opts.inputSets.forEach((set, i) => {
-      let { name, label, icon } = set
+      let { name, label } = set
       name = name || utils.hyphenCase(label)
-      if (icon) {
-        label = `<span class="control-icon">${icon}</span>${label}`
+      if (set.icon) {
+        label = `<span class="control-icon">${set.icon}</span>${label}`
       }
-      let inputSet = m('li', label, {
+      const inputSet = m('li', label, {
         className: `input-set-control input-set-${i}`,
       })
       inputSet.dataset.type = name
@@ -203,9 +203,9 @@ const FormBuilder = function(opts, element) {
     className: 'form-wrap form-builder' + utils.mobileClass(),
   })
 
-  let $editorWrap = $(d.editorWrap)
+  const $editorWrap = $(d.editorWrap)
 
-  let cbWrap = m('div', d.controls, {
+  const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
     className: 'cb-wrap ' + data.layout.controls,
   })
@@ -430,7 +430,7 @@ const FormBuilder = function(opts, element) {
     typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox
     typeAttrsMap['radio-group'] = typeAttrsMap.checkbox
 
-    let typeAttrs = typeAttrsMap[type]
+    const typeAttrs = typeAttrsMap[type]
 
     if (type === 'radio-group') {
       utils.remove('toggle', typeAttrs)
@@ -479,12 +479,12 @@ const FormBuilder = function(opts, element) {
       value: () => textAttribute('value', values),
       maxlength: () => numberAttribute('maxlength', values),
       access: () => {
-        let rolesDisplay = values.role ? 'style="display:block"' : ''
-        let availableRoles = [`<div class="available-roles" ${rolesDisplay}>`]
+        const rolesDisplay = values.role ? 'style="display:block"' : ''
+        const availableRoles = [`<div class="available-roles" ${rolesDisplay}>`]
         for (key in opts.roles) {
           if (opts.roles.hasOwnProperty(key)) {
-            let roleId = `fld-${data.lastID}-roles-${key}`
-            let cbAttrs = {
+            const roleId = `fld-${data.lastID}-roles-${key}`
+            const cbAttrs = {
               type: 'checkbox',
               name: 'roles[]',
               value: key,
@@ -501,7 +501,7 @@ const FormBuilder = function(opts, element) {
           }
         }
         availableRoles.push('</div>')
-        let accessLabels = {
+        const accessLabels = {
           first: i18n.roles,
           second: i18n.limitRole,
           content: availableRoles.join(''),
@@ -517,8 +517,8 @@ const FormBuilder = function(opts, element) {
       options: () => fieldOptions(values),
     }
     let key
-    let roles = values.role !== undefined ? values.role.split(',') : []
-    let numAttrs = ['min', 'max', 'step']
+    const roles = values.role !== undefined ? values.role.split(',') : []
+    const numAttrs = ['min', 'max', 'step']
 
     if (type === 'number') {
       numAttrs.forEach(numAttr => {
@@ -528,7 +528,7 @@ const FormBuilder = function(opts, element) {
 
     if (type === 'file') {
       advFieldMap['multiple'] = () => {
-        let labels = {
+        const labels = {
           first: i18n.multipleFiles,
           second: i18n.allowMultipleFiles,
         }
@@ -555,16 +555,16 @@ const FormBuilder = function(opts, element) {
     }
 
     Object.keys(fieldAttrs).forEach(index => {
-      let attr = fieldAttrs[index]
-      let useDefaultAttr = [true]
+      const attr = fieldAttrs[index]
+      const useDefaultAttr = [true]
 
       if (opts.typeUserDisabledAttrs[type]) {
-        let typeDisabledAttrs = opts.typeUserDisabledAttrs[type]
+        const typeDisabledAttrs = opts.typeUserDisabledAttrs[type]
         useDefaultAttr.push(!utils.inArray(attr, typeDisabledAttrs))
       }
 
       if (opts.typeUserAttrs[type]) {
-        let userAttrs = Object.keys(opts.typeUserAttrs[type])
+        const userAttrs = Object.keys(opts.typeUserAttrs[type])
         useDefaultAttr.push(!utils.inArray(attr, userAttrs))
       }
 
@@ -579,7 +579,7 @@ const FormBuilder = function(opts, element) {
 
     // Append custom attributes as defined in typeUserAttrs option
     if (opts.typeUserAttrs[type]) {
-      let customAttr = processTypeUserAttrs(opts.typeUserAttrs[type], values)
+      const customAttr = processTypeUserAttrs(opts.typeUserAttrs[type], values)
       advFields.push(customAttr)
     }
 
@@ -617,7 +617,7 @@ const FormBuilder = function(opts, element) {
         boolAttribute(attr, { ...attrData, [attr]: values[attr] }, { first: attrData.label }),
     }
 
-    for (let attribute in typeUserAttr) {
+    for (const attribute in typeUserAttr) {
       if (typeUserAttr.hasOwnProperty(attribute)) {
         const attrValType = userAttrType(attribute, typeUserAttr[attribute])
         const orig = i18n[attribute]
@@ -657,14 +657,14 @@ const FormBuilder = function(opts, element) {
     }
     const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
-    let optionInputs = ['checkbox', 'checkbox-group', 'radio-group']
+    const optionInputs = ['checkbox', 'checkbox-group', 'radio-group']
     if (!utils.inArray(textAttrs.type, optionInputs)) {
       textAttrs.className.push('form-control')
     }
 
     textAttrs = Object.assign({}, attrs, textAttrs)
-    let textInput = `<input ${utils.attrString(textAttrs)}>`
-    let inputWrap = `<div class="input-wrap">${textInput}</div>`
+    const textInput = `<input ${utils.attrString(textAttrs)}>`
+    const inputWrap = `<div class="input-wrap">${textInput}</div>`
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
   }
 
@@ -749,7 +749,7 @@ const FormBuilder = function(opts, element) {
       style = 'default'
     }
 
-    let styleLabel = `<label>${i18n.style}</label>`
+    const styleLabel = `<label>${i18n.style}</label>`
     styleField += h.input({
       value: style || 'default',
       type: 'hidden',
@@ -758,11 +758,11 @@ const FormBuilder = function(opts, element) {
     styleField += '<div class="btn-group" role="group">'
 
     styles.btn.forEach(btnStyle => {
-      let classList = ['btn-xs', 'btn', `btn-${btnStyle}`]
+      const classList = ['btn-xs', 'btn', `btn-${btnStyle}`]
       if (style === btnStyle) {
         classList.push('selected')
       }
-      let btn = m('button', mi18n.get(`styles.btn.${btnStyle}`), {
+      const btn = m('button', mi18n.get(`styles.btn.${btnStyle}`), {
         value: btnStyle,
         type: 'button',
         className: classList.join(' '),
@@ -830,16 +830,16 @@ const FormBuilder = function(opts, element) {
       optionAttrs = utils.trimObj(optionAttrs)
       return m('option', optionAttrs.label, optionAttrs)
     })
-    let selectAttrs = {
+    const selectAttrs = {
       id: attribute + '-' + data.lastID,
       name: attribute,
       className: `fld-${attribute} form-control`,
     }
-    let labelText = i18n[attribute] || utils.capitalize(attribute) || ''
-    let label = m('label', labelText, { for: selectAttrs.id })
-    let select = m('select', selectOptions, selectAttrs)
-    let inputWrap = m('div', select, { className: 'input-wrap' })
-    let attrWrap = m('div', [label, inputWrap], {
+    const labelText = i18n[attribute] || utils.capitalize(attribute) || ''
+    const label = m('label', labelText, { for: selectAttrs.id })
+    const select = m('select', selectOptions, selectAttrs)
+    const inputWrap = m('div', select, { className: 'input-wrap' })
+    const attrWrap = m('div', [label, inputWrap], {
       className: `form-group ${selectAttrs.name}-wrap`,
     })
 
@@ -853,7 +853,7 @@ const FormBuilder = function(opts, element) {
    * @return {String}
    */
   const textAttribute = (attribute, values) => {
-    let textArea = ['paragraph']
+    const textArea = ['paragraph']
 
     let attrVal = values[attribute] || ''
     let attrLabel = i18n[attribute]
@@ -866,9 +866,9 @@ const FormBuilder = function(opts, element) {
       }
     }
 
-    let placeholder = i18n[`placeholders.${attribute}`] || ''
+    const placeholder = i18n[`placeholders.${attribute}`] || ''
     let attributefield = ''
-    let noMakeAttr = []
+    const noMakeAttr = []
 
     if (!noMakeAttr.some(elem => elem === true)) {
       const inputConfig = {
@@ -890,7 +890,7 @@ const FormBuilder = function(opts, element) {
         attributefield += `<input ${utils.attrString(inputConfig)}>`
       }
 
-      let inputWrap = `<div class="input-wrap">${attributefield}</div>`
+      const inputWrap = `<div class="input-wrap">${attributefield}</div>`
 
       let visibility = 'block'
       if (attribute === 'value') {
@@ -907,9 +907,9 @@ const FormBuilder = function(opts, element) {
   }
 
   const requiredField = fieldData => {
-    let { type } = fieldData
-    let noRequire = ['header', 'paragraph', 'button']
-    let noMake = []
+    const { type } = fieldData
+    const noRequire = ['header', 'paragraph', 'button']
+    const noMake = []
     let requireField = ''
 
     if (utils.inArray(type, noRequire)) {
@@ -954,7 +954,7 @@ const FormBuilder = function(opts, element) {
       fieldButtons = fieldButtons.filter(btnData => !utils.inArray(btnData.type, disabledFieldButtons))
     }
 
-    let liContents = [m('div', fieldButtons, { className: 'field-actions' })]
+    const liContents = [m('div', fieldButtons, { className: 'field-actions' })]
 
     liContents.push(
       m('label', utils.parsedHtml(label), {
@@ -970,7 +970,7 @@ const FormBuilder = function(opts, element) {
     )
 
     // add the help icon
-    let descAttrs = {
+    const descAttrs = {
       className: 'tooltip-element',
       tooltip: values.description,
       style: values.description ? 'display:inline-block' : 'display:none',
@@ -992,12 +992,12 @@ const FormBuilder = function(opts, element) {
 
     liContents.push(editPanel)
 
-    let field = m('li', liContents, {
+    const field = m('li', liContents, {
       class: `${type}-field form-field`,
       type: type,
       id: data.lastID,
     })
-    let $li = $(field)
+    const $li = $(field)
 
     $li.data('fieldData', { attrs: values })
 
@@ -1032,20 +1032,20 @@ const FormBuilder = function(opts, element) {
   }
 
   // Select field html, since there may be multiple
-  let selectFieldOptions = function(name, optionData, multipleSelect) {
-    let optionInputType = {
+  const selectFieldOptions = function(name, optionData, multipleSelect) {
+    const optionInputType = {
       selected: multipleSelect ? 'checkbox' : 'radio',
     }
-    let optionDataOrder = ['value', 'label', 'selected']
-    let optionInputs = []
-    let optionTemplate = { selected: false, label: '', value: '' }
+    const optionDataOrder = ['value', 'label', 'selected']
+    const optionInputs = []
+    const optionTemplate = { selected: false, label: '', value: '' }
 
     optionData = Object.assign(optionTemplate, optionData)
 
     for (let i = optionDataOrder.length - 1; i >= 0; i--) {
-      let prop = optionDataOrder[i]
+      const prop = optionDataOrder[i]
       if (optionData.hasOwnProperty(prop)) {
-        let attrs = {
+        const attrs = {
           type: optionInputType[prop] || 'text',
           className: 'option-' + prop,
           value: optionData[prop],
@@ -1071,20 +1071,20 @@ const FormBuilder = function(opts, element) {
     return utils.markup('li', optionInputs).outerHTML
   }
 
-  let cloneItem = function cloneItem(currentItem) {
-    let currentId = currentItem.attr('id')
-    let type = currentItem.attr('type')
-    let ts = new Date().getTime()
-    let cloneName = type + '-' + ts
-    let $clone = currentItem.clone()
+  const cloneItem = function cloneItem(currentItem) {
+    const currentId = currentItem.attr('id')
+    const type = currentItem.attr('type')
+    const ts = new Date().getTime()
+    const cloneName = type + '-' + ts
+    const $clone = currentItem.clone()
 
     $('.fld-name', $clone).val(cloneName)
     $clone.find('[id]').each((i, elem) => {
       elem.id = elem.id.replace(currentId, data.lastID)
     })
     $clone.find('[for]').each((index, elem) => {
-      let curId = elem.getAttribute('for')
-      let newForId = curId.replace(currentId, data.lastID)
+      const curId = elem.getAttribute('for')
+      const newForId = curId.replace(currentId, data.lastID)
       elem.setAttribute('for', newForId)
     })
 
@@ -1124,13 +1124,13 @@ const FormBuilder = function(opts, element) {
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {
-    let $field = $(e.target).parents('.form-field:eq(0)')
-    let field = $field[0]
-    let type = field.getAttribute('type')
-    let $option = $(e.target.parentElement)
+    const $field = $(e.target).parents('.form-field:eq(0)')
+    const field = $field[0]
+    const type = field.getAttribute('type')
+    const $option = $(e.target.parentElement)
     e.preventDefault()
-    let options = field.querySelector('.sortable-options')
-    let optionsCount = options.childNodes.length
+    const options = field.querySelector('.sortable-options')
+    const optionsCount = options.childNodes.length
     if (optionsCount <= 2 && !type.includes('checkbox')) {
       opts.notify.error('Error: ' + i18n.minOptionMessage)
     } else {
@@ -1144,13 +1144,13 @@ const FormBuilder = function(opts, element) {
 
   // touch focus
   $stage.on('touchstart', 'input', e => {
-    let $input = $(this)
+    const $input = $(this)
     if (e.handled !== true) {
       if ($input.attr('type') === 'checkbox') {
         $input.trigger('click')
       } else {
         $input.focus()
-        let fieldVal = $input.val()
+        const fieldVal = $input.val()
         $input.val(fieldVal)
       }
     } else {
@@ -1163,7 +1163,7 @@ const FormBuilder = function(opts, element) {
     e.stopPropagation()
     e.preventDefault()
     if (e.handled !== true) {
-      let targetID = $(e.target)
+      const targetID = $(e.target)
         .parents('.form-field:eq(0)')
         .attr('id')
       h.toggleEdit(targetID)
@@ -1180,7 +1180,7 @@ const FormBuilder = function(opts, element) {
     e.stopPropagation()
     e.preventDefault()
     if (e.handled !== true) {
-      let targetID =
+      const targetID =
         e.target.tagName == 'li'
           ? $(e.target).attr('id')
           : $(e.target)
@@ -1197,7 +1197,7 @@ const FormBuilder = function(opts, element) {
     $valWrap.toggle(e.target.value !== 'quill')
   })
 
-  let stageOnChangeSelectors = ['.prev-holder input', '.prev-holder select', '.prev-holder textarea']
+  const stageOnChangeSelectors = ['.prev-holder input', '.prev-holder select', '.prev-holder textarea']
   $stage.on('change', stageOnChangeSelectors.join(', '), e => {
     let prevOptions
     if (e.target.classList.contains('other-option')) {
@@ -1206,21 +1206,21 @@ const FormBuilder = function(opts, element) {
     const field = utils.closest(e.target, '.form-field')
     const optionTypes = ['select', 'checkbox-group', 'radio-group']
     if (utils.inArray(field.type, optionTypes)) {
-      let options = field.getElementsByClassName('option-value')
+      const options = field.getElementsByClassName('option-value')
       if (field.type === 'select') {
         utils.forEach(options, i => {
-          let selectedOption = options[i].parentElement.childNodes[0]
+          const selectedOption = options[i].parentElement.childNodes[0]
           selectedOption.checked = e.target.value === options[i].value
         })
       } else {
         prevOptions = document.getElementsByName(e.target.name)
         utils.forEach(prevOptions, i => {
-          let selectedOption = options[i].parentElement.childNodes[0]
+          const selectedOption = options[i].parentElement.childNodes[0]
           selectedOption.checked = prevOptions[i].checked
         })
       }
     } else {
-      let fieldVal = document.getElementById('value-' + field.id)
+      const fieldVal = document.getElementById('value-' + field.id)
       if (fieldVal) {
         fieldVal.value = e.target.value
       }
@@ -1232,8 +1232,8 @@ const FormBuilder = function(opts, element) {
   // update preview to label
   utils.addEventListeners(d.stage, 'keyup change', ({ target }) => {
     if (!target.classList.contains('fld-label')) return
-    let value = target.value || target.innerHTML
-    let label = utils.closest(target, '.form-field').querySelector('.field-label')
+    const value = target.value || target.innerHTML
+    const label = utils.closest(target, '.form-field').querySelector('.field-label')
     label.innerHTML = utils.parsedHtml(value)
   })
 
@@ -1242,12 +1242,12 @@ const FormBuilder = function(opts, element) {
 
   // update preview for description
   $stage.on('keyup', 'input[name="description"]', function(e) {
-    let $field = $(e.target).parents('.form-field:eq(0)')
-    let closestToolTip = $('.tooltip-element', $field)
-    let ttVal = $(e.target).val()
+    const $field = $(e.target).parents('.form-field:eq(0)')
+    const closestToolTip = $('.tooltip-element', $field)
+    const ttVal = $(e.target).val()
     if (ttVal !== '') {
       if (!closestToolTip.length) {
-        let tt = `<span class="tooltip-element" tooltip="${ttVal}">?</span>`
+        const tt = `<span class="tooltip-element" tooltip="${ttVal}">?</span>`
         $('.field-label', $field).after(tt)
       } else {
         closestToolTip.attr('tooltip', ttVal).css('display', 'inline-block')
@@ -1337,8 +1337,8 @@ const FormBuilder = function(opts, element) {
   // Update button style selection
   $stage.on('click', '.style-wrap button', e => {
     const $button = $(e.target)
-    let styleVal = $button.val()
-    let $btnStyle = $button.parent().prev('.btn-style')
+    const styleVal = $button.val()
+    const $btnStyle = $button.parent().prev('.btn-style')
     $btnStyle.val(styleVal)
     $button.siblings('.btn').removeClass('selected')
     $button.addClass('selected')
@@ -1356,10 +1356,10 @@ const FormBuilder = function(opts, element) {
 
   // Attach a callback to toggle roles visibility
   $stage.on('click', 'input.fld-access', function(e) {
-    let roles = $(e.target)
+    const roles = $(e.target)
       .closest('.form-field')
       .find('.available-roles')
-    let enableRolesCB = $(e.target)
+    const enableRolesCB = $(e.target)
     roles.slideToggle(250, function() {
       if (!enableRolesCB.is(':checked')) {
         $('input[type=checkbox]', roles).removeAttr('checked')
@@ -1381,7 +1381,7 @@ const FormBuilder = function(opts, element) {
       isMultiple = $firstOption.attr('type') === 'checkbox'
     }
 
-    let name = $firstOption.attr('name')
+    const name = $firstOption.attr('name')
 
     $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple))
   })

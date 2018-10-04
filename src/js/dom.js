@@ -25,7 +25,7 @@ export const empty = element => {
 }
 
 export const filter = (elems, term, show = true) => {
-  let filteredElems = []
+  const filteredElems = []
   let toggle = ['none', 'block']
 
   if (show) {
@@ -33,7 +33,7 @@ export const filter = (elems, term, show = true) => {
   }
 
   for (let i = elems.length - 1; i >= 0; i--) {
-    let txt = elems[i].textContent.toLowerCase()
+    const txt = elems[i].textContent.toLowerCase()
     if (txt.indexOf(term.toLowerCase()) !== -1) {
       elems[i].style.display = toggle[0]
       filteredElems.push(elems[i])

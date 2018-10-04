@@ -24,6 +24,7 @@ pages:
 - formBuilder Options:
   - actionButtons: formBuilder/options/actionButtons.md
   - append/prepend: formBuilder/options/appendPrepend.md
+  - allowStageSort: formBuilder/options/allowStageSort.md
   - controlOrder: formBuilder/options/controlOrder.md
   - controlPosition: formBuilder/options/controlPosition.md
   - dataType: formBuilder/options/dataType.md

@@ -27,14 +27,14 @@ export default class layout {
         }
 
         // wrap the output in a form-group div & return
-        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
+        const className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
         return this.markup('div', [label, field], {
           className: className,
         })
       },
       noLabel: (field, label, help, data) => {
         // wrap the output in a form-group div & return without a label element
-        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
+        const className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
         return this.markup('div', field, {
           className: className,
         })
@@ -84,15 +84,15 @@ export default class layout {
     this.data = $.extend({}, data)
 
     // build the control
-    let control = new renderControl(data, this.preview)
+    const control = new renderControl(data, this.preview)
     let field = control.build()
     if (typeof field !== 'object' || !field.field) {
       field = { field: field }
     }
 
     // build the label & help text
-    let label = this.label()
-    let help = this.help()
+    const label = this.label()
+    const help = this.help()
 
     // process the relevant layout template
     let elementTemplate
@@ -101,7 +101,7 @@ export default class layout {
     } else {
       elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default'
     }
-    let element = this.processTemplate(elementTemplate, field.field, label, help)
+    const element = this.processTemplate(elementTemplate, field.field, label, help)
 
     // execute prerender events
     control.on('prerender')(element)
@@ -116,9 +116,9 @@ export default class layout {
    * @return {Object} dom element to render the label
    */
   label() {
-    let label = this.data.label || ''
-    let labelText = utils.parsedHtml(label)
-    let labelContents = [labelText]
+    const label = this.data.label || ''
+    const labelText = utils.parsedHtml(label)
+    const labelContents = [labelText]
     if (this.data.required) {
       labelContents.push(this.markup('span', '*', { className: 'fb-required' }))
     }

@@ -54,7 +54,7 @@ export default class controlSelect extends control {
         if (typeof option === 'string') {
           option = { label: option, value: option }
         }
-        let { label = '', ...optionAttrs } = option
+        const { label = '', ...optionAttrs } = option
         optionAttrs.id = `${data.id}-${i}`
 
         // don't select this option if a placeholder is defined
@@ -68,7 +68,7 @@ export default class controlSelect extends control {
         }
 
         if (isSelect) {
-          let o = this.markup('option', document.createTextNode(label), optionAttrs)
+          const o = this.markup('option', document.createTextNode(label), optionAttrs)
           options.push(o)
         } else {
           const labelContents = [label]
@@ -83,8 +83,7 @@ export default class controlSelect extends control {
           }
           const input = this.markup('input', null, Object.assign({}, data, optionAttrs))
           const labelAttrs = { for: optionAttrs.id }
-          label = this.markup('label', labelContents, labelAttrs)
-          let output = [input, label]
+          let output = [input, this.markup('label', labelContents, labelAttrs)]
           if (toggle) {
             labelAttrs.className = 'kc-toggle'
             labelContents.unshift(input, this.markup('span'))

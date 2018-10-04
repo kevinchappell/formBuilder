@@ -10,11 +10,11 @@ export default class controlAutocomplete extends control {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    let { values, type, ...data } = this.config
+    const { values, type, ...data } = this.config
     const keyboardNav = e => {
       const list = e.target.nextSibling.nextSibling
       const hiddenField = e.target.nextSibling
-      let activeOption = this.getActiveOption(list)
+      const activeOption = this.getActiveOption(list)
       const keyCodeMapVals = [
         // up
         [
@@ -68,7 +68,7 @@ export default class controlAutocomplete extends control {
           },
         ],
       ]
-      let keyCodeMap = new Map(keyCodeMapVals)
+      const keyCodeMap = new Map(keyCodeMapVals)
 
       let direction = keyCodeMap.get(e.keyCode)
       if (!direction) {
@@ -117,18 +117,18 @@ export default class controlAutocomplete extends control {
         }
       },
     }
-    let fauxAttrs = Object.assign({}, data, {
+    const fauxAttrs = Object.assign({}, data, {
       id: `${data.id}-input`,
       autocomplete: 'off',
       events: fauxEvents,
     })
-    let hiddenAttrs = Object.assign({}, data, { type: 'hidden' })
+    const hiddenAttrs = Object.assign({}, data, { type: 'hidden' })
     delete fauxAttrs.name
     const field = [this.markup('input', null, fauxAttrs), this.markup('input', null, hiddenAttrs)]
 
     const options = values.map(optionData => {
-      let label = optionData.label
-      let config = {
+      const label = optionData.label
+      const config = {
         events: {
           click: evt => {
             const list = evt.target.parentElement
@@ -160,7 +160,7 @@ export default class controlAutocomplete extends control {
    * Shows autocomplete list. Automatically selects 'selectedOption'
    * @param {Object} list - list of autocomplete options
    * @param {Object} selectedOption - option to be selected
-  */
+   */
   showList(list, selectedOption) {
     this.selectOption(list, selectedOption)
     list.style.display = 'block'
@@ -171,7 +171,7 @@ export default class controlAutocomplete extends control {
    * Returns first option from autocomplete list with 'active-option' class
    * @param {Object} list - list of autocomplete options
    * @return {Object} first list option with 'active-option' class
-  */
+   */
   getActiveOption(list) {
     const activeOption = list.getElementsByClassName('active-option')[0]
     if (activeOption && activeOption.style.display !== 'none') {
@@ -184,7 +184,7 @@ export default class controlAutocomplete extends control {
    * Previous next option to the current option
    * @param {Object} current - currently selected option
    * @return {Object} previous option to the current option or null if previous doesn't exist
-  */
+   */
   getPreviousOption(current) {
     let previous = current
     do {
@@ -197,7 +197,7 @@ export default class controlAutocomplete extends control {
    * Returns next option to the current option
    * @param {Object} current - currently selected option
    * @return {Object} next option to the current option or null if next doesn't exist
-  */
+   */
   getNextOption(current) {
     let next = current
     do {
@@ -248,10 +248,10 @@ export default class controlAutocomplete extends control {
   onRender(evt) {
     // Set userData if available
     if (this.config.userData) {
-      let $el = $('#' + this.config.name)
-      let $options = $el.next()
+      const $el = $('#' + this.config.name)
+      const $options = $el.next()
 
-      let preSelectedOption = this.config.userData[0]
+      const preSelectedOption = this.config.userData[0]
       let selectedOption = null
 
       $options.find('li').each(function() {
