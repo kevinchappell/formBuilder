@@ -19,13 +19,13 @@ utils.inArray = function(needle, haystack) {
 }
 
 /**
-   * Remove null or undefined values
-   * @param  {Object} attrs {attrName: attrValue}
-   * @return {Object}       Object trimmed of null or undefined values
-   */
+ * Remove null or undefined values
+ * @param  {Object} attrs {attrName: attrValue}
+ * @return {Object}       Object trimmed of null or undefined values
+ */
 utils.trimObj = function(attrs) {
-  let xmlRemove = [null, undefined, '', false, 'false']
-  for (let attr in attrs) {
+  const xmlRemove = [null, undefined, '', false, 'false']
+  for (const attr in attrs) {
     if (utils.inArray(attrs[attr], xmlRemove)) {
       delete attrs[attr]
     } else if (Array.isArray(attrs[attr])) {
@@ -39,12 +39,12 @@ utils.trimObj = function(attrs) {
 }
 
 /**
-   * Test if attribute is a valid HTML attribute
-   * @param  {String} attr
-   * @return {Boolean}
-   */
+ * Test if attribute is a valid HTML attribute
+ * @param  {String} attr
+ * @return {Boolean}
+ */
 utils.validAttr = function(attr) {
-  let invalid = [
+  const invalid = [
     'values',
     'enableOther',
     'other',
@@ -56,13 +56,13 @@ utils.validAttr = function(attr) {
 }
 
 /**
-   * Convert an attrs object into a string
-   *
-   * @param  {Object} attrs object of attributes for markup
-   * @return {string}
-   */
+ * Convert an attrs object into a string
+ *
+ * @param  {Object} attrs object of attributes for markup
+ * @return {string}
+ */
 utils.attrString = function(attrs) {
-  let attributes = []
+  const attributes = []
 
   for (let attr in attrs) {
     if (attrs.hasOwnProperty(attr) && utils.validAttr(attr)) {
@@ -74,11 +74,11 @@ utils.attrString = function(attrs) {
 }
 
 /**
-   * Convert attributes to markup safe strings
-   * @param  {String} name  attribute name
-   * @param  {String} value attribute value
-   * @return {Object}       {attrName: attrValue}
-   */
+ * Convert attributes to markup safe strings
+ * @param  {String} name  attribute name
+ * @param  {String} value attribute value
+ * @return {Object}       {attrName: attrValue}
+ */
 utils.safeAttr = function(name, value) {
   name = utils.safeAttrName(name)
   let valString
@@ -102,7 +102,7 @@ utils.safeAttr = function(name, value) {
 }
 
 utils.safeAttrName = function(name) {
-  let safeAttr = {
+  const safeAttr = {
     className: 'class',
   }
 
@@ -110,11 +110,11 @@ utils.safeAttrName = function(name) {
 }
 
 /**
-   * Convert strings into lowercase-hyphen
-   *
-   * @param  {String} str
-   * @return {String}
-   */
+ * Convert strings into lowercase-hyphen
+ *
+ * @param  {String} str
+ * @return {String}
+ */
 utils.hyphenCase = str => {
   // eslint-disable-next-line no-useless-escape
   str = str.replace(/[^\w\s\-]/gi, '')
@@ -126,17 +126,17 @@ utils.hyphenCase = str => {
 }
 
 /**
-   * convert a hyphenated string to camelCase
-   * @param  {String} str
-   * @return {String}
-   */
+ * convert a hyphenated string to camelCase
+ * @param  {String} str
+ * @return {String}
+ */
 utils.camelCase = str => str.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
 
 /**
-   * Determine content type
-   * @param  {Node | String | Array | Object} content
-   * @return {String}                         contentType for mapping
-   */
+ * Determine content type
+ * @param  {Node | String | Array | Object} content
+ * @return {String}                         contentType for mapping
+ */
 utils.contentType = content => {
   let type = typeof content
   if (content instanceof Node || content instanceof HTMLElement) {
@@ -149,14 +149,14 @@ utils.contentType = content => {
 }
 
 /**
-   * Bind events to an element
-   * @param  {Object} element DOM element
-   * @param  {Object} events  object full of events eg. {click: evt => callback}
-   * @return {void}
-   */
+ * Bind events to an element
+ * @param  {Object} element DOM element
+ * @param  {Object} events  object full of events eg. {click: evt => callback}
+ * @return {void}
+ */
 utils.bindEvents = (element, events) => {
   if (events) {
-    for (let event in events) {
+    for (const event in events) {
       if (events.hasOwnProperty(event)) {
         element.addEventListener(event, evt => events[event](evt))
       }
@@ -170,22 +170,22 @@ utils.bindEvents = (element, events) => {
  * @return {String}       name
  */
 utils.nameAttr = function(field) {
-  let epoch = new Date().getTime()
-  let prefix = field.type || utils.hyphenCase(field.label)
+  const epoch = new Date().getTime()
+  const prefix = field.type || utils.hyphenCase(field.label)
   return prefix + '-' + epoch
 }
 
 /**
-   * Generate markup wrapper where needed
-   *
-   * @param  {string}              tag
-   * @param  {String|Array|Object} content we wrap this
-   * @param  {Object}              attributes
-   * @return {Object} DOM Element
-   */
+ * Generate markup wrapper where needed
+ *
+ * @param  {string}              tag
+ * @param  {String|Array|Object} content we wrap this
+ * @param  {Object}              attributes
+ * @return {Object} DOM Element
+ */
 utils.markup = function(tag, content = '', attributes = {}) {
   let contentType = utils.contentType(content)
-  let { events, ...attrs } = attributes
+  const { events, ...attrs } = attributes
   const field = document.createElement(tag)
 
   const appendContent = {
@@ -193,7 +193,7 @@ utils.markup = function(tag, content = '', attributes = {}) {
       field.innerHTML += content
     },
     object: config => {
-      let { tag, content, ...data } = config
+      const { tag, content, ...data } = config
       return field.appendChild(utils.markup(tag, content, data))
     },
     node: content => {
@@ -213,10 +213,12 @@ utils.markup = function(tag, content = '', attributes = {}) {
     undefined: () => {},
   }
 
-  for (let attr in attrs) {
+  for (const attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       const name = utils.safeAttrName(attr)
-      const attrVal = Array.isArray(attrs[attr]) ? utils.unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
+      const attrVal = Array.isArray(attrs[attr])
+        ? utils.unique(attrs[attr].join(' ').split(' ')).join(' ')
+        : attrs[attr]
       field.setAttribute(name, attrVal)
     }
   }
@@ -231,13 +233,13 @@ utils.markup = function(tag, content = '', attributes = {}) {
 }
 
 /**
-   * Convert html element attributes to key/value object
-   * @param  {Object} elem DOM element
-   * @return {Object} ex: {attrName: attrValue}
-   */
+ * Convert html element attributes to key/value object
+ * @param  {Object} elem DOM element
+ * @return {Object} ex: {attrName: attrValue}
+ */
 utils.parseAttrs = elem => {
-  let attrs = elem.attributes
-  let data = {}
+  const attrs = elem.attributes
+  const data = {}
   utils.forEach(attrs, attr => {
     let attrVal = attrs[attr].value || ''
     if (attrVal.match(/false|true/g)) {
@@ -255,13 +257,13 @@ utils.parseAttrs = elem => {
 }
 
 /**
-   * Convert field options to optionData
-   * @param  {NodeList} options  DOM elements
-   * @return {Array} optionData array
-   */
+ * Convert field options to optionData
+ * @param  {NodeList} options  DOM elements
+ * @return {Array} optionData array
+ */
 utils.parseOptions = options => {
   let optionData = {}
-  let data = []
+  const data = []
 
   for (let i = 0; i < options.length; i++) {
     optionData = utils.parseAttrs(options[i])
@@ -273,19 +275,19 @@ utils.parseOptions = options => {
 }
 
 /**
-   * Parse XML formData
-   * @param  {String} xmlString
-   * @return {Array}            formData array
-   */
+ * Parse XML formData
+ * @param  {String} xmlString
+ * @return {Array}            formData array
+ */
 utils.parseXML = xmlString => {
   const parser = new window.DOMParser()
-  let xml = parser.parseFromString(xmlString, 'text/xml')
-  let formData = []
+  const xml = parser.parseFromString(xmlString, 'text/xml')
+  const formData = []
 
   if (xml) {
-    let fields = xml.getElementsByTagName('field')
+    const fields = xml.getElementsByTagName('field')
     for (let i = 0; i < fields.length; i++) {
-      let fieldData = utils.parseAttrs(fields[i])
+      const fieldData = utils.parseAttrs(fields[i])
       const options = fields[i].getElementsByTagName('option')
 
       if (options && options.length) {
@@ -300,30 +302,30 @@ utils.parseXML = xmlString => {
 }
 
 /**
-   * Converts escaped HTML into usable HTML
-   * @param  {String} html escaped HTML
-   * @return {String}      parsed HTML
-   */
+ * Converts escaped HTML into usable HTML
+ * @param  {String} html escaped HTML
+ * @return {String}      parsed HTML
+ */
 utils.parsedHtml = html => {
-  let escapeElement = document.createElement('textarea')
+  const escapeElement = document.createElement('textarea')
   escapeElement.innerHTML = html
   return escapeElement.textContent
 }
 
 /**
-   * Escape markup so it can be displayed rather than rendered
-   * @param  {String} html markup
-   * @return {String}      escaped html
-   */
+ * Escape markup so it can be displayed rather than rendered
+ * @param  {String} html markup
+ * @return {String}      escaped html
+ */
 utils.escapeHtml = html => {
-  let escapeElement = document.createElement('textarea')
+  const escapeElement = document.createElement('textarea')
   escapeElement.textContent = html
   return escapeElement.innerHTML
 }
 
 // Escape an attribute
 utils.escapeAttr = str => {
-  let match = {
+  const match = {
     '"': '&quot;',
     '&': '&amp;',
     '<': '&lt;',
@@ -337,7 +339,7 @@ utils.escapeAttr = str => {
 
 // Escape attributes
 utils.escapeAttrs = attrs => {
-  for (let attr in attrs) {
+  for (const attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       attrs[attr] = utils.escapeAttr(attrs[attr])
     }
@@ -354,21 +356,21 @@ utils.forEach = function(array, callback, scope) {
 }
 
 /**
-   * Remove duplicates from an array of elements
-   * @param  {Array} array  array with possible duplicates
-   * @return {Array}        array with only unique values
-   */
+ * Remove duplicates from an array of elements
+ * @param  {Array} array  array with possible duplicates
+ * @return {Array}        array with only unique values
+ */
 utils.unique = array => {
   return array.filter((elem, pos, arr) => arr.indexOf(elem) === pos)
 }
 
 /**
-   * Removes a value from an array
-   * @param  {String|Number} val
-   * @param  {Array} arr
-   */
+ * Removes a value from an array
+ * @param  {String|Number} val
+ * @param  {Array} arr
+ */
 utils.remove = (val, arr) => {
-  let index = arr.indexOf(val)
+  const index = arr.indexOf(val)
 
   if (index > -1) {
     arr.splice(index, 1)
@@ -376,11 +378,11 @@ utils.remove = (val, arr) => {
 }
 
 /**
-   * Loads an array of scripts using jQuery's `getScript`
-   * @param  {Array|String}  scriptScr    scripts
-   * @param  {String} path   optional to load form
-   * @return {Promise}       a promise
-   */
+ * Loads an array of scripts using jQuery's `getScript`
+ * @param  {Array|String}  scriptScr    scripts
+ * @param  {String} path   optional to load form
+ * @return {Promise}       a promise
+ */
 utils.getScripts = (scriptScr, path) => {
   const $ = jQuery
   let _arr = []
@@ -391,7 +393,7 @@ utils.getScripts = (scriptScr, path) => {
 
   if (!utils.isCached(scriptScr)) {
     _arr = $.map(scriptScr, src => {
-      let options = {
+      const options = {
         dataType: 'script',
         cache: true,
         url: (path || '') + src,
@@ -406,11 +408,11 @@ utils.getScripts = (scriptScr, path) => {
 }
 
 /**
-   * Checks if remote resource is already loaded
-   * @param  {String|Array} src  url of remote script or css
-   * @param  {String}       type       'js' or 'css'
-   * @return {Boolean}      isCached
-   */
+ * Checks if remote resource is already loaded
+ * @param  {String|Array} src  url of remote script or css
+ * @param  {String}       type       'js' or 'css'
+ * @return {Boolean}      isCached
+ */
 utils.isCached = (src, type = 'js') => {
   let isCached = false
   const cache = window.fbLoaded[type]
@@ -423,11 +425,11 @@ utils.isCached = (src, type = 'js') => {
 }
 
 /**
-   * Appends stylesheets to the head
-   * @param  {Array} scriptScr
-   * @param  {String} path
-   * @return {void}
-   */
+ * Appends stylesheets to the head
+ * @param  {Array} scriptScr
+ * @param  {String} path
+ * @return {void}
+ */
 utils.getStyles = (scriptScr, path) => {
   if (!Array.isArray(scriptScr)) {
     scriptScr = [scriptScr]
@@ -453,7 +455,7 @@ utils.getStyles = (scriptScr, path) => {
 
     // append the style into the head
     if (type == 'href') {
-      let link = document.createElement('link')
+      const link = document.createElement('link')
       link.type = 'text/css'
       link.rel = 'stylesheet'
       link.href = (path || '') + src
@@ -481,8 +483,8 @@ utils.capitalize = str => {
 }
 
 utils.merge = (obj1, obj2) => {
-  let mergedObj = Object.assign({}, obj1, obj2)
-  for (let prop in obj2) {
+  const mergedObj = Object.assign({}, obj1, obj2)
+  for (const prop in obj2) {
     if (mergedObj.hasOwnProperty(prop)) {
       if (Array.isArray(obj2[prop])) {
         mergedObj[prop] = Array.isArray(obj1[prop]) ? utils.unique(obj1[prop].concat(obj2[prop])) : obj2[prop]
@@ -507,7 +509,7 @@ utils.addEventListeners = (el, evts, fn) => {
  * @return {Object}     DOM Element
  */
 utils.closest = (el, cls) => {
-  let className = cls.replace('.', '')
+  const className = cls.replace('.', '')
   while ((el = el.parentElement) && !el.classList.contains(className));
   return el
 }
@@ -525,14 +527,14 @@ utils.debounce = (func, wait = 250, immediate = false) => {
   let timeout
   return function(...args) {
     // eslint-disable-next-line no-invalid-this
-    let context = this
-    let later = function() {
+    const context = this
+    const later = function() {
       timeout = null
       if (!immediate) {
         func.apply(context, args)
       }
     }
-    let callNow = immediate && !timeout
+    const callNow = immediate && !timeout
     clearTimeout(timeout)
     timeout = setTimeout(later, wait)
     if (callNow) {

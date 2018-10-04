@@ -176,7 +176,13 @@
         2,
         "single"
       ],
-      "prefer-const": 0
+      "prefer-const": [
+        1,
+        {
+          "destructuring": "any",
+          "ignoreReadBeforeAssign": false
+        }
+      ]
     }
   },
   "engines": {}

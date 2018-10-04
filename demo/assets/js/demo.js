@@ -29,6 +29,7 @@ jQuery(function($) {
     {
       type: 'textarea',
       subtype: 'tinymce',
+      datatype: 'custom-tinymce',
       label: 'tinyMCE',
       required: true,
     }
@@ -157,7 +158,7 @@ jQuery(function($) {
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
     actionButtons: actionButtons,
-    disableFields: ['autocomplete'],
+    disableFields: ['autocomplete', 'custom-tinymce'],
     replaceFields: replaceFields,
     disabledFieldButtons: {
       text: ['copy']
