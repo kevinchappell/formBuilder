@@ -23,32 +23,34 @@ pages:
   - Custom Elements: formBuilder/options/templates.md
 - formBuilder Options:
   - actionButtons: formBuilder/options/actionButtons.md
-  - append/prepend: formBuilder/options/appendPrepend.md
   - allowStageSort: formBuilder/options/allowStageSort.md
+  - append/prepend: formBuilder/options/appendPrepend.md
   - controlOrder: formBuilder/options/controlOrder.md
   - controlPosition: formBuilder/options/controlPosition.md
   - dataType: formBuilder/options/dataType.md
   - defaultFields: formBuilder/options/defaultFields.md
-  - disableFields: formBuilder/options/disableFields.md
-  - disabledAttrs: formBuilder/options/disabledAttrs.md
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
+  - disabledAttrs: formBuilder/options/disabledAttrs.md
   - disabledFieldButtons: formBuilder/options/disabledFieldButtons.md
+  - disableFields: formBuilder/options/disableFields.md
   - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
-  - fields: formBuilder/options/fields.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
+  - fields: formBuilder/options/fields.md
   - formData: formBuilder/options/formData.md
-  - inputSets: formBuilder/options/inputSets.md
   - i18n: formBuilder/options/i18n.md
+  - inputSets: formBuilder/options/inputSets.md
   - notify: formBuilder/options/notify.md
+  - replaceFields: formBuilder/options/replaceFields.md
   - roles: formBuilder/options/roles.md
+  - scrollToFieldOnAdd: formBuilder/options/scrollToFieldOnAdd.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
   - templates: formBuilder/options/templates.md
   - typeUserAttrs: formBuilder/options/typeUserAttrs.md
-  - typeUserEvents: formBuilder/options/typeUserEvents.md
   - typeUserDisabledAttrs: formBuilder/options/typeUserDisabledAttrs.md
+  - typeUserEvents: formBuilder/options/typeUserEvents.md
 - formBuilder Actions:
   - setLang: formBuilder/actions/setLang.md
   - getData: formBuilder/actions/getData.md

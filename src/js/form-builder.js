@@ -1496,7 +1496,7 @@ const FormBuilder = function(opts, element) {
               delete methods.instance.promise
               resolve(methods.instance)
             })
-            .catch(console.error)
+            .catch(opts.notify.error)
         }),
       }
 

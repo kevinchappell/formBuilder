@@ -897,7 +897,7 @@ export default class Helpers {
     const fields = form.getElementsByClassName('form-field')
 
     if (!fields.length) {
-      console.warn('No fields to remove')
+      config.opts.notify.warn('No fields to remove')
       return false
     }
 
@@ -905,16 +905,16 @@ export default class Helpers {
       const availableIds = [].slice.call(fields).map(field => {
         return field.id
       })
-      console.warn('fieldID required to remove specific fields.')
-      console.warn('Removing last field since no ID was supplied.')
-      console.warn('Available IDs: ' + availableIds.join(', '))
+      config.opts.notify.warn('fieldID required to remove specific fields.')
+      config.opts.notify.warn('Removing last field since no ID was supplied.')
+      config.opts.notify.warn('Available IDs: ' + availableIds.join(', '))
       fieldID = form.lastChild.id
     }
 
     const field = document.getElementById(fieldID)
     const $field = $(field)
     if (!field) {
-      console.warn('Field not found')
+      config.opts.notify.warn('Field not found')
       return false
     }
 

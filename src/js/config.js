@@ -47,15 +47,16 @@ export const defaultOptions = {
   fieldRemoveWarn: false,
   fieldEditContainer: null, // DOM node or selector
   inputSets: [],
-  replaceFields: [],
-  roles: {
-    1: 'Administrator',
-  },
   notify: {
     error: console.error,
     success: console.log,
     warning: console.warn,
   },
+  replaceFields: [],
+  roles: {
+    1: 'Administrator',
+  },
+  showActionButtons: true,
   onSave: (evt, formData) => null,
   onAddField: (fieldData, fieldId) => fieldData,
   onClearAll: () => null,
@@ -74,7 +75,6 @@ export const defaultOptions = {
   },
   subtypes: {},
   templates: {},
-  showActionButtons: true,
   typeUserDisabledAttrs: {},
   typeUserAttrs: {},
   typeUserEvents: {},
