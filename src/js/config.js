@@ -1,13 +1,12 @@
 export const defaultOptions = {
-  controlPosition: 'right',
-  append: false,
-  actionButtons: [],
+  actionButtons: [], // additional form action buttons- save, data, clear
   allowStageSort: true,
+  append: false, // append non-editable content to the form.
   controlOrder: [
     'autocomplete',
     'button',
-    'checkbox',
     'checkbox-group',
+    'checkbox',
     'date',
     'file',
     'header',
@@ -19,52 +18,37 @@ export const defaultOptions = {
     'text',
     'textarea',
   ],
+  controlPosition: 'right',
   dataType: 'json',
-  // Array of fields to disable
-  disableFields: [],
-  disabledAttrs: [],
-  disabledActionButtons: [], // save, data, clear
-  disabledFieldButtons: {},
-  editOnAdd: false,
-  // Uneditable fields or other content you would like to appear
-  // before and after regular fields:
-  // array of objects with fields values
-  // ex:
-  // defaultFields: [{
-  //   label: 'First Name',
-  //   name: 'first-name',
-  //   required: 'true',
-  //   description: 'Your first name',
-  //   type: 'text'
-  // }, {
-  //   label: 'Phone',
-  //   name: 'phone',
-  //   description: 'How can we reach you?',
-  //   type: 'text'
-  // }],
   defaultFields: [],
-  fields: [],
+  disabledActionButtons: [], // save, data, clear
+  disabledAttrs: [],
+  disabledFieldButtons: {},
+  disableFields: [], // Array of fields to disable
+  disableInjectedStyle: false, // removes the injected style
+  editOnAdd: false, // opens the edit panel on added field
+  fields: [], // add custom control configs
   fieldRemoveWarn: false,
   fieldEditContainer: null, // DOM node or selector
-  inputSets: [],
+  inputSets: [], // add groups of fields at a time
   notify: {
     error: console.error,
     success: console.log,
     warning: console.warn,
   },
+  onAddField: (fieldData, fieldId) => fieldData,
+  onClearAll: () => null,
+  onCloseFieldEdit: () => null,
+  onOpenFieldEdit: () => null,
+  onSave: (evt, formData) => null,
+  prepend: false,
   replaceFields: [],
   roles: {
     1: 'Administrator',
   },
-  showActionButtons: true,
-  onSave: (evt, formData) => null,
-  onAddField: (fieldData, fieldId) => fieldData,
-  onClearAll: () => null,
-  onOpenFieldEdit: () => null,
-  onCloseFieldEdit: () => null,
-  prepend: false,
-  sortableControls: false,
   scrollToFieldOnAdd: true,
+  showActionButtons: true,
+  sortableControls: false,
   stickyControls: {
     enable: true,
     offset: {
@@ -75,8 +59,8 @@ export const defaultOptions = {
   },
   subtypes: {},
   templates: {},
-  typeUserDisabledAttrs: {},
   typeUserAttrs: {},
+  typeUserDisabledAttrs: {},
   typeUserEvents: {},
 }
 

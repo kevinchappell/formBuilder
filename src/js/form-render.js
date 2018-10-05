@@ -326,6 +326,7 @@ class FormRender {
         formRenderForms.each(index => methods.instance.render(formRenderForms[index], index))
       }
     },
+    html: () => formRenderForms.map(index => formRenderForms[index]).html(),
   }
 
   $.fn.formRender = function(methodOrOptions = {}, ...args) {

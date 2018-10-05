@@ -47,18 +47,23 @@ pages:
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
+  - subtypes: formBuilder/options/subtypes.md
   - templates: formBuilder/options/templates.md
   - typeUserAttrs: formBuilder/options/typeUserAttrs.md
   - typeUserDisabledAttrs: formBuilder/options/typeUserDisabledAttrs.md
   - typeUserEvents: formBuilder/options/typeUserEvents.md
 - formBuilder Actions:
-  - setLang: formBuilder/actions/setLang.md
-  - getData: formBuilder/actions/getData.md
-  - showData: formBuilder/actions/showData.md
-  - clearFields: formBuilder/actions/clearFields.md
-  - setData: formBuilder/actions/setData.md
   - addField: formBuilder/actions/addField.md
+  - clearFields: formBuilder/actions/clearFields.md
+  - closeAllFieldEdit: formBuilder/actions/closeAllFieldEdit.md
+  - getData: formBuilder/actions/getData.md
   - removeField: formBuilder/actions/removeField.md
+  - save: formBuilder/actions/save.md
+  - setData: formBuilder/actions/setData.md
+  - setLang: formBuilder/actions/setLang.md
+  - showData: formBuilder/actions/showData.md
+  - toggleAllFieldEdit: formBuilder/actions/toggleAllFieldEdit.md
+  - toggleFieldEdit: formBuilder/actions/toggleFieldEdit.md
 - formBuilder Promise: formBuilder/promise.md
 - formRender Demos:
   - Basic: formRender/demos/basic.md

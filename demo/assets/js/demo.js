@@ -128,9 +128,10 @@ jQuery(function($) {
   };
 
   // test disabledAttrs
-  var disabledAttrs = ['placeholder'];
+  var disabledAttrs = ['placeholder', 'name'];
 
   var fbOptions = {
+    // disabledAttrs,
     // allowStageSort: false,
     // dataType: 'xml',
     subtypes: {
@@ -256,6 +257,9 @@ jQuery(function($) {
       renderUserForm: function() {
         const formData = '[{"type":"text","label":"Color picker","name":"text-1526099104236","subtype":"color","userData":["#00ff00"]},{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"tel","userData":["123-456-7890"]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1526096579821","userData":["2018-01-01"]},{"type":"number","label":"Number","className":"form-control","name":"number-1526099204594","min":"1","max":"3","step":".2","userData":["1.1"]},{"type":"textarea","label":"Text Area","className":"form-control","name":"textarea-1526099273610","subtype":"textarea","userData":["Tennessee Welcomes You!"]},{"type":"textarea","subtype":"tinymce","label":"TinyMCE","className":"form-control","name":"textarea-1526099273610","userData":["&lt;p&gt;&lt;span style=&quot;color: #339966;&quot;&gt;It&#39;s a great place&lt;/span&gt;&lt;/p&gt;"]}]';
         $('.render-wrap').formRender('render', formData);
+      },
+      getHTML: function() {
+        console.log($('.render-wrap').formRender('html'));
       },
       showUserData: function() {
         alert(JSON.stringify($('.render-wrap').formRender('userData')))

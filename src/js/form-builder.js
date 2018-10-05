@@ -98,7 +98,9 @@ const FormBuilder = function(opts, element) {
     }
 
     // build & insert the new list item to represent this control
-    const newFieldControl = m('li', m('span', label), { className: `${iconClassName} input-control input-control-${i}` })
+    const newFieldControl = m('li', m('span', label), {
+      className: `${iconClassName} input-control input-control-${i}`,
+    })
     newFieldControl.dataset.type = type
     controlList.push(type)
     allControls[type] = newFieldControl
@@ -474,8 +476,8 @@ const FormBuilder = function(opts, element) {
       style: () => btnStyles(values.style),
       placeholder: () => textAttribute('placeholder', values),
       rows: () => numberAttribute('rows', values),
-      className: () => textAttribute('className', values),
-      name: () => textAttribute('name', values),
+      className: isHidden => textAttribute('className', values, isHidden),
+      name: isHidden => textAttribute('name', values, isHidden),
       value: () => textAttribute('value', values),
       maxlength: () => numberAttribute('maxlength', values),
       access: () => {
@@ -554,9 +556,12 @@ const FormBuilder = function(opts, element) {
       }
     }
 
+    const noDisable = ['name', 'className']
+
     Object.keys(fieldAttrs).forEach(index => {
       const attr = fieldAttrs[index]
       const useDefaultAttr = [true]
+      const isDisabled = opts.disabledAttrs.includes(attr)
 
       if (opts.typeUserDisabledAttrs[type]) {
         const typeDisabledAttrs = opts.typeUserDisabledAttrs[type]
@@ -568,12 +573,12 @@ const FormBuilder = function(opts, element) {
         useDefaultAttr.push(!utils.inArray(attr, userAttrs))
       }
 
-      if (utils.inArray(attr, opts.disabledAttrs)) {
+      if (isDisabled && !noDisable.includes(attr)) {
         useDefaultAttr.push(false)
       }
 
-      if (useDefaultAttr.every(use => use === true)) {
-        advFields.push(advFieldMap[attr]())
+      if (useDefaultAttr.every(Boolean)) {
+        advFields.push(advFieldMap[attr](isDisabled))
       }
     })
 
@@ -850,9 +855,10 @@ const FormBuilder = function(opts, element) {
    * Generate some text inputs for field attributes, **will be replaced**
    * @param  {String} attribute
    * @param  {Object} values
+   * @param  {Boolean} isHidden
    * @return {String}
    */
-  const textAttribute = (attribute, values) => {
+  const textAttribute = (attribute, values, isHidden = false) => {
     const textArea = ['paragraph']
 
     let attrVal = values[attribute] || ''
@@ -892,7 +898,7 @@ const FormBuilder = function(opts, element) {
 
       const inputWrap = `<div class="input-wrap">${attributefield}</div>`
 
-      let visibility = 'block'
+      let visibility = isHidden ? 'none' : 'block'
       if (attribute === 'value') {
         visibility = values.subtype && values.subtype === 'quill' && 'none'
       }
@@ -1468,17 +1474,17 @@ const FormBuilder = function(opts, element) {
       const i18nOpts = $.extend({}, defaultI18n, i18n, true)
       methods.instance = {
         actions: {
-          getData: null,
-          setData: null,
-          save: null,
-          showData: null,
-          setLang: null,
           addField: null,
-          removeField: null,
           clearFields: null,
-          toggleFieldEdit: null,
           closeAllFieldEdit: null,
+          getData: null,
+          removeField: null,
+          save: null,
+          setData: null,
+          setLang: null,
+          showData: null,
           toggleAllFieldEdit: null,
+          toggleFieldEdit: null,
         },
         get formData() {
           return methods.getData && methods.getData('json')
