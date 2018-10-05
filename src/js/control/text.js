@@ -23,7 +23,10 @@ export default class controlText extends control {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    this.dom = this.markup('input', null, this.config)
+    let { name } = this.config
+    name = this.config.multiple ? `${name}[]` : name
+    const inputConfig = Object.assign({}, this.config, { name })
+    this.dom = this.markup('input', null, inputConfig)
     return this.dom
   }
 

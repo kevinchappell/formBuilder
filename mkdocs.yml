@@ -32,6 +32,7 @@ pages:
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
   - disabledAttrs: formBuilder/options/disabledAttrs.md
   - disabledFieldButtons: formBuilder/options/disabledFieldButtons.md
+  - disabledSubtypes: formBuilder/options/disabledSubtypes.md
   - disableFields: formBuilder/options/disableFields.md
   - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
