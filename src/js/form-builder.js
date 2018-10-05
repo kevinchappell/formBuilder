@@ -649,16 +649,17 @@ const FormBuilder = function(opts, element) {
   /**
    * Text input value for attribute
    * @param  {String} name
-   * @param  {Object} attrs also known as values
+   * @param  {Object} inputAttrs also known as values
    * @return {String}       input markup
    */
-  function inputUserAttrs(name, attrs) {
+  function inputUserAttrs(name, inputAttrs) {
+    const { class: classname, className, ...attrs } = inputAttrs
     let textAttrs = {
       id: name + '-' + data.lastID,
       title: attrs.description || attrs.label || name.toUpperCase(),
       name: name,
       type: attrs.type || 'text',
-      className: [`fld-${name}`],
+      className: [`fld-${name}`, (classname || className || '').trim()],
     }
     const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
@@ -681,7 +682,7 @@ const FormBuilder = function(opts, element) {
    * @return {String}         select markup
    */
   function selectUserAttrs(name, fieldData) {
-    const { multiple, options, label: labelText, value, ...restData } = fieldData
+    const { multiple, options, label: labelText, value, class: classname, className, ...restData } = fieldData
     const optis = Object.keys(options).map(val => {
       const attrs = { value: val }
       if (Array.isArray(value) ? utils.inArray(val, value) : val === value) {
@@ -689,11 +690,12 @@ const FormBuilder = function(opts, element) {
       }
       return m('option', options[val], attrs).outerHTML
     })
+
     const selectAttrs = {
       id: `${name}-${data.lastID}`,
       title: restData.description || labelText || name.toUpperCase(),
       name,
-      className: `fld-${name} form-control`,
+      className: `fld-${name} form-control ${classname || className || ''}`.trim(),
     }
 
     if (multiple) {
@@ -792,7 +794,8 @@ const FormBuilder = function(opts, element) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const attrVal = values[attribute]
+    const {class: classname, className, ...attrs} = values
+    const attrVal = attrs[attribute]
     const attrLabel = i18n[attribute] || attribute
     const placeholder = i18n[`placeholder.${attribute}`]
     const inputConfig = {
@@ -801,7 +804,7 @@ const FormBuilder = function(opts, element) {
       name: attribute,
       min: '0',
       placeholder: placeholder,
-      className: `fld-${attribute} form-control`,
+      className: `fld-${attribute} form-control ${classname || className || ''}`.trim(),
       id: `${attribute}-${data.lastID}`,
     }
     const numberAttribute = h.input(utils.trimObj(inputConfig)).outerHTML
