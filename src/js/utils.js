@@ -86,11 +86,8 @@ utils.safeAttr = function(name, value) {
   if (value) {
     if (Array.isArray(value)) {
       valString = utils.escapeAttr(value.join(' '))
-    } else {
-      if (typeof value === 'boolean') {
-        value = value.toString()
-      }
-      valString = utils.escapeAttr(value.replace(',', ' ').trim())
+    } else if (typeof value === 'boolean') {
+      value = value.toString()
     }
   }
 
