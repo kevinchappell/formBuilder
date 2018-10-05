@@ -794,7 +794,7 @@ const FormBuilder = function(opts, element) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const {class: classname, className, ...attrs} = values
+    const { class: classname, className, ...attrs } = values
     const attrVal = attrs[attribute]
     const attrLabel = i18n[attribute] || attribute
     const placeholder = i18n[`placeholder.${attribute}`]
@@ -1430,7 +1430,8 @@ const FormBuilder = function(opts, element) {
     setLang: locale => {
       mi18n.setCurrent.call(mi18n, locale).then(() => {
         d.empty(element)
-        const formBuilder = new FormBuilder(originalOpts, element)
+        const newOptions = Object.assign({}, originalOpts, { formData: h.save.call(h) })
+        const formBuilder = new FormBuilder(newOptions, element)
         $(element).data('formBuilder', formBuilder)
       })
     },
