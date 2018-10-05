@@ -153,7 +153,9 @@ export default class Helpers {
 
       // Handle options
       if (field.type.match(optionFields)) {
-        fieldContent = `\n${values.map(option => indent(4) + m('option', option.label, option).outerHTML).join('\n')}\n${indent(3)}`
+        fieldContent = `\n${values
+          .map(option => indent(4) + m('option', option.label, option).outerHTML)
+          .join('\n')}\n${indent(3)}`
       }
 
       xml.push(indent(3) + m('field', fieldContent, fieldData).outerHTML)
@@ -978,6 +980,7 @@ export default class Helpers {
    * @return {Array} subtypes
    */
   processSubtypes(subtypeOpts) {
+    const disabledSubtypes = config.opts.disabledSubtypes
     // first register any passed subtype options against the appropriate type control class
     for (const fieldType in subtypeOpts) {
       if (subtypeOpts.hasOwnProperty(fieldType)) {
@@ -986,7 +989,13 @@ export default class Helpers {
     }
 
     // retrieve a list of all subtypes
-    const subtypeDef = control.getRegisteredSubtypes()
+    const registeredSubtypes = control.getRegisteredSubtypes()
+
+    // remove disabled subtypes
+    const subtypeDef = Object.entries(registeredSubtypes).reduce((acc, [key, val]) => {
+      acc[key] = (disabledSubtypes[key] && utils.subtract(disabledSubtypes[key], val)) || val
+      return acc
+    }, {})
 
     // reformat the subtypes for each fieldType
     const subtypes = {}

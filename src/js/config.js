@@ -24,6 +24,7 @@ export const defaultOptions = {
   disabledActionButtons: [], // save, data, clear
   disabledAttrs: [],
   disabledFieldButtons: {},
+  disabledSubtypes: {}, // subtypes you want disabled
   disableFields: [], // Array of fields to disable
   disableHTMLLabels: false, // disables html in field labels
   disableInjectedStyle: false, // removes the injected style

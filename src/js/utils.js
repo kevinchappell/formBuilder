@@ -61,17 +61,11 @@ utils.validAttr = function(attr) {
  * @param  {Object} attrs object of attributes for markup
  * @return {string}
  */
-utils.attrString = function(attrs) {
-  const attributes = []
-
-  for (let attr in attrs) {
-    if (attrs.hasOwnProperty(attr) && utils.validAttr(attr)) {
-      attr = utils.safeAttr(attr, attrs[attr])
-      attributes.push(attr.name + attr.value)
-    }
-  }
-  return attributes.join(' ')
-}
+utils.attrString = attrs =>
+  Object.entries(attrs)
+    .map(([key, val]) => utils.validAttr(key) && Object.values(utils.safeAttr(key, val)).join(''))
+    .filter(Boolean)
+    .join(' ')
 
 /**
  * Convert attributes to markup safe strings
@@ -79,15 +73,18 @@ utils.attrString = function(attrs) {
  * @param  {String} value attribute value
  * @return {Object}       {attrName: attrValue}
  */
-utils.safeAttr = function(name, value) {
+utils.safeAttr = (name, value) => {
   name = utils.safeAttrName(name)
   let valString
 
   if (value) {
     if (Array.isArray(value)) {
       valString = utils.escapeAttr(value.join(' '))
-    } else if (typeof value === 'boolean') {
-      value = value.toString()
+    } else {
+      if (typeof value === 'boolean') {
+        value = value.toString()
+      }
+      valString = utils.escapeAttr(value.trim())
     }
   }
 
@@ -98,7 +95,7 @@ utils.safeAttr = function(name, value) {
   }
 }
 
-utils.safeAttrName = function(name) {
+utils.safeAttrName = name => {
   const safeAttr = {
     className: 'class',
   }
@@ -581,6 +578,13 @@ utils.safename = str => {
  */
 utils.forceNumber = str => {
   return str.replace(/[^0-9]/g, '')
+}
+
+// subtract the contents of 1 array from another
+utils.subtract = (arr, from) => {
+  return from.filter(function(a) {
+    return !~this.indexOf(a)
+  }, arr)
 }
 
 export default utils

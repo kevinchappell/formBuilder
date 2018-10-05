@@ -131,7 +131,10 @@ jQuery(function($) {
   var disabledAttrs = ['placeholder', 'name'];
 
   var fbOptions = {
-    disableHTMLLabels: true,
+    disabledSubtypes: {
+      text: ['password']
+    },
+    // disableHTMLLabels: true,
     // disabledAttrs,
     // allowStageSort: false,
     // dataType: 'xml',
