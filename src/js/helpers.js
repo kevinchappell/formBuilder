@@ -931,6 +931,12 @@ export default class Helpers {
       }
     })
 
+    const userEvents = config.opts.typeUserEvents[field.type]
+
+    if (userEvents && userEvents.onremove) {
+      userEvents.onremove(field)
+    }
+
     document.dispatchEvent(events.fieldRemoved)
     return fieldRemoved
   }
