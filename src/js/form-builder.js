@@ -1390,7 +1390,7 @@ const FormBuilder = function(opts, element) {
       isMultiple = $firstOption.attr('type') === 'checkbox'
     }
 
-    const name = $firstOption.attr('name')
+    const name = $firstOption.attr('name').replace(/-option$/, '')
 
     $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple))
   })
