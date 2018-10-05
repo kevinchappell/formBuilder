@@ -1182,8 +1182,8 @@ const FormBuilder = function(opts, element) {
     }
   })
 
-  $stage.on('dblclick', 'li.form-field, .field-label', e => {
-    if (e.target.tagName.toLowerCase() === 'input' || e.target.contentEditable) {
+  $stage.on('dblclick', 'li.form-field', e => {
+    if (['select', 'input', 'label'].includes(e.target.tagName.toLowerCase()) || e.target.contentEditable === 'true') {
       return
     }
     e.stopPropagation()
