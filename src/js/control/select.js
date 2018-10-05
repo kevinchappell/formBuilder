@@ -101,9 +101,6 @@ export default class controlSelect extends control {
           id: `${data.id}-other`,
           className: `${data.className} other-option`,
           value: '',
-          events: {
-            click: () => this.otherOptionCB(otherOptionAttrs.id),
-          },
         }
 
         let wrapperClass = optionType
@@ -176,22 +173,6 @@ export default class controlSelect extends control {
       checkboxes[i].addEventListener('change', toggleValid)
     }
     toggleValid()
-  }
-
-  /**
-   * Callback for 'other' option.
-   * Toggles the hidden text area for "other" option.
-   * @param  {String} otherId id of the "other" option input
-   */
-  otherOptionCB(otherId) {
-    const otherInput = document.getElementById(otherId)
-    const otherInputValue = document.getElementById(`${otherId}-value`)
-
-    if (otherInput.checked) {
-      otherInputValue.style.display = 'inline-block'
-    } else {
-      otherInputValue.style.display = 'none'
-    }
   }
 
   /**

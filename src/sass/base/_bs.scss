@@ -72,7 +72,8 @@ textarea {
   .input-group-btn:first-child > .btn-group:not(:first-child) > .btn,
   .input-group-btn:first-child > .btn:not(:first-child),
   .input-group-btn:last-child > .btn,
-  .input-group-btn:last-child > .btn-group > .btn, .input-group-btn:last-child > .dropdown-toggle {
+  .input-group-btn:last-child > .btn-group > .btn,
+  .input-group-btn:last-child > .dropdown-toggle {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
@@ -220,10 +221,10 @@ textarea.form-control {
 
 .fb-checkbox-group {
   .checkbox,
-  .checkbox-inline{
+  .checkbox-inline {
     padding-left: 0;
     input {
-      position:relative;
+      position: relative;
       margin: 4px 0 0;
     }
     label {
@@ -233,14 +234,18 @@ textarea.form-control {
 }
 
 .fb-radio-group {
-  .radio, .radio-inline{
+  .radio,
+  .radio-inline {
     padding-left: 0;
     input {
-      position:relative;
+      position: relative;
       margin: 4px 0 0;
     }
     label {
       padding-left: 4px;
+      input[type='text'] {
+        margin-top: 0;
+      }
     }
   }
 }

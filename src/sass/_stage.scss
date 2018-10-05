@@ -320,6 +320,12 @@
     display: block;
   }
 
+  .other-option:checked + label {
+    input {
+      display: inline-block;
+    }
+  }
+
   .other-val {
     margin-left: 5px;
     display: none;
