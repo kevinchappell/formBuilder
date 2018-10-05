@@ -890,7 +890,7 @@ const FormBuilder = function(opts, element) {
         for: inputConfig.id,
       }).outerHTML
 
-      if (attribute === 'label') {
+      if (attribute === 'label' && !opts.disableHTMLLabels) {
         inputConfig.contenteditable = true
         attributefield += m('div', attrVal, inputConfig).outerHTML
       } else {

@@ -25,6 +25,7 @@ export const defaultOptions = {
   disabledAttrs: [],
   disabledFieldButtons: {},
   disableFields: [], // Array of fields to disable
+  disableHTMLLabels: false, // disables html in field labels
   disableInjectedStyle: false, // removes the injected style
   editOnAdd: false, // opens the edit panel on added field
   fields: [], // add custom control configs
