@@ -279,12 +279,12 @@ class FormRender {
         .slice()
         .filter(fieldData => fieldData.subtype === 'tinymce')
         .forEach(fieldData => window.tinymce.get(fieldData.name).setContent(''))
+
       container.querySelectorAll('input, select, textarea').forEach(input => {
-        if (input.type === 'checkbox' || input.type === 'radio') {
-          input.checked = false;
-        }
-        else {
-          input.value = '';
+        if (['checkbox', 'radio'].includes(input.type)) {
+          input.checked = false
+        } else {
+          input.value = ''
         }
       })
     })

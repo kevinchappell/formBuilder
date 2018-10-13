@@ -1,3 +1,5 @@
+const dataType = 'json'
+
 jQuery(function($) {
   var fields = [
     {
@@ -137,15 +139,11 @@ jQuery(function($) {
     // disableHTMLLabels: true,
     // disabledAttrs,
     // allowStageSort: false,
-    // dataType: 'xml',
+    dataType,
     subtypes: {
       text: ['datetime-local']
     },
     onSave: function(e, formData) {
-      $('.render-wrap').formRender({
-        formData: formData,
-        templates: templates
-      });
       window.sessionStorage.setItem('formData', JSON.stringify(formData));
       toggleEdit();
     },
@@ -168,6 +166,7 @@ jQuery(function($) {
     disabledFieldButtons: {
       text: ['copy']
     },
+    // controlPosition: 'left',
     i18n: {
       override: {
         'en-US': {
@@ -175,8 +174,6 @@ jQuery(function($) {
         }
       }
     }
-    // controlPosition: 'left'
-    // disabledAttrs
   };
   var formData = window.sessionStorage.getItem('formData');
   var editing = true;
@@ -194,10 +191,11 @@ jQuery(function($) {
     if (!editing) {
       $('.build-wrap').formBuilder('setData', $('.render-wrap').formRender('userData'))
     } else {
-      var formRenderData = $('.build-wrap').formBuilder('getData')
+      var formRenderData = $('.build-wrap').formBuilder('getData');
       $('.render-wrap').formRender({
         formData: formRenderData,
-        templates: templates
+        templates: templates,
+        dataType
       });
       window.sessionStorage.setItem('formData', JSON.stringify(formRenderData));
     }

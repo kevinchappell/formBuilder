@@ -143,31 +143,26 @@ export default class Helpers {
    */
   xmlSave(form) {
     const formData = this.prepData(form)
-    const indent = (width = 1) => Array(width + 1).join('  ')
-    const xml = ['<form-template>', `${indent()}<fields>`]
     const xmlSerializer = new XMLSerializer()
+    const fields = []
 
-    utils.forEach(formData, function(fieldIndex, field) {
+    formData.forEach(field => {
       let fieldContent = null
       const { values, ...fieldData } = field
       const optionFields = optionFieldsRegEx
 
       // Handle options
       if (field.type.match(optionFields)) {
-        fieldContent = `\n${values
-          .map(option => indent(4) + m('option', option.label, option).outerHTML)
-          .join('\n')}\n${indent(3)}`
+        fieldContent = values.map(option => m('option', option.label, option))
       }
 
-      const s = m('field', fieldContent, fieldData)
-      const xmlString = xmlSerializer.serializeToString(s)
-
-      xml.push(indent(3) + xmlString)
+      const fieldHTML = m('field', fieldContent, fieldData).outerHTML
+      fields.push(fieldHTML)
     })
 
-    xml.push(`${indent()}</fields>`, '</form-template>')
+    const formTemplate = m('form-template', m('fields', fields.join('')))
 
-    return xml.join('\n')
+    return xmlSerializer.serializeToString(formTemplate)
   }
 
   /**
@@ -256,13 +251,8 @@ export default class Helpers {
     }
 
     const setData = {
-      xml: formData => utils.parseXML(formData),
-      json: formData => {
-        if (typeof formData === 'string') {
-          return window.JSON.parse(formData)
-        }
-        return formData
-      },
+      xml: formData => (Array.isArray(formData) ? formData : utils.parseXML(formData)),
+      json: formData => (typeof formData === 'string' ? window.JSON.parse(formData) : formData),
     }
 
     data.formData = setData[config.opts.dataType](formData) || []
