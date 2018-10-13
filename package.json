@@ -81,14 +81,14 @@
     ]
   },
   "scripts": {
-    "test": "npm test",
-    "test:watch": "npm test -- --reporter min --watch",
+    "test": "yarn test",
+    "test:watch": "yarn test -- --reporter min --watch",
     "font": "node tools/run icon-font",
     "deploy": "babel-node -- node_modules/gulp/bin/gulp deploy",
     "tag:patch": "babel-node -- node_modules/gulp/bin/gulp tag --patch",
     "tag:minor": "babel-node -- node_modules/gulp/bin/gulp tag --minor",
-    "release:patch": "npm run tag:patch --patch && npm run deploy",
-    "release:minor": "npm run tag:minor --minor && npm run deploy",
+    "release:patch": "yarn run tag:patch --patch && yarn run deploy",
+    "release:minor": "yarn run tag:minor --minor && yarn run deploy",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
     "build": "webpack --mode production -p --progress --config tools/webpack.config",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
