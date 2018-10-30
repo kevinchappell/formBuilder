@@ -39,7 +39,7 @@ window.fbControls.push(function(controlClass) {
       this.inputId = this.config.name;
       let defaultValue = this.config.value || 3.6;
       this.input = this.markup('input', null, {
-        name: this.inputId,
+        name: name,
         id: this.inputId,
         value: defaultValue,
         type: 'hidden'
