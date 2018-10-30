@@ -36,7 +36,18 @@ window.fbControls.push(function(controlClass) {
      * @return {Object} DOM Element to be injected into the form.
      */
     build() {
-      return this.markup('span', null, {id: this.config.name});
+      this.inputId = this.config.name;
+      let defaultValue = this.config.value || 3.6;
+      this.input = this.markup('input', null, {
+        name: name,
+        id: this.inputId,
+        value: defaultValue,
+        type: 'hidden'
+      });
+
+      this.field = this.markup('span', null, { id: this.config.name + "_render" });
+
+      return this.markup('div', [this.input, this.field]);
     }
 
     /**
@@ -44,7 +55,13 @@ window.fbControls.push(function(controlClass) {
      */
     onRender() {
       let value = this.config.value || 3.6;
-      $('#'+this.config.name).rateYo({rating: value});
+      var targetId = this.config.name;
+      $('#' + this.config.name + "_render").rateYo({
+          rating: value,
+          onSet: function onSet(rating, rateYoInstance) {
+            $('#' + targetId).val(rating);
+          }
+      });
     }
   }
 
