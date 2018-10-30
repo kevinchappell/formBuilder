@@ -12,12 +12,10 @@ import control from './control'
 import './control/index'
 import controlCustom from './control/custom'
 
-let instanceTime = new Date().getTime()
-
 const FormBuilder = function(opts, element) {
   const formBuilder = this
   const i18n = mi18n.current
-  const formID = 'frmb-' + instanceTime++
+  const formID = `frmb-${new Date().getTime()}`
   const data = new Data(formID)
   const d = new Dom(formID)
 
@@ -1412,6 +1410,7 @@ const FormBuilder = function(opts, element) {
 
   // Make actions accessible
   formBuilder.actions = {
+    getFieldTypes: activeOnly => activeOnly ? utils.subtract(controls, opts.disableFields) : controls,
     clearFields: animate => h.removeAllFields(d.stage, animate),
     showData: h.showData.bind(h),
     save: h.save.bind(h),
@@ -1478,6 +1477,7 @@ const FormBuilder = function(opts, element) {
       const i18nOpts = $.extend({}, defaultI18n, i18n, true)
       methods.instance = {
         actions: {
+          getFieldTypes: null,
           addField: null,
           clearFields: null,
           closeAllFieldEdit: null,

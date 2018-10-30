@@ -1,6 +1,7 @@
 .stage-wrap {
   position: relative;
   padding: 0;
+  margin: 0;
   width: calc(74% - 5px);
 
   @include breakpoint('phone-lrg') {

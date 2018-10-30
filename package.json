@@ -90,13 +90,13 @@
     "release:patch": "yarn run tag:patch --patch && yarn run deploy",
     "release:minor": "yarn run tag:minor --minor && yarn run deploy",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
-    "build": "webpack --mode production -p --progress --config tools/webpack.config",
+    "build": "webpack --mode production -p --progress --config tools/webpack.config && cp -a dist/*.js demo/assets/js/",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:vendor": "babel-node -- tools/run build-vendor",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
   "dependencies": {
-    "jquery": "^3.1.1",
+    "jquery": "3.1.1",
     "jquery-ui-sortable": "*"
   },
   "devDependencies": {
@@ -111,7 +111,7 @@
     "babel-register": "6.26.0",
     "clean-webpack-plugin": "0.1.19",
     "clui": "0.3.6",
-    "compression-webpack-plugin": "1.1.11",
+    "compression-webpack-plugin": "2.0.0",
     "copy-webpack-plugin": "4.5.1",
     "cross-env": "5.2.0",
     "css-loader": "0.28.11",
@@ -120,8 +120,10 @@
     "eslint-config-prettier": "2.9.0",
     "eslint-loader": "2.0.0",
     "eslint-plugin-prettier": "2.6.0",
+    "html-webpack-harddisk-plugin": "0.2.0",
+    "html-webpack-plugin": "3.2.0",
     "inquirer": "6.0.0",
-    "mi18n": "^0.4.6",
+    "mi18n": "0.4.6",
     "node-sass": "4.9.0",
     "opener": "1.4.3",
     "postcss-loader": "2.1.5",

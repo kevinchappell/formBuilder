@@ -5,6 +5,9 @@ const CompressionPlugin = require('compression-webpack-plugin')
 const { BannerPlugin } = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
+const { langFiles } = require('./build-helpers')
 
 // hack for Ubuntu on Windows
 try {
@@ -17,16 +20,26 @@ const PRODUCTION = process.argv.includes('production')
 const ANALYZE = process.argv.includes('--analyze')
 const devtool = PRODUCTION ? false : 'inline-source-map'
 const outputDir = resolve(__dirname, '../', 'dist/')
+const camelCase = str => str.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
 
-const bannerTemplate = [`${pkg.name} - ${pkg.homepage}`, `Version: ${pkg.version}`, `Author: ${pkg.author}`, ''].join(
-  '\n'
-)
+const bannerTemplate = ({ chunk }) => {
+  const banner = {
+    [`jQuery ${camelCase(chunk.name)}`]: pkg.homepage,
+    Version: pkg.version,
+    Author: pkg.author,
+  }
+
+  return Object.entries(banner)
+    .map(([key, val]) => [key, val].join(': '))
+    .join('\n')
+}
 
 const webpackConfig = {
   context: outputDir,
   entry: {
     'form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
     'form-render': resolve(__dirname, '../', pkg.config.files.formRender.js),
+    demo: resolve(__dirname, '../src/demo/', 'js/demo.js'),
   },
   output: {
     path: outputDir,
@@ -48,7 +61,7 @@ const webpackConfig = {
       },
       {
         test: /\.lang$/,
-        loader: 'file?name=[path][name].[ext]&context=./src',
+        loader: 'file-loader?name=[path][name].[ext]&context=./src',
       },
       {
         test: /\.scss$/,
@@ -95,9 +108,19 @@ const webpackConfig = {
     new CleanWebpackPlugin(['dist/*', 'demo/assets/js/form-*'], {
       root: join(__dirname, '..'),
     }),
-    new BannerPlugin(bannerTemplate),
+    new HtmlWebpackPlugin({
+      template: '../src/demo/index.html',
+      formBuilder: PRODUCTION ? 'assets/js/form-builder.min.js' : '../dist/form-builder.min.js',
+      formRender: PRODUCTION ? 'assets/js/form-render.min.js' : '../dist/form-render.min.js',
+      demo: PRODUCTION ? 'assets/js/demo.js' : '../dist/demo.min.js',
+      alwaysWriteToDisk: true,
+      inject: false,
+      langFiles,
+    }),
+    new HtmlWebpackHarddiskPlugin({ outputPath: './demo/' }),
+    new BannerPlugin({ banner: bannerTemplate, test: /\.js$/ }),
     new CompressionPlugin({
-      asset: '[path].gz[query]',
+      filename: '[path].gz[query]',
       algorithm: 'gzip',
       test: /\.(js)$/,
       threshold: 10240,

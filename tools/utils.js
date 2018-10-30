@@ -59,7 +59,7 @@ export const checkUnstagedChanges = () => {
  * @return {Array} Array of potential unfinished branches
  */
 export const findUnfinishedReleases = releaseType => {
-  const unfinishedReleases = execTrim(`git branch -l`)
+  const unfinishedReleases = execTrim('git branch -l')
     .split('\n')
     .filter(branchName => new RegExp(`${releaseType}/.+`).test(branchName))
 
@@ -339,6 +339,7 @@ export const loadLog = version => fs.readFileSync(`.git/${version}`).toString()
 /**
  * Remove the saved changelog
  * @param  {Float} version
+ * @return {String} removedFile
  */
 export const removeLog = version => fs.unlinkSync(`.git/${version}`)
 

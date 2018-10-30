@@ -587,4 +587,30 @@ utils.subtract = (arr, from) => {
   }, arr)
 }
 
+export const insertStyle = srcs => {
+  srcs = Array.isArray(srcs) ? srcs : [srcs]
+  const promises = srcs.map(
+    ({ src, id }) =>
+      new Promise((resolve, reject) => {
+        if (window.fbLoaded.css.includes(src)) {
+          return resolve(src)
+        }
+        const formeoStyle = utils.markup('link', null, {
+          href: src,
+          rel: 'stylesheet',
+          id,
+        })
+
+        document.head.insertBefore(formeoStyle, document.head.firstChild)
+      })
+  )
+
+  return Promise.all(promises)
+}
+
+export const removeStyle = id => {
+  const elem = document.getElementById(id)
+  return elem.parentElement.removeChild(elem)
+}
+
 export default utils
