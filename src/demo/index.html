@@ -38,9 +38,7 @@
       <h2>i18n</h2>
       <select id="setLanguage">
         <% _.forEach(htmlWebpackPlugin.options.langFiles, function(langFile) { %>
-        <option value="<%- langFile.locale %>">
-          <%- langFile.nativeName %>
-        </option>
+        <option value="<%- langFile.locale %>"><%- langFile.nativeName %></option>
         <% }); %>
       </select>
     </div>

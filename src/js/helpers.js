@@ -1,6 +1,6 @@
 import { instanceDom, empty, optionFieldsRegEx, remove } from './dom'
 import { instanceData } from './data'
-import utils from './utils'
+import utils, { mobileClass } from './utils'
 import events from './events'
 import mi18n from 'mi18n'
 import { config } from './config'
@@ -620,7 +620,7 @@ export default class Helpers {
     if (fields.length) {
       _this.confirm(
         i18n.clearAllMessage,
-        function() {
+        () => {
           _this.removeAllFields.call(_this, stage)
           config.opts.notify.success(i18n.allFieldsRemoved)
           config.opts.onClearAll()
@@ -700,57 +700,6 @@ export default class Helpers {
       sessionStorage.setItem('fieldOrder', JSON.stringify(fieldOrder))
     }
     return fieldOrder
-  }
-
-  /**
-   * Reorder the controls if the user has previously ordered them.
-   *
-   * @param  {Array} controls - an array of control types
-   * @return {Array} ordered fields
-   */
-  orderFields(controls) {
-    const opts = config.opts
-    const controlOrder = opts.controlOrder.concat(controls)
-    let fieldOrder
-
-    // retrieve any saved ordering from the session
-    if (window.sessionStorage) {
-      if (opts.sortableControls) {
-        fieldOrder = window.sessionStorage.getItem('fieldOrder')
-      } else {
-        window.sessionStorage.removeItem('fieldOrder')
-      }
-    }
-
-    // if we have a saved order, use it. Otherwise build the order ourselves
-    if (!fieldOrder) {
-      fieldOrder = utils.unique(controlOrder)
-    } else {
-      fieldOrder = window.JSON.parse(fieldOrder)
-      fieldOrder = utils.unique(fieldOrder.concat(controls))
-      fieldOrder = Object.keys(fieldOrder).map(i => fieldOrder[i])
-    }
-
-    // order custom fields
-    fieldOrder.forEach(field => {
-      // identify custom field
-      const randomKey = new RegExp('-[\\d]{4}$')
-
-      if (field.match(randomKey)) {
-        const baseFieldIndex = fieldOrder.indexOf(field.replace(randomKey, ''))
-        if (baseFieldIndex !== -1) {
-          fieldOrder.splice(fieldOrder.indexOf(field), 1)
-          fieldOrder.splice(baseFieldIndex + 1, fieldOrder.indexOf(field), field)
-        }
-      }
-    })
-
-    // remove disableFields
-    if (opts.disableFields.length) {
-      fieldOrder = fieldOrder.filter(type => opts.disableFields.indexOf(type) == -1)
-    }
-
-    return fieldOrder.filter(Boolean)
   }
 
   /**
@@ -871,8 +820,9 @@ export default class Helpers {
    * Open a dialog with the form's data
    */
   showData() {
-    const data = this.data
-    const formData = utils.escapeHtml(data.formData)
+    // const data = this.data
+    // const formData = utils.escapeHtml(data.formData)
+    const formData = this.getFormData('json', true)
     const code = m('code', formData, {
       className: `formData-${config.opts.dataType}`,
     })
@@ -891,7 +841,6 @@ export default class Helpers {
     const _this = this
     const form = this.d.stage
     const fields = form.getElementsByClassName('form-field')
-    console.log(config.opts)
 
     if (!fields.length) {
       config.opts.notify.warning('No fields to remove')
@@ -1026,16 +975,42 @@ export default class Helpers {
   editorUI(formID) {
     const d = this.d
     const data = this.data
+    const id = formID || data.formID
+    d.editorWrap = m('div', null, {
+      id: `${data.formID}-form-wrap`,
+      className: `form-wrap form-builder ${mobileClass()}`,
+    })
+
     d.stage = m('ul', null, {
-      id: data.formID,
+      id,
       className: `frmb stage-wrap ${data.layout.stage}`,
     })
 
-    // Create draggable fields for formBuilder
+    // Create container for controls
     d.controls = m('ul', null, {
-      id: `${data.formID}-control-box`,
+      id: `${id}-control-box`,
       className: 'frmb-control',
     })
+
+    const buttons = this.formActionButtons()
+    d.formActions = m('div', buttons, {
+      className: 'form-actions btn-group',
+    })
+  }
+
+  /**
+   * Generates form action buttons
+   * @return {Object} formActions btn-group
+   */
+  formActionButtons() {
+    const opts = config.opts
+    return opts.actionButtons
+      .map(btnData => {
+        if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
+          return this.processActionButtons(btnData)
+        }
+      })
+      .filter(Boolean)
   }
 
   /**
@@ -1082,7 +1057,6 @@ export default class Helpers {
     ].concat(actionButtons)
 
     opts.fields = opts.fields.concat(replaceFields)
-    console.log(opts.fields)
     opts.disableFields = opts.disableFields.concat(replaceFields.map(({ type }) => type && type))
     config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
     return config.opts
@@ -1113,8 +1087,4 @@ export default class Helpers {
 
     return data[type](formatted)
   }
-
-  // end class
 }
-
-// export default Helpers;

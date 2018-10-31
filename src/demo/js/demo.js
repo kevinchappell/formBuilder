@@ -2,6 +2,8 @@ import '../sass/demo.scss'
 import { insertStyle, removeStyle } from '../../js/utils'
 import { builderActions, renderActions, demoActions } from './actionButtons'
 
+const localeSessionKey = 'formBuilder-locale'
+
 const toggleBootStrap = ({ target }) => {
   if (!target.checked) {
     removeStyle('bootstrap')
@@ -57,12 +59,12 @@ jQuery(function($) {
     {
       id: 'smile',
       className: 'btn btn-success',
-      label: '⚙',
+      label: '😁',
       type: 'button',
       events: {
         click: () => {
-          // @todo toggle options editor
-          // alert('😁😁😁 !SMILE! 😁😁😁')
+          // @todo toggle options editor instead
+          alert('😁😁😁 !SMILE! 😁😁😁')
         },
       },
     },
@@ -180,12 +182,16 @@ jQuery(function($) {
     subtypes: {
       text: ['datetime-local'],
     },
-    onSave: function(e, formData) {
+    onSave: (e, formData) => {
       window.sessionStorage.setItem('formData', JSON.stringify(formData))
       toggleEdit()
     },
-    onAddField: function(fieldId) {
+    onAddField: fieldId => {
       document.getElementById('currentFieldId').value = fieldId
+    },
+    onClearAll: () => {
+      window.sessionStorage.removeItem('formData')
+      console.log('removed formData')
     },
     stickyControls: {
       enable: true,
@@ -255,12 +261,22 @@ jQuery(function($) {
       })
     })
 
-    document.querySelectorAll('.editForm').forEach(element => {
-      element.addEventListener('click', toggleEdit)
-    })
+    document.querySelectorAll('.editForm').forEach(element => element.addEventListener('click', toggleEdit), false)
+    const langSelect = document.getElementById('setLanguage')
+    const savedLocale = window.sessionStorage.getItem(localeSessionKey)
 
-    document.getElementById('setLanguage').addEventListener('change', function(e) {
-      fb.actions.setLang(e.target.value)
-    })
+    if (savedLocale) {
+      langSelect.value = savedLocale
+      fb.actions.setLang(savedLocale)
+    }
+
+    langSelect.addEventListener(
+      'change',
+      ({ target: { value: lang } }) => {
+        window.sessionStorage.setItem(localeSessionKey, lang)
+        fb.actions.setLang(lang)
+      },
+      false
+    )
   })
 })

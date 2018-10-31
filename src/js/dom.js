@@ -82,4 +82,17 @@ export default class Dom {
     instanceDom[formID] = this
     return instanceDom[formID]
   }
+
+  /**
+   * Do something hen a specific dom element renders
+   * @param {Object} node
+   * @param {Function} cb
+   */
+  onRender(node, cb) {
+    if (!node.parentElement) {
+      window.requestAnimationFrame(() => this.onRender(node, cb))
+    } else {
+      cb(node)
+    }
+  }
 }

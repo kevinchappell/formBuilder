@@ -1772,7 +1772,7 @@ compressible@~2.0.14:
   dependencies:
     mime-db ">= 1.36.0 < 2"
 
-compression-webpack-plugin@^2.0.0:
+compression-webpack-plugin@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/compression-webpack-plugin/-/compression-webpack-plugin-2.0.0.tgz#46476350c1eb27f783dccc79ac2f709baa2cffbc"
   dependencies:
@@ -3371,9 +3371,9 @@ html-minifier@^3.2.3:
     relateurl "0.2.x"
     uglify-js "3.4.x"
 
-html-webpack-harddisk-plugin@^0.2.0:
+html-webpack-harddisk-plugin@0.2.0:
   version "0.2.0"
-  resolved "https://registry.yarnpkg.com/html-webpack-harddisk-plugin/-/html-webpack-harddisk-plugin-0.2.0.tgz#465414a534219b69c1fd8127b585f8d86897fb2d"
+  resolved "http://registry.npmjs.org/html-webpack-harddisk-plugin/-/html-webpack-harddisk-plugin-0.2.0.tgz#465414a534219b69c1fd8127b585f8d86897fb2d"
   dependencies:
     "@types/webpack" "^3.0.5"
     mkdirp "^0.5.1"
@@ -3914,9 +3914,9 @@ jquery-ui-sortable@*:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/jquery-ui-sortable/-/jquery-ui-sortable-1.0.0.tgz#0ee062ce02b29b36585ede3a3e0ddde666060f96"
 
-jquery@^3.1.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
+jquery@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.1.1.tgz#347c1c21c7e004115e0a4da32cece041fad3c8a3"
 
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.4.9"
@@ -4300,7 +4300,7 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
-mi18n@^0.4.6:
+mi18n@0.4.6:
   version "0.4.6"
   resolved "https://registry.yarnpkg.com/mi18n/-/mi18n-0.4.6.tgz#fc3b73dd9d1c821beff0b3d99f5e7af3d8577237"
   dependencies:

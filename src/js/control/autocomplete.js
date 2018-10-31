@@ -6,6 +6,18 @@ import { filter } from '../dom'
  */
 export default class controlAutocomplete extends control {
   /**
+   * definition
+   * @return {Object} select control definition
+   */
+  static get definition() {
+    return {
+      mi18n: {
+        requireValidOption: 'requireValidOption',
+      },
+    }
+  }
+
+  /**
    * build a text DOM element, supporting other jquery text form-control's
    * @return {Object} DOM Element to be injected into the form.
    */

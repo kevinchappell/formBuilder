@@ -1,16 +1,14 @@
 import '../sass/form-builder.scss'
-import Dom from './dom'
+import Dom, { empty } from './dom'
 import { remove } from './dom'
 import { Data } from './data'
 import mi18n from 'mi18n'
-import utils from './utils'
+import utils, { subtract, hyphenCase, nameAttr, trimObj, forEach, markup, removeFromArray } from './utils'
 import events from './events'
 import layout from './layout'
 import Helpers from './helpers'
 import { defaultOptions, defaultI18n, config, styles } from './config'
-import control from './control'
-import './control/index'
-import controlCustom from './control/custom'
+import Controls from './controls'
 
 const FormBuilder = function(opts, element) {
   const formBuilder = this
@@ -25,107 +23,19 @@ const FormBuilder = function(opts, element) {
   }
   const layoutEngine = new opts.layout(opts.layoutTemplates, true)
 
-  // ability for controls to have their own configuration / options
-  // of the format control identifier (type, or type.subtype): {options}
-  control.controlConfig = opts.controlConfig || {}
-
   const h = new Helpers(formID, layoutEngine, formBuilder)
-  const m = utils.markup
+  const m = markup
   data.layout = h.editorLayout(opts.controlPosition)
+  opts = h.processOptions(opts)
+  h.editorUI(formID)
   data.formID = formID
   data.lastID = `${data.formID}-fld-1`
-
-  const originalOpts = opts
-
-  // load in any custom specified controls, or preloaded plugin controls
-  control.loadCustom(opts.controls)
-
-  opts = h.processOptions(opts)
-  // register any passed custom templates & fields
-  if (Object.keys(opts.fields).length) {
-    controlCustom.register(opts.templates, opts.fields)
-  }
+  const controls = new Controls(opts, d)
 
   const subtypes = (config.subtypes = h.processSubtypes(opts.subtypes))
-  h.editorUI(formID)
 
   const $stage = $(d.stage)
-
-  // retrieve a full list of loaded controls
-  const controls = control.getRegistered()
-  const customFields = controlCustom.getRegistered()
-  if (customFields) {
-    $.merge(controls, customFields)
-  }
-
-  // if we support rearranging control order, add classes to support this
-  if (opts.sortableControls) {
-    d.controls.classList.add('sort-enabled')
-  }
-
-  // DOM element to hold the list of controls
   const $cbUL = $(d.controls)
-
-  // add each control to the interface
-  const controlList = []
-  const allControls = {}
-
-  for (let i = 0; i < controls.length; i++) {
-    const type = controls[i]
-    // first check if this is a custom control
-    let custom = controlCustom.lookup(type)
-    let controlClass
-    if (custom) {
-      controlClass = custom.class
-    } else {
-      custom = {}
-
-      // determine the class, icon & label for this control
-      controlClass = control.getClass(type)
-      if (!controlClass || !controlClass.active(type)) {
-        continue
-      }
-    }
-    const icon = custom.icon || controlClass.icon(type)
-    let label = custom.label || controlClass.label(type)
-    const iconClassName = !icon ? custom.iconClassName || `icon-${type.replace(/-[\d]{4}$/, '')}` : ''
-
-    // if the class has specified a custom icon, inject it into the label
-    if (icon) {
-      label = `<span class="control-icon">${icon}</span>${label}`
-    }
-
-    // build & insert the new list item to represent this control
-    const newFieldControl = m('li', m('span', label), {
-      className: `${iconClassName} input-control input-control-${i}`,
-    })
-    newFieldControl.dataset.type = type
-    controlList.push(type)
-    allControls[type] = newFieldControl
-  }
-
-  if (opts.inputSets.length) {
-    opts.inputSets.forEach((set, i) => {
-      let { name, label } = set
-      name = name || utils.hyphenCase(label)
-      if (set.icon) {
-        label = `<span class="control-icon">${set.icon}</span>${label}`
-      }
-      const inputSet = m('li', label, {
-        className: `input-set-control input-set-${i}`,
-      })
-      inputSet.dataset.type = name
-      controlList.push(name)
-      allControls[name] = inputSet
-    })
-  }
-
-  // append controls to list
-  h.orderFields(controlList).forEach(control => {
-    if (allControls[control]) {
-      d.controls.appendChild(allControls[control])
-    }
-  })
 
   // Sortable fields
   $stage.sortable({
@@ -175,7 +85,7 @@ const FormBuilder = function(opts, element) {
   const processControl = control => {
     if (control[0].classList.contains('input-set-control')) {
       const inputSets = []
-      const inputSet = opts.inputSets.find(set => utils.hyphenCase(set.name || set.label) === control[0].dataset.type)
+      const inputSet = opts.inputSets.find(set => hyphenCase(set.name || set.label) === control[0].dataset.type)
       if (inputSet && inputSet.showHeader) {
         const header = {
           type: 'header',
@@ -198,11 +108,6 @@ const FormBuilder = function(opts, element) {
     }
   }
 
-  d.editorWrap = m('div', null, {
-    id: `${data.formID}-form-wrap`,
-    className: 'form-wrap form-builder' + utils.mobileClass(),
-  })
-
   const $editorWrap = $(d.editorWrap)
 
   const cbWrap = m('div', d.controls, {
@@ -211,16 +116,7 @@ const FormBuilder = function(opts, element) {
   })
 
   if (opts.showActionButtons) {
-    const buttons = opts.actionButtons.map(btnData => {
-      if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
-        return h.processActionButtons(btnData)
-      }
-    })
-    const formActions = (d.formActions = m('div', buttons, {
-      className: 'form-actions btn-group',
-    }))
-
-    cbWrap.appendChild(formActions)
+    cbWrap.appendChild(d.formActions)
   }
 
   $editorWrap.append(d.stage, cbWrap)
@@ -231,8 +127,8 @@ const FormBuilder = function(opts, element) {
     $(element).replaceWith($editorWrap)
   }
 
-  $('li', d.controls).click(evt => {
-    const $control = $(evt.target).closest('li')
+  $(d.controls).on('click', 'li', ({ target }) => {
+    const $control = $(target).closest('li')
     h.stopIndex = undefined
     processControl($control)
     h.save.call(h)
@@ -242,7 +138,7 @@ const FormBuilder = function(opts, element) {
   const nonEditableFields = () => {
     const cancelArray = []
     const disabledField = type =>
-      utils.markup('li', opts[type], {
+      m('li', opts[type], {
         className: `disabled-field form-${type}`,
       })
 
@@ -268,11 +164,11 @@ const FormBuilder = function(opts, element) {
       field.type = $field[0].dataset.type
       if (field.type) {
         // check for a custom type
-        const custom = controlCustom.lookup(field.type)
+        const custom = controls.custom.lookup(field.type)
         if (custom) {
           field = Object.assign({}, custom)
         } else {
-          const controlClass = control.getClass(field.type)
+          const controlClass = controls.getClass(field.type)
           field.label = controlClass.label(field.type)
         }
 
@@ -299,10 +195,10 @@ const FormBuilder = function(opts, element) {
     }
 
     if (!field.name) {
-      field.name = utils.nameAttr(field)
+      field.name = nameAttr(field)
     }
 
-    if (isNew && utils.inArray(field.type, ['text', 'number', 'file', 'date', 'select', 'textarea', 'autocomplete'])) {
+    if (isNew && ['text', 'number', 'file', 'date', 'select', 'textarea', 'autocomplete'].includes(field.type)) {
       field.className = field.className || 'form-control'
     }
 
@@ -325,7 +221,7 @@ const FormBuilder = function(opts, element) {
   const loadFields = function(formData) {
     formData = h.getData(formData)
     if (formData && formData.length) {
-      formData.forEach(fieldData => prepFieldVars(utils.trimObj(fieldData)))
+      formData.forEach(fieldData => prepFieldVars(trimObj(fieldData)))
       d.stage.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
       // Load default fields if none are set
@@ -358,7 +254,7 @@ const FormBuilder = function(opts, element) {
     const optionDataTemplate = label => {
       const optionData = {
         label,
-        value: utils.hyphenCase(label),
+        value: hyphenCase(label),
       }
 
       if (type !== 'autocomplete') {
@@ -370,7 +266,7 @@ const FormBuilder = function(opts, element) {
 
     if (!values || !values.length) {
       let defaultOptCount = [1, 2, 3]
-      if (utils.inArray(type, ['checkbox-group', 'checkbox'])) {
+      if (['checkbox-group', 'checkbox'].includes(type)) {
         defaultOptCount = [1]
       }
       fieldValues = defaultOptCount.map(index => optionDataTemplate(`${i18n.option} ${index}`))
@@ -399,7 +295,7 @@ const FormBuilder = function(opts, element) {
     const defaultAttrs = ['required', 'label', 'description', 'placeholder', 'className', 'name', 'access', 'value']
     const noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(d.optionFields)
 
-    const valueField = !utils.inArray(type, noValFields)
+    const valueField = !noValFields.includes(type)
 
     const typeAttrsMap = {
       autocomplete: defaultAttrs.concat(['options', 'requireValidOption']),
@@ -433,16 +329,16 @@ const FormBuilder = function(opts, element) {
     const typeAttrs = typeAttrsMap[type]
 
     if (type === 'radio-group') {
-      utils.remove('toggle', typeAttrs)
+      removeFromArray('toggle', typeAttrs)
     }
 
     // Help Text / Description Field
-    if (utils.inArray(type, ['header', 'paragraph', 'button'])) {
-      utils.remove('description', typeAttrs)
+    if (['header', 'paragraph', 'button'].includes(type)) {
+      removeFromArray('description', typeAttrs)
     }
 
     if (!valueField) {
-      utils.remove('value', typeAttrs)
+      removeFromArray('value', typeAttrs)
     }
 
     return typeAttrs || defaultAttrs
@@ -491,7 +387,7 @@ const FormBuilder = function(opts, element) {
               id: roleId,
               className: 'roles-field',
             }
-            if (utils.inArray(key, roles)) {
+            if (roles.includes(key)) {
               cbAttrs.checked = 'checked'
             }
 
@@ -515,44 +411,36 @@ const FormBuilder = function(opts, element) {
           second: i18n.enableOtherMsg,
         }),
       options: () => fieldOptions(values),
+      requireValidOption: () =>
+        boolAttribute('requireValidOption', values, {
+          first: ' ',
+          second: i18n.requireValidOption,
+        }),
+      multiple: () => {
+        const typeLabels = {
+          default: {
+            first: 'Multiple',
+            second: 'set multiple attribute',
+          },
+          file: {
+            first: i18n.multipleFiles,
+            second: i18n.allowMultipleFiles,
+          },
+          select: {
+            first: ' ',
+            second: i18n.selectionsMessage,
+          },
+        }
+        return boolAttribute('multiple', values, typeLabels[type] || typeLabels.default)
+      },
     }
     let key
     const roles = values.role !== undefined ? values.role.split(',') : []
     const numAttrs = ['min', 'max', 'step']
 
-    if (type === 'number') {
-      numAttrs.forEach(numAttr => {
-        advFieldMap[numAttr] = () => numberAttribute(numAttr, values)
-      })
-    }
-
-    if (type === 'file') {
-      advFieldMap['multiple'] = () => {
-        const labels = {
-          first: i18n.multipleFiles,
-          second: i18n.allowMultipleFiles,
-        }
-        return boolAttribute('multiple', values, labels)
-      }
-    }
-
-    if (type === 'select') {
-      advFieldMap['multiple'] = () => {
-        return boolAttribute('multiple', values, {
-          first: ' ',
-          second: i18n.selectionsMessage,
-        })
-      }
-    }
-
-    if (type === 'autocomplete') {
-      advFieldMap['requireValidOption'] = () => {
-        return boolAttribute('requireValidOption', values, {
-          first: ' ',
-          second: i18n.requireValidOption,
-        })
-      }
-    }
+    numAttrs.forEach(numAttr => {
+      advFieldMap[numAttr] = () => numberAttribute(numAttr, values)
+    })
 
     const noDisable = ['name', 'className']
 
@@ -563,12 +451,12 @@ const FormBuilder = function(opts, element) {
 
       if (opts.typeUserDisabledAttrs[type]) {
         const typeDisabledAttrs = opts.typeUserDisabledAttrs[type]
-        useDefaultAttr.push(!utils.inArray(attr, typeDisabledAttrs))
+        useDefaultAttr.push(!typeDisabledAttrs.includes(attr))
       }
 
       if (opts.typeUserAttrs[type]) {
         const userAttrs = Object.keys(opts.typeUserAttrs[type])
-        useDefaultAttr.push(!utils.inArray(attr, userAttrs))
+        useDefaultAttr.push(!userAttrs.includes(attr))
       }
 
       if (isDisabled && !noDisable.includes(attr)) {
@@ -662,7 +550,7 @@ const FormBuilder = function(opts, element) {
     const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
     const optionInputs = ['checkbox', 'checkbox-group', 'radio-group']
-    if (!utils.inArray(textAttrs.type, optionInputs)) {
+    if (!optionInputs.includes(textAttrs.type)) {
       textAttrs.className.push('form-control')
     }
 
@@ -683,7 +571,7 @@ const FormBuilder = function(opts, element) {
     const { multiple, options, label: labelText, value, class: classname, className, ...restData } = fieldData
     const optis = Object.keys(options).map(val => {
       const attrs = { value: val }
-      if (Array.isArray(value) ? utils.inArray(val, value) : val === value) {
+      if (Array.isArray(value) ? value.includes(val) : val === value) {
         attrs.selected = null
       }
       return m('option', options[val], attrs).outerHTML
@@ -866,7 +754,7 @@ const FormBuilder = function(opts, element) {
     let attrLabel = i18n[attribute]
 
     if (attribute === 'label') {
-      if (utils.inArray(values.type, textArea)) {
+      if (textArea.includes(values.type)) {
         attrLabel = i18n.content
       } else {
         attrVal = utils.parsedHtml(attrVal)
@@ -919,7 +807,7 @@ const FormBuilder = function(opts, element) {
     const noMake = []
     let requireField = ''
 
-    if (utils.inArray(type, noRequire)) {
+    if (noRequire.includes(type)) {
       noMake.push(true)
     }
     if (!noMake.some(elem => elem === true)) {
@@ -958,7 +846,7 @@ const FormBuilder = function(opts, element) {
     ]
 
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
-      fieldButtons = fieldButtons.filter(btnData => !utils.inArray(btnData.type, disabledFieldButtons))
+      fieldButtons = fieldButtons.filter(btnData => !disabledFieldButtons.includes(btnData.type))
     }
 
     const liContents = [m('div', fieldButtons, { className: 'field-actions' })]
@@ -1212,7 +1100,7 @@ const FormBuilder = function(opts, element) {
     }
     const field = utils.closest(e.target, '.form-field')
     const optionTypes = ['select', 'checkbox-group', 'radio-group']
-    if (utils.inArray(field.type, optionTypes)) {
+    if (optionTypes.includes(field.type)) {
       const options = field.getElementsByClassName('option-value')
       if (field.type === 'select') {
         utils.forEach(options, i => {
@@ -1410,7 +1298,8 @@ const FormBuilder = function(opts, element) {
 
   // Make actions accessible
   formBuilder.actions = {
-    getFieldTypes: activeOnly => activeOnly ? utils.subtract(controls, opts.disableFields) : controls,
+    getFieldTypes: activeOnly =>
+      activeOnly ? subtract(controls.getRegistered(), opts.disableFields) : controls.getRegistered(),
     clearFields: animate => h.removeAllFields(d.stage, animate),
     showData: h.showData.bind(h),
     save: h.save.bind(h),
@@ -1424,20 +1313,19 @@ const FormBuilder = function(opts, element) {
       h.stopIndex = undefined
       h.removeAllFields(d.stage, false)
       loadFields(formData)
-      h.save.call(h)
     },
     setLang: locale => {
       mi18n.setCurrent.call(mi18n, locale).then(() => {
-        d.empty(element)
-        const newOptions = Object.assign({}, originalOpts, { formData: h.save.call(h) })
-        const formBuilder = new FormBuilder(newOptions, element)
-        $(element).data('formBuilder', formBuilder)
+        d.stage.dataset.content = mi18n.get('getStarted')
+        controls.init()
+        empty(d.formActions)
+        h.formActionButtons().forEach(button => d.formActions.appendChild(button))
       })
     },
     toggleFieldEdit: fieldId => {
       const fieldIds = Array.isArray(fieldId) ? fieldId : [fieldId]
       fieldIds.forEach(fId => {
-        if (!utils.inArray(typeof fId, ['number', 'string'])) {
+        if (!['number', 'string'].includes(typeof fId)) {
           return
         }
         if (typeof fId === 'number') {
@@ -1449,23 +1337,21 @@ const FormBuilder = function(opts, element) {
       })
     },
     toggleAllFieldEdit: () => {
-      utils.forEach(d.stage.children, index => {
+      forEach(d.stage.children, index => {
         h.toggleEdit(d.stage.children[index].id)
       })
     },
     closeAllFieldEdit: h.closeAllEdit.bind(h),
   }
 
-  // elements sometimes take too long to fully render,
-  // we must wait for them
-  setTimeout(() => {
-    $stage.css('min-height', $cbUL.height())
-
+  // set min-height on stage onRender
+  d.onRender(d.controls, () => {
+    d.stage.style.minHeight = `${d.controls.clientHeight}px`
     // If option set, controls will remain in view in editor
     if (opts.stickyControls.enable) {
       h.stickyControls($stage)
     }
-  }, 100)
+  })
 
   return formBuilder
 }

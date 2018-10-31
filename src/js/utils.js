@@ -1,9 +1,8 @@
 /**
  * Cross file utilities for working with arrays,
  * sorting and other fun stuff
- * @return {Object} utils
  */
-const utils = {}
+
 window.fbLoaded = {
   js: [],
   css: [],
@@ -13,20 +12,15 @@ window.fbEditors = {
   tinymce: {},
 }
 
-// cleaner syntax for testing indexOf element
-utils.inArray = function(needle, haystack) {
-  return haystack.indexOf(needle) !== -1
-}
-
 /**
  * Remove null or undefined values
  * @param  {Object} attrs {attrName: attrValue}
  * @return {Object}       Object trimmed of null or undefined values
  */
-utils.trimObj = function(attrs) {
+export const trimObj = function(attrs) {
   const xmlRemove = [null, undefined, '', false, 'false']
   for (const attr in attrs) {
-    if (utils.inArray(attrs[attr], xmlRemove)) {
+    if (xmlRemove.includes(attrs[attr])) {
       delete attrs[attr]
     } else if (Array.isArray(attrs[attr])) {
       if (!attrs[attr].length) {
@@ -43,7 +37,7 @@ utils.trimObj = function(attrs) {
  * @param  {String} attr
  * @return {Boolean}
  */
-utils.validAttr = function(attr) {
+export const validAttr = function(attr) {
   const invalid = [
     'values',
     'enableOther',
@@ -52,7 +46,7 @@ utils.validAttr = function(attr) {
     // 'style',
     'subtype',
   ]
-  return !utils.inArray(attr, invalid)
+  return !invalid.includes(attr)
 }
 
 /**
@@ -61,9 +55,9 @@ utils.validAttr = function(attr) {
  * @param  {Object} attrs object of attributes for markup
  * @return {string}
  */
-utils.attrString = attrs =>
+export const attrString = attrs =>
   Object.entries(attrs)
-    .map(([key, val]) => utils.validAttr(key) && Object.values(utils.safeAttr(key, val)).join(''))
+    .map(([key, val]) => validAttr(key) && Object.values(safeAttr(key, val)).join(''))
     .filter(Boolean)
     .join(' ')
 
@@ -73,18 +67,18 @@ utils.attrString = attrs =>
  * @param  {String} value attribute value
  * @return {Object}       {attrName: attrValue}
  */
-utils.safeAttr = (name, value) => {
-  name = utils.safeAttrName(name)
+export const safeAttr = (name, value) => {
+  name = safeAttrName(name)
   let valString
 
   if (value) {
     if (Array.isArray(value)) {
-      valString = utils.escapeAttr(value.join(' '))
+      valString = escapeAttr(value.join(' '))
     } else {
       if (typeof value === 'boolean') {
         value = value.toString()
       }
-      valString = utils.escapeAttr(value.trim())
+      valString = escapeAttr(value.trim())
     }
   }
 
@@ -95,12 +89,12 @@ utils.safeAttr = (name, value) => {
   }
 }
 
-utils.safeAttrName = name => {
+export const safeAttrName = name => {
   const safeAttr = {
     className: 'class',
   }
 
-  return safeAttr[name] || utils.hyphenCase(name)
+  return safeAttr[name] || hyphenCase(name)
 }
 
 /**
@@ -109,7 +103,7 @@ utils.safeAttrName = name => {
  * @param  {String} str
  * @return {String}
  */
-utils.hyphenCase = str => {
+export const hyphenCase = str => {
   // eslint-disable-next-line no-useless-escape
   str = str.replace(/[^\w\s\-]/gi, '')
   str = str.replace(/([A-Z])/g, function($1) {
@@ -124,23 +118,7 @@ utils.hyphenCase = str => {
  * @param  {String} str
  * @return {String}
  */
-utils.camelCase = str => str.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
-
-/**
- * Determine content type
- * @param  {Node | String | Array | Object} content
- * @return {String}                         contentType for mapping
- */
-utils.contentType = content => {
-  let type = typeof content
-  if (content instanceof Node || content instanceof HTMLElement) {
-    type = 'node'
-  } else if (Array.isArray(content)) {
-    type = 'array'
-  }
-
-  return type
-}
+export const camelCase = str => str.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
 
 /**
  * Bind events to an element
@@ -148,7 +126,7 @@ utils.contentType = content => {
  * @param  {Object} events  object full of events eg. {click: evt => callback}
  * @return {void}
  */
-utils.bindEvents = (element, events) => {
+export const bindEvents = (element, events) => {
   if (events) {
     for (const event in events) {
       if (events.hasOwnProperty(event)) {
@@ -163,10 +141,28 @@ utils.bindEvents = (element, events) => {
  * @param  {Object} field
  * @return {String}       name
  */
-utils.nameAttr = function(field) {
+export const nameAttr = function(field) {
   const epoch = new Date().getTime()
-  const prefix = field.type || utils.hyphenCase(field.label)
+  const prefix = field.type || hyphenCase(field.label)
   return prefix + '-' + epoch
+}
+
+/**
+   * Determine content type
+   * @param  {Node | String | Array | Object} content
+   * @return {String}
+   */
+export const getContentType = content => {
+  if (content === undefined) {
+    return content
+  }
+
+  return [
+    ['array', content => Array.isArray(content)],
+    ['node', content => content instanceof window.Node || content instanceof window.HTMLElement],
+    ['component', () => content && content.dom],
+    [typeof content, () => true],
+  ].find(typeCondition => typeCondition[1](content))[0]
 }
 
 /**
@@ -177,8 +173,8 @@ utils.nameAttr = function(field) {
  * @param  {Object}              attributes
  * @return {Object} DOM Element
  */
-utils.markup = function(tag, content = '', attributes = {}) {
-  let contentType = utils.contentType(content)
+export const markup = function(tag, content = '', attributes = {}) {
+  let contentType = getContentType(content)
   const { events, ...attrs } = attributes
   const field = document.createElement(tag)
 
@@ -188,20 +184,20 @@ utils.markup = function(tag, content = '', attributes = {}) {
     },
     object: config => {
       const { tag, content, ...data } = config
-      return field.appendChild(utils.markup(tag, content, data))
+      return field.appendChild(markup(tag, content, data))
     },
     node: content => {
       return field.appendChild(content)
     },
     array: content => {
       for (let i = 0; i < content.length; i++) {
-        contentType = utils.contentType(content[i])
+        contentType = getContentType(content[i])
         appendContent[contentType](content[i])
       }
     },
     function: content => {
       content = content()
-      contentType = utils.contentType(content)
+      contentType = getContentType(content)
       appendContent[contentType](content)
     },
     undefined: () => {},
@@ -209,19 +205,17 @@ utils.markup = function(tag, content = '', attributes = {}) {
 
   for (const attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
-      const name = utils.safeAttrName(attr)
-      const attrVal = Array.isArray(attrs[attr])
-        ? utils.unique(attrs[attr].join(' ').split(' ')).join(' ')
-        : attrs[attr]
+      const name = safeAttrName(attr)
+      const attrVal = Array.isArray(attrs[attr]) ? unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
       field.setAttribute(name, attrVal)
     }
   }
 
   if (content) {
-    appendContent[contentType].call(this, content)
+    appendContent[contentType](content)
   }
 
-  utils.bindEvents(field, events)
+  bindEvents(field, events)
 
   return field
 }
@@ -231,10 +225,10 @@ utils.markup = function(tag, content = '', attributes = {}) {
  * @param  {Object} elem DOM element
  * @return {Object} ex: {attrName: attrValue}
  */
-utils.parseAttrs = elem => {
+export const parseAttrs = elem => {
   const attrs = elem.attributes
   const data = {}
-  utils.forEach(attrs, attr => {
+  forEach(attrs, attr => {
     let attrVal = attrs[attr].value || ''
     if (attrVal.match(/false|true/g)) {
       attrVal = attrVal === 'true'
@@ -255,13 +249,14 @@ utils.parseAttrs = elem => {
  * @param  {NodeList} options  DOM elements
  * @return {Array} optionData array
  */
-utils.parseOptions = options => {
-  let optionData = {}
+export const parseOptions = options => {
   const data = []
 
   for (let i = 0; i < options.length; i++) {
-    optionData = utils.parseAttrs(options[i])
-    optionData.label = options[i].textContent
+    const optionData = {
+      ...parseAttrs(options[i]),
+      label: options[i].textContent,
+    }
     data.push(optionData)
   }
 
@@ -273,7 +268,7 @@ utils.parseOptions = options => {
  * @param  {String} xmlString
  * @return {Array}            formData array
  */
-utils.parseXML = xmlString => {
+export const parseXML = xmlString => {
   const parser = new window.DOMParser()
   const xml = parser.parseFromString(xmlString, 'text/xml')
   const formData = []
@@ -281,11 +276,11 @@ utils.parseXML = xmlString => {
   if (xml) {
     const fields = xml.getElementsByTagName('field')
     for (let i = 0; i < fields.length; i++) {
-      const fieldData = utils.parseAttrs(fields[i])
+      const fieldData = parseAttrs(fields[i])
       const options = fields[i].getElementsByTagName('option')
 
       if (options && options.length) {
-        fieldData.values = utils.parseOptions(options)
+        fieldData.values = parseOptions(options)
       }
 
       formData.push(fieldData)
@@ -300,7 +295,7 @@ utils.parseXML = xmlString => {
  * @param  {String} html escaped HTML
  * @return {String}      parsed HTML
  */
-utils.parsedHtml = html => {
+export const parsedHtml = html => {
   const escapeElement = document.createElement('textarea')
   escapeElement.innerHTML = html
   return escapeElement.textContent
@@ -311,14 +306,14 @@ utils.parsedHtml = html => {
  * @param  {String} html markup
  * @return {String}      escaped html
  */
-utils.escapeHtml = html => {
+export const escapeHtml = html => {
   const escapeElement = document.createElement('textarea')
   escapeElement.textContent = html
   return escapeElement.innerHTML
 }
 
 // Escape an attribute
-utils.escapeAttr = str => {
+export const escapeAttr = str => {
   const match = {
     '"': '&quot;',
     '&': '&amp;',
@@ -332,10 +327,10 @@ utils.escapeAttr = str => {
 }
 
 // Escape attributes
-utils.escapeAttrs = attrs => {
+export const escapeAttrs = attrs => {
   for (const attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
-      attrs[attr] = utils.escapeAttr(attrs[attr])
+      attrs[attr] = escapeAttr(attrs[attr])
     }
   }
 
@@ -343,7 +338,7 @@ utils.escapeAttrs = attrs => {
 }
 
 // forEach that can be used on nodeList
-utils.forEach = function(array, callback, scope) {
+export const forEach = function(array, callback, scope) {
   for (let i = 0; i < array.length; i++) {
     callback.call(scope, i, array[i]) // passes back stuff we need
   }
@@ -354,7 +349,7 @@ utils.forEach = function(array, callback, scope) {
  * @param  {Array} array  array with possible duplicates
  * @return {Array}        array with only unique values
  */
-utils.unique = array => {
+export const unique = array => {
   return array.filter((elem, pos, arr) => arr.indexOf(elem) === pos)
 }
 
@@ -363,7 +358,7 @@ utils.unique = array => {
  * @param  {String|Number} val
  * @param  {Array} arr
  */
-utils.remove = (val, arr) => {
+export const removeFromArray = (val, arr) => {
   const index = arr.indexOf(val)
 
   if (index > -1) {
@@ -377,7 +372,7 @@ utils.remove = (val, arr) => {
  * @param  {String} path   optional to load form
  * @return {Promise}       a promise
  */
-utils.getScripts = (scriptScr, path) => {
+export const getScripts = (scriptScr, path) => {
   const $ = jQuery
   let _arr = []
 
@@ -385,7 +380,7 @@ utils.getScripts = (scriptScr, path) => {
     scriptScr = [scriptScr]
   }
 
-  if (!utils.isCached(scriptScr)) {
+  if (!isCached(scriptScr)) {
     _arr = $.map(scriptScr, src => {
       const options = {
         dataType: 'script',
@@ -407,13 +402,13 @@ utils.getScripts = (scriptScr, path) => {
  * @param  {String}       type       'js' or 'css'
  * @return {Boolean}      isCached
  */
-utils.isCached = (src, type = 'js') => {
+export const isCached = (src, type = 'js') => {
   let isCached = false
   const cache = window.fbLoaded[type]
   if (Array.isArray(src)) {
-    isCached = src.every(s => utils.inArray(s, cache))
+    isCached = src.every(s => cache.includes(s))
   } else {
-    isCached = utils.inArray(src, cache)
+    isCached = cache.includes(src)
   }
   return isCached
 }
@@ -424,7 +419,7 @@ utils.isCached = (src, type = 'js') => {
  * @param  {String} path
  * @return {void}
  */
-utils.getStyles = (scriptScr, path) => {
+export const getStyles = (scriptScr, path) => {
   if (!Array.isArray(scriptScr)) {
     scriptScr = [scriptScr]
   }
@@ -443,7 +438,7 @@ utils.getStyles = (scriptScr, path) => {
     }
 
     // check we haven't already loaded this css
-    if (utils.isCached(key, 'css')) {
+    if (isCached(key, 'css')) {
       return
     }
 
@@ -470,20 +465,20 @@ utils.getStyles = (scriptScr, path) => {
  * @param  {String} str uncapitalized string
  * @return {String} str capitalized string
  */
-utils.capitalize = str => {
+export const capitalize = str => {
   return str.replace(/\b\w/g, function(m) {
     return m.toUpperCase()
   })
 }
 
-utils.merge = (obj1, obj2) => {
+export const merge = (obj1, obj2) => {
   const mergedObj = Object.assign({}, obj1, obj2)
   for (const prop in obj2) {
     if (mergedObj.hasOwnProperty(prop)) {
       if (Array.isArray(obj2[prop])) {
-        mergedObj[prop] = Array.isArray(obj1[prop]) ? utils.unique(obj1[prop].concat(obj2[prop])) : obj2[prop]
+        mergedObj[prop] = Array.isArray(obj1[prop]) ? unique(obj1[prop].concat(obj2[prop])) : obj2[prop]
       } else if (typeof obj2[prop] === 'object') {
-        mergedObj[prop] = utils.merge(obj1[prop], obj2[prop])
+        mergedObj[prop] = merge(obj1[prop], obj2[prop])
       } else {
         mergedObj[prop] = obj2[prop]
       }
@@ -492,7 +487,7 @@ utils.merge = (obj1, obj2) => {
   return mergedObj
 }
 
-utils.addEventListeners = (el, evts, fn) => {
+export const addEventListeners = (el, evts, fn) => {
   return evts.split(' ').forEach(e => el.addEventListener(e, fn, false))
 }
 
@@ -502,13 +497,11 @@ utils.addEventListeners = (el, evts, fn) => {
  * @param  {String} cls class
  * @return {Object}     DOM Element
  */
-utils.closest = (el, cls) => {
+export const closest = (el, cls) => {
   const className = cls.replace('.', '')
   while ((el = el.parentElement) && !el.classList.contains(className));
   return el
 }
-
-utils.noop = () => null
 
 /**
  * Debounce often called functions, like save
@@ -517,7 +510,7 @@ utils.noop = () => null
  * @param  {Boolean} immediate
  * @return {Function} debounce
  */
-utils.debounce = (func, wait = 250, immediate = false) => {
+export const debounce = (func, wait = 250, immediate = false) => {
   let timeout
   return function(...args) {
     // eslint-disable-next-line no-invalid-this
@@ -542,7 +535,7 @@ utils.debounce = (func, wait = 250, immediate = false) => {
  * @todo find css only solution
  * @return {String} Mobile class added to formBuilder
  */
-utils.mobileClass = () => {
+export const mobileClass = () => {
   let mobileClass = ''
   ;(a => {
     // eslint-disable-next-line
@@ -551,7 +544,7 @@ utils.mobileClass = () => {
         a
       )
     ) {
-      mobileClass = ' fb-mobile'
+      mobileClass = 'fb-mobile'
     }
   })(navigator.userAgent || navigator.vendor || window.opera)
   return mobileClass
@@ -563,7 +556,7 @@ utils.mobileClass = () => {
  * @param  {String} str string to be converted
  * @return {String}     converter string
  */
-utils.safename = str => {
+export const safename = str => {
   return str
     .replace(/\s/g, '-')
     .replace(/[^a-zA-Z0-9[\]_-]/g, '')
@@ -576,12 +569,10 @@ utils.safename = str => {
  * @param  {string} str string with possible number
  * @return {string}     string without numbers
  */
-utils.forceNumber = str => {
-  return str.replace(/[^0-9]/g, '')
-}
+export const forceNumber = str => str.replace(/[^0-9]/g, '')
 
 // subtract the contents of 1 array from another
-utils.subtract = (arr, from) => {
+export const subtract = (arr, from) => {
   return from.filter(function(a) {
     return !~this.indexOf(a)
   }, arr)
@@ -595,7 +586,7 @@ export const insertStyle = srcs => {
         if (window.fbLoaded.css.includes(src)) {
           return resolve(src)
         }
-        const formeoStyle = utils.markup('link', null, {
+        const formeoStyle = markup('link', null, {
           href: src,
           rel: 'stylesheet',
           id,
@@ -611,6 +602,41 @@ export const insertStyle = srcs => {
 export const removeStyle = id => {
   const elem = document.getElementById(id)
   return elem.parentElement.removeChild(elem)
+}
+
+const utils = {
+  addEventListeners,
+  attrString,
+  camelCase,
+  capitalize,
+  closest,
+  getContentType,
+  debounce,
+  escapeAttr,
+  escapeAttrs,
+  escapeHtml,
+  forceNumber,
+  forEach,
+  getScripts,
+  getStyles,
+  hyphenCase,
+  isCached,
+  markup,
+  merge,
+  mobileClass,
+  nameAttr,
+  parseAttrs,
+  parsedHtml,
+  parseOptions,
+  parseXML,
+  removeFromArray,
+  safeAttr,
+  safeAttrName,
+  safename,
+  subtract,
+  trimObj,
+  unique,
+  validAttr,
 }
 
 export default utils
