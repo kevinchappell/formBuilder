@@ -81,8 +81,7 @@
     ]
   },
   "scripts": {
-    "test": "yarn test",
-    "test:watch": "yarn test -- --reporter min --watch",
+    "test": "yarn build",
     "font": "node tools/run icon-font",
     "deploy": "yarn build && babel-node -- tools/run deploy",
     "tag:patch": "babel-node -- node_modules/gulp/bin/gulp tag --patch",

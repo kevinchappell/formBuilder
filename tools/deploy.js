@@ -9,10 +9,10 @@ const onFinish = (err, cb) => {
 }
 
 // Deploy the demo and site.
-const deploy = async () => exec('git push origin $(git subtree split --prefix demo $(git rev-parse --abbrev-ref HEAD)):origin/gh-pages --force', err => {
+const deploy = async () => exec('git push origin $(git subtree split --prefix demo $(git rev-parse --abbrev-ref HEAD)):gh-pages --force', err => {
   onFinish(err, () => {
     console.log('Demo successfully deployed')
-    // exec('cd site && yarn deploy && cd ../', err => onFinish(err, () => console.log('Site successfully deployed')))
+    exec('cd site && yarn deploy && cd ../', err => onFinish(err, () => console.log('Site successfully deployed')))
   })
 })
 
