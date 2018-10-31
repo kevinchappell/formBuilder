@@ -20,7 +20,7 @@ export default class controlQuill extends controlTextarea {
    */
   build() {
     // eslint-disable-next-line no-unused-vars
-    let {value = '', ...attrs} = this.config;
+    const {value = '', ...attrs} = this.config;
     this.field = this.markup('div', null, attrs);
     return this.field;
   }
@@ -30,10 +30,10 @@ export default class controlQuill extends controlTextarea {
    * @param {Object} evt - event
    */
   onRender(evt) {
-    let value = this.config.value || '';
+    const value = this.config.value || '';
     const Delta = window.Quill.import('delta');
     window.fbEditors.quill[this.id] = {};
-    let editor = window.fbEditors.quill[this.id];
+    const editor = window.fbEditors.quill[this.id];
     editor.instance = new window.Quill(this.field, {
       modules: {
         toolbar: [

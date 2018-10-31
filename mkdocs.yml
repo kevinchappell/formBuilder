@@ -23,38 +23,48 @@ pages:
   - Custom Elements: formBuilder/options/templates.md
 - formBuilder Options:
   - actionButtons: formBuilder/options/actionButtons.md
+  - allowStageSort: formBuilder/options/allowStageSort.md
   - append/prepend: formBuilder/options/appendPrepend.md
   - controlOrder: formBuilder/options/controlOrder.md
   - controlPosition: formBuilder/options/controlPosition.md
   - dataType: formBuilder/options/dataType.md
   - defaultFields: formBuilder/options/defaultFields.md
-  - disableFields: formBuilder/options/disableFields.md
-  - disabledAttrs: formBuilder/options/disabledAttrs.md
   - disabledActionButtons: formBuilder/options/disabledActionButtons.md
+  - disabledAttrs: formBuilder/options/disabledAttrs.md
+  - disabledFieldButtons: formBuilder/options/disabledFieldButtons.md
+  - disabledSubtypes: formBuilder/options/disabledSubtypes.md
+  - disableFields: formBuilder/options/disableFields.md
   - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
-  - fields: formBuilder/options/fields.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
+  - fields: formBuilder/options/fields.md
   - formData: formBuilder/options/formData.md
-  - inputSets: formBuilder/options/inputSets.md
   - i18n: formBuilder/options/i18n.md
+  - inputSets: formBuilder/options/inputSets.md
   - notify: formBuilder/options/notify.md
+  - replaceFields: formBuilder/options/replaceFields.md
   - roles: formBuilder/options/roles.md
+  - scrollToFieldOnAdd: formBuilder/options/scrollToFieldOnAdd.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
   - stickyControls: formBuilder/options/stickyControls.md
+  - subtypes: formBuilder/options/subtypes.md
   - templates: formBuilder/options/templates.md
   - typeUserAttrs: formBuilder/options/typeUserAttrs.md
-  - typeUserEvents: formBuilder/options/typeUserEvents.md
   - typeUserDisabledAttrs: formBuilder/options/typeUserDisabledAttrs.md
+  - typeUserEvents: formBuilder/options/typeUserEvents.md
 - formBuilder Actions:
-  - setLang: formBuilder/actions/setLang.md
-  - getData: formBuilder/actions/getData.md
-  - showData: formBuilder/actions/showData.md
-  - clearFields: formBuilder/actions/clearFields.md
-  - setData: formBuilder/actions/setData.md
   - addField: formBuilder/actions/addField.md
+  - clearFields: formBuilder/actions/clearFields.md
+  - closeAllFieldEdit: formBuilder/actions/closeAllFieldEdit.md
+  - getData: formBuilder/actions/getData.md
   - removeField: formBuilder/actions/removeField.md
+  - save: formBuilder/actions/save.md
+  - setData: formBuilder/actions/setData.md
+  - setLang: formBuilder/actions/setLang.md
+  - showData: formBuilder/actions/showData.md
+  - toggleAllFieldEdit: formBuilder/actions/toggleAllFieldEdit.md
+  - toggleFieldEdit: formBuilder/actions/toggleFieldEdit.md
 - formBuilder Promise: formBuilder/promise.md
 - formRender Demos:
   - Basic: formRender/demos/basic.md
@@ -64,6 +74,8 @@ pages:
   - container: formRender/options/container.md
   - formData: formRender/options/formData.md
   - render: formRender/options/render.md
+- formRender Actions:
+  - userData: formRender/actions/userData.md
 - Contributing: contributing.md
 - About:
   - License: license.md
@@ -71,6 +83,7 @@ extra_css:
   - 'css/site.css'
   - '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css'
 extra_javascript:
+  - '//cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js'
   - 'js/scripts.js'
   - '//production-assets.codepen.io/assets/embed/ei.js'
   - '//sidecar.gitter.im/dist/sidecar.v1.js'

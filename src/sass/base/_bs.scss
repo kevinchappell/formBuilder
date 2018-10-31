@@ -16,16 +16,6 @@ input {
   line-height: normal;
 }
 
-button,
-input,
-optgroup,
-select,
-textarea {
-  margin: 0;
-  font: inherit;
-  color: inherit;
-}
-
 textarea {
   overflow: auto;
 }
@@ -72,7 +62,8 @@ textarea {
   .input-group-btn:first-child > .btn-group:not(:first-child) > .btn,
   .input-group-btn:first-child > .btn:not(:first-child),
   .input-group-btn:last-child > .btn,
-  .input-group-btn:last-child > .btn-group > .btn, .input-group-btn:last-child > .dropdown-toggle {
+  .input-group-btn:last-child > .btn-group > .btn,
+  .input-group-btn:last-child > .dropdown-toggle {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
@@ -218,37 +209,25 @@ textarea.form-control {
   color: $error;
 }
 
-.fb-checkbox-group {
-  .checkbox,
-  .checkbox-inline{
-    padding-left: 0;
-    input {
-      position:relative;
-      margin: 4px 0 0;
-    }
-    label {
-      padding-left: 4px;
-    }
-  }
-}
-
+.fb-checkbox-group,
 .fb-radio-group {
-  .radio, .radio-inline{
-    padding-left: 0;
-    input {
-      position:relative;
-      margin: 4px 0 0;
-    }
-    label {
-      padding-left: 4px;
-    }
+  input[type='checkbox'],
+  input[type='radio'] {
+    margin: 0 4px 0 0;
   }
 }
 
 .fb-checkbox-inline,
 .fb-radio-inline {
+  margin-right: 8px;
   display: inline-block;
   vertical-align: middle;
+  padding-left: 0;
+  label {
+    input[type='text'] {
+      margin-top: 0;
+    }
+  }
 }
 
 .fb-checkbox-inline:first-child,
