@@ -72,7 +72,7 @@ export default class controlSelect extends control {
           options.push(o)
         } else {
           const labelContents = [label]
-          let wrapperClass = optionType
+          let wrapperClass = `fb-${optionType}`
           if (inline) {
             wrapperClass += '-inline'
           }
@@ -103,7 +103,7 @@ export default class controlSelect extends control {
           value: '',
         }
 
-        let wrapperClass = optionType
+        let wrapperClass = `fb-${optionType}`
         if (inline) {
           wrapperClass += '-inline'
         }

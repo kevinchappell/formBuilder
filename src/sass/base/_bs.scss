@@ -209,41 +209,25 @@ textarea.form-control {
   color: $error;
 }
 
-.fb-checkbox-group {
-  .checkbox,
-  .checkbox-inline {
-    padding-left: 0;
-    input {
-      position: relative;
-      margin: 4px 0 0;
-    }
-    label {
-      padding-left: 4px;
-    }
-  }
-}
-
+.fb-checkbox-group,
 .fb-radio-group {
-  .radio,
-  .radio-inline {
-    padding-left: 0;
-    input {
-      position: relative;
-      margin: 4px 0 0;
-    }
-    label {
-      padding-left: 4px;
-      input[type='text'] {
-        margin-top: 0;
-      }
-    }
+  input[type='checkbox'],
+  input[type='radio'] {
+    margin: 0 4px 0 0;
   }
 }
 
 .fb-checkbox-inline,
 .fb-radio-inline {
+  margin-right: 8px;
   display: inline-block;
   vertical-align: middle;
+  padding-left: 0;
+  label {
+    input[type='text'] {
+      margin-top: 0;
+    }
+  }
 }
 
 .fb-checkbox-inline:first-child,
