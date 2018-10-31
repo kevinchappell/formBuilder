@@ -21,6 +21,18 @@ pages:
   - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
   - Data: formBuilder/demos/data.md
   - Custom Elements: formBuilder/options/templates.md
+- formBuilder Actions:
+  - addField: formBuilder/actions/addField.md
+  - clearFields: formBuilder/actions/clearFields.md
+  - closeAllFieldEdit: formBuilder/actions/closeAllFieldEdit.md
+  - getData: formBuilder/actions/getData.md
+  - removeField: formBuilder/actions/removeField.md
+  - save: formBuilder/actions/save.md
+  - setData: formBuilder/actions/setData.md
+  - setLang: formBuilder/actions/setLang.md
+  - showData: formBuilder/actions/showData.md
+  - toggleAllFieldEdit: formBuilder/actions/toggleAllFieldEdit.md
+  - toggleFieldEdit: formBuilder/actions/toggleFieldEdit.md
 - formBuilder Options:
   - actionButtons: formBuilder/options/actionButtons.md
   - allowStageSort: formBuilder/options/allowStageSort.md
@@ -42,6 +54,11 @@ pages:
   - i18n: formBuilder/options/i18n.md
   - inputSets: formBuilder/options/inputSets.md
   - notify: formBuilder/options/notify.md
+  - onAddField: formBuilder/options/onAddField.md
+  - onClearAll: formBuilder/options/onClearAll.md
+  - onCloseFieldEdit: formBuilder/options/onCloseFieldEdit.md
+  - onOpenFieldEdit: formBuilder/options/onOpenFieldEdit.md
+  - onSave: formBuilder/options/onSave.md
   - replaceFields: formBuilder/options/replaceFields.md
   - roles: formBuilder/options/roles.md
   - scrollToFieldOnAdd: formBuilder/options/scrollToFieldOnAdd.md
@@ -53,18 +70,6 @@ pages:
   - typeUserAttrs: formBuilder/options/typeUserAttrs.md
   - typeUserDisabledAttrs: formBuilder/options/typeUserDisabledAttrs.md
   - typeUserEvents: formBuilder/options/typeUserEvents.md
-- formBuilder Actions:
-  - addField: formBuilder/actions/addField.md
-  - clearFields: formBuilder/actions/clearFields.md
-  - closeAllFieldEdit: formBuilder/actions/closeAllFieldEdit.md
-  - getData: formBuilder/actions/getData.md
-  - removeField: formBuilder/actions/removeField.md
-  - save: formBuilder/actions/save.md
-  - setData: formBuilder/actions/setData.md
-  - setLang: formBuilder/actions/setLang.md
-  - showData: formBuilder/actions/showData.md
-  - toggleAllFieldEdit: formBuilder/actions/toggleAllFieldEdit.md
-  - toggleFieldEdit: formBuilder/actions/toggleFieldEdit.md
 - formBuilder Promise: formBuilder/promise.md
 - formRender Demos:
   - Basic: formRender/demos/basic.md
@@ -75,6 +80,10 @@ pages:
   - formData: formRender/options/formData.md
   - render: formRender/options/render.md
 - formRender Actions:
+  - clear: formRender/actions/clear.md
+  - html: formRender/actions/html.md
+  - render: formRender/actions/render.md
+  - setData: formRender/actions/setData.md
   - userData: formRender/actions/userData.md
 - Contributing: contributing.md
 - About:
