@@ -1,0 +1,23 @@
+language: node_js
+node_js: lts/*
+sudo: false
+cache:
+  yarn: true
+  directories:
+  - node_modules
+deploy:
+  - provider: releases
+    skip_cleanup: true
+    api_key:
+      secure: $GITHUB_RELEASES
+    on:
+      repo: kevinchappell/formBuilder
+      branch: master
+  - provider: npm
+    email: kevin.b.chappell@gmail.com
+    api_key:
+      secure: $NPM_KEY
+    on:
+      tags: true
+      repo: kevinchappell/formBuilder
+      branch: master

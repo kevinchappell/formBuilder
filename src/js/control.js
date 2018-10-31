@@ -1,5 +1,5 @@
 // CONTROL.JS
-import utils from './utils'
+import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils'
 import mi18n from 'mi18n'
 
 /**
@@ -25,8 +25,8 @@ export default class control {
     }
 
     // process config - extract standard properties
-    let properties = ['label', 'description', 'subtype', 'required','disabled']
-    for (let prop of properties) {
+    const properties = ['label', 'description', 'subtype', 'required', 'disabled']
+    for (const prop of properties) {
       this[prop] = config[prop]
       delete config[prop]
     }
@@ -49,7 +49,7 @@ export default class control {
     if (!control.controlConfig) {
       control.controlConfig = {}
     }
-    let classId = this.subtype ? this.type + '.' + this.subtype : this.type
+    const classId = this.subtype ? this.type + '.' + this.subtype : this.type
     this.classConfig = $.extend({}, control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
@@ -63,8 +63,8 @@ export default class control {
     }
 
     // Allow setting disabled flag
-    if(this.disabled){
-      config['disabled'] = 'disabled' 
+    if (this.disabled) {
+      config['disabled'] = 'disabled'
     }
     this.config = config
     this.configure()
@@ -93,7 +93,7 @@ export default class control {
    */
   static register(types, controlClass, parentType) {
     // store subtypes as <type>.<subtype> in the register
-    let prefix = parentType ? parentType + '.' : ''
+    const prefix = parentType ? parentType + '.' : ''
 
     // initialise the register
     if (!control.classRegister) {
@@ -104,9 +104,9 @@ export default class control {
     }
 
     // associate the controlClass with each passed control type
-    for (let type of types) {
+    for (const type of types) {
       // '.' is a restricted character for type names
-      if (type.indexOf('.') > -1) {
+      if (type.indexOf('.') !== -1) {
         // eslint-disable-next-line max-len
         control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
         continue
@@ -122,7 +122,7 @@ export default class control {
    * @return {Array} registered types (or subtypes)
    */
   static getRegistered(type = false) {
-    let types = Object.keys(control.classRegister)
+    const types = Object.keys(control.classRegister)
     if (!types.length) {
       return types
     }
@@ -142,10 +142,10 @@ export default class control {
    * @return {Object} an object containing {type: array of subtypes}.
    */
   static getRegisteredSubtypes() {
-    let types = {}
-    for (let key in control.classRegister) {
+    const types = {}
+    for (const key in control.classRegister) {
       if (control.classRegister.hasOwnProperty(key)) {
-        let [type, subtype] = key.split('.')
+        const [type, subtype] = key.split('.')
         if (!subtype) {
           continue
         }
@@ -166,8 +166,8 @@ export default class control {
    * @return {Class} control subclass as defined in the call to register
    */
   static getClass(type, subtype) {
-    let lookup = subtype ? type + '.' + subtype : type
-    let controlClass = control.classRegister[lookup] || control.classRegister[type]
+    const lookup = subtype ? type + '.' + subtype : type
+    const controlClass = control.classRegister[lookup] || control.classRegister[type]
     if (!controlClass) {
       return control.error(
         'Invalid control type. (Type: ' +
@@ -201,7 +201,7 @@ export default class control {
     // expects a function that receives the master control class to inherit from (or optional classRegister to inherit from subclass)
     // see src/js/control_plugins/ for an example
     if (!window.fbControlsLoaded) {
-      for (let loadControl of controlClasses) {
+      for (const loadControl of controlClasses) {
         loadControl(control, control.classRegister)
       }
       window.fbControlsLoaded = true
@@ -217,14 +217,14 @@ export default class control {
    * @return {String} the translated label
    */
   static mi18n(lookup, args) {
-    let def = this.definition
+    const def = this.definition
     let i18n = def.i18n || {}
-    let locale = mi18n.locale
+    const locale = mi18n.locale
     i18n = i18n[locale] || i18n.default || i18n
-    let lookupCamel = this.camelCase(lookup)
+    const lookupCamel = this.camelCase(lookup)
 
     // if translation is defined in the control, return it
-    let value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[lookup] : i18n
+    const value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[lookup] : i18n
     if (value) {
       return value
     }
@@ -266,7 +266,7 @@ export default class control {
   static icon(type) {
     // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
     // http://formbuilder.readthedocs.io/en/latest/formBuilder/options/inputSets/
-    let def = this.definition
+    const def = this.definition
     if (def && typeof def.icon === 'object') {
       return def.icon[type]
     }
@@ -289,8 +289,8 @@ export default class control {
    * @return {Object} DOM Element to be injected into the form, or an object/hash of configuration as above
    */
   build() {
-    let { label, type, ...data } = this.config
-    return this.markup(type, utils.parsedHtml(label), data)
+    const { label, type, ...data } = this.config
+    return this.markup(type, parsedHtml(label), data)
   }
 
   /**
@@ -300,14 +300,14 @@ export default class control {
    * @return {Function/Object} - function to execute for specified event, or all events of no eventType is specified
    */
   on(eventType) {
-    let events = {
+    const events = {
       // executed just prior to the row being returned by the layout class. Receives the DOMelement about to be passed back
       prerender: element => {},
 
       // onRender event to execute code each time an instance of this control is injected into the DOM
       render: evt => {
         // check for a class render event - default to an empty function
-        let onRender = () => {
+        const onRender = () => {
           if (this.onRender) {
             this.onRender()
           }
@@ -315,10 +315,10 @@ export default class control {
 
         // check for any css & javascript to include
         if (this.css) {
-          utils.getStyles(this.css)
+          getStyles(this.css)
         }
-        if (this.js && !utils.isCached(this.js)) {
-          utils.getScripts(this.js).done(onRender)
+        if (this.js && !isCached(this.js)) {
+          getScripts(this.js).done(onRender)
         } else {
           onRender()
         }
@@ -336,7 +336,7 @@ export default class control {
   }
 
   /**
-   * link to the utils.markup method
+   * wrap the utils.markup method
    * ideally this would be inherited from a parent 'dom' type element supporting dom helper type methods
    * @param  {String} tag
    * @param  {Object|String|Array} content
@@ -344,7 +344,7 @@ export default class control {
    * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
-    this.element = utils.markup(tag, content, attributes)
+    this.element = markup(tag, content, attributes)
     return this.element
   }
 
@@ -354,7 +354,7 @@ export default class control {
    * @return {String}      parsed HTML
    */
   parsedHtml(html) {
-    return utils.parsedHtml(html)
+    return parsedHtml(html)
   }
 
   /**
@@ -363,6 +363,6 @@ export default class control {
    * @return {String}
    */
   static camelCase(str) {
-    return utils.camelCase(str)
+    return camelCase(str)
   }
 }

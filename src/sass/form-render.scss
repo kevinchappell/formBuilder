@@ -4,10 +4,20 @@
 .rendered-form {
   @import 'base/bs';
   @import 'kc-toggle';
+
+  label {
+    font-weight: normal;
+  }
 }
 
 .form-group .fb-required {
   color: $error;
+}
+
+.other-option:checked + label {
+  input {
+    display: inline-block;
+  }
 }
 
 .other-val {

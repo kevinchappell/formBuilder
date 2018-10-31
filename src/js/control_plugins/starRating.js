@@ -54,7 +54,7 @@ window.fbControls.push(function(controlClass) {
      * onRender callback
      */
     onRender() {
-      let value = this.config.value || 3.6;
+      const value = this.config.value || 3.6;
       var targetId = this.config.name;
       $('#' + this.config.name + "_render").rateYo({
           rating: value,
