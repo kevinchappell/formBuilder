@@ -84,7 +84,7 @@
     "test": "yarn test",
     "test:watch": "yarn test -- --reporter min --watch",
     "font": "node tools/run icon-font",
-    "deploy": "babel-node -- node_modules/gulp/bin/gulp deploy",
+    "deploy": "yarn build && babel-node -- tools/run deploy",
     "tag:patch": "babel-node -- node_modules/gulp/bin/gulp tag --patch",
     "tag:minor": "babel-node -- node_modules/gulp/bin/gulp tag --minor",
     "release:patch": "yarn run tag:patch --patch && yarn run deploy",
