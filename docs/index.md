@@ -15,21 +15,25 @@ formRender is the companion plugin to formBuilder that lets you render the resul
 
 ## Project layout
 ```bash
-    demo/             # Website for http://formbuilder.online
-    dist/             # Compiled files for distribution
+    demo/               # Website for http://formbuilder.online
+    dist/               # Compiled files for distribution
     docs/
-        index.md      # The documentation homepage.
-        ...           # Other markdown pages, images and other files.
-    src/              # Source files for editing the plugin
-    .fontello         # Fontello session token used for editing the icon font
+        index.md        # The documentation homepage.
+        license.md
+        ...             # Other markdown pages, images and other files.
+    src/                # Source files for editing the plugin
+    tools/              # build configurations, icon-font script
+    .codeclimate.yml    # Fontello session token used for editing the icon font
     .gitignore
-    .sass-lint.yml    # Config file for sass-lint to maintain css quality and style
-    CHANGELOG.md
-    CONTRIBUTING.md   # Contributor guidelines
-    LICENSE
-    README.md
+    .travis.yml         # Config file for travis-ci
     bower.json
-    gulpfile.babel.js # Build process
-    mkdocs.yml        # The configuration file.
-    package.json      # Plugin config. Files in build process are stored in the `"config"` property.
+    CHANGELOG.md
+    composer.json
+    CONTRIBUTING.md     # Contributor guidelines
+    ISSUE_TEMPLATE.MD
+    LICENSE
+    mkdocs.yml          # mkdocs config file
+    package.json        # npm
+    README.md
+    yarn.lock
 ```

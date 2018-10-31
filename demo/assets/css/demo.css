@@ -9,16 +9,6 @@ body {
   font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
 }
 
-body > div {}
-
-#fb-template {
-  // display: none;
-}
-
-.template-textarea-wrap {
-  display: block !important;
-}
-
 .content {
   margin: auto;
   width: 100%;
@@ -26,23 +16,20 @@ body > div {}
   padding-top: 5em;
 }
 
-.form-rendered .build-wrap {
+.form-rendered .build-wrap,
+.form-rendered .formbuilder-title,
+.form-rendered .formbuilder-actions {
   display: none;
 }
 
-.render-wrap {
+.render-wrap,
+.formrender-title,
+.formrender-actions {
   display: none;
 }
 
-.form-rendered .render-wrap {
-  display: block;
-}
-
-#edit-form {
-  display: none;
-  float: right;
-}
-
-.form-rendered #edit-form {
+.form-rendered .render-wrap,
+.form-rendered .formrender-title,
+.form-rendered .formrender-actions {
   display: block;
 }
