@@ -115,7 +115,7 @@ const webpackConfig = {
       template: '../src/demo/index.html',
       formBuilder: PRODUCTION ? 'assets/js/form-builder.min.js' : '../dist/form-builder.min.js',
       formRender: PRODUCTION ? 'assets/js/form-render.min.js' : '../dist/form-render.min.js',
-      demo: PRODUCTION ? 'assets/js/demo.js' : '../dist/demo.min.js',
+      demo: PRODUCTION ? 'assets/js/demo.min.js' : '../dist/demo.min.js',
       alwaysWriteToDisk: true,
       inject: false,
       langFiles: Object.entries(langFiles).map(([key, val]) => ({
