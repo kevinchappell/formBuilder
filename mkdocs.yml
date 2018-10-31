@@ -46,7 +46,7 @@ pages:
   - disabledFieldButtons: formBuilder/options/disabledFieldButtons.md
   - disabledSubtypes: formBuilder/options/disabledSubtypes.md
   - disableFields: formBuilder/options/disableFields.md
-  - disabledHTMLLabels: formBuilder/options/disabledHTMLLabels.md
+  - disableHTMLLabels: formBuilder/options/disableHTMLLabels.md
   - disableInjectedStyle: formBuilder/options/disableInjectedStyle.md
   - editOnAdd: formBuilder/options/editOnAdd.md
   - fieldRemoveWarn: formBuilder/options/fieldRemoveWarn.md
