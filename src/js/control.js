@@ -1,5 +1,5 @@
 // CONTROL.JS
-import utils from './utils'
+import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils'
 import mi18n from 'mi18n'
 
 /**
@@ -290,7 +290,7 @@ export default class control {
    */
   build() {
     const { label, type, ...data } = this.config
-    return this.markup(type, utils.parsedHtml(label), data)
+    return this.markup(type, parsedHtml(label), data)
   }
 
   /**
@@ -315,10 +315,10 @@ export default class control {
 
         // check for any css & javascript to include
         if (this.css) {
-          utils.getStyles(this.css)
+          getStyles(this.css)
         }
-        if (this.js && !utils.isCached(this.js)) {
-          utils.getScripts(this.js).done(onRender)
+        if (this.js && !isCached(this.js)) {
+          getScripts(this.js).done(onRender)
         } else {
           onRender()
         }
@@ -336,7 +336,7 @@ export default class control {
   }
 
   /**
-   * link to the utils.markup method
+   * wrap the utils.markup method
    * ideally this would be inherited from a parent 'dom' type element supporting dom helper type methods
    * @param  {String} tag
    * @param  {Object|String|Array} content
@@ -344,7 +344,7 @@ export default class control {
    * @return {Object} DOM element
    */
   markup(tag, content = '', attributes = {}) {
-    this.element = utils.markup(tag, content, attributes)
+    this.element = markup(tag, content, attributes)
     return this.element
   }
 
@@ -354,7 +354,7 @@ export default class control {
    * @return {String}      parsed HTML
    */
   parsedHtml(html) {
-    return utils.parsedHtml(html)
+    return parsedHtml(html)
   }
 
   /**
@@ -363,6 +363,6 @@ export default class control {
    * @return {String}
    */
   static camelCase(str) {
-    return utils.camelCase(str)
+    return camelCase(str)
   }
 }

@@ -1,13 +1,13 @@
 const pkg = require('../package.json')
 const { resolve, join } = require('path')
 const autoprefixer = require('autoprefixer')
+const { BannerPlugin, DefinePlugin } = require('webpack')
 const CompressionPlugin = require('compression-webpack-plugin')
-const { BannerPlugin } = require('webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
-const { langFiles } = require('./build-helpers')
+const langFiles = require('formbuilder-languages')
 
 // hack for Ubuntu on Windows
 try {
@@ -108,6 +108,9 @@ const webpackConfig = {
     new CleanWebpackPlugin(['dist/*', 'demo/assets/js/form-*'], {
       root: join(__dirname, '..'),
     }),
+    new DefinePlugin({
+      FB_EN_US: JSON.stringify(langFiles['en-US'])
+    }),
     new HtmlWebpackPlugin({
       template: '../src/demo/index.html',
       formBuilder: PRODUCTION ? 'assets/js/form-builder.min.js' : '../dist/form-builder.min.js',
@@ -115,7 +118,10 @@ const webpackConfig = {
       demo: PRODUCTION ? 'assets/js/demo.js' : '../dist/demo.min.js',
       alwaysWriteToDisk: true,
       inject: false,
-      langFiles,
+      langFiles: Object.entries(langFiles).map(([key, val]) => ({
+        locale: key,
+        nativeName: val.NATIVE_NAME,
+      })),
     }),
     new HtmlWebpackHarddiskPlugin({ outputPath: './demo/' }),
     new BannerPlugin({ banner: bannerTemplate, test: /\.js$/ }),

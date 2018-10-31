@@ -1,3 +1,8 @@
+import mi18n from 'mi18n'
+
+// eslint-disable-next-line
+mi18n.addLanguage('en-US', FB_EN_US)
+
 export const defaultOptions = {
   actionButtons: [], // additional form action buttons- save, data, clear
   allowStageSort: true,

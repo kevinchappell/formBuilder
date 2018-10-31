@@ -487,9 +487,14 @@ export const merge = (obj1, obj2) => {
   return mergedObj
 }
 
-export const addEventListeners = (el, evts, fn) => {
-  return evts.split(' ').forEach(e => el.addEventListener(e, fn, false))
-}
+/**
+ *
+ * @param {Node} el
+ * @param {String} evts events to bind to
+ * @param {Function} cb
+ * @return {Array} events
+ */
+export const addEventListeners = (el, evts, cb) => evts.split(' ').forEach(e => el.addEventListener(e, cb, false))
 
 /**
  * Find the closest parent by class
@@ -501,33 +506,6 @@ export const closest = (el, cls) => {
   const className = cls.replace('.', '')
   while ((el = el.parentElement) && !el.classList.contains(className));
   return el
-}
-
-/**
- * Debounce often called functions, like save
- * @param  {Function}  func
- * @param  {Number}  wait
- * @param  {Boolean} immediate
- * @return {Function} debounce
- */
-export const debounce = (func, wait = 250, immediate = false) => {
-  let timeout
-  return function(...args) {
-    // eslint-disable-next-line no-invalid-this
-    const context = this
-    const later = function() {
-      timeout = null
-      if (!immediate) {
-        func.apply(context, args)
-      }
-    }
-    const callNow = immediate && !timeout
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-    if (callNow) {
-      func.apply(context, args)
-    }
-  }
 }
 
 /**
@@ -611,7 +589,6 @@ const utils = {
   capitalize,
   closest,
   getContentType,
-  debounce,
   escapeAttr,
   escapeAttrs,
   escapeHtml,

@@ -1,6 +1,6 @@
 {
   "name": "formbuilder.js",
-  "version": "2.10.0-beta.1",
+  "version": "2.10.0-beta.2",
   "main": "dist/form-builder.min.js",
   "files": [
     "dist/form-builder.min.js",
@@ -120,6 +120,7 @@
     "eslint-config-prettier": "2.9.0",
     "eslint-loader": "2.0.0",
     "eslint-plugin-prettier": "2.6.0",
+    "formbuilder-languages": "0.0.3",
     "html-webpack-harddisk-plugin": "0.2.0",
     "html-webpack-plugin": "3.2.0",
     "inquirer": "6.0.0",

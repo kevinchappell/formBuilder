@@ -1,13 +1,22 @@
+import mi18n from 'mi18n'
 import { instanceDom, empty, optionFieldsRegEx, remove } from './dom'
 import { instanceData } from './data'
-import utils, { mobileClass } from './utils'
+import {
+  mobileClass,
+  markup as m,
+  forEach,
+  camelCase,
+  escapeHtml,
+  trimObj,
+  subtract,
+  parseXML,
+  capitalize,
+  unique,
+} from './utils'
 import events from './events'
-import mi18n from 'mi18n'
 import { config } from './config'
 import control from './control'
 import controlCustom from './control/custom'
-
-const m = utils.markup
 
 /**
  * Utilities specific to form-builder.js
@@ -177,7 +186,7 @@ export default class Helpers {
 
     if (form.childNodes.length !== 0) {
       // build data object
-      utils.forEach(form.childNodes, function(index, field) {
+      forEach(form.childNodes, function(index, field) {
         const $field = $(field)
 
         if (!$field.hasClass('disabled-field')) {
@@ -217,7 +226,7 @@ export default class Helpers {
             }
           }
 
-          fieldData = utils.trimObj(fieldData)
+          fieldData = trimObj(fieldData)
 
           const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
 
@@ -251,7 +260,7 @@ export default class Helpers {
     }
 
     const setData = {
-      xml: formData => (Array.isArray(formData) ? formData : utils.parseXML(formData)),
+      xml: formData => (Array.isArray(formData) ? formData : parseXML(formData)),
       json: formData => (typeof formData === 'string' ? window.JSON.parse(formData) : formData),
     }
 
@@ -303,11 +312,11 @@ export default class Helpers {
   getAttrVals(field) {
     const fieldData = Object.create(null)
     const attrs = field.querySelectorAll('[class*="fld-"]')
-    utils.forEach(attrs, index => {
+    forEach(attrs, index => {
       const attr = attrs[index]
-      const name = utils.camelCase(attr.getAttribute('name'))
+      const name = camelCase(attr.getAttribute('name'))
       const value = [
-        [attr.attributes.contenteditable, () => utils.escapeHtml(attr.innerHTML)],
+        [attr.attributes.contenteditable, () => escapeHtml(attr.innerHTML)],
         [attr.type === 'checkbox', () => attr.checked],
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
@@ -353,7 +362,7 @@ export default class Helpers {
       })
     }
 
-    previewData = utils.trimObj(previewData)
+    previewData = trimObj(previewData)
 
     previewData.className = _this.classNames(field, previewData)
 
@@ -383,12 +392,12 @@ export default class Helpers {
     }
 
     const disabledFields = stage.querySelectorAll('.disabled-field')
-    utils.forEach(disabledFields, index => {
+    forEach(disabledFields, index => {
       const field = disabledFields[index]
       const title = mi18n.get('fieldNonEditable')
 
       if (title) {
-        const tt = utils.markup('p', title, { className: 'frmb-tt' })
+        const tt = m('p', title, { className: 'frmb-tt' })
         field.appendChild(tt)
         field.addEventListener('mousemove', e => move(e, { tt, field }))
       }
@@ -431,8 +440,7 @@ export default class Helpers {
 
     // reverse the array to put custom classes at end,
     // remove any duplicates, convert to string, remove whitespace
-    return utils
-      .unique(classes)
+    return unique(classes)
       .join(' ')
       .trim()
   }
@@ -494,7 +502,7 @@ export default class Helpers {
    * @return {Object} DOM Object
    */
   showOverlay() {
-    const overlay = utils.markup('div', null, {
+    const overlay = m('div', null, {
       className: 'form-builder-overlay',
     })
     document.body.appendChild(overlay)
@@ -575,7 +583,7 @@ export default class Helpers {
 
     className = 'form-builder-dialog ' + className
 
-    const miniModal = utils.markup('div', content, { className: className })
+    const miniModal = m('div', content, { className: className })
     if (!coords) {
       coords = {
         pageX: Math.max(clientWidth, window.innerWidth || 0) / 2,
@@ -664,7 +672,7 @@ export default class Helpers {
     if (animate) {
       stage.classList.add('removing')
       let outerHeight = 0
-      utils.forEach(fields, index => (outerHeight += fields[index].offsetHeight + 3))
+      forEach(fields, index => (outerHeight += fields[index].offsetHeight + 3))
       fields[0].style.marginTop = `${-outerHeight}px`
       setTimeout(() => {
         empty(stage).classList.remove('removing')
@@ -896,7 +904,7 @@ export default class Helpers {
     const data = this.data
     if (!labelText) {
       if (attrs.id) {
-        labelText = mi18n.current[attrs.id] || utils.capitalize(attrs.id)
+        labelText = mi18n.current[attrs.id] || capitalize(attrs.id)
       } else {
         labelText = ''
       }
@@ -943,7 +951,7 @@ export default class Helpers {
 
     // remove disabled subtypes
     const subtypeDef = Object.entries(registeredSubtypes).reduce((acc, [key, val]) => {
-      acc[key] = (disabledSubtypes[key] && utils.subtract(disabledSubtypes[key], val)) || val
+      acc[key] = (disabledSubtypes[key] && subtract(disabledSubtypes[key], val)) || val
       return acc
     }, {})
 

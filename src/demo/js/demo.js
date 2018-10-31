@@ -3,6 +3,7 @@ import { insertStyle, removeStyle } from '../../js/utils'
 import { builderActions, renderActions, demoActions } from './actionButtons'
 
 const localeSessionKey = 'formBuilder-locale'
+const defaultLocale = 'en-US'
 
 const toggleBootStrap = ({ target }) => {
   if (!target.checked) {
@@ -189,10 +190,7 @@ jQuery(function($) {
     onAddField: fieldId => {
       document.getElementById('currentFieldId').value = fieldId
     },
-    onClearAll: () => {
-      window.sessionStorage.removeItem('formData')
-      console.log('removed formData')
-    },
+    onClearAll: () => window.sessionStorage.removeItem('formData'),
     stickyControls: {
       enable: true,
     },
@@ -212,7 +210,7 @@ jQuery(function($) {
     controlPosition: 'right', // left|right,
     i18n: {
       override: {
-        'en-US': {
+        [defaultLocale]: {
           number: 'Big Numbers',
         },
       },
@@ -265,7 +263,7 @@ jQuery(function($) {
     const langSelect = document.getElementById('setLanguage')
     const savedLocale = window.sessionStorage.getItem(localeSessionKey)
 
-    if (savedLocale) {
+    if (savedLocale && savedLocale !== defaultLocale) {
       langSelect.value = savedLocale
       fb.actions.setLang(savedLocale)
     }

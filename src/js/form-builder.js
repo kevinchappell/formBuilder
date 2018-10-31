@@ -1,14 +1,30 @@
 import '../sass/form-builder.scss'
-import Dom, { empty } from './dom'
+import throttle from 'lodash/throttle'
+import Dom from './dom'
 import { remove } from './dom'
 import { Data } from './data'
 import mi18n from 'mi18n'
-import utils, { subtract, hyphenCase, nameAttr, trimObj, forEach, markup, removeFromArray } from './utils'
 import events from './events'
 import layout from './layout'
 import Helpers from './helpers'
 import { defaultOptions, defaultI18n, config, styles } from './config'
 import Controls from './controls'
+import {
+  subtract,
+  hyphenCase,
+  nameAttr,
+  trimObj,
+  forEach,
+  markup,
+  removeFromArray,
+  attrString,
+  capitalize,
+  parsedHtml,
+  addEventListeners,
+  closest,
+  safename,
+  forceNumber,
+} from './utils'
 
 const FormBuilder = function(opts, element) {
   const formBuilder = this
@@ -124,6 +140,7 @@ const FormBuilder = function(opts, element) {
   if (element.type !== 'textarea') {
     $(element).append($editorWrap)
   } else {
+    // formBuilder no longer uses textArea for element
     $(element).replaceWith($editorWrap)
   }
 
@@ -555,7 +572,7 @@ const FormBuilder = function(opts, element) {
     }
 
     textAttrs = Object.assign({}, attrs, textAttrs)
-    const textInput = `<input ${utils.attrString(textAttrs)}>`
+    const textInput = `<input ${attrString(textAttrs)}>`
     const inputWrap = `<div class="input-wrap">${textInput}</div>`
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
   }
@@ -693,7 +710,7 @@ const FormBuilder = function(opts, element) {
       className: `fld-${attribute} form-control ${classname || className || ''}`.trim(),
       id: `${attribute}-${data.lastID}`,
     }
-    const numberAttribute = h.input(utils.trimObj(inputConfig)).outerHTML
+    const numberAttribute = h.input(trimObj(inputConfig)).outerHTML
     const inputWrap = `<div class="input-wrap">${numberAttribute}</div>`
     const inputLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`
 
@@ -721,7 +738,7 @@ const FormBuilder = function(opts, element) {
       if (option.value === values[attribute]) {
         optionAttrs.selected = true
       }
-      optionAttrs = utils.trimObj(optionAttrs)
+      optionAttrs = trimObj(optionAttrs)
       return m('option', optionAttrs.label, optionAttrs)
     })
     const selectAttrs = {
@@ -729,7 +746,7 @@ const FormBuilder = function(opts, element) {
       name: attribute,
       className: `fld-${attribute} form-control`,
     }
-    const labelText = i18n[attribute] || utils.capitalize(attribute) || ''
+    const labelText = i18n[attribute] || capitalize(attribute) || ''
     const label = m('label', labelText, { for: selectAttrs.id })
     const select = m('select', selectOptions, selectAttrs)
     const inputWrap = m('div', select, { className: 'input-wrap' })
@@ -757,7 +774,7 @@ const FormBuilder = function(opts, element) {
       if (textArea.includes(values.type)) {
         attrLabel = i18n.content
       } else {
-        attrVal = utils.parsedHtml(attrVal)
+        attrVal = parsedHtml(attrVal)
       }
     }
 
@@ -782,7 +799,7 @@ const FormBuilder = function(opts, element) {
       } else {
         inputConfig.value = attrVal
         inputConfig.type = 'text'
-        attributefield += `<input ${utils.attrString(inputConfig)}>`
+        attributefield += `<input ${attrString(inputConfig)}>`
       }
 
       const inputWrap = `<div class="input-wrap">${attributefield}</div>`
@@ -852,7 +869,7 @@ const FormBuilder = function(opts, element) {
     const liContents = [m('div', fieldButtons, { className: 'field-actions' })]
 
     liContents.push(
-      m('label', utils.parsedHtml(label), {
+      m('label', parsedHtml(label), {
         className: 'field-label',
       })
     )
@@ -961,9 +978,9 @@ const FormBuilder = function(opts, element) {
       className: 'remove btn icon-cancel',
       title: i18n.removeMessage,
     }
-    optionInputs.push(utils.markup('a', null, removeAttrs))
+    optionInputs.push(m('a', null, removeAttrs))
 
-    return utils.markup('li', optionInputs).outerHTML
+    return m('li', optionInputs).outerHTML
   }
 
   const cloneItem = function cloneItem(currentItem) {
@@ -998,7 +1015,7 @@ const FormBuilder = function(opts, element) {
 
   // ---------------------- Event listeners ---------------------- //
 
-  const saveAndUpdate = utils.debounce(evt => {
+  const saveAndUpdate = evt => {
     if (evt) {
       const isDisabled = [({ type, target }) => type === 'keyup' && target.name === 'className'].some(typeCondition =>
         typeCondition(evt)
@@ -1010,12 +1027,12 @@ const FormBuilder = function(opts, element) {
       h.updatePreview($(evt.target).closest('.form-field'))
       h.save.call(h)
     }
-  })
+  }
 
   const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
 
   // Save field on change
-  $stage.on('change blur keyup click', previewSelectors, saveAndUpdate)
+  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, 333, { leading: false }))
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {
@@ -1098,18 +1115,18 @@ const FormBuilder = function(opts, element) {
     if (e.target.classList.contains('other-option')) {
       return
     }
-    const field = utils.closest(e.target, '.form-field')
+    const field = closest(e.target, '.form-field')
     const optionTypes = ['select', 'checkbox-group', 'radio-group']
     if (optionTypes.includes(field.type)) {
       const options = field.getElementsByClassName('option-value')
       if (field.type === 'select') {
-        utils.forEach(options, i => {
+        forEach(options, i => {
           const selectedOption = options[i].parentElement.childNodes[0]
           selectedOption.checked = e.target.value === options[i].value
         })
       } else {
         prevOptions = document.getElementsByName(e.target.name)
-        utils.forEach(prevOptions, i => {
+        forEach(prevOptions, i => {
           const selectedOption = options[i].parentElement.childNodes[0]
           selectedOption.checked = prevOptions[i].checked
         })
@@ -1125,11 +1142,11 @@ const FormBuilder = function(opts, element) {
   })
 
   // update preview to label
-  utils.addEventListeners(d.stage, 'keyup change', ({ target }) => {
+  addEventListeners(d.stage, 'keyup change', ({ target }) => {
     if (!target.classList.contains('fld-label')) return
     const value = target.value || target.innerHTML
-    const label = utils.closest(target, '.form-field').querySelector('.field-label')
-    label.innerHTML = utils.parsedHtml(value)
+    const label = closest(target, '.form-field').querySelector('.field-label')
+    label.innerHTML = parsedHtml(value)
   })
 
   // remove error styling when users tries to correct mistake
@@ -1168,7 +1185,7 @@ const FormBuilder = function(opts, element) {
 
   // format name attribute
   $stage.on('blur', 'input.fld-name', function(e) {
-    e.target.value = utils.safename(e.target.value)
+    e.target.value = safename(e.target.value)
     if (e.target.value === '') {
       $(e.target)
         .addClass('field-error')
@@ -1179,7 +1196,7 @@ const FormBuilder = function(opts, element) {
   })
 
   $stage.on('blur', 'input.fld-maxlength', e => {
-    e.target.value = utils.forceNumber(e.target.value)
+    e.target.value = forceNumber(e.target.value)
   })
 
   // Copy field
@@ -1220,8 +1237,8 @@ const FormBuilder = function(opts, element) {
 
     // Check if user is sure they want to remove the field
     if (opts.fieldRemoveWarn) {
-      const warnH3 = utils.markup('h3', i18n.warning)
-      const warnMessage = utils.markup('p', i18n.fieldRemoveWarning)
+      const warnH3 = m('h3', i18n.warning)
+      const warnMessage = m('p', i18n.fieldRemoveWarning)
       h.confirm([warnH3, warnMessage], () => h.removeField(deleteID), coords)
       $field.addClass('deleting')
     } else {
@@ -1291,7 +1308,7 @@ const FormBuilder = function(opts, element) {
 
   if (opts.disableInjectedStyle) {
     const styleTags = document.getElementsByClassName('formBuilder-injected-style')
-    utils.forEach(styleTags, i => remove(styleTags[i]))
+    forEach(styleTags, i => remove(styleTags[i]))
   }
 
   document.dispatchEvent(events.loaded)
@@ -1318,7 +1335,7 @@ const FormBuilder = function(opts, element) {
       mi18n.setCurrent.call(mi18n, locale).then(() => {
         d.stage.dataset.content = mi18n.get('getStarted')
         controls.init()
-        empty(d.formActions)
+        d.empty(d.formActions)
         h.formActionButtons().forEach(button => d.formActions.appendChild(button))
       })
     },
