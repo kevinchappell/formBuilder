@@ -200,11 +200,11 @@ export default class control {
     // loop through each defined custom control.
     // expects a function that receives the master control class to inherit from (or optional classRegister to inherit from subclass)
     // see src/js/control_plugins/ for an example
-    if (!window.fbControlsLoaded) {
+    if (!this.fbControlsLoaded) {
       for (const loadControl of controlClasses) {
         loadControl(control, control.classRegister)
       }
-      window.fbControlsLoaded = true
+      this.fbControlsLoaded = true
     }
   }
 
