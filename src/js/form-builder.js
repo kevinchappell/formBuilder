@@ -26,6 +26,8 @@ import {
   forceNumber,
 } from './utils'
 
+const DEFAULT_TIMEOUT = 333
+
 const FormBuilder = function(opts, element) {
   const formBuilder = this
   const i18n = mi18n.current
@@ -41,8 +43,8 @@ const FormBuilder = function(opts, element) {
 
   const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = markup
-  data.layout = h.editorLayout(opts.controlPosition)
   opts = h.processOptions(opts)
+  data.layout = h.editorLayout(opts.controlPosition)
   h.editorUI(formID)
   data.formID = formID
   data.lastID = `${data.formID}-fld-1`
@@ -128,7 +130,7 @@ const FormBuilder = function(opts, element) {
 
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
-    className: 'cb-wrap ' + data.layout.controls,
+    className: `cb-wrap ${data.layout.controls}`,
   })
 
   if (opts.showActionButtons) {
@@ -530,7 +532,7 @@ const FormBuilder = function(opts, element) {
         const attrValType = userAttrType(attribute, typeUserAttr[attribute])
         const orig = i18n[attribute]
         const tUA = typeUserAttr[attribute]
-        const origValue = tUA.value
+        const origValue = tUA.value || ''
         tUA.value = values[attribute] || tUA.value || ''
 
         if (tUA.label) {
@@ -591,7 +593,7 @@ const FormBuilder = function(opts, element) {
       if (Array.isArray(value) ? value.includes(val) : val === value) {
         attrs.selected = null
       }
-      return m('option', options[val], attrs).outerHTML
+      return m('option', options[val], attrs)
     })
 
     const selectAttrs = {
@@ -1032,7 +1034,7 @@ const FormBuilder = function(opts, element) {
   const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
 
   // Save field on change
-  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, 333, { leading: false }))
+  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, DEFAULT_TIMEOUT, { leading: false }))
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {
@@ -1363,11 +1365,14 @@ const FormBuilder = function(opts, element) {
 
   // set min-height on stage onRender
   d.onRender(d.controls, () => {
-    d.stage.style.minHeight = `${d.controls.clientHeight}px`
-    // If option set, controls will remain in view in editor
-    if (opts.stickyControls.enable) {
-      h.stickyControls($stage)
-    }
+    // Ensure style has loaded
+    setTimeout(() => {
+      d.stage.style.minHeight = `${d.controls.clientHeight}px`
+      // If option set, controls will remain in view in editor
+      if (opts.stickyControls.enable) {
+        h.stickyControls($stage)
+      }
+    }, 0)
   })
 
   return formBuilder

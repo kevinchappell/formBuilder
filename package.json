@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "2.10.0",
+  "version": "2.10.1",
   "main": "dist/form-builder.min.js",
   "files": [
     "dist/form-builder.min.js",
@@ -81,6 +81,7 @@
     ]
   },
   "scripts": {
+    "copy": "cp -a dist/* demo/assets/js/",
     "test": "yarn build",
     "font": "node tools/run icon-font",
     "deploy": "yarn build && babel-node -- tools/run deploy",
@@ -89,7 +90,7 @@
     "release:patch": "yarn run tag:patch --patch && yarn run deploy",
     "release:minor": "yarn run tag:minor --minor && yarn run deploy",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
-    "build": "webpack --mode production -p --progress --config tools/webpack.config && cp -a dist/*.js demo/assets/js/",
+    "build": "webpack --mode production -p --progress --config tools/webpack.config && yarn build:plugins && yarn copy",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:vendor": "babel-node -- tools/run build-vendor",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config"
