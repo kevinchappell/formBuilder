@@ -530,7 +530,7 @@ const FormBuilder = function(opts, element) {
         const attrValType = userAttrType(attribute, typeUserAttr[attribute])
         const orig = i18n[attribute]
         const tUA = typeUserAttr[attribute]
-        const origValue = tUA.value
+        const origValue = tUA.value || ''
         tUA.value = values[attribute] || tUA.value || ''
 
         if (tUA.label) {
@@ -591,7 +591,7 @@ const FormBuilder = function(opts, element) {
       if (Array.isArray(value) ? value.includes(val) : val === value) {
         attrs.selected = null
       }
-      return m('option', options[val], attrs).outerHTML
+      return m('option', options[val], attrs)
     })
 
     const selectAttrs = {
