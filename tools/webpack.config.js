@@ -16,15 +16,17 @@ try {
   require('os').networkInterfaces = () => ({})
 }
 
+const root = resolve(__dirname, '../')
 const PRODUCTION = process.argv.includes('production')
 const ANALYZE = process.argv.includes('--analyze')
 const devtool = PRODUCTION ? false : 'inline-source-map'
-const outputDir = resolve(__dirname, '../', 'dist/')
+const outputDir = resolve(root, 'dist/')
 const camelCase = str => str.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
 
 const bannerTemplate = ({ chunk }) => {
+  const name = chunk.name.substring(chunk.name.lastIndexOf('/') + 1, chunk.name.length)
   const banner = {
-    [`jQuery ${camelCase(chunk.name)}`]: pkg.homepage,
+    [`jQuery ${camelCase(name)}`]: pkg.homepage,
     Version: pkg.version,
     Author: pkg.author,
   }
@@ -37,13 +39,12 @@ const bannerTemplate = ({ chunk }) => {
 const webpackConfig = {
   context: outputDir,
   entry: {
-    'form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
-    'form-render': resolve(__dirname, '../', pkg.config.files.formRender.js),
-    demo: resolve(__dirname, '../src/demo/', 'js/demo.js'),
+    'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
+    'dist/form-render': resolve(__dirname, '../', pkg.config.files.formRender.js),
+    'demo/assets/js/demo': resolve(__dirname, '../src/demo/', 'js/demo.js'),
   },
   output: {
-    path: outputDir,
-    publicPath: '/dist',
+    path: root,
     filename: '[name].min.js',
   },
   module: {
@@ -109,13 +110,14 @@ const webpackConfig = {
       root: join(__dirname, '..'),
     }),
     new DefinePlugin({
-      FB_EN_US: JSON.stringify(langFiles['en-US'])
+      FB_EN_US: JSON.stringify(langFiles['en-US']),
     }),
     new HtmlWebpackPlugin({
       template: '../src/demo/index.html',
-      formBuilder: PRODUCTION ? 'assets/js/form-builder.min.js' : '../dist/form-builder.min.js',
-      formRender: PRODUCTION ? 'assets/js/form-render.min.js' : '../dist/form-render.min.js',
-      demo: PRODUCTION ? 'assets/js/demo.min.js' : '../dist/demo.min.js',
+      filename: '../demo/index.html',
+      formBuilder: PRODUCTION ? 'assets/js/form-builder.min.js' : 'dist/form-builder.min.js',
+      formRender: PRODUCTION ? 'assets/js/form-render.min.js' : 'dist/form-render.min.js',
+      demo: PRODUCTION ? 'assets/js/demo.min.js' : 'demo/assets/js/demo.min.js',
       alwaysWriteToDisk: true,
       inject: false,
       langFiles: Object.entries(langFiles).map(([key, val]) => ({
