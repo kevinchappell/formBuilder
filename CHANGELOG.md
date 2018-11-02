@@ -1,5 +1,67 @@
 # Changelog
 
+- v2.10.0 - Release 2.10.0 [#842](https://github.com/kevinchappell/formBuilder/pull/842)
+  ## Fixed:
+  - inline checkbox/radio
+  - bug with clear() as reported in #750 and #828, control type check to clear() so that method doesn't reset the value for checkboxes and radio buttons, which caused the userData getter to work incorrectly.
+  - #530, Modified helpers.js::xmlSave() to serialize field data so any XML in a field's attributes is properly escaped. (#804)
+  - doubleclick event handler, resolves #535
+  - new option name, resolves #687
+  - name attribute for inputs with multiple, resolves #736
+  - current formData not carried over to new formBuilder instance on language change, resolves #735
+  - attrString util, resolves #739
+  - Lock dev dependency versions, prevents breaking changes introduced by node_modules
+  - Ensure custom attributes are included in exported data resolves #824 resolves #773
+  - Other option should hide input value when deselected, resolves #808
+  - do not disable className or name attributes- resolves #819
+  - ensure html from label is correctly escaped, resolves #816
+  - inputSet bug
+  - label saving, add esc to close data modal, resolves #757
+  - attribute placeholder typo, fix label added when it should be removed, resolves #763
+  - bug where empty className is not applied
+  - label overflow problem, resolves #779
+  - duplicate custom controls
+
+
+  ## Added:
+  - Deploy script
+  - formbuilder-languages module
+  - disableSubtypes option
+  - `onremove` to typeUserEvents
+  - `disableHTMLLabels` option, resolves #747
+  - `replaceFields` option
+  - `layout` and `layoutTemplates` docs
+  - `onOpenFieldEdit` and `scrollToFieldOnAdd` options, `closeAllFieldEdit` action
+  - `toggleAllFieldEdit` action
+  - `setData` and render actions to formRender, resolves #770
+  - `onFieldAdd` option and `toggleFieldEdit` action, resolves #772
+  - Enable multiple select field for typeUserAttrs, resolves #776
+  - `allowStageSort` option, resolves #777
+
+
+  ## Removed:
+  - remove mi18n network dependency
+  - package-lock.json
+  - replace comma, resolves #740
+  - unused modules
+  - gulp
+
+
+  ## Improved:
+  - Documentation
+  - xmlSave performance and code style
+  - Demo, moved to src so can transpile, inline style, more api buttons for manual testing
+  - Switch to yarn
+  - Use existing formBuilder instance instead of creating a new one on setLang, fixes memory leak where reference was maintained to old instance
+  - typeUserAttrs docs, resolves #810
+  - code style and cleanup
+  - use spaces instead of tabs for data formatting
+  - use both instance methods and jQuery plugin calls ie. `fbInstance.setData(formData)` and `$('.build-wrap').formBuilder('setData', formData)`
+  - update mi18n, add support checkbox custom attributes
+  - reduce file churn
+  - improve stickyControls
+  - use onRender instead of setTimeout
+
 - v2.9.8 - hotfix(inputSets): control icon [#634](https://github.com/kevinchappell/formBuilder/pull/634)
 - v2.9.7 - Merge branch 'hotfix/2.9.7'
 - v2.9.6 - Removed unused style, add get-data class to data button [#605](https://github.com/kevinchappell/formBuilder/pull/605)

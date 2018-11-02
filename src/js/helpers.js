@@ -984,6 +984,7 @@ export default class Helpers {
     const d = this.d
     const data = this.data
     const id = formID || data.formID
+
     d.editorWrap = m('div', null, {
       id: `${data.formID}-form-wrap`,
       className: `form-wrap form-builder ${mobileClass()}`,
