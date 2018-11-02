@@ -248,7 +248,7 @@ const FormBuilder = function(opts, element) {
       d.stage.classList.remove('empty')
     } else if (!opts.prepend && !opts.append) {
       d.stage.classList.add('empty')
-      d.stage.dataset.content = i18n.getStarted
+      d.stage.dataset.content = mi18n.get('getStarted')
     }
 
     if (nonEditableFields()) {
@@ -267,8 +267,8 @@ const FormBuilder = function(opts, element) {
   const fieldOptions = function(fieldData) {
     const { type, values, name } = fieldData
     let fieldValues
-    const optionActions = [m('a', i18n.addOption, { className: 'add add-opt' })]
-    const fieldOptions = [m('label', i18n.selectOptions, { className: 'false-label' })]
+    const optionActions = [m('a', mi18n.get('addOption'), { className: 'add add-opt' })]
+    const fieldOptions = [m('label', mi18n.get('selectOptions'), { className: 'false-label' })]
     const isMultiple = fieldData.multiple || type === 'checkbox-group'
     const optionDataTemplate = label => {
       const optionData = {
@@ -288,7 +288,7 @@ const FormBuilder = function(opts, element) {
       if (['checkbox-group', 'checkbox'].includes(type)) {
         defaultOptCount = [1]
       }
-      fieldValues = defaultOptCount.map(index => optionDataTemplate(`${i18n.option} ${index}`))
+      fieldValues = defaultOptCount.map(index => optionDataTemplate(`${mi18n.get('optionCount', index)}`))
 
       const firstOption = fieldValues[0]
       if (firstOption.hasOwnProperty('selected') && type !== 'radio-group') {
@@ -374,10 +374,10 @@ const FormBuilder = function(opts, element) {
     const fieldAttrs = defaultFieldAttrs(type)
     const advFieldMap = {
       required: () => requiredField(values),
-      toggle: () => boolAttribute('toggle', values, { first: i18n.toggle }),
+      toggle: () => boolAttribute('toggle', values, { first: mi18n.get('toggle') }),
       inline: () => {
         const labels = {
-          first: i18n.inline,
+          first: mi18n.get('inline'),
           second: mi18n.get('inlineDesc', type.replace('-group', '')),
         }
 
@@ -417,8 +417,8 @@ const FormBuilder = function(opts, element) {
         }
         availableRoles.push('</div>')
         const accessLabels = {
-          first: i18n.roles,
-          second: i18n.limitRole,
+          first: mi18n.get('roles'),
+          second: mi18n.get('limitRole'),
           content: availableRoles.join(''),
         }
 
@@ -426,14 +426,14 @@ const FormBuilder = function(opts, element) {
       },
       other: () =>
         boolAttribute('other', values, {
-          first: i18n.enableOther,
-          second: i18n.enableOtherMsg,
+          first: mi18n.get('enableOther'),
+          second: mi18n.get('enableOtherMsg'),
         }),
       options: () => fieldOptions(values),
       requireValidOption: () =>
         boolAttribute('requireValidOption', values, {
           first: ' ',
-          second: i18n.requireValidOption,
+          second: mi18n.get('requireValidOption'),
         }),
       multiple: () => {
         const typeLabels = {
@@ -442,12 +442,12 @@ const FormBuilder = function(opts, element) {
             second: 'set multiple attribute',
           },
           file: {
-            first: i18n.multipleFiles,
-            second: i18n.allowMultipleFiles,
+            first: mi18n.get('multipleFiles'),
+            second: mi18n.get('allowMultipleFiles'),
           },
           select: {
             first: ' ',
-            second: i18n.selectionsMessage,
+            second: mi18n.get('selectionsMessage'),
           },
         }
         return boolAttribute('multiple', values, typeLabels[type] || typeLabels.default)
@@ -530,7 +530,7 @@ const FormBuilder = function(opts, element) {
     for (const attribute in typeUserAttr) {
       if (typeUserAttr.hasOwnProperty(attribute)) {
         const attrValType = userAttrType(attribute, typeUserAttr[attribute])
-        const orig = i18n[attribute]
+        const orig = mi18n.get(attribute)
         const tUA = typeUserAttr[attribute]
         const origValue = tUA.value || ''
         tUA.value = values[attribute] || tUA.value || ''
@@ -701,8 +701,8 @@ const FormBuilder = function(opts, element) {
   const numberAttribute = (attribute, values) => {
     const { class: classname, className, ...attrs } = values
     const attrVal = attrs[attribute]
-    const attrLabel = i18n[attribute] || attribute
-    const placeholder = i18n[`placeholder.${attribute}`]
+    const attrLabel = mi18n.get(attribute) || attribute
+    const placeholder = mi18n.get(`placeholder.${attribute}`)
     const inputConfig = {
       type: 'number',
       value: attrVal,
@@ -748,7 +748,7 @@ const FormBuilder = function(opts, element) {
       name: attribute,
       className: `fld-${attribute} form-control`,
     }
-    const labelText = i18n[attribute] || capitalize(attribute) || ''
+    const labelText = mi18n.get(attribute) || capitalize(attribute) || ''
     const label = m('label', labelText, { for: selectAttrs.id })
     const select = m('select', selectOptions, selectAttrs)
     const inputWrap = m('div', select, { className: 'input-wrap' })
@@ -770,17 +770,17 @@ const FormBuilder = function(opts, element) {
     const textArea = ['paragraph']
 
     let attrVal = values[attribute] || ''
-    let attrLabel = i18n[attribute]
+    let attrLabel = mi18n.get(attribute)
 
     if (attribute === 'label') {
       if (textArea.includes(values.type)) {
-        attrLabel = i18n.content
+        attrLabel = mi18n.get('content')
       } else {
         attrVal = parsedHtml(attrVal)
       }
     }
 
-    const placeholder = i18n[`placeholders.${attribute}`] || ''
+    const placeholder = mi18n.get(`placeholders.${attribute}`) || ''
     let attributefield = ''
     const noMakeAttr = []
 
@@ -831,7 +831,7 @@ const FormBuilder = function(opts, element) {
     }
     if (!noMake.some(elem => elem === true)) {
       requireField = boolAttribute('required', fieldData, {
-        first: i18n.required,
+        first: mi18n.get('required'),
       })
     }
 
@@ -841,26 +841,26 @@ const FormBuilder = function(opts, element) {
   // Append the new field to the editor
   const appendNewField = function(values, isNew = true) {
     const type = values.type || 'text'
-    const label = values.label || (isNew ? i18n[type] || i18n.label : '')
+    const label = values.label || (isNew ? i18n.get(type) || mi18n.get('label') : '')
     const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
     let fieldButtons = [
       m('a', null, {
         type: 'remove',
         id: 'del_' + data.lastID,
         className: 'del-button btn icon-cancel delete-confirm',
-        title: i18n.removeMessage,
+        title: mi18n.get('removeMessage'),
       }),
       m('a', null, {
         type: 'edit',
         id: data.lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
-        title: i18n.hide,
+        title: mi18n.get('hide'),
       }),
       m('a', null, {
         type: 'copy',
         id: data.lastID + '-copy',
         className: 'copy-button btn icon-copy',
-        title: i18n.copyButtonTooltip,
+        title: mi18n.get('copyButtonTooltip'),
       }),
     ]
 
@@ -892,7 +892,7 @@ const FormBuilder = function(opts, element) {
     liContents.push(m('span', '?', descAttrs))
 
     liContents.push(m('div', '', { className: 'prev-holder' }))
-    const formElements = m('div', [advFields(values), m('a', i18n.close, { className: 'close-field' })], {
+    const formElements = m('div', [advFields(values), m('a', mi18n.get('close'), { className: 'close-field' })], {
       className: 'form-elements',
     })
 
@@ -966,7 +966,7 @@ const FormBuilder = function(opts, element) {
           name: name + '-option',
         }
 
-        attrs.placeholder = i18n[`placeholder.${prop}`] || ''
+        attrs.placeholder = mi18n.get(`placeholder.${prop}`) || ''
 
         if (prop === 'selected' && optionData.selected === true) {
           attrs.checked = optionData.selected
@@ -978,7 +978,7 @@ const FormBuilder = function(opts, element) {
 
     const removeAttrs = {
       className: 'remove btn icon-cancel',
-      title: i18n.removeMessage,
+      title: mi18n.get('removeMessage'),
     }
     optionInputs.push(m('a', null, removeAttrs))
 
@@ -1046,7 +1046,7 @@ const FormBuilder = function(opts, element) {
     const options = field.querySelector('.sortable-options')
     const optionsCount = options.childNodes.length
     if (optionsCount <= 2 && !type.includes('checkbox')) {
-      opts.notify.error('Error: ' + i18n.minOptionMessage)
+      opts.notify.error('Error: ' + mi18n.get('minOptionMessage'))
     } else {
       $option.slideUp('250', () => {
         $option.remove()
@@ -1191,7 +1191,7 @@ const FormBuilder = function(opts, element) {
     if (e.target.value === '') {
       $(e.target)
         .addClass('field-error')
-        .attr('placeholder', i18n.cannotBeEmpty)
+        .attr('placeholder', mi18n.get('cannotBeEmpty'))
     } else {
       $(e.target).removeClass('field-error')
     }
@@ -1239,8 +1239,8 @@ const FormBuilder = function(opts, element) {
 
     // Check if user is sure they want to remove the field
     if (opts.fieldRemoveWarn) {
-      const warnH3 = m('h3', i18n.warning)
-      const warnMessage = m('p', i18n.fieldRemoveWarning)
+      const warnH3 = m('h3', mi18n.get('warning'))
+      const warnMessage = m('p', mi18n.get('fieldRemoveWarning'))
       h.confirm([warnH3, warnMessage], () => h.removeField(deleteID), coords)
       $field.addClass('deleting')
     } else {
