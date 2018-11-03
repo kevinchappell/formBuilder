@@ -1,5 +1,6 @@
 # Changelog
 
+- v2.10.3 - Bugfix fbControlsLoaded [#853](https://github.com/kevinchappell/formBuilder/pull/853)
 - v2.10.2 - Bugfix i18n lookups [#852](https://github.com/kevinchappell/formBuilder/pull/852)
 - v2.10.1 - Bugfix typeUserAttrs [#851](https://github.com/kevinchappell/formBuilder/pull/851)
 - v2.10.0 - Release 2.10.0 [#842](https://github.com/kevinchappell/formBuilder/pull/842)
