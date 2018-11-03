@@ -10,7 +10,7 @@ The UserData option aims to enable formRender to both capture the form data befo
 var formRenderInstance = $('#render-container').formRender(formRenderOptions);
 </code></pre>
 
-1. After the user has entered data into the rendered form, their data is accessible from `formRenderInstance.userData` or `$('#render-container').formRender('userData)`
+1. After the user has entered data into the rendered form, their data is accessible from `formRenderInstance.userData` or `$('#render-container').formRender('userData')`
 <pre><code class="js">console.log(formRenderInstance.userData);
 // "[{"type":"text","label":"Full Name","name":"text-1526099104236","subtype":"text","userData":["John Smith"]}]"
 </code></pre>
@@ -44,5 +44,9 @@ A common use case for userData would be to create a form, save the input data fr
   var frInstance = $('#renderMe').formRender(fbOptions);
 </code>
 </pre>
+
+## Demo
+<p data-height="300" data-theme-id="22927" data-slug-hash="QGjqbV" data-default-tab="js,result" data-user="kevinchappell" data-pen-title="formRender: userData" class="codepen">See the Pen</p>
+
 
 
