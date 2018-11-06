@@ -43,7 +43,7 @@ class FormRender {
         warning: console.warn,
       },
     }
-    this.options = $.extend(true, defaults, options)
+    this.options = jQuery.extend(true, defaults, options)
     this.instanceContainers = []
 
     if (!mi18n.current) {
@@ -333,7 +333,7 @@ class FormRender {
     html: () => formRenderForms.map(index => formRenderForms[index]).html(),
   }
 
-  $.fn.formRender = function(methodOrOptions = {}, ...args) {
+  jQuery.fn.formRender = function(methodOrOptions = {}, ...args) {
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
@@ -349,7 +349,7 @@ class FormRender {
    * @param {Object} options - optional subset of formRender options - doesn't support container or other form rendering based options.
    * @return {DOMElement} the rendered field
    */
-  $.fn.controlRender = function(data, options = {}) {
+  jQuery.fn.controlRender = function(data, options = {}) {
     options.formData = data
     options.dataType = typeof data === 'string' ? 'json' : 'xml'
     const formRender = new FormRender(options)

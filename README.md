@@ -1,4 +1,4 @@
-formBuilder v2.10.3
+formBuilder
 ===========
 
 [![Join the chat at https://gitter.im/kevinchappell/formBuilder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kevinchappell/formBuilder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -16,7 +16,7 @@ jQuery($ => {
 ## [Demo](https://formbuilder.online/)
 [![form-builder](https://cloud.githubusercontent.com/assets/1457540/16901016/d415f75c-4c2e-11e6-8687-a84c9822162d.png)](https://formbuilder.online/)
 
-## [Documentation](http://formbuilder.readthedocs.io/en/latest)
+## [Documentation](https://formbuilder.online/docs)
 
 ## [Angular 2/4 Version](https://github.com/KhaledSMQ/Ng2FormBuilder)
 

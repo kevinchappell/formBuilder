@@ -47,7 +47,7 @@ export default class layout {
 
     // merge in any custom templates
     if (templates) {
-      this.templates = $.extend(this.templates, templates)
+      this.templates = jQuery.extend(this.templates, templates)
     }
     this.configure()
   }
@@ -81,7 +81,7 @@ export default class layout {
       }
     }
     data.id = data.name
-    this.data = $.extend({}, data)
+    this.data = jQuery.extend({}, data)
 
     // build the control
     const control = new renderControl(data, this.preview)

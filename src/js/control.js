@@ -14,10 +14,10 @@ export default class control {
    * @param {Boolean} preview isPreview
    */
   constructor(config, preview) {
-    this.rawConfig = $.extend({}, config)
+    this.rawConfig = jQuery.extend({}, config)
 
     // make a copy of config so we don't change the object reference
-    config = $.extend({}, config)
+    config = jQuery.extend({}, config)
     this.preview = preview
     delete config.isPreview
     if (this.preview) {
@@ -50,7 +50,7 @@ export default class control {
       control.controlConfig = {}
     }
     const classId = this.subtype ? this.type + '.' + this.subtype : this.type
-    this.classConfig = $.extend({}, control.controlConfig[classId] || {})
+    this.classConfig = jQuery.extend({}, control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
     if (this.subtype) {
@@ -265,7 +265,7 @@ export default class control {
    */
   static icon(type) {
     // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
-    // http://formbuilder.readthedocs.io/en/latest/formBuilder/options/inputSets/
+    // https://formbuilder.online/docs/formBuilder/options/inputSets/
     const def = this.definition
     if (def && typeof def.icon === 'object') {
       return def.icon[type]

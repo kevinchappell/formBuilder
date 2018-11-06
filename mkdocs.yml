@@ -1,11 +1,18 @@
 site_name: formBuilder
 site_url: https://formbuilder.online
-repo_url: https://github.com/kevinchappell/formBuilder.git
+site_dir: site/src/docs
+repo_url: https://github.com/kevinchappell/formBuilder
 repo_name: 'GitHub'
 site_description: A jQuery plugin for drag and drop form creation
-site_favicon: favicon.ico
-theme: readthedocs
-pages:
+theme:
+  name: readthedocs
+  custom_dir: docs/theme/
+  highlightjs: true
+  hljs_languages:
+    - bash
+    - javascript
+google_analytics: ['UA-4784386-21', 'formbuilder.online/docs']
+nav:
 - Introduction: index.md
 - Getting Started: getting-started.md
 - Development:
@@ -15,12 +22,14 @@ pages:
   - Control Plugins: formBuilder/control-plugins.md
   - Icon Font: editing-fonts.md
 - formBuilder Demos:
+  - AngularJS: formBuilder/demos/angular.md
   - Basic: formBuilder/demos/basic.md
+  - Custom Elements: formBuilder/options/templates.md
+  - Data: formBuilder/demos/data.md
+  - React: formBuilder/demos/react.md
+  - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
   - Toggle formBuilder: formBuilder/demos/toggle-builder.md
   - Translating: formBuilder/demos/translation.md
-  - Tabbed/Multi-paged Forms: formBuilder/demos/tabs.md
-  - Data: formBuilder/demos/data.md
-  - Custom Elements: formBuilder/options/templates.md
 - formBuilder Actions:
   - addField: formBuilder/actions/addField.md
   - clearFields: formBuilder/actions/clearFields.md
@@ -54,6 +63,8 @@ pages:
   - formData: formBuilder/options/formData.md
   - i18n: formBuilder/options/i18n.md
   - inputSets: formBuilder/options/inputSets.md
+  - layout: formBuilder/options/layout.md
+  - layoutTemplates: formBuilder/options/layoutTemplates.md
   - notify: formBuilder/options/notify.md
   - onAddField: formBuilder/options/onAddField.md
   - onClearAll: formBuilder/options/onClearAll.md
@@ -75,20 +86,21 @@ pages:
 - formRender Demos:
   - Basic: formRender/demos/basic.md
   - Preview popup: formRender/demos/preview-popup.md
-- formRender Options:
-  - Overview: formRender/options.md
-  - container: formRender/options/container.md
-  - formData: formRender/options/formData.md
-  - render: formRender/options/render.md
 - formRender Actions:
   - clear: formRender/actions/clear.md
   - html: formRender/actions/html.md
   - render: formRender/actions/render.md
   - setData: formRender/actions/setData.md
   - userData: formRender/actions/userData.md
+- formRender Options:
+  - Overview: formRender/options.md
+  - container: formRender/options/container.md
+  - formData: formRender/options/formData.md
+  - layout: formRender/options/layout.md
+  - layoutTemplates: formRender/options/layoutTemplates.md
+  - render: formRender/options/render.md
 - Contributing: contributing.md
-- About:
-  - License: license.md
+- License: license.md
 extra_css:
   - 'css/site.css'
   - '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/monokai-sublime.min.css'

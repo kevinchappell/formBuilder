@@ -9,7 +9,7 @@ export default class controlCustom extends control {
 
   /**
    * Override the register method to allow passing 'templates' configuration data
-   * @param {Object} templates an object/hash of template data as defined http://formbuilder.readthedocs.io/en/latest/formBuilder/options/templates/
+   * @param {Object} templates an object/hash of template data as defined https://formbuilder.online/docs/formBuilder/options/templates/
    * @param {Array} fields
    */
   static register(templates = {}, fields = []) {
@@ -61,7 +61,7 @@ export default class controlCustom extends control {
         // generate a random key & map the settings against it
         lookup = field.datatype ? field.datatype : `${type}-${Math.floor((Math.random() * 9000) + 1000)}`;
 
-        controlCustom.customRegister[lookup] = $.extend(field, {
+        controlCustom.customRegister[lookup] = jQuery.extend(field, {
           type: type,
           class: controlClass
         });
