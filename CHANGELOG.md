@@ -1,3 +1,11 @@
+## [2.10.7](https://github.com/kevinchappell/formBuilder/compare/v2.10.6...v2.10.7) (2018-11-06)
+
+
+### Bug Fixes
+
+* **cd:** update travis config and deploy script ([ac03283](https://github.com/kevinchappell/formBuilder/commit/ac03283))
+* **formData:** formData getter not working ([235b77e](https://github.com/kevinchappell/formBuilder/commit/235b77e))
+
 ## [2.10.6](https://github.com/kevinchappell/formBuilder/compare/v2.10.5...v2.10.6) (2018-11-06)
 
 
