@@ -13,8 +13,6 @@ cache:
   - node_modules
 notifications:
   email: false
-git:
-  submodules: false
 before_install:
   - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
   - git config credential.helper "store --file=.git/credentials"
