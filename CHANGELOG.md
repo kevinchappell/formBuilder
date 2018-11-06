@@ -1,3 +1,10 @@
+## [2.10.9](https://github.com/kevinchappell/formBuilder/compare/v2.10.8...v2.10.9) (2018-11-06)
+
+
+### Bug Fixes
+
+* **docs:** use highlightjs 9.12.0 ([2c61944](https://github.com/kevinchappell/formBuilder/commit/2c61944))
+
 ## [2.10.8](https://github.com/kevinchappell/formBuilder/compare/v2.10.7...v2.10.8) (2018-11-06)
 
 
