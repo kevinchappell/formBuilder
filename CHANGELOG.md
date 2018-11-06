@@ -1,3 +1,11 @@
+## [2.10.6](https://github.com/kevinchappell/formBuilder/compare/v2.10.5...v2.10.6) (2018-11-06)
+
+
+### Bug Fixes
+
+* **cd:** update deploy script to not require babel-node ([f161be5](https://github.com/kevinchappell/formBuilder/commit/f161be5))
+* **cd:** update readme, have deploy script return, run deploy script directly ([1916870](https://github.com/kevinchappell/formBuilder/commit/1916870))
+
 ## [2.10.5](https://github.com/kevinchappell/formBuilder/compare/v2.10.4...v2.10.5) (2018-11-06)
 
 
