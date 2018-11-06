@@ -1,3 +1,10 @@
+## [2.10.5](https://github.com/kevinchappell/formBuilder/compare/v2.10.4...v2.10.5) (2018-11-06)
+
+
+### Bug Fixes
+
+* **cd:** semantic-release plugins, site deploy commands ([57325bc](https://github.com/kevinchappell/formBuilder/commit/57325bc))
+
 ## [2.10.4](https://github.com/kevinchappell/formBuilder/compare/v2.10.3...v2.10.4) (2018-11-06)
 
 
