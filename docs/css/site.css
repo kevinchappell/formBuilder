@@ -1,16 +1,17 @@
 .wy-grid-for-nav {
   position:relative;
-  background-attachment: fixed;
-  background-color: #f2f2f2;
-  background-image: url('../img/noise.png');
+}
+
+.wy-body-for-nav {
+  background: #f2f2f2 url('https://formbuilder.online/assets/img/noise.png') repeat fixed;
 }
 
 .wy-nav-content {
-  max-width: 1010px;
+  max-width: inherit;
 }
 
 .wy-side-nav-search {
-  background-image: url('../img/logo-bg.svg'), linear-gradient(to bottom, #000, #92278F);
+  background-image: url('https://formbuilder.online/assets/img/logo-bg.svg'), linear-gradient(to bottom, #000, #92278F);
   background-size: cover, 100% 100%;
   background-position: 50% 0, 50% 0%;
 }
@@ -30,11 +31,19 @@ p {
 
 .wy-menu-vertical li.current > a {
   color: #000;
-  background: #f2f2f2 url('../img/noise.png') repeat 50% 50%;
+  background: #f2f2f2 url('https://formbuilder.online/assets/img/noise.png') repeat 50% 50%;
 }
 
 .wy-menu-vertical ul {
   padding-left: 0;
+}
+
+.wy-menu-vertical a {
+  font-weight: normal;
+}
+
+.wy-menu-vertical p.caption {
+  margin-bottom: 0;
 }
 
 .wy-side-nav-search > a {
@@ -96,6 +105,24 @@ code.hljs:hover .btn {
   transform: translate(0, 100%);
   animation: 2500ms toast ease-in-out forwards;
   z-index: 120;
+}
+
+
+.home-link img {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  width: 32px;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+@media screen and (min-width: 1400px) {
+  .wy-nav-content {
+    margin: 0;
+    background: transparent;
+    max-width: inherit;
+  }
 }
 
 @keyframes toast {

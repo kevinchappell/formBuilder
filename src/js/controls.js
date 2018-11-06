@@ -51,7 +51,7 @@ export default class Controls {
     this.registeredControls = registeredControls
     const customFields = controlCustom.getRegistered()
     if (customFields) {
-      $.merge(registeredControls, customFields)
+      jQuery.merge(registeredControls, customFields)
     }
 
     // if we support rearranging control order, add classes to support this

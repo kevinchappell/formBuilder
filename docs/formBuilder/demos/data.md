@@ -1,8 +1,14 @@
 # Getting Data
 
+Get by Instance
+```javascript
+const formBuilder = $fbEditor.formBuilder();
+const formData = formBuilder.formData; // getter
 ```
-var formBuilder = $fbEditor.formBuilder();
-var formData = formBuilder.formData; //getter
+or
+```javascript
+const dataType = 'json' // optional 'js'|'json'|'xml', defaults 'js'
+$fbEditor.formBuilder('getData', dataType)
 ```
 
 ### Get formData using actions:
@@ -10,7 +16,3 @@ var formData = formBuilder.formData; //getter
 
 ### Get formData from `formData`
 <p data-height="580" data-theme-id="22927" data-slug-hash="bpRowv" data-default-tab="js,result" data-user="kevinchappell" data-embed-version="2" class="codepen"></p>
-
-### Where's my HTML
-There are some cases where you would want the HTML instead of a rendered form.
-<p data-height="300" data-theme-id="22927" data-slug-hash="wWvyaM" data-default-tab="result" data-user="kevinchappell" data-embed-version="2" class="codepen"></p>

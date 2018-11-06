@@ -28,7 +28,6 @@ const copyBtnImg = () => {
 
 const copyBtn = msg => {
   const btn = document.createElement('button')
-  btn.src = '//sidecar.gitter.im/dist/sidecar.v1.js'
   btn.className = 'btn'
   btn.appendChild(copyBtnImg())
   const clipboard = new window.ClipboardJS(btn, {

@@ -381,19 +381,19 @@ export const getScripts = (scriptScr, path) => {
   }
 
   if (!isCached(scriptScr)) {
-    _arr = $.map(scriptScr, src => {
+    _arr = jQuery.map(scriptScr, src => {
       const options = {
         dataType: 'script',
         cache: true,
         url: (path || '') + src,
       }
-      return $.ajax(options).done(() => window.fbLoaded.js.push(src))
+      return jQuery.ajax(options).done(() => window.fbLoaded.js.push(src))
     })
   }
 
-  _arr.push($.Deferred(deferred => $(deferred.resolve)))
+  _arr.push(jQuery.Deferred(deferred => $(deferred.resolve)))
 
-  return $.when(..._arr)
+  return jQuery.when(..._arr)
 }
 
 /**
