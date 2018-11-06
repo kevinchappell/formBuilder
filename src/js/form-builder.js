@@ -1399,7 +1399,7 @@ const FormBuilder = function(opts, element) {
           toggleFieldEdit: null,
         },
         get formData() {
-          return methods.instance.getData && methods.instance.getData('json')
+          return methods.instance.actions.getData && methods.instance.actions.getData('json')
         },
         promise: new Promise(function(resolve, reject) {
           mi18n
