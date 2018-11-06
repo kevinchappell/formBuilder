@@ -5,8 +5,8 @@ stages:
 - test
 - deploy
 language: node_js
-node_js: "10"
-python: "3.4"
+node_js: '10'
+python: '3.4'
 cache:
   directories:
   - "~/.npm"
@@ -26,7 +26,7 @@ jobs:
     - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
     - git config credential.helper "store --file=.git/credentials"
     - git config --global user.email "bot@formbuilder.online"
-    - git config --global user.name "🤖"
+    - "git config --global user.name \"\U0001F916\""
     - sudo apt-get update
     - sudo apt-get -y install python3-pip python-dev
     - sudo pip3 install --upgrade setuptools
@@ -44,5 +44,5 @@ jobs:
     - yarn deploy
 env:
   global:
-  - secure: mKHa/u/PeXUUroLwtaUkXOj3aaokU/2Nmp/esViUwz9VQHzvyEKKmpbuUQ2Vz4+TXXL5WtXIAD2to3+LrLAb784MD9GGHXWmJp1CvtGj0I4FbfbtvtSVMKezXRanwEYQCW/ozIvjB3X4ha780tb3yBdydwHWN1wriPaXUpP/D4FJT/GALEhk6OkbQXhpJzm++TfXAaTzWrfLNAzmmDTCTMFA6YeFVzf90TGYUWW+vIYjMItvJbIdvuoPNMKfUH/6m1AaAMU63lgJSYLhIFxHvTDj1valIsD5/lxhdjeRIjdc96j45tkxIvZOim6tXP//se8dyFWWSDxP5DErpQuUb7Lgzmj8bs+BPao3nm+6UBJ+SjD+4WhIDElBMwRBPqzA4leNSvt4p1yKUBGyFYMYFd/Y7OaI/LsHYPfMagJk+gUGvBGmTJy1bGXjPQ2Eejl8HaLVTDnVcjVsWxkB8why+GKKEuqCiRFgiirxSRfXF3LACzpBasfH8SdQqaadWcSkz2fMOkANyhFAhDQjlLU0Y9K8YCGpta2T4qrHf8QiR2UhEUaafuoWzGKbZBoQjVk05UJoKMFt+kl8ie39y4PUCMw+3SBcBbeqYShMF+l5Tcd93UQpa72fzSgz61J6wBYikO4Xe/ecZ4U8VMWgIyjZziFjjzOV367AmSnkUjcGqMw=
-  - secure: nKf6rLgTxC5KU69ZRAdiS/yQaHwA1PvI/ZSLu4/IswtXBLMbx65/HNJjGt1n+ycCkcWIwU9Ncp1uBIQbkFUranvYv0LjmIIZ36KfRQI27CZaLWGDZNqIcKSPNTr08UZEQbUzxeglUiJQim333ohYhVeXy2rnsJg0uTsaCPl/c58Yy3dtt4Z8KlPLGzKpUsn75vEED7/Wz6waCKasCn8yW3/30KImQ3a3KT5Lj5VgIavcrgQIao6KgMykNq/ECLRyliAtSF7AZqGiXvzIrmIJApySGEVwy6B+2n/Sc9ZVp2NC5oIBct9CggAvgzVlP5IdGzKQbRWO2uKFy4TGUsY2FgvfWODOWsG0BPp8TI31atlQcfzXEicQFqokmX/ZMj4nV1jVOD/R1Spz+03DUsLVTHM0y61ZeWTo3qIcohJBpqoaprXiHj1dQYOwubCM0fCQIZKQ36x5xk1RYARJBei6w0h3/3iASvdmF29Maq8906gMxEfj9B8N5xiV9kHM9KMUETVX7rdYABZ2jWQtL93AXdU4LqKKXFTCanBy8dJROtl254T4H8JX5RvGBxMylxwpDr9/mP+SCeNOJ8Pft6Si0RQiSSWCv8tbgGebA++p2TpJlVjaJkDqmxv9UkxPS0cdpi8YWWxzS/5axkTTioAlkyOUNhECJiMq9bL+EwMcN5o=
+  - secure: Fzq6BMwpDtUVH6ONSD5cg3gxDl/6bL9d4xoCnb1Ck3jhLen7GVSBCVs8dTPP0J1kMUbcPfywdG5CrdTMUXtuT3i7uVEqDxemkWYLyKwtvtqWPSFFTS9WvLnoxPvpTnDDoXvU9DhZoFP5U6nEELZIcqJceGwpDReROvJM1LKug72su7LHG40FWPj3w1X5XvMMKZlp6ClFwHZYDs7ybDcWlz6s2TsdunW0JW15+KMEDVuPTKw5VVk6ytnC3j3XXNus8ARRH/vG7DWCOtOai2ckYHchqz9c37oms5xA8nT4+J4Se/sgvkZo/jfa5tJSOljppUxMwyyNdkEu3QIEVNPgBtQf34KhWFN+FivuZHK4qG12lyQvRcJYlBJvUeSp29KABZv8oESIso5/HD8cIOEVCLUXjhOkcLF8S6cSRag0+/PT0u7Aj/L0ONKNsYhikOM773ilmbt8Vb7tjSOi7aoLJBmUlNVJcT4wJwJFjoe7bUppeqj1pC/+2+aX/IJDX6LfX6kpSxKGUH/DfJpEXq0xjCfsa8aap2gXfbn9Exsynx6KlIyAMRkmTU7S7iMiBts1fKMZvks3wA8rR4b44EZO+qgP5EbTGhCsvLYl3f5TiRsJf+w9LQrtP4Vl8mOU0XFgfrKArGMp6KDp1x1cyF/X4LAO9ySSDu9IEUj7Ft3WyOs=
+  - secure: At9Vnh2CLHl2SaVAz02N+q9HJ7cfhTpwnyFkeBdvq5ztg7frb78BOK4dyheWbGW7ISbdEhtvZU/UA1rwS37D8cbcTlzjoKT28G+KTEU1fsAM6agZAnoAZj8or0SVH5KEQy/vdx27gp5NevJqiwsVtTfown71VHe+8IFILnGo3aqmY+SbQJd3f2wPbNxGwt2C3n55iqWDQFNcYMD/IJcy2/Sooru3iKu8KQnWD3ug4anpz8cWdnjwDzwhsFbXYZLOoCXTotNfJdRI8ZuoKa8VVbHNMGv9hwcUR5ncI5otGCQ3w/gO9FFRJ083A0Ca1FhlZNuahPj8K9qAuQVmeYYLbNngyj4kgbDMWOubFN+6wp5h0L+7B6Cph3pcbLOimJfHKjksekofTBinGivzZFxSMn9x1OsSyHuljvomMRpzthuRNzB4/6G4q5rEEImWChCFwxoSPdLec7lbDPnba4MF5OC6F1Lvgesz4CSlR1RXlm7fYQ3NvWsMMuizBb3nvIhFlYe+vJw/EOpruB5QUiSV1TWpfW/kzxk8at04UXzpDsCm3r5847dI7LMA/3Fk1YddflYZFQxeAWuEH5ZoVdPaVMj8u2XxFMkB+56mF95o6Ec8zWeB7RAxbRf14isU0vY2e/IX1BqipVbo0erPQYetp/KQNR9TOmrqunOMvYQzg/A=
