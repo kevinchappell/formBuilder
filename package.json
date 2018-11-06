@@ -7,6 +7,9 @@
     "url": "http://github.com/kevinchappell/formBuilder",
     "type": "git"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "author": "Kevin Chappell <kevin.b.chappell@gmail.com>",
   "contributors": [],
   "bugs": "https://github.com/kevinchappell/formBuilder/issues",
@@ -77,17 +80,19 @@
     ]
   },
   "scripts": {
+    "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
+    "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config",
+    "build:vendor": "node tools/run build-vendor",
+    "build": "webpack --mode production -p --progress --config tools/webpack.config && yarn build:plugins && yarn copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md",
+    "deploy": "yarn build && node tools/run deploy",
     "docs": "mkdocs build",
-    "test": "yarn build",
     "font": "node tools/run icon-font",
     "lint": "eslint ./src --ext .js || true",
-    "deploy": "yarn build && node tools/run deploy",
+    "semantic-release": "semantic-release",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
-    "build": "webpack --mode production -p --progress --config tools/webpack.config && yarn build:plugins && yarn copy",
-    "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
-    "build:vendor": "node tools/run build-vendor",
-    "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config"
+    "test": "yarn build",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "dependencies": {
     "jquery": "3.3.1",
@@ -130,8 +135,10 @@
     "replace-in-file": "3.4.0",
     "request": "2.87.0",
     "sass-loader": "7.0.3",
+    "semantic-release": "15.10.7",
     "semver": "5.5.0",
     "style-loader": "0.21.0",
+    "travis-deploy-once": "5.0.9",
     "unzip": "0.1.11",
     "webpack": "4.12.0",
     "webpack-bundle-analyzer": "2.13.1",
