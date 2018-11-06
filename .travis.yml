@@ -29,7 +29,7 @@ jobs:
     - git config --global user.name "🤖"
     - sudo apt-get update
     - sudo apt-get -y install python3-pip python-dev
-    - sudo pip3 install --user --upgrade pip3 setuptools
+    - sudo pip3 install --upgrade setuptools
     - sudo pip3 install mkdocs
     - python3 -V
     - pip3 -V
