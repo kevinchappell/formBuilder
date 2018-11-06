@@ -27,7 +27,7 @@ jobs:
     - git config credential.helper "store --file=.git/credentials"
     - git config --global user.email "bot@formbuilder.online"
     - git config --global user.name "🤖"
-    - sudo apt-get updates
+    - sudo apt-get update
     - sudo apt-get -y install python3-pip
     - sudo pip3 install -U setuptools
     - sudo pip3 install mkdocs
