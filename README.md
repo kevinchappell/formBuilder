@@ -6,7 +6,7 @@ A jQuery plugin for drag and drop form creation, formBuilder has many options an
 **Example**
 ```javascript
 jQuery($ => {
-  $('fb-editor').formBuilder();
+  $('#fb-editor').formBuilder();
 })
 ```
 
