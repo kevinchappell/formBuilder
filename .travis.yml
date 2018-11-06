@@ -44,6 +44,8 @@ jobs:
       skip_cleanup: true
     after_deploy:
       - yarn deploy
+      - ls -l
+      - yarn deploy:site
 env:
   global:
   - secure: Fzq6BMwpDtUVH6ONSD5cg3gxDl/6bL9d4xoCnb1Ck3jhLen7GVSBCVs8dTPP0J1kMUbcPfywdG5CrdTMUXtuT3i7uVEqDxemkWYLyKwtvtqWPSFFTS9WvLnoxPvpTnDDoXvU9DhZoFP5U6nEELZIcqJceGwpDReROvJM1LKug72su7LHG40FWPj3w1X5XvMMKZlp6ClFwHZYDs7ybDcWlz6s2TsdunW0JW15+KMEDVuPTKw5VVk6ytnC3j3XXNus8ARRH/vG7DWCOtOai2ckYHchqz9c37oms5xA8nT4+J4Se/sgvkZo/jfa5tJSOljppUxMwyyNdkEu3QIEVNPgBtQf34KhWFN+FivuZHK4qG12lyQvRcJYlBJvUeSp29KABZv8oESIso5/HD8cIOEVCLUXjhOkcLF8S6cSRag0+/PT0u7Aj/L0ONKNsYhikOM773ilmbt8Vb7tjSOi7aoLJBmUlNVJcT4wJwJFjoe7bUppeqj1pC/+2+aX/IJDX6LfX6kpSxKGUH/DfJpEXq0xjCfsa8aap2gXfbn9Exsynx6KlIyAMRkmTU7S7iMiBts1fKMZvks3wA8rR4b44EZO+qgP5EbTGhCsvLYl3f5TiRsJf+w9LQrtP4Vl8mOU0XFgfrKArGMp6KDp1x1cyF/X4LAO9ySSDu9IEUj7Ft3WyOs=

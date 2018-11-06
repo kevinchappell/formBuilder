@@ -86,6 +86,7 @@
     "build": "webpack --mode production -p --progress --config tools/webpack.config && yarn build:plugins && yarn copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md",
     "deploy": "yarn build && node tools/deploy.js",
+    "deploy:site": "yarn docs && cd site/ && yarn deploy && cd ../",
     "docs": "mkdocs build",
     "font": "node tools/run icon-font",
     "lint": "eslint ./src --ext .js || true",
