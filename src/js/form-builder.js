@@ -63,7 +63,7 @@ const FormBuilder = function(opts, element) {
     beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
     start: (evt, ui) => h.startMoving.call(h, evt, ui),
     stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
-    cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button'].join(', '),
+    cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(', '),
     placeholder: 'frmb-placeholder',
   })
 
@@ -1380,9 +1380,9 @@ const FormBuilder = function(opts, element) {
 ;(function($) {
   const methods = {
     init: (options, elems) => {
-      const { i18n, ...opts } = $.extend({}, defaultOptions, options, true)
+      const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
       config.opts = opts
-      const i18nOpts = $.extend({}, defaultI18n, i18n, true)
+      const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
       methods.instance = {
         actions: {
           getFieldTypes: null,
@@ -1399,7 +1399,7 @@ const FormBuilder = function(opts, element) {
           toggleFieldEdit: null,
         },
         get formData() {
-          return methods.getData && methods.getData('json')
+          return methods.instance.getData && methods.instance.getData('json')
         },
         promise: new Promise(function(resolve, reject) {
           mi18n
@@ -1422,7 +1422,7 @@ const FormBuilder = function(opts, element) {
     },
   }
 
-  $.fn.formBuilder = function(methodOrOptions = {}, ...args) {
+  jQuery.fn.formBuilder = function(methodOrOptions = {}, ...args) {
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {

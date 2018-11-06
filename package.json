@@ -2,10 +2,6 @@
   "name": "formBuilder",
   "version": "2.10.3",
   "main": "dist/form-builder.min.js",
-  "files": [
-    "dist/form-builder.min.js",
-    "dist/form-render.min.js"
-  ],
   "homepage": "https://formbuilder.online/",
   "repository": {
     "url": "http://github.com/kevinchappell/formBuilder",
@@ -81,25 +77,26 @@
     ]
   },
   "scripts": {
-    "copy": "cp -a dist/* demo/assets/js/",
+    "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md",
+    "docs": "mkdocs build",
     "test": "yarn build",
     "font": "node tools/run icon-font",
-    "deploy": "yarn build && babel-node -- tools/run deploy",
-    "tag:patch": "babel-node -- node_modules/gulp/bin/gulp tag --patch",
-    "tag:minor": "babel-node -- node_modules/gulp/bin/gulp tag --minor",
-    "release:patch": "yarn run tag:patch --patch && yarn run deploy",
-    "release:minor": "yarn run tag:minor --minor && yarn run deploy",
+    "lint": "eslint ./src --ext .js || true",
+    "deploy": "yarn build && node tools/run deploy",
     "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
     "build": "webpack --mode production -p --progress --config tools/webpack.config && yarn build:plugins && yarn copy",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
-    "build:vendor": "babel-node -- tools/run build-vendor",
+    "build:vendor": "node tools/run build-vendor",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config"
   },
   "dependencies": {
-    "jquery": "3.1.1",
+    "jquery": "3.3.1",
     "jquery-ui-sortable": "*"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "3.0.1",
+    "@semantic-release/git": "7.0.5",
+    "@semantic-release/npm": "5.0.5",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.3",
     "babel-eslint": "8.2.3",
@@ -112,6 +109,7 @@
     "clean-webpack-plugin": "0.1.19",
     "clui": "0.3.6",
     "compression-webpack-plugin": "2.0.0",
+    "concat-files": "0.1.1",
     "copy-webpack-plugin": "4.5.1",
     "cross-env": "5.2.0",
     "css-loader": "0.28.11",
@@ -120,7 +118,7 @@
     "eslint-config-prettier": "2.9.0",
     "eslint-loader": "2.0.0",
     "eslint-plugin-prettier": "2.6.0",
-    "formbuilder-languages": "^0.0.4",
+    "formbuilder-languages": "0.0.4",
     "html-webpack-harddisk-plugin": "0.2.0",
     "html-webpack-plugin": "3.2.0",
     "inquirer": "6.0.0",
@@ -138,7 +136,8 @@
     "webpack": "4.12.0",
     "webpack-bundle-analyzer": "2.13.1",
     "webpack-cli": "3.0.8",
-    "webpack-dev-server": "3.1.4"
+    "webpack-dev-server": "3.1.4",
+    "wrapper-webpack-plugin": "2.0.0"
   },
   "prettierOptions": {
     "singleQuote": true,

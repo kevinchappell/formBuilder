@@ -3,7 +3,7 @@ Control plugin architecture
 
 formBuilder can be easily extended to support new controls. Rather than have all controls load into the core formRender.js file, bloating it with controls that are rarely used, less used controls can be added as a plugin.
 
-Using a plugin 
+Using a plugin
 ============
 Adding a plugin control into your project is as simple as including the file in a `<script>` tag in your page. Form data elements can now use this type & will be correctly rendered.
 
@@ -29,13 +29,13 @@ Example
 </script>
 ```
 
-Creating a new control plugin 
+Creating a new control plugin
 ============
 In general, to create a control in the formBuilder project, you will need to create a new class which inherits from the `control` class (as defined in `control.js`). When creating a plugin control, because this script will be executed in a different namespace, we need to instead define our new control in an array of functions to be run by the formRender class.
 
 The `window.fbControls` property is used to store any plugin control anonymous functions. Your function will receive a `controlClass` argument which you can inherit from. It can also optionally receive an object containing all registered `control` children classes with their `type` as the object property/key, allowing you to create subtype classes which inherit from another control. Finally, your function should return the new class.
 
-Compiling 
+Compiling
 -------
 
 formBuilder is written in ES6, but compiled back down to ES5 to ensure maximum browser support. This adds a layer of complexity in adding plugin control classes.
@@ -70,12 +70,13 @@ window.fbControls.push(function (controlClass) {
      * @return DOM Element to be injected into the form.
      */
     build() {
-      return this.markup('span', null, {id: this.config.name});
+      this.dom = this.markup('span', null, {id: this.config.name});
+      return this.dom;
     }
 
     onRender() {
-      let value = this.config.value || 3.6;
-      $('#'+this.config.name).rateYo({rating: value});
+      const rating = this.config.value || 3.6;
+      $(this.dom).rateYo({rating});
     }
   }
 

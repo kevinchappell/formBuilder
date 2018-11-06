@@ -11,7 +11,7 @@ The above pattern should be avoided for 2 reasons:
 1. At initialization formBuilder will only have the data you provided it.
 2. formBuilder loads asynchronous and `actions` are not immediately available.
 
-If an `action` needs to be called immediately upon initialization it's recommended to use the [`promise`](http://formbuilder.readthedocs.io/en/latest/formBuilder/promise/) property.
+If an `action` needs to be called immediately upon initialization it's recommended to use the [`promise`](https://formbuilder.online/docs/formBuilder/promise/) property.
 
 - @param  {String} type
 - @param  {Boolean} formatted

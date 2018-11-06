@@ -177,7 +177,7 @@ export default class controlFineUploader extends controlText {
     // defaults to '/upload'
 
     // deep copy merge in passed class configuration over any conflicting defaults
-    const config = $.extend(true, {
+    const config = jQuery.extend(true, {
       request: {
         endpoint: this.handler
       },

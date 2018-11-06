@@ -8,6 +8,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
+const WrapperPlugin = require('wrapper-webpack-plugin')
 
 // hack for Ubuntu on Windows
 try {
@@ -108,6 +109,11 @@ const webpackConfig = {
   plugins: [
     new CleanWebpackPlugin(['dist/*', 'demo/assets/js/form-*'], {
       root: join(__dirname, '..'),
+    }),
+    new WrapperPlugin({
+      test: /\.js$/, // only wrap output of bundle files with '.js' extension
+      header: '(function ($) { "use strict";\n',
+      footer: '\n})(jQuery);'
     }),
     new DefinePlugin({
       FB_EN_US: JSON.stringify(langFiles['en-US']),

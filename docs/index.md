@@ -15,7 +15,7 @@ formRender is the companion plugin to formBuilder that lets you render the resul
 
 ## Project layout
 ```bash
-    demo/               # Website for http://formbuilder.online
+    demo/               # Website for https://formbuilder.online
     dist/               # Compiled files for distribution
     docs/
         index.md        # The documentation homepage.

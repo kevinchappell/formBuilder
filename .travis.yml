@@ -1,23 +1,45 @@
+sudo: required
+stages:
+- lint
+- test
+- deploy
 language: node_js
-node_js: lts/*
-sudo: false
+node_js: '10'
 cache:
-  yarn: true
   directories:
+  - "~/.npm"
   - node_modules
-deploy:
-  - provider: releases
+notifications:
+  email: false
+git:
+  submodules: false
+jobs:
+  include:
+  - stage: lint
+    script: yarn lint
     skip_cleanup: true
-    api_key:
-      secure: $GITHUB_RELEASES
-    on:
-      repo: kevinchappell/formBuilder
-      branch: master
-  - provider: npm
-    email: kevin.b.chappell@gmail.com
-    api_key:
-      secure: $NPM_KEY
-    on:
-      tags: true
-      repo: kevinchappell/formBuilder
-      branch: master
+  - stage: deploy
+    if: branch = master
+    before_deploy:
+    - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+    - git config credential.helper "store --file=.git/credentials"
+    - git config --global user.email "bot@formbuilder.online"
+    - git config --global user.name "🤖"
+    - sudo apt-get -y install python3-pip python-dev
+    - sudo pip3 install -U setuptools
+    - sudo pip install mkdocs
+    - python3 -V
+    - pip3 -V
+    - mkdocs -V
+    - yarn build
+    deploy:
+      provider: script
+      script:
+      - yarn travis-deploy-once "yarn semantic-release"
+      skip_cleanup: true
+    after_deploy:
+    - yarn deploy
+env:
+  global:
+  - secure: mKHa/u/PeXUUroLwtaUkXOj3aaokU/2Nmp/esViUwz9VQHzvyEKKmpbuUQ2Vz4+TXXL5WtXIAD2to3+LrLAb784MD9GGHXWmJp1CvtGj0I4FbfbtvtSVMKezXRanwEYQCW/ozIvjB3X4ha780tb3yBdydwHWN1wriPaXUpP/D4FJT/GALEhk6OkbQXhpJzm++TfXAaTzWrfLNAzmmDTCTMFA6YeFVzf90TGYUWW+vIYjMItvJbIdvuoPNMKfUH/6m1AaAMU63lgJSYLhIFxHvTDj1valIsD5/lxhdjeRIjdc96j45tkxIvZOim6tXP//se8dyFWWSDxP5DErpQuUb7Lgzmj8bs+BPao3nm+6UBJ+SjD+4WhIDElBMwRBPqzA4leNSvt4p1yKUBGyFYMYFd/Y7OaI/LsHYPfMagJk+gUGvBGmTJy1bGXjPQ2Eejl8HaLVTDnVcjVsWxkB8why+GKKEuqCiRFgiirxSRfXF3LACzpBasfH8SdQqaadWcSkz2fMOkANyhFAhDQjlLU0Y9K8YCGpta2T4qrHf8QiR2UhEUaafuoWzGKbZBoQjVk05UJoKMFt+kl8ie39y4PUCMw+3SBcBbeqYShMF+l5Tcd93UQpa72fzSgz61J6wBYikO4Xe/ecZ4U8VMWgIyjZziFjjzOV367AmSnkUjcGqMw=
+  - secure: nKf6rLgTxC5KU69ZRAdiS/yQaHwA1PvI/ZSLu4/IswtXBLMbx65/HNJjGt1n+ycCkcWIwU9Ncp1uBIQbkFUranvYv0LjmIIZ36KfRQI27CZaLWGDZNqIcKSPNTr08UZEQbUzxeglUiJQim333ohYhVeXy2rnsJg0uTsaCPl/c58Yy3dtt4Z8KlPLGzKpUsn75vEED7/Wz6waCKasCn8yW3/30KImQ3a3KT5Lj5VgIavcrgQIao6KgMykNq/ECLRyliAtSF7AZqGiXvzIrmIJApySGEVwy6B+2n/Sc9ZVp2NC5oIBct9CggAvgzVlP5IdGzKQbRWO2uKFy4TGUsY2FgvfWODOWsG0BPp8TI31atlQcfzXEicQFqokmX/ZMj4nV1jVOD/R1Spz+03DUsLVTHM0y61ZeWTo3qIcohJBpqoaprXiHj1dQYOwubCM0fCQIZKQ36x5xk1RYARJBei6w0h3/3iASvdmF29Maq8906gMxEfj9B8N5xiV9kHM9KMUETVX7rdYABZ2jWQtL93AXdU4LqKKXFTCanBy8dJROtl254T4H8JX5RvGBxMylxwpDr9/mP+SCeNOJ8Pft6Si0RQiSSWCv8tbgGebA++p2TpJlVjaJkDqmxv9UkxPS0cdpi8YWWxzS/5axkTTioAlkyOUNhECJiMq9bL+EwMcN5o=

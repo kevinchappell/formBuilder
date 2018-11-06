@@ -92,7 +92,7 @@ window.fbControls.push(function(controlClass, allControlClasses) {
       const editor = window.fbEditors.trumbowyg[this.id] = $(this.field);
 
       // reword some of the terminology
-      $.extend(true, $.trumbowyg.langs.en, {
+      jQuery.extend(true, $.trumbowyg.langs.en, {
         insertImage: 'Insert Remote Image',
         upload: 'Upload Image',
         base64: 'Embed Image'
