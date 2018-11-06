@@ -4,7 +4,7 @@
   "main": "dist/form-builder.min.js",
   "homepage": "https://formbuilder.online/",
   "repository": {
-    "url": "http://github.com/kevinchappell/formBuilder",
+    "url": "https://github.com/kevinchappell/formBuilder.git",
     "type": "git"
   },
   "files": [
