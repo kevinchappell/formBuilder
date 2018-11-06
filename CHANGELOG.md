@@ -1,4 +1,14 @@
-# Changelog
+## [2.10.4](https://github.com/kevinchappell/formBuilder/compare/v2.10.3...v2.10.4) (2018-11-06)
+
+
+### Bug Fixes
+
+* **cd:** update encrypted access keys ([d36cab9](https://github.com/kevinchappell/formBuilder/commit/d36cab9))
+* **ci:** deploy ([68e897a](https://github.com/kevinchappell/formBuilder/commit/68e897a))
+* **ci:** deploy script typo ([2e3fbe1](https://github.com/kevinchappell/formBuilder/commit/2e3fbe1))
+* **ci:** deploys ([63aa874](https://github.com/kevinchappell/formBuilder/commit/63aa874))
+* **docs:** Add missing documentation ([#855](https://github.com/kevinchappell/formBuilder/issues/855)) ([094573c](https://github.com/kevinchappell/formBuilder/commit/094573c)), closes [#678](https://github.com/kevinchappell/formBuilder/issues/678) [#648](https://github.com/kevinchappell/formBuilder/issues/648)
+* **package.json:** update repository.url ([a511e0d](https://github.com/kevinchappell/formBuilder/commit/a511e0d))
 
 - v2.10.3 - Bugfix fbControlsLoaded [#853](https://github.com/kevinchappell/formBuilder/pull/853)
 - v2.10.2 - Bugfix i18n lookups [#852](https://github.com/kevinchappell/formBuilder/pull/852)
