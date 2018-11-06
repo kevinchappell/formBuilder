@@ -42,6 +42,7 @@ jobs:
       skip_cleanup: true
     after_deploy:
       - yarn deploy
+      - git clone --depth 1 "https://${GH_TOKEN}:@github.com/${SITE_REPO}" "$SITE_DIR" 2> /dev/null || (cd "$SITE_DIR" ; git pull; cd ../)
       - ls -l
       - yarn deploy:site
 env:
