@@ -1,3 +1,10 @@
+## [2.10.8](https://github.com/kevinchappell/formBuilder/compare/v2.10.7...v2.10.8) (2018-11-06)
+
+
+### Bug Fixes
+
+* **cd:** website auto deploy ([8235f2b](https://github.com/kevinchappell/formBuilder/commit/8235f2b))
+
 ## [2.10.7](https://github.com/kevinchappell/formBuilder/compare/v2.10.6...v2.10.7) (2018-11-06)
 
 
