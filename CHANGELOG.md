@@ -1,3 +1,17 @@
+# [3.0.0](https://github.com/kevinchappell/formBuilder/compare/v2.10.9...v3.0.0) (2018-11-07)
+
+
+### Bug Fixes
+
+* **labels:** html in xml labels breaks forms ([#858](https://github.com/kevinchappell/formBuilder/issues/858)) ([ea29e79](https://github.com/kevinchappell/formBuilder/commit/ea29e79))
+
+
+### BREAKING CHANGES
+
+* **labels:** Existing forms created using xml dataType that have html labels will have their labels converted to text
+
+Note: the next major release will drop xml support completely
+
 ## [2.10.9](https://github.com/kevinchappell/formBuilder/compare/v2.10.8...v2.10.9) (2018-11-06)
 
 
