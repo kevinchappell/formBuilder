@@ -172,7 +172,9 @@ export default class layout {
    * @return {DOMElement}
    */
   processTemplate(template, ...args) {
+
     let processed = this.templates[template](...args, this.data)
+
     if (processed.jquery) {
       processed = processed[0]
     }

@@ -50,6 +50,16 @@ export const validAttr = function(attr) {
 }
 
 /**
+ * Convert an attrs object into a string for xml node
+ * @param  {Object} attrs object of attributes for markup
+ * @return {string}
+ */
+export const xmlAttrString = attrs =>
+  Object.entries(attrs)
+    .map(([key, val]) => `${hyphenCase(key)}="${val}"`)
+    .join(' ')
+
+/**
  * Convert an attrs object into a string
  *
  * @param  {Object} attrs object of attributes for markup
@@ -88,6 +98,14 @@ export const safeAttr = (name, value) => {
     value,
   }
 }
+
+/**
+ * recursively flatten a nested array
+ * @param {Array} arr to be flattened
+ * @return {Array} flattened array
+ */
+export const flattenArray = arr =>
+  arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flattenArray(val) : val), [])
 
 export const safeAttrName = name => {
   const safeAttr = {
@@ -148,10 +166,10 @@ export const nameAttr = function(field) {
 }
 
 /**
-   * Determine content type
-   * @param  {Node | String | Array | Object} content
-   * @return {String}
-   */
+ * Determine content type
+ * @param  {Node | String | Array | Object} content
+ * @return {String}
+ */
 export const getContentType = content => {
   if (content === undefined) {
     return content
@@ -237,7 +255,7 @@ export const parseAttrs = elem => {
     }
 
     if (attrVal) {
-      data[attrs[attr].name] = attrVal
+      data[camelCase(attrs[attr].name)] = attrVal
     }
   })
 
@@ -535,9 +553,7 @@ export const mobileClass = () => {
  * @return {String}     converter string
  */
 export const safename = str => {
-  return str
-    .replace(/\s/g, '-')
-    .replace(/[^a-zA-Z0-9[\]_-]/g, '')
+  return str.replace(/\s/g, '-').replace(/[^a-zA-Z0-9[\]_-]/g, '')
 }
 
 /**

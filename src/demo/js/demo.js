@@ -5,6 +5,19 @@ import { builderActions, renderActions, demoActions } from './actionButtons'
 const localeSessionKey = 'formBuilder-locale'
 const defaultLocale = 'en-US'
 
+const dataTypes = document.querySelectorAll('.demo-dataType')
+const dataType = window.sessionStorage.getItem('dataType') || 'json'
+const changeDataType = ({ target }) => {
+  window.sessionStorage.setItem('dataType', target.value)
+  demoActions.resetDemo()
+}
+for (let i = 0; i < dataTypes.length; i++) {
+  if (dataType === dataTypes[i].value) {
+    dataTypes[i].checked = true
+  }
+  dataTypes[i].addEventListener('click', changeDataType, false)
+}
+
 const toggleBootStrap = ({ target }) => {
   if (!target.checked) {
     removeStyle('bootstrap')
@@ -18,7 +31,6 @@ const toggleBootStrap = ({ target }) => {
 
 document.getElementById('toggleBootstrap').addEventListener('click', toggleBootStrap, false)
 
-const dataType = 'json'
 jQuery(function($) {
   const fields = [
     {
@@ -184,7 +196,7 @@ jQuery(function($) {
       text: ['datetime-local'],
     },
     onSave: (e, formData) => {
-      window.sessionStorage.setItem('formData', JSON.stringify(formData))
+      window.sessionStorage.setItem('formData', formData)
       toggleEdit()
     },
     onAddField: fieldId => {
@@ -220,7 +232,7 @@ jQuery(function($) {
   let editing = true
 
   if (formData) {
-    fbOptions.formData = JSON.parse(formData)
+    fbOptions.formData = formData
   }
 
   /**
@@ -232,13 +244,13 @@ jQuery(function($) {
     if (!editing) {
       $('.build-wrap').formBuilder('setData', $('.render-wrap').formRender('userData'))
     } else {
-      const formRenderData = $('.build-wrap').formBuilder('getData')
+      const formRenderData = $('.build-wrap').formBuilder('getData', dataType)
       $('.render-wrap').formRender({
         formData: formRenderData,
         templates: templates,
         dataType,
       })
-      window.sessionStorage.setItem('formData', JSON.stringify(formRenderData))
+      window.sessionStorage.setItem('formData', formRenderData)
     }
     return (editing = !editing)
   }

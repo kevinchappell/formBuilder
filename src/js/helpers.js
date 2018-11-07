@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { instanceDom, empty, optionFieldsRegEx, remove } from './dom'
+import { instanceDom, empty, remove, optionFields } from './dom'
 import { instanceData } from './data'
 import {
   mobileClass,
@@ -12,6 +12,8 @@ import {
   parseXML,
   capitalize,
   unique,
+  xmlAttrString,
+  flattenArray,
 } from './utils'
 import events from './events'
 import { config } from './config'
@@ -146,31 +148,31 @@ export default class Helpers {
 
   /**
    * XML save
-   *
    * @param  {Object} form sortableFields node
    * @return {String} xml in string
    */
   xmlSave(form) {
     const formData = this.prepData(form)
     const xmlSerializer = new XMLSerializer()
-    const fields = []
+    const fields = ['<fields>']
 
     formData.forEach(field => {
-      let fieldContent = null
+      const hasContent = optionFields.includes(field.type)
       const { values, ...fieldData } = field
-      const optionFields = optionFieldsRegEx
+      let fieldHTML = [`<field ${xmlAttrString(fieldData)} ${hasContent ? '' : '/'}>`]
 
       // Handle options
-      if (field.type.match(optionFields)) {
-        fieldContent = values.map(option => m('option', option.label, option))
+      if (hasContent) {
+        const options = values.map(option => m('option', option.label, option).outerHTML)
+        fieldHTML = fieldHTML.concat([options, '</field>'])
       }
 
-      const fieldHTML = m('field', fieldContent, fieldData).outerHTML
       fields.push(fieldHTML)
     })
 
-    const formTemplate = m('form-template', m('fields', fields.join('')))
+    fields.push('</fields>')
 
+    const formTemplate = m('form-template', flattenArray(fields).join(''))
     return xmlSerializer.serializeToString(formTemplate)
   }
 
@@ -261,7 +263,12 @@ export default class Helpers {
 
     const setData = {
       xml: formData => (Array.isArray(formData) ? formData : parseXML(formData)),
-      json: formData => (typeof formData === 'string' ? window.JSON.parse(formData) : formData),
+      json: formData => {
+        if (typeof formData === 'string') {
+          return window.JSON.parse(formData)
+        }
+        return formData
+      },
     }
 
     data.formData = setData[config.opts.dataType](formData) || []
@@ -316,7 +323,7 @@ export default class Helpers {
       const attr = attrs[index]
       const name = camelCase(attr.getAttribute('name'))
       const value = [
-        [attr.attributes.contenteditable, () => escapeHtml(attr.innerHTML)],
+        [attr.attributes.contenteditable, () => config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML],
         [attr.type === 'checkbox', () => attr.checked],
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
@@ -367,6 +374,7 @@ export default class Helpers {
     previewData.className = _this.classNames(field, previewData)
 
     $field.data('fieldData', previewData)
+
 
     // determine the control class for this type, and then process it through the layout engine
     const custom = controlCustom.lookup(previewData.type)
@@ -828,9 +836,12 @@ export default class Helpers {
    * Open a dialog with the form's data
    */
   showData() {
-    // const data = this.data
-    // const formData = utils.escapeHtml(data.formData)
-    const formData = this.getFormData('json', true)
+    let formData = this.getFormData(config.opts.dataType, true)
+
+    if (config.opts.dataType === 'xml') {
+      formData = escapeHtml(formData)
+    }
+
     const code = m('code', formData, {
       className: `formData-${config.opts.dataType}`,
     })
@@ -1067,6 +1078,11 @@ export default class Helpers {
 
     opts.fields = opts.fields.concat(replaceFields)
     opts.disableFields = opts.disableFields.concat(replaceFields.map(({ type }) => type && type))
+
+    if (opts.dataType === 'xml') {
+      // html labels are not available using xml dataType
+      opts.disableHTMLLabels = true
+    }
     config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
     return config.opts
   }
