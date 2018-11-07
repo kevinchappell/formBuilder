@@ -34,7 +34,7 @@ jobs:
     - python3 -V
     - pip3 -V
     - mkdocs -V
-    - yarn build
+    - yarn build:all
     deploy:
       provider: script
       script:
