@@ -82,10 +82,34 @@ class FormRender {
           className: 'rendered-form',
         })
         this.appendChild(renderedFormWrap)
+  
         fields.forEach(field => {
-          renderedFormWrap.appendChild(field)
-          field.dispatchEvent(events.fieldRendered)
+          // Determine if rows are being used. If so, create the row and append to its row-{group}
+          // If the fields have row-, create & append to the appropriate row
+          const classes = field.className.split('row-');
+          if(classes[1]){           
+            const rowGroup = classes[1].split(' ')[0];
+            const rowID = this.id ? `${this.id}-row-${rowGroup}` : `row-${rowGroup}`;
+
+            // Check if this rowID is created yet or not.            
+            let rowGroupNode = document.getElementById(rowID);
+            if(!rowGroupNode){              
+              rowGroupNode = document.createElement('div');
+              rowGroupNode.id = rowID;
+              rowGroupNode.classList.add('row');   
+              rowGroupNode.classList.add('form-inline');
+              renderedFormWrap.appendChild(rowGroupNode)
+            }
+            rowGroupNode.appendChild(field);              
+          }
+          else{   
+            // Append without row     
+            renderedFormWrap.appendChild(field)
+          }
+
+          field.dispatchEvent(events.fieldRendered) 
         })
+
       }
     }
 
