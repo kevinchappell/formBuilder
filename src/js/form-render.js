@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import utils from './utils'
+import utils, { parseXML } from './utils'
 import events from './events'
 import layout from './layout'
 import control from './control'
@@ -296,7 +296,7 @@ class FormRender {
    */
   parseFormData(formData) {
     const setData = {
-      xml: formData => utils.parseXML(formData),
+      xml: formData => parseXML(formData),
       json: formData => window.JSON.parse(formData),
     }
     if (typeof formData !== 'object') {
