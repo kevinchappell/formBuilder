@@ -82,7 +82,7 @@
   "scripts": {
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config",
-    "build:vendor": "node tools/run build-vendor",
+    "build:vendor": "mkdir -p demo/assets/js/ && node tools/run build-vendor",
     "build": "webpack --mode production -p --progress --config tools/webpack.config",
     "build:all": "yarn build && yarn build:plugins && yarn build:vendor && yarn copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && mkdir -p demo/assets/lang && cp node_modules/formbuilder-languages/*.lang demo/assets/lang/",
@@ -93,7 +93,7 @@
     "lint": "eslint ./src --ext .js || true",
     "preinstall": "git submodule update --init --recursive",
     "semantic-release": "semantic-release",
-    "start": "webpack-dev-server --mode development --open --config tools/webpack.config",
+    "start": "yarn build:vendor && webpack-dev-server --mode development --open --config tools/webpack.config",
     "test": "yarn build",
     "travis-deploy-once": "travis-deploy-once"
   },

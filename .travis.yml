@@ -13,12 +13,13 @@ cache:
   - node_modules
 notifications:
   email: false
+git:
+  submodules: false
 before_install:
   - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
   - git config --global credential.helper "store --file=.git/credentials"
   - git config --global user.email "bot@formbuilder.online"
   - "git config --global user.name \"\U0001F916\""
-  - git submodule update --init --recursive
 jobs:
   include:
   - stage: lint
