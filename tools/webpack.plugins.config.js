@@ -1,43 +1,34 @@
-const fs = require('fs');
-const {resolve} = require('path');
-const pkg = require('../package.json');
-const webpackConfig = require('./webpack.config');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const fs = require('fs')
+const { resolve } = require('path')
+const pkg = require('../package.json')
+const webpackConfig = require('./webpack.config')
 
-const pluginsDir = resolve(__dirname, '../', pkg.config.files.pluginsDir);
-const outputDir = resolve(__dirname, '../', 'demo/assets/js/control_plugins/');
+const root = resolve(__dirname, '../')
+const pluginsDir = resolve(__dirname, '../', pkg.config.files.pluginsDir)
 
-webpackConfig.entry = {};
+const pluginsConfig = {
+  plugins: [],
+  output: {
+    path: root,
+    filename: '[name].min.js',
+  },
+  entry: () =>
+    new Promise(resolve => {
+      const entry = {}
+      fs.readdir(pluginsDir, (error, files) => {
+        if (error) {
+          throw Error(error)
+        }
+        files.forEach(file => {
+          if (file.indexOf('.js') !== -1) {
+            const pluginName = file.replace('.js', '')
+            entry[`dist/control_plugins/${pluginName}`] = `${pluginsDir}/${file}`
+            entry[`demo/assets/js/control_plugins/${pluginName}`] = `${pluginsDir}/${file}`
+          }
+        })
+        resolve(entry)
+      })
+    }),
+}
 
-webpackConfig.plugins = [
-  new CopyWebpackPlugin([
-  {
-    from: outputDir,
-    to: resolve(__dirname, '../', 'dist/control_plugins')
-  }
-])
-]
-
-webpackConfig.output = {
-  path: outputDir,
-  publicPath: '/assets/js/control_plugins',
-  filename: '[name].min.js'
-};
-
-webpackConfig.entry = () => new Promise((resolve) => {
-  let entry = {};
-  fs.readdir(pluginsDir, (error, files) => {
-    if (error) {
-      throw Error(error)
-    }
-    files.forEach(file => {
-      if (file.indexOf('.js') !== -1) {
-        let pluginName = file.replace('.js', '');
-        entry[pluginName] = `${pluginsDir}/${file}`;
-      }
-    });
-    resolve(entry);
-  });
-});
-
-module.exports = webpackConfig;
+module.exports = Object.assign({}, webpackConfig, pluginsConfig)
