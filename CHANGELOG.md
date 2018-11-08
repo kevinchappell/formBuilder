@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/kevinchappell/formBuilder/compare/v3.0.0...v3.0.1) (2018-11-08)
+
+
+### Bug Fixes
+
+* **plugins:** fix plugins build script ([de388bd](https://github.com/kevinchappell/formBuilder/commit/de388bd))
+
 # [3.0.0](https://github.com/kevinchappell/formBuilder/compare/v2.10.9...v3.0.0) (2018-11-07)
 
 
