@@ -31,7 +31,7 @@ export default class layout {
     
         // Lift any col- and row- type class to the form-group wrapper. The row- class denotes the row group it should go to
         if(data.className){
-          const classes = data.className.split(' ').filter(className => (/^col-(xs|sm|md|lg)-\d+/.test(className) || className.startsWith('row-')));
+          const classes = data.className.split(' ').filter(className => (/^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-')));
           if(classes && classes.length > 0){
             className += ` ${classes.join(' ')}`;
 
