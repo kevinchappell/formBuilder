@@ -91,7 +91,6 @@
     "docs": "mkdocs build",
     "font": "node tools/run icon-font",
     "lint": "eslint ./src --ext .js || true",
-    "preinstall": "git submodule update --init --recursive",
     "semantic-release": "semantic-release",
     "start": "yarn build:vendor && webpack-dev-server --mode development --open --config tools/webpack.config",
     "test": "yarn build",
