@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/kevinchappell/formBuilder/compare/v3.0.1...v3.0.2) (2018-11-12)
+
+
+### Bug Fixes
+
+* **package.json:** remove preinstall ([#865](https://github.com/kevinchappell/formBuilder/issues/865)) ([3ab0d35](https://github.com/kevinchappell/formBuilder/commit/3ab0d35))
+
 ## [3.0.1](https://github.com/kevinchappell/formBuilder/compare/v3.0.0...v3.0.1) (2018-11-08)
 
 
