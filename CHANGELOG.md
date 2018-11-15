@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/kevinchappell/formBuilder/compare/v3.0.2...v3.1.0) (2018-11-15)
+
+
+### Features
+
+* **column:** add bootstrap grid/column support ([e9cc23a](https://github.com/kevinchappell/formBuilder/commit/e9cc23a)), closes [#859](https://github.com/kevinchappell/formBuilder/issues/859)
+
 ## [3.0.2](https://github.com/kevinchappell/formBuilder/compare/v3.0.1...v3.0.2) (2018-11-12)
 
 
