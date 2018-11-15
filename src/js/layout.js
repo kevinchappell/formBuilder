@@ -27,7 +27,22 @@ export default class layout {
         }
 
         // wrap the output in a form-group div & return
-        const className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
+        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
+    
+        // Lift any col- and row- type class to the form-group wrapper. The row- class denotes the row group it should go to
+        if(data.className){
+          const classes = data.className.split(' ').filter(className => (/^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-')));
+          if(classes && classes.length > 0){
+            className += ` ${classes.join(' ')}`;
+
+            // Now that the col- types were lifted, remove from the actual input field
+            for (let index = 0; index < classes.length; index++) {
+              const element = classes[index];
+              field.classList.remove(element)
+            }
+          }
+        }
+
         return this.markup('div', [label, field], {
           className: className,
         })
