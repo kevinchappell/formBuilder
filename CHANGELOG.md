@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/kevinchappell/formBuilder/compare/v3.1.0...v3.1.1) (2018-11-19)
+
+
+### Bug Fixes
+
+* **formRender:** error when destrtcuring null ([0b958af](https://github.com/kevinchappell/formBuilder/commit/0b958af))
+
 # [3.1.0](https://github.com/kevinchappell/formBuilder/compare/v3.0.2...v3.1.0) (2018-11-15)
 
 
