@@ -157,16 +157,16 @@ export default class Helpers {
     const fields = ['<fields>']
 
     formData.forEach(field => {
-      const hasContent = optionFields.includes(field.type)
       const { values, ...fieldData } = field
-      let fieldHTML = [`<field ${xmlAttrString(fieldData)} ${hasContent ? '' : '/'}>`]
+      let fieldHTML = [`<field ${xmlAttrString(fieldData)}>`]
 
       // Handle options
-      if (hasContent) {
+      if (optionFields.includes(field.type)) {
         const options = values.map(option => m('option', option.label, option).outerHTML)
-        fieldHTML = fieldHTML.concat([options, '</field>'])
+        fieldHTML = fieldHTML.concat(options)
       }
 
+      fieldHTML.push('</field>')
       fields.push(fieldHTML)
     })
 
@@ -323,7 +323,10 @@ export default class Helpers {
       const attr = attrs[index]
       const name = camelCase(attr.getAttribute('name'))
       const value = [
-        [attr.attributes.contenteditable, () => config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML],
+        [
+          attr.attributes.contenteditable,
+          () => (config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML),
+        ],
         [attr.type === 'checkbox', () => attr.checked],
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
@@ -374,7 +377,6 @@ export default class Helpers {
     previewData.className = _this.classNames(field, previewData)
 
     $field.data('fieldData', previewData)
-
 
     // determine the control class for this type, and then process it through the layout engine
     const custom = controlCustom.lookup(previewData.type)
