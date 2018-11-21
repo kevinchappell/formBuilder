@@ -37,7 +37,7 @@ window.fbControls.push(function(controlClass) {
      */
     build() {
       this.inputId = this.config.name;
-      let defaultValue = this.config.value || 3.6;
+      const defaultValue = this.config.value || 3.6;
       this.input = this.markup('input', null, {
         name: name,
         id: this.inputId,
@@ -56,7 +56,7 @@ window.fbControls.push(function(controlClass) {
     onRender() {
       const value = this.config.value || 3.6;
       var targetId = this.config.name;
-      $('#' + this.config.name + "_render").rateYo({
+      $(this.field).rateYo({
           rating: value,
           onSet: function onSet(rating, rateYoInstance) {
             $('#' + targetId).val(rating);
