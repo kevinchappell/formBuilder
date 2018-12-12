@@ -1,3 +1,11 @@
+## [3.1.3](https://github.com/kevinchappell/formBuilder/compare/v3.1.2...v3.1.3) (2018-12-12)
+
+
+### Bug Fixes
+
+* **dependency:** har-validator 5.1.2 was unpublished, causing ci builds to fail. Update dependencies to fix ([051c0e0](https://github.com/kevinchappell/formBuilder/commit/051c0e0))
+* **langs:** Update formBuilder-languages dependency ([5b39cb1](https://github.com/kevinchappell/formBuilder/commit/5b39cb1))
+
 ## [3.1.2](https://github.com/kevinchappell/formBuilder/compare/v3.1.1...v3.1.2) (2018-11-20)
 
 
