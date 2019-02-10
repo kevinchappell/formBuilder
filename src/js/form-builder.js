@@ -1378,51 +1378,51 @@ const FormBuilder = function(opts, element) {
   return formBuilder
 }
 ;(function($) {
-  const methods = {
-    init: (options, elems) => {
-      const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
-      config.opts = opts
-      const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
-      methods.instance = {
-        actions: {
-          getFieldTypes: null,
-          addField: null,
-          clearFields: null,
-          closeAllFieldEdit: null,
-          getData: null,
-          removeField: null,
-          save: null,
-          setData: null,
-          setLang: null,
-          showData: null,
-          toggleAllFieldEdit: null,
-          toggleFieldEdit: null,
-        },
-        get formData() {
-          return methods.instance.actions.getData && methods.instance.actions.getData('json')
-        },
-        promise: new Promise(function(resolve, reject) {
-          mi18n
-            .init(i18nOpts)
-            .then(() => {
-              elems.each(i => {
-                const formBuilder = new FormBuilder(opts, elems[i])
-                $(elems[i]).data('formBuilder', formBuilder)
-                Object.assign(methods, formBuilder.actions)
-                methods.instance.actions = formBuilder.actions
-              })
-              delete methods.instance.promise
-              resolve(methods.instance)
-            })
-            .catch(opts.notify.error)
-        }),
-      }
-
-      return methods.instance
-    },
-  }
-
   jQuery.fn.formBuilder = function(methodOrOptions = {}, ...args) {
+    const methods = {
+      init: (options, elems) => {
+        const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
+        config.opts = opts
+        const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
+        methods.instance = {
+          actions: {
+            getFieldTypes: null,
+            addField: null,
+            clearFields: null,
+            closeAllFieldEdit: null,
+            getData: null,
+            removeField: null,
+            save: null,
+            setData: null,
+            setLang: null,
+            showData: null,
+            toggleAllFieldEdit: null,
+            toggleFieldEdit: null,
+          },
+          get formData() {
+            return methods.instance.actions.getData && methods.instance.actions.getData('json')
+          },
+          promise: new Promise(function(resolve, reject) {
+            mi18n
+              .init(i18nOpts)
+              .then(() => {
+                elems.each(i => {
+                  const formBuilder = new FormBuilder(opts, elems[i])
+                  $(elems[i]).data('formBuilder', formBuilder)
+                  Object.assign(methods, formBuilder.actions)
+                  methods.instance.actions = formBuilder.actions
+                })
+                delete methods.instance.promise
+                resolve(methods.instance)
+              })
+              .catch(opts.notify.error)
+          }),
+        }
+  
+        return methods.instance
+      },
+    }
+    
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
