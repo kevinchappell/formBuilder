@@ -8,7 +8,7 @@ Attribute input types are generated using the `typeof` for the value. Custom att
 const typeUserAttrs = {
   text: {
     shape: {
-      label: 'Class',
+      label: 'Class', // i18n support by passing and array eg. ['optionCount', {count: 3}]
       multiple: true, // optional, omitting generates normal <select>
       options: {
         'red form-control': 'Red',
@@ -20,6 +20,8 @@ const typeUserAttrs = {
   }
 };
 ```
+
+## [Example with i18n support](https://codepen.io/kevinchappell/pen/EMqvbG?editors=1010)
 
 ## Example Checkbox
 ```javascript
