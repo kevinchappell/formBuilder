@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/kevinchappell/formBuilder/compare/v3.1.3...v3.2.0) (2019-03-29)
+
+
+### Features
+
+* **i18n:** add support for translatable typeUserAttrs ([158b278](https://github.com/kevinchappell/formBuilder/commit/158b278)), closes [#919](https://github.com/kevinchappell/formBuilder/issues/919)
+
 ## [3.1.3](https://github.com/kevinchappell/formBuilder/compare/v3.1.2...v3.1.3) (2018-12-12)
 
 
