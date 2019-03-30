@@ -1,6 +1,29 @@
 // LAYOUT.JS
 import utils from './utils'
 
+const processClassName = (data, field) => {
+  // wrap the output in a form-group div & return
+  let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
+
+  if (data.className) {
+    let classes = data.className.split(' ')
+    // Lift any col- and row- type class to the form-group wrapper. The row- class denotes the row group it should go to
+    classes = classes.filter(className => /^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-'))
+
+    if (classes && classes.length > 0) {
+      className += ` ${classes.join(' ')}`
+    }
+
+    // Now that the col- types were lifted, remove from the actual input field
+    for (let index = 0; index < classes.length; index++) {
+      const element = classes[index]
+      field.classList.remove(element)
+    }
+  }
+
+  return className
+}
+
 /**
  * Base class for controlling the layout of each 'row' on the form
  * Can be extended & customised with the new object being passed to FormRender as the new layout object
@@ -26,38 +49,19 @@ export default class layout {
           label.appendChild(help)
         }
 
-        // wrap the output in a form-group div & return
-        let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
-    
-        // Lift any col- and row- type class to the form-group wrapper. The row- class denotes the row group it should go to
-        if(data.className){
-          const classes = data.className.split(' ').filter(className => (/^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-')));
-          if(classes && classes.length > 0){
-            className += ` ${classes.join(' ')}`;
-
-            // Now that the col- types were lifted, remove from the actual input field
-            for (let index = 0; index < classes.length; index++) {
-              const element = classes[index];
-              field.classList.remove(element)
-            }
-          }
-        }
-
         return this.markup('div', [label, field], {
-          className: className,
+          className: processClassName(data, field)
         })
       },
       noLabel: (field, label, help, data) => {
-        // wrap the output in a form-group div & return without a label element
-        const className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
         return this.markup('div', field, {
-          className: className,
+          className: processClassName(data, field)
         })
       },
       hidden: (field, label, help, data) => {
         // no wrapper any any visible elements
         return field
-      },
+      }
     }
 
     // merge in any custom templates
@@ -146,7 +150,7 @@ export default class layout {
     // generate a label element
     return this.markup('label', labelContents, {
       for: this.data.id,
-      className: `fb-${this.data.type}-label`,
+      className: `fb-${this.data.type}-label`
     })
   }
 
@@ -167,7 +171,7 @@ export default class layout {
     // generate the default help element
     return this.markup('span', '?', {
       className: 'tooltip-element',
-      tooltip: this.data.description,
+      tooltip: this.data.description
     })
   }
 
@@ -187,7 +191,6 @@ export default class layout {
    * @return {DOMElement}
    */
   processTemplate(template, ...args) {
-
     let processed = this.templates[template](...args, this.data)
 
     if (processed.jquery) {

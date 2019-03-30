@@ -353,11 +353,6 @@ export default class Helpers {
     const $prevHolder = $('.prev-holder', field)
     let previewData = Object.assign({}, _this.getAttrVals(field, previewData), { type: fieldType })
 
-    const style = $('.btn-style', field).val()
-    if (style) {
-      previewData.style = style
-    }
-
     if (fieldType.match(d.optionFieldsRegEx)) {
       previewData.values = []
       previewData.multiple = $('[name="multiple"]', field).is(':checked')
@@ -422,11 +417,14 @@ export default class Helpers {
    */
   classNames(field, previewData) {
     const className = field.querySelector('.fld-className')
+    const styleField = field.querySelector('.btn-style')
+    const style = styleField && styleField.value
+
     if (!className) {
       return
     }
-    const { type, style } = previewData
-    const classes = className.multiple ? $(className).val() : className.value.split(' ')
+    const { type } = previewData
+    const classes = className.multiple ? $(className).val() : className.value.trim().split(' ')
     const types = {
       button: 'btn',
       submit: 'btn',
@@ -434,25 +432,29 @@ export default class Helpers {
 
     const primaryType = types[type]
 
-    if (primaryType) {
-      if (style) {
-        for (let i = 0; i < classes.length; i++) {
-          const re = new RegExp(`(?:^|\\s)${primaryType}-(.*?)(?:\\s|$)+`, 'g')
-          const match = classes[i].match(re)
-          if (match) {
-            classes.splice(i, 1)
-          }
+    if (primaryType && style) {
+      for (let i = 0; i < classes.length; i++) {
+        const re = new RegExp(`^${primaryType}-.*`, 'g')
+        const match = classes[i].match(re)
+        if (match) {
+          classes.splice(i, 1, primaryType + '-' + style)
+        } else {
+          classes.push(primaryType + '-' + style)
         }
-        classes.push(primaryType + '-' + style)
       }
+
       classes.push(primaryType)
     }
 
-    // reverse the array to put custom classes at end,
-    // remove any duplicates, convert to string, remove whitespace
-    return unique(classes)
+    const trimmedClassName = unique(classes)
       .join(' ')
       .trim()
+
+    className.value = trimmedClassName
+
+    // reverse the array to put custom classes at end,
+    // remove any duplicates, convert to string, remove whitespace
+    return trimmedClassName
   }
 
   /**
@@ -643,7 +645,7 @@ export default class Helpers {
           config.opts.notify.success(i18n.allFieldsRemoved)
           config.opts.onClearAll()
         },
-        coords
+        coords,
       )
     } else {
       _this.dialog(i18n.noFieldsToClear, coords)

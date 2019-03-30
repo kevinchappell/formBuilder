@@ -23,7 +23,7 @@ import {
   addEventListeners,
   closest,
   safename,
-  forceNumber
+  forceNumber,
 } from './utils'
 
 const DEFAULT_TIMEOUT = 333
@@ -64,9 +64,9 @@ const FormBuilder = function(opts, element) {
     start: (evt, ui) => h.startMoving.call(h, evt, ui),
     stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
     cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(
-      ', '
+      ', ',
     ),
-    placeholder: 'frmb-placeholder'
+    placeholder: 'frmb-placeholder',
   })
 
   if (!opts.allowStageSort) {
@@ -99,7 +99,7 @@ const FormBuilder = function(opts, element) {
         h.setFieldOrder($cbUL)
         h.doCancel = !opts.sortableControls
       }
-    }
+    },
   })
 
   const processControl = control => {
@@ -111,7 +111,7 @@ const FormBuilder = function(opts, element) {
           type: 'header',
           subtype: 'h2',
           id: inputSet.name,
-          label: inputSet.label
+          label: inputSet.label,
         }
         inputSets.push(header)
       }
@@ -132,7 +132,7 @@ const FormBuilder = function(opts, element) {
 
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
-    className: `cb-wrap ${data.layout.controls}`
+    className: `cb-wrap ${data.layout.controls}`,
   })
 
   if (opts.showActionButtons) {
@@ -160,7 +160,7 @@ const FormBuilder = function(opts, element) {
     const cancelArray = []
     const disabledField = type =>
       m('li', opts[type], {
-        className: `disabled-field form-${type}`
+        className: `disabled-field form-${type}`,
       })
 
     if (opts.prepend && !$('.disabled-field.form-prepend', d.stage).length) {
@@ -202,7 +202,7 @@ const FormBuilder = function(opts, element) {
             return {
               label: $(elem).text(),
               value: $(elem).attr('value'),
-              selected: Boolean($(elem).attr('selected'))
+              selected: Boolean($(elem).attr('selected')),
             }
           })
         }
@@ -275,7 +275,7 @@ const FormBuilder = function(opts, element) {
     const optionDataTemplate = label => {
       const optionData = {
         label,
-        value: hyphenCase(label)
+        value: hyphenCase(label),
       }
 
       if (type !== 'autocomplete') {
@@ -303,7 +303,7 @@ const FormBuilder = function(opts, element) {
 
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
     const options = m('ol', fieldValues.map(option => selectFieldOptions(name, option, isMultiple)), {
-      className: 'sortable-options'
+      className: 'sortable-options',
     })
     const optionsWrap = m('div', [options, optionActionsWrap], { className: 'sortable-options-wrap' })
 
@@ -331,7 +331,7 @@ const FormBuilder = function(opts, element) {
         'name',
         'access',
         'other',
-        'options'
+        'options',
       ],
       text: defaultAttrs.concat(['subtype', 'maxlength']),
       date: defaultAttrs,
@@ -341,7 +341,7 @@ const FormBuilder = function(opts, element) {
       paragraph: ['label', 'subtype', 'className', 'access'],
       number: defaultAttrs.concat(['min', 'max', 'step']),
       select: defaultAttrs.concat(['multiple', 'options']),
-      textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows'])
+      textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
     }
 
     typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox
@@ -380,7 +380,7 @@ const FormBuilder = function(opts, element) {
       inline: () => {
         const labels = {
           first: mi18n.get('inline'),
-          second: mi18n.get('inlineDesc', type.replace('-group', ''))
+          second: mi18n.get('inlineDesc', type.replace('-group', '')),
         }
 
         return boolAttribute('inline', values, labels)
@@ -406,7 +406,7 @@ const FormBuilder = function(opts, element) {
               name: 'roles[]',
               value: key,
               id: roleId,
-              className: 'roles-field'
+              className: 'roles-field',
             }
             if (roles.includes(key)) {
               cbAttrs.checked = 'checked'
@@ -421,7 +421,7 @@ const FormBuilder = function(opts, element) {
         const accessLabels = {
           first: mi18n.get('roles'),
           second: mi18n.get('limitRole'),
-          content: availableRoles.join('')
+          content: availableRoles.join(''),
         }
 
         return boolAttribute('access', values, accessLabels)
@@ -429,31 +429,31 @@ const FormBuilder = function(opts, element) {
       other: () =>
         boolAttribute('other', values, {
           first: mi18n.get('enableOther'),
-          second: mi18n.get('enableOtherMsg')
+          second: mi18n.get('enableOtherMsg'),
         }),
       options: () => fieldOptions(values),
       requireValidOption: () =>
         boolAttribute('requireValidOption', values, {
           first: ' ',
-          second: mi18n.get('requireValidOption')
+          second: mi18n.get('requireValidOption'),
         }),
       multiple: () => {
         const typeLabels = {
           default: {
             first: 'Multiple',
-            second: 'set multiple attribute'
+            second: 'set multiple attribute',
           },
           file: {
             first: mi18n.get('multipleFiles'),
-            second: mi18n.get('allowMultipleFiles')
+            second: mi18n.get('allowMultipleFiles'),
           },
           select: {
             first: ' ',
-            second: mi18n.get('selectionsMessage')
-          }
+            second: mi18n.get('selectionsMessage'),
+          },
         }
         return boolAttribute('multiple', values, typeLabels[type] || typeLabels.default)
-      }
+      },
     }
     let key
     const roles = values.role !== undefined ? values.role.split(',') : []
@@ -508,7 +508,7 @@ const FormBuilder = function(opts, element) {
     return (
       [
         ['array', ({ options }) => !!options],
-        [typeof attrData.value, () => true] // string, number,
+        [typeof attrData.value, () => true], // string, number,
       ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
     )
   }
@@ -525,7 +525,8 @@ const FormBuilder = function(opts, element) {
       array: selectUserAttrs,
       string: inputUserAttrs,
       number: numberAttribute,
-      boolean: (attr, attrData) => boolAttribute(attr, { ...attrData, [attr]: values[attr] }, { first: attrData.label })
+      boolean: (attr, attrData) =>
+        boolAttribute(attr, { ...attrData, [attr]: values[attr] }, { first: attrData.label }),
     }
 
     for (const attribute in typeUserAttr) {
@@ -565,7 +566,7 @@ const FormBuilder = function(opts, element) {
       title: attrs.description || attrs.label || name.toUpperCase(),
       name: name,
       type: attrs.type || 'text',
-      className: [`fld-${name}`, (classname || className || '').trim()]
+      className: [`fld-${name}`, (classname || className || '').trim()],
     }
     const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
@@ -604,7 +605,7 @@ const FormBuilder = function(opts, element) {
       id: `${name}-${data.lastID}`,
       title: restData.description || labelText || name.toUpperCase(),
       name,
-      className: `fld-${name} form-control ${classname || className || ''}`.trim()
+      className: `fld-${name} form-control ${classname || className || ''}`.trim(),
     }
 
     if (multiple) {
@@ -625,13 +626,13 @@ const FormBuilder = function(opts, element) {
   const boolAttribute = (name, values, labels = {}) => {
     const label = txt =>
       m('label', txt, {
-        for: `${name}-${data.lastID}`
+        for: `${name}-${data.lastID}`,
       }).outerHTML
     const cbAttrs = {
       type: 'checkbox',
       className: `fld-${name}`,
       name,
-      id: `${name}-${data.lastID}`
+      id: `${name}-${data.lastID}`,
     }
     if (values[name]) {
       cbAttrs.checked = true
@@ -653,7 +654,7 @@ const FormBuilder = function(opts, element) {
     right = m('div', right, { className: 'input-wrap' }).outerHTML
 
     return m('div', left.concat(right), {
-      className: `form-group ${name}-wrap`
+      className: `form-group ${name}-wrap`,
     }).outerHTML
   }
 
@@ -669,7 +670,7 @@ const FormBuilder = function(opts, element) {
     styleField += h.input({
       value: style || 'default',
       type: 'hidden',
-      className: 'btn-style'
+      className: 'btn-style',
     }).outerHTML
     styleField += '<div class="btn-group" role="group">'
 
@@ -681,7 +682,7 @@ const FormBuilder = function(opts, element) {
       const btn = m('button', mi18n.get(`styles.btn.${btnStyle}`), {
         value: btnStyle,
         type: 'button',
-        className: classList.join(' ')
+        className: classList.join(' '),
       }).outerHTML
 
       styleField += btn
@@ -690,7 +691,7 @@ const FormBuilder = function(opts, element) {
     styleField += '</div>'
 
     styleField = m('div', [styleLabel, styleField], {
-      className: 'form-group style-wrap'
+      className: 'form-group style-wrap',
     })
 
     return styleField.outerHTML
@@ -714,14 +715,14 @@ const FormBuilder = function(opts, element) {
       min: '0',
       placeholder: placeholder,
       className: `fld-${attribute} form-control ${classname || className || ''}`.trim(),
-      id: `${attribute}-${data.lastID}`
+      id: `${attribute}-${data.lastID}`,
     }
     const numberAttribute = h.input(trimObj(inputConfig)).outerHTML
     const inputWrap = `<div class="input-wrap">${numberAttribute}</div>`
     const inputLabel = `<label for="${inputConfig.id}">${attrLabel}</label>`
 
     return m('div', [inputLabel, inputWrap], {
-      className: `form-group ${attribute}-wrap`
+      className: `form-group ${attribute}-wrap`,
     }).outerHTML
   }
 
@@ -737,9 +738,9 @@ const FormBuilder = function(opts, element) {
       let optionAttrs = Object.assign(
         {
           label: `${i18n.option} ${i}`,
-          value: undefined
+          value: undefined,
         },
-        option
+        option,
       )
       if (option.value === values[attribute]) {
         optionAttrs.selected = true
@@ -750,14 +751,14 @@ const FormBuilder = function(opts, element) {
     const selectAttrs = {
       id: attribute + '-' + data.lastID,
       name: attribute,
-      className: `fld-${attribute} form-control`
+      className: `fld-${attribute} form-control`,
     }
     const labelText = mi18n.get(attribute) || capitalize(attribute) || ''
     const label = m('label', labelText, { for: selectAttrs.id })
     const select = m('select', selectOptions, selectAttrs)
     const inputWrap = m('div', select, { className: 'input-wrap' })
     const attrWrap = m('div', [label, inputWrap], {
-      className: `form-group ${selectAttrs.name}-wrap`
+      className: `form-group ${selectAttrs.name}-wrap`,
     })
 
     return attrWrap.outerHTML
@@ -793,10 +794,10 @@ const FormBuilder = function(opts, element) {
         name: attribute,
         placeholder,
         className: `fld-${attribute} form-control`,
-        id: `${attribute}-${data.lastID}`
+        id: `${attribute}-${data.lastID}`,
       }
       const attributeLabel = m('label', attrLabel, {
-        for: inputConfig.id
+        for: inputConfig.id,
       }).outerHTML
 
       if (attribute === 'label' && !opts.disableHTMLLabels) {
@@ -817,7 +818,7 @@ const FormBuilder = function(opts, element) {
 
       attributefield = m('div', [attributeLabel, inputWrap], {
         className: `form-group ${attribute}-wrap`,
-        style: `display: ${visibility}`
+        style: `display: ${visibility}`,
       })
     }
 
@@ -835,7 +836,7 @@ const FormBuilder = function(opts, element) {
     }
     if (!noMake.some(elem => elem === true)) {
       requireField = boolAttribute('required', fieldData, {
-        first: mi18n.get('required')
+        first: mi18n.get('required'),
       })
     }
 
@@ -852,20 +853,20 @@ const FormBuilder = function(opts, element) {
         type: 'remove',
         id: 'del_' + data.lastID,
         className: 'del-button btn icon-cancel delete-confirm',
-        title: mi18n.get('removeMessage')
+        title: mi18n.get('removeMessage'),
       }),
       m('a', null, {
         type: 'edit',
         id: data.lastID + '-edit',
         className: 'toggle-form btn icon-pencil',
-        title: mi18n.get('hide')
+        title: mi18n.get('hide'),
       }),
       m('a', null, {
         type: 'copy',
         id: data.lastID + '-copy',
         className: 'copy-button btn icon-copy',
-        title: mi18n.get('copyButtonTooltip')
-      })
+        title: mi18n.get('copyButtonTooltip'),
+      }),
     ]
 
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
@@ -876,34 +877,34 @@ const FormBuilder = function(opts, element) {
 
     liContents.push(
       m('label', parsedHtml(label), {
-        className: 'field-label'
-      })
+        className: 'field-label',
+      }),
     )
 
     liContents.push(
       m('span', ' *', {
         className: 'required-asterisk',
-        style: values.required ? 'display:inline' : ''
-      })
+        style: values.required ? 'display:inline' : '',
+      }),
     )
 
     // add the help icon
     const descAttrs = {
       className: 'tooltip-element',
       tooltip: values.description,
-      style: values.description ? 'display:inline-block' : 'display:none'
+      style: values.description ? 'display:inline-block' : 'display:none',
     }
     liContents.push(m('span', '?', descAttrs))
 
     liContents.push(m('div', '', { className: 'prev-holder' }))
     const formElements = m('div', [advFields(values), m('a', mi18n.get('close'), { className: 'close-field' })], {
-      className: 'form-elements'
+      className: 'form-elements',
     })
 
     const editPanel = m('div', formElements, {
       id: `${data.lastID}-holder`,
       className: 'frm-holder',
-      dataFieldId: data.lastID
+      dataFieldId: data.lastID,
     })
 
     formBuilder.currentEditPanel = editPanel
@@ -913,7 +914,7 @@ const FormBuilder = function(opts, element) {
     const field = m('li', liContents, {
       class: `${type}-field form-field`,
       type: type,
-      id: data.lastID
+      id: data.lastID,
     })
     const $li = $(field)
 
@@ -952,7 +953,7 @@ const FormBuilder = function(opts, element) {
   // Select field html, since there may be multiple
   const selectFieldOptions = function(name, optionData, multipleSelect) {
     const optionInputType = {
-      selected: multipleSelect ? 'checkbox' : 'radio'
+      selected: multipleSelect ? 'checkbox' : 'radio',
     }
     const optionDataOrder = ['value', 'label', 'selected']
     const optionInputs = []
@@ -967,7 +968,7 @@ const FormBuilder = function(opts, element) {
           type: optionInputType[prop] || 'text',
           className: 'option-' + prop,
           value: optionData[prop],
-          name: name + '-option'
+          name: name + '-option',
         }
 
         attrs.placeholder = mi18n.get(`placeholder.${prop}`) || ''
@@ -982,7 +983,7 @@ const FormBuilder = function(opts, element) {
 
     const removeAttrs = {
       className: 'remove btn icon-cancel',
-      title: mi18n.get('removeMessage')
+      title: mi18n.get('removeMessage'),
     }
     optionInputs.push(m('a', null, removeAttrs))
 
@@ -1024,7 +1025,7 @@ const FormBuilder = function(opts, element) {
   const saveAndUpdate = evt => {
     if (evt) {
       const isDisabled = [({ type, target }) => type === 'keyup' && target.name === 'className'].some(typeCondition =>
-        typeCondition(evt)
+        typeCondition(evt),
       )
       if (isDisabled) {
         return false
@@ -1225,7 +1226,7 @@ const FormBuilder = function(opts, element) {
     const bodyRect = document.body.getBoundingClientRect()
     const coords = {
       pageX: buttonPosition.left + buttonPosition.width / 2,
-      pageY: buttonPosition.top - bodyRect.top - 12
+      pageY: buttonPosition.top - bodyRect.top - 12,
     }
 
     const deleteID = $(e.target)
@@ -1238,7 +1239,7 @@ const FormBuilder = function(opts, element) {
       function() {
         $field.removeClass('deleting')
       },
-      false
+      false,
     )
 
     // Check if user is sure they want to remove the field
@@ -1255,13 +1256,14 @@ const FormBuilder = function(opts, element) {
   // Update button style selection
   $stage.on('click', '.style-wrap button', e => {
     const $button = $(e.target)
+    const $attrsWrap = $button.closest('.form-elements')
     const styleVal = $button.val()
-    const $btnStyle = $button.parent().prev('.btn-style')
+    const $btnStyle = $('.btn-style', $attrsWrap)
     $btnStyle.val(styleVal)
     $button.siblings('.btn').removeClass('selected')
     $button.addClass('selected')
     h.updatePreview($btnStyle.closest('.form-field'))
-    h.save.call(h)
+    h.save()
   })
 
   // Attach a callback to toggle required asterisk
@@ -1307,7 +1309,7 @@ const FormBuilder = function(opts, element) {
   $stage.on('mouseover mouseout', '.remove, .del-button', e =>
     $(e.target)
       .closest('li')
-      .toggleClass('delete')
+      .toggleClass('delete'),
   )
 
   loadFields()
@@ -1364,7 +1366,7 @@ const FormBuilder = function(opts, element) {
         h.toggleEdit(d.stage.children[index].id)
       })
     },
-    closeAllFieldEdit: h.closeAllEdit.bind(h)
+    closeAllFieldEdit: h.closeAllEdit.bind(h),
   }
 
   // set min-height on stage onRender
@@ -1400,7 +1402,7 @@ const FormBuilder = function(opts, element) {
           setLang: null,
           showData: null,
           toggleAllFieldEdit: null,
-          toggleFieldEdit: null
+          toggleFieldEdit: null,
         },
         get formData() {
           return methods.instance.actions.getData && methods.instance.actions.getData('json')
@@ -1419,11 +1421,11 @@ const FormBuilder = function(opts, element) {
               resolve(methods.instance)
             })
             .catch(opts.notify.error)
-        })
+        }),
       }
 
       return methods.instance
-    }
+    },
   }
 
   jQuery.fn.formBuilder = function(methodOrOptions = {}, ...args) {
