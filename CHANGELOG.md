@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/kevinchappell/formBuilder/compare/v3.2.0...v3.2.1) (2019-03-30)
+
+
+### Bug Fixes
+
+* **btn:** button style classes not correctly applied ([3278840](https://github.com/kevinchappell/formBuilder/commit/3278840))
+
 # [3.2.0](https://github.com/kevinchappell/formBuilder/compare/v3.1.3...v3.2.0) (2019-03-29)
 
 
