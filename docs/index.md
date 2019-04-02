@@ -18,27 +18,19 @@ formRender is the companion plugin to formBuilder that lets you render the resul
 --- | --- | --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 11 ✔ |
 
-## Project layout
-```bash
-    demo/               # Website for https://formbuilder.online
-    dist/               # Compiled files for distribution
-    docs/
-        index.md        # The documentation homepage.
-        license.md
-        ...             # Other markdown pages, images and other files.
-    src/                # Source files for editing the plugin
-    tools/              # build configurations, icon-font script
-    .codeclimate.yml    # Fontello session token used for editing the icon font
-    .gitignore
-    .travis.yml         # Config file for travis-ci
-    bower.json
-    CHANGELOG.md
-    composer.json
-    CONTRIBUTING.md     # Contributor guidelines
-    ISSUE_TEMPLATE.MD
-    LICENSE
-    mkdocs.yml          # mkdocs config file
-    package.json        # npm
-    README.md
-    yarn.lock
-```
+### List of built-in controls
+
+- autocomplete
+- button
+- checkbox-group
+- date
+- file
+- header
+- hidden
+- number
+- paragraph
+- radio-group
+- select
+- starRating
+- text
+- textarea
