@@ -30,6 +30,6 @@ At the time of writing this, formBuilder is available in dozens of languages tha
 ## Custom Controls
 See the Control and Control Plugin Architecture Documentation to learn about how to create custom controls.
 
- - [Overview](/formBuilder/overview)
- - [Control](/formBuilder/controls)
- - [Control Plugins](/formBuilder/control-plugins)
+ - [Overview](https://formbuilder.online/docs/formBuilder/overview/)
+ - [Control](https://formbuilder.online/docs/formBuilder/controls/)
+ - [Control Plugins](https://formbuilder.online/docs/formBuilder/control-plugins/)
