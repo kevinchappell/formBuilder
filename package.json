@@ -97,7 +97,7 @@
     "travis-deploy-once": "travis-deploy-once"
   },
   "dependencies": {
-    "jquery": "3.3.1",
+    "jquery": ">=3.4.0",
     "jquery-ui-sortable": "*"
   },
   "devDependencies": {
