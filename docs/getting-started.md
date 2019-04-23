@@ -1,13 +1,11 @@
 # Getting Started
 
 ## Download and install
-formBuilder and formRender are available directly from [GitHub](https://github.com/kevinchappell/formBuilder/tree/master/dist) and through yarn/npm.
+
+formBuilder and formRender are available directly from [GitHub](https://github.com/kevinchappell/formBuilder/tree/master/dist) and through npm.
 
 Install module from package manager:
-```bash
-$ yarn add formBuilder
-```
-or
+
 ```bash
 $ npm i --save formBuilder
 ```
@@ -15,6 +13,7 @@ $ npm i --save formBuilder
 Once you have the module/plugin installed, include it in your build process for vendor dependencies, add to html via `<script>` tag, or `wp_enqueue_script` for a WordPress website.
 
 ## Basic Example
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -34,4 +33,3 @@ Once you have the module/plugin installed, include it in your build process for 
 </body>
 </html>
 ```
-

@@ -28,8 +28,8 @@ Navigate to the directory you'll be working from and run:
 ```bash
 $ git clone https://github.com/kevinchappell/formBuilder.git form-builder
 $ cd form-builder
-$ yarn
-$ yarn start
+$ npm i
+$ npm start
 ```
 
 The above code will clone the repo, install the required `node_modules` and run the default `npm start` script. You should now have a locally running version of the [demo page](https://kevinchappell.github.io/formBuilder/).
