@@ -15,7 +15,7 @@ Callback for when fields are added to the stage. Good as a catch-all action for 
 
 ```javascript
 const options = {
-  onFieldAdd: function(fieldId) {
+  onAddField: function(fieldId) {
     const currentFieldId = fieldId
   },
 }
