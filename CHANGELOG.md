@@ -1,3 +1,10 @@
+## [3.2.2](https://github.com/kevinchappell/formBuilder/compare/v3.2.1...v3.2.2) (2019-04-23)
+
+
+### Bug Fixes
+
+* update jquery dependency ([5541494](https://github.com/kevinchappell/formBuilder/commit/5541494))
+
 ## [3.2.1](https://github.com/kevinchappell/formBuilder/compare/v3.2.0...v3.2.1) (2019-03-30)
 
 
