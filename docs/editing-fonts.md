@@ -4,7 +4,7 @@ formBuilder uses an icon font generated with Fontello. Fontello makes it easy fo
 ### Editing
 To edit the current icon font, open terminal and run:
 ```bash
-yarn font edit
+npm run font edit
 ```
 
 This will open and create a new session on fontello.com where you can choose new icons or upload your own.
@@ -12,7 +12,7 @@ This will open and create a new session on fontello.com where you can choose new
 ### Saving
 When finished, click the Save Session button and return to the terminal and type:
 ```bash
-yarn font save
+npm run font save
 ```
 
 * Note *
