@@ -1,6 +1,7 @@
 # Libraries and classes
 
 Key files / folders:
+
   * `control.js` - defines the parent class for all controls and a bunch of class level methods for defining information about each control (label, icon etc)
   * `control/*.js` - the individual controls to form the base set of controls transpiled into the final codebase, each inheriting from `control.js`.
   * `control_plugins/*.js` - additional controls which also inherit from `control.js` that remain outside the transpiled code but are able to be individually included as required. 
