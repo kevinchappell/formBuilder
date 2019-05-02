@@ -81,15 +81,15 @@
     "build": "webpack --mode production -p --progress --config tools/webpack.config",
     "build:all": "npm-run-all build build:vendor build:plugins copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && mkdir -p demo/assets/lang && cp node_modules/formbuilder-languages/*.lang demo/assets/lang/",
-    "deploy": "npm run build && node tools/deploy.js",
-    "deploy:site": "npm run docs && cd site/ && npm run deploy && cd ../",
+    "deploy": "npm run-script build && node tools/deploy.js",
+    "deploy:site": "npm run-script docs && cd site/ && npm run-script deploy && cd ../",
     "docs": "mkdocs build",
     "font": "babel-node tools/icon-font",
     "lint": "eslint ./src --ext .js || true",
     "semantic-release": "semantic-release",
     "start:devServer": "webpack-dev-server --mode development --open --config tools/webpack.config",
     "start": "npm-run-all build:vendor start:devServer",
-    "test": "npm run build",
+    "test": "npm run-script build",
     "travis-deploy-once": "travis-deploy-once"
   },
   "dependencies": {
