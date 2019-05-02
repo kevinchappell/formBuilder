@@ -1,3 +1,11 @@
+## [3.2.3](https://github.com/kevinchappell/formBuilder/compare/v3.2.2...v3.2.3) (2019-05-02)
+
+
+### Bug Fixes
+
+* development build, upgrade babel ([a3e446c](https://github.com/kevinchappell/formBuilder/commit/a3e446c)), closes [#942](https://github.com/kevinchappell/formBuilder/issues/942)
+* use run-script instead of run ([e8275e5](https://github.com/kevinchappell/formBuilder/commit/e8275e5))
+
 ## [3.2.2](https://github.com/kevinchappell/formBuilder/compare/v3.2.1...v3.2.2) (2019-04-23)
 
 
