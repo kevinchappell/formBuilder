@@ -81,7 +81,6 @@ const webpackConfig = {
             loader: 'css-loader',
             options: {
               camelCase: true,
-              minimize: true,
               sourceMap: !PRODUCTION,
             },
           },
@@ -107,13 +106,16 @@ const webpackConfig = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(['dist/*', 'demo/assets/js/form-*'], {
-      root: join(__dirname, '..'),
-    }),
+    new CleanWebpackPlugin(
+      { cleanOnceBeforeBuildPatterns: ['dist/*', 'demo/assets/js/form-*'] },
+      {
+        root: join(__dirname, '..'),
+      },
+    ),
     new WrapperPlugin({
       test: /\.js$/, // only wrap output of bundle files with '.js' extension
       header: '(function ($) { "use strict";\n',
-      footer: '\n})(jQuery);'
+      footer: '\n})(jQuery);',
     }),
     new DefinePlugin({
       FB_EN_US: JSON.stringify(langFiles['en-US']),
