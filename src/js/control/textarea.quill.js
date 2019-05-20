@@ -1,4 +1,5 @@
 import controlTextarea from './textarea';
+import utils from '../utils';
 
 /**
  * Quill rich text editor element
@@ -10,8 +11,36 @@ export default class controlQuill extends controlTextarea {
    * configure the quill editor requirements
    */
   configure() {
-    this.js = '//cdn.quilljs.com/1.2.4/quill.js';
-    this.css = '//cdn.quilljs.com/1.2.4/quill.snow.css';
+    const defaultClassConfig = {
+      js: '//cdn.quilljs.com/1.2.4/quill.js',
+      css: '//cdn.quilljs.com/1.2.4/quill.snow.css',
+    }
+
+    const defaultEditorConfig = {
+      modules: {
+        toolbar: [
+          [{'header': [1, 2, false]}],
+          ['bold', 'italic', 'underline'],
+          ['code-block']
+        ]
+      },
+      placeholder: this.config.placeholder || '',
+      theme: 'snow'
+    }
+
+    const [customClassConfig, customEditorConfig] = utils.splitObject(this.classConfig, ['css', 'js'])
+
+    // Allow for customization of the control
+    Object.assign(this, {
+      ...defaultClassConfig,
+      ...customClassConfig,
+    })
+
+    // Allow for customization of the editor
+    this.editorConfig = {
+      ...defaultEditorConfig,
+      ...customEditorConfig,
+    }
   }
 
   /**
@@ -34,17 +63,7 @@ export default class controlQuill extends controlTextarea {
     const Delta = window.Quill.import('delta');
     window.fbEditors.quill[this.id] = {};
     const editor = window.fbEditors.quill[this.id];
-    editor.instance = new window.Quill(this.field, {
-      modules: {
-        toolbar: [
-          [{'header': [1, 2, false]}],
-          ['bold', 'italic', 'underline'],
-          ['code-block']
-        ]
-      },
-      placeholder: this.config.placeholder || '',
-      theme: 'snow'
-    });
+    editor.instance = new window.Quill(this.field, this.editorConfig);
     editor.data = new Delta();
     if (value) {
       editor.instance.setContents(window.JSON.parse(this.parsedHtml(value)));
