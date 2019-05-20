@@ -631,4 +631,30 @@ const utils = {
   validAttr,
 }
 
+/**
+ * Splits an object based on array of keys
+ *
+ * @param {Object} obj Object to be split
+ * @param {Array}  keys Array of keys to use when splitting Object
+ *
+ * @return {Array} returns an array of Objects, the first where the keys matched,
+ *                 the second where they did not
+ */
+utils.splitObject = (obj, keys) => {
+  // reducer for recreating the initial object after splitting via keys
+  // provide a function so I don't reference the original obj
+  const reconstructObj = initialObj => (result, key) => {
+    result[key] = initialObj[key]
+    return result
+  }
+
+  const kept = Object.keys(obj)
+                     .filter(key => keys.includes(key))
+                     .reduce(reconstructObj(obj), {})
+  const rest = Object.keys(obj)
+                     .filter(key => !keys.includes(key))
+                     .reduce(reconstructObj(obj), {})
+  return [kept, rest]
+}
+
 export default utils

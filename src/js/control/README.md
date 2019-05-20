@@ -42,6 +42,8 @@ This option expects an object with keys for the names of controls to specify an 
 Have a look at `src/js/control/textarea.tinymce.js` for an example of a control that supports configuring. Rich text editors regularly require this type of configuration - customising toolbars, adding in plugins etc.
 
 ```javascript
+// inside the tinymce control class this is available as this.classConfig.paste_data_images
+
 var renderOpts = {
   controlConfig: {
     'textarea.tinymce': {
@@ -50,7 +52,16 @@ var renderOpts = {
   }
 };
 
-// inside the tinymce control class this is available as this.classConfig.paste_data_images
+// load a different version of Quill
+
+var renderOpts = {
+  controlConfig: {
+    'textarea.quill': {
+      js: '//cdn.quilljs.com/1.3.4/quill.js',
+      css: '//cdn.quilljs.com/1.3.4/quill.snow.css',
+    }
+  }
+}
 
 ```
 
