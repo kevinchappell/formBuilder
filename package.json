@@ -8,7 +8,8 @@
     "type": "git"
   },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "src/**/*"
   ],
   "author": "Kevin Chappell <kevin.b.chappell@gmail.com>",
   "contributors": [],
@@ -24,6 +25,7 @@
   "license": "MIT",
   "ignore": [
     "**/*",
+    "!src/**/*",
     "node_modules",
     "test"
   ],
