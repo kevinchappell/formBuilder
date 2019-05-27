@@ -28,7 +28,7 @@ import {
 
 const DEFAULT_TIMEOUT = 333
 
-const FormBuilder = function(opts, element) {
+const FormBuilder = function(opts, element, $) {
   const formBuilder = this
   const i18n = mi18n.current
   const formID = `frmb-${new Date().getTime()}`
@@ -704,16 +704,19 @@ const FormBuilder = function(opts, element) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const { class: classname, className, ...attrs } = values
-    const attrVal = attrs[attribute]
+    const { class: classname, className, min = 0, max, step, value, ...attrs } = values
+    const attrVal = attrs[attribute] || value
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
+
     const inputConfig = {
       type: 'number',
       value: attrVal,
       name: attribute,
-      min: '0',
-      placeholder: placeholder,
+      min,
+      max,
+      step,
+      placeholder,
       className: `fld-${attribute} form-control ${classname || className || ''}`.trim(),
       id: `${attribute}-${data.lastID}`,
     }
@@ -1383,58 +1386,60 @@ const FormBuilder = function(opts, element) {
 
   return formBuilder
 }
-;(function($) {
-  jQuery.fn.formBuilder = function(methodOrOptions = {}, ...args) {
-    const methods = {
-      init: (options, elems) => {
-        const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
-        config.opts = opts
-        const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
-        methods.instance = {
-          actions: {
-            getFieldTypes: null,
-            addField: null,
-            clearFields: null,
-            closeAllFieldEdit: null,
-            getData: null,
-            removeField: null,
-            save: null,
-            setData: null,
-            setLang: null,
-            showData: null,
-            toggleAllFieldEdit: null,
-            toggleFieldEdit: null,
-          },
-          get formData() {
-            return methods.instance.actions.getData && methods.instance.actions.getData('json')
-          },
-          promise: new Promise(function(resolve, reject) {
-            mi18n
-              .init(i18nOpts)
-              .then(() => {
-                elems.each(i => {
-                  const formBuilder = new FormBuilder(opts, elems[i])
-                  $(elems[i]).data('formBuilder', formBuilder)
-                  Object.assign(methods, formBuilder.actions)
-                  methods.instance.actions = formBuilder.actions
-                })
-                delete methods.instance.promise
-                resolve(methods.instance)
-              })
-              .catch(opts.notify.error)
-          }),
-        }
-  
-        return methods.instance
+
+const methods = {
+  init: (options, elems) => {
+    const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
+    config.opts = opts
+    const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
+    methods.instance = {
+      actions: {
+        getFieldTypes: null,
+        addField: null,
+        clearFields: null,
+        closeAllFieldEdit: null,
+        getData: null,
+        removeField: null,
+        save: null,
+        setData: null,
+        setLang: null,
+        showData: null,
+        toggleAllFieldEdit: null,
+        toggleFieldEdit: null,
       },
+      get formData() {
+        return methods.instance.actions.getData && methods.instance.actions.getData('json')
+      },
+      promise: new Promise(function(resolve, reject) {
+        mi18n
+          .init(i18nOpts)
+          .then(() => {
+            elems.each(i => {
+              const formBuilder = new FormBuilder(opts, elems[i], jQuery)
+              jQuery(elems[i]).data('formBuilder', formBuilder)
+              Object.assign(methods, formBuilder.actions)
+              methods.instance.actions = formBuilder.actions
+            })
+            delete methods.instance.promise
+            resolve(methods.instance)
+          })
+          .catch(err => {
+            reject(err)
+            opts.notify.error(err)
+          })
+      }),
     }
-    
-    if (methods[methodOrOptions]) {
-      return methods[methodOrOptions].apply(this, args)
-    } else {
-      const instance = methods.init(methodOrOptions, this)
-      Object.assign(methods, instance)
-      return instance
-    }
+
+    return methods.instance
+  },
+}
+
+jQuery.fn.formBuilder = function(methodOrOptions = {}, ...args) {
+  if (methods[methodOrOptions]) {
+    return methods[methodOrOptions].apply(this, args)
+  } else {
+    const instance = methods.init(methodOrOptions, this)
+    Object.assign(methods, instance)
+    return instance
   }
-})(jQuery)
+}
