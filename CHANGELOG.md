@@ -1,3 +1,11 @@
+## [3.2.4](https://github.com/kevinchappell/formBuilder/compare/v3.2.3...v3.2.4) (2019-05-27)
+
+
+### Bug Fixes
+
+* npm audit ([d7d7535](https://github.com/kevinchappell/formBuilder/commit/d7d7535))
+* numeric value preservation ([9e4de4f](https://github.com/kevinchappell/formBuilder/commit/9e4de4f)), closes [#945](https://github.com/kevinchappell/formBuilder/issues/945)
+
 ## [3.2.3](https://github.com/kevinchappell/formBuilder/compare/v3.2.2...v3.2.3) (2019-05-02)
 
 
