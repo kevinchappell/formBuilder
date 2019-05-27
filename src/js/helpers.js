@@ -328,6 +328,7 @@ export default class Helpers {
           () => (config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML),
         ],
         [attr.type === 'checkbox', () => attr.checked],
+        [attr.type === 'number' && attr.value !== '', () => Number(attr.value)],
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
       ].find(([condition]) => !!condition)[1]()

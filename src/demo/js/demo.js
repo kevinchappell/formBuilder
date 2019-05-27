@@ -179,6 +179,13 @@ jQuery(function($) {
         value: false,
       },
     },
+    number: {
+      volume: {
+        label: 'Volume Level',
+        value: 1,
+        max: 11,
+      },
+    },
   }
 
   // test disabledAttrs
@@ -195,10 +202,7 @@ jQuery(function($) {
     subtypes: {
       text: ['datetime-local'],
     },
-    onSave: (e, formData) => {
-      window.sessionStorage.setItem('formData', formData)
-      toggleEdit()
-    },
+    onSave: toggleEdit,
     onAddField: fieldId => {
       document.getElementById('currentFieldId').value = fieldId
     },
@@ -256,6 +260,7 @@ jQuery(function($) {
   }
 
   const formBuilder = $('.build-wrap').formBuilder(fbOptions)
+
   const fbPromise = formBuilder.promise
 
   fbPromise.then(function(fb) {
@@ -286,7 +291,7 @@ jQuery(function($) {
         window.sessionStorage.setItem(localeSessionKey, lang)
         fb.actions.setLang(lang)
       },
-      false
+      false,
     )
   })
 })
