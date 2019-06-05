@@ -35,7 +35,7 @@ If your new class inherits from another child class, you should conform to the n
 
 # Supporting user configuration of controls
 
-For a lot of controls, it is entirely feasible that the user will want to customise that control on a case by case basis. Rather than forcing them to create a whole new control, you can allow you control to be configured by using the `controlConfig` option with formBuilder or formRender.
+For a lot of controls, it is entirely feasible that the user will want to customise that control on a case by case basis. Rather than forcing them to create a whole new control, you can allow your control to be configured by using the `controlConfig` option with formBuilder or formRender.
 
 This option expects an object with keys for the names of controls to specify an object of configuration for. This configuration is then exposed to the control in `this.classConfig`.
 
