@@ -88,9 +88,7 @@ const webpackConfig = {
             loader: 'postcss-loader',
             options: {
               plugins: [
-                autoprefixer({
-                  browsers: ['> 1%'],
-                }),
+                autoprefixer(),
               ],
               sourceMap: !PRODUCTION,
             },

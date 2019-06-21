@@ -77,9 +77,9 @@
   "scripts": {
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config",
-    "build:vendor": "mkdir -p demo/assets/js/ && babel-node tools/build-vendor",
+    "build:vendor": "babel-node tools/build-vendor",
     "build": "webpack --mode production -p --progress --config tools/webpack.config",
-    "build:all": "npm-run-all build build:vendor build:plugins copy",
+    "build:all": "npm-run-all build:plugins build:vendor build copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && mkdir -p demo/assets/lang && cp node_modules/formbuilder-languages/*.lang demo/assets/lang/",
     "deploy": "npm run-script build && node tools/deploy.js",
     "deploy:site": "npm run-script docs && cd site/ && npm run-script deploy && cd ../",
@@ -88,7 +88,8 @@
     "lint": "eslint ./src --ext .js || true",
     "semantic-release": "semantic-release",
     "start:devServer": "webpack-dev-server --mode development --open --config tools/webpack.config",
-    "start": "npm-run-all build:vendor start:devServer",
+    "prestart": "npm run build:vendor",
+    "start": "npm run start:devServer",
     "test": "npm run-script build",
     "travis-deploy-once": "travis-deploy-once"
   },
@@ -123,6 +124,7 @@
     "eslint-loader": "^2.1.2",
     "eslint-plugin-prettier": "^3.0.1",
     "formbuilder-languages": "^0.1.0",
+    "fs-extra": "^8.0.1",
     "html-webpack-harddisk-plugin": "^1.0.1",
     "html-webpack-plugin": "^3.2.0",
     "inquirer": "^6.3.1",
@@ -208,5 +210,8 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
-  }
+  },
+  "browserslist": [
+    "> 1%"
+  ]
 }
