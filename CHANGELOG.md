@@ -1,3 +1,10 @@
+## [3.2.5](https://github.com/kevinchappell/formBuilder/compare/v3.2.4...v3.2.5) (2019-06-26)
+
+
+### Bug Fixes
+
+* browserslist config, build:vendor ([32acf6b](https://github.com/kevinchappell/formBuilder/commit/32acf6b))
+
 ## [3.2.4](https://github.com/kevinchappell/formBuilder/compare/v3.2.3...v3.2.4) (2019-05-27)
 
 
