@@ -84,7 +84,7 @@ export default class Dom {
   }
 
   /**
-   * Do something hen a specific dom element renders
+   * Do something when a specific dom element renders
    * @param {Object} node
    * @param {Function} cb
    */
