@@ -31,4 +31,4 @@ export default class controlParagraph extends control {
 // register the following controls
 control.register(['paragraph', 'header'], controlParagraph)
 control.register(['p', 'address', 'blockquote', 'canvas', 'output'], controlParagraph, 'paragraph')
-control.register(['h1', 'h2', 'h3', 'h4'], controlParagraph, 'header')
+control.register(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], controlParagraph, 'header')
