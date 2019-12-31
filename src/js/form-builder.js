@@ -704,7 +704,7 @@ const FormBuilder = function(opts, element, $) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const { class: classname, className, min = 0, max, step, value, ...attrs } = values
+    const { class: classname, className, value, ...attrs } = values
     const attrVal = attrs[attribute] || value
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
@@ -713,9 +713,6 @@ const FormBuilder = function(opts, element, $) {
       type: 'number',
       value: attrVal,
       name: attribute,
-      min,
-      max,
-      step,
       placeholder,
       className: `fld-${attribute} form-control ${classname || className || ''}`.trim(),
       id: `${attribute}-${data.lastID}`,
