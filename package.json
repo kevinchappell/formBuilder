@@ -137,7 +137,7 @@
     "replace-in-file": "^4.0.0",
     "request": "^2.88.0",
     "sass-loader": "^7.1.0",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^15.14.0",
     "semver": "^6.0.0",
     "style-loader": "^0.23.1",
     "travis-deploy-once": "^5.0.11",
