@@ -66,7 +66,7 @@ window.fbControls.push(function(controlClass, allControlClasses) {
 
       // output some css styles to override editor defaults that don't work with formbuilder
       const css = this.markup('style', `
-      div.fb-textarea div.trumbowyg-box {
+      div.formbuilder-textarea div.trumbowyg-box {
         margin: auto;
       }`, {type: 'text/css'});
 

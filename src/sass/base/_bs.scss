@@ -204,21 +204,21 @@ textarea.form-control {
   float: left;
 }
 
-.fb-required,
+.formbuilder-required,
 .required-asterisk {
   color: $error;
 }
 
-.fb-checkbox-group,
-.fb-radio-group {
+.formbuilder-checkbox-group,
+.formbuilder-radio-group {
   input[type='checkbox'],
   input[type='radio'] {
     margin: 0 4px 0 0;
   }
 }
 
-.fb-checkbox-inline,
-.fb-radio-inline {
+.formbuilder-checkbox-inline,
+.formbuilder-radio-inline {
   margin-right: 8px;
   display: inline-block;
   vertical-align: middle;
@@ -230,12 +230,12 @@ textarea.form-control {
   }
 }
 
-.fb-checkbox-inline:first-child,
-.fb-radio-inline:first-child {
+.formbuilder-checkbox-inline:first-child,
+.formbuilder-radio-inline:first-child {
   padding-left: 0;
 }
 
-.fb-autocomplete-list {
+.formbuilder-autocomplete-list {
   background-color: $white;
   display: none;
   list-style: none;
