@@ -78,7 +78,7 @@ const FormBuilder = function(opts, element, $) {
     helper: 'clone',
     opacity: 0.9,
     connectWith: $stage,
-    cancel: '.fb-separator',
+    cancel: '.formbuilder-separator',
     cursor: 'move',
     scroll: false,
     placeholder: 'ui-state-highlight',

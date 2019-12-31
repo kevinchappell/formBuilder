@@ -540,7 +540,7 @@ export const mobileClass = () => {
         a
       )
     ) {
-      mobileClass = 'fb-mobile'
+      mobileClass = 'formbuilder-mobile'
     }
   })(navigator.userAgent || navigator.vendor || window.opera)
   return mobileClass
