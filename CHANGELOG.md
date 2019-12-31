@@ -1,3 +1,10 @@
+## [3.2.6](https://github.com/kevinchappell/formBuilder/compare/v3.2.5...v3.2.6) (2019-12-31)
+
+
+### Bug Fixes
+
+* adblock because of fb- prefix ([e091474](https://github.com/kevinchappell/formBuilder/commit/e091474219cba88ff0c950649de62ec0de9ab414))
+
 ## [3.2.5](https://github.com/kevinchappell/formBuilder/compare/v3.2.4...v3.2.5) (2019-06-26)
 
 
