@@ -78,7 +78,8 @@ export default class controlFineUploader extends controlText {
       },
     ]
     this.handler = this.classConfig.handler || '/upload'
-    ;['js', 'css', 'handler'].forEach(key => delete this.classConfig[key])
+    const deleteKeys = ['js', 'css', 'handler']
+    deleteKeys.forEach(key => delete this.classConfig[key])
 
     // fineuploader template that needs to be defined for the UI
     const template =
