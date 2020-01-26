@@ -26,8 +26,8 @@ export default class Controls {
   }
 
   /**
- * bootstrap controls and append them
- */
+   * bootstrap controls and append them
+   */
   init() {
     this.setupControls()
     this.appendControls()
@@ -159,7 +159,7 @@ export default class Controls {
 
     // remove disableFields
     if (opts.disableFields.length) {
-      fieldOrder = fieldOrder.filter(type => opts.disableFields.indexOf(type) == -1)
+      fieldOrder = fieldOrder.filter(type => !opts.disableFields.includes(type))
     }
 
     return fieldOrder.filter(Boolean)
@@ -169,11 +169,15 @@ export default class Controls {
    * Adds the controls to the control list
    */
   appendControls() {
+    const fragment = document.createDocumentFragment()
     empty(this.dom)
     // append controls to list
     this.orderFields(this.controlList).forEach(controlKey => {
       const control = this.allControls[controlKey]
-      control && this.dom.appendChild(control)
+      if (control) {
+        fragment.appendChild(control)
+      }
     })
+    this.dom.appendChild(fragment)
   }
 }
