@@ -1,6 +1,6 @@
 import '../sass/demo.scss'
 import { insertStyle, removeStyle } from '../../js/utils'
-import { demoActions, generateActionTable } from './actionButtons'
+import { demoActions, generateActionTable, setCurrentFieldIdValues } from './actionButtons'
 
 const localeSessionKey = 'formBuilder-locale'
 const defaultLocale = 'en-US'
@@ -211,10 +211,7 @@ jQuery(function($) {
     },
     onSave: toggleEdit,
     onAddField: fieldId => {
-      const currentFieldIds = document.querySelectorAll('.current-field-id')
-      currentFieldIds.forEach(field => {
-        field.value = fieldId
-      })
+      setCurrentFieldIdValues(fieldId)
     },
     onClearAll: () => window.sessionStorage.removeItem('formData'),
     stickyControls: {

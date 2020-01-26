@@ -1215,9 +1215,9 @@ const FormBuilder = function(opts, element, $) {
   })
 
   // Copy field
-  $stage.on('click touchstart', '.icon-copy', function(e) {
-    e.preventDefault()
-    const currentItem = $(e.target)
+  $stage.on('click touchstart', '.icon-copy', function(evt) {
+    evt.preventDefault()
+    const currentItem = $(evt.target)
       .parent()
       .parent('li')
     const $clone = cloneItem(currentItem)
@@ -1257,7 +1257,7 @@ const FormBuilder = function(opts, element, $) {
       h.confirm([warnH3, warnMessage], () => h.removeField(deleteID), coords)
       $field.addClass('deleting')
     } else {
-      h.removeField(deleteID)
+      h.removeField(deleteID, e)
     }
   })
 
