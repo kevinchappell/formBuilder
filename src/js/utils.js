@@ -18,7 +18,7 @@ window.fbEditors = {
  * @return {Object}       Object trimmed of null or undefined values
  */
 export const trimObj = function(attrs) {
-  const xmlRemove = [null, undefined, '', false, 'false']
+  const xmlRemove = [null, undefined, '']
   for (const attr in attrs) {
     if (xmlRemove.includes(attrs[attr])) {
       delete attrs[attr]
@@ -575,7 +575,7 @@ export const insertStyle = srcs => {
   srcs = Array.isArray(srcs) ? srcs : [srcs]
   const promises = srcs.map(
     ({ src, id }) =>
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         if (window.fbLoaded.css.includes(src)) {
           return resolve(src)
         }
