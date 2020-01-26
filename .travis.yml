@@ -31,6 +31,7 @@ jobs:
       before_deploy:
         - sudo apt-get update
         - sudo apt-get -y install python3.5 python3.5-dev libncurses5-dev python3-pip
+        - sudo mv /usr/bin/python3 /usr/bin/python3-old
         - sudo ln -s /usr/bin/python3.5 /usr/bin/python3
         - python --version
         - sudo pip3 install --upgrade setuptools
