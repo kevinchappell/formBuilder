@@ -29,11 +29,10 @@ jobs:
     - stage: deploy
       if: branch = master
       before_deploy:
-        - python --version
-        - pyenv global 3.5.0
-        - python --version
         - sudo apt-get update
-        - sudo apt-get -y install python3-pip python-dev
+        - sudo apt-get -y install python3.5 python3.5-dev libncurses5-dev python3-pip
+        - sudo ln -s /usr/bin/python3.5 /usr/bin/python3
+        - python --version
         - sudo pip3 install --upgrade setuptools
         - sudo pip3 install mkdocs
         - python3 -V
