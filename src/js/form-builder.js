@@ -47,7 +47,7 @@ const FormBuilder = function(opts, element, $) {
   data.layout = h.editorLayout(opts.controlPosition)
   h.editorUI(formID)
   data.formID = formID
-  data.lastID = `${data.formID}-fld-1`
+  data.lastID = `${data.formID}-fld-0`
   const controls = new Controls(opts, d)
 
   const subtypes = (config.subtypes = h.processSubtypes(opts.subtypes))
@@ -229,10 +229,10 @@ const FormBuilder = function(opts, element, $) {
     }
 
     if (isNew) {
-      field = Object.assign({}, field, opts.onAddField(data.lastID, field))
       setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
     }
 
+    opts.onAddField(data.lastID, field)
     appendNewField(field, isNew)
 
     d.stage.classList.remove('empty')
@@ -508,6 +508,7 @@ const FormBuilder = function(opts, element, $) {
     return (
       [
         ['array', ({ options }) => !!options],
+        ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
         [typeof attrData.value, () => true], // string, number,
       ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
     )
@@ -525,8 +526,15 @@ const FormBuilder = function(opts, element, $) {
       array: selectUserAttrs,
       string: inputUserAttrs,
       number: numberAttribute,
-      boolean: (attr, attrData) =>
-        boolAttribute(attr, { ...attrData, [attr]: values[attr] }, { first: attrData.label }),
+      boolean: (attr, attrData) => {
+        let isChecked = false
+        if (values.hasOwnProperty(attr)) {
+          isChecked = values[attr]
+        } else if (attrData.hasOwnProperty('value') || attrData.hasOwnProperty('value')) {
+          isChecked = attrData.value || attrData.checked || false
+        }
+        return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: attrData.label })
+      },
     }
 
     for (const attribute in typeUserAttr) {
@@ -845,6 +853,8 @@ const FormBuilder = function(opts, element, $) {
 
   // Append the new field to the editor
   const appendNewField = function(values, isNew = true) {
+    data.lastID = h.incrementId(data.lastID)
+
     const type = values.type || 'text'
     const label = values.label || (isNew ? i18n.get(type) || mi18n.get('label') : '')
     const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
@@ -946,8 +956,6 @@ const FormBuilder = function(opts, element, $) {
         field.scrollIntoView({ behavior: 'smooth' })
       }
     }
-
-    data.lastID = h.incrementId(data.lastID)
   }
 
   // Select field html, since there may be multiple
@@ -1367,6 +1375,9 @@ const FormBuilder = function(opts, element, $) {
       })
     },
     closeAllFieldEdit: h.closeAllEdit.bind(h),
+    getCurrentFieldId: () => {
+      return data.lastID
+    },
   }
 
   // set min-height on stage onRender
@@ -1403,6 +1414,7 @@ const methods = {
         showData: null,
         toggleAllFieldEdit: null,
         toggleFieldEdit: null,
+        getCurrentFieldId: null,
       },
       get formData() {
         return methods.instance.actions.getData && methods.instance.actions.getData('json')
@@ -1432,8 +1444,14 @@ const methods = {
 }
 
 jQuery.fn.formBuilder = function(methodOrOptions = {}, ...args) {
-  if (methods[methodOrOptions]) {
-    return methods[methodOrOptions].apply(this, args)
+  const isMethod = typeof methodOrOptions === 'string'
+  if (isMethod) {
+    if (methods[methodOrOptions]) {
+      if (typeof methods[methodOrOptions] === 'function') {
+        return methods[methodOrOptions].apply(this, args)
+      }
+      return methods[methodOrOptions]
+    }
   } else {
     const instance = methods.init(methodOrOptions, this)
     Object.assign(methods, instance)

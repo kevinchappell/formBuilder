@@ -26,3 +26,39 @@ body {
 .form-rendered .formrender-actions {
   display: block;
 }
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  td {
+    border: 1px solid #aaa;
+    padding: 16px;
+    &:last-child {
+      text-align: center;
+    }
+  }
+  thead {
+    background-color: #fff;
+  }
+  tbody {
+    background-color: #fff;
+    tr {
+      &:nth-child(odd) {
+        background-color: #ddd;
+      }
+    }
+  }
+  textarea {
+    width: 100%;
+    height: 24px;
+    transition: height 333ms ease-in-out;
+    &:focus {
+      height: 160px;
+    }
+  }
+}
+
+.demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

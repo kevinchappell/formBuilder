@@ -302,14 +302,20 @@ export default class control {
   on(eventType) {
     const events = {
       // executed just prior to the row being returned by the layout class. Receives the DOMelement about to be passed back
-      prerender: element => {},
+      /**
+       * @param {Node} element
+       */
+      prerender: element => element,
 
-      // onRender event to execute code each time an instance of this control is injected into the DOM
+      /**
+       * onRender event to execute code each time an instance of this control is injected into the DOM
+       * @param {Node} element
+       */
       render: evt => {
         // check for a class render event - default to an empty function
         const onRender = () => {
           if (this.onRender) {
-            this.onRender()
+            this.onRender(evt)
           }
         }
 
@@ -320,7 +326,7 @@ export default class control {
         if (this.js && !isCached(this.js)) {
           getScripts(this.js).done(onRender)
         } else {
-          onRender()
+          onRender(evt)
         }
       },
     }

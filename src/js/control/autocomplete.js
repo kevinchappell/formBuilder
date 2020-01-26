@@ -298,6 +298,7 @@ export default class controlAutocomplete extends control {
         this.hideList(list)
       }
     }
+    return evt
   }
 }
 
