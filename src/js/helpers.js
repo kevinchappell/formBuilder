@@ -876,7 +876,9 @@ export default class Helpers {
       return false
     }
 
-    if (!fieldID) {
+    const field = fieldID && document.getElementById(fieldID)
+
+    if (!fieldID || !field) {
       const availableIds = [].slice.call(fields).map(field => {
         return field.id
       })
@@ -886,7 +888,6 @@ export default class Helpers {
       fieldID = form.lastChild.id
     }
 
-    const field = document.getElementById(fieldID)
     const $field = $(field)
     if (!field) {
       config.opts.notify.warning('Field not found')

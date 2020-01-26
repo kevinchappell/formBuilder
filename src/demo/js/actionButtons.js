@@ -1,5 +1,12 @@
 import { titleCase } from './utils'
 
+export const setCurrentFieldIdValues = value => {
+  const currentFieldIds = document.querySelectorAll('.current-field-id')
+  currentFieldIds.forEach(field => {
+    field.value = value
+  })
+}
+
 export const builderActions = {
   showData: () => $('.build-wrap').formBuilder('showData'),
   clearFields: () => $('.build-wrap').formBuilder('clearFields'),
@@ -21,6 +28,7 @@ export const builderActions = {
   },
   removeField: () => {
     const currentFieldId = $('.build-wrap').formBuilder('getCurrentFieldId')
+    setCurrentFieldIdValues('')
     $('.build-wrap').formBuilder('removeField', currentFieldId)
   },
   getXML: () => {
