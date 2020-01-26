@@ -33,10 +33,8 @@ jobs:
         - sudo apt-get -y install python3.5 python3.5-dev libncurses5-dev python3-pip
         - sudo mv /usr/bin/python3 /usr/bin/python3-old
         - sudo ln -s /usr/bin/python3.5 /usr/bin/python3
-        - python --version
         - sudo pip3 install --upgrade setuptools
         - sudo pip3 install mkdocs
-        - python3 -V
         - pip3 -V
         - mkdocs -V
         - npm run build:all
@@ -46,10 +44,8 @@ jobs:
           - npm run travis-deploy-once "npm run semantic-release"
         skip_cleanup: true
       after_deploy:
-        - npm run deploy
         - git clone --depth 1 "https://${GH_TOKEN}:@github.com/${SITE_REPO}" "$SITE_DIR" 2> /dev/null || (cd "$SITE_DIR" ; git pull; cd ../)
-        - ls -l
-        - npm run deploy:site
+        - npm run deploy:all
 env:
   global:
     - secure: Fzq6BMwpDtUVH6ONSD5cg3gxDl/6bL9d4xoCnb1Ck3jhLen7GVSBCVs8dTPP0J1kMUbcPfywdG5CrdTMUXtuT3i7uVEqDxemkWYLyKwtvtqWPSFFTS9WvLnoxPvpTnDDoXvU9DhZoFP5U6nEELZIcqJceGwpDReROvJM1LKug72su7LHG40FWPj3w1X5XvMMKZlp6ClFwHZYDs7ybDcWlz6s2TsdunW0JW15+KMEDVuPTKw5VVk6ytnC3j3XXNus8ARRH/vG7DWCOtOai2ckYHchqz9c37oms5xA8nT4+J4Se/sgvkZo/jfa5tJSOljppUxMwyyNdkEu3QIEVNPgBtQf34KhWFN+FivuZHK4qG12lyQvRcJYlBJvUeSp29KABZv8oESIso5/HD8cIOEVCLUXjhOkcLF8S6cSRag0+/PT0u7Aj/L0ONKNsYhikOM773ilmbt8Vb7tjSOi7aoLJBmUlNVJcT4wJwJFjoe7bUppeqj1pC/+2+aX/IJDX6LfX6kpSxKGUH/DfJpEXq0xjCfsa8aap2gXfbn9Exsynx6KlIyAMRkmTU7S7iMiBts1fKMZvks3wA8rR4b44EZO+qgP5EbTGhCsvLYl3f5TiRsJf+w9LQrtP4Vl8mOU0XFgfrKArGMp6KDp1x1cyF/X4LAO9ySSDu9IEUj7Ft3WyOs=
