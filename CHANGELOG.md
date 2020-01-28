@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/kevinchappell/formBuilder/compare/v3.3.0...v3.3.1) (2020-01-28)
+
+
+### Bug Fixes
+
+* field removed from stage but not formData ([2c6d824](https://github.com/kevinchappell/formBuilder/commit/2c6d824fe5dcbe413440b3c3fa59b5944e1c5bf9)), closes [#1028](https://github.com/kevinchappell/formBuilder/issues/1028)
+
 # [3.3.0](https://github.com/kevinchappell/formBuilder/compare/v3.2.6...v3.3.0) (2020-01-26)
 
 
