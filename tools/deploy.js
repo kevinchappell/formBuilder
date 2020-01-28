@@ -11,7 +11,6 @@ const onFinish = (err, cb) => {
 }
 
 const commands = [
-  'git clone --depth 1 --single-branch --branch gh-pages git@github.com:kevinchappell/formBuilder.git gh-pages',
   'mv gh-pages/.git demo/',
   'cd demo',
   'git add --all',

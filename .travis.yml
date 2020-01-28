@@ -44,6 +44,7 @@ jobs:
           - npm run travis-deploy-once "npm run semantic-release"
         skip_cleanup: true
       after_deploy:
+        - git clone --depth 1 --single-branch --branch "$DEMO_BRANCH" "https://${GH_TOKEN}:@github.com/${DEMO_REPO}" "$DEMO_BRANCH"
         - git clone --depth 1 "https://${GH_TOKEN}:@github.com/${SITE_REPO}" "$SITE_DIR" 2> /dev/null || (cd "$SITE_DIR" ; git pull; cd ../)
         - npm run deploy:all
 env:
