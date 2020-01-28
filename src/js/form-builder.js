@@ -1257,7 +1257,7 @@ const FormBuilder = function(opts, element, $) {
       h.confirm([warnH3, warnMessage], () => h.removeField(deleteID), coords)
       $field.addClass('deleting')
     } else {
-      h.removeField(deleteID, e)
+      h.removeField(deleteID)
     }
   })
 
