@@ -1,16 +1,17 @@
 sudo: required
 dist: trusty
 stages:
-- lint
-- test
-- deploy
+  - lint
+  - test
+  - deploy
 language: node_js
-node_js: '10'
-python: '3.4'
+node_js: 'lts/*'
+python:
+  - 3.5
 cache:
   directories:
-  - "~/.npm"
-  - node_modules
+    - '~/.npm'
+    - node_modules
 notifications:
   email: false
 git:
@@ -22,31 +23,31 @@ before_install:
   - "git config --global user.name \"\U0001F916\""
 jobs:
   include:
-  - stage: lint
-    script: npm run lint
-    skip_cleanup: true
-  - stage: deploy
-    if: branch = master
-    before_deploy:
-    - sudo apt-get update
-    - sudo apt-get -y install python3-pip python-dev
-    - sudo pip3 install --upgrade setuptools
-    - sudo pip3 install mkdocs
-    - python3 -V
-    - pip3 -V
-    - mkdocs -V
-    - npm run build:all
-    deploy:
-      provider: script
-      script:
-      - npm run travis-deploy-once "npm run semantic-release"
+    - stage: lint
+      script: npm run lint
       skip_cleanup: true
-    after_deploy:
-      - npm run deploy
-      - git clone --depth 1 "https://${GH_TOKEN}:@github.com/${SITE_REPO}" "$SITE_DIR" 2> /dev/null || (cd "$SITE_DIR" ; git pull; cd ../)
-      - ls -l
-      - npm run deploy:site
+    - stage: deploy
+      if: branch = master
+      before_deploy:
+        - sudo apt-get update
+        - sudo apt-get -y install python3.5 python3.5-dev libncurses5-dev python3-pip
+        - sudo mv /usr/bin/python3 /usr/bin/python3-old
+        - sudo ln -s /usr/bin/python3.5 /usr/bin/python3
+        - sudo pip3 install --upgrade setuptools
+        - sudo pip3 install mkdocs
+        - pip3 -V
+        - mkdocs -V
+        - npm run build:all
+      deploy:
+        provider: script
+        script:
+          - npm run travis-deploy-once "npm run semantic-release"
+        skip_cleanup: true
+      after_deploy:
+        - git clone --depth 1 --single-branch --branch "$DEMO_BRANCH" "https://${GH_TOKEN}:@github.com/${DEMO_REPO}" "$DEMO_BRANCH"
+        - git clone --depth 1 "https://${GH_TOKEN}:@github.com/${SITE_REPO}" "$SITE_DIR" 2> /dev/null || (cd "$SITE_DIR" ; git pull; cd ../)
+        - npm run deploy:all
 env:
   global:
-  - secure: Fzq6BMwpDtUVH6ONSD5cg3gxDl/6bL9d4xoCnb1Ck3jhLen7GVSBCVs8dTPP0J1kMUbcPfywdG5CrdTMUXtuT3i7uVEqDxemkWYLyKwtvtqWPSFFTS9WvLnoxPvpTnDDoXvU9DhZoFP5U6nEELZIcqJceGwpDReROvJM1LKug72su7LHG40FWPj3w1X5XvMMKZlp6ClFwHZYDs7ybDcWlz6s2TsdunW0JW15+KMEDVuPTKw5VVk6ytnC3j3XXNus8ARRH/vG7DWCOtOai2ckYHchqz9c37oms5xA8nT4+J4Se/sgvkZo/jfa5tJSOljppUxMwyyNdkEu3QIEVNPgBtQf34KhWFN+FivuZHK4qG12lyQvRcJYlBJvUeSp29KABZv8oESIso5/HD8cIOEVCLUXjhOkcLF8S6cSRag0+/PT0u7Aj/L0ONKNsYhikOM773ilmbt8Vb7tjSOi7aoLJBmUlNVJcT4wJwJFjoe7bUppeqj1pC/+2+aX/IJDX6LfX6kpSxKGUH/DfJpEXq0xjCfsa8aap2gXfbn9Exsynx6KlIyAMRkmTU7S7iMiBts1fKMZvks3wA8rR4b44EZO+qgP5EbTGhCsvLYl3f5TiRsJf+w9LQrtP4Vl8mOU0XFgfrKArGMp6KDp1x1cyF/X4LAO9ySSDu9IEUj7Ft3WyOs=
-  - secure: At9Vnh2CLHl2SaVAz02N+q9HJ7cfhTpwnyFkeBdvq5ztg7frb78BOK4dyheWbGW7ISbdEhtvZU/UA1rwS37D8cbcTlzjoKT28G+KTEU1fsAM6agZAnoAZj8or0SVH5KEQy/vdx27gp5NevJqiwsVtTfown71VHe+8IFILnGo3aqmY+SbQJd3f2wPbNxGwt2C3n55iqWDQFNcYMD/IJcy2/Sooru3iKu8KQnWD3ug4anpz8cWdnjwDzwhsFbXYZLOoCXTotNfJdRI8ZuoKa8VVbHNMGv9hwcUR5ncI5otGCQ3w/gO9FFRJ083A0Ca1FhlZNuahPj8K9qAuQVmeYYLbNngyj4kgbDMWOubFN+6wp5h0L+7B6Cph3pcbLOimJfHKjksekofTBinGivzZFxSMn9x1OsSyHuljvomMRpzthuRNzB4/6G4q5rEEImWChCFwxoSPdLec7lbDPnba4MF5OC6F1Lvgesz4CSlR1RXlm7fYQ3NvWsMMuizBb3nvIhFlYe+vJw/EOpruB5QUiSV1TWpfW/kzxk8at04UXzpDsCm3r5847dI7LMA/3Fk1YddflYZFQxeAWuEH5ZoVdPaVMj8u2XxFMkB+56mF95o6Ec8zWeB7RAxbRf14isU0vY2e/IX1BqipVbo0erPQYetp/KQNR9TOmrqunOMvYQzg/A=
+    - secure: Fzq6BMwpDtUVH6ONSD5cg3gxDl/6bL9d4xoCnb1Ck3jhLen7GVSBCVs8dTPP0J1kMUbcPfywdG5CrdTMUXtuT3i7uVEqDxemkWYLyKwtvtqWPSFFTS9WvLnoxPvpTnDDoXvU9DhZoFP5U6nEELZIcqJceGwpDReROvJM1LKug72su7LHG40FWPj3w1X5XvMMKZlp6ClFwHZYDs7ybDcWlz6s2TsdunW0JW15+KMEDVuPTKw5VVk6ytnC3j3XXNus8ARRH/vG7DWCOtOai2ckYHchqz9c37oms5xA8nT4+J4Se/sgvkZo/jfa5tJSOljppUxMwyyNdkEu3QIEVNPgBtQf34KhWFN+FivuZHK4qG12lyQvRcJYlBJvUeSp29KABZv8oESIso5/HD8cIOEVCLUXjhOkcLF8S6cSRag0+/PT0u7Aj/L0ONKNsYhikOM773ilmbt8Vb7tjSOi7aoLJBmUlNVJcT4wJwJFjoe7bUppeqj1pC/+2+aX/IJDX6LfX6kpSxKGUH/DfJpEXq0xjCfsa8aap2gXfbn9Exsynx6KlIyAMRkmTU7S7iMiBts1fKMZvks3wA8rR4b44EZO+qgP5EbTGhCsvLYl3f5TiRsJf+w9LQrtP4Vl8mOU0XFgfrKArGMp6KDp1x1cyF/X4LAO9ySSDu9IEUj7Ft3WyOs=
+    - secure: At9Vnh2CLHl2SaVAz02N+q9HJ7cfhTpwnyFkeBdvq5ztg7frb78BOK4dyheWbGW7ISbdEhtvZU/UA1rwS37D8cbcTlzjoKT28G+KTEU1fsAM6agZAnoAZj8or0SVH5KEQy/vdx27gp5NevJqiwsVtTfown71VHe+8IFILnGo3aqmY+SbQJd3f2wPbNxGwt2C3n55iqWDQFNcYMD/IJcy2/Sooru3iKu8KQnWD3ug4anpz8cWdnjwDzwhsFbXYZLOoCXTotNfJdRI8ZuoKa8VVbHNMGv9hwcUR5ncI5otGCQ3w/gO9FFRJ083A0Ca1FhlZNuahPj8K9qAuQVmeYYLbNngyj4kgbDMWOubFN+6wp5h0L+7B6Cph3pcbLOimJfHKjksekofTBinGivzZFxSMn9x1OsSyHuljvomMRpzthuRNzB4/6G4q5rEEImWChCFwxoSPdLec7lbDPnba4MF5OC6F1Lvgesz4CSlR1RXlm7fYQ3NvWsMMuizBb3nvIhFlYe+vJw/EOpruB5QUiSV1TWpfW/kzxk8at04UXzpDsCm3r5847dI7LMA/3Fk1YddflYZFQxeAWuEH5ZoVdPaVMj8u2XxFMkB+56mF95o6Ec8zWeB7RAxbRf14isU0vY2e/IX1BqipVbo0erPQYetp/KQNR9TOmrqunOMvYQzg/A=

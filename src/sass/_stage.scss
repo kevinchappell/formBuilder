@@ -28,7 +28,7 @@
   min-height: 200px;
   transition: background-color 500ms ease-in-out;
 
-  .fb-required {
+  .formbuilder-required {
     color: $error;
   }
 
@@ -262,7 +262,7 @@
       min-height: 125px;
     }
 
-    .form-group > label:not([class='fb-checkbox-label']) {
+    .form-group > label:not([class='formbuilder-checkbox-label']) {
       display: none;
     }
 
@@ -673,7 +673,7 @@
   }
 }
 
-.fb-mobile {
+.formbuilder-mobile {
   .field-actions {
     opacity: 1;
   }

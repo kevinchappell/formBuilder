@@ -1,6 +1,6 @@
 import '../sass/demo.scss'
 import { insertStyle, removeStyle } from '../../js/utils'
-import { builderActions, renderActions, demoActions } from './actionButtons'
+import { demoActions, generateActionTable, setCurrentFieldIdValues } from './actionButtons'
 
 const localeSessionKey = 'formBuilder-locale'
 const defaultLocale = 'en-US'
@@ -186,6 +186,13 @@ jQuery(function($) {
         max: 11,
       },
     },
+    'checkbox-group': {
+      randomize: {
+        label: 'Randomize',
+        type: 'checkbox',
+        value: false,
+      },
+    },
   }
 
   // test disabledAttrs
@@ -204,7 +211,7 @@ jQuery(function($) {
     },
     onSave: toggleEdit,
     onAddField: fieldId => {
-      document.getElementById('currentFieldId').value = fieldId
+      setCurrentFieldIdValues(fieldId)
     },
     onClearAll: () => window.sessionStorage.removeItem('formData'),
     stickyControls: {
@@ -264,25 +271,34 @@ jQuery(function($) {
   const fbPromise = formBuilder.promise
 
   fbPromise.then(function(fb) {
-    const apiBtns = {
-      ...builderActions,
-      ...renderActions,
-      ...demoActions,
-    }
-
-    Object.keys(apiBtns).forEach(function(action) {
-      document.getElementById(action).addEventListener('click', function(e) {
-        apiBtns[action]()
-      })
-    })
-
     document.querySelectorAll('.editForm').forEach(element => element.addEventListener('click', toggleEdit), false)
     const langSelect = document.getElementById('setLanguage')
-    const savedLocale = window.sessionStorage.getItem(localeSessionKey)
+    const savedLocale = window.sessionStorage.getItem(localeSessionKey) || defaultLocale
 
-    if (savedLocale && savedLocale !== defaultLocale) {
-      langSelect.value = savedLocale
-      fb.actions.setLang(savedLocale)
+    langSelect.value = savedLocale
+    fb.actions.setLang(savedLocale)
+
+    const columns = ['action', 'description', 'demo']
+    const actions = {
+      getFieldTypes: 'Get the registered field types for the form.',
+      showData: 'Trigger a modal to appear that shows the current formData value',
+      clearFields: 'Removes all the fields from the template editor',
+      getData: 'Read the current formData',
+      getXML: 'Get the current formData in XML format',
+      getJSON: 'Get the current formData in JSON format',
+      getJS: 'Get the current formData in JS object format',
+      setData: 'set the current formData value for the editor',
+      toggleAllEdit: 'toggle the edit mode for all fields',
+      toggleEdit: 'toggle a specific field edit mode by index or id',
+      addField: 'programmatically add a field to the template editor',
+      removeField: 'remove a field by its index or id from the editor stage',
+      resetDemo: 'reset the demo to default state',
+    }
+
+    const actionApi = document.getElementById('action-api')
+    actionApi.appendChild(generateActionTable(actions, columns))
+    if (formData && formData !== '[]') {
+      document.getElementById('set-form-data-value').value = window.JSON.stringify(JSON.parse(formData), null, '  ')
     }
 
     langSelect.addEventListener(

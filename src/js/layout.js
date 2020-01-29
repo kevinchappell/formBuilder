@@ -3,7 +3,7 @@ import utils from './utils'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
-  let className = data.id ? `fb-${data.type} form-group field-${data.id}` : ''
+  let className = data.id ? `formbuilder-${data.type} form-group field-${data.id}` : ''
 
   if (data.className) {
     let classes = data.className.split(' ')
@@ -58,7 +58,7 @@ export default class layout {
           className: processClassName(data, field)
         })
       },
-      hidden: (field, label, help, data) => {
+      hidden: (field) => {
         // no wrapper any any visible elements
         return field
       }
@@ -139,7 +139,7 @@ export default class layout {
     const labelText = utils.parsedHtml(label)
     const labelContents = [labelText]
     if (this.data.required) {
-      labelContents.push(this.markup('span', '*', { className: 'fb-required' }))
+      labelContents.push(this.markup('span', '*', { className: 'formbuilder-required' }))
     }
 
     // support an override template for labels
@@ -150,7 +150,7 @@ export default class layout {
     // generate a label element
     return this.markup('label', labelContents, {
       for: this.data.id,
-      className: `fb-${this.data.type}-label`
+      className: `formbuilder-${this.data.type}-label`
     })
   }
 

@@ -1,4 +1,4 @@
-import controlText from './text';
+import controlText from './text'
 
 /**
  * Fineuploader class - render the fineuploader tool (https://fineuploader.com) in place of the traditional file upload widget
@@ -32,7 +32,6 @@ import controlText from './text';
  * If you wish to define a custom template for the interface, this can be defined in controlConfig.file.template. It defaults to the gallery template provided by the Fineuploader project
  */
 export default class controlFineUploader extends controlText {
-
   /**
    * Class configuration - return the icons & label related to this control
    * @return {Object} definition object
@@ -40,18 +39,21 @@ export default class controlFineUploader extends controlText {
   static get definition() {
     return {
       i18n: {
-        default: 'Fine Uploader'
-      }
-    };
+        default: 'Fine Uploader',
+      },
+    }
   }
 
   /**
    * configure the fineupload default settings & allow for controlConfig options
    */
   configure() {
-    this.js = this.classConfig.js || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/jquery.fine-uploader.min.js';
+    this.js =
+      this.classConfig.js ||
+      '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/jquery.fine-uploader.min.js'
     this.css = [
-      this.classConfig.css || '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/fine-uploader-gallery.min.css',
+      this.classConfig.css ||
+        '//cdnjs.cloudflare.com/ajax/libs/file-uploader/5.14.2/jquery.fine-uploader/fine-uploader-gallery.min.css',
       {
         type: 'inline',
         id: 'fineuploader-inline',
@@ -72,14 +74,17 @@ export default class controlFineUploader extends controlText {
           .qq-uploader .qq-error-message span {
             display: inline-block;
             text-align: left;
-          }`
-      }
-    ];
-    this.handler = this.classConfig.handler || '/upload';
-    ['js', 'css', 'handler'].forEach(key => delete this.classConfig[key]);
+          }`,
+      },
+    ]
+    this.handler = this.classConfig.handler || '/upload'
+    const deleteKeys = ['js', 'css', 'handler']
+    deleteKeys.forEach(key => delete this.classConfig[key])
 
     // fineuploader template that needs to be defined for the UI
-    const template = this.classConfig.template || `
+    const template =
+      this.classConfig.template ||
+      `
       <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
         <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
           <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
@@ -149,10 +154,10 @@ export default class controlFineUploader extends controlText {
             <button type="button" class="qq-ok-button-selector">Ok</button>
           </div>
         </dialog>
-      </div>`;
+      </div>`
     this.fineTemplate = $('<div/>')
       .attr('id', 'qq-template')
-      .html(template);
+      .html(template)
   }
 
   /**
@@ -160,83 +165,90 @@ export default class controlFineUploader extends controlText {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    this.input = this.markup('input', null, {type: 'hidden', name: this.config.name, id: this.config.name});
-    this.wrapper = this.markup('div', '', {id: this.config.name + '-wrapper'});
-    return [this.input, this.wrapper];
+    this.input = this.markup('input', null, { type: 'hidden', name: this.config.name, id: this.config.name })
+    this.wrapper = this.markup('div', '', { id: this.config.name + '-wrapper' })
+    return [this.input, this.wrapper]
   }
 
   /**
    * onRender callback
    */
   onRender() {
-    const wrapper = $(this.wrapper);
-    const input = $(this.input);
+    const wrapper = $(this.wrapper)
+    const input = $(this.input)
 
     // we need to know where the server handler file located. I.e. where to we send the upload POST to?
     // to set this, define controlConfig.file.handler in the formbuilder options
     // defaults to '/upload'
 
     // deep copy merge in passed class configuration over any conflicting defaults
-    const config = jQuery.extend(true, {
-      request: {
-        endpoint: this.handler
-      },
-      deleteFile: {
-        enabled: true,
-        endpoint: this.handler
-      },
-      chunking: {
-        enabled: true,
-        concurrent: {
-          enabled: true
+    const config = jQuery.extend(
+      true,
+      {
+        request: {
+          endpoint: this.handler,
         },
-        success: {
-          endpoint: this.handler + (this.handler.indexOf('?') == -1 ? '?' : '&') + 'done'
-        }
-      },
-      resume: {
-        enabled: true
-      },
-      retry: {
-        enableAuto: true,
-        showButton: true
-      },
-      callbacks: {
-        onError: (id, name, errorReason, xhrOrXdr) => {
-          if (errorReason.slice(-1) != '.') {
-            errorReason += '.';
-          }
-          const error = $('<div />')
-            .addClass('qq-error-message')
-            .html(`<span>Error processing upload: <b>${name}</b>.<br />Reason: ${errorReason}</span>`)
-            .prependTo(wrapper.find('.qq-uploader'));
-          setTimeout(() => {
-            error.fadeOut(() => {
-              error.remove();
-            });
-          }, 6000);
+        deleteFile: {
+          enabled: true,
+          endpoint: this.handler,
         },
-        onStatusChange: (id, oldStatus, newStatus) => {
-          const uploads = wrapper.fineUploader('getUploads');
-
-          // retrieve an array of successfully uploaded filenames
-          const successful = [];
-          for (const upload of uploads) {
-            if (upload.status != 'upload successful') {
-              continue;
+        chunking: {
+          enabled: true,
+          concurrent: {
+            enabled: true,
+          },
+          success: {
+            endpoint: this.handler + (this.handler.indexOf('?') == -1 ? '?' : '&') + 'done',
+          },
+        },
+        resume: {
+          enabled: true,
+        },
+        retry: {
+          enableAuto: true,
+          showButton: true,
+        },
+        callbacks: {
+          onError: (id, name, errorReason) => {
+            if (errorReason.slice(-1) != '.') {
+              errorReason += '.'
             }
-            successful.push(upload.name);
-          }
-          input.val(successful.join(', '));
-        }
+            const error = $('<div />')
+              .addClass('qq-error-message')
+              .html(`<span>Error processing upload: <b>${name}</b>.<br />Reason: ${errorReason}</span>`)
+              .prependTo(wrapper.find('.qq-uploader'))
+            const removeErrorTimeout = window.setTimeout(() => {
+              error.fadeOut(() => {
+                error.remove()
+                window.clearTimeout(removeErrorTimeout)
+              })
+            }, 6000)
+            return id
+          },
+          onStatusChange: (id, oldStatus, newStatus) => {
+            const uploads = wrapper.fineUploader('getUploads')
+
+            // retrieve an array of successfully uploaded filenames
+            const successful = []
+            for (const upload of uploads) {
+              if (upload.status != 'upload successful') {
+                continue
+              }
+              successful.push(upload.name)
+            }
+            input.val(successful.join(', '))
+            return { id, oldStatus, newStatus }
+          },
+        },
+        template: this.fineTemplate,
       },
-      template: this.fineTemplate
-    }, this.classConfig);
-    wrapper.fineUploader(config);
+      this.classConfig,
+    )
+    wrapper.fineUploader(config)
   }
 }
 
 // register fineuploader as a subtype to the 'file' type control (defined in text.js)
 // also register the default file uploader as a subtype too so it appears in the dropdown
-controlText.register('file', controlText, 'file');
-controlText.register('fineuploader', controlFineUploader, 'file');
+controlText.register('file', controlText, 'file')
+controlText.register('fineuploader', controlFineUploader, 'file')

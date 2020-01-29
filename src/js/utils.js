@@ -18,7 +18,7 @@ window.fbEditors = {
  * @return {Object}       Object trimmed of null or undefined values
  */
 export const trimObj = function(attrs) {
-  const xmlRemove = [null, undefined, '', false, 'false']
+  const xmlRemove = [null, undefined, '']
   for (const attr in attrs) {
     if (xmlRemove.includes(attrs[attr])) {
       delete attrs[attr]
@@ -537,10 +537,10 @@ export const mobileClass = () => {
     // eslint-disable-next-line
     if (
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
-        a
+        a,
       )
     ) {
-      mobileClass = 'fb-mobile'
+      mobileClass = 'formbuilder-mobile'
     }
   })(navigator.userAgent || navigator.vendor || window.opera)
   return mobileClass
@@ -575,7 +575,7 @@ export const insertStyle = srcs => {
   srcs = Array.isArray(srcs) ? srcs : [srcs]
   const promises = srcs.map(
     ({ src, id }) =>
-      new Promise((resolve, reject) => {
+      new Promise(resolve => {
         if (window.fbLoaded.css.includes(src)) {
           return resolve(src)
         }
@@ -586,7 +586,7 @@ export const insertStyle = srcs => {
         })
 
         document.head.insertBefore(formeoStyle, document.head.firstChild)
-      })
+      }),
   )
 
   return Promise.all(promises)
@@ -595,6 +595,42 @@ export const insertStyle = srcs => {
 export const removeStyle = id => {
   const elem = document.getElementById(id)
   return elem.parentElement.removeChild(elem)
+}
+
+/**
+ *
+ * @param {String} str
+ * @return {String} titleized string
+ */
+export function titleCase(str) {
+  const lowers = [
+    'a',
+    'an',
+    'and',
+    'as',
+    'at',
+    'but',
+    'by',
+    'for',
+    'for',
+    'from',
+    'in',
+    'into',
+    'near',
+    'nor',
+    'of',
+    'on',
+    'onto',
+    'or',
+    'the',
+    'to',
+    'with',
+  ].map(lower => `\\s${lower}\\s`)
+  const regex = new RegExp(`(?!${lowers.join('|')})\\w\\S*`, 'g')
+  return `${str}`.replace(
+    regex,
+    txt => txt.charAt(0).toUpperCase() + txt.substr(1).replace(/[A-Z]/g, word => ` ${word}`),
+  )
 }
 
 const utils = {
@@ -629,6 +665,7 @@ const utils = {
   trimObj,
   unique,
   validAttr,
+  titleCase,
 }
 
 /**
@@ -649,11 +686,11 @@ utils.splitObject = (obj, keys) => {
   }
 
   const kept = Object.keys(obj)
-                     .filter(key => keys.includes(key))
-                     .reduce(reconstructObj(obj), {})
+    .filter(key => keys.includes(key))
+    .reduce(reconstructObj(obj), {})
   const rest = Object.keys(obj)
-                     .filter(key => !keys.includes(key))
-                     .reduce(reconstructObj(obj), {})
+    .filter(key => !keys.includes(key))
+    .reduce(reconstructObj(obj), {})
   return [kept, rest]
 }
 

@@ -155,7 +155,7 @@ export default class controlAutocomplete extends control {
       return this.markup('li', label, config)
     })
 
-    field.push(this.markup('ul', options, { id: `${data.id}-list`, className: `fb-${type}-list` }))
+    field.push(this.markup('ul', options, { id: `${data.id}-list`, className: `formbuilder-${type}-list` }))
     return field
   }
 
@@ -298,6 +298,7 @@ export default class controlAutocomplete extends control {
         this.hideList(list)
       }
     }
+    return evt
   }
 }
 

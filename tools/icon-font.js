@@ -34,8 +34,8 @@ const processEntry = entry => {
   const splitPath = entry.path.split('/')
   const baseName = splitPath.shift()
   const fileName = splitPath.pop()
-  const fonts = [`${baseName}/config.json`, `${baseName}/font/fb-icons.woff`]
-  const css = [`${baseName}/css/fb-icons-embedded.css`]
+  const fonts = [`${baseName}/config.json`, `${baseName}/font/formbuilder-icons.woff`]
+  const css = [`${baseName}/css/formbuilder-icons-embedded.css`]
   if (fonts.includes(entry.path)) {
     const targetDir = `${__dirname}/../${files.fonts}`
     const targetFile = `${targetDir}/${fileName}`

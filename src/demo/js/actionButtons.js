@@ -1,7 +1,11 @@
-const setFormData =
-  '[{"type":"text","label":"Full Name","subtype":"text","className":"form-control","name":"text-1476748004559"},{"type":"select","label":"Occupation","className":"form-control","name":"select-1476748006618","values":[{"label":"Street Sweeper","value":"option-1","selected":true},{"label":"Moth Man","value":"option-2"},{"label":"Chemist","value":"option-3"}]},{"type":"textarea","label":"Short Bio","rows":"5","className":"form-control","name":"textarea-1476748007461"}]'
+import { titleCase } from '../../js/utils'
 
-const currentFieldId = document.getElementById('currentFieldId')
+export const setCurrentFieldIdValues = value => {
+  const currentFieldIds = document.querySelectorAll('.current-field-id')
+  currentFieldIds.forEach(field => {
+    field.value = value
+  })
+}
 
 export const builderActions = {
   showData: () => $('.build-wrap').formBuilder('showData'),
@@ -10,7 +14,9 @@ export const builderActions = {
     console.log($('.build-wrap').formBuilder('getData'))
   },
   setData: () => {
-    $('.build-wrap').formBuilder('setData', setFormData)
+    const { value } = document.getElementById('set-form-data-value')
+    window.sessionStorage.setItem('formData', value)
+    $('.build-wrap').formBuilder('setData', value)
   },
   addField: () => {
     const field = {
@@ -21,8 +27,9 @@ export const builderActions = {
     $('.build-wrap').formBuilder('addField', field)
   },
   removeField: () => {
-    const fieldId = currentFieldId.value
-    $('.build-wrap').formBuilder('removeField', fieldId)
+    const currentFieldId = $('.build-wrap').formBuilder('getCurrentFieldId')
+    setCurrentFieldIdValues('')
+    $('.build-wrap').formBuilder('removeField', currentFieldId)
   },
   getXML: () => {
     alert($('.build-wrap').formBuilder('getData', 'xml'))
@@ -35,7 +42,8 @@ export const builderActions = {
     console.log($('.build-wrap').formBuilder('getData'))
   },
   toggleEdit: () => {
-    $('.build-wrap').formBuilder('toggleFieldEdit', currentFieldId.value)
+    const currentFieldId = $('.build-wrap').formBuilder('getCurrentFieldId')
+    $('.build-wrap').formBuilder('toggleFieldEdit', currentFieldId)
   },
   toggleAllEdit: () => $('.build-wrap').formBuilder('toggleAllFieldEdit'),
   getFieldTypes: () => console.log($('.build-wrap').formBuilder('getFieldTypes')),
@@ -86,4 +94,69 @@ export const demoActions = {
     window.sessionStorage.removeItem('formData')
     location.reload()
   },
+}
+
+const processCell = cellData => {
+  let cell = cellData
+  if (typeof cell === 'string') {
+    cell = { attrs: { scope: 'col' }, content: titleCase(cellData) }
+  }
+
+  if (typeof cell.content === 'string') {
+    cell.content = document.createTextNode(cell.content)
+  }
+
+  return { attrs: {}, ...cell }
+}
+
+const generateTr = (columns, isHeader = false) =>
+  columns.reduce((acc, cur) => {
+    const column = processCell(cur)
+    const type = isHeader ? 'th' : 'td'
+    const td = document.createElement(type)
+    td.appendChild(column.content)
+    Object.entries(column.attrs).forEach(([key, val]) => {
+      td.setAttribute(key, val)
+    })
+    acc.appendChild(td)
+    return acc
+  }, document.createElement('tr'))
+
+const apiBtns = {
+  ...builderActions,
+  ...renderActions,
+  ...demoActions,
+}
+
+export const generateActionTable = (actions, columns) => {
+  const fragment = document.createDocumentFragment()
+  const thead = document.createElement('thead')
+  thead.appendChild(generateTr(columns, true))
+  const actionApiRows = Object.entries(actions).reduce((acc, [key, content]) => {
+    const description = { content }
+    const code = document.createElement('code')
+    code.appendChild(document.createTextNode(key))
+    const action = { content: code }
+    let actionDemoTrigger = document.getElementById(key)
+    if (!actionDemoTrigger) {
+      actionDemoTrigger = document.createElement('button')
+      actionDemoTrigger.id = key
+      actionDemoTrigger.textContent = titleCase(key)
+      actionDemoTrigger.addEventListener('click', e => apiBtns[key] && apiBtns[key](e))
+    } else {
+      const trigger = actionDemoTrigger.querySelector('.trigger')
+      if (trigger) {
+        trigger.addEventListener('click', e => apiBtns[key] && apiBtns[key](e))
+      }
+    }
+    const demo = { content: actionDemoTrigger }
+    acc.appendChild(generateTr([action, description, demo]))
+    return acc
+  }, document.createDocumentFragment())
+  const tbody = document.createElement('tbody')
+  tbody.appendChild(actionApiRows)
+
+  fragment.appendChild(thead)
+  fragment.appendChild(tbody)
+  return fragment
 }

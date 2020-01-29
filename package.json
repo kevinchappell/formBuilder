@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "3.2.5",
+  "version": "3.3.1",
   "main": "dist/form-builder.min.js",
   "homepage": "https://formbuilder.online/",
   "repository": {
@@ -81,7 +81,8 @@
     "build": "webpack --mode production -p --progress --config tools/webpack.config",
     "build:all": "npm-run-all build:plugins build:vendor build copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && mkdir -p demo/assets/lang && cp node_modules/formbuilder-languages/*.lang demo/assets/lang/",
-    "deploy": "npm run-script build && node tools/deploy.js",
+    "deploy:all": "npm-run-all deploy:demo deploy:site",
+    "deploy:demo": "node tools/deploy.js",
     "deploy:site": "npm run-script docs && cd site/ && npm run-script deploy && cd ../",
     "docs": "mkdocs build",
     "font": "babel-node tools/icon-font",
@@ -119,7 +120,6 @@
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
     "eslint": "^5.16.0",
-    "eslint-config-google": "^0.12.0",
     "eslint-config-prettier": "^4.2.0",
     "eslint-loader": "^2.1.2",
     "eslint-plugin-prettier": "^3.0.1",
@@ -137,7 +137,7 @@
     "replace-in-file": "^4.0.0",
     "request": "^2.88.0",
     "sass-loader": "^7.1.0",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^15.14.0",
     "semver": "^6.0.0",
     "style-loader": "^0.23.1",
     "travis-deploy-once": "^5.0.11",
@@ -158,7 +158,6 @@
     "parser": "babel-eslint",
     "extends": [
       "eslint:recommended",
-      "google",
       "prettier"
     ],
     "plugins": [

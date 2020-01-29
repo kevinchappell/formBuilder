@@ -71,6 +71,7 @@ export default class controlQuill extends controlTextarea {
     editor.instance.on('text-change', function(delta) {
       editor.data = editor.data.compose(delta);
     });
+    return evt
   }
 }
 

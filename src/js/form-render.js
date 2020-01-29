@@ -261,7 +261,7 @@ class FormRender {
       .filter(fieldData => fieldData.subtype === 'tinymce')
       .forEach(fieldData => window.tinymce.get(fieldData.name).save())
 
-    this.instanceContainers.forEach((container, index) => {
+    this.instanceContainers.forEach((container) => {
       const userDataMap = $('select, input, textarea', container)
         .serializeArray()
         .reduce((acc, { name, value }) => {
@@ -324,7 +324,7 @@ class FormRender {
   }
 }
 
-;(function($) {
+;(function() {
   let formRenderForms
   const methods = {
     init: (forms, options = {}) => {
