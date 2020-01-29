@@ -285,6 +285,25 @@ export const parseOptions = options => {
 }
 
 /**
+ * Convert field user data to userData
+ * @param  {NodeList} userData  DOM elements
+ * @return {Array} optionData array
+ */
+export const parseUserData = userData => {
+  const data = []
+  
+  if(userData.length){
+    const values = userData[0].getElementsByTagName('value')
+
+    for (let i = 0; i < values.length; i++) {
+      data.push(values[i].textContent)
+    }
+  }
+
+  return data
+}
+
+/**
  * Parse XML formData
  * @param  {String} xmlString
  * @return {Array}            formData array
@@ -299,9 +318,14 @@ export const parseXML = xmlString => {
     for (let i = 0; i < fields.length; i++) {
       const fieldData = parseAttrs(fields[i])
       const options = fields[i].getElementsByTagName('option')
+      const userData = fields[i].getElementsByTagName('userData')
 
       if (options && options.length) {
         fieldData.values = parseOptions(options)
+      }
+
+      if (userData && userData.length) {
+        fieldData.userData = parseUserData(userData)
       }
 
       formData.push(fieldData)
@@ -659,6 +683,7 @@ const utils = {
   parseAttrs,
   parsedHtml,
   parseOptions,
+  parseUserData,
   parseXML,
   removeFromArray,
   safeAttr,
