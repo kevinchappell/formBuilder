@@ -1,3 +1,10 @@
+## [3.3.2](https://github.com/kevinchappell/formBuilder/compare/v3.3.1...v3.3.2) (2020-01-31)
+
+
+### Bug Fixes
+
+* build ([55721ec](https://github.com/kevinchappell/formBuilder/commit/55721ec85dc55f289d46d1ead3941bdbbdc66f21))
+
 ## [3.3.1](https://github.com/kevinchappell/formBuilder/compare/v3.3.0...v3.3.1) (2020-01-28)
 
 
