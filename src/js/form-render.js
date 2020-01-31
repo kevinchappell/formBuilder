@@ -38,9 +38,15 @@ class FormRender {
       render: true,
       templates: {}, // custom inline defined templates
       notify: {
-        error: console.error,
-        success: console.log,
-        warning: console.warn,
+        error: error => {
+          console.log(error)
+        },
+        success: success => {
+          console.log(success)
+        },
+        warning: warning => {
+          console.warn(warning)
+        },
       },
     }
     this.options = jQuery.extend(true, defaults, options)
