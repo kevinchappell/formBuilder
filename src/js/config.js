@@ -41,9 +41,15 @@ export const defaultOptions = {
   fieldEditContainer: null, // DOM node or selector
   inputSets: [], // add groups of fields at a time
   notify: {
-    error: console.error,
-    success: console.log,
-    warning: console.warn,
+    error: error => {
+      console.log(error)
+    },
+    success: success => {
+      console.log(success)
+    },
+    warning: warning => {
+      console.warn(warning)
+    },
   },
   onAddField: (fieldId, fieldData) => fieldData,
   onClearAll: noop,

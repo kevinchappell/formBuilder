@@ -38,9 +38,15 @@ class FormRender {
       render: true,
       templates: {}, // custom inline defined templates
       notify: {
-        error: console.error,
-        success: console.log,
-        warning: console.warn,
+        error: error => {
+          console.log(error)
+        },
+        success: success => {
+          console.log(success)
+        },
+        warning: warning => {
+          console.warn(warning)
+        },
       },
     }
     this.options = jQuery.extend(true, defaults, options)
@@ -234,7 +240,7 @@ class FormRender {
     const fieldData = opts.formData
     if (!fieldData || Array.isArray(fieldData)) {
       throw new Error(
-        'To render a single element, please specify a single object of formData for the field in question'
+        'To render a single element, please specify a single object of formData for the field in question',
       )
     }
     const sanitizedField = this.santizeField(fieldData)
@@ -261,7 +267,7 @@ class FormRender {
       .filter(fieldData => fieldData.subtype === 'tinymce')
       .forEach(fieldData => window.tinymce.get(fieldData.name).save())
 
-    this.instanceContainers.forEach((container) => {
+    this.instanceContainers.forEach(container => {
       const userDataMap = $('select, input, textarea', container)
         .serializeArray()
         .reduce((acc, { name, value }) => {
