@@ -1,3 +1,11 @@
+## [3.3.3](https://github.com/kevinchappell/formBuilder/compare/v3.3.2...v3.3.3) (2020-02-01)
+
+
+### Bug Fixes
+
+* travis deploy ([127909d](https://github.com/kevinchappell/formBuilder/commit/127909d5e36416d1bdab8356884317d724ddd0bb))
+* travis node version, include docs in dist package ([78799a5](https://github.com/kevinchappell/formBuilder/commit/78799a520f6af0bea7800ccfb27473a6a60844a7))
+
 ## [3.3.2](https://github.com/kevinchappell/formBuilder/compare/v3.3.1...v3.3.2) (2020-01-31)
 
 
