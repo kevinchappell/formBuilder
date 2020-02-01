@@ -5,7 +5,7 @@ stages:
   - test
   - deploy
 language: node_js
-node_js: 11
+node_js: 'lts/*'
 python:
   - 3.5
 cache:
