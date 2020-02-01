@@ -20,5 +20,9 @@ const commands = [
   'rm -rf gh-pages/ demo/',
 ]
 
-// Deploy the demo and site.
-exec(commands.join(' && '), err => onFinish(err, () => console.log('Demo successfully deployed')))
+// try to deploy the demo
+try {
+  exec(commands.join(' && '), err => onFinish(err, () => console.log('Demo successfully deployed')))
+} catch (e) {
+  console.error(e)
+}
