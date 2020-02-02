@@ -1,3 +1,15 @@
+# [3.4.0](https://github.com/kevinchappell/formBuilder/compare/v3.3.4...v3.4.0) (2020-02-02)
+
+
+### Bug Fixes
+
+* website generation and deployment ([6ba8ce0](https://github.com/kevinchappell/formBuilder/commit/6ba8ce094c2b28853413613f46581f7cc79702e3))
+
+
+### Features
+
+* **editor:** hidden field labels ([f9b648c](https://github.com/kevinchappell/formBuilder/commit/f9b648c109584202b5d739886b5d449e8807f94c))
+
 ## [3.3.5](https://github.com/kevinchappell/formBuilder/compare/v3.3.4...v3.3.5) (2020-02-02)
 
 
