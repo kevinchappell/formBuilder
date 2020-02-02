@@ -1,3 +1,10 @@
+## [3.3.5](https://github.com/kevinchappell/formBuilder/compare/v3.3.4...v3.3.5) (2020-02-02)
+
+
+### Bug Fixes
+
+* website generation and deployment ([cc3047e](https://github.com/kevinchappell/formBuilder/commit/cc3047e717974b2fd886ea69aa3090cb863087cc))
+
 ## [3.3.4](https://github.com/kevinchappell/formBuilder/compare/v3.3.3...v3.3.4) (2020-02-01)
 
 
