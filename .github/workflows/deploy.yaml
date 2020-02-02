@@ -20,7 +20,7 @@ jobs:
           CI: true
         run: npm install
       - name: Build the plugin
-        run: npm run build
+        run: npm run build:all
       - name: API Demo Deploy - https://kevinchappell.github.io/formBuilder/
         if: success()
         uses: maxheld83/ghpages@v0.2.1
