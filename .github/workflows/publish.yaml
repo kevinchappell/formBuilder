@@ -1,0 +1,32 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [12]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Nodejs ${{ matrix.node }}
+        uses: actions/setup-node@v1
+      - name: Install dependencies
+        env:
+          CI: true
+        run: npm install
+      - name: Build the plugin
+        run: npm run build
+      - name: Publish the plugin
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          FORMBUILDER_WEBSITE_DIR: ${{ secrets.FORMBUILDER_WEBSITE_DIR }}
+          FORMBUILDER_WEBSITE_REPO: ${{ secrets.FORMBUILDER_WEBSITE_REPO }}
+        run: npx semantic-release

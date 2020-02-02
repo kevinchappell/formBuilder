@@ -12,6 +12,6 @@ const vendor = Object.keys(pkg.dependencies).map(require.resolve)
  * Concatenates the vendor files into a single vendor file for the demo
  * @return {Function} concat
  */
-concat(vendor, `${targetDir}/vendor.js`, function(err, data) {
+concat(vendor, `${targetDir}/vendor.js`, err => {
   if (err) throw err
 })
