@@ -302,9 +302,13 @@ const FormBuilder = function(opts, element, $) {
     }
 
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
-    const options = m('ol', fieldValues.map(option => selectFieldOptions(name, option, isMultiple)), {
-      className: 'sortable-options',
-    })
+    const options = m(
+      'ol',
+      fieldValues.map(option => selectFieldOptions(name, option, isMultiple)),
+      {
+        className: 'sortable-options',
+      },
+    )
     const optionsWrap = m('div', [options, optionActionsWrap], { className: 'sortable-options-wrap' })
 
     fieldOptions.push(optionsWrap)
@@ -856,7 +860,10 @@ const FormBuilder = function(opts, element, $) {
     data.lastID = h.incrementId(data.lastID)
 
     const type = values.type || 'text'
-    const label = values.label || (isNew ? i18n.get(type) || mi18n.get('label') : '')
+    let label = values.label || (isNew ? i18n.get(type) || mi18n.get('label') : '')
+    if (type === 'hidden') {
+      label = `${mi18n.get(type)}: ${values.name}`
+    }
     const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
     let fieldButtons = [
       m('a', null, {
