@@ -1,3 +1,10 @@
+## [3.4.1](https://github.com/kevinchappell/formBuilder/compare/v3.4.0...v3.4.1) (2020-03-02)
+
+
+### Bug Fixes
+
+* multiple attribute added to select ([bb04cd4](https://github.com/kevinchappell/formBuilder/commit/bb04cd4fa41a73520aec669da370699a2c900544))
+
 # [3.4.0](https://github.com/kevinchappell/formBuilder/compare/v3.3.4...v3.4.0) (2020-02-02)
 
 
