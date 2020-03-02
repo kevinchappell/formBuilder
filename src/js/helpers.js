@@ -368,7 +368,7 @@ export default class Helpers {
       })
     }
 
-    previewData = trimObj(previewData)
+    previewData = trimObj(previewData, true)
 
     previewData.className = _this.classNames(field, previewData)
 
