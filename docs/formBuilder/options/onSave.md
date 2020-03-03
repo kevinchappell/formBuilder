@@ -4,7 +4,7 @@ Callbacks to run on editor save.
 ## Usage
 ```javascript
 var options = {
-      onSave: function(formData) {
+      onSave: function(evt, formData) {
           toggleEdit();
           $('.render-wrap').formRender({formData});
           window.sessionStorage.setItem('formData', JSON.stringify(formData));
