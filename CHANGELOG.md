@@ -1,3 +1,10 @@
+## [3.4.2](https://github.com/kevinchappell/formBuilder/compare/v3.4.1...v3.4.2) (2020-03-04)
+
+
+### Bug Fixes
+
+* clone id bug ([82c29a9](https://github.com/kevinchappell/formBuilder/commit/82c29a9448ce31b247a24fb2c678f101bfb04cd0))
+
 ## [3.4.1](https://github.com/kevinchappell/formBuilder/compare/v3.4.0...v3.4.1) (2020-03-02)
 
 
