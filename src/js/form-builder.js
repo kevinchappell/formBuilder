@@ -1006,6 +1006,7 @@ const FormBuilder = function(opts, element, $) {
   }
 
   const cloneItem = function cloneItem(currentItem) {
+    data.lastID = h.incrementId(data.lastID)
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
     const ts = new Date().getTime()
@@ -1031,7 +1032,6 @@ const FormBuilder = function(opts, element, $) {
       opts.typeUserEvents[type].onclone($clone[0])
     }
 
-    data.lastID = h.incrementId(data.lastID)
     return $clone
   }
 
