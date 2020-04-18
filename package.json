@@ -9,7 +9,8 @@
   },
   "files": [
     "dist/**/*",
-    "docs/**/*"
+    "docs/**/*",
+    "src/**/*"
   ],
   "author": "Kevin Chappell <kevin.b.chappell@gmail.com>",
   "contributors": [],
