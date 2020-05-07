@@ -1,5 +1,5 @@
 # Actions -> addField
-At a field to the stage at a specific index or append it to the list. The `addField` action take 2 arguments, the fieldData in js format and optionally an insertion index.
+Add a field to the stage at a specific index or append it to the list. The `addField` action take 2 arguments, the fieldData in js format and optionally an insertion index.
 
 ## Usage
 ```javascript
