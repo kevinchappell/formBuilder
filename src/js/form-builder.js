@@ -532,9 +532,11 @@ const FormBuilder = function(opts, element, $) {
       number: numberAttribute,
       boolean: (attr, attrData) => {
         let isChecked = false
-        if (values.hasOwnProperty(attr)) {
+        if(attr.type === 'checkbox'){
+          isChecked = Boolean(attrData.hasOwnProperty('value') ? attrData.value : false)
+        } else if (values.hasOwnProperty(attr)) {
           isChecked = values[attr]
-        } else if (attrData.hasOwnProperty('value') || attrData.hasOwnProperty('value')) {
+        } else if (attrData.hasOwnProperty('value') || attrData.hasOwnProperty('checked')) {
           isChecked = attrData.value || attrData.checked || false
         }
         return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: attrData.label })
