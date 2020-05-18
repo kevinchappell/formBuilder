@@ -30,6 +30,7 @@ const typeUserAttrs = {
     readonly: {
       label: 'readonly',
       value: false,
+      type: 'checkbox',
     }
   }
 };
