@@ -232,8 +232,8 @@ const FormBuilder = function(opts, element, $) {
       setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
     }
 
-    opts.onAddField(data.lastID, field)
     appendNewField(field, isNew)
+    opts.onAddField(data.lastID, field)
 
     d.stage.classList.remove('empty')
   }
