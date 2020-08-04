@@ -53,7 +53,9 @@ export default class Controls {
     if (customFields) {
       jQuery.merge(registeredControls, customFields)
     }
-
+    const registeredSubtypes = control.getRegisteredSubtypes()
+    this.registeredSubtypes = registeredSubtypes
+    
     // if we support rearranging control order, add classes to support this
     if (opts.sortableControls) {
       this.dom.classList.add('sort-enabled')

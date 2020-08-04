@@ -347,6 +347,10 @@ const FormBuilder = function(opts, element, $) {
       select: defaultAttrs.concat(['multiple', 'options']),
       textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
     }
+    
+    if((type in controls.registeredSubtypes) && !(type in typeAttrsMap)){
+      typeAttrsMap[type] = defaultAttrs.concat(['subtype'])
+    }
 
     typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox
     typeAttrsMap['radio-group'] = typeAttrsMap.checkbox
