@@ -88,7 +88,7 @@ export const styles = {
 }
 
 export const defaultI18n = {
-  location: 'https://formbuilder.online/assets/lang/',
+  location: 'assets/lang/',
 }
 
 export const config = {}
