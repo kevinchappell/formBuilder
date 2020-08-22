@@ -1,3 +1,11 @@
+## [3.4.4](https://github.com/kevinchappell/formBuilder/compare/v3.4.3...v3.4.4) (2020-08-22)
+
+
+### Bug Fixes
+
+* checkbox other value ([7e7569e](https://github.com/kevinchappell/formBuilder/commit/7e7569ef770d2adc568b1663c5a5ebb4095cf2c9)), closes [#1061](https://github.com/kevinchappell/formBuilder/issues/1061)
+* timeout memory leaks ([34fa376](https://github.com/kevinchappell/formBuilder/commit/34fa3768979743730d7a558cde66e0cfe188dc91))
+
 ## [3.4.3](https://github.com/kevinchappell/formBuilder/compare/v3.4.2...v3.4.3) (2020-08-22)
 
 
