@@ -85,10 +85,14 @@ export const renderActions = {
 
 export const demoActions = {
   testSubmit: () => {
-    const formData = new FormData(document.forms[0])
-    console.log('Can submit: ', document.forms[0].checkValidity())
+    const form = document.querySelector('.render-wrap')
+    const formData = new FormData(form)
+    console.log('Can submit: ', form.checkValidity())
     // Display the key/value pairs
-    console.log('FormData:', formData)
+    console.log('FormData:')
+    for (var pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`)
+    }
   },
   resetDemo: () => {
     window.sessionStorage.removeItem('formData')

@@ -294,9 +294,20 @@ jQuery(function($) {
       removeField: 'remove a field by its index or id from the editor stage',
       resetDemo: 'reset the demo to default state',
     }
+    const demoActions = {
+      loadUserForm: 'Load user form',
+      showUserData: 'Show user form',
+      renderUserForm: 'Render user form',
+      getHTML: 'Get HTML',
+      clearUserForm: 'Clear user form',
+      testSubmit: 'Test Submit',
+    }
 
     const actionApi = document.getElementById('action-api')
     actionApi.appendChild(generateActionTable(actions, columns))
+    const demoApi = document.getElementById('demo-api')
+    demoApi.appendChild(generateActionTable(demoActions, columns))
+
     if (formData && formData !== '[]') {
       document.getElementById('set-form-data-value').value = window.JSON.stringify(JSON.parse(formData), null, '  ')
     }

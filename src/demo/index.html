@@ -46,65 +46,10 @@
       <div class="action-buttons formbuilder-actions">
         <h2>Actions</h2>
         <table id="action-api" class="api-table"></table>
-        <div id="toggleEdit">
-          <button class="trigger">Toggle Field Edit</button>
-          <input type="text" placeholder="current field id" class="current-field-id" />
-        </div>
-        <div id="removeField">
-          <button class="trigger">Remove Field</button>
-          <input type="text" placeholder="current field id" class="current-field-id" />
-        </div>
-        <div id="setData">
-          <button class="trigger">Set Form Data</button>
-          <textarea id="set-form-data-value">
-            [
-              {
-                "type": "text",
-                "label": "Full Name",
-                "subtype": "text",
-                "className": "form-control",
-                "name": "text-1476748004559"
-              },
-              {
-                "type": "select",
-                "label": "Occupation",
-                "className": "form-control",
-                "name": "select-1476748006618",
-                "values": [
-                  {
-                    "label": "Street Sweeper",
-                    "value": "option-1",
-                    "selected": true
-                  },
-                  {
-                    "label": "Moth Man",
-                    "value": "option-2"
-                  },
-                  {
-                    "label": "Chemist",
-                    "value": "option-3"
-                  }
-                ]
-              },
-              {
-                "type": "textarea",
-                "label": "Short Bio",
-                "rows": "5",
-                "className": "form-control",
-                "name": "textarea-1476748007461"
-              }
-            ]</textarea
-          >
-        </div>
       </div>
       <div class="action-buttons formrender-actions">
         <h2>Actions</h2>
-        <button id="loadUserForm" type="button">Load User Form</button>
-        <button id="showUserData" type="button">Show User Data</button>
-        <button id="renderUserForm" type="button">Render User Form</button>
-        <button id="getHTML" type="button">Get HTML</button>
-        <button id="clearUserForm" type="button">Clear Form</button>
-        <button id="testSubmit" type="submit">Test Submit</button>
+        <table id="demo-api" class="api-table"></table>
       </div>
     </div>
     <div id="formbuilder-options"></div>
