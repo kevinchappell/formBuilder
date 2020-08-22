@@ -1,3 +1,10 @@
+## [3.4.3](https://github.com/kevinchappell/formBuilder/compare/v3.4.2...v3.4.3) (2020-08-22)
+
+
+### Bug Fixes
+
+* copy language files from module ([0fee6c3](https://github.com/kevinchappell/formBuilder/commit/0fee6c3fbae0f4ced16ad196494a891f9d140066)), closes [#1068](https://github.com/kevinchappell/formBuilder/issues/1068)
+
 ## [3.4.2](https://github.com/kevinchappell/formBuilder/compare/v3.4.1...v3.4.2) (2020-03-04)
 
 
