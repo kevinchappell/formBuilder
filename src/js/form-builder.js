@@ -229,7 +229,10 @@ const FormBuilder = function(opts, element, $) {
     }
 
     if (isNew) {
-      setTimeout(() => document.dispatchEvent(events.fieldAdded), 10)
+      const eventTimeout = setTimeout(() => {
+        document.dispatchEvent(events.fieldAdded)
+        clearTimeout(eventTimeout)
+      }, 10)
     }
 
     appendNewField(field, isNew)
@@ -347,8 +350,8 @@ const FormBuilder = function(opts, element, $) {
       select: defaultAttrs.concat(['multiple', 'options']),
       textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
     }
-    
-    if((type in controls.registeredSubtypes) && !(type in typeAttrsMap)){
+
+    if (type in controls.registeredSubtypes && !(type in typeAttrsMap)) {
       typeAttrsMap[type] = defaultAttrs.concat(['subtype'])
     }
 
@@ -536,7 +539,7 @@ const FormBuilder = function(opts, element, $) {
       number: numberAttribute,
       boolean: (attr, attrData) => {
         let isChecked = false
-        if(attr.type === 'checkbox'){
+        if (attr.type === 'checkbox') {
           isChecked = Boolean(attrData.hasOwnProperty('value') ? attrData.value : false)
         } else if (values.hasOwnProperty(attr)) {
           isChecked = values[attr]
@@ -1396,12 +1399,13 @@ const FormBuilder = function(opts, element, $) {
   // set min-height on stage onRender
   d.onRender(d.controls, () => {
     // Ensure style has loaded
-    setTimeout(() => {
+    const onRenderTimeout = setTimeout(() => {
       d.stage.style.minHeight = `${d.controls.clientHeight}px`
       // If option set, controls will remain in view in editor
       if (opts.stickyControls.enable) {
         h.stickyControls($stage)
       }
+      clearTimeout(onRenderTimeout)
     }, 0)
   })
 

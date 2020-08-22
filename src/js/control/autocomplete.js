@@ -101,8 +101,9 @@ export default class controlAutocomplete extends control {
       },
       blur: evt => {
         evt.target.removeEventListener('keydown', keyboardNav)
-        setTimeout(() => {
+        const blurTimeout = setTimeout(() => {
           evt.target.nextSibling.nextSibling.style.display = 'none'
+          clearTimeout(blurTimeout)
         }, 200)
         // Validate the option entered exists
         if (this.config.requireValidOption) {

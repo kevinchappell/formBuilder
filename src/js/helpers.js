@@ -687,9 +687,10 @@ export default class Helpers {
       let outerHeight = 0
       forEach(fields, index => (outerHeight += fields[index].offsetHeight + 3))
       fields[0].style.marginTop = `${-outerHeight}px`
-      setTimeout(() => {
+      const animateTimeout = setTimeout(() => {
         empty(stage).classList.remove('removing')
         this.save()
+        clearTimeout(animateTimeout)
       }, 400)
     } else {
       empty(stage)
