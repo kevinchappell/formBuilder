@@ -129,7 +129,6 @@
     "html-webpack-plugin": "^4.3.0",
     "inquirer": "^7.3.3",
     "mi18n": "^0.4.8",
-    "mini-css-extract-plugin": "^0.10.0",
     "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.5",
     "opener": "^1.5.1",
