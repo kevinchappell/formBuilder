@@ -1351,7 +1351,10 @@ const FormBuilder = function(opts, element, $) {
       activeOnly ? subtract(controls.getRegistered(), opts.disableFields) : controls.getRegistered(),
     clearFields: animate => h.removeAllFields(d.stage, animate),
     showData: h.showData.bind(h),
-    save: h.save.bind(h),
+    save: minify => {
+      h.save(minify)
+      config.opts.onSave(h.getFormData())
+    },
     addField: (field, index) => {
       h.stopIndex = data.formData.length ? index : undefined
       prepFieldVars(field)

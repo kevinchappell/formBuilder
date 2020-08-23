@@ -18,6 +18,9 @@ export const builderActions = {
     window.sessionStorage.setItem('formData', value)
     $('.build-wrap').formBuilder('setData', value)
   },
+  save: () => {
+    $('.build-wrap').formBuilder('save')
+  },
   addField: () => {
     const field = {
       type: 'text',

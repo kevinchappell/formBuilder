@@ -288,6 +288,7 @@ jQuery(function($) {
       getJSON: 'Get the current formData in JSON format',
       getJS: 'Get the current formData in JS object format',
       setData: 'set the current formData value for the editor',
+      save: 'call save from the api',
       toggleAllEdit: 'toggle the edit mode for all fields',
       toggleEdit: 'toggle a specific field edit mode by index or id',
       addField: 'programmatically add a field to the template editor',
