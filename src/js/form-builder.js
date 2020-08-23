@@ -1327,7 +1327,9 @@ const FormBuilder = function(opts, element, $) {
 
     const name = $firstOption.attr('name').replace(/-option$/, '')
 
-    $('.sortable-options', $optionWrap).append(selectFieldOptions(name, false, isMultiple))
+    const optionTemplate = { selected: false, label: '', value: '' }
+    const optionData = config.opts.onAddOption(optionTemplate, $('.sortable-options', $optionWrap).children().length)
+    $('.sortable-options', $optionWrap).append(selectFieldOptions(name, optionData, isMultiple))
   })
 
   $stage.on('mouseover mouseout', '.remove, .del-button', e =>
