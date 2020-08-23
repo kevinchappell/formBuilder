@@ -1,3 +1,10 @@
+## [3.5.1](https://github.com/kevinchappell/formBuilder/compare/v3.5.0...v3.5.1) (2020-08-23)
+
+
+### Bug Fixes
+
+* site home url in /docs ([b73d695](https://github.com/kevinchappell/formBuilder/commit/b73d69553998b0356eb907316c7face77bbd70f4))
+
 # [3.5.0](https://github.com/kevinchappell/formBuilder/compare/v3.4.5...v3.5.0) (2020-08-23)
 
 
