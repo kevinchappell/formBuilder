@@ -9,7 +9,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const WrapperPlugin = require('wrapper-webpack-plugin')
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 // hack for Ubuntu on Windows
 try {
