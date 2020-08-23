@@ -94,8 +94,7 @@
     "start:devServer": "webpack-dev-server --mode development --config tools/webpack.config",
     "prestart": "npm-run-all -p build:vendor copy:lang",
     "start": "npm run start:devServer",
-    "test": "npm run-script build",
-    "travis-deploy-once": "travis-deploy-once"
+    "test": "npm run-script build"
   },
   "dependencies": {
     "jquery": ">=3.4.1",
