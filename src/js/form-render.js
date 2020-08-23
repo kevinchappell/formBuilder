@@ -335,7 +335,7 @@ class FormRender {
   }
 }
 
-;(function() {
+(function() {
   let formRenderForms
   const methods = {
     init: (forms, options = {}) => {

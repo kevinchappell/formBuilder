@@ -61,8 +61,14 @@ export const renderActions = {
           encoding: 'xml',
           menubar: 'edit insert format table',
           plugins: 'preview searchreplace autolink link table lists textcolor colorpicker',
-          toolbar:
-            'formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | preview',
+          toolbar: [
+            'formatselect',
+            'bold italic forecolor backcolor',
+            'link',
+            'alignleft aligncenter alignright alignjustify',
+            'numlist bullist outdent indent',
+            'preview'
+          ].join(' | ')
         },
       },
       formData:

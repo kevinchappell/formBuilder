@@ -92,6 +92,7 @@ export default class control {
    * will be registered as subtypes of this parent
    */
   static register(types, controlClass, parentType) {
+
     // store subtypes as <type>.<subtype> in the register
     const prefix = parentType ? parentType + '.' : ''
 
@@ -111,6 +112,7 @@ export default class control {
         control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
         continue
       }
+
       control.classRegister[prefix + type] = controlClass
     }
   }
@@ -174,7 +176,7 @@ export default class control {
           type +
           ', Subtype: ' +
           subtype +
-          '). Please ensure you have registered it, and imported it correctly.'
+          '). Please ensure you have registered it, and imported it correctly.',
       )
     }
 
@@ -264,7 +266,7 @@ export default class control {
    * @return {String} icon
    */
   static icon(type) {
-    // @todo - support for `icon-${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
+    // @todo - support for `${css_prefix_text}${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
     // https://formbuilder.online/docs/formBuilder/options/inputSets/
     const def = this.definition
     if (def && typeof def.icon === 'object') {

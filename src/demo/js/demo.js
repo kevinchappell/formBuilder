@@ -243,6 +243,7 @@ jQuery(function($) {
         },
       },
     },
+    scrollToFieldOnAdd: false,
   }
   const formData = window.sessionStorage.getItem('formData')
   let editing = true

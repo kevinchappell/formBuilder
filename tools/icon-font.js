@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import http from 'http'
 import { Spinner } from 'clui'
-import unzip from 'unzip'
+import unzip from 'unzipper'
 import opener from 'opener'
 import inquirer from 'inquirer'
 import replace from 'replace-in-file'
@@ -117,7 +117,7 @@ const fontEdit = async () => {
 }
 
 const iconFont = () => {
-  const [action] = process.argv.slice(3)
+  const [action] = process.argv.slice(2)
   const fontActions = {
     edit: fontEdit,
     save: fontSave,
@@ -125,4 +125,4 @@ const iconFont = () => {
   return fontActions[action] ? fontActions[action]() : fontActions['edit']()
 }
 
-export default iconFont
+export default iconFont()

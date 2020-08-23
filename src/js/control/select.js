@@ -155,7 +155,7 @@ export default class controlSelect extends control {
       }
     }
     const toggleRequired = (checkboxes, isValid) => {
-      ;[].forEach.call(checkboxes, cb => {
+      [].forEach.call(checkboxes, cb => {
         if (isValid) {
           cb.removeAttribute('required')
         } else {
