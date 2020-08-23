@@ -1,3 +1,10 @@
+## [3.4.5](https://github.com/kevinchappell/formBuilder/compare/v3.4.4...v3.4.5) (2020-08-23)
+
+
+### Bug Fixes
+
+* onSave not called when save called from the api ([d607b02](https://github.com/kevinchappell/formBuilder/commit/d607b02c4001bee160aade80c11cce93451a12d0)), closes [#1058](https://github.com/kevinchappell/formBuilder/issues/1058)
+
 ## [3.4.4](https://github.com/kevinchappell/formBuilder/compare/v3.4.3...v3.4.4) (2020-08-22)
 
 
