@@ -4,11 +4,12 @@ const autoprefixer = require('autoprefixer')
 const { BannerPlugin, DefinePlugin } = require('webpack')
 const CompressionPlugin = require('compression-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const WrapperPlugin = require('wrapper-webpack-plugin')
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 // hack for Ubuntu on Windows
 try {
@@ -71,16 +72,14 @@ const webpackConfig = {
           {
             loader: 'style-loader',
             options: {
-              attrs: {
+              attributes: {
                 class: 'formBuilder-injected-style',
               },
-              sourceMap: !PRODUCTION,
             },
           },
           {
             loader: 'css-loader',
             options: {
-              camelCase: true,
               sourceMap: !PRODUCTION,
             },
           },
@@ -148,6 +147,7 @@ const webpackConfig = {
     inline: true,
     contentBase: 'demo/',
     noInfo: true,
+    open: true
   },
 }
 

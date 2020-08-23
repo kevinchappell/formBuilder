@@ -25,6 +25,7 @@ import {
   safename,
   forceNumber,
 } from './utils'
+import { css_prefix_text } from '../fonts/config.json'
 
 const DEFAULT_TIMEOUT = 333
 
@@ -878,19 +879,19 @@ const FormBuilder = function(opts, element, $) {
       m('a', null, {
         type: 'remove',
         id: 'del_' + data.lastID,
-        className: 'del-button btn icon-cancel delete-confirm',
+        className: `del-button btn ${css_prefix_text}cancel delete-confirm`,
         title: mi18n.get('removeMessage'),
       }),
       m('a', null, {
         type: 'edit',
         id: data.lastID + '-edit',
-        className: 'toggle-form btn icon-pencil',
+        className: `toggle-form btn ${css_prefix_text}pencil`,
         title: mi18n.get('hide'),
       }),
       m('a', null, {
         type: 'copy',
         id: data.lastID + '-copy',
-        className: 'copy-button btn icon-copy',
+        className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
     ]
@@ -947,9 +948,7 @@ const FormBuilder = function(opts, element, $) {
     $li.data('fieldData', { attrs: values })
 
     if (typeof h.stopIndex !== 'undefined') {
-      $('> li', d.stage)
-        .eq(h.stopIndex)
-        .before($li)
+      $('> li', d.stage).eq(h.stopIndex).before($li)
     } else {
       $stage.append($li)
     }
@@ -1006,7 +1005,7 @@ const FormBuilder = function(opts, element, $) {
     }
 
     const removeAttrs = {
-      className: 'remove btn icon-cancel',
+      className: `remove btn ${css_prefix_text}cancel`,
       title: mi18n.get('removeMessage'),
     }
     optionInputs.push(m('a', null, removeAttrs))
@@ -1106,9 +1105,7 @@ const FormBuilder = function(opts, element, $) {
     e.stopPropagation()
     e.preventDefault()
     if (e.handled !== true) {
-      const targetID = $(e.target)
-        .parents('.form-field:eq(0)')
-        .attr('id')
+      const targetID = $(e.target).parents('.form-field:eq(0)').attr('id')
       h.toggleEdit(targetID)
       e.handled = true
     } else {
@@ -1124,11 +1121,7 @@ const FormBuilder = function(opts, element, $) {
     e.preventDefault()
     if (e.handled !== true) {
       const targetID =
-        e.target.tagName == 'li'
-          ? $(e.target).attr('id')
-          : $(e.target)
-              .closest('li.form-field')
-              .attr('id')
+        e.target.tagName == 'li' ? $(e.target).attr('id') : $(e.target).closest('li.form-field').attr('id')
       h.toggleEdit(targetID)
       e.handled = true
     }
@@ -1218,9 +1211,7 @@ const FormBuilder = function(opts, element, $) {
   $stage.on('blur', 'input.fld-name', function(e) {
     e.target.value = safename(e.target.value)
     if (e.target.value === '') {
-      $(e.target)
-        .addClass('field-error')
-        .attr('placeholder', mi18n.get('cannotBeEmpty'))
+      $(e.target).addClass('field-error').attr('placeholder', mi18n.get('cannotBeEmpty'))
     } else {
       $(e.target).removeClass('field-error')
     }
@@ -1231,11 +1222,9 @@ const FormBuilder = function(opts, element, $) {
   })
 
   // Copy field
-  $stage.on('click touchstart', '.icon-copy', function(evt) {
+  $stage.on('click touchstart', `.${css_prefix_text}copy`, function(evt) {
     evt.preventDefault()
-    const currentItem = $(evt.target)
-      .parent()
-      .parent('li')
+    const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
     $clone.insertAfter(currentItem)
     h.updatePreview($clone)
@@ -1253,9 +1242,7 @@ const FormBuilder = function(opts, element, $) {
       pageY: buttonPosition.top - bodyRect.top - 12,
     }
 
-    const deleteID = $(e.target)
-      .parents('.form-field:eq(0)')
-      .attr('id')
+    const deleteID = $(e.target).parents('.form-field:eq(0)').attr('id')
     const $field = $(document.getElementById(deleteID))
 
     document.addEventListener(
@@ -1292,17 +1279,12 @@ const FormBuilder = function(opts, element, $) {
 
   // Attach a callback to toggle required asterisk
   $stage.on('click', '.fld-required', e => {
-    $(e.target)
-      .closest('.form-field')
-      .find('.required-asterisk')
-      .toggle()
+    $(e.target).closest('.form-field').find('.required-asterisk').toggle()
   })
 
   // Attach a callback to toggle roles visibility
   $stage.on('click', 'input.fld-access', function(e) {
-    const roles = $(e.target)
-      .closest('.form-field')
-      .find('.available-roles')
+    const roles = $(e.target).closest('.form-field').find('.available-roles')
     const enableRolesCB = $(e.target)
     roles.slideToggle(250, function() {
       if (!enableRolesCB.is(':checked')) {
@@ -1332,11 +1314,7 @@ const FormBuilder = function(opts, element, $) {
     $('.sortable-options', $optionWrap).append(selectFieldOptions(name, optionData, isMultiple))
   })
 
-  $stage.on('mouseover mouseout', '.remove, .del-button', e =>
-    $(e.target)
-      .closest('li')
-      .toggleClass('delete'),
-  )
+  $stage.on('mouseover mouseout', '.remove, .del-button', e => $(e.target).closest('li').toggleClass('delete'))
 
   loadFields()
 

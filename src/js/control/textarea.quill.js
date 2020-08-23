@@ -1,12 +1,11 @@
-import controlTextarea from './textarea';
-import utils from '../utils';
+import controlTextarea from './textarea'
+import utils from '../utils'
 
 /**
  * Quill rich text editor element
  * See https://quilljs.com/ for more info
  */
 export default class controlQuill extends controlTextarea {
-
   /**
    * configure the quill editor requirements
    */
@@ -18,14 +17,10 @@ export default class controlQuill extends controlTextarea {
 
     const defaultEditorConfig = {
       modules: {
-        toolbar: [
-          [{'header': [1, 2, false]}],
-          ['bold', 'italic', 'underline'],
-          ['code-block']
-        ]
+        toolbar: [[{ header: [1, 2, false] }], ['bold', 'italic', 'underline'], ['code-block']],
       },
       placeholder: this.config.placeholder || '',
-      theme: 'snow'
+      theme: 'snow',
     }
 
     const [customClassConfig, customEditorConfig] = utils.splitObject(this.classConfig, ['css', 'js'])
@@ -49,9 +44,9 @@ export default class controlQuill extends controlTextarea {
    */
   build() {
     // eslint-disable-next-line no-unused-vars
-    const {value = '', ...attrs} = this.config;
-    this.field = this.markup('div', null, attrs);
-    return this.field;
+    const { value = '', ...attrs } = this.config
+    this.field = this.markup('div', null, attrs)
+    return this.field
   }
 
   /**
@@ -59,21 +54,21 @@ export default class controlQuill extends controlTextarea {
    * @param {Object} evt - event
    */
   onRender(evt) {
-    const value = this.config.value || '';
-    const Delta = window.Quill.import('delta');
-    window.fbEditors.quill[this.id] = {};
-    const editor = window.fbEditors.quill[this.id];
-    editor.instance = new window.Quill(this.field, this.editorConfig);
-    editor.data = new Delta();
+    const value = this.config.value || ''
+    const Delta = window.Quill.import('delta')
+    window.fbEditors.quill[this.id] = {}
+    const editor = window.fbEditors.quill[this.id]
+    editor.instance = new window.Quill(this.field, this.editorConfig)
+    editor.data = new Delta()
     if (value) {
-      editor.instance.setContents(window.JSON.parse(this.parsedHtml(value)));
+      editor.instance.setContents(window.JSON.parse(this.parsedHtml(value)))
     }
     editor.instance.on('text-change', function(delta) {
-      editor.data = editor.data.compose(delta);
-    });
+      editor.data = editor.data.compose(delta)
+    })
     return evt
   }
 }
 
 // register quill as a richtext control
-controlTextarea.register('quill', controlQuill, 'textarea');
+controlTextarea.register('quill', controlQuill, 'textarea')

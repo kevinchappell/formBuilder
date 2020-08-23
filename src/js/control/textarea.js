@@ -1,22 +1,20 @@
-import control from '../control';
+import control from '../control'
 
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
 export default class controlTextarea extends control {
-
   /**
    * class configuration
    */
   static get definition() {
     return {
-
       // mi18n custom mappings (defaults to camelCase type)
       mi18n: {
-        textarea: 'textArea'
-      }
-    };
+        textarea: 'textArea',
+      },
+    }
   }
 
   /**
@@ -24,21 +22,21 @@ export default class controlTextarea extends control {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    const {value = '', ...attrs} = this.config;
-    this.field = this.markup('textarea', this.parsedHtml(value), attrs);
-    return this.field;
+    const { value = '', ...attrs } = this.config
+    this.field = this.markup('textarea', this.parsedHtml(value), attrs)
+    return this.field
   }
 
   /**
-  * onRender callback
-  */
+   * onRender callback
+   */
   onRender() {
     // Set userData if available
-    if(this.config.userData){       
-      $('#'+this.config.name).val(this.config.userData[0]);        
+    if (this.config.userData) {
+      $('#' + this.config.name).val(this.config.userData[0])
     }
   }
-    
+
   /**
    * extend the default events to add a prerender for textareas
    * @param {String} eventType
@@ -46,21 +44,21 @@ export default class controlTextarea extends control {
    */
   on(eventType) {
     if (eventType == 'prerender' && this.preview) {
-      return (element) => {
+      return element => {
         if (this.field) {
-          element = this.field;
+          element = this.field
         }
 
         // if this is a preview, stop events bubbling up so the editor preview is clickable (and not draggable)
-        $(element).on('mousedown', (e) => {
-          e.stopPropagation();
-        });
-      };
+        $(element).on('mousedown', e => {
+          e.stopPropagation()
+        })
+      }
     }
-    return super.on(eventType);
+    return super.on(eventType)
   }
 }
 
 // register the following controls
-control.register('textarea', controlTextarea);
-control.register('textarea', controlTextarea, 'textarea');
+control.register('textarea', controlTextarea)
+control.register('textarea', controlTextarea, 'textarea')
