@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/kevinchappell/formBuilder/compare/v3.4.5...v3.5.0) (2020-08-23)
+
+
+### Features
+
+* onAddOption ([7824e08](https://github.com/kevinchappell/formBuilder/commit/7824e08c657df9b55bf65597b48067965780471a)), closes [#1098](https://github.com/kevinchappell/formBuilder/issues/1098)
+
 ## [3.4.5](https://github.com/kevinchappell/formBuilder/compare/v3.4.4...v3.4.5) (2020-08-23)
 
 
