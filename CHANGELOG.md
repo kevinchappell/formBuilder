@@ -1,3 +1,10 @@
+## [3.5.2](https://github.com/kevinchappell/formBuilder/compare/v3.5.1...v3.5.2) (2020-08-23)
+
+
+### Bug Fixes
+
+* icon name conflict ([1231aae](https://github.com/kevinchappell/formBuilder/commit/1231aae178edad3dad8cdffb753020db3bc6a24c))
+
 ## [3.5.1](https://github.com/kevinchappell/formBuilder/compare/v3.5.0...v3.5.1) (2020-08-23)
 
 
