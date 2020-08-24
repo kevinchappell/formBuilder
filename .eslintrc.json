@@ -21,6 +21,7 @@
     "semi": ["error", "never"],
     "no-unused-vars": 1,
     "no-prototype-builtins": 0,
+    "arrow-parens": ["warn", "as-needed"],
     "prefer-const": [
       1,
       {

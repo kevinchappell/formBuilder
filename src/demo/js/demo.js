@@ -213,9 +213,10 @@ jQuery(function($) {
     onAddField: fieldId => {
       setCurrentFieldIdValues(fieldId)
     },
-    onAddOption: (optionTemplate, optionIndex) => {
-      optionTemplate.label = `Option ${optionIndex + 1}`
-      optionTemplate.value = `option-${optionIndex + 1}`
+    onAddOption: (optionTemplate, {index}) => {
+      optionTemplate.label = optionTemplate.label || `Option ${index + 1}`
+      optionTemplate.value = optionTemplate.value || `option-${index + 1}`
+
       return optionTemplate
     },
     onClearAll: () => window.sessionStorage.removeItem('formData'),
@@ -316,7 +317,10 @@ jQuery(function($) {
     demoApi.appendChild(generateActionTable(demoActions, columns))
 
     if (formData && formData !== '[]') {
-      document.getElementById('set-form-data-value').value = window.JSON.stringify(JSON.parse(formData), null, '  ')
+      const setFormDataInputValue = document.getElementById('set-form-data-value')
+      if (setFormDataInputValue) {
+        setFormDataInputValue.value = window.JSON.stringify(JSON.parse(formData), null, '  ')
+      }
     }
 
     langSelect.addEventListener(
