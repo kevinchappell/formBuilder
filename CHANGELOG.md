@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/kevinchappell/formBuilder/compare/v3.5.2...v3.6.0) (2020-08-24)
+
+
+### Features
+
+* custom option attributes ([c072cae](https://github.com/kevinchappell/formBuilder/commit/c072caeb7db83d61faf12c4ee9783e5ae6d28cbf)), closes [#1038](https://github.com/kevinchappell/formBuilder/issues/1038) [#986](https://github.com/kevinchappell/formBuilder/issues/986) [#956](https://github.com/kevinchappell/formBuilder/issues/956)
+
 ## [3.5.2](https://github.com/kevinchappell/formBuilder/compare/v3.5.1...v3.5.2) (2020-08-23)
 
 
