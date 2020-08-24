@@ -129,16 +129,22 @@ export default class Helpers {
     const $options = $('.sortable-options li', field)
 
     $options.each(i => {
-      const $option = $($options[i])
-      const selected = $('.option-selected', $option).is(':checked')
-      const attrs = {
-        label: $('.option-label', $option).val(),
-        value: $('.option-value', $option).val(),
-      }
+      const option = $options[i]
+      const stringAttrs = option.querySelectorAll('input[type=text], input[type=number], select')
+      const boolAttrs = option.querySelectorAll('input[type=checkbox], input[type=radio]')
+      const attrs = {}
 
-      if (selected) {
-        attrs.selected = selected
-      }
+      forEach(stringAttrs, i => {
+        const stringAttr = stringAttrs[i]
+        const attrName = stringAttr.dataset.attr
+        attrs[attrName] = stringAttr.value
+      })
+
+      forEach(boolAttrs, i => {
+        const boolAttr = boolAttrs[i]
+        const attrName = boolAttr.getAttribute('data-attr')
+        attrs[attrName] = boolAttr.checked
+      })
 
       options.push(attrs)
     })

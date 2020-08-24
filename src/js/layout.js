@@ -58,7 +58,7 @@ export default class layout {
           className: processClassName(data, field)
         })
       },
-      hidden: (field) => {
+      hidden: field => {
         // no wrapper any any visible elements
         return field
       }

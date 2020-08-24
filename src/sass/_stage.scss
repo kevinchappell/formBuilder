@@ -431,8 +431,10 @@
     padding: 0;
 
     > li {
+      display: flex;
       cursor: move;
       margin: 1px;
+      padding-right: 28px;
 
       &:nth-child(1) .remove {
         display: none;
@@ -447,7 +449,7 @@
       .remove {
         position: absolute;
         opacity: 1;
-        right: 14px;
+        right: 8px;
         height: 18px;
         width: 18px;
         top: 14px;
@@ -473,7 +475,7 @@
 
     input[type='text'] {
       width: calc(44.5% - 17px);
-      margin: 0 1%;
+      margin: 0 3px;
       float: none;
     }
   }
