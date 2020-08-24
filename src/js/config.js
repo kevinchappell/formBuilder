@@ -52,7 +52,7 @@ export const defaultOptions = {
     },
   },
   onAddField: (fieldId, fieldData) => fieldData,
-  onAddOption: noop,
+  onAddOption: obj => obj,
   onClearAll: noop,
   onCloseFieldEdit: noop,
   onOpenFieldEdit: noop,

@@ -277,18 +277,21 @@ const FormBuilder = function(opts, element, $) {
     const optionActions = [m('a', mi18n.get('addOption'), { className: 'add add-opt' })]
     const fieldOptions = [m('label', mi18n.get('selectOptions'), { className: 'false-label' })]
     const isMultiple = fieldData.multiple || type === 'checkbox-group'
-    const optionDataTemplate = label => ({
-      selected: false,
-      label,
-      value: hyphenCase(label),
-    })
+    const optionDataTemplate = count => {
+      const label = mi18n.get('optionCount', count)
+      return {
+        selected: false,
+        label,
+        value: hyphenCase(label)
+      }
+    }
 
     if (!values || !values.length) {
       let defaultOptCount = [1, 2, 3]
       if (['checkbox-group', 'checkbox'].includes(type)) {
         defaultOptCount = [1]
       }
-      fieldValues = defaultOptCount.map(index => optionDataTemplate(`${mi18n.get('optionCount', index)}`))
+      fieldValues = defaultOptCount.map(optionDataTemplate)
 
       const firstOption = fieldValues[0]
       if (firstOption.hasOwnProperty('selected') && type !== 'radio-group') {
