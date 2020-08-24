@@ -213,12 +213,12 @@ jQuery(function($) {
     onAddField: fieldId => {
       setCurrentFieldIdValues(fieldId)
     },
-    onAddOption: (optionTemplate, {index}) => {
-      optionTemplate.label = optionTemplate.label || `Option ${index + 1}`
-      optionTemplate.value = optionTemplate.value || `option-${index + 1}`
+    // onAddOption: (optionTemplate, {index}) => {
+    //   optionTemplate.label = optionTemplate.label || `Option ${index + 1}`
+    //   optionTemplate.value = optionTemplate.value || `option-${index + 1}`
 
-      return optionTemplate
-    },
+    //   return optionTemplate
+    // },
     onClearAll: () => window.sessionStorage.removeItem('formData'),
     stickyControls: {
       enable: true,
