@@ -1,3 +1,10 @@
+## [3.6.1](https://github.com/kevinchappell/formBuilder/compare/v3.6.0...v3.6.1) (2020-08-24)
+
+
+### Bug Fixes
+
+* onAddOption default ([55f4a8f](https://github.com/kevinchappell/formBuilder/commit/55f4a8f273c11641e882a149aaeba782ba1a031d))
+
 # [3.6.0](https://github.com/kevinchappell/formBuilder/compare/v3.5.2...v3.6.0) (2020-08-24)
 
 
