@@ -629,13 +629,13 @@ const FormBuilder = function(opts, element, $) {
     
     const textInput = (() => {
         if (textAttrs.type === 'textarea') {
-          const textValue = textAttrs.value;
-          delete textAttrs.value;
-          return `<textarea ${attrString(textAttrs)}>${textValue}</textarea>`;
+          const textValue = textAttrs.value
+          delete textAttrs.value
+          return `<textarea ${attrString(textAttrs)}>${textValue}</textarea>`
         } else {
-          return `<input ${attrString(textAttrs)}>`;
+          return `<input ${attrString(textAttrs)}>`
         }
-    })();
+    })()
 
     const inputWrap = `<div class="input-wrap">${textInput}</div>`
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
