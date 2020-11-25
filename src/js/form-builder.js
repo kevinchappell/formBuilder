@@ -385,6 +385,7 @@ const FormBuilder = function(opts, element, $) {
   const advFields = values => {
     const { type } = values
     const advFields = []
+    const typeClass = controls.getClass(type)
     const fieldAttrs = defaultFieldAttrs(type)
     const advFieldMap = {
       required: () => requiredField(values),
@@ -487,6 +488,11 @@ const FormBuilder = function(opts, element, $) {
         useDefaultAttr.push(!typeDisabledAttrs.includes(attr))
       }
 
+      if (typeClass.definition.hasOwnProperty('defaultAttrs')) {
+        const userAttrs = Object.keys(typeClass.definition.defaultAttrs)
+        useDefaultAttr.push(!userAttrs.includes(attr))
+      }
+
       if (opts.typeUserAttrs[type]) {
         const userAttrs = Object.keys(opts.typeUserAttrs[type])
         useDefaultAttr.push(!userAttrs.includes(attr))
@@ -500,6 +506,12 @@ const FormBuilder = function(opts, element, $) {
         advFields.push(advFieldMap[attr](isDisabled))
       }
     })
+
+    // Append custom attributes as defined in control plugin definition
+    if (typeClass.definition.hasOwnProperty('defaultAttrs')){
+      const customAttr = processTypeUserAttrs(typeClass.definition.defaultAttrs, values)
+      advFields.push(customAttr)
+    }
 
     // Append custom attributes as defined in typeUserAttrs option
     if (opts.typeUserAttrs[type]) {
@@ -604,6 +616,7 @@ const FormBuilder = function(opts, element, $) {
       name: name,
       type: attrs.type || 'text',
       className: [`fld-${name}`, (classname || className || '').trim()],
+      value: attrs.value || '',
     }
     const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 
@@ -613,7 +626,17 @@ const FormBuilder = function(opts, element, $) {
     }
 
     textAttrs = Object.assign({}, attrs, textAttrs)
-    const textInput = `<input ${attrString(textAttrs)}>`
+    
+    const textInput = (() => {
+        if (textAttrs.type === 'textarea') {
+          const textValue = textAttrs.value;
+          delete textAttrs.value;
+          return `<textarea ${attrString(textAttrs)}>${textValue}</textarea>`;
+        } else {
+          return `<input ${attrString(textAttrs)}>`;
+        }
+    })();
+
     const inputWrap = `<div class="input-wrap">${textInput}</div>`
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
   }
