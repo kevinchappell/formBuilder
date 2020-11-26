@@ -45,9 +45,11 @@ The following methods are static methods designed to be called on the class. E.g
   
 ## Control definitions
 To define information about this control, `static get definition()` method will allow us to define information about this new class. The object returned by `get definition` getter method supports the following properties:
+
   * `mi18n` - this property allows you to map a lookup (generally the `type` or `subtype`) to a defined mi18n lookup. By default `form-builder` will look use the type or subtype to look up translations, but this property allows you to map those to different lookup keys. See `control/text.js` for an example.
 
   * `i18n` - used primarily by control plugins. This allows you to encapsulate the translations within the plugin itself. While best practice is to use the mi18n library, a control plugin will generally need to be self contained. If any translations cannot be found defined here, `control.js` will fall back to looking up the `mi18n` object.
+
 ```javascript
 // option 1 - define multiple translations
 i18n: {
@@ -81,6 +83,21 @@ static get definition() {
 }
 ```
   * `inactive` - array of inactive types that shouldn't appear in formBuilder interface (but still be supported for rendering purposes) - see `control/select.js` for an example
+
+  * `defaultAttrs` - used primarily by control plugins. This allows you to define custom attributes for the control plugin without needing to modify the formBuilder options. Follows the style of `typeUserAttrs` and can be overwritten as such. 
+```javascript
+static get definition() {
+  return {
+    defaultAttrs:{
+        'Extra Content': {
+            'label': 'extracontent', 
+            'value' : '', 
+            'type': 'textarea'
+        }
+    }
+  }
+}
+```
   
 The label for a control in the list of form builder controls should be defined as the translation for the `type`. E.g. if you want to rename the label for a textarea, you would update the mi18n translation for `textarea`, or define an override in the `i18n` property.
 
