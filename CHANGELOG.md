@@ -1,3 +1,10 @@
+## [3.6.2](https://github.com/kevinchappell/formBuilder/compare/v3.6.1...v3.6.2) (2020-12-07)
+
+
+### Bug Fixes
+
+* radio group option remove button visible on second option ([8a838f7](https://github.com/kevinchappell/formBuilder/commit/8a838f7b18835af6a7055f3db183590eb8255c9c)), closes [#1143](https://github.com/kevinchappell/formBuilder/issues/1143)
+
 ## [3.6.1](https://github.com/kevinchappell/formBuilder/compare/v3.6.0...v3.6.1) (2020-08-24)
 
 
