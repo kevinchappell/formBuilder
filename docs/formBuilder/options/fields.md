@@ -4,11 +4,10 @@ Add custom controls to the control bar using the `fields` option.
 ## Usage
 ```javascript
 var fields = [{
-  label: 'First Name',
-  attrs: {
-    type: 'text'
-  },
-  icon: '😍'
+  label: "Email",
+  type: "text",
+  subtype: "email",
+  icon: "✉"
 }];
 $(container).formBuilder({fields});
 ```
