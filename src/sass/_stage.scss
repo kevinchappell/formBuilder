@@ -420,6 +420,12 @@
     }
   }
 
+  .radio-group-field {
+    .sortable-options li:nth-child(2) .remove {
+      display: none;
+    }
+  }
+
   .sortable-options {
     display: inline-block;
     width: 100%;
@@ -438,12 +444,6 @@
 
       &:nth-child(1) .remove {
         display: none;
-      }
-
-      .radio-group-field & {
-        &:nth-child(2) .remove {
-          display: none;
-        }
       }
 
       .remove {
