@@ -525,6 +525,16 @@ const FormBuilder = function(opts, element, $) {
   }
 
   /**
+   * 
+   * @param {Object} values    field attributes
+   * @param {String} subType   subType
+   * @return {Boolean}         indicates whether or not the field has a subtype
+   */
+  function hasSubType(values, subType) {
+    return values.subtype && values.subtype === subType
+  }
+
+  /**
    * Processes typeUserAttrs
    * @param  {Object} typeUserAttr option
    * @param  {Object} values       field attributes
@@ -552,21 +562,27 @@ const FormBuilder = function(opts, element, $) {
     for (const attribute in typeUserAttr) {
       if (typeUserAttr.hasOwnProperty(attribute)) {
         const attrValType = userAttrType(typeUserAttr[attribute])
-        const orig = mi18n.get(attribute)
-        const tUA = typeUserAttr[attribute]
-        const origValue = tUA.value || ''
-        tUA.value = values[attribute] || tUA.value || ''
+        if (attrValType !== 'undefined') {
+          const orig = mi18n.get(attribute)
+          const tUA = typeUserAttr[attribute]
+          const origValue = tUA.value || ''
+          tUA.value = values[attribute] || tUA.value || ''
 
-        if (tUA.label) {
-          i18n[attribute] = Array.isArray(tUA.label) ? mi18n.get(...tUA.label) || tUA.label[0] : tUA.label
+          if (tUA.label) {
+            i18n[attribute] = Array.isArray(tUA.label) ? mi18n.get(...tUA.label) || tUA.label[0] : tUA.label
+          }
+
+          if (attrTypeMap[attrValType]) {
+            advField.push(attrTypeMap[attrValType](attribute, tUA))
+          }
+
+          i18n[attribute] = orig
+          tUA.value = origValue
+        } else if (attrValType === 'undefined' && hasSubType(values, attribute)) {
+          advField.push(processTypeUserAttrs(typeUserAttr[attribute], values))
+        } else {
+          continue
         }
-
-        if (attrTypeMap[attrValType]) {
-          advField.push(attrTypeMap[attrValType](attribute, tUA))
-        }
-
-        i18n[attribute] = orig
-        tUA.value = origValue
       }
     }
 
