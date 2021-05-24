@@ -53,7 +53,7 @@
         "demo/assets/sass/site.scss"
       ]
     },
-    "fontServer": "http://fontello.com",
+    "fontServer": "https://fontello.com",
     "fontelloToken": "09d648f01d6c57cb9f9b8cc55043e0c0"
   },
   "babel": {
