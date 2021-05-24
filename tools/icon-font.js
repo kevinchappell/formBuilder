@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import http from 'http'
+import https from 'https'
 import { Spinner } from 'clui'
 import unzip from 'unzipper'
 import opener from 'opener'
@@ -56,7 +56,7 @@ const fontSave = async fontelloToken => {
   const status = new Spinner('Importing Font', spinner)
   status.start()
 
-  http
+  https
     .get(`${fontServer}/${token}/get`)
     .on('response', res => {
       // stream directly instead of download and unpack
