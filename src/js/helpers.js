@@ -658,7 +658,6 @@ export default class Helpers {
   }
 
   addDefaultFields() {
-    console.log('defaults added back')
     // Load default fields if none are set
     config.opts.defaultFields.forEach(field => this.formBuilder.prepFieldVars(field))
     this.d.stage.classList.remove('empty')
