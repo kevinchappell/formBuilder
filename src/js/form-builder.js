@@ -180,7 +180,7 @@ const FormBuilder = function(opts, element, $) {
   }
 
   // builds the standard formbuilder datastructure for a field definition
-  const prepFieldVars = function($field, isNew = false) {
+  const prepFieldVars = ($field, isNew = false) => {
     let field = {}
     if ($field instanceof jQuery) {
       // get the default type etc & label for this field
@@ -244,6 +244,8 @@ const FormBuilder = function(opts, element, $) {
     d.stage.classList.remove('empty')
   }
 
+  formBuilder.prepFieldVars = prepFieldVars
+
   // Parse saved XML template data
   const loadFields = function(formData) {
     formData = h.getData(formData)
@@ -251,9 +253,7 @@ const FormBuilder = function(opts, element, $) {
       formData.forEach(fieldData => prepFieldVars(trimObj(fieldData)))
       d.stage.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
-      // Load default fields if none are set
-      opts.defaultFields.forEach(field => prepFieldVars(field))
-      d.stage.classList.remove('empty')
+      h.addDefaultFields()
     } else if (!opts.prepend && !opts.append) {
       d.stage.classList.add('empty')
       d.stage.dataset.content = mi18n.get('getStarted')
@@ -526,7 +526,7 @@ const FormBuilder = function(opts, element, $) {
   }
 
   /**
-   * 
+   *
    * @param {Object} values    field attributes
    * @param {String} subType   subType
    * @return {Boolean}         indicates whether or not the field has a subtype

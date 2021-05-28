@@ -71,6 +71,7 @@ nav:
   - onCloseFieldEdit: formBuilder/options/onCloseFieldEdit.md
   - onOpenFieldEdit: formBuilder/options/onOpenFieldEdit.md
   - onSave: formBuilder/options/onSave.md
+  - persistDefaultFields: formBuilder/options/persistDefaultFields.md
   - replaceFields: formBuilder/options/replaceFields.md
   - roles: formBuilder/options/roles.md
   - scrollToFieldOnAdd: formBuilder/options/scrollToFieldOnAdd.md

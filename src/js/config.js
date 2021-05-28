@@ -62,6 +62,7 @@ export const defaultOptions = {
    * @param {Object} formData
    */
   onSave: noop,
+  persistDefaultFields: false,
   prepend: false,
   replaceFields: [],
   roles: {

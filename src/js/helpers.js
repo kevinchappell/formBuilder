@@ -194,7 +194,7 @@ export default class Helpers {
 
     if (form.childNodes.length !== 0) {
       // build data object
-      forEach(form.childNodes, function(index, field) {
+      forEach(form.childNodes, function (index, field) {
         const $field = $(field)
 
         if (!$field.hasClass('disabled-field')) {
@@ -358,13 +358,13 @@ export default class Helpers {
 
     const fieldType = $field.attr('type')
     const $prevHolder = $('.prev-holder', field)
-    let previewData = Object.assign({}, _this.getAttrVals(field, previewData), { type: fieldType })
+    let previewData = Object.assign({}, _this.getAttrVals(field), { type: fieldType })
 
     if (fieldType.match(d.optionFieldsRegEx)) {
       previewData.values = []
       previewData.multiple = $('[name="multiple"]', field).is(':checked')
 
-      $('.sortable-options li', field).each(function(i, $option) {
+      $('.sortable-options li', field).each(function (i, $option) {
         const option = {
           selected: $('.option-selected', $option).is(':checked'),
           value: $('.option-value', $option).val(),
@@ -453,9 +453,7 @@ export default class Helpers {
       classes.push(primaryType)
     }
 
-    const trimmedClassName = unique(classes)
-      .join(' ')
-      .trim()
+    const trimmedClassName = unique(classes).join(' ').trim()
 
     className.value = trimmedClassName
 
@@ -553,11 +551,11 @@ export default class Helpers {
       className: 'no btn btn-danger btn-sm',
     })
 
-    no.onclick = function() {
+    no.onclick = function () {
       _this.closeConfirm(overlay)
     }
 
-    yes.onclick = function() {
+    yes.onclick = function () {
       yesAction()
       _this.closeConfirm(overlay)
     }
@@ -659,6 +657,13 @@ export default class Helpers {
     }
   }
 
+  addDefaultFields() {
+    console.log('defaults added back')
+    // Load default fields if none are set
+    config.opts.defaultFields.forEach(field => this.formBuilder.prepFieldVars(field))
+    this.d.stage.classList.remove('empty')
+  }
+
   /**
    * Removes all fields from the form
    * @param {Object} stage to remove fields form
@@ -683,7 +688,7 @@ export default class Helpers {
       markEmptyArray.push(true)
     }
 
-    if (!markEmptyArray.some(elem => elem === true)) {
+    if (!markEmptyArray.some(Boolean)) {
       stage.classList.add('empty')
       stage.dataset.content = i18n.getStarted
     }
@@ -693,14 +698,20 @@ export default class Helpers {
       let outerHeight = 0
       forEach(fields, index => (outerHeight += fields[index].offsetHeight + 3))
       fields[0].style.marginTop = `${-outerHeight}px`
-      const animateTimeout = setTimeout(() => {
-        empty(stage).classList.remove('removing')
-        this.save()
-        clearTimeout(animateTimeout)
-      }, 400)
-    } else {
-      empty(stage)
-      this.save()
+    }
+
+    const animationTimeout = animate ? 400 : 0
+    const animateTimeout = setTimeout(() => {
+      this.emptyStage(stage)
+      clearTimeout(animateTimeout)
+    }, animationTimeout)
+  }
+
+  emptyStage(stage) {
+    empty(stage).classList.remove('removing')
+    this.save()
+    if (config.opts.persistDefaultFields) {
+      this.addDefaultFields()
     }
   }
 
@@ -806,7 +817,7 @@ export default class Helpers {
     const cbPosition = controls.getBoundingClientRect()
     const { top: stageTop } = stage.getBoundingClientRect()
 
-    $(window).scroll(function(evt) {
+    $(window).scroll(function (evt) {
       const scrollTop = $(evt.target).scrollTop()
       const offsetDefaults = {
         top: 5,
@@ -901,7 +912,7 @@ export default class Helpers {
       return false
     }
 
-    $field.slideUp(animationSpeed, function() {
+    $field.slideUp(animationSpeed, function () {
       $field.removeClass('deleting')
       $field.remove()
       fieldRemoved = true
