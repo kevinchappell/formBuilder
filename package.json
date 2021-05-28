@@ -77,7 +77,7 @@
     ]
   },
   "scripts": {
-    "prepare": "npm i && run build",
+    "install": "npm i && run build",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config",
     "build:vendor": "babel-node tools/build-vendor",
