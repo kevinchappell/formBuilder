@@ -31,7 +31,7 @@ const toggleBootStrap = ({ target }) => {
 
 document.getElementById('toggleBootstrap').addEventListener('click', toggleBootStrap, false)
 
-jQuery(function($) {
+jQuery(function ($) {
   const fields = [
     {
       type: 'autocomplete',
@@ -61,11 +61,8 @@ jQuery(function($) {
       subtype: 'custom-group',
       label: 'Custom Checkbox Group w/Sub Type',
       required: true,
-      values: [
-        { label: 'Option 1' },
-        { label: 'Option 2' }
-      ]
-    }
+      values: [{ label: 'Option 1' }, { label: 'Option 2' }],
+    },
   ]
 
   const replaceFields = [
@@ -95,7 +92,7 @@ jQuery(function($) {
   ]
 
   const templates = {
-    starRating: function(fieldData) {
+    starRating: function (fieldData) {
       return {
         field: '<span id="' + fieldData.name + '">',
         onRender: () => {
@@ -201,8 +198,8 @@ jQuery(function($) {
         customInput: {
           label: 'Custom Text Field',
           value: 'This field is added only to checkbox with specific subtype',
-          type: 'text'
-        }
+          type: 'text',
+        },
       },
     },
   }
@@ -211,6 +208,16 @@ jQuery(function($) {
   const disabledAttrs = ['placeholder', 'name']
 
   const fbOptions = {
+    defaultFields: [
+      {
+        className: 'form-control',
+        label: 'Default Field',
+        placeholder: 'Enter your default field value',
+        name: 'default-field-1',
+        type: 'text',
+      },
+    ],
+    persistDefaultFields: true,
     disabledSubtypes: {
       text: ['password'],
     },
@@ -220,13 +227,13 @@ jQuery(function($) {
     dataType,
     subtypes: {
       text: ['datetime-local'],
-      'checkbox-group': ['custom-group']
+      'checkbox-group': ['custom-group'],
     },
     onSave: toggleEdit,
     onAddField: fieldId => {
       setCurrentFieldIdValues(fieldId)
     },
-    onAddOption: (optionTemplate, {index}) => {
+    onAddOption: (optionTemplate, { index }) => {
       optionTemplate.label = optionTemplate.label || `Option ${index + 1}`
       optionTemplate.value = optionTemplate.value || `option-${index + 1}`
 
@@ -290,7 +297,7 @@ jQuery(function($) {
 
   const fbPromise = formBuilder.promise
 
-  fbPromise.then(function(fb) {
+  fbPromise.then(function (fb) {
     document.querySelectorAll('.editForm').forEach(element => element.addEventListener('click', toggleEdit), false)
     const langSelect = document.getElementById('setLanguage')
     const savedLocale = window.sessionStorage.getItem(localeSessionKey) || defaultLocale
