@@ -54,7 +54,7 @@
       ]
     },
     "fontServer": "https://fontello.com",
-    "fontelloToken": "09d648f01d6c57cb9f9b8cc55043e0c0"
+    "fontelloToken": "8133a89b02aa83af98cec852f5f4c127"
   },
   "babel": {
     "presets": [
@@ -77,6 +77,7 @@
     ]
   },
   "scripts": {
+    "prepare": "npm i && run build",
     "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
     "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config",
     "build:vendor": "babel-node tools/build-vendor",
