@@ -162,11 +162,21 @@ export const bindEvents = (element, events) => {
  * @param  {Object} field
  * @return {String}       name
  */
-export const nameAttr = function(field) {
-  const epoch = new Date().getTime()
-  const prefix = field.type || hyphenCase(field.label)
-  return prefix + '-' + epoch
-}
+export const nameAttr = (function() {
+  let lepoch
+  let counter = 0
+  return function(field) {
+    const epoch = new Date().getTime()
+    if (epoch === lepoch) {
+      ++counter
+    } else {
+      counter = 0
+      lepoch = epoch
+    }
+    const prefix = field.type || hyphenCase(field.label)
+    return prefix + '-' + epoch + '-' + counter
+  }
+})()
 
 /**
  * Determine content type
