@@ -1,3 +1,10 @@
+## [3.7.1](https://github.com/kevinchappell/formBuilder/compare/v3.7.0...v3.7.1) (2021-06-04)
+
+
+### Bug Fixes
+
+* setData working intermittently ([753280f](https://github.com/kevinchappell/formBuilder/commit/753280f183663dd153802458209b6427c10f4c36)), closes [#1197](https://github.com/kevinchappell/formBuilder/issues/1197)
+
 # [3.7.0](https://github.com/kevinchappell/formBuilder/compare/v3.6.2...v3.7.0) (2021-05-28)
 
 
