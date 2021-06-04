@@ -90,6 +90,7 @@
     "docs": "mkdocs build",
     "font": "babel-node tools/icon-font",
     "lint": "eslint ./src --ext .js || true",
+    "lint:fix": "eslint ./src --ext .js --fix",
     "semantic-release": "semantic-release",
     "start:devServer": "webpack-dev-server --mode development --config tools/webpack.config",
     "prestart": "npm-run-all -p build:vendor copy:lang",
