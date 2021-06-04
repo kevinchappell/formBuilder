@@ -14,9 +14,16 @@ export const builderActions = {
     console.log($('.build-wrap').formBuilder('getData'))
   },
   setData: () => {
-    const { value } = document.getElementById('set-form-data-value')
-    window.sessionStorage.setItem('formData', value)
-    $('.build-wrap').formBuilder('setData', value)
+    const fb = $('.build-wrap').formBuilder
+    const dataInput = fb('markup', 'textarea', fb('getData', 'json', true), {
+      id: 'setData-value',
+      rows: 30,
+      style: 'width: 100%',
+    })
+    const click = () => $('.build-wrap').formBuilder('setData', dataInput.value)
+    const setDataButton = fb('markup', 'button', 'Set Data', { events: { click } })
+    const dialogContents = fb('markup', 'div', [dataInput, setDataButton])
+    fb('showDialog', dialogContents, null, 'data-dialog')
   },
   save: () => {
     $('.build-wrap').formBuilder('save')
@@ -67,8 +74,8 @@ export const renderActions = {
             'link',
             'alignleft aligncenter alignright alignjustify',
             'numlist bullist outdent indent',
-            'preview'
-          ].join(' | ')
+            'preview',
+          ].join(' | '),
         },
       },
       formData:

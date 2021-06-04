@@ -647,7 +647,11 @@ export default class Helpers {
         i18n.clearAllMessage,
         () => {
           _this.removeAllFields.call(_this, stage)
-          config.opts.notify.success(i18n.allFieldsRemoved)
+          if (config.opts.persistDefaultFields && config.opts.defaultFields) {
+            this.addDefaultFields()
+          } else {
+            config.opts.notify.success(i18n.allFieldsRemoved)
+          }
           config.opts.onClearAll()
         },
         coords,
@@ -669,7 +673,7 @@ export default class Helpers {
    * @param {Boolean} animate whether to animate or not
    * @return {void}
    */
-  removeAllFields(stage, animate = true) {
+  removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
     const fields = stage.querySelectorAll('li.form-field')
@@ -692,26 +696,12 @@ export default class Helpers {
       stage.dataset.content = i18n.getStarted
     }
 
-    if (animate) {
-      stage.classList.add('removing')
-      let outerHeight = 0
-      forEach(fields, index => (outerHeight += fields[index].offsetHeight + 3))
-      fields[0].style.marginTop = `${-outerHeight}px`
-    }
-
-    const animationTimeout = animate ? 400 : 0
-    const animateTimeout = setTimeout(() => {
-      this.emptyStage(stage)
-      clearTimeout(animateTimeout)
-    }, animationTimeout)
+    this.emptyStage(stage)
   }
 
   emptyStage(stage) {
     empty(stage).classList.remove('removing')
     this.save()
-    if (config.opts.persistDefaultFields) {
-      this.addDefaultFields()
-    }
   }
 
   /**
