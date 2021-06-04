@@ -337,7 +337,7 @@ jQuery(function ($) {
     demoApi.appendChild(generateActionTable(demoActions, columns))
 
     if (formData && formData !== '[]') {
-      const setFormDataInputValue = document.getElementById('set-form-data-value')
+      const setFormDataInputValue = document.getElementById('setData-value')
       if (setFormDataInputValue) {
         setFormDataInputValue.value = window.JSON.stringify(JSON.parse(formData), null, '  ')
       }

@@ -62,3 +62,14 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+
+#setData-value {
+  background-color: transparent;
+  border: 0 none;
+  color: #fff;
+  padding: 0;
+}
+
+.form-builder-dialog {
+  overflow-y: auto;
+}
