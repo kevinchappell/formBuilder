@@ -1,3 +1,10 @@
+## [3.7.2](https://github.com/kevinchappell/formBuilder/compare/v3.7.1...v3.7.2) (2021-06-07)
+
+
+### Bug Fixes
+
+* save not returning js formData ([490ad72](https://github.com/kevinchappell/formBuilder/commit/490ad72c3efd7055792c9990821005f65d6ee812))
+
 ## [3.7.1](https://github.com/kevinchappell/formBuilder/compare/v3.7.0...v3.7.1) (2021-06-04)
 
 
