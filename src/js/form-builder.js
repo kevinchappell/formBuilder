@@ -1381,8 +1381,11 @@ const FormBuilder = function (opts, element, $) {
     clearFields: animate => h.removeAllFields(d.stage, animate),
     showData: h.showData.bind(h),
     save: minify => {
-      h.save(minify)
-      config.opts.onSave(h.getFormData())
+      const formData = h.save(minify)
+      const formDataJS = window.JSON.parse(formData)
+      config.opts.onSave(formDataJS)
+
+      return formDataJS
     },
     addField: (field, index) => {
       h.stopIndex = data.formData.length ? index : undefined
