@@ -16,13 +16,19 @@
   background-position: 50% 0, 50% 0%;
 }
 
-pre {
-  color: #f8f8f2 !important;
-  background-color: #23241f !important;
+.rst-content pre code {
+  color: #f8f8f2;
+  background-color: #23241f;
+  white-space: pre;
+  padding: 1em;
+  line-height: 1.5em;
+  border-width: 1px;
 }
 
-code {
-  padding: 3px 5px !important;
+.rst-content code {
+  color: #000000;
+  background-color: #ffffff;
+  border-width: 0;
 }
 
 p {
