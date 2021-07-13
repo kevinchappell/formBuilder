@@ -1,3 +1,10 @@
+## [3.7.3](https://github.com/kevinchappell/formBuilder/compare/v3.7.2...v3.7.3) (2021-07-13)
+
+
+### Bug Fixes
+
+* documentation code colors ([b2db0d7](https://github.com/kevinchappell/formBuilder/commit/b2db0d7a06576a05802d8af68e89adad45301824))
+
 ## [3.7.2](https://github.com/kevinchappell/formBuilder/compare/v3.7.1...v3.7.2) (2021-06-07)
 
 
