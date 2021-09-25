@@ -17,12 +17,27 @@ const processClassName = (data, field) => {
     // Now that the col- types were lifted, remove from the actual input field
     for (let index = 0; index < classes.length; index++) {
       const element = classes[index]
-      if(data.type != 'autocomplete'){
-        field.classList.remove(element) 
-      }else if(data.type == 'autocomplete'){
+     
+      if(data.type == 'autocomplete'){
         for (let j = 0; j < field.length; j++) {
           field[j].classList.remove(element)      
         }
+      }else if(data.type == 'radio-group'){
+        field.classList.remove(element) 
+
+        var radioGroupInputs = $('input', field)
+        for (let j = 0; j < radioGroupInputs.length; j++) {
+          radioGroupInputs[j].classList.remove(element) 
+        }
+      }else if(data.type == 'checkbox-group'){
+        field.classList.remove(element) 
+
+        var checkboxGroupInputs = $('input', field)
+        for (let j = 0; j < checkboxGroupInputs.length; j++) {
+          checkboxGroupInputs[j].classList.remove(element) 
+        }
+      }else{
+        field.classList.remove(element) 
       }
 
     }
