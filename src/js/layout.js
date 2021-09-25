@@ -17,7 +17,14 @@ const processClassName = (data, field) => {
     // Now that the col- types were lifted, remove from the actual input field
     for (let index = 0; index < classes.length; index++) {
       const element = classes[index]
-      field.classList.remove(element)
+      if(data.type != 'autocomplete'){
+        field.classList.remove(element) 
+      }else if(data.type == 'autocomplete'){
+        for (let j = 0; j < field.length; j++) {
+          field[j].classList.remove(element)      
+        }
+      }
+
     }
   }
 
