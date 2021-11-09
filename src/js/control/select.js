@@ -33,7 +33,12 @@ export default class controlSelect extends control {
     }
 
     if (type === 'checkbox-group' && data.required) {
-      this.onRender = this.groupRequired
+      const self = this
+      const defaultOnRender = this.onRender.bind(this)
+      this.onRender = function() {
+        self.groupRequired()
+        defaultOnRender()
+      }
     }
 
     delete data.title
