@@ -7,15 +7,17 @@
       media="screen"
       href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.1/jquery.rateyo.min.css"
     />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <meta
       name="viewport"
       content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
     />
+    <style>.rendered-form{padding:10px;}</style>
     <title>jQuery formBuilder/formRender Demo</title>
   </head>
 
-  <body>
+  <body style="background-color: #fff;">
     <header class="demo-header">
       <label for="toggleBootstrap">Toggle Bootstrap <input type="checkbox" id="toggleBootstrap"/></label>
       <div>
@@ -40,6 +42,7 @@
       <h1 class="formrender-title">
         jQuery formRender -
         <button class="editForm">Edit</button>
+        <button id="btnShow">Show UserData</button>
       </h1>
       <div class="build-wrap"></div>
       <form class="render-wrap"></form>
@@ -53,6 +56,8 @@
       </div>
     </div>
     <div id="formbuilder-options"></div>
+
+    <span id='spanResult'></span>
     <script src="assets/js/vendor.js"></script>
 
     <script src="<%= htmlWebpackPlugin.options.formBuilder %>"></script>

@@ -66,7 +66,7 @@ export const defaultOptions = {
   prepend: false,
   replaceFields: [],
   roles: {
-    1: 'Administrator',
+    
   },
   scrollToFieldOnAdd: true,
   showActionButtons: true,
@@ -84,6 +84,9 @@ export const defaultOptions = {
   typeUserAttrs: {},
   typeUserDisabledAttrs: {},
   typeUserEvents: {},
+  propertiesInModal: true,
+  maxFieldsInRow: 4,
+  hideDropZones:false,
 }
 
 export const styles = {

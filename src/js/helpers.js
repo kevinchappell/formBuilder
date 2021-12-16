@@ -46,6 +46,8 @@ export default class Helpers {
    * @param  {Object} ui
    */
   startMoving(event, ui) {
+    $('.fb-drop-target').addClass('is-active')
+    $('.fb-drop-target-wrapper').addClass('is-active')
     ui.item.show().addClass('moving')
     this.doCancel = true
     this.from = ui.item.parent()
@@ -59,13 +61,9 @@ export default class Helpers {
    */
   stopMoving(event, ui) {
     const _this = this
+    $('.fb-drop-target').removeClass('is-active')
+    $('.fb-drop-target-wrapper').removeClass('is-active')
     ui.item.removeClass('moving')
-    if (_this.doCancel) {
-      if (ui.sender) {
-        $(ui.sender).sortable('cancel')
-      }
-      this.from.sortable('cancel')
-    }
     _this.save()
     _this.doCancel = false
   }
@@ -189,64 +187,80 @@ export default class Helpers {
    */
   prepData(form) {
     const formData = []
+    formData['rows'] = {}
     const d = this.d
     const _this = this
-
     if (form.childNodes.length !== 0) {
       // build data object
-      forEach(form.childNodes, function (index, field) {
-        const $field = $(field)
-
-        if (!$field.hasClass('disabled-field')) {
-          let fieldData = _this.getTypes($field)
-          const $roleInputs = $('.roles-field:checked', field)
-          const roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
-
-          fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
-
-          if (fieldData.subtype) {
-            if (fieldData.subtype === 'quill') {
-              const id = `${fieldData.name}-preview`
-              if (window.fbEditors.quill[id]) {
-                const instance = window.fbEditors.quill[id].instance
-                const data = instance.getContents()
-                fieldData.value = window.JSON.stringify(data.ops)
-              }
-            } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
-              const id = `${fieldData.name}-preview`
-              if (window.tinymce.editors[id]) {
-                const editor = window.tinymce.editors[id]
-                fieldData.value = editor.getContent()
+      forEach(form.childNodes, function (index, row) {
+        const $row = $(row)
+        if (!$row.hasClass('disabled-field')) {
+          const rows = []
+          const cols = $row.find('.fb-field-wrapper').length
+          const bootstrapClassName = 'row-' + (index+1) +' col-md-' + parseInt(12/cols)
+          $row.find('.fb-field-wrapper').each( function(i, field) {
+            const $field = $(field)
+            let fieldData = _this.getTypes($field)
+            const $roleInputs = $('.roles-field:checked', field)
+            const roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
+  
+            fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
+  
+            if (fieldData.subtype) {
+              if (fieldData.subtype === 'quill') {
+                const id = `${fieldData.name}-preview`
+                if (window.fbEditors.quill[id]) {
+                  const instance = window.fbEditors.quill[id].instance
+                  const data = instance.getContents()
+                  fieldData.value = window.JSON.stringify(data.ops)
+                }
+              } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
+                const id = `${fieldData.name}-preview`
+                if (window.tinymce.editors[id]) {
+                  const editor = window.tinymce.editors[id]
+                  fieldData.value = editor.getContent()
+                }
               }
             }
-          }
-
-          if (roleVals.length) {
-            fieldData.role = roleVals.join(',')
-          }
-
-          fieldData.className = fieldData.className || fieldData.class
-
-          if (fieldData.className) {
-            const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
-            if (match) {
-              fieldData.style = match[1]
+            
+            if (roleVals.length) {
+              fieldData.role = roleVals.join(',')
             }
-          }
-
-          fieldData = trimObj(fieldData)
-
-          const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
-
-          if (multipleField) {
-            fieldData.values = _this.fieldOptionData($field)
-          }
-
-          formData.push(fieldData)
+            if(typeof fieldData.className == 'undefined') {
+              if( typeof fieldData.class != 'undefined' ){
+                fieldData.className = fieldData.class
+              }
+              else{
+                fieldData.className = ''
+              }
+            }
+  
+            if (fieldData.className) {
+              const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
+              if (match) {
+                fieldData.style = match[1]
+              }
+            }
+            if( fieldData.hasOwnProperty('className') ){
+              fieldData = Object.assign({}, fieldData, {'className':(fieldData.className.length) ? fieldData.className + ' ' + bootstrapClassName : bootstrapClassName})
+            }
+            else{
+              fieldData = Object.assign({}, fieldData, {'className':bootstrapClassName})
+            }
+            fieldData = trimObj(fieldData)
+  
+            const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
+  
+            if (multipleField) {
+              fieldData.values = _this.fieldOptionData($field)
+            }
+  
+            rows.push(fieldData)
+          })
+          formData.push(rows)
         }
       })
     }
-
     return formData
   }
 
@@ -634,7 +648,7 @@ export default class Helpers {
     const formID = e.target.id.match(/frmb-\d{13}/)[0]
     const stage = document.getElementById(formID)
     const i18n = mi18n.current
-    const fields = $('li.form-field', stage)
+    const fields = $('.form-builder .fb-field-wrapper')
     const buttonPosition = e.target.getBoundingClientRect()
     const bodyRect = document.body.getBoundingClientRect()
     const coords = {
@@ -653,6 +667,8 @@ export default class Helpers {
             config.opts.notify.success(i18n.allFieldsRemoved)
           }
           config.opts.onClearAll()
+          this.formBuilder.resetDropAreas() //don't change the order
+          this.formBuilder.updateColumns()
         },
         coords,
       )
@@ -676,7 +692,7 @@ export default class Helpers {
   removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
-    const fields = stage.querySelectorAll('li.form-field')
+    const fields = stage.querySelectorAll('.form-builder .fb-field-wrapper')
     const markEmptyArray = []
 
     if (!fields.length) {
@@ -876,7 +892,7 @@ export default class Helpers {
     let fieldRemoved = false
     const _this = this
     const form = this.d.stage
-    const fields = form.getElementsByClassName('form-field')
+    const fields = form.getElementsByClassName('fb-field-wrapper')
 
     if (!fields.length) {
       config.opts.notify.warning('No fields to remove')
@@ -910,6 +926,8 @@ export default class Helpers {
         form.classList.add('empty')
         form.dataset.content = mi18n.current.getStarted
       }
+      _this.formBuilder.resetDropAreas() //don't change the order
+      _this.formBuilder.updateColumns()
     })
 
     const userEvents = config.opts.typeUserEvents[field.type]
@@ -1019,7 +1037,7 @@ export default class Helpers {
       className: `form-wrap form-builder ${mobileClass()}`,
     })
 
-    d.stage = m('ul', null, {
+    d.stage = m('div', null, {
       id,
       className: `frmb stage-wrap ${data.layout.stage}`,
     })
@@ -1130,4 +1148,32 @@ export default class Helpers {
 
     return data[type](formatted)
   }
+
+  generateDropZones(vertical = false, hide = false){ 
+    
+    const dashedZone = []
+    if( vertical ){
+      dashedZone.push( m('div','', { className: 'form-field-dropzone form-field-dropzone-vertical' }) )
+      dashedZone.push( m('div','', { className: 'dashed-dropzone dashed-dropzone-vertical' }) )
+    }
+    else{
+      dashedZone.push( m('div','', { className: 'form-field-dropzone form-field-dropzone-horizontal' }) )
+      dashedZone.push( m('div','', { className: 'dashed-dropzone dashed-dropzone-horizontal' }) )
+    }
+
+    const zoneHolder = m('div',dashedZone, { className: 'dropzone-holder' })
+    let dropTarget = m('div',zoneHolder, { className: 'fb-drop-target' })
+    if( !vertical){
+      dropTarget = m('div',zoneHolder, { className: 'fb-drop-target-wrapper', style:'display:' + ((hide) ? 'none':'block') })
+    }
+    return dropTarget
+  }
+
+  findObjectIndex($objects,$object ){
+
+
+
+  }
+  
+
 }

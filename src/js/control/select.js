@@ -82,6 +82,8 @@ export default class controlSelect extends control {
             optionAttrs.checked = 'checked'
             delete optionAttrs.selected
           }
+          data.className = data.className.replace(/(^|\s)row-\S+/g, '')
+          data.className = data.className.replace(/(^|\s)col-md-\S+/g, '')
           const input = this.markup('input', null, Object.assign({}, data, optionAttrs))
           const labelAttrs = { for: optionAttrs.id }
           let output = [input, this.markup('label', labelContents, labelAttrs)]

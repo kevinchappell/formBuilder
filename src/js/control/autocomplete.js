@@ -130,6 +130,9 @@ export default class controlAutocomplete extends control {
         }
       },
     }
+    data.className = data.className.replace(/(^|\s)row-\S+/g, '')
+    data.className = data.className.replace(/(^|\s)col-md-\S+/g, '')
+    
     const fauxAttrs = Object.assign({}, data, {
       id: `${data.id}-input`,
       autocomplete: 'off',
@@ -137,6 +140,7 @@ export default class controlAutocomplete extends control {
     })
     const hiddenAttrs = Object.assign({}, data, { type: 'hidden' })
     delete fauxAttrs.name
+
     const field = [this.markup('input', null, fauxAttrs), this.markup('input', null, hiddenAttrs)]
 
     const options = values.map(optionData => {

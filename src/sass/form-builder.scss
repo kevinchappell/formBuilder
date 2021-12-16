@@ -1,15 +1,26 @@
 @import 'base/variables';
 @import 'base/font';
 @import 'base/mixins';
-
+@function to-rgb($value) {
+  @return red($value), green($value), blue($value);
+}
+@function rgba-css-var($identifier, $target) {
+  @if $identifier == "body" and $target == "bg" {
+    @return rgba(var(--#{$variable-prefix}#{$identifier}-bg-rgb), var(--#{$variable-prefix}#{$target}-opacity));
+  } @if $identifier == "body" and $target == "text" {
+    @return rgba(var(--#{$variable-prefix}#{$identifier}-color-rgb), var(--#{$variable-prefix}#{$target}-opacity));
+  } @else {
+    @return rgba(var(--#{$variable-prefix}#{$identifier}-rgb), var(--#{$variable-prefix}#{$target}-opacity));
+  }
+}
 .form-wrap.form-builder {
   @import 'base/bs';
   @import 'base/animation';
   @import 'controls';
-  @import 'stage';
   @import 'kc-toggle';
+  @import "~bootstrap/scss/bootstrap";
   position: relative;
-
+  padding: 24px;
   &::after {
     content: '';
     display: table;
@@ -17,6 +28,7 @@
   }
 }
 
+@import 'stage';
 .cb-wrap,
 .stage-wrap {
   vertical-align: top;
@@ -113,10 +125,11 @@ textarea {
 }
 
 .toggle-form {
-  opacity: 0;
+  opacity: 1;
 
   &:hover {
     border-color: lighten($grey, 40%);
+    
   }
 
   &::before {
@@ -153,6 +166,29 @@ textarea {
   }
 }
 
+.formbuilder-icon-dragged{
+  border-radius: 3px;
+  border: 1px solid #cbd6e2;
+  font-size: 16px;
+  color: #33475b;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 400;
+  background-color: #fff;
+  position: relative;
+  cursor: move;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  z-index: 11;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+.formbuilder-icon-dragged::before{
+  vertical-align:super;
+}
 .form-builder-dialog {
   position: absolute;
   border-radius: 5px;
@@ -213,4 +249,250 @@ textarea {
       margin-left: 10px;
     }
   }
+}
+
+.fb-row *, .fb-row :after, .fb-row :before {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box
+}
+.fb-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -10px;
+  margin-left: -10px
+}
+.fb-row.small-gutters, .fb-row.small-padding {
+  margin-right: -5px;
+  margin-left: -5px
+}
+.fb-row.small-gutters>.fb-field-col, .fb-row.small-gutters>[class^=fb-field-col-], .fb-row.small-padding>.fb-field-col, .fb-row.small-padding>[class^=fb-field-col-] {
+  padding-right: 5px;
+  padding-left: 5px
+}
+.fb-row.no-gutters, .fb-row.no-padding {
+  margin-right: 0;
+  margin-left: 0
+}
+.fb-row.no-gutters>.fb-field-col, .fb-row.no-gutters>[class^=fb-field-col-], .fb-row.no-padding>.fb-field-col, .fb-row.no-padding>[class^=fb-field-col-] {
+  padding-right: 0;
+  padding-left: 0
+}
+.fb-field-col, [class^=fb-field-col-] {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 10px;
+  padding-left: 10px
+}
+.fb-field-col-1 {
+  flex: 0 0 8.3333333333%;
+  max-width: 8.3333333333%
+}
+.fb-field-col-2 {
+  flex: 0 0 16.6666666667%;
+  max-width: 16.6666666667%
+}
+.fb-field-col-3 {
+  flex: 0 0 25%;
+  max-width: 25%
+}
+.fb-field-col-4 {
+  flex: 0 0 33.3333333333%;
+  max-width: 33.3333333333%
+}
+.fb-field-col-5 {
+  flex: 0 0 41.6666666667%;
+  max-width: 41.6666666667%
+}
+.fb-field-col-6 {
+  flex: 0 0 50%;
+  max-width: 50%
+}
+.fb-field-col-7 {
+  flex: 0 0 58.3333333333%;
+  max-width: 58.3333333333%
+}
+.fb-field-col-8 {
+  flex: 0 0 66.6666666667%;
+  max-width: 66.6666666667%
+}
+.fb-field-col-9 {
+  flex: 0 0 75%;
+  max-width: 75%
+}
+.fb-field-col-10 {
+  flex: 0 0 83.3333333333%;
+  max-width: 83.3333333333%
+}
+.fb-field-col-11 {
+  flex: 0 0 91.6666666667%;
+  max-width: 91.6666666667%
+}
+.fb-field-col-12 {
+  flex: 0 0 100%;
+  max-width: 100%
+}
+.fb-field-col-auto {
+  flex-basis: 0;
+  flex-grow: 1;
+  max-width: 100%
+}
+div[data-popover=tooltip] {
+  background-color: #1c2e36;
+  padding-left: 8px;
+  padding-right: 8px;
+  text-align: center;
+  color: #fff;
+  width: auto
+}
+div[data-popover=tooltip].dropdown-position-top:before {
+  border-top-color: #454d54
+}
+div[data-popover=tooltip].dropdown-position-bottom:before {
+  border-bottom-color: #454d54
+}
+div[data-popover=tooltip].dropdown-position-left:before {
+  border-left-color: #454d54
+}
+div[data-popover=tooltip].dropdown-position-right:before {
+  border-right-color: #454d54
+}
+
+.field-wrapper {
+  margin: 0!important
+}
+[data-is-showing-errors=true] .text {
+  border-color: #ef4e4e
+}
+.field[data-classification=box] {
+  margin: 2px 0
+}
+.field[data-classification=box] .field-wrapper {
+  display: flex;
+  align-items: center
+}
+.field[data-classification=box] .box-heading {
+  padding-left: 5px
+}
+
+.fb-field-wrapper {
+  width: 100%;
+  position: relative;
+  padding: 10px 15px!important;
+  cursor: move;
+  border-radius: 4px;
+  transition: all .2s ease;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  z-index: 2
+}
+.fb-field-wrapper:hover {
+  /*background: #f1f5f8*/
+}
+.fb-field-wrapper.is-active {
+  opacity: .3
+}
+.fb-field-wrapper.has-errors {
+  box-shadow: 0 0 1px 1px #ef9898;
+  background: #fff6f6
+}
+.fb-field-wrapper svg {
+  width: 100%;
+  height: 100%
+}
+.fb-field-wrapper .warning {
+  margin: 8px 0 0
+}
+
+.fb-drop-target-wrapper {
+  position: relative;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  height: 6px
+}
+.fb-drop-target-wrapper.is-active {
+  z-index: 10
+}
+.dropzone-holder {
+  position: relative
+}
+.form-field-dropzone {
+  z-index: 1;
+  position: absolute
+}
+.form-field-dropzone-horizontal {
+  height: 65px;
+  width: 100%;
+  top: -25px
+}
+.dashed-dropzone {
+  border: 1px dashed #0d99f2;
+  border-radius: 1px;
+  background-color: #e5f5f8;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .2s ease
+}
+.is-disabled .dashed-dropzone {
+  opacity: 0!important;
+  visibility: hidden!important
+}
+.is-active>.dropzone-holder>.dashed-dropzone {
+  opacity: 1;
+  visibility: visible
+}
+.is-hover .dashed-dropzone {
+  background-color: #0d99f2
+}
+.dashed-dropzone-horizontal {
+  height: 11px
+}
+.fb-drop-target {
+  width: 0;
+  z-index: 1;
+  height:80%;
+  -webkit-transform: translateY(1em) translateX(-5px);
+  transform: translateY(1em) translateX(-5px);
+  padding-bottom:5px;
+}
+.dropzone-holder{
+  height:100%;
+}
+.fb-drop-target.is-active {
+  z-index: 10
+}
+.form-field-dropzone-vertical {
+  z-index: 2;
+  top: -20px;
+  left: -10px;
+  width: 30px;
+  height: 100%;
+}
+.dashed-dropzone-vertical {
+  width: 11px;
+  height: 100%;
+}
+.fb-dropzone-new-field {
+  position: relative;
+  background-color: #fff;
+  border: 1px dashed #8aa2bd;
+  border-radius: 4px;
+  color: #7c98b6;
+  text-align: center;
+  transition: all .2s ease;
+  z-index: 10
+}
+.fb-dropzone-new-field.is-active {
+  opacity: 1;
+  visibility: visible
+}
+.fb-dropzone-new-field.is-hover {
+  border: 1px dashed #0d99f2;
+  background-color: #e5f5f8
+}
+.fb-dropzone-new-field span {
+  pointer-events: none
 }

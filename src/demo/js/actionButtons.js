@@ -9,7 +9,10 @@ export const setCurrentFieldIdValues = value => {
 
 export const builderActions = {
   showData: () => $('.build-wrap').formBuilder('showData'),
-  clearFields: () => $('.build-wrap').formBuilder('clearFields'),
+  clearFields: () => {
+    console.log('here')
+    $('.build-wrap').formBuilder('clearFields')
+  },
   getData: () => {
     console.log($('.build-wrap').formBuilder('getData'))
   },

@@ -30,8 +30,17 @@ const toggleBootStrap = ({ target }) => {
 }
 
 document.getElementById('toggleBootstrap').addEventListener('click', toggleBootStrap, false)
+let frControl
 
 jQuery(function ($) {
+  
+  $('#btnShow').click(function () {
+    
+    console.log(frControl.userData)
+    $('#spanResult').text(JSON.stringify(frControl.userData))
+  
+  })
+
   const fields = [
     {
       type: 'autocomplete',
@@ -108,59 +117,70 @@ jQuery(function ($) {
       icon: '👨',
       name: 'user-details', // optional
       showHeader: true, // optional
-      fields: [
-        {
-          type: 'text',
-          label: 'First Name',
-          className: 'form-control',
-        },
-        {
-          type: 'select',
-          label: 'Profession',
-          className: 'form-control',
-          values: [
-            {
-              label: 'Street Sweeper',
-              value: 'option-2',
-              selected: false,
-            },
-            {
-              label: 'Brain Surgeon',
-              value: 'option-3',
-              selected: false,
-            },
-          ],
-        },
-        {
+      fields: 
+      [
+        [
+          {
+            type: 'text',
+            label: 'First Name',
+            className: 'form-control',
+          },
+          {
+            type: 'select',
+            label: 'Profession',
+            className: 'form-control',
+            values: [
+              {
+                label: 'Street Sweeper',
+                value: 'option-2',
+                selected: false,
+              },
+              {
+                label: 'Brain Surgeon',
+                value: 'option-3',
+                selected: false,
+              },
+            ],
+          }
+        ],
+        [
+          {
           type: 'textarea',
           label: 'Short Bio:',
           className: 'form-control',
-        },
+          }
+        ],
       ],
     },
     {
       label: 'User Agreement',
       fields: [
-        {
-          type: 'header',
-          subtype: 'h3',
-          label: 'Terms & Conditions',
-          className: 'header',
-        },
-        {
-          type: 'paragraph',
-          label:
-            'Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.',
-        },
-        {
-          type: 'paragraph',
-          label:
-            'Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.',
-        },
-        {
+        [
+          {
+            type: 'header',
+            subtype: 'h3',
+            label: 'Terms & Conditions',
+            className: 'header',
+          },
+          {
+            type: 'paragraph',
+            label:
+              'Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.',
+          }
+        ],
+        [
+          {
+            type: 'paragraph',
+            label:
+              'Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.',
+          }
+        ],
+        [
+          {
           type: 'checkbox',
           label: 'Do you agree to the terms and conditions?',
-        },
+          }
+        ],
       ],
     },
   ]
@@ -208,20 +228,12 @@ jQuery(function ($) {
   const disabledAttrs = ['placeholder', 'name']
 
   const fbOptions = {
-    defaultFields: [
-      {
-        className: 'form-control',
-        label: 'Default Field',
-        placeholder: 'Enter your default field value',
-        name: 'default-field-1',
-        type: 'text',
-      },
-    ],
+    
     persistDefaultFields: true,
     disabledSubtypes: {
       text: ['password'],
     },
-    // disableHTMLLabels: true,
+     disableHTMLLabels: false,
     disabledAttrs,
     // allowStageSort: false,
     dataType,
@@ -243,7 +255,14 @@ jQuery(function ($) {
     stickyControls: {
       enable: true,
     },
+    roles: {
+      1: 'Administrator',
+      2: 'User'
+    },
     sortableControls: true,
+    propertiesInModal: true,
+    maxFieldsInRow: 3,
+    hideDropZones:false,
     fields: fields,
     templates: templates,
     inputSets: inputSets,
@@ -253,6 +272,7 @@ jQuery(function ($) {
     actionButtons: actionButtons,
     disableFields: ['autocomplete', 'custom-tinymce'],
     replaceFields: replaceFields,
+    fieldRemoveWarn: true,
     disabledFieldButtons: {
       text: ['copy'],
     },
@@ -266,7 +286,8 @@ jQuery(function ($) {
     },
     scrollToFieldOnAdd: false,
   }
-  const formData = window.sessionStorage.getItem('formData')
+  var formData = '[  [    {      "type": "text",      "required": false,      "label": "Text Field",      "className": "form-control row-1 col-md-12",      "name": "text-1639444791603-0",      "access": false,      "subtype": "text"    }  ]]'//'[[{"type":"paragraph","subtype":"p","label":"Paragraph","className":"row-1 col-md-12","access":false}],[{"type":"header","subtype":"h3","label":"Header","className":"test row-2 col-md-12","access":false}]]'//'[[{"type":"text","required":false,"label":"Text Field","className":"form-control row-1 col-md-6","name":"text-1636453044631-0","access":false,"subtype":"text","readonly":false},{"type":"text","required":false,"label":"Full Name","className":"form-control row-1 col-md-6","name":"text-1476748004559","access":false,"value":"2","subtype":"text","maxlength":2}],[{"type":"select","required":false,"label":"Select","className":"form-control row-2 col-md-4","name":"select-1636461342702-0","access":false,"multiple":false,"values":[{"label":"Option 1","value":"option-1","selected":true},{"label":"Option 2","value":"option-2","selected":false},{"label":"Option 3","value":"option-3","selected":false}]},{"type":"select","required":false,"label":"Select","className":"form-control row-2 col-md-4","name":"select-1636461306907-0","access":false,"multiple":false,"values":[{"label":"Option 1","value":"option-1","selected":true},{"label":"Option 2","value":"option-2","selected":false},{"label":"Option 3","value":"option-3","selected":false}]},{"type":"select","required":false,"label":"Select","className":"form-control row-2 col-md-4","name":"select-1636453046284-0","access":false,"multiple":false,"values":[{"label":"Option 1","value":"option-1","selected":true},{"label":"Option 2","value":"option-2","selected":false},{"label":"Option 3","value":"option-3","selected":false}]}],[{"type":"text","required":false,"label":"Text Field","className":"form-control row-3 col-md-12","name":"text-1636453050671-0","access":false,"value":"4","subtype":"text","maxlength":4}],[{"type":"select","required":false,"label":"Select","className":"form-control row-4 col-md-12","name":"select-1636461342859-0","access":false,"multiple":false,"values":[{"label":"Option 1","value":"option-1","selected":true},{"label":"Option 2","value":"option-2","selected":false},{"label":"Option 3","value":"option-3","selected":false}]}]]'
+
   let editing = true
 
   if (formData) {
@@ -283,7 +304,7 @@ jQuery(function ($) {
       $('.build-wrap').formBuilder('setData', $('.render-wrap').formRender('userData'))
     } else {
       const formRenderData = $('.build-wrap').formBuilder('getData', dataType)
-      $('.render-wrap').formRender({
+      frControl = $('.render-wrap').formRender({
         formData: formRenderData,
         templates: templates,
         dataType,

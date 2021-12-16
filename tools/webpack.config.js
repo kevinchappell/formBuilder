@@ -10,6 +10,7 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const WrapperPlugin = require('wrapper-webpack-plugin')
 
+
 // hack for Ubuntu on Windows
 try {
   require('os').networkInterfaces()
@@ -20,7 +21,7 @@ try {
 const root = resolve(__dirname, '../')
 const PRODUCTION = process.argv.includes('production')
 const ANALYZE = process.argv.includes('--analyze')
-const devtool = PRODUCTION ? false : 'inline-source-map'
+const devtool = 'source-map'
 const outputDir = resolve(root, 'dist/')
 const camelCase = str => str.replace(/-([a-z])/g, (m, w) => w.toUpperCase())
 
@@ -146,7 +147,9 @@ const webpackConfig = {
     inline: true,
     contentBase: 'demo/',
     noInfo: true,
-    open: true
+    writeToDisk: true,
+    open: true,
+    host: 'localhost'
   },
 }
 

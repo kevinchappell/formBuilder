@@ -100,7 +100,7 @@ class FormRender {
             // Check if this rowID is created yet or not.
             let rowGroupNode = document.getElementById(rowID)
             if (!rowGroupNode) {
-              rowGroupNode = utils.markup('div', null, { id: rowID, className: 'row form-inline' })
+              rowGroupNode = utils.markup('div', null, { id: rowID, className: 'row' })
               renderedFormWrap.appendChild(rowGroupNode)
             }
             rowGroupNode.appendChild(field)
@@ -189,14 +189,16 @@ class FormRender {
       // instantiate the layout class & loop through the field configuration
       const engine = new opts.layout(opts.layoutTemplates)
       for (let i = 0; i < opts.formData.length; i++) {
-        const fieldData = opts.formData[i]
-        const sanitizedField = this.santizeField(fieldData, instanceIndex)
+        const rows = opts.formData[i]
+        for (let j = 0; j < rows.length; j++) {
+          const fieldData = rows[j]
+          const sanitizedField = this.santizeField(fieldData, instanceIndex)
+          // determine the control class for this type, and then process it through the layout engine
+          const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+          const field = engine.build(controlClass, sanitizedField)
 
-        // determine the control class for this type, and then process it through the layout engine
-        const controlClass = control.getClass(fieldData.type, fieldData.subtype)
-        const field = engine.build(controlClass, sanitizedField)
-
-        rendered.push(field)
+          rendered.push(field)
+        }
       }
 
       if (element) {
@@ -287,13 +289,16 @@ class FormRender {
 
       const definedFieldsLength = definedFields.length
       for (let i = 0; i < definedFieldsLength; i++) {
-        const definedField = definedFields[i]
-        // Skip fields that have no name--Likely these are fields that do not hold data(h1,p)
-        if (definedField.name === undefined) continue
-        // Skip disabled fields -- This will not have user data available
-        if (definedField.disabled) continue
+        const rows = definedFields[i]
+        for (let j = 0; j < rows.length; j++) {
+          const definedField = rows[j]
+          // Skip fields that have no name--Likely these are fields that do not hold data(h1,p)
+          if (definedField.name === undefined) continue
+          // Skip disabled fields -- This will not have user data available
+          if (definedField.disabled) continue
 
-        definedField.userData = userDataMap[definedField.name]
+          definedField.userData = userDataMap[definedField.name]
+        }
       }
     })
 

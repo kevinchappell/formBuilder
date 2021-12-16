@@ -23,6 +23,7 @@
   }
 }
 
+
 .frmb {
   list-style-type: none;
   min-height: 200px;
@@ -36,7 +37,7 @@
     overflow: hidden;
   }
 
-  > li {
+  .fb-field-wrapper {
     &:hover {
       .field-actions {
         opacity: 1;
@@ -44,17 +45,17 @@
 
       border-color: #66afe9;
       outline: 0;
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(102, 175, 233, 0.6);
+      /*box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(102, 175, 233, 0.6);*/@at-root
+      background: #f1f5f8;
 
-      li {
+      div {
         :hover {
           background: #fefefe;
         }
       }
     }
   }
-
-  li {
+  li{
     position: relative;
     padding: 6px;
     clear: both;
@@ -62,6 +63,54 @@
     margin-bottom: 3px;
     background-color: $white;
     transition: background-color 250ms ease-in-out, margin-top 400ms;
+    align-items: center;
+
+    &:first-child {
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+
+      .field-actions {
+        .btn:last-child {
+          border-radius: 0 5px 0 0;
+        }
+      }
+    }
+
+    &:last-child {
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+    }
+
+    &.no-fields label {
+      font-weight: 400;
+    }
+
+    .close-field {
+      position: absolute;
+      color: $grey;
+      left: 50%;
+      bottom: 6px;
+      background: $white;
+      border-top: 1px solid $input-border-color;
+      border-left: 1px solid $input-border-color;
+      border-right: 1px solid $input-border-color;
+      transform: translateX(-50%);
+      padding: 0 5px;
+      border-top-right-radius: 3px;
+      border-top-left-radius: 3px;
+      cursor: pointer;
+      transition: background-color 250ms ease-in-out;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+
+
+  
+  div {
 
     &.hidden-field {
       background-color: $hidden-field-bgcolor;
@@ -79,8 +128,8 @@
     }
 
     &:last-child {
-      border-bottom-right-radius: 5px;
-      border-bottom-left-radius: 5px;
+      /*border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;*/
     }
 
     &.no-fields label {
@@ -151,27 +200,6 @@
       }
     }
 
-    .close-field {
-      position: absolute;
-      color: $grey;
-      left: 50%;
-      bottom: 6px;
-      background: $white;
-      border-top: 1px solid $input-border-color;
-      border-left: 1px solid $input-border-color;
-      border-right: 1px solid $input-border-color;
-      transform: translateX(-50%);
-      padding: 0 5px;
-      border-top-right-radius: 3px;
-      border-top-left-radius: 3px;
-      cursor: pointer;
-      transition: background-color 250ms ease-in-out;
-
-      &:hover {
-        text-decoration: none;
-      }
-    }
-
     &.button-field,
     &.header-field,
     &.paragraph-field {
@@ -212,9 +240,9 @@
     }
   }
 
-  li.deleting,
-  li.delete:hover,
-  li:hover li.delete:hover {
+  div.deleting,
+  div.delete:hover,
+  div:hover div.delete:hover {
     background-color: #fdd;
 
     .close-field {
@@ -222,7 +250,7 @@
     }
   }
 
-  li.deleting {
+  div.deleting {
     z-index: 20;
     pointer-events: none;
   }
@@ -421,7 +449,7 @@
   }
 
   .radio-group-field {
-    .sortable-options li:nth-child(2) .remove {
+    .sortable-options div:nth-child(2) .remove {
       display: none;
     }
   }
@@ -510,159 +538,161 @@
       }
     }
   }
+}
 
-  .form-elements {
-    padding: 10px 5px;
-    background: #f7f7f7;
-    border-radius: 3px;
-    margin: 0;
+.form-elements {
+  @extend .frmb;
+
+  padding: 10px 5px;
+  background: #f7f7f7;
+  border-radius: 3px;
+  margin: 0;
+  border: 1px solid $input-border-color;
+
+  .input-wrap {
+    width: 81.33333333%;
+    margin-left: 2%;
+    float: left;
+
+    > input[type='checkbox'] {
+      margin-top: 8px;
+    }
+  }
+
+  .btn-group {
+    margin-left: 2%;
+  }
+
+  .add {
+    clear: both;
+  }
+
+  [contenteditable],
+  select[multiple] {
+    height: auto;
+  }
+
+  [contenteditable].form-control,
+  input[type='text'],
+  input[type='number'],
+  input[type='date'],
+  input[type='color'],
+  textarea,
+  select {
+    transition: background 250ms ease-in-out;
+    padding: 6px 12px;
     border: 1px solid $input-border-color;
+    background-color: $white;
+  }
 
+  @include breakpoint('phone-lrg') {
     .input-wrap {
-      width: 81.33333333%;
-      margin-left: 2%;
+      width: 100%;
+      margin-left: 0;
+      float: none;
+    }
+  }
+
+  input[type='number'] {
+    width: auto;
+  }
+
+  .btn-group {
+    margin-left: 2%;
+  }
+
+  .false-label,
+  label {
+    .col-md-6 &,
+    .col-md-8 & {
+      display: block;
+    }
+
+    &:first-child {
+      width: 16.66666667%;
+      padding-top: 7px;
+      margin-bottom: 0;
+      text-align: right;
+      font-weight: 700;
       float: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: capitalize;
 
-      > input[type='checkbox'] {
-        margin-top: 8px;
-      }
-    }
-
-    .btn-group {
-      margin-left: 2%;
-    }
-
-    .add {
-      clear: both;
-    }
-
-    [contenteditable],
-    select[multiple] {
-      height: auto;
-    }
-
-    [contenteditable].form-control,
-    input[type='text'],
-    input[type='number'],
-    input[type='date'],
-    input[type='color'],
-    textarea,
-    select {
-      transition: background 250ms ease-in-out;
-      padding: 6px 12px;
-      border: 1px solid $input-border-color;
-      background-color: $white;
-    }
-
-    @include breakpoint('phone-lrg') {
-      .input-wrap {
-        width: 100%;
-        margin-left: 0;
-        float: none;
-      }
-    }
-
-    input[type='number'] {
-      width: auto;
-    }
-
-    .btn-group {
-      margin-left: 2%;
-    }
-
-    .false-label,
-    label {
-      .col-md-6 &,
-      .col-md-8 & {
+      @include breakpoint('phone-lrg') {
         display: block;
-      }
+        width: auto;
+        float: none;
+        text-align: left;
 
-      &:first-child {
-        width: 16.66666667%;
-        padding-top: 7px;
-        margin-bottom: 0;
-        text-align: right;
-        font-weight: 700;
-        float: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-transform: capitalize;
-
-        @include breakpoint('phone-lrg') {
-          display: block;
-          width: auto;
-          float: none;
-          text-align: left;
-
-          &.empty-label {
-            display: none;
-          }
+        &.empty-label {
+          display: none;
         }
       }
+    }
 
-      &.multiple,
-      &.required-label,
-      &.toggle-label,
-      &.roles-label,
-      &.other-label {
-        text-align: left;
-        float: none;
-        margin-bottom: -3px;
-        font-weight: 400;
-        width: calc(81.3333% - 23px);
-      }
+    &.multiple,
+    &.required-label,
+    &.toggle-label,
+    &.roles-label,
+    &.other-label {
+      text-align: left;
+      float: none;
+      margin-bottom: -3px;
+      font-weight: 400;
+      width: calc(81.3333% - 23px);
+    }
+  }
+
+  input {
+    &.error {
+      border: 1px solid $error;
+    }
+
+    &.fld-maxlength {
+      width: 75px;
+    }
+
+    &.field-error {
+      background: $off-white;
+      border: 1px solid $input-border-color;
+    }
+  }
+
+  label {
+    em {
+      display: block;
+      font-weight: 400;
+      font-size: 0.75em;
+    }
+
+    &.maxlength-label {
+      line-height: 1em;
+    }
+  }
+
+  .available-roles {
+    display: none;
+    padding: 10px;
+    margin: 10px 0;
+    background: darken($white, 10%);
+    box-shadow: inset 0 0 2px 0 $grey-light-30;
+
+    @include breakpoint('phone-lrg') {
+      margin-left: 0;
+    }
+
+    label {
+      font-weight: 400;
+      width: auto;
+      float: none;
+      display: inline;
     }
 
     input {
-      &.error {
-        border: 1px solid $error;
-      }
-
-      &.fld-maxlength {
-        width: 75px;
-      }
-
-      &.field-error {
-        background: $off-white;
-        border: 1px solid $input-border-color;
-      }
-    }
-
-    label {
-      em {
-        display: block;
-        font-weight: 400;
-        font-size: 0.75em;
-      }
-
-      &.maxlength-label {
-        line-height: 1em;
-      }
-    }
-
-    .available-roles {
-      display: none;
-      padding: 10px;
-      margin: 10px 0;
-      background: darken($white, 10%);
-      box-shadow: inset 0 0 2px 0 $grey-light-30;
-
-      @include breakpoint('phone-lrg') {
-        margin-left: 0;
-      }
-
-      label {
-        font-weight: 400;
-        width: auto;
-        float: none;
-        display: inline;
-      }
-
-      input {
-        display: inline;
-        top: auto;
-      }
+      display: inline;
+      top: auto;
     }
   }
 }
