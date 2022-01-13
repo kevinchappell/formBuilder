@@ -1099,7 +1099,13 @@ const FormBuilder = function (opts, element, $) {
     function TryCreateNew() {
       if (!result.rowNumber) {
         //Column information wasn't defined, get new default configuration for one
-        const nextRow = Math.max(...formRows) + 1
+        let nextRow
+        if (formRows.length == 0) {
+          nextRow = 1
+        } else {
+          nextRow = Math.max(...formRows) + 1
+        }
+
         result.rowNumber = nextRow
         result.columnSize = opts.defaultGridColumnClass
 
