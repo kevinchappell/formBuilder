@@ -36,6 +36,7 @@ const FormBuilder = function (opts, element, $) {
   const formID = `frmb-${new Date().getTime()}`
   const data = new Data(formID)
   const d = new Dom(formID)
+  let formRows = []
 
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
@@ -57,19 +58,7 @@ const FormBuilder = function (opts, element, $) {
   const $stage = $(d.stage)
   const $cbUL = $(d.controls)
 
-  // Sortable fields
-  $stage.sortable({
-    cursor: 'move',
-    opacity: 0.9,
-    revert: 150,
-    beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
-    start: (evt, ui) => h.startMoving.call(h, evt, ui),
-    stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
-    cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(
-      ', ',
-    ),
-    placeholder: 'frmb-placeholder',
-  })
+  $('<div class="snackbar">').appendTo($stage)
 
   if (!opts.allowStageSort) {
     $stage.sortable('disable')
@@ -906,6 +895,8 @@ const FormBuilder = function (opts, element, $) {
 
   // Append the new field to the editor
   const appendNewField = function (values, isNew = true) {
+    const columnData = prepareFieldRow(values)
+
     data.lastID = h.incrementId(data.lastID)
 
     const type = values.type || 'text'
@@ -932,6 +923,12 @@ const FormBuilder = function (opts, element, $) {
         id: data.lastID + '-copy',
         className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
+      }),
+      m('a', null, {
+        type: 'resize',
+        id: data.lastID + '-resize',
+        className: `resize-button btn ${css_prefix_text}resize`,
+        title: 'Resize Mode',
       }),
     ]
 
@@ -962,7 +959,9 @@ const FormBuilder = function (opts, element, $) {
     }
     liContents.push(m('span', '?', descAttrs))
 
-    liContents.push(m('div', '', { className: 'prev-holder' }))
+    const prevHolder = m('div', '', { className: 'prev-holder', dataFieldId: data.lastID })
+    liContents.push(prevHolder)
+
     const formElements = m('div', [advFields(values), m('a', mi18n.get('close'), { className: 'close-field' })], {
       className: 'form-elements',
     })
@@ -997,6 +996,39 @@ const FormBuilder = function (opts, element, $) {
     // generate the control, insert it into the list item & add it to the stage
     h.updatePreview($li)
 
+    const targetRow = `div.row-${columnData.rowNumber}`
+    let rowWrapperNode
+
+    //Check if an overall row already exists for the field, else create one
+    if ($stage.children(targetRow).length) {
+      rowWrapperNode = $stage.children(targetRow)
+    } else {
+      rowWrapperNode = m('div', null, {
+        id: `${field.id}-row`,
+        className: `row row-${columnData.rowNumber} rowWrapper`,
+      })
+    }
+
+    //Add a wrapper div for the field itself. This div will be the rendered representation
+    const rowGroupNode2 = m('div', null, {
+      id: `${field.id}-cont`,
+      className: columnData.columnSize,
+    })
+    $(rowGroupNode2).appendTo(rowWrapperNode)
+
+    $stage.append(rowWrapperNode)
+    $li.appendTo(rowGroupNode2)
+
+    setupSortableWrapper(rowWrapperNode)
+
+    //Record the fact that this field did not originally have column information stored.
+    //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
+    if (columnData.addedDefaultColumnClass) {
+      $li.attr('addedDefaultColumnClass', true)
+    }
+
+    h.tmpCleanPrevHolder($(prevHolder))
+
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
       opts.typeUserEvents[type].onadd(field)
     }
@@ -1008,6 +1040,75 @@ const FormBuilder = function (opts, element, $) {
       }
       if (field.scrollIntoView && opts.scrollToFieldOnAdd) {
         field.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }
+
+  function setupSortableWrapper(rowWrapperNode) {
+    $(rowWrapperNode).sortable({
+      connectWith: '.rowWrapper',
+      cursor: 'move',
+      opacity: 0.9,
+      revert: 150,
+      cursorAt: {
+        left: 5,
+        top: 5,
+      },
+      placeholder: 'ui-state-highlight',
+      grid: [1, 1],
+      stop: function (event, ui) {
+        const parentRowClass = ui.item.closest('.rowWrapper')
+        const childRowCount = parentRowClass.children('div').length
+        const newAutoCalcSizeValue = Math.floor(12 / childRowCount)
+
+        parentRowClass.children('div').each((i, elem) => {
+          const colWrapper = $(`#${elem.id}`)
+
+          //Don't auto-resize the field if the user had manually adjusted it during this session
+          if (colWrapper.find('li').attr('manuallyChangedDefaultColumnClass') == 'true') {
+            return
+          }
+
+          h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
+        })
+      },
+      update: function (event, ui) {
+        const inputClassElement = $(`#className-${ui.item.attr('id').replace('-cont', '')}`)
+        if (inputClassElement.val()) {
+          const oldRow = h.getRowClass(inputClassElement.val())
+          const wrapperRow = h.getRowClass(ui.item.closest('.rowWrapper').attr('class'))
+          inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
+          checkRowCleanup()
+        }
+      },
+    })
+  }
+
+  function prepareFieldRow(data) {
+    let result = {}
+
+    result = h.tryParseColumnInfo(data)
+    TryCreateNew()
+
+    if (!formRows.includes(result.rowNumber)) {
+      formRows.push(result.rowNumber)
+    }
+
+    return result
+
+    function TryCreateNew() {
+      if (!result.rowNumber) {
+        //Column information wasn't defined, get new default configuration for one
+        const nextRow = Math.max(...formRows) + 1
+        result.rowNumber = nextRow
+        result.columnSize = opts.defaultGridColumnClass
+
+        if (!data.className) {
+          data.className = ''
+        }
+
+        data.className += ` row-${result.rowNumber} ${result.columnSize}`
+        result.addedDefaultColumnClass = true
       }
     }
   }
@@ -1308,6 +1409,86 @@ const FormBuilder = function (opts, element, $) {
       h.removeField(deleteID)
     }
   })
+
+  var resizeMode = false
+  var resizeField
+  let startResizeX
+  let startResizeY
+  $stage.on('click touchstart', '.resize-button', e => {
+    e.preventDefault()
+
+    resizeMode = true
+    const ID = $(e.target).parents('.form-field:eq(0)').attr('id')
+    resizeField = $(document.getElementById(ID))
+    startResizeX = e.pageX
+    startResizeY = e.pageY
+
+    h.showToast('Starting Resize Mode - Use the mousewheel to resize.', 1500)
+  })
+
+  //Use mousewheel to work the resize mode
+  $stage.bind('mousewheel', function (e) {
+    if (resizeMode) {
+      //During resize mode dont allow normal scrolling
+      e.preventDefault()
+
+      const parentCont = resizeField.closest('div')
+      const currentColValue = h.getBootstrapColumnValue(parentCont.attr('class'))
+
+      let nextColSize
+      if (e.originalEvent.wheelDelta / 120 > 0) {
+        nextColSize = parseInt(currentColValue) + 1
+      } else {
+        nextColSize = parseInt(currentColValue) - 1
+      }
+
+      if (nextColSize > 12) {
+        h.showToast('<b class="formbuilder-required">Column Size cannot exceed 12</b>')
+        return
+      }
+
+      if (nextColSize < 1) {
+        h.showToast('<b class="formbuilder-required">Column Size cannot be less than 1</b>')
+        return
+      }
+
+      h.syncBootstrapColumnWrapperAndClassProperty(resizeField.attr('id'), nextColSize)
+      resizeField.attr('manuallyChangedDefaultColumnClass', true)
+
+      removeNextRowPreview()
+      $(`<kbd class='nextRowPreview'>${nextColSize}</kbd>`).insertAfter(parentCont.find('.field-actions'))
+    }
+  })
+
+  //When mouse moves away a certain distance, cancel resize mode
+  $(document).mousemove(e => {
+    if (
+      resizeMode &&
+      h.getDistanceBetweenPoints(startResizeX, startResizeY, e.pageX, e.pageY) > config.opts.cancelResizeModeDistance
+    ) {
+      h.showToast('Resize Mode Finished', 1500)
+      resizeMode = false
+      removeNextRowPreview()
+    }
+  })
+
+  function removeNextRowPreview() {
+    resizeField.closest('div').find('.nextRowPreview').remove()
+  }
+
+  $(document).on('checkRowCleanup', () => {
+    checkRowCleanup()
+  })
+
+  function checkRowCleanup() {
+    $('.rowWrapper').each((i, elem) => {
+      if ($(elem).children().length == 0) {
+        const rowValue = h.getRowValue($(elem).attr('class'))
+        formRows = formRows.filter(x => x != rowValue)
+        $(elem).remove()
+      }
+    })
+  }
 
   // Update button style selection
   $stage.on('click', '.style-wrap button', e => {

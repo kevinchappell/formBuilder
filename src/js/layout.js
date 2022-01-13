@@ -15,9 +15,11 @@ const processClassName = (data, field) => {
     }
 
     // Now that the col- types were lifted, remove from the actual input field
-    for (let index = 0; index < classes.length; index++) {
-      const element = classes[index]
-      field.classList.remove(element)
+    if (field.classList) {
+      for (let index = 0; index < classes.length; index++) {
+        const element = classes[index]
+        field.classList.remove(element)
+      }
     }
   }
 
@@ -50,18 +52,18 @@ export default class layout {
         }
 
         return this.markup('div', [label, field], {
-          className: processClassName(data, field)
+          className: processClassName(data, field),
         })
       },
       noLabel: (field, label, help, data) => {
         return this.markup('div', field, {
-          className: processClassName(data, field)
+          className: processClassName(data, field),
         })
       },
       hidden: field => {
         // no wrapper any any visible elements
         return field
-      }
+      },
     }
 
     // merge in any custom templates
@@ -150,7 +152,7 @@ export default class layout {
     // generate a label element
     return this.markup('label', labelContents, {
       for: this.data.id,
-      className: `formbuilder-${this.data.type}-label`
+      className: `formbuilder-${this.data.type}-label`,
     })
   }
 
@@ -171,7 +173,7 @@ export default class layout {
     // generate the default help element
     return this.markup('span', '?', {
       className: 'tooltip-element',
-      tooltip: this.data.description
+      tooltip: this.data.description,
     })
   }
 

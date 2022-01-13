@@ -84,6 +84,8 @@ export const defaultOptions = {
   typeUserAttrs: {},
   typeUserDisabledAttrs: {},
   typeUserEvents: {},
+  defaultGridColumnClass: 'col-md-12',
+  cancelResizeModeDistance: 100,
 }
 
 export const styles = {
