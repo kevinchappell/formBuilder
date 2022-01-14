@@ -808,12 +808,14 @@ export default class Helpers {
       this.formBuilder.currentEditPanel = $editPanel[0]
       config.opts.onOpenFieldEdit($editPanel[0])
       document.dispatchEvent(events.fieldEditOpened)
+      this.toggleResizeButtonVisible(fieldID, false)
     } else {
       //Put the li back in its place
       rowContainer.append(liContainer)
 
       config.opts.onCloseFieldEdit($editPanel[0])
       document.dispatchEvent(events.fieldEditClosed)
+      this.toggleResizeButtonVisible(fieldID)
 
       setTimeout(() => {
         const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
@@ -1238,6 +1240,15 @@ export default class Helpers {
     }
 
     return result
+  }
+
+  toggleResizeButtonVisible(fieldId, visible = true) {
+    if (!visible) {
+      $(`#${fieldId}-resize`).css('display', 'none')
+      return
+    }
+
+    $(`#${fieldId}-resize`).css('display', 'unset')
   }
 
   showToast(msg, timeout = 3000) {
