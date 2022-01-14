@@ -432,13 +432,15 @@
     margin-left: 2%;
     background: $input-border-color;
     margin-bottom: 0;
-    border-radius: 5px;
+    border-radius: 2px;
     list-style: none;
     padding: 0;
 
     > li {
       cursor: move;
       margin: 1px;
+      padding: 6px;
+      background-color: $white;
 
       &:nth-child(1) .remove {
         display: none;
@@ -447,10 +449,11 @@
       .remove {
         position: relative;
         opacity: 1;
-        left: 28px;
+        float: right;
+        right: 14px;
         height: 18px;
         width: 18px;
-        top: 0px;
+        top: 8px;
         font-size: 12px;
         padding: 0;
         color: $error;
