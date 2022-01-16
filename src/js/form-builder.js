@@ -58,8 +58,6 @@ const FormBuilder = function (opts, element, $) {
   const $stage = $(d.stage)
   const $cbUL = $(d.controls)
 
-  $('<div class="snackbar">').appendTo($stage)
-
   if (!opts.allowStageSort) {
     $stage.sortable('disable')
   }
@@ -120,6 +118,8 @@ const FormBuilder = function (opts, element, $) {
   }
 
   const $editorWrap = $(d.editorWrap)
+
+  $('<div class="snackbar">').appendTo($editorWrap)
 
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
@@ -896,7 +896,6 @@ const FormBuilder = function (opts, element, $) {
   // Append the new field to the editor
   const appendNewField = function (values, isNew = true) {
     const columnData = prepareFieldRow(values)
-
     data.lastID = h.incrementId(data.lastID)
 
     const type = values.type || 'text'
@@ -925,10 +924,10 @@ const FormBuilder = function (opts, element, $) {
         title: mi18n.get('copyButtonTooltip'),
       }),
       m('a', null, {
-        type: 'resize',
-        id: data.lastID + '-resize',
-        className: `resize-button btn ${css_prefix_text}resize`,
-        title: 'Resize Mode',
+        type: 'grid',
+        id: data.lastID + '-grid',
+        className: `grid-button btn ${css_prefix_text}grid`,
+        title: 'Grid Mode',
       }),
     ]
 
@@ -1057,29 +1056,10 @@ const FormBuilder = function (opts, element, $) {
       placeholder: 'ui-state-highlight',
       grid: [1, 1],
       stop: function (event, ui) {
-        const parentRowClass = ui.item.closest('.rowWrapper')
-        const childRowCount = parentRowClass.children('div').length
-        const newAutoCalcSizeValue = Math.floor(12 / childRowCount)
-
-        parentRowClass.children('div').each((i, elem) => {
-          const colWrapper = $(`#${elem.id}`)
-
-          //Don't auto-resize the field if the user had manually adjusted it during this session
-          if (colWrapper.find('li').attr('manuallyChangedDefaultColumnClass') == 'true') {
-            return
-          }
-
-          h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
-        })
+        autoSizeRowColumns(ui.item.closest('.rowWrapper'))
       },
       update: function (event, ui) {
-        const inputClassElement = $(`#className-${ui.item.attr('id').replace('-cont', '')}`)
-        if (inputClassElement.val()) {
-          const oldRow = h.getRowClass(inputClassElement.val())
-          const wrapperRow = h.getRowClass(ui.item.closest('.rowWrapper').attr('class'))
-          inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
-          checkRowCleanup()
-        }
+        syncFieldWithNewRow(ui.item.attr('id'))
       },
     })
   }
@@ -1416,29 +1396,28 @@ const FormBuilder = function (opts, element, $) {
     }
   })
 
-  var resizeMode = false
-  var resizeField
-  let startResizeX
-  let startResizeY
-  $stage.on('click touchstart', '.resize-button', e => {
+  var gridMode = false
+  var gridModeTargetField
+  let gridModeStartX
+  let gridModeStartY
+  $stage.on('click touchstart', '.grid-button', e => {
     e.preventDefault()
 
-    resizeMode = true
+    gridMode = true
     const ID = $(e.target).parents('.form-field:eq(0)').attr('id')
-    resizeField = $(document.getElementById(ID))
-    startResizeX = e.pageX
-    startResizeY = e.pageY
+    gridModeTargetField = $(document.getElementById(ID))
+    gridModeStartX = e.pageX
+    gridModeStartY = e.pageY
 
-    h.showToast('Starting Resize Mode - Use the mousewheel to resize.', 1500)
+    h.showToast('Starting Grid Mode - Use the mousewheel to resize.', 1500)
   })
 
-  //Use mousewheel to work the resize mode
+  //Use mousewheel to work resizing
   $stage.bind('mousewheel', function (e) {
-    if (resizeMode) {
-      //During resize mode dont allow normal scrolling
+    if (gridMode) {
       e.preventDefault()
 
-      const parentCont = resizeField.closest('div')
+      const parentCont = gridModeTargetField.closest('div')
       const currentColValue = h.getBootstrapColumnValue(parentCont.attr('class'))
 
       let nextColSize
@@ -1458,28 +1437,143 @@ const FormBuilder = function (opts, element, $) {
         return
       }
 
-      h.syncBootstrapColumnWrapperAndClassProperty(resizeField.attr('id'), nextColSize)
-      resizeField.attr('manuallyChangedDefaultColumnClass', true)
+      h.syncBootstrapColumnWrapperAndClassProperty(gridModeTargetField.attr('id'), nextColSize)
+      gridModeTargetField.attr('manuallyChangedDefaultColumnClass', true)
 
       removeNextRowPreview()
       $(`<kbd class='nextRowPreview'>${nextColSize}</kbd>`).insertAfter(parentCont.find('.field-actions'))
     }
   })
 
-  //When mouse moves away a certain distance, cancel resize mode
+  //Use W A S D or Arrow Keys to move the field up/down/left/right across the form
+  //Use R to auto-size all columns in the row equally
+  $(document).keydown(e => {
+    if (gridMode) {
+      e.preventDefault()
+      const rowWrapper = gridModeTargetField.closest('.rowWrapper')
+
+      if (e.keyCode == 87 || e.keyCode == 38) {
+        moveFieldUp(rowWrapper)
+      }
+
+      if (e.keyCode == 83 || e.keyCode == 40) {
+        moveFieldDown(rowWrapper)
+      }
+
+      if (e.keyCode == 65 || e.keyCode == 37) {
+        moveFieldLeft()
+      }
+
+      if (e.keyCode == 68 || e.keyCode == 39) {
+        moveFieldRight()
+      }
+
+      if (e.keyCode == 82) {
+        autoSizeRowColumns(rowWrapper, true)
+      }
+    }
+  })
+
+  function moveFieldUp(rowWrapper) {
+    const rowSibling = rowWrapper.prev()
+    if (rowSibling.length) {
+      gridModeTargetField.parent().appendTo(rowSibling)
+      syncFieldWithNewRow(gridModeTargetField.attr('id'))
+    } else {
+      createNewRow(true)
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function moveFieldDown(rowWrapper) {
+    const rowSibling = rowWrapper.next()
+    if (rowSibling.length) {
+      gridModeTargetField.parent().appendTo(rowSibling)
+      syncFieldWithNewRow(gridModeTargetField.attr('id'))
+    } else {
+      createNewRow()
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function moveFieldLeft() {
+    const colSibling = gridModeTargetField.parent().prev()
+    if (colSibling.length) {
+      gridModeTargetField.parent().after(colSibling)
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function moveFieldRight() {
+    const colSibling = gridModeTargetField.parent().next()
+    if (colSibling.length) {
+      gridModeTargetField.parent().before(colSibling)
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function createNewRow(prepend = false) {
+    const columnData = prepareFieldRow({})
+
+    const rowWrapperNode = m('div', null, {
+      id: `${gridModeTargetField.attr('id')}-row`,
+      className: `row row-${columnData.rowNumber} rowWrapper`,
+    })
+
+    gridModeTargetField.parent().appendTo(rowWrapperNode)
+
+    if (prepend) {
+      $stage.prepend(rowWrapperNode)
+    } else {
+      $stage.append(rowWrapperNode)
+    }
+
+    setupSortableWrapper(rowWrapperNode)
+    syncFieldWithNewRow(gridModeTargetField.attr('id'))
+    checkRowCleanup()
+  }
+
+  function autoSizeRowColumns(rowWrapper, force = false) {
+    const childRowCount = rowWrapper.children('div').length
+    const newAutoCalcSizeValue = Math.floor(12 / childRowCount)
+
+    rowWrapper.children('div').each((i, elem) => {
+      const colWrapper = $(`#${elem.id}`)
+
+      //Don't auto-size the field if the user had manually adjusted it during this session
+      if (!force && colWrapper.find('li').attr('manuallyChangedDefaultColumnClass') == 'true') {
+        h.showToast(`Preserving column size of field ${i + 1} because you had personally adjusted it`, 4000)
+        return
+      }
+
+      h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
+    })
+  }
+
+  function syncFieldWithNewRow(fieldID) {
+    const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
+    if (inputClassElement.val()) {
+      const oldRow = h.getRowClass(inputClassElement.val())
+      const wrapperRow = h.getRowClass(inputClassElement.closest('.rowWrapper').attr('class'))
+      inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
+      checkRowCleanup()
+    }
+  }
+
+  //When mouse moves away a certain distance, cancel grid mode
   $(document).mousemove(e => {
     if (
-      resizeMode &&
-      h.getDistanceBetweenPoints(startResizeX, startResizeY, e.pageX, e.pageY) > config.opts.cancelResizeModeDistance
+      gridMode &&
+      h.getDistanceBetweenPoints(gridModeStartX, gridModeStartY, e.pageX, e.pageY) > config.opts.cancelGridModeDistance
     ) {
-      h.showToast('Resize Mode Finished', 1500)
-      resizeMode = false
+      h.showToast('Grid Mode Finished', 1500)
+      gridMode = false
       removeNextRowPreview()
     }
   })
 
   function removeNextRowPreview() {
-    resizeField.closest('div').find('.nextRowPreview').remove()
+    gridModeTargetField.closest('div').find('.nextRowPreview').remove()
   }
 
   $(document).on('checkRowCleanup', () => {
@@ -1487,7 +1581,7 @@ const FormBuilder = function (opts, element, $) {
   })
 
   function checkRowCleanup() {
-    $('.rowWrapper').each((i, elem) => {
+    $stage.children('.rowWrapper').each((i, elem) => {
       if ($(elem).children().length == 0) {
         const rowValue = h.getRowValue($(elem).attr('class'))
         formRows = formRows.filter(x => x != rowValue)

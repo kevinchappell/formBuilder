@@ -808,14 +808,14 @@ export default class Helpers {
       this.formBuilder.currentEditPanel = $editPanel[0]
       config.opts.onOpenFieldEdit($editPanel[0])
       document.dispatchEvent(events.fieldEditOpened)
-      this.toggleResizeButtonVisible(fieldID, false)
+      this.toggleGridModeButtonVisible(fieldID, false)
     } else {
       //Put the li back in its place
       rowContainer.append(liContainer)
 
       config.opts.onCloseFieldEdit($editPanel[0])
       document.dispatchEvent(events.fieldEditClosed)
-      this.toggleResizeButtonVisible(fieldID)
+      this.toggleGridModeButtonVisible(fieldID)
 
       setTimeout(() => {
         const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
@@ -1242,13 +1242,21 @@ export default class Helpers {
     return result
   }
 
-  toggleResizeButtonVisible(fieldId, visible = true) {
+  toggleGridModeButtonVisible(fieldId, visible = true) {
     if (!visible) {
-      $(`#${fieldId}-resize`).css('display', 'none')
+      $(`#${fieldId}-grid`).css('display', 'none')
       return
     }
 
-    $(`#${fieldId}-resize`).css('display', 'unset')
+    $(`#${fieldId}-grid`).css('display', 'unset')
+  }
+
+  //Briefly highlight on/off
+  toggleHighlight(field, ms = 600) {
+    field.addClass('moveHighlight')
+    setTimeout(function () {
+      field.removeClass('moveHighlight')
+    }, ms)
   }
 
   showToast(msg, timeout = 3000) {

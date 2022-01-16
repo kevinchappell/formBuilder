@@ -54,6 +54,17 @@
     }
   }
 
+  // .rowWrapper {
+  //   //position: relative;
+  //   margin-right: 0px;
+  //   width: 100%;
+
+  //   &:hover {
+  //     background-color: black;
+  //     //background-image: linear-gradient(to top, #cfd9df 0%, #f0e68c 100%);
+  //   }
+  // }
+
   li.form-field {
     position: relative;
     padding: 6px;
@@ -439,6 +450,7 @@
     > li {
       cursor: move;
       margin: 1px;
+
       padding: 6px;
       background-color: $white;
 
@@ -797,10 +809,15 @@
     opacity: 0;
   }
 }
+/*   ------------   END TOOLTIP   ------------   */
 
 .ui-state-highlight {
   border-color: #00ccff;
   background-color: #00ccff;
   width: 10px;
   border-radius: 6px;
+}
+
+.moveHighlight {
+  background-color: rgba(171, 234, 250, 0.664) !important;
 }
