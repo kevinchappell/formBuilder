@@ -1600,6 +1600,7 @@ const FormBuilder = function (opts, element, $) {
       $(d.formActions).css('display', 'none')
 
       buildGridModeHelp()
+      h.closeAllEdit()
     } else {
       h.showToast('Grid Mode Finished', 1500)
       gridMode = false

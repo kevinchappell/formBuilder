@@ -760,14 +760,13 @@ export default class Helpers {
    */
   closeAllEdit() {
     const _this = this
-    const fields = $('> li.editing', _this.d.stage)
-    const toggleBtns = $('.toggle-form', _this.d.stage)
-    const editPanels = $('.frm-holder', fields)
 
-    toggleBtns.removeClass('open')
-    fields.removeClass('editing')
-    $('.prev-holder', fields).show()
-    editPanels.hide()
+    $(_this.d.stage)
+      .find('li.form-field')
+      .each((i, elem) => {
+        console.log(elem.id)
+        this.closeField(elem.id, false)
+      })
   }
 
   /**
@@ -777,16 +776,41 @@ export default class Helpers {
    * @return {Node|null} field
    */
   toggleEdit(fieldId, animate = true) {
+    const field = document.getElementById(fieldId)
+    if (!field) {
+      return field
+    }
+
+    if ($(field).hasClass('editing')) {
+      return this.closeField(fieldId, animate)
+    } else {
+      return this.openField(fieldId, animate)
+    }
+  }
+
+  closeField(fieldId, animate = true) {
     const _this = this
 
     const field = document.getElementById(fieldId)
     if (!field) {
       return field
     }
+
     const $editPanel = $('.frm-holder', field)
     const $preview = $('.prev-holder', field)
+
+    let currentlyEditing = false
+    if ($(field).hasClass('editing')) {
+      currentlyEditing = true
+    }
+
+    if (!currentlyEditing) {
+      return field
+    }
+
     field.classList.toggle('editing')
     $('.toggle-form', field).toggleClass('open')
+
     if (animate) {
       $preview.slideToggle(250)
       $editPanel.slideToggle(250)
@@ -801,37 +825,74 @@ export default class Helpers {
     const liContainer = $(`#${fieldID}`)
     const rowContainer = $(`#${fieldID}-cont`)
 
-    if (field.classList.contains('editing')) {
-      //Temporarily move the li outside(keeping same relative overall spot in the form) so that the field details show in full width regardless of its column size
-      liContainer.insertAfter(rowContainer.closest('.rowWrapper'))
+    //Put the li back in its place
+    rowContainer.append(liContainer)
 
-      this.formBuilder.currentEditPanel = $editPanel[0]
-      config.opts.onOpenFieldEdit($editPanel[0])
-      document.dispatchEvent(events.fieldEditOpened)
-      this.toggleGridModeButtonVisible(fieldID, false)
-    } else {
-      //Put the li back in its place
-      rowContainer.append(liContainer)
+    config.opts.onCloseFieldEdit($editPanel[0])
+    document.dispatchEvent(events.fieldEditClosed)
+    this.toggleGridModeButtonVisible(fieldID)
 
-      config.opts.onCloseFieldEdit($editPanel[0])
-      document.dispatchEvent(events.fieldEditClosed)
-      this.toggleGridModeButtonVisible(fieldID)
+    setTimeout(() => {
+      const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
 
-      setTimeout(() => {
-        const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
-
-        cleanResults.forEach(result => {
-          if (result['columnInfo'].columnSize) {
-            const currentClassRow = rowContainer.attr('class')
-            if (currentClassRow != result['columnInfo'].columnSize) {
-              //Keep the wrapping column div sync'd to the column property from the field
-              rowContainer.attr('class', result['columnInfo'].columnSize)
-              _this.tmpCleanPrevHolder(prevHolder)
-            }
+      cleanResults.forEach(result => {
+        if (result['columnInfo'].columnSize) {
+          const currentClassRow = rowContainer.attr('class')
+          if (currentClassRow != result['columnInfo'].columnSize) {
+            //Keep the wrapping column div sync'd to the column property from the field
+            rowContainer.attr('class', result['columnInfo'].columnSize)
+            _this.tmpCleanPrevHolder(prevHolder)
           }
-        })
-      }, 300)
+        }
+      })
+    }, 300)
+
+    return field
+  }
+
+  openField(fieldId, animate = true) {
+    const field = document.getElementById(fieldId)
+    if (!field) {
+      return field
     }
+
+    const $editPanel = $('.frm-holder', field)
+    const $preview = $('.prev-holder', field)
+
+    let currentlyEditing = false
+    if ($(field).hasClass('editing')) {
+      currentlyEditing = true
+    }
+
+    if (currentlyEditing) {
+      return field
+    }
+
+    field.classList.toggle('editing')
+    $('.toggle-form', field).toggleClass('open')
+
+    if (animate) {
+      $preview.slideToggle(250)
+      $editPanel.slideToggle(250)
+    } else {
+      $preview.toggle()
+      $editPanel.toggle()
+    }
+    this.updatePreview($(field))
+
+    const prevHolder = $(field).find('.prev-holder')
+    const fieldID = prevHolder.attr('data-field-id')
+    const liContainer = $(`#${fieldID}`)
+    const rowContainer = $(`#${fieldID}-cont`)
+
+    //Temporarily move the li outside(keeping same relative overall spot in the form) so that the field details show in full width regardless of its column size
+    liContainer.insertAfter(rowContainer.closest('.rowWrapper'))
+
+    this.formBuilder.currentEditPanel = $editPanel[0]
+    config.opts.onOpenFieldEdit($editPanel[0])
+    document.dispatchEvent(events.fieldEditOpened)
+    this.toggleGridModeButtonVisible(fieldID, false)
+
     return field
   }
 
