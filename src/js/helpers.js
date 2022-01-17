@@ -975,8 +975,6 @@ export default class Helpers {
 
     document.dispatchEvent(events.fieldRemoved)
 
-    //Remove the column wrapper
-    $field.parent().remove()
     $(document).trigger('checkRowCleanup')
     return fieldRemoved
   }
