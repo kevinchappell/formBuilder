@@ -130,6 +130,12 @@ const FormBuilder = function (opts, element, $) {
     cbWrap.appendChild(d.formActions)
   }
 
+  const gridModeHelp = m('div', '', {
+    id: `${data.formID}-gridModeHelp`,
+    className: 'grid-mode-help',
+  })
+  cbWrap.appendChild(gridModeHelp)
+
   $editorWrap.append(d.stage, cbWrap)
 
   if (element.type !== 'textarea') {
@@ -1403,13 +1409,12 @@ const FormBuilder = function (opts, element, $) {
   $stage.on('click touchstart', '.grid-button', e => {
     e.preventDefault()
 
-    gridMode = true
     const ID = $(e.target).parents('.form-field:eq(0)').attr('id')
     gridModeTargetField = $(document.getElementById(ID))
     gridModeStartX = e.pageX
     gridModeStartY = e.pageY
 
-    h.showToast('Starting Grid Mode - Use the mousewheel to resize.', 1500)
+    toggleGridModeActive()
   })
 
   //Use mousewheel to work resizing
@@ -1440,8 +1445,7 @@ const FormBuilder = function (opts, element, $) {
       h.syncBootstrapColumnWrapperAndClassProperty(gridModeTargetField.attr('id'), nextColSize)
       gridModeTargetField.attr('manuallyChangedDefaultColumnClass', true)
 
-      removeNextRowPreview()
-      $(`<kbd class='nextRowPreview'>${nextColSize}</kbd>`).insertAfter(parentCont.find('.field-actions'))
+      buildGridModeCurrentRowInfo()
     }
   })
 
@@ -1471,6 +1475,8 @@ const FormBuilder = function (opts, element, $) {
       if (e.keyCode == 82) {
         autoSizeRowColumns(rowWrapper, true)
       }
+
+      buildGridModeCurrentRowInfo()
     }
   })
 
@@ -1566,15 +1572,9 @@ const FormBuilder = function (opts, element, $) {
       gridMode &&
       h.getDistanceBetweenPoints(gridModeStartX, gridModeStartY, e.pageX, e.pageY) > config.opts.cancelGridModeDistance
     ) {
-      h.showToast('Grid Mode Finished', 1500)
-      gridMode = false
-      removeNextRowPreview()
+      toggleGridModeActive(false)
     }
   })
-
-  function removeNextRowPreview() {
-    gridModeTargetField.closest('div').find('.nextRowPreview').remove()
-  }
 
   $(document).on('checkRowCleanup', () => {
     checkRowCleanup()
@@ -1587,6 +1587,119 @@ const FormBuilder = function (opts, element, $) {
         formRows = formRows.filter(x => x != rowValue)
         $(elem).remove()
       }
+    })
+  }
+
+  function toggleGridModeActive(active = true) {
+    if (active) {
+      gridMode = true
+      h.showToast('Starting Grid Mode - Use the mousewheel to resize.', 1500)
+
+      //Hide controls
+      $cbUL.css('display', 'none')
+      $(d.formActions).css('display', 'none')
+
+      buildGridModeHelp()
+    } else {
+      h.showToast('Grid Mode Finished', 1500)
+      gridMode = false
+      $(gridModeHelp).html('')
+
+      //Show controls
+      $cbUL.css('display', 'unset')
+      $(d.formActions).css('display', 'unset')
+    }
+  }
+
+  function buildGridModeHelp() {
+    $(gridModeHelp).html(`
+    <div style='padding:5px'>    
+      <h3 class="text text-center">Grid Mode</h3>    
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>MOUSEWHEEL</kbd></td>
+            <td>Adjust the field column size</td>
+          </tr>    
+          <tr>
+            <td><kbd>W or &#x2191;</kbd></td> 
+            <td>Move the field up/into another row</td>
+          </tr>
+          <tr>
+              <td><kbd>S or &#x2193;</kbd></td> 
+              <td>Move the field down/into another row</td>
+          </tr>
+          <tr>
+              <td><kbd>A or &#x2190;</kbd></td> 
+              <td>Move the field left within the row</td>
+          </tr>
+          <tr>
+              <td><kbd>D or &#x2192;</kbd></td> 
+              <td>Move the field right within the row</td>
+          </tr>
+          <tr>
+            <td><kbd>R</kbd></td> 
+            <td>Resize all fields within the row to be maximally equal</td>
+          </tr>
+        </tbody> 
+      </table>
+
+      <h5 class="text text-center" style='padding-top:10px'>Current Row Fields</h5>    
+      
+      <table class='gridHelpCurrentRow'>
+        <colgroup>
+          <col width="100%" />
+          <col width="0%" />
+        </colgroup>
+        
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Size</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        </tbody> 
+      </table>
+      
+    </div>
+    `)
+
+    buildGridModeCurrentRowInfo()
+  }
+
+  function buildGridModeCurrentRowInfo() {
+    $(gridModeHelp).find('.gridHelpCurrentRow tbody').empty()
+
+    const rowWrapper = gridModeTargetField.closest('.rowWrapper')
+
+    rowWrapper.children('div').each((i, elem) => {
+      const colWrapper = $(`#${elem.id}`)
+      const fieldID = colWrapper.find('li').attr('id')
+      const label = $(`#label-${fieldID}`).html()
+
+      //Highlight the current field being worked on
+      let currentFieldClass = ''
+      if (gridModeTargetField.attr('id') == fieldID) {
+        currentFieldClass = 'currentGridModeFieldHighlight'
+      }
+
+      $(gridModeHelp).find('.gridHelpCurrentRow tbody').append(`
+        <tr>
+          <td class='grid-mode-help-row1 ${currentFieldClass}'>${label}</td>
+          <td class='grid-mode-help-row2 ${currentFieldClass}'>
+            ${h.getBootstrapColumnValue($(`#${fieldID}-cont`).attr('class'))}
+          </td>
+        <tr>
+      `)
     })
   }
 

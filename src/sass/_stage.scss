@@ -810,3 +810,23 @@
 .moveHighlight {
   background-color: rgba(171, 234, 250, 0.664) !important;
 }
+
+.currentGridModeFieldHighlight {
+  background-color: rgba(171, 234, 250, 0.664) !important;
+}
+
+.grid-mode-help {
+  background-color: $white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.grid-mode-help-row1 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 1px;
+}
+.grid-mode-help-row2 {
+  white-space: nowrap;
+}
