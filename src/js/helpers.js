@@ -194,12 +194,28 @@ export default class Helpers {
     const _this = this
 
     if (form.childNodes.length !== 0) {
-      // build data object
+      const fields = []
+      //Get form-fields as expected(within rowWrapper)
       forEach(form.childNodes, function (_index, fieldWrapper) {
         const $fieldWrapper = $(fieldWrapper)
 
         //Go one level deeper than the row container to find the li
         $fieldWrapper.find('li.form-field').each(function (i, field) {
+          fields.push(field)
+        })
+      })
+
+      //Get form-fields that might still be currently editing and are temporarily outside a rowWrapper
+      forEach(form.childNodes, function (_index, testElement) {
+        const $testElement = $(testElement)
+        if ($testElement.is('li') && $testElement.hasClass('form-field')) {
+          console.log('adding open field ' + $testElement.attr('id'))
+          fields.push(testElement)
+        }
+      })
+
+      if (fields.length) {
+        fields.forEach(field => {
           const $field = $(field)
 
           if (!$field.hasClass('disabled-field')) {
@@ -268,7 +284,7 @@ export default class Helpers {
             formData.push(fieldData)
           }
         })
-      })
+      }
     }
 
     return formData
@@ -764,7 +780,6 @@ export default class Helpers {
     $(_this.d.stage)
       .find('li.form-field')
       .each((i, elem) => {
-        console.log(elem.id)
         this.closeField(elem.id, false)
       })
   }
