@@ -1307,7 +1307,7 @@ export default class Helpers {
       return
     }
 
-    $(`#${fieldId}-grid`).css('display', 'unset')
+    $(`#${fieldId}-grid`).css('display', '')
   }
 
   //Briefly highlight on/off
