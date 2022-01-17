@@ -209,7 +209,6 @@ export default class Helpers {
       forEach(form.childNodes, function (_index, testElement) {
         const $testElement = $(testElement)
         if ($testElement.is('li') && $testElement.hasClass('form-field')) {
-          console.log('adding open field ' + $testElement.attr('id'))
           fields.push(testElement)
         }
       })
