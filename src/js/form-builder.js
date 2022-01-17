@@ -988,6 +988,16 @@ const FormBuilder = function (opts, element, $) {
     })
     const $li = $(field)
 
+    $li
+      .mouseenter(function (e) {
+        if (!gridMode) {
+          gridModeTargetField = $(this)
+          gridModeStartX = e.pageX
+          gridModeStartY = e.pageY
+        }
+      })
+      .mouseleave(function () {})
+
     $li.data('fieldData', { attrs: values })
 
     if (typeof h.stopIndex !== 'undefined') {
@@ -1417,6 +1427,14 @@ const FormBuilder = function (opts, element, $) {
     toggleGridModeActive()
   })
 
+  //Use E to enter into Grid Mode for the currently active(hovered field)
+  $(document).keydown(e => {
+    if (e.keyCode == 69 && gridModeTargetField) {
+      e.preventDefault()
+      toggleGridModeActive()
+    }
+  })
+
   //Use mousewheel to work resizing
   $stage.bind('mousewheel', function (e) {
     if (gridMode) {
@@ -1604,6 +1622,8 @@ const FormBuilder = function (opts, element, $) {
     } else {
       h.showToast('Grid Mode Finished', 1500)
       gridMode = false
+      gridModeTargetField = null
+
       $(gridModeHelp).html('')
 
       //Show controls
@@ -1648,6 +1668,10 @@ const FormBuilder = function (opts, element, $) {
           <tr>
             <td><kbd>R</kbd></td> 
             <td>Resize all fields within the row to be maximally equal</td>
+          </tr>
+          <tr>
+            <td><kbd>E</kbd></td> 
+            <td>Enter Grid Mode when hovering over a form field</td>
           </tr>
         </tbody> 
       </table>
