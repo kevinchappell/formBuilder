@@ -16,10 +16,7 @@ const processClassName = (data, field) => {
 
     // Now that the col- types were lifted, remove from the actual input field
     if (field.classList) {
-      for (let index = 0; index < classes.length; index++) {
-        const element = classes[index]
-        field.classList.remove(element)
-      }
+      field.classList.remove(...classes)
     }
   }
 
