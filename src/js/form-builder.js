@@ -1375,10 +1375,41 @@ const FormBuilder = function (opts, element, $) {
     evt.preventDefault()
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
-    $clone.insertAfter(currentItem)
+    prepareCloneWrappers($clone, currentItem)
     h.updatePreview($clone)
     h.save.call(h)
+
+    h.tmpCleanPrevHolder($clone.find('.prev-holder'))
   })
+
+  function prepareCloneWrappers($clone, currentItem) {
+    const inputClassElement = $(`#className-${currentItem.attr('id')}`)
+    const columnData = prepareFieldRow({})
+
+    const rowWrapper = m('div', null, {
+      id: `${$clone.attr('id')}-row`,
+      className: `row row-${columnData.rowNumber} rowWrapper`,
+    })
+
+    const colWrapper = m('div', null, {
+      id: `${$clone.attr('id')}-cont`,
+      className: `${h.getBootstrapColumnClass(inputClassElement.val())} colWrapper`,
+    })
+    $(colWrapper).appendTo(rowWrapper)
+
+    let insertAfterElement
+    if (currentItem.parent().is('div')) {
+      insertAfterElement = currentItem.closest('.rowWrapper')
+    } else if (currentItem.parent().is('ul')) {
+      insertAfterElement = currentItem.prev('.rowWrapper')
+    }
+
+    $(rowWrapper).insertAfter(insertAfterElement)
+    $clone.appendTo(colWrapper)
+
+    setupSortableWrapper(rowWrapper)
+    syncFieldWithNewRow($clone.attr('id'))
+  }
 
   // Delete field
   $stage.on('click touchstart', '.delete-confirm', e => {
@@ -1678,9 +1709,9 @@ const FormBuilder = function (opts, element, $) {
             <td>Resize all fields within the row to be maximally equal</td>
           </tr>
           <tr>
-            <td><kbd>E</kbd></td> 
-            <td>Enter Grid Mode when hovering over a form field</td>
-          </tr>
+          <td><kbd>E</kbd></td> 
+          <td>Enter Grid Mode when hovering over a form field</td>
+        </tr>
         </tbody> 
       </table>
 

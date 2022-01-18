@@ -834,10 +834,8 @@ export default class Helpers {
     }
     this.updatePreview($(field))
 
-    const prevHolder = $(field).find('.prev-holder')
-    const fieldID = prevHolder.attr('data-field-id')
-    const liContainer = $(`#${fieldID}`)
-    const rowContainer = $(`#${fieldID}-cont`)
+    const liContainer = $(`#${fieldId}`)
+    const rowContainer = $(`#${fieldId}-cont`)
 
     //Put the li back in its place
     rowContainer.append(liContainer)
@@ -847,6 +845,7 @@ export default class Helpers {
     config.opts.onCloseFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditClosed)
 
+    const prevHolder = liContainer.find('.prev-holder')
     const resultsTimeout = setTimeout(() => {
       clearTimeout(resultsTimeout)
       const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
@@ -896,10 +895,8 @@ export default class Helpers {
     }
     this.updatePreview($(field))
 
-    const prevHolder = $(field).find('.prev-holder')
-    const fieldID = prevHolder.attr('data-field-id')
-    const liContainer = $(`#${fieldID}`)
-    const rowContainer = $(`#${fieldID}-cont`)
+    const liContainer = $(`#${fieldId}`)
+    const rowContainer = $(`#${fieldId}-cont`)
 
     //Mark the container as something we don't want to cleanup immediately
     this.formBuilder.preserveTempContainers.push(rowContainer.attr('id'))
