@@ -846,7 +846,8 @@ export default class Helpers {
     document.dispatchEvent(events.fieldEditClosed)
     this.toggleGridModeButtonVisible(fieldID)
 
-    setTimeout(() => {
+    const resultsTimeout = setTimeout(() => {
+      clearTimeout(resultsTimeout)
       const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
 
       cleanResults.forEach(result => {
