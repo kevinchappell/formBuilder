@@ -14,6 +14,8 @@ import {
   unique,
   xmlAttrString,
   flattenArray,
+  bootstrapColumnRegex,
+  getAllGridRelatedClasses,
 } from './utils'
 import events from './events'
 import { config } from './config'
@@ -254,9 +256,7 @@ export default class Helpers {
               $field.closest('.rowWrapper').children().length == 1 &&
               fieldData.className.includes(config.opts.defaultGridColumnClass)
             ) {
-              const classes = fieldData.className
-                .split(' ')
-                .filter(className => /^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-'))
+              const classes = getAllGridRelatedClasses(fieldData.className)
 
               if (classes && classes.length > 0) {
                 classes.forEach(element => {
@@ -1297,9 +1297,7 @@ export default class Helpers {
     const result = {}
 
     if (data.className) {
-      const classes = data.className
-        .split(' ')
-        .filter(className => /^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-'))
+      const classes = getAllGridRelatedClasses(data.className)
 
       if (classes && classes.length > 0) {
         classes.forEach(element => {
@@ -1406,7 +1404,7 @@ export default class Helpers {
       return
     }
 
-    const splitClasses = className.split(' ').filter(className => /^col-(xs|sm|md|lg)-([^\s]+)/.test(className))
+    const splitClasses = className.split(' ').filter(className => bootstrapColumnRegex.test(className))
     if (splitClasses && splitClasses.length > 0) {
       return splitClasses[0]
     }

@@ -1,14 +1,14 @@
 // LAYOUT.JS
 import utils from './utils'
+import { getAllGridRelatedClasses } from './utils'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
   let className = data.id ? `formbuilder-${data.type} form-group field-${data.id}` : ''
 
   if (data.className) {
-    let classes = data.className.split(' ')
     // Lift any col- and row- type class to the form-group wrapper. The row- class denotes the row group it should go to
-    classes = classes.filter(className => /^col-(xs|sm|md|lg)-([^\s]+)/.test(className) || className.startsWith('row-'))
+    const classes = getAllGridRelatedClasses(data.className)
 
     if (classes && classes.length > 0) {
       className += ` ${classes.join(' ')}`
