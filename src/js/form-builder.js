@@ -37,6 +37,7 @@ const FormBuilder = function (opts, element, $) {
   const data = new Data(formID)
   const d = new Dom(formID)
   let formRows = []
+  formBuilder.preserveTempContainers = []
 
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
@@ -1027,7 +1028,7 @@ const FormBuilder = function (opts, element, $) {
     //Add a wrapper div for the field itself. This div will be the rendered representation
     const rowGroupNode2 = m('div', null, {
       id: `${field.id}-cont`,
-      className: columnData.columnSize,
+      className: `${columnData.columnSize} colWrapper`,
     })
     $(rowGroupNode2).appendTo(rowWrapperNode)
 
@@ -1599,6 +1600,13 @@ const FormBuilder = function (opts, element, $) {
   })
 
   function checkRowCleanup() {
+    $stage.find('.colWrapper').each((i, elem) => {
+      const $colWrapper = $(elem)
+      if ($colWrapper.is(':empty') && !formBuilder.preserveTempContainers.includes($colWrapper.attr('id'))) {
+        $colWrapper.remove()
+      }
+    })
+
     $stage.children('.rowWrapper').each((i, elem) => {
       if ($(elem).children().length == 0) {
         const rowValue = h.getRowValue($(elem).attr('class'))

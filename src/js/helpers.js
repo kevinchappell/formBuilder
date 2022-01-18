@@ -842,9 +842,10 @@ export default class Helpers {
     //Put the li back in its place
     rowContainer.append(liContainer)
 
+    this.removeContainerProtection(rowContainer.attr('id'))
+
     config.opts.onCloseFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditClosed)
-    this.toggleGridModeButtonVisible(fieldID)
 
     const resultsTimeout = setTimeout(() => {
       clearTimeout(resultsTimeout)
@@ -855,7 +856,7 @@ export default class Helpers {
           const currentClassRow = rowContainer.attr('class')
           if (currentClassRow != result['columnInfo'].columnSize) {
             //Keep the wrapping column div sync'd to the column property from the field
-            rowContainer.attr('class', result['columnInfo'].columnSize)
+            rowContainer.attr('class', `${result['columnInfo'].columnSize} colWrapper`)
             _this.tmpCleanPrevHolder(prevHolder)
           }
         }
@@ -900,13 +901,15 @@ export default class Helpers {
     const liContainer = $(`#${fieldID}`)
     const rowContainer = $(`#${fieldID}-cont`)
 
+    //Mark the container as something we don't want to cleanup immediately
+    this.formBuilder.preserveTempContainers.push(rowContainer.attr('id'))
+
     //Temporarily move the li outside(keeping same relative overall spot in the form) so that the field details show in full width regardless of its column size
     liContainer.insertAfter(rowContainer.closest('.rowWrapper'))
 
     this.formBuilder.currentEditPanel = $editPanel[0]
     config.opts.onOpenFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditOpened)
-    this.toggleGridModeButtonVisible(fieldID, false)
 
     return field
   }
@@ -1051,7 +1054,12 @@ export default class Helpers {
 
     document.dispatchEvent(events.fieldRemoved)
 
-    $(document).trigger('checkRowCleanup')
+    this.removeContainerProtection(`${fieldID}-cont`)
+
+    setTimeout(() => {
+      $(document).trigger('checkRowCleanup')
+    }, 300)
+
     return fieldRemoved
   }
 
@@ -1314,13 +1322,12 @@ export default class Helpers {
     return result
   }
 
-  toggleGridModeButtonVisible(fieldId, visible = true) {
-    if (!visible) {
-      $(`#${fieldId}-grid`).css('display', 'none')
-      return
+  //Remove one reference that protected this potentially empty container. There may be other open fields needing the container
+  removeContainerProtection(containerID) {
+    var index = this.formBuilder.preserveTempContainers.indexOf(containerID)
+    if (index !== -1) {
+      this.formBuilder.preserveTempContainers.splice(index, 1)
     }
-
-    $(`#${fieldId}-grid`).css('display', '')
   }
 
   //Briefly highlight on/off
