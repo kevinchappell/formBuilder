@@ -29,6 +29,19 @@ import {
 import { css_prefix_text } from '../fonts/config.json'
 
 const DEFAULT_TIMEOUT = 333
+const rowWrapperClassSelector = '.rowWrapper'
+const rowWrapperClass = rowWrapperClassSelector.replace('.', '')
+
+const colWrapperClassSelector = '.colWrapper'
+const colWrapperClass = colWrapperClassSelector.replace('.', '')
+
+const tmpRowWrapperClassSelector = '.tempRowWrapper'
+const tmpRowWrapperClass = tmpRowWrapperClassSelector.replace('.', '')
+
+const tmpColWrapperClassSelector = '.tempColWrapper'
+const tmpColWrapperClass = tmpColWrapperClassSelector.replace('.', '')
+
+let isMoving = false
 
 const FormBuilder = function (opts, element, $) {
   const formBuilder = this
@@ -36,8 +49,12 @@ const FormBuilder = function (opts, element, $) {
   const formID = `frmb-${new Date().getTime()}`
   const data = new Data(formID)
   const d = new Dom(formID)
+
   let formRows = []
   formBuilder.preserveTempContainers = []
+  formBuilder.rowWrapperClassSelector = rowWrapperClassSelector
+  formBuilder.colWrapperClassSelector = colWrapperClassSelector
+  formBuilder.colWrapperClass = colWrapperClass
 
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
@@ -63,28 +80,211 @@ const FormBuilder = function (opts, element, $) {
     $stage.sortable('disable')
   }
 
+  let droppingNewControl = false
+  let dropTargetIsRow = false
+  let dropTargetIsColumn = false
+
+  let $targetDropWrapper
+
+  //Setup areas to connect/drag a control with
+  $cbUL.hover(
+    function () {
+      if (isMoving) {
+        return
+      }
+
+      //Drop to create new row above/below an existing field
+      SetupDroppableRows()
+
+      //Drop area to merge field into row to the left/right of existing field
+      SetupDroppableColumns()
+    },
+    function () {
+      if (!isMoving) {
+        cleanupDropAreas()
+      }
+    },
+  )
+
+  function cleanupDropAreas(hard = false) {
+    //Cleanup after moving hover away
+    $stage.find(tmpRowWrapperClassSelector).css('display', 'none')
+    $stage.find(tmpColWrapperClassSelector).css('display', 'none')
+
+    $stage.find(colWrapperClassSelector).removeClass('colHoverTempStyle')
+
+    if (hard) {
+      $stage.find(tmpRowWrapperClassSelector).remove()
+      $stage.find(tmpColWrapperClassSelector).remove()
+    }
+  }
+
+  //Turn off drop areas during scrolling so the fixed cols dont look odd
+  $(window).scroll(function () {
+    cleanupDropAreas()
+  })
+
+  function SetupDroppableRows() {
+    $stage.find(tmpRowWrapperClassSelector).remove()
+
+    $stage.children(rowWrapperClassSelector).each((i, elem) => {
+      const rowWrapper = $(elem)
+
+      const tmpRowTarget = m('div', null, {
+        className: tmpRowWrapperClass,
+      })
+      $(tmpRowTarget).addClass('hoverDropStyle')
+
+      if (rowWrapper.index() == 0) {
+        const beforeClone = $(tmpRowTarget).clone()
+        beforeClone.insertBefore(rowWrapper)
+        setupDroppableRow(beforeClone)
+      }
+
+      $(tmpRowTarget).insertAfter(rowWrapper)
+      setupDroppableRow($(tmpRowTarget))
+    })
+  }
+
+  function setupDroppableRow(element) {
+    $(element).sortable({
+      over: function (event) {
+        $(event.target).addClass('hoverDropStyleInverse')
+      },
+      out: function (event) {
+        $(event.target).removeClass('hoverDropStyleInverse')
+      },
+      receive: function (event, ui) {
+        if (droppingNewControl) {
+          dropTargetIsRow = true
+
+          $targetDropWrapper = $(ui.item.parent())
+          h.doCancel = true
+          processControl(ui.item)
+        }
+      },
+      deactivate: function () {
+        $stage.find(tmpRowWrapperClassSelector).remove()
+      },
+    })
+  }
+
+  function SetupDroppableColumns() {
+    $stage.find(tmpColWrapperClassSelector).remove()
+
+    $stage.children(rowWrapperClassSelector).each((i, rowWrapper) => {
+      //Get the max height of the entire row to set the placeholder height as
+      let maxColumnHeight = 10
+      $(rowWrapper)
+        .children(colWrapperClassSelector)
+        .each((i, elem) => {
+          const colWrapper = $(elem)
+          const colHeight = parseInt(colWrapper.css('height'))
+          if (colHeight > maxColumnHeight) {
+            maxColumnHeight = colHeight
+          }
+        })
+
+      $(rowWrapper)
+        .children(colWrapperClassSelector)
+        .each((i, elem) => {
+          const colWrapper = $(elem)
+          colWrapper.addClass('colHoverTempStyle')
+
+          const tmpColTarget = m('div', null, {
+            className: tmpColWrapperClass,
+          })
+
+          if (colWrapper.index() == 0) {
+            const beforeClone = $(tmpColTarget).clone()
+            beforeClone
+              .addClass('hoverColumnDropStyle')
+              .css({ left: 0, top: colWrapper.offset().top - $(window).scrollTop(), height: maxColumnHeight })
+            beforeClone.insertBefore(colWrapper)
+            setupDroppableColumn(beforeClone)
+          }
+
+          $(tmpColTarget)
+            .addClass('hoverColumnDropStyle')
+            .css({
+              left: colWrapper.offset().left + colWrapper.width() + 40,
+              top: colWrapper.offset().top - $(window).scrollTop(),
+              height: maxColumnHeight,
+            })
+
+          $(tmpColTarget).insertAfter(colWrapper)
+          setupDroppableColumn($(tmpColTarget))
+        })
+    })
+  }
+
+  function setupDroppableColumn(element) {
+    $(element).sortable({
+      over: function (event) {
+        $(event.target).addClass('hoverDropStyleInverse')
+      },
+      out: function (event) {
+        $(event.target).removeClass('hoverDropStyleInverse')
+      },
+      receive: function (event, ui) {
+        if (droppingNewControl) {
+          dropTargetIsColumn = true
+          $targetDropWrapper = $(ui.item.parent())
+          h.doCancel = true
+          processControl(ui.item)
+        }
+      },
+      deactivate: function () {
+        $stage.find(tmpColWrapperClassSelector).remove()
+      },
+    })
+  }
+
   // ControlBox with different fields
   $cbUL.sortable({
-    helper: 'clone',
+    helper: function (e, el) {
+      //Shrink the control a little while dragging so it's not in the way as much
+      return el
+        .clone()
+        .css({ width: '50px', height: '35px', border: '1px', borderStyle: 'solid', borderColor: 'black' })
+        .html('')
+    },
     opacity: 0.9,
-    connectWith: $stage,
+    connectWith: [tmpRowWrapperClassSelector, tmpColWrapperClassSelector],
     cancel: '.formbuilder-separator',
     cursor: 'move',
+    cursorAt: {
+      left: 5,
+      top: 5,
+    },
+    containment: 'window',
     scroll: false,
-    placeholder: 'ui-state-highlight',
-    start: (evt, ui) => h.startMoving.call(h, evt, ui),
-    stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
+    start: (evt, ui) => {
+      h.startMoving.call(h, evt, ui)
+      isMoving = true
+    },
+    stop: (evt, ui) => {
+      h.stopMoving.call(h, evt, ui)
+      isMoving = false
+      cleanupDropAreas(true)
+    },
     revert: 150,
-    beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
+    beforeStop: (evt, ui) => {
+      h.beforeStop.call(h, evt, ui)
+    },
     distance: 3,
     update: function (event, ui) {
+      isMoving = false
       if (h.doCancel) {
         return false
       }
 
-      if (ui.item.parent()[0] === d.stage) {
-        h.doCancel = true
-        processControl(ui.item)
+      dropTargetIsColumn = $(ui.item.parent()).hasClass(tmpColWrapperClass)
+      dropTargetIsRow = $(ui.item.parent()).hasClass(tmpRowWrapperClass)
+      const dropTargetIsStage = ui.item.parent().parent()[0] === d.stage
+
+      if (dropTargetIsStage || dropTargetIsRow || dropTargetIsColumn) {
+        droppingNewControl = true
       } else {
         h.setFieldOrder($cbUL)
         h.doCancel = !opts.sortableControls
@@ -1012,7 +1212,13 @@ const FormBuilder = function (opts, element, $) {
     // generate the control, insert it into the list item & add it to the stage
     h.updatePreview($li)
 
-    const targetRow = `div.row-${columnData.rowNumber}`
+    let targetRow = `div.row-${columnData.rowNumber}`
+
+    //If dropping to column area, use the row that already exists
+    if (droppingNewControl && dropTargetIsColumn) {
+      targetRow = `div.${h.getRowClass($targetDropWrapper.parent().attr('class'))}`
+    }
+
     let rowWrapperNode
 
     //Check if an overall row already exists for the field, else create one
@@ -1021,21 +1227,45 @@ const FormBuilder = function (opts, element, $) {
     } else {
       rowWrapperNode = m('div', null, {
         id: `${field.id}-row`,
-        className: `row row-${columnData.rowNumber} rowWrapper`,
+        className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
       })
     }
 
-    //Add a wrapper div for the field itself. This div will be the rendered representation
-    const rowGroupNode2 = m('div', null, {
-      id: `${field.id}-cont`,
-      className: `${columnData.columnSize} colWrapper`,
-    })
-    $(rowGroupNode2).appendTo(rowWrapperNode)
+    //Turn the placeholder into the new row. Copy some attributes over
+    if (droppingNewControl && dropTargetIsRow) {
+      $targetDropWrapper.attr('id', rowWrapperNode.id)
+      $targetDropWrapper.attr('class', rowWrapperNode.className)
+      $targetDropWrapper.attr('style', '')
+      rowWrapperNode = $targetDropWrapper
+    }
 
-    $stage.append(rowWrapperNode)
+    //Add a wrapper div for the field itself. This div will be the rendered representation
+    let rowGroupNode2 = m('div', null, {
+      id: `${field.id}-cont`,
+      className: `${columnData.columnSize} ${colWrapperClass}`,
+    })
+
+    //Turn the placeholder into the new column wrapper. Copy some attributes over
+    if (droppingNewControl && dropTargetIsColumn) {
+      $targetDropWrapper.attr('id', rowGroupNode2.id)
+      $targetDropWrapper.attr('class', rowGroupNode2.className)
+      $targetDropWrapper.attr('style', '')
+      rowGroupNode2 = $targetDropWrapper
+    }
+
+    //If dropping, use the existing index, do not always append to end
+    if (!dropTargetIsColumn) {
+      $(rowGroupNode2).appendTo(rowWrapperNode)
+    }
+
+    //If dropping, use the existing index, do not always append to end
+    if (!droppingNewControl) {
+      $stage.append(rowWrapperNode)
+    }
+
     $li.appendTo(rowGroupNode2)
 
-    setupSortableWrapper(rowWrapperNode)
+    setupSortableRowWrapper(rowWrapperNode)
 
     //Record the fact that this field did not originally have column information stored.
     //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
@@ -1058,22 +1288,40 @@ const FormBuilder = function (opts, element, $) {
         field.scrollIntoView({ behavior: 'smooth' })
       }
     }
+
+    //Autosize entire row when dropping from control area
+    if (droppingNewControl && dropTargetIsColumn) {
+      autoSizeRowColumns(rowWrapperNode, true)
+    }
+
+    cleanupDropAreas(true)
+
+    droppingNewControl = false
+    dropTargetIsRow = false
+    dropTargetIsColumn = false
   }
 
-  function setupSortableWrapper(rowWrapperNode) {
+  function setupSortableRowWrapper(rowWrapperNode) {
     $(rowWrapperNode).sortable({
-      connectWith: '.rowWrapper',
+      connectWith: rowWrapperClassSelector,
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
-      cursorAt: {
-        left: 5,
-        top: 5,
+      deactivate: function () {
+        cleanupDropAreas(true)
       },
       placeholder: 'ui-state-highlight',
       grid: [1, 1],
+      receive: function (event, ui) {
+        cleanupDropAreas(true)
+
+        if (droppingNewControl) {
+          h.doCancel = true
+          processControl(ui.item)
+        }
+      },
       stop: function (event, ui) {
-        autoSizeRowColumns(ui.item.closest('.rowWrapper'))
+        autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector))
       },
       update: function (event, ui) {
         syncFieldWithNewRow(ui.item.attr('id'))
@@ -1388,26 +1636,26 @@ const FormBuilder = function (opts, element, $) {
 
     const rowWrapper = m('div', null, {
       id: `${$clone.attr('id')}-row`,
-      className: `row row-${columnData.rowNumber} rowWrapper`,
+      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
     })
 
     const colWrapper = m('div', null, {
       id: `${$clone.attr('id')}-cont`,
-      className: `${h.getBootstrapColumnClass(inputClassElement.val())} colWrapper`,
+      className: `${h.getBootstrapColumnClass(inputClassElement.val())} ${colWrapperClass}`,
     })
     $(colWrapper).appendTo(rowWrapper)
 
     let insertAfterElement
     if (currentItem.parent().is('div')) {
-      insertAfterElement = currentItem.closest('.rowWrapper')
+      insertAfterElement = currentItem.closest(rowWrapperClassSelector)
     } else if (currentItem.parent().is('ul')) {
-      insertAfterElement = currentItem.prev('.rowWrapper')
+      insertAfterElement = currentItem.prev(rowWrapperClassSelector)
     }
 
     $(rowWrapper).insertAfter(insertAfterElement)
     $clone.appendTo(colWrapper)
 
-    setupSortableWrapper(rowWrapper)
+    setupSortableRowWrapper(rowWrapper)
     syncFieldWithNewRow($clone.attr('id'))
   }
 
@@ -1496,6 +1744,7 @@ const FormBuilder = function (opts, element, $) {
       gridModeTargetField.attr('manuallyChangedDefaultColumnClass', true)
 
       buildGridModeCurrentRowInfo()
+      h.toggleHighlight(gridModeTargetField)
     }
   })
 
@@ -1504,7 +1753,7 @@ const FormBuilder = function (opts, element, $) {
   $(document).keydown(e => {
     if (gridMode) {
       e.preventDefault()
-      const rowWrapper = gridModeTargetField.closest('.rowWrapper')
+      const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
 
       if (e.keyCode == 87 || e.keyCode == 38) {
         moveFieldUp(rowWrapper)
@@ -1573,7 +1822,7 @@ const FormBuilder = function (opts, element, $) {
 
     const rowWrapperNode = m('div', null, {
       id: `${gridModeTargetField.attr('id')}-row`,
-      className: `row row-${columnData.rowNumber} rowWrapper`,
+      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
     })
 
     gridModeTargetField.parent().appendTo(rowWrapperNode)
@@ -1584,16 +1833,16 @@ const FormBuilder = function (opts, element, $) {
       $stage.append(rowWrapperNode)
     }
 
-    setupSortableWrapper(rowWrapperNode)
+    setupSortableRowWrapper(rowWrapperNode)
     syncFieldWithNewRow(gridModeTargetField.attr('id'))
     checkRowCleanup()
   }
 
   function autoSizeRowColumns(rowWrapper, force = false) {
-    const childRowCount = rowWrapper.children('div').length
+    const childRowCount = rowWrapper.children(`div${colWrapperClassSelector}`).length
     const newAutoCalcSizeValue = Math.floor(12 / childRowCount)
 
-    rowWrapper.children('div').each((i, elem) => {
+    rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
       const colWrapper = $(`#${elem.id}`)
 
       //Don't auto-size the field if the user had manually adjusted it during this session
@@ -1607,12 +1856,14 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function syncFieldWithNewRow(fieldID) {
-    const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
-    if (inputClassElement.val()) {
-      const oldRow = h.getRowClass(inputClassElement.val())
-      const wrapperRow = h.getRowClass(inputClassElement.closest('.rowWrapper').attr('class'))
-      inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
-      checkRowCleanup()
+    if (fieldID) {
+      const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
+      if (inputClassElement.val()) {
+        const oldRow = h.getRowClass(inputClassElement.val())
+        const wrapperRow = h.getRowClass(inputClassElement.closest(rowWrapperClassSelector).attr('class'))
+        inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
+        checkRowCleanup()
+      }
     }
   }
 
@@ -1631,14 +1882,14 @@ const FormBuilder = function (opts, element, $) {
   })
 
   function checkRowCleanup() {
-    $stage.find('.colWrapper').each((i, elem) => {
+    $stage.find(colWrapperClassSelector).each((i, elem) => {
       const $colWrapper = $(elem)
       if ($colWrapper.is(':empty') && !formBuilder.preserveTempContainers.includes($colWrapper.attr('id'))) {
         $colWrapper.remove()
       }
     })
 
-    $stage.children('.rowWrapper').each((i, elem) => {
+    $stage.children(rowWrapperClassSelector).each((i, elem) => {
       if ($(elem).children().length == 0) {
         const rowValue = h.getRowValue($(elem).attr('class'))
         formRows = formRows.filter(x => x != rowValue)
@@ -1658,6 +1909,7 @@ const FormBuilder = function (opts, element, $) {
 
       buildGridModeHelp()
       h.closeAllEdit()
+      h.toggleHighlight(gridModeTargetField)
     } else {
       h.showToast('Grid Mode Finished', 1500)
       gridMode = false
@@ -1743,9 +1995,9 @@ const FormBuilder = function (opts, element, $) {
   function buildGridModeCurrentRowInfo() {
     $(gridModeHelp).find('.gridHelpCurrentRow tbody').empty()
 
-    const rowWrapper = gridModeTargetField.closest('.rowWrapper')
+    const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
 
-    rowWrapper.children('div').each((i, elem) => {
+    rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
       const colWrapper = $(`#${elem.id}`)
       const fieldID = colWrapper.find('li').attr('id')
       const label = $(`#label-${fieldID}`).html()

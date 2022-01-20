@@ -253,7 +253,7 @@ export default class Helpers {
             if (
               fieldData.className &&
               $field.attr('addeddefaultcolumnclass') == 'true' &&
-              $field.closest('.rowWrapper').children().length == 1 &&
+              $field.closest(this.formBuilder.rowWrapperClassSelector).children().length == 1 &&
               fieldData.className.includes(config.opts.defaultGridColumnClass)
             ) {
               const classes = getAllGridRelatedClasses(fieldData.className)
@@ -715,7 +715,7 @@ export default class Helpers {
   removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
-    const fields = stage.querySelectorAll('.rowWrapper')
+    const fields = stage.querySelectorAll(this.formBuilder.rowWrapperClassSelector)
     const markEmptyArray = []
 
     if (!fields.length) {
@@ -855,7 +855,7 @@ export default class Helpers {
           const currentClassRow = rowContainer.attr('class')
           if (currentClassRow != result['columnInfo'].columnSize) {
             //Keep the wrapping column div sync'd to the column property from the field
-            rowContainer.attr('class', `${result['columnInfo'].columnSize} colWrapper`)
+            rowContainer.attr('class', `${result['columnInfo'].columnSize} ${this.formBuilder.colWrapperClass}`)
             _this.tmpCleanPrevHolder(prevHolder)
           }
         }
@@ -902,7 +902,7 @@ export default class Helpers {
     this.formBuilder.preserveTempContainers.push(rowContainer.attr('id'))
 
     //Temporarily move the li outside(keeping same relative overall spot in the form) so that the field details show in full width regardless of its column size
-    liContainer.insertAfter(rowContainer.closest('.rowWrapper'))
+    liContainer.insertAfter(rowContainer.closest(this.formBuilder.rowWrapperClassSelector))
 
     this.formBuilder.currentEditPanel = $editPanel[0]
     config.opts.onOpenFieldEdit($editPanel[0])
