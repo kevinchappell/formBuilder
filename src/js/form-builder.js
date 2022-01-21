@@ -129,7 +129,9 @@ const FormBuilder = function (opts, element, $) {
 
   //Turn off drop areas during scrolling so the fixed cols dont look odd
   $(window).scroll(function () {
-    cleanupDropAreas()
+    if (config.opts.enableColumnDrop) {
+      cleanupDropAreas()
+    }
   })
 
   function SetupDroppableRows() {
@@ -265,7 +267,6 @@ const FormBuilder = function (opts, element, $) {
       left: 5,
       top: 5,
     },
-    containment: 'window',
     scroll: false,
     start: (evt, ui) => {
       h.startMoving.call(h, evt, ui)
