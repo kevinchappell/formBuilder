@@ -94,10 +94,14 @@ const FormBuilder = function (opts, element, $) {
       }
 
       //Drop to create new row above/below an existing field
-      SetupDroppableRows()
+      if (config.opts.enableRowDrop) {
+        SetupDroppableRows()
+      }
 
       //Drop area to merge field into row to the left/right of existing field
-      SetupDroppableColumns()
+      if (config.opts.enableColumnDrop) {
+        SetupDroppableColumns()
+      }
     },
     function () {
       if (!isMoving) {
@@ -107,6 +111,10 @@ const FormBuilder = function (opts, element, $) {
   )
 
   function cleanupDropAreas(hard = false) {
+    if (!config.opts.enableRowDrop && !config.opts.enableColumnDrop) {
+      return
+    }
+
     //Cleanup after moving hover away
     $stage.find(tmpRowWrapperClassSelector).css('display', 'none')
     $stage.find(tmpColWrapperClassSelector).css('display', 'none')
