@@ -1379,6 +1379,12 @@ export default class Helpers {
     }
   }
 
+  //Example className of 'row row-1' would be changed for 'row row-4' where 4 is the newValue
+  changeRowClass(className, newValue) {
+    const rowClass = this.getRowClass(className)
+    return className.replace(rowClass, `row-${newValue}`)
+  }
+
   //Return the column size i.e col-md-6 would return 6
   getBootstrapColumnValue(className) {
     if (!className) {

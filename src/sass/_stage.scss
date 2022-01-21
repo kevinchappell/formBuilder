@@ -856,7 +856,17 @@
 }
 
 .colHoverTempStyle {
-  margin-right: 80px !important;
-  margin-left: 70px !important;
+  margin-right: 10px !important;
+  margin-left: 10px !important;
   flex: 95 !important;
+}
+
+.rowWrapper {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.btnAddControl {
+  border: 0;
+  background-color: unset;
 }
