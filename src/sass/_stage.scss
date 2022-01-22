@@ -833,28 +833,6 @@
   white-space: nowrap;
 }
 
-.hoverDropStyle {
-  border: 1px dashed #0d99f2;
-  border-radius: 3px;
-  background-color: #e5f5f8;
-  height: 20px;
-  margin: 6px;
-}
-
-.hoverColumnDropStyle {
-  border: 1px dashed #0d99f2;
-  border-radius: 3px;
-  background-color: #e5f5f8;
-  width: 20px;
-  position: fixed;
-  margin-left: 40px;
-}
-
-.hoverDropStyleInverse {
-  background-color: #0d99f2;
-  border: 1px dashed #e5f5f8;
-}
-
 .colHoverTempStyle {
   margin-right: 10px !important;
   margin-left: 10px !important;
