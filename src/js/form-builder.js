@@ -1933,6 +1933,21 @@ const FormBuilder = function (opts, element, $) {
       h.toggleHighlight(gridModeTargetField)
     } else {
       h.showToast('Grid Mode Finished', 1500)
+
+      //If when exiting grid mode and the row columns end up being > 12 (This can happen if the user moved a column up/down and exited), auto-resize it.
+      const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
+      let totalRowValueCount = 0
+
+      rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
+        const colWrapper = $(`#${elem.id}`)
+        const fieldID = colWrapper.find('li').attr('id')
+        totalRowValueCount += h.getBootstrapColumnValue($(`#${fieldID}-cont`).attr('class'))
+      })
+
+      if (totalRowValueCount > 12) {
+        autoSizeRowColumns(rowWrapper, true)
+      }
+
       gridMode = false
       gridModeTargetField = null
 
