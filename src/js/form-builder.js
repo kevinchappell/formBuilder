@@ -1279,9 +1279,13 @@ const FormBuilder = function (opts, element, $) {
 
     $(rowWrapperNode).off('mouseleave')
     $(rowWrapperNode).on('mouseleave', function (e) {
-      $(e.currentTarget).find(tmpColWrapperClassSelector).remove()
-      $(e.currentTarget).find(colWrapperClassSelector).removeClass('colHoverTempStyle')
+      removeColumnInsertButtons($(e.currentTarget))
     })
+  }
+
+  function removeColumnInsertButtons(rowWrapper) {
+    rowWrapper.find(tmpColWrapperClassSelector).remove()
+    rowWrapper.find(colWrapperClassSelector).removeClass('colHoverTempStyle')
   }
 
   function prepareFieldRow(data) {
@@ -1797,6 +1801,7 @@ const FormBuilder = function (opts, element, $) {
       }
 
       buildGridModeCurrentRowInfo()
+      removeColumnInsertButtons(rowWrapper)
     }
   })
 
