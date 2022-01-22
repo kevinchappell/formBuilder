@@ -35,9 +35,6 @@ const rowWrapperClass = rowWrapperClassSelector.replace('.', '')
 const colWrapperClassSelector = '.colWrapper'
 const colWrapperClass = colWrapperClassSelector.replace('.', '')
 
-const tmpRowWrapperClassSelector = '.tempRowWrapper'
-const tmpRowWrapperClass = tmpRowWrapperClassSelector.replace('.', '')
-
 const tmpColWrapperClassSelector = '.tempColWrapper'
 const tmpColWrapperClass = tmpColWrapperClassSelector.replace('.', '')
 
@@ -83,131 +80,30 @@ const FormBuilder = function (opts, element, $) {
   let insertingNewControl = false
   let insertTargetIsRow = false
   let insertTargetIsColumn = false
+  let insertTargetIsStage = false
 
   let $targetInsertWrapper
   let cloneControls
 
-  //Setup areas to connect/drag a control with
-  $cbUL.hover(
-    function () {
-      if (isMoving) {
-        return
-      }
-
-      //Drop to create new row above/below an existing field
-      if (config.opts.enableRowDrop) {
-        SetupDroppableRows()
-      }
-    },
-    function () {
-      if (!isMoving) {
-        cleanupTempPlaceholders()
-      }
-    },
-  )
-
-  function cleanupTempPlaceholders(hard = false) {
-    if (!config.opts.enableRowDrop) {
-      return
-    }
-
-    //Cleanup after moving hover away
-    $stage.find(tmpRowWrapperClassSelector).css('display', 'none')
-    $stage.find(tmpColWrapperClassSelector).css('display', 'none')
-
-    $stage.find(colWrapperClassSelector).removeClass('colHoverTempStyle')
-
-    if (hard) {
-      $stage.find(tmpRowWrapperClassSelector).remove()
-      $stage.find(tmpColWrapperClassSelector).remove()
-    }
-  }
-
-  function SetupDroppableRows() {
-    $stage.find(tmpRowWrapperClassSelector).remove()
-
-    $stage.children(rowWrapperClassSelector).each((i, elem) => {
-      const rowWrapper = $(elem)
-
-      const tmpRowTarget = m('div', null, {
-        className: tmpRowWrapperClass,
-      })
-      $(tmpRowTarget).addClass('hoverDropStyle')
-
-      if (rowWrapper.index() == 0) {
-        const beforeClone = $(tmpRowTarget).clone()
-        beforeClone.insertBefore(rowWrapper)
-        setupDroppableRow(beforeClone)
-      }
-
-      $(tmpRowTarget).insertAfter(rowWrapper)
-      setupDroppableRow($(tmpRowTarget))
-    })
-  }
-
-  function setupDroppableRow(element) {
-    $(element).sortable({
-      over: function (event) {
-        $(event.target).addClass('hoverDropStyleInverse')
-      },
-      out: function (event) {
-        $(event.target).removeClass('hoverDropStyleInverse')
-      },
-      receive: function (event, ui) {
-        if (insertingNewControl) {
-          insertTargetIsRow = true
-
-          $targetInsertWrapper = $(ui.item.parent())
-          h.doCancel = true
-          processControl(ui.item)
-        }
-      },
-      deactivate: function () {
-        $stage.find(tmpRowWrapperClassSelector).remove()
-      },
-    })
-  }
-
-  function setupColumnInserts(rowWrapper) {
-    $(rowWrapper)
-      .children(colWrapperClassSelector)
-      .each((i, elem) => {
-        const colWrapper = $(elem)
-        colWrapper.addClass('colHoverTempStyle')
-
-        if (colWrapper.index() == 0) {
-          $(
-            `<button type="button" class=" ${tmpColWrapperClass} formbuilder-icon-plus btnAddControl ${h.getRowClass(
-              colWrapper.parent().attr('class'),
-            )}" prepend="true"></button>`,
-          ).insertBefore(colWrapper)
-        }
-
-        $(
-          `<button type="button" class=" ${tmpColWrapperClass} formbuilder-icon-plus btnAddControl ${h.getRowClass(
-            colWrapper.parent().attr('class'),
-          )}" appendAfter="${colWrapper.attr('id')}"></button>`,
-        ).insertAfter(colWrapper)
-      })
-  }
+  $stage.sortable({
+    cursor: 'move',
+    opacity: 0.9,
+    revert: 150,
+    beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
+    start: (evt, ui) => h.startMoving.call(h, evt, ui),
+    stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
+    cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(
+      ', ',
+    ),
+    placeholder: 'frmb-placeholder',
+  })
 
   // ControlBox with different fields
   $cbUL.sortable({
-    helper: function (e, el) {
-      //Shrink the control a little while dragging so it's not in the way as much
-      return el
-        .clone()
-        .css({ width: '50px', height: '35px', border: '1px', borderStyle: 'solid', borderColor: 'black' })
-        .html('')
-    },
     opacity: 0.9,
-    connectWith: [tmpRowWrapperClassSelector, tmpColWrapperClassSelector],
+    connectWith: $stage,
     cancel: '.formbuilder-separator',
     cursor: 'move',
-    cursorAt: {
-      left: 5,
-      top: 5,
-    },
     scroll: false,
     start: (evt, ui) => {
       h.startMoving.call(h, evt, ui)
@@ -216,7 +112,7 @@ const FormBuilder = function (opts, element, $) {
     stop: (evt, ui) => {
       h.stopMoving.call(h, evt, ui)
       isMoving = false
-      cleanupTempPlaceholders(true)
+      cleanupTempPlaceholders()
     },
     revert: 150,
     beforeStop: (evt, ui) => {
@@ -229,11 +125,18 @@ const FormBuilder = function (opts, element, $) {
         return false
       }
 
-      insertTargetIsRow = $(ui.item.parent()).hasClass(tmpRowWrapperClass)
-      const dropTargetIsStage = ui.item.parent().parent()[0] === d.stage
+      insertTargetIsStage = ui.item.parent()[0] === d.stage
 
-      if (dropTargetIsStage || insertTargetIsRow) {
-        insertingNewControl = true
+      if (insertTargetIsStage) {
+        if (ui.item.index() == 0) {
+          ui.item.attr('prepend', 'true')
+        } else {
+          ui.item.attr('appendAfter', ui.item.prev('.rowWrapper').attr('id'))
+        }
+        $targetInsertWrapper = ui.item
+
+        h.doCancel = true
+        processControl(ui.item)
       } else {
         h.setFieldOrder($cbUL)
         h.doCancel = !opts.sortableControls
@@ -296,6 +199,11 @@ const FormBuilder = function (opts, element, $) {
   }
 
   $(d.controls).on('click', 'li', ({ target }) => {
+    //Prevent duplicate add when click & dragging control to specific spot
+    if (isMoving) {
+      return
+    }
+
     const $control = $(target).closest('li')
     h.stopIndex = undefined
     processControl($control)
@@ -1184,30 +1092,38 @@ const FormBuilder = function (opts, element, $) {
     }
 
     //Add a wrapper div for the field itself. This div will be the rendered representation
-    const rowGroupNode2 = m('div', null, {
+    const colWrapperNode = m('div', null, {
       id: `${field.id}-cont`,
       className: `${columnData.columnSize} ${colWrapperClass}`,
     })
 
     if (insertingNewControl && insertTargetIsColumn) {
       if ($targetInsertWrapper.attr('prepend') == 'true') {
-        $(rowGroupNode2).prependTo(rowWrapperNode)
+        $(colWrapperNode).prependTo(rowWrapperNode)
       } else {
-        $(rowGroupNode2).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
+        $(colWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
       }
     }
 
     //Control insert will take care of inserting itself
     if (!insertTargetIsColumn) {
-      $(rowGroupNode2).appendTo(rowWrapperNode)
+      $(colWrapperNode).appendTo(rowWrapperNode)
+    }
+
+    if (insertTargetIsStage) {
+      if ($targetInsertWrapper.attr('prepend') == 'true') {
+        $(rowWrapperNode).prependTo($stage)
+      } else {
+        $(rowWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
+      }
     }
 
     //If inserting, use the existing index, do not always append to end
-    if (!insertingNewControl) {
+    if (!insertingNewControl && !insertTargetIsStage) {
       $stage.append(rowWrapperNode)
     }
 
-    $li.appendTo(rowGroupNode2)
+    $li.appendTo(colWrapperNode)
 
     setupSortableRowWrapper(rowWrapperNode)
 
@@ -1238,11 +1154,12 @@ const FormBuilder = function (opts, element, $) {
       autoSizeRowColumns(rowWrapperNode, true)
     }
 
-    cleanupTempPlaceholders(true)
+    cleanupTempPlaceholders()
 
     insertingNewControl = false
     insertTargetIsRow = false
     insertTargetIsColumn = false
+    insertTargetIsStage = false
   }
 
   function setupSortableRowWrapper(rowWrapperNode) {
@@ -1252,17 +1169,19 @@ const FormBuilder = function (opts, element, $) {
       opacity: 0.9,
       revert: 150,
       deactivate: function () {
-        cleanupTempPlaceholders(true)
+        cleanupTempPlaceholders()
       },
       placeholder: 'ui-state-highlight',
-      grid: [1, 1],
       receive: function (event, ui) {
-        cleanupTempPlaceholders(true)
+        cleanupTempPlaceholders()
 
         if (insertingNewControl) {
           h.doCancel = true
           processControl(ui.item)
         }
+      },
+      start: function () {
+        cleanupTempPlaceholders()
       },
       stop: function (event, ui) {
         autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector))
@@ -1281,6 +1200,34 @@ const FormBuilder = function (opts, element, $) {
     $(rowWrapperNode).on('mouseleave', function (e) {
       removeColumnInsertButtons($(e.currentTarget))
     })
+  }
+
+  function cleanupTempPlaceholders() {
+    $stage.find(colWrapperClassSelector).removeClass('colHoverTempStyle')
+    $stage.find(tmpColWrapperClassSelector).remove()
+  }
+
+  function setupColumnInserts(rowWrapper) {
+    $(rowWrapper)
+      .children(colWrapperClassSelector)
+      .each((i, elem) => {
+        const colWrapper = $(elem)
+        colWrapper.addClass('colHoverTempStyle')
+
+        if (colWrapper.index() == 0) {
+          $(
+            `<button type="button" class=" ${tmpColWrapperClass} formbuilder-icon-plus btnAddControl ${h.getRowClass(
+              colWrapper.parent().attr('class'),
+            )}" prepend="true"></button>`,
+          ).insertBefore(colWrapper)
+        }
+
+        $(
+          `<button type="button" class=" ${tmpColWrapperClass} formbuilder-icon-plus btnAddControl ${h.getRowClass(
+            colWrapper.parent().attr('class'),
+          )}" appendAfter="${colWrapper.attr('id')}"></button>`,
+        ).insertAfter(colWrapper)
+      })
   }
 
   function removeColumnInsertButtons(rowWrapper) {
@@ -1903,8 +1850,13 @@ const FormBuilder = function (opts, element, $) {
     }
   })
 
-  $(document).on('checkRowCleanup', () => {
+  $(document).on('checkRowCleanup', (event, data) => {
     checkRowCleanup()
+
+    const rowWrapper = $(`#${data.rowWrapperID}`)
+    if (rowWrapper.length) {
+      autoSizeRowColumns(rowWrapper, true)
+    }
   })
 
   function checkRowCleanup() {
@@ -1936,7 +1888,7 @@ const FormBuilder = function (opts, element, $) {
       $(d.formActions).css('display', 'none')
 
       //Cleanup temp artifacts
-      cleanupTempPlaceholders(true)
+      cleanupTempPlaceholders()
 
       buildGridModeHelp()
       h.closeAllEdit()

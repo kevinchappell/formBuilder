@@ -1027,6 +1027,7 @@ export default class Helpers {
     }
 
     const $field = $(field)
+    const fieldRowWrapper = $field.closest(this.formBuilder.rowWrapperClassSelector)
     if (!field) {
       config.opts.notify.warning('Field not found')
       return false
@@ -1054,7 +1055,7 @@ export default class Helpers {
     this.removeContainerProtection(`${fieldID}-cont`)
 
     setTimeout(() => {
-      $(document).trigger('checkRowCleanup')
+      $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
     }, 300)
 
     return fieldRemoved
