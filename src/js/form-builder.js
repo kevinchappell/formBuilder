@@ -1743,6 +1743,24 @@ const FormBuilder = function (opts, element, $) {
         return
       }
 
+      //Check overall column value, do not allow the entire row to exceed 12
+      const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
+
+      let totalRowValueCount = nextColSize
+      rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
+        const colWrapper = $(`#${elem.id}`)
+        const fieldID = colWrapper.find('li').attr('id')
+
+        if (fieldID != gridModeTargetField.attr('id')) {
+          totalRowValueCount += h.getBootstrapColumnValue($(`#${fieldID}-cont`).attr('class'))
+        }
+      })
+
+      if (totalRowValueCount > 12) {
+        h.showToast('<b class="formbuilder-required">There is a maximum of 12 columns per row</b>')
+        return
+      }
+
       h.syncBootstrapColumnWrapperAndClassProperty(gridModeTargetField.attr('id'), nextColSize)
       gridModeTargetField.attr('manuallyChangedDefaultColumnClass', true)
 
