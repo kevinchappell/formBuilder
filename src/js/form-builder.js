@@ -1920,6 +1920,8 @@ const FormBuilder = function (opts, element, $) {
         const rowValue = h.getRowValue($(elem).attr('class'))
         formRows = formRows.filter(x => x != rowValue)
         $(elem).remove()
+      } else {
+        removeColumnInsertButtons($(elem))
       }
     })
   }
@@ -1932,6 +1934,9 @@ const FormBuilder = function (opts, element, $) {
       //Hide controls
       $cbUL.css('display', 'none')
       $(d.formActions).css('display', 'none')
+
+      //Cleanup temp artifacts
+      cleanupTempPlaceholders(true)
 
       buildGridModeHelp()
       h.closeAllEdit()
