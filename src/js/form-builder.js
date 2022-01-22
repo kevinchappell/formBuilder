@@ -38,6 +38,12 @@ const colWrapperClass = colWrapperClassSelector.replace('.', '')
 const tmpColWrapperClassSelector = '.tempColWrapper'
 const tmpColWrapperClass = tmpColWrapperClassSelector.replace('.', '')
 
+const tmpRowPlaceholderClassSelector = '.tempRowWrapper'
+const tmpRowPlaceholderClass = tmpRowPlaceholderClassSelector.replace('.', '')
+
+const invisibleRowPlaceholderClassSelector = '.invisibleRowPlaceholder'
+const invisibleRowPlaceholderClass = invisibleRowPlaceholderClassSelector.replace('.', '')
+
 let isMoving = false
 
 const FormBuilder = function (opts, element, $) {
@@ -101,7 +107,7 @@ const FormBuilder = function (opts, element, $) {
   // ControlBox with different fields
   $cbUL.sortable({
     opacity: 0.9,
-    connectWith: $stage,
+    connectWith: [$stage, rowWrapperClassSelector],
     cancel: '.formbuilder-separator',
     cursor: 'move',
     scroll: false,
@@ -1127,6 +1133,8 @@ const FormBuilder = function (opts, element, $) {
 
     setupSortableRowWrapper(rowWrapperNode)
 
+    SetupInvisibleRowPlaceholders(rowWrapperNode)
+
     //Record the fact that this field did not originally have column information stored.
     //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
     if (columnData.addedDefaultColumnClass) {
@@ -1162,23 +1170,135 @@ const FormBuilder = function (opts, element, $) {
     insertTargetIsStage = false
   }
 
+  function SetupInvisibleRowPlaceholders(rowWrapperNode) {
+    const wrapperClone = $(rowWrapperNode).clone()
+    wrapperClone
+      .addClass('hoverDropStyle')
+      .addClass(invisibleRowPlaceholderClass)
+      .addClass(tmpRowPlaceholderClass)
+      .html('')
+    wrapperClone.css('height', '50px')
+
+    wrapperClone.attr('class', wrapperClone.attr('class').replace('row-', ''))
+    wrapperClone.removeAttr('id')
+
+    if ($(rowWrapperNode).index() == 0) {
+      const wrapperClone2 = $(wrapperClone).clone()
+      $stage.prepend(wrapperClone2)
+      setupSortableRowWrapper(wrapperClone2)
+    }
+
+    wrapperClone.insertAfter($(rowWrapperNode))
+    setupSortableRowWrapper(wrapperClone)
+  }
+
+  function ResetAllInvisibleRowPlaceholders() {
+    $stage.children(tmpRowPlaceholderClassSelector).remove()
+
+    $stage.children(rowWrapperClassSelector).each((i, elem) => {
+      SetupInvisibleRowPlaceholders($(elem))
+    })
+  }
+
   function setupSortableRowWrapper(rowWrapperNode) {
     $(rowWrapperNode).sortable({
-      connectWith: rowWrapperClassSelector,
+      connectWith: [rowWrapperClassSelector],
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
       deactivate: function () {
         cleanupTempPlaceholders()
       },
-      placeholder: 'ui-state-highlight',
+      helper: function (e, el) {
+        //Shrink the control a little while dragging so it's not in the way as much
+        const clone = el.clone()
+        clone.find('.field-actions').remove()
+        clone.css({ width: '20%' })
+        return clone
+      },
+      over: function (event, ui) {
+        const overTarget = $(event.target)
+        const overTargetIsPlaceholder = overTarget.hasClass(tmpRowPlaceholderClass)
+
+        if (!overTargetIsPlaceholder) {
+          removeColumnInsertButtons(overTarget)
+        }
+
+        overTarget.addClass('hoverDropStyleInverse')
+
+        if (!overTargetIsPlaceholder) {
+          $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+
+          //Only show the placeholder for what is above/below the rowWrapper
+          overTarget.prevAll(tmpRowPlaceholderClassSelector).first().removeClass(invisibleRowPlaceholderClass)
+          overTarget.nextAll(tmpRowPlaceholderClassSelector).first().removeClass(invisibleRowPlaceholderClass)
+        }
+      },
+      out: function (event) {
+        $(event.target).removeClass('hoverDropStyleInverse')
+      },
+      placeholder: 'hoverDropStyleInverse',
       receive: function (event, ui) {
+        const senderIsControlsBox = $(ui.sender).attr('id') == $cbUL.attr('id')
+
+        const droppingToNewRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+        const droppingToPlaceholderRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+        const droppingToExistingRow =
+          $(ui.item).parent().hasClass(rowWrapperClass) && !$(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+
+        if (droppingToNewRow && !senderIsControlsBox) {
+          const colWrapper = $(ui.item)
+
+          const columnData = prepareFieldRow({})
+
+          const rowWrapperNode = m('div', null, {
+            id: `${colWrapper.find('li').attr('id')}-row`,
+            className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+          })
+
+          $(ui.item).parent().replaceWith(rowWrapperNode)
+
+          colWrapper.appendTo(rowWrapperNode)
+
+          setupSortableRowWrapper(rowWrapperNode)
+          syncFieldWithNewRow(colWrapper.attr('id'))
+          checkRowCleanup()
+        }
+
+        if (droppingToPlaceholderRow && senderIsControlsBox) {
+          insertTargetIsRow = true
+          insertingNewControl = true
+          $targetInsertWrapper = $(ui.item).parent()
+        }
+
+        if (droppingToExistingRow && senderIsControlsBox) {
+          //Look for the closest add control button and act as if that was used to add the control
+          if ($(ui.item).prev().hasClass('btnAddControl')) {
+            $targetInsertWrapper = $(ui.item).prev()
+          } else if ($(ui.item).next().hasClass('btnAddControl')) {
+            $targetInsertWrapper = $(ui.item).next()
+          } else {
+            $targetInsertWrapper = $(ui.item).attr('prepend', 'true')
+          }
+
+          const parentRowValue = h.getRowClass($(ui.item).parent().attr('class'))
+          $targetInsertWrapper.addClass(parentRowValue)
+
+          insertTargetIsColumn = true
+          insertingNewControl = true
+
+          h.stopIndex = undefined
+        }
+
         cleanupTempPlaceholders()
 
         if (insertingNewControl) {
           h.doCancel = true
           processControl(ui.item)
+          h.save.call(h)
         }
+
+        ResetAllInvisibleRowPlaceholders()
       },
       start: function () {
         cleanupTempPlaceholders()
@@ -1753,7 +1873,7 @@ const FormBuilder = function (opts, element, $) {
   })
 
   function moveFieldUp(rowWrapper) {
-    const rowSibling = rowWrapper.prev()
+    const rowSibling = rowWrapper.prevAll().not(invisibleRowPlaceholderClassSelector).first()
     if (rowSibling.length) {
       gridModeTargetField.parent().appendTo(rowSibling)
       syncFieldWithNewRow(gridModeTargetField.attr('id'))
@@ -1764,7 +1884,7 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function moveFieldDown(rowWrapper) {
-    const rowSibling = rowWrapper.next()
+    const rowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).first()
     if (rowSibling.length) {
       gridModeTargetField.parent().appendTo(rowSibling)
       syncFieldWithNewRow(gridModeTargetField.attr('id'))
@@ -1859,6 +1979,13 @@ const FormBuilder = function (opts, element, $) {
     }
   })
 
+  $(document).on('fieldOpened', (event, data) => {
+    const rowWrapper = $(`#${data.rowWrapperID}`)
+    if (rowWrapper.length) {
+      removeColumnInsertButtons(rowWrapper)
+    }
+  })
+
   function checkRowCleanup() {
     $stage.find(colWrapperClassSelector).each((i, elem) => {
       const $colWrapper = $(elem)
@@ -1868,7 +1995,7 @@ const FormBuilder = function (opts, element, $) {
     })
 
     $stage.children(rowWrapperClassSelector).each((i, elem) => {
-      if ($(elem).children().length == 0) {
+      if ($(elem).children().length == 0 && !$(elem).hasClass(invisibleRowPlaceholderClass)) {
         const rowValue = h.getRowValue($(elem).attr('class'))
         formRows = formRows.filter(x => x != rowValue)
         $(elem).remove()

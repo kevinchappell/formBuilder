@@ -896,17 +896,20 @@ export default class Helpers {
     this.updatePreview($(field))
 
     const liContainer = $(`#${fieldId}`)
-    const rowContainer = $(`#${fieldId}-cont`)
+    const colWrapper = $(`#${fieldId}-cont`)
+    const rowWrapper = colWrapper.closest(this.formBuilder.rowWrapperClassSelector)
 
     //Mark the container as something we don't want to cleanup immediately
-    this.formBuilder.preserveTempContainers.push(rowContainer.attr('id'))
+    this.formBuilder.preserveTempContainers.push(colWrapper.attr('id'))
 
     //Temporarily move the li outside(keeping same relative overall spot in the form) so that the field details show in full width regardless of its column size
-    liContainer.insertAfter(rowContainer.closest(this.formBuilder.rowWrapperClassSelector))
+    liContainer.insertAfter(rowWrapper)
 
     this.formBuilder.currentEditPanel = $editPanel[0]
     config.opts.onOpenFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditOpened)
+
+    $(document).trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
 
     return field
   }
