@@ -79,14 +79,9 @@ const FormBuilder = function (opts, element, $) {
   const $stage = $(d.stage)
   const $cbUL = $(d.controls)
 
-  if (!opts.allowStageSort) {
-    $stage.sortable('disable')
-  }
-
   let insertingNewControl = false
   let insertTargetIsRow = false
   let insertTargetIsColumn = false
-  let insertTargetIsStage = false
 
   let $targetInsertWrapper
   let cloneControls
@@ -104,10 +99,14 @@ const FormBuilder = function (opts, element, $) {
     placeholder: 'frmb-placeholder',
   })
 
+  if (!opts.allowStageSort) {
+    $stage.sortable('disable')
+  }
+
   // ControlBox with different fields
   $cbUL.sortable({
     opacity: 0.9,
-    connectWith: [$stage, rowWrapperClassSelector],
+    connectWith: rowWrapperClassSelector,
     cancel: '.formbuilder-separator',
     cursor: 'move',
     scroll: false,
@@ -125,28 +124,18 @@ const FormBuilder = function (opts, element, $) {
       h.beforeStop.call(h, evt, ui)
     },
     distance: 3,
-    update: function (event, ui) {
+    update: function (event) {
       isMoving = false
       if (h.doCancel) {
         return false
       }
 
-      insertTargetIsStage = ui.item.parent()[0] === d.stage
-
-      if (insertTargetIsStage) {
-        if (ui.item.index() == 0) {
-          ui.item.attr('prepend', 'true')
-        } else {
-          ui.item.attr('appendAfter', ui.item.prev('.rowWrapper').attr('id'))
-        }
-        $targetInsertWrapper = ui.item
-
-        h.doCancel = true
-        processControl(ui.item)
-      } else {
-        h.setFieldOrder($cbUL)
-        h.doCancel = !opts.sortableControls
+      //If started to enter a control into row but then moved it back, hide the placeholders again
+      if ($(event.target).attr('id') == $cbUL.attr('id')) {
+        $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
       }
+      h.setFieldOrder($cbUL)
+      h.doCancel = !opts.sortableControls
     },
   })
 
@@ -1116,16 +1105,8 @@ const FormBuilder = function (opts, element, $) {
       $(colWrapperNode).appendTo(rowWrapperNode)
     }
 
-    if (insertTargetIsStage) {
-      if ($targetInsertWrapper.attr('prepend') == 'true') {
-        $(rowWrapperNode).prependTo($stage)
-      } else {
-        $(rowWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
-      }
-    }
-
     //If inserting, use the existing index, do not always append to end
-    if (!insertingNewControl && !insertTargetIsStage) {
+    if (!insertingNewControl) {
       $stage.append(rowWrapperNode)
     }
 
@@ -1167,7 +1148,6 @@ const FormBuilder = function (opts, element, $) {
     insertingNewControl = false
     insertTargetIsRow = false
     insertTargetIsColumn = false
-    insertTargetIsStage = false
   }
 
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
@@ -1216,7 +1196,7 @@ const FormBuilder = function (opts, element, $) {
         clone.css({ width: '20%' })
         return clone
       },
-      over: function (event, ui) {
+      over: function (event) {
         const overTarget = $(event.target)
         const overTargetIsPlaceholder = overTarget.hasClass(tmpRowPlaceholderClass)
 
