@@ -1193,7 +1193,7 @@ const FormBuilder = function (opts, element, $) {
         //Shrink the control a little while dragging so it's not in the way as much
         const clone = el.clone()
         clone.find('.field-actions').remove()
-        clone.css({ width: '20%' })
+        clone.css({ width: '20%', height: '100px', minHeight: '60px', overflow: 'hidden' })
         return clone
       },
       over: function (event) {
@@ -1763,6 +1763,10 @@ const FormBuilder = function (opts, element, $) {
 
   //Use E to enter into Grid Mode for the currently active(hovered field)
   $(document).keydown(e => {
+    if (gridModeTargetField && gridModeTargetField.hasClass('editing')) {
+      return
+    }
+
     if (e.keyCode == 69 && gridModeTargetField) {
       e.preventDefault()
       toggleGridModeActive()
@@ -2105,7 +2109,16 @@ const FormBuilder = function (opts, element, $) {
     rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
       const colWrapper = $(`#${elem.id}`)
       const fieldID = colWrapper.find('li').attr('id')
-      const label = $(`#label-${fieldID}`).html()
+      const fieldType = $(`#${fieldID}`).attr('type')
+
+      let label = $(`#label-${fieldID}`).html()
+      if (fieldType == 'hidden' || fieldType == 'paragraph') {
+        label = $(`#name-${fieldID}`).val()
+      }
+
+      if (!label) {
+        label = $(`#${fieldID}`).attr('id')
+      }
 
       //Highlight the current field being worked on
       let currentFieldClass = ''
