@@ -1767,6 +1767,15 @@ const FormBuilder = function (opts, element, $) {
       return
     }
 
+    //Don't enter grid mode if you are on an input field of the element just typing
+    if (
+      gridModeTargetField &&
+      $(document.activeElement).is('input') &&
+      $(document.activeElement).closest('li').attr('id') == gridModeTargetField.attr('id')
+    ) {
+      return
+    }
+
     if (e.keyCode == 69 && gridModeTargetField) {
       e.preventDefault()
       toggleGridModeActive()
