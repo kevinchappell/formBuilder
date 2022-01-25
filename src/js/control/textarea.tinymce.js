@@ -10,8 +10,8 @@ import controlTextarea from './textarea'
  * var renderOpts = {
  *    controlConfig: {
  *      'textarea.tinymce': {
-*         paste_data_images: false
-*       }
+ *         paste_data_images: false
+ *       }
  *    }
  * };
  * ```
@@ -21,7 +21,7 @@ export default class controlTinymce extends controlTextarea {
    * configure the tinymce editor requirements
    */
   configure() {
-    this.js = ['https://cdn.tinymce.com/4/tinymce.min.js']
+    this.js = ['https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js']
 
     // additional javascript config
     if (this.classConfig.js) {
@@ -78,8 +78,11 @@ export default class controlTinymce extends controlTextarea {
     // define options & allow them to be overwritten in the class config
     const options = jQuery.extend(this.editorOptions, this.classConfig)
     options.target = this.field
-    // initialise the editor
-    window.tinymce.init(options)
+
+    setTimeout(() => {
+      // initialise the editor
+      window.tinymce.init(options)
+    }, 100)
 
     // Set userData
     if (this.config.userData) {
