@@ -1041,15 +1041,7 @@ const FormBuilder = function (opts, element, $) {
     })
     const $li = $(field)
 
-    $li
-      .mouseenter(function (e) {
-        if (!gridMode) {
-          gridModeTargetField = $(this)
-          gridModeStartX = e.pageX
-          gridModeStartY = e.pageY
-        }
-      })
-      .mouseleave(function () {})
+    AttatchColWrapperHandler($li)
 
     $li.data('fieldData', { attrs: values })
 
@@ -1150,6 +1142,30 @@ const FormBuilder = function (opts, element, $) {
     insertTargetIsColumn = false
   }
 
+  function AttatchColWrapperHandler(colWrapper) {
+    colWrapper.mouseenter(function (e) {
+      $stage.find(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+
+      //Only show the placeholder for what is above/below the rowWrapper
+      $(this)
+        .closest(rowWrapperClassSelector)
+        .prevAll(tmpRowPlaceholderClassSelector)
+        .first()
+        .removeClass(invisibleRowPlaceholderClass)
+      $(this)
+        .closest(rowWrapperClassSelector)
+        .nextAll(tmpRowPlaceholderClassSelector)
+        .first()
+        .removeClass(invisibleRowPlaceholderClass)
+
+      if (!gridMode) {
+        gridModeTargetField = $(this)
+        gridModeStartX = e.pageX
+        gridModeStartY = e.pageY
+      }
+    })
+  }
+
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
     const wrapperClone = $(rowWrapperNode).clone()
     wrapperClone
@@ -1188,6 +1204,7 @@ const FormBuilder = function (opts, element, $) {
       revert: 150,
       deactivate: function () {
         cleanupTempPlaceholders()
+        ResetAllInvisibleRowPlaceholders()
       },
       helper: function (e, el) {
         //Shrink the control a little while dragging so it's not in the way as much
@@ -1237,6 +1254,7 @@ const FormBuilder = function (opts, element, $) {
           })
 
           $(ui.item).parent().replaceWith(rowWrapperNode)
+          AttatchColWrapperHandler($(ui.item))
 
           colWrapper.appendTo(rowWrapperNode)
 
@@ -1438,6 +1456,13 @@ const FormBuilder = function (opts, element, $) {
       const curId = elem.getAttribute('for')
       const newForId = curId.replace(currentId, data.lastID)
       elem.setAttribute('for', newForId)
+    })
+
+    //Copy selects(includes subtype if applicable)
+    const selects = currentItem.find('select')
+    selects.each(function (i) {
+      const select = this
+      $clone.find('select').eq(i).val($(select).val())
     })
 
     $clone.attr('id', data.lastID)
