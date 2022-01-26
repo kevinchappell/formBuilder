@@ -1670,6 +1670,13 @@ const FormBuilder = function (opts, element, $) {
         top: btn.offset().top - $(window).scrollTop(),
       })
     }
+
+    //Ensure the bottom of the menu is visible when close to the bottom of page
+    const bottomOfClone = cloneControls.offset().top + cloneControls.outerHeight()
+    const bottomOfScreen = $(window).scrollTop() + $(window).innerHeight()
+    if (bottomOfClone > bottomOfScreen) {
+      cloneControls.css({ top: parseInt(cloneControls.css('top')) - (bottomOfClone - bottomOfScreen) })
+    }
   })
 
   // Copy field
