@@ -1075,6 +1075,13 @@ const FormBuilder = function (opts, element, $) {
       const newForId = curId.replace(currentId, data.lastID)
       elem.setAttribute('for', newForId)
     })
+    
+    //Copy selects(includes subtype if applicable)
+    const selects = currentItem.find('select')
+    selects.each(function (i) {
+      const select = this
+      $clone.find('select').eq(i).val($(select).val())
+    })
 
     $clone.attr('id', data.lastID)
     $clone.attr('name', cloneName)
