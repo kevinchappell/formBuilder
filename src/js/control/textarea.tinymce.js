@@ -21,7 +21,7 @@ export default class controlTinymce extends controlTextarea {
    * configure the tinymce editor requirements
    */
   configure() {
-    this.js = ['https://cdn.tinymce.com/4/tinymce.min.js']
+    this.js = ['https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js']
 
     // additional javascript config
     if (this.classConfig.js) {
@@ -88,6 +88,14 @@ export default class controlTinymce extends controlTextarea {
     if (this.config.userData) {
       window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]))
     }
+
+    if (window.lastFormBuilderCopiedTinyMCE) {
+      setTimeout(() => {
+        window.tinymce.editors[this.id].setContent(this.parsedHtml(window.lastFormBuilderCopiedTinyMCE))
+        window.lastFormBuilderCopiedTinyMCE = null
+      }, 300)
+    }
+
     return evt
   }
 }

@@ -1301,6 +1301,11 @@ const FormBuilder = function (opts, element, $) {
         }
 
         ResetAllInvisibleRowPlaceholders()
+
+        const listFieldItem = $(ui.item).find('li')
+
+        CheckTinyMCETransition(listFieldItem)
+        UpdatePreviewAndSave(listFieldItem)
       },
       start: function () {
         cleanupTempPlaceholders()
@@ -1322,6 +1327,18 @@ const FormBuilder = function (opts, element, $) {
     $(rowWrapperNode).on('mouseleave', function (e) {
       removeColumnInsertButtons($(e.currentTarget))
     })
+  }
+
+  function CheckTinyMCETransition(fieldListItem) {
+    const isTinyMCE = fieldListItem.find('textarea[type="tinymce"]')
+    if (isTinyMCE.length) {
+      window.lastFormBuilderCopiedTinyMCE = window.tinymce.get(isTinyMCE.attr('id')).save()
+    }
+  }
+
+  function UpdatePreviewAndSave(fieldListItem) {
+    h.updatePreview(fieldListItem)
+    h.save.call(h)
   }
 
   function cleanupTempPlaceholders() {
@@ -1446,6 +1463,9 @@ const FormBuilder = function (opts, element, $) {
 
   const cloneItem = function cloneItem(currentItem) {
     data.lastID = h.incrementId(data.lastID)
+
+    CheckTinyMCETransition(currentItem)
+
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
     const ts = new Date().getTime()
@@ -1492,8 +1512,7 @@ const FormBuilder = function (opts, element, $) {
         return false
       }
 
-      h.updatePreview($(evt.target).closest('.form-field'))
-      h.save.call(h)
+      UpdatePreviewAndSave($(evt.target).closest('.form-field'))
     }
   }
 
@@ -1516,8 +1535,7 @@ const FormBuilder = function (opts, element, $) {
     } else {
       $option.slideUp('250', () => {
         $option.remove()
-        h.updatePreview($field)
-        h.save.call(h)
+        UpdatePreviewAndSave($field)
       })
     }
   })
@@ -1714,8 +1732,7 @@ const FormBuilder = function (opts, element, $) {
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
     prepareCloneWrappers($clone, currentItem)
-    h.updatePreview($clone)
-    h.save.call(h)
+    UpdatePreviewAndSave($clone)
 
     h.tmpCleanPrevHolder($clone.find('.prev-holder'))
   })
@@ -2168,8 +2185,7 @@ const FormBuilder = function (opts, element, $) {
     $btnStyle.val(styleVal)
     $button.siblings('.btn').removeClass('selected')
     $button.addClass('selected')
-    h.updatePreview($btnStyle.closest('.form-field'))
-    h.save()
+    UpdatePreviewAndSave($btnStyle.closest('.form-field'))
   })
 
   // Attach a callback to toggle required asterisk
