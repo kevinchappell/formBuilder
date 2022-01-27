@@ -1297,9 +1297,10 @@ const FormBuilder = function (opts, element, $) {
         ResetAllInvisibleRowPlaceholders()
 
         const listFieldItem = $(ui.item).find('li')
-
-        CheckTinyMCETransition(listFieldItem)
-        UpdatePreviewAndSave(listFieldItem)
+        if (listFieldItem.length) {
+          CheckTinyMCETransition(listFieldItem)
+          UpdatePreviewAndSave(listFieldItem)
+        }
       },
       start: function () {
         cleanupTempPlaceholders()
@@ -1992,6 +1993,8 @@ const FormBuilder = function (opts, element, $) {
     if (rowWrapper.length) {
       autoSizeRowColumns(rowWrapper, true)
     }
+
+    checkSetupBlankStage()
   })
 
   $(document).on('fieldOpened', (event, data) => {
@@ -2018,6 +2021,24 @@ const FormBuilder = function (opts, element, $) {
         removeColumnInsertButtons($(elem))
       }
     })
+  }
+
+  function checkSetupBlankStage() {
+    if ($stage.find('li').length > 0) {
+      return
+    }
+
+    const columnData = prepareFieldRow({})
+
+    const rowWrapperNode = m('div', null, {
+      id: `${h.incrementId(data.lastID)}-row`,
+      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+    })
+
+    $stage.append(rowWrapperNode)
+    setupSortableRowWrapper(rowWrapperNode)
+    ResetAllInvisibleRowPlaceholders()
+    $stage.find(tmpRowPlaceholderClassSelector).eq(0).removeClass(invisibleRowPlaceholderClass)
   }
 
   function toggleGridModeActive(active = true) {
@@ -2300,6 +2321,9 @@ const FormBuilder = function (opts, element, $) {
       if (opts.stickyControls.enable) {
         h.stickyControls($stage)
       }
+
+      checkSetupBlankStage()
+
       clearTimeout(onRenderTimeout)
     }, 0)
   })
