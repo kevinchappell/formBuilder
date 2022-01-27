@@ -249,22 +249,6 @@ export default class Helpers {
 
             fieldData.className = fieldData.className || fieldData.class
 
-            //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
-            if (
-              fieldData.className &&
-              $field.attr('addeddefaultcolumnclass') == 'true' &&
-              $field.closest(this.formBuilder.rowWrapperClassSelector).children().length == 1 &&
-              fieldData.className.includes(config.opts.defaultGridColumnClass)
-            ) {
-              const classes = getAllGridRelatedClasses(fieldData.className)
-
-              if (classes && classes.length > 0) {
-                classes.forEach(element => {
-                  fieldData.className = fieldData.className.replace(element, '').trim()
-                })
-              }
-            }
-
             if (fieldData.className) {
               const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
               if (match) {

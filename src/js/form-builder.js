@@ -1108,12 +1108,6 @@ const FormBuilder = function (opts, element, $) {
 
     SetupInvisibleRowPlaceholders(rowWrapperNode)
 
-    //Record the fact that this field did not originally have column information stored.
-    //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
-    if (columnData.addedDefaultColumnClass) {
-      $li.attr('addedDefaultColumnClass', true)
-    }
-
     h.tmpCleanPrevHolder($(prevHolder))
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
@@ -1410,7 +1404,6 @@ const FormBuilder = function (opts, element, $) {
         }
 
         data.className += ` row-${result.rowNumber} ${result.columnSize}`
-        result.addedDefaultColumnClass = true
       }
     }
   }
