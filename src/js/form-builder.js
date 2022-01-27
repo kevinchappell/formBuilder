@@ -1200,10 +1200,6 @@ const FormBuilder = function (opts, element, $) {
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
-      deactivate: function () {
-        cleanupTempPlaceholders()
-        ResetAllInvisibleRowPlaceholders()
-      },
       helper: function (e, el) {
         //Shrink the control a little while dragging so it's not in the way as much
         const clone = el.clone()
@@ -1306,6 +1302,7 @@ const FormBuilder = function (opts, element, $) {
         cleanupTempPlaceholders()
       },
       stop: function (event, ui) {
+        $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
         autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector))
       },
       update: function (event, ui) {
