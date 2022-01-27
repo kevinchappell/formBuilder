@@ -736,4 +736,19 @@ utils.splitObject = (obj, keys) => {
   return [kept, rest]
 }
 
+$.fn.swapWith = function (that) {
+  var $this = this
+  var $that = $(that)
+
+  // create temporary placeholder
+  var $temp = $('<div>')
+
+  // 3-step swap
+  $this.before($temp)
+  $that.before($this)
+  $temp.before($that).remove()
+
+  return $this
+}
+
 export default utils

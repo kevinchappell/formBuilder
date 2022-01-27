@@ -132,7 +132,7 @@ const FormBuilder = function (opts, element, $) {
 
       //If started to enter a control into row but then moved it back, hide the placeholders again
       if ($(event.target).attr('id') == $cbUL.attr('id')) {
-        $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+        HideInvisibleRowPlaceholders()
       }
       h.setFieldOrder($cbUL)
       h.doCancel = !opts.sortableControls
@@ -1144,26 +1144,30 @@ const FormBuilder = function (opts, element, $) {
 
   function AttatchColWrapperHandler(colWrapper) {
     colWrapper.mouseenter(function (e) {
-      $stage.find(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
-
-      //Only show the placeholder for what is above/below the rowWrapper
-      $(this)
-        .closest(rowWrapperClassSelector)
-        .prevAll(tmpRowPlaceholderClassSelector)
-        .first()
-        .removeClass(invisibleRowPlaceholderClass)
-      $(this)
-        .closest(rowWrapperClassSelector)
-        .nextAll(tmpRowPlaceholderClassSelector)
-        .first()
-        .removeClass(invisibleRowPlaceholderClass)
-
       if (!gridMode) {
+        HideInvisibleRowPlaceholders()
+
+        //Only show the placeholder for what is above/below the rowWrapper
+        $(this)
+          .closest(rowWrapperClassSelector)
+          .prevAll(tmpRowPlaceholderClassSelector)
+          .first()
+          .removeClass(invisibleRowPlaceholderClass)
+        $(this)
+          .closest(rowWrapperClassSelector)
+          .nextAll(tmpRowPlaceholderClassSelector)
+          .first()
+          .removeClass(invisibleRowPlaceholderClass)
+
         gridModeTargetField = $(this)
         gridModeStartX = e.pageX
         gridModeStartY = e.pageY
       }
     })
+  }
+
+  function HideInvisibleRowPlaceholders() {
+    $stage.find(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
   }
 
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
@@ -1173,7 +1177,7 @@ const FormBuilder = function (opts, element, $) {
       .addClass(invisibleRowPlaceholderClass)
       .addClass(tmpRowPlaceholderClass)
       .html('')
-    wrapperClone.css('height', '50px')
+    wrapperClone.css('height', '40px')
 
     wrapperClone.attr('class', wrapperClone.attr('class').replace('row-', ''))
     wrapperClone.removeAttr('id')
@@ -1224,7 +1228,7 @@ const FormBuilder = function (opts, element, $) {
         overTarget.addClass('hoverDropStyleInverse')
 
         if (!overTargetIsPlaceholder) {
-          $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+          HideInvisibleRowPlaceholders()
 
           //Only show the placeholder for what is above/below the rowWrapper
           overTarget.prevAll(tmpRowPlaceholderClassSelector).first().removeClass(invisibleRowPlaceholderClass)
@@ -1898,23 +1902,21 @@ const FormBuilder = function (opts, element, $) {
   })
 
   function moveFieldUp(rowWrapper) {
-    const rowSibling = rowWrapper.prevAll().not(invisibleRowPlaceholderClassSelector).first()
-    if (rowSibling.length) {
-      gridModeTargetField.parent().appendTo(rowSibling)
-      syncFieldWithNewRow(gridModeTargetField.attr('id'))
+    const previousRowSibling = rowWrapper.prevAll().not(tmpRowPlaceholderClassSelector).first()
+    if (previousRowSibling.length) {
+      $(gridModeTargetField.parent().parent()).swapWith(previousRowSibling)
     } else {
-      createNewRow(true)
+      return
     }
     h.toggleHighlight(gridModeTargetField)
   }
 
   function moveFieldDown(rowWrapper) {
-    const rowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).first()
-    if (rowSibling.length) {
-      gridModeTargetField.parent().appendTo(rowSibling)
-      syncFieldWithNewRow(gridModeTargetField.attr('id'))
+    const nextRowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).first()
+    if (nextRowSibling.length) {
+      $(gridModeTargetField.parent().parent()).swapWith(nextRowSibling)
     } else {
-      createNewRow()
+      return
     }
     h.toggleHighlight(gridModeTargetField)
   }
@@ -1934,28 +1936,6 @@ const FormBuilder = function (opts, element, $) {
     }
     h.toggleHighlight(gridModeTargetField)
   }
-
-  function createNewRow(prepend = false) {
-    const columnData = prepareFieldRow({})
-
-    const rowWrapperNode = m('div', null, {
-      id: `${gridModeTargetField.attr('id')}-row`,
-      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
-    })
-
-    gridModeTargetField.parent().appendTo(rowWrapperNode)
-
-    if (prepend) {
-      $stage.prepend(rowWrapperNode)
-    } else {
-      $stage.append(rowWrapperNode)
-    }
-
-    setupSortableRowWrapper(rowWrapperNode)
-    syncFieldWithNewRow(gridModeTargetField.attr('id'))
-    checkRowCleanup()
-  }
-
   function autoSizeRowColumns(rowWrapper, force = false) {
     const childRowCount = rowWrapper.children(`div${colWrapperClassSelector}`).length
     const newAutoCalcSizeValue = Math.floor(12 / childRowCount)
@@ -2045,6 +2025,7 @@ const FormBuilder = function (opts, element, $) {
       buildGridModeHelp()
       h.closeAllEdit()
       h.toggleHighlight(gridModeTargetField)
+      HideInvisibleRowPlaceholders()
     } else {
       h.showToast('Grid Mode Finished', 1500)
 
@@ -2078,7 +2059,7 @@ const FormBuilder = function (opts, element, $) {
     <div style='padding:5px'>    
       <h3 class="text text-center">Grid Mode</h3>    
       
-      <table>
+      <table style='border-spacing:7px;border-collapse: separate'>
         <thead>
           <tr>
             <th>Action</th>
@@ -2092,19 +2073,19 @@ const FormBuilder = function (opts, element, $) {
           </tr>    
           <tr>
             <td><kbd>W or &#x2191;</kbd></td> 
-            <td>Move the field up/into another row</td>
+            <td>Move entire row up</td>
           </tr>
           <tr>
               <td><kbd>S or &#x2193;</kbd></td> 
-              <td>Move the field down/into another row</td>
+              <td>Move entire row down</td>
           </tr>
           <tr>
-              <td><kbd>A or &#x2190;</kbd></td> 
-              <td>Move the field left within the row</td>
+              <td><kbd>A or &#x2190;</kbd></td>
+              <td>Move field left within the row</td>
           </tr>
           <tr>
               <td><kbd>D or &#x2192;</kbd></td> 
-              <td>Move the field right within the row</td>
+              <td>Move field right within the row</td>
           </tr>
           <tr>
             <td><kbd>R</kbd></td> 
