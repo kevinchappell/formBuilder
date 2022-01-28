@@ -139,6 +139,12 @@ const FormBuilder = function (opts, element, $) {
     },
   })
 
+  $cbUL.on('mouseenter', function (e) {
+    if (stageHasFields()) {
+      $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+    }
+  })
+
   const processControl = control => {
     if (control[0].classList.contains('input-set-control')) {
       const inputSets = []
@@ -197,6 +203,11 @@ const FormBuilder = function (opts, element, $) {
     //Prevent duplicate add when click & dragging control to specific spot
     if (isMoving) {
       return
+    }
+
+    //Remove initial placeholder if simply clicking to add field into blank stage
+    if (!stageHasFields()) {
+      $stage.find(tmpRowPlaceholderClassSelector).eq(0).remove()
     }
 
     const $control = $(target).closest('li')
@@ -1166,11 +1177,7 @@ const FormBuilder = function (opts, element, $) {
 
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
     const wrapperClone = $(rowWrapperNode).clone()
-    wrapperClone
-      .addClass('hoverDropStyle')
-      .addClass(invisibleRowPlaceholderClass)
-      .addClass(tmpRowPlaceholderClass)
-      .html('')
+    wrapperClone.addClass(invisibleRowPlaceholderClass).addClass(tmpRowPlaceholderClass).html('')
     wrapperClone.css('height', '40px')
 
     wrapperClone.attr('class', wrapperClone.attr('class').replace('row-', ''))
@@ -1226,6 +1233,7 @@ const FormBuilder = function (opts, element, $) {
         }
       },
       out: function (event) {
+        $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
         $(event.target).removeClass('hoverDropStyleInverse')
       },
       placeholder: 'hoverDropStyleInverse',
@@ -2020,8 +2028,12 @@ const FormBuilder = function (opts, element, $) {
     })
   }
 
+  function stageHasFields() {
+    return $stage.find('li').length > 0
+  }
+
   function checkSetupBlankStage() {
-    if ($stage.find('li').length > 0) {
+    if (stageHasFields()) {
       return
     }
 
@@ -2035,7 +2047,13 @@ const FormBuilder = function (opts, element, $) {
     $stage.append(rowWrapperNode)
     setupSortableRowWrapper(rowWrapperNode)
     ResetAllInvisibleRowPlaceholders()
-    $stage.find(tmpRowPlaceholderClassSelector).eq(0).removeClass(invisibleRowPlaceholderClass)
+
+    //Create 1 invisible placeholder which will allow the initial drag anywhere in the stage
+    $stage
+      .find(tmpRowPlaceholderClassSelector)
+      .eq(0)
+      .removeClass(invisibleRowPlaceholderClass)
+      .css({ height: $stage.css('height'), backgroundColor: 'transparent' })
   }
 
   function toggleGridModeActive(active = true) {
