@@ -2017,15 +2017,18 @@ const FormBuilder = function (opts, element, $) {
       }
     })
 
-    $stage.children(rowWrapperClassSelector).each((i, elem) => {
-      if ($(elem).children().length == 0 && !$(elem).hasClass(invisibleRowPlaceholderClass)) {
-        const rowValue = h.getRowValue($(elem).attr('class'))
-        formRows = formRows.filter(x => x != rowValue)
-        $(elem).remove()
-      } else {
-        removeColumnInsertButtons($(elem))
-      }
-    })
+    $stage
+      .children(rowWrapperClassSelector)
+      .not(tmpRowPlaceholderClassSelector)
+      .each((i, elem) => {
+        if ($(elem).children(colWrapperClassSelector).length == 0) {
+          const rowValue = h.getRowValue($(elem).attr('class'))
+          formRows = formRows.filter(x => x != rowValue)
+          $(elem).remove()
+        } else {
+          removeColumnInsertButtons($(elem))
+        }
+      })
   }
 
   function stageHasFields() {
