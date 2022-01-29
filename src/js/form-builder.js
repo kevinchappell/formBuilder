@@ -1119,6 +1119,12 @@ const FormBuilder = function (opts, element, $) {
 
     SetupInvisibleRowPlaceholders(rowWrapperNode)
 
+    //Record the fact that this field did not originally have column information stored.
+    //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
+    if (columnData.addedDefaultColumnClass) {
+      $li.attr('addedDefaultColumnClass', true)
+    }
+
     h.tmpCleanPrevHolder($(prevHolder))
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
@@ -1397,15 +1403,9 @@ const FormBuilder = function (opts, element, $) {
 
     function TryCreateNew() {
       if (!result.rowNumber) {
-        //Column information wasn't defined, get new default configuration for one
-        let nextRow
-        if (formRows.length == 0) {
-          nextRow = 1
-        } else {
-          nextRow = Math.max(...formRows) + 1
-        }
-
-        result.rowNumber = nextRow
+        //Column information wasn't defined, get new default configuration for one.
+        result.rowNumber = opts.defaultGridStartingRow
+        opts.defaultGridStartingRow += 1
 
         //If inserting directly into column, use the correct rowNumber
         if (insertingNewControl && insertTargetIsColumn) {
@@ -1419,6 +1419,7 @@ const FormBuilder = function (opts, element, $) {
         }
 
         data.className += ` row-${result.rowNumber} ${result.columnSize}`
+        result.addedDefaultColumnClass = true
       }
     }
   }
