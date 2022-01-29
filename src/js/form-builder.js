@@ -1178,7 +1178,7 @@ const FormBuilder = function (opts, element, $) {
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
     const wrapperClone = $(rowWrapperNode).clone()
     wrapperClone.addClass(invisibleRowPlaceholderClass).addClass(tmpRowPlaceholderClass).html('')
-    wrapperClone.css('height', '40px')
+    wrapperClone.css('height', '1px')
 
     wrapperClone.attr('class', wrapperClone.attr('class').replace('row-', ''))
     wrapperClone.removeAttr('id')
@@ -1207,6 +1207,7 @@ const FormBuilder = function (opts, element, $) {
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
+      tolerance: 'pointer',
       helper: function (e, el) {
         //Shrink the control a little while dragging so it's not in the way as much
         const clone = el.clone()
@@ -1228,8 +1229,16 @@ const FormBuilder = function (opts, element, $) {
           HideInvisibleRowPlaceholders()
 
           //Only show the placeholder for what is above/below the rowWrapper
-          overTarget.prevAll(tmpRowPlaceholderClassSelector).first().removeClass(invisibleRowPlaceholderClass)
-          overTarget.nextAll(tmpRowPlaceholderClassSelector).first().removeClass(invisibleRowPlaceholderClass)
+          overTarget
+            .prevAll(tmpRowPlaceholderClassSelector)
+            .first()
+            .removeClass(invisibleRowPlaceholderClass)
+            .css('height', '40px')
+          overTarget
+            .nextAll(tmpRowPlaceholderClassSelector)
+            .first()
+            .removeClass(invisibleRowPlaceholderClass)
+            .css('height', '40px')
         }
       },
       out: function (event) {
