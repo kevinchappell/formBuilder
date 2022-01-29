@@ -1362,6 +1362,10 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function setupColumnInserts(rowWrapper) {
+    if (!opts.enableColumnInsertMenu) {
+      return
+    }
+
     $(rowWrapper)
       .children(colWrapperClassSelector)
       .each((i, elem) => {

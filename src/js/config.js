@@ -87,6 +87,7 @@ export const defaultOptions = {
   defaultGridColumnClass: 'col-md-12',
   defaultGridStartingRow: 1000,
   cancelGridModeDistance: 100,
+  enableColumnInsertMenu: true,
 }
 
 export const styles = {
