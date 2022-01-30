@@ -1,3 +1,4 @@
+import { Editor, EditorManager, Settings } from 'tinymce'
 import controlTextarea from './textarea'
 
 /**
@@ -17,11 +18,12 @@ import controlTextarea from './textarea'
  * ```
  */
 export default class controlTinymce extends controlTextarea {
+  editorOptions: Settings & { readonly?: boolean }
   /**
    * configure the tinymce editor requirements
    */
   configure() {
-    this.js = ['https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js']
+    this.js = ['https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js'] as unknown as []
 
     // additional javascript config
     if (this.classConfig.js) {
@@ -29,7 +31,7 @@ export default class controlTinymce extends controlTextarea {
       if (!Array.isArray(js)) {
         js = new Array(js)
       }
-      this.js.concat(js)
+      ;(this.js as unknown as []).concat(js)
       delete this.classConfig.js
     }
 

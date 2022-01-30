@@ -100,8 +100,14 @@
     "test": "npm run-script build"
   },
   "dependencies": {
+    "@types/jquery": "^3.5.13",
+    "@types/jqueryui": "^1.12.16",
+    "@types/tinymce": "^4.6.4",
     "jquery": ">=3.4.1",
-    "jquery-ui-sortable": "*"
+    "jquery-ui-bundle": ">=1.12.1",
+    "jquery-ui-sortable": "*",
+    "source-map-loader": "^3.0.1",
+    "ts-loader": "^9.2.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -115,6 +121,8 @@
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/npm": "^7.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
     "autoprefixer": "^9.8.6",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
@@ -124,7 +132,7 @@
     "concat-files": "^0.1.1",
     "cross-env": "^7.0.2",
     "css-loader": "^4.2.1",
-    "eslint": "^7.7.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-prettier": "^3.4.0",
@@ -144,6 +152,7 @@
     "semantic-release": "^17.1.1",
     "semver": "^7.3.2",
     "style-loader": "^1.2.1",
+    "typescript": "^4.5.5",
     "unzipper": "^0.10.11",
     "webpack": "^4.44.1",
     "webpack-bundle-analyzer": "^3.8.0",

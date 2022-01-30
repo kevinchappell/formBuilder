@@ -1,3 +1,5 @@
+import { Layout } from '../formbuilder-types'
+
 export const instanceData = {}
 
 /**
@@ -6,6 +8,10 @@ export const instanceData = {}
  * unless we move all data functionality here.
  */
 export class Data {
+  lastID: string
+  formData: {} | any[]
+  formID: any
+  layout: string | Layout
   /**
    * Set defaults
    * @param  {String} formID

@@ -1,8 +1,9 @@
 import mi18n from 'mi18n'
 
-const noop = () => null
+const noop = (...args: any) => null
 
 // eslint-disable-next-line
+//@ts-ignore
 mi18n.addLanguage('en-US', FB_EN_US)
 
 export const defaultOptions = {
@@ -53,7 +54,7 @@ export const defaultOptions = {
   },
   onAddField: (fieldId, fieldData) => fieldData,
   onAddFieldAfter: (fieldId, fieldData) => fieldData,
-  onAddOption: obj => obj,
+  onAddOption: (obj, { type, index, isMultiple }) => obj,
   onClearAll: noop,
   onCloseFieldEdit: noop,
   onOpenFieldEdit: noop,
@@ -79,6 +80,7 @@ export const defaultOptions = {
       right: 'auto',
     },
   },
+  formData: {},
   subtypes: {},
   templates: {},
   typeUserAttrs: {},
@@ -97,4 +99,7 @@ export const defaultI18n = {
   location: 'assets/lang/',
 }
 
-export const config = {}
+export const config = {
+  opts: defaultOptions,
+  subtypes: {},
+}

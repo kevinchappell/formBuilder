@@ -40,7 +40,7 @@ const bannerTemplate = ({ chunk }) => {
 const webpackConfig = {
   context: outputDir,
   entry: {
-    'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
+    'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.ts),
     'dist/form-render': resolve(__dirname, '../', pkg.config.files.formRender.js),
     'demo/assets/js/demo': resolve(__dirname, '../src/demo/', 'js/demo.js'),
   },
@@ -50,6 +50,11 @@ const webpackConfig = {
   },
   module: {
     rules: [
+      // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+      { test: /\.tsx?$/, loader: 'ts-loader' },
+      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      { test: /\.js$/, loader: 'source-map-loader' },
+
       {
         enforce: 'pre',
         test: /\.js$/,
@@ -140,13 +145,13 @@ const webpackConfig = {
   devtool,
   resolve: {
     modules: [resolve(__dirname, 'src'), 'node_modules'],
-    extensions: ['.js', '.scss'],
+    extensions: ['.js', '.scss', '.ts'],
   },
   devServer: {
     inline: true,
     contentBase: 'demo/',
     noInfo: true,
-    open: true
+    open: true,
   },
 }
 

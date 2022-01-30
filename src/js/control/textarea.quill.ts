@@ -1,11 +1,12 @@
 import controlTextarea from './textarea'
-import utils from '../utils'
+import utils, { splitObject } from '../utils'
 
 /**
  * Quill rich text editor element
  * See https://quilljs.com/ for more info
  */
 export default class controlQuill extends controlTextarea {
+  editorConfig: any
   /**
    * configure the quill editor requirements
    */
@@ -23,7 +24,7 @@ export default class controlQuill extends controlTextarea {
       theme: 'snow',
     }
 
-    const [customClassConfig, customEditorConfig] = utils.splitObject(this.classConfig, ['css', 'js'])
+    const [customClassConfig, customEditorConfig] = splitObject(this.classConfig, ['css', 'js'])
 
     // Allow for customization of the control
     Object.assign(this, {
@@ -63,7 +64,7 @@ export default class controlQuill extends controlTextarea {
     if (value) {
       editor.instance.setContents(window.JSON.parse(this.parsedHtml(value)))
     }
-    editor.instance.on('text-change', function(delta) {
+    editor.instance.on('text-change', function (delta) {
       editor.data = editor.data.compose(delta)
     })
     return evt

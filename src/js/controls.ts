@@ -9,6 +9,15 @@ import { css_prefix_text } from '../fonts/config.json'
  * control parent class for creating control panel
  */
 export default class Controls {
+  opts: any
+  dom: any
+  custom: typeof controlCustom
+  getClass: (type: any, subtype?: any) => any
+  getRegistered: (type?: boolean) => string[]
+  registeredControls: string[]
+  registeredSubtypes: {}
+  controlList: any[]
+  allControls: {}
   /**
    * setup instance
    * @param {Object} opts

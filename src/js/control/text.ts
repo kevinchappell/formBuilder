@@ -5,6 +5,7 @@ import control from '../control'
  * Output a <input type="text" ... /> form element
  */
 export default class controlText extends control {
+  dom: any
   /**
    * class configuration
    */
@@ -34,6 +35,7 @@ export default class controlText extends control {
    * onRender callback
    */
   onRender() {
+    super.build()
     // Set userData if available
     if (this.config.userData) {
       $(this.dom).val(this.config.userData[0])

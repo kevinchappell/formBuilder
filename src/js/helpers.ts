@@ -21,11 +21,20 @@ import events from './events'
 import { config } from './config'
 import control from './control'
 import controlCustom from './control/custom'
+import { CheckboxAttributes, Coords, FieldData, FieldTypes, GridInfo } from '../formbuilder-types'
 
 /**
  * Utilities specific to form-builder.js
  */
 export default class Helpers {
+  data: any
+  d: any
+  doCancel: boolean
+  layout: any
+  formBuilder: any
+  toastTimer: any
+  from: any
+  stopIndex: number
   /**
    * Setup defaults, get instance data and dom
    * @param  {String} formId
@@ -110,10 +119,10 @@ export default class Helpers {
    * @return {Object} {type: 'fieldType', subtype: 'fieldSubType'}
    */
   getTypes($field) {
-    const types = {
+    const types: FieldTypes = {
       type: $field.attr('type'),
     }
-    const subtype = $('.fld-subtype', $field).val()
+    const subtype = $('.fld-subtype', $field).val() as string
 
     if (subtype !== types.type) {
       types.subtype = subtype
@@ -135,16 +144,16 @@ export default class Helpers {
       const option = $options[i]
       const stringAttrs = option.querySelectorAll('input[type=text], input[type=number], select')
       const boolAttrs = option.querySelectorAll('input[type=checkbox], input[type=radio]')
-      const attrs = {}
+      const attrs: CheckboxAttributes = {}
 
       forEach(stringAttrs, i => {
-        const stringAttr = stringAttrs[i]
+        const stringAttr = stringAttrs[i] as HTMLInputElement
         const attrName = stringAttr.dataset.attr
         attrs[attrName] = stringAttr.value
       })
 
       forEach(boolAttrs, i => {
-        const boolAttr = boolAttrs[i]
+        const boolAttr = boolAttrs[i] as HTMLInputElement
         const attrName = boolAttr.getAttribute('data-attr')
         attrs[attrName] = boolAttr.checked
       })
@@ -176,7 +185,7 @@ export default class Helpers {
       }
 
       fieldHTML.push('</field>')
-      fields.push(fieldHTML)
+      fields.push(...fieldHTML)
     })
 
     fields.push('</fields>')
@@ -220,9 +229,9 @@ export default class Helpers {
           const $field = $(field)
 
           if (!$field.hasClass('disabled-field')) {
-            let fieldData = _this.getTypes($field)
+            let fieldData: FieldData = _this.getTypes($field)
             const $roleInputs = $('.roles-field:checked', field)
-            const roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
+            const roleVals = $roleInputs.map(index => ($roleInputs[index] as HTMLInputElement).value).get()
 
             fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
 
@@ -326,12 +335,12 @@ export default class Helpers {
    * @param {Boolean} minify whether to return formatted or minified data
    * @return {XML|JSON} formData
    */
-  save(minify) {
+  save(minify: boolean = false) {
     const _this = this
     const data = this.data
     const stage = this.d.stage
     const doSave = {
-      xml: minify => _this.xmlSave(stage, minify),
+      xml: minify => _this.xmlSave(stage),
       json: minify => window.JSON.stringify(_this.prepData(stage), null, minify && '  '),
     }
 
@@ -507,7 +516,7 @@ export default class Helpers {
    * @param  {Object} overlay Existing overlay if there is one
    * @param  {Object} dialog  Existing dialog
    */
-  closeConfirm(overlay, dialog) {
+  closeConfirm(overlay, dialog = null) {
     if (!overlay) {
       overlay = document.getElementsByClassName('form-builder-overlay')[0]
     }
@@ -579,7 +588,7 @@ export default class Helpers {
    * @param  {String}  className Custom class to be added to the dialog
    * @return {Object}            Reference to the modal
    */
-  confirm(message, yesAction, coords = false, className = '') {
+  confirm(message, yesAction, coords: Coords, className = '') {
     const _this = this
     const i18n = mi18n.current
     const overlay = _this.showOverlay()
@@ -631,7 +640,7 @@ export default class Helpers {
    * @param  {String}  className classname to be added to the dialog
    * @return {Object}            dom
    */
-  dialog(content, coords = false, className = '') {
+  dialog(content, coords: Coords, className = '') {
     const _this = this
     const clientWidth = document.documentElement.clientWidth
     const clientHeight = document.documentElement.clientHeight
@@ -739,7 +748,7 @@ export default class Helpers {
   }
 
   emptyStage(stage) {
-    empty(stage).classList.remove('removing')
+    ;(empty(stage) as HTMLElement).classList.remove('removing')
     this.save()
   }
 
@@ -920,15 +929,15 @@ export default class Helpers {
    * @param  {Boolean} property style eg. width, height, opacity
    * @return {String}           computed style
    */
-  getStyle(elem, property = false) {
+  getStyle(elem: HTMLElement, property: boolean | string = false) {
     let style
     if (window.getComputedStyle) {
       style = window.getComputedStyle(elem, null)
-    } else if (elem.currentStyle) {
-      style = elem.currentStyle
+    } else if (elem.style) {
+      style = elem.style
     }
 
-    return property ? style[property] : style
+    return property ? style[property as string] : style
   }
 
   /**
@@ -1017,7 +1026,7 @@ export default class Helpers {
       return false
     }
 
-    const field = fieldID && document.getElementById(fieldID)
+    const field = fieldID && (document.getElementById(fieldID) as HTMLInputElement)
 
     if (!fieldID || !field) {
       const availableIds = [].slice.call(fields).map(field => {
@@ -1304,7 +1313,7 @@ export default class Helpers {
   }
 
   tryParseColumnInfo(data) {
-    const result = {}
+    const result: GridInfo = {}
 
     if (data.className) {
       const classes = getAllGridRelatedClasses(data.className)

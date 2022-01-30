@@ -1,12 +1,29 @@
 // CONTROL.JS
 import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils'
 import mi18n from 'mi18n'
+import { i18nDefinition } from '../formbuilder-types'
 
 /**
  * Base class for all control classes
  * Defines the structure of a control class and some standard control methods
  */
 export default class control {
+  static controlConfig: any
+  rawConfig: any
+  preview: any
+  id: any
+  type: any
+  description: any
+  subtype: any
+  classConfig: any
+  required: any
+  disabled: any
+  config: any
+  static classRegister: any
+  static fbControlsLoaded: any
+  css: any
+  js: boolean | []
+  element: any
   /**
    * initialise the control object
    * @param {Object} config each control class receives a control configuration
@@ -80,7 +97,7 @@ export default class control {
    * @return {Object} configuration
    */
   static get definition() {
-    return {}
+    return {} as any
   }
 
   /**
@@ -91,8 +108,7 @@ export default class control {
    * @param {String} parentType - optional - if defined, any classes registered
    * will be registered as subtypes of this parent
    */
-  static register(types, controlClass, parentType) {
-
+  static register(types, controlClass, parentType = null) {
     // store subtypes as <type>.<subtype> in the register
     const prefix = parentType ? parentType + '.' : ''
 
@@ -167,7 +183,7 @@ export default class control {
    * a class mapped to this subtype. If none found, fall back to the type.
    * @return {Class} control subclass as defined in the call to register
    */
-  static getClass(type, subtype) {
+  static getClass(type, subtype = null) {
     const lookup = subtype ? type + '.' + subtype : type
     const controlClass = control.classRegister[lookup] || control.classRegister[type]
     if (!controlClass) {
@@ -218,7 +234,7 @@ export default class control {
    * @param {Object|Number|String} args - string or key/val pairs for string lookups with variables
    * @return {String} the translated label
    */
-  static mi18n(lookup, args) {
+  static mi18n(lookup, args = null) {
     const def = this.definition
     let i18n = def.i18n || {}
     const locale = mi18n.locale
@@ -295,6 +311,8 @@ export default class control {
     return this.markup(type, parsedHtml(label), data)
   }
 
+  onRender(evt: any) {}
+
   /**
    * code to execute for supported events
    * to implement an onRender event in a child class, simply define an onRender method
@@ -315,7 +333,7 @@ export default class control {
        */
       render: evt => {
         // check for a class render event - default to an empty function
-        const onRender = () => {
+        const onRender = evt => {
           if (this.onRender) {
             this.onRender(evt)
           }
@@ -351,7 +369,7 @@ export default class control {
    * @param  {Object} attributes
    * @return {Object} DOM element
    */
-  markup(tag, content = '', attributes = {}) {
+  markup(tag, content: any = '', attributes = {}) {
     this.element = markup(tag, content, attributes)
     return this.element
   }

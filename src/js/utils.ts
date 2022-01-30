@@ -3,6 +3,8 @@
  * sorting and other fun stuff
  */
 
+import { FormBuilderFormData, MarkupAttributes } from '../formbuilder-types'
+
 window.fbLoaded = {
   js: [],
   css: [],
@@ -18,7 +20,7 @@ window.fbEditors = {
  * @return {Object}       Object trimmed of null or undefined values
  */
 export const trimObj = function (attrs, removeFalse = false) {
-  const xmlRemove = [null, undefined, '']
+  const xmlRemove: Array<string | boolean> = [null, undefined, '']
   if (removeFalse) {
     xmlRemove.push(false)
   }
@@ -188,12 +190,26 @@ export const getContentType = content => {
     return content
   }
 
-  return [
-    ['array', content => Array.isArray(content)],
-    ['node', content => content instanceof window.Node || content instanceof window.HTMLElement],
-    ['component', () => content && content.dom],
-    [typeof content, () => true],
-  ].find(typeCondition => typeCondition[1](content))[0]
+  if (Array.isArray(content)) {
+    return 'array'
+  }
+
+  if (content instanceof window.Node || content instanceof window.HTMLElement) {
+    return 'node'
+  }
+
+  if (content && content.dom) {
+    return 'component'
+  }
+
+  return typeof content
+
+  // return [
+  //   ['array', content => Array.isArray(content)],
+  //   ['node', content => content instanceof window.Node || content instanceof window.HTMLElement],
+  //   ['component', () => content && content.dom],
+  //   [typeof content, () => true],
+  // ].find(typeCondition => typeCondition[1](content))[0]
 }
 
 /**
@@ -204,7 +220,7 @@ export const getContentType = content => {
  * @param  {Object}              attributes
  * @return {Object} DOM Element
  */
-export const markup = function (tag, content = '', attributes = {}) {
+export const markup = function (tag, content: any = '', attributes: MarkupAttributes = {}) {
   let contentType = getContentType(content)
   const { events, ...attrs } = attributes
   const field = document.createElement(tag)
@@ -326,7 +342,7 @@ export const parseXML = xmlString => {
   if (xml) {
     const fields = xml.getElementsByTagName('field')
     for (let i = 0; i < fields.length; i++) {
-      const fieldData = parseAttrs(fields[i])
+      const fieldData: any = parseAttrs(fields[i])
       const options = fields[i].getElementsByTagName('option')
       const userData = fields[i].getElementsByTagName('userData')
 
@@ -393,7 +409,7 @@ export const escapeAttrs = attrs => {
 }
 
 // forEach that can be used on nodeList
-export const forEach = function (array, callback, scope) {
+export const forEach = function (array, callback, scope = undefined) {
   for (let i = 0; i < array.length; i++) {
     callback.call(scope, i, array[i]) // passes back stuff we need
   }
@@ -427,7 +443,7 @@ export const removeFromArray = (val, arr) => {
  * @param  {String} path   optional to load form
  * @return {Promise}       a promise
  */
-export const getScripts = (scriptScr, path) => {
+export const getScripts = (scriptScr, path = null) => {
   const $ = jQuery
   let _arr = []
 
@@ -474,7 +490,7 @@ export const isCached = (src, type = 'js') => {
  * @param  {String} path
  * @return {void}
  */
-export const getStyles = (scriptScr, path) => {
+export const getStyles = (scriptScr, path = null) => {
   if (!Array.isArray(scriptScr)) {
     scriptScr = [scriptScr]
   }
@@ -674,6 +690,32 @@ export function titleCase(str) {
   )
 }
 
+/**
+ * Splits an object based on array of keys
+ *
+ * @param {Object} obj Object to be split
+ * @param {Array}  keys Array of keys to use when splitting Object
+ *
+ * @return {Array} returns an array of Objects, the first where the keys matched,
+ *                 the second where they did not
+ */
+export const splitObject = (obj, keys) => {
+  // reducer for recreating the initial object after splitting via keys
+  // provide a function so I don't reference the original obj
+  const reconstructObj = initialObj => (result, key) => {
+    result[key] = initialObj[key]
+    return result
+  }
+
+  const kept = Object.keys(obj)
+    .filter(key => keys.includes(key))
+    .reduce(reconstructObj(obj), {})
+  const rest = Object.keys(obj)
+    .filter(key => !keys.includes(key))
+    .reduce(reconstructObj(obj), {})
+  return [kept, rest]
+}
+
 const utils = {
   addEventListeners,
   attrString,
@@ -708,32 +750,7 @@ const utils = {
   unique,
   validAttr,
   titleCase,
-}
-
-/**
- * Splits an object based on array of keys
- *
- * @param {Object} obj Object to be split
- * @param {Array}  keys Array of keys to use when splitting Object
- *
- * @return {Array} returns an array of Objects, the first where the keys matched,
- *                 the second where they did not
- */
-utils.splitObject = (obj, keys) => {
-  // reducer for recreating the initial object after splitting via keys
-  // provide a function so I don't reference the original obj
-  const reconstructObj = initialObj => (result, key) => {
-    result[key] = initialObj[key]
-    return result
-  }
-
-  const kept = Object.keys(obj)
-    .filter(key => keys.includes(key))
-    .reduce(reconstructObj(obj), {})
-  const rest = Object.keys(obj)
-    .filter(key => !keys.includes(key))
-    .reduce(reconstructObj(obj), {})
-  return [kept, rest]
+  splitObject,
 }
 
 $.fn.swapWith = function (that) {

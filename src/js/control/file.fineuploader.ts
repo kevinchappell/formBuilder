@@ -32,11 +32,15 @@ import controlText from './text'
  * If you wish to define a custom template for the interface, this can be defined in controlConfig.file.template. It defaults to the gallery template provided by the Fineuploader project
  */
 export default class controlFineUploader extends controlText {
+  handler: any
+  fineTemplate: JQuery<HTMLElement>
+  input: any
+  wrapper: any
   /**
    * Class configuration - return the icons & label related to this control
    * @return {Object} definition object
    */
-  static get definition() {
+  get definition() {
     return {
       i18n: {
         default: 'Fine Uploader',
@@ -155,9 +159,7 @@ export default class controlFineUploader extends controlText {
           </div>
         </dialog>
       </div>`
-    this.fineTemplate = $('<div/>')
-      .attr('id', 'qq-template')
-      .html(template)
+    this.fineTemplate = $('<div/>').attr('id', 'qq-template').html(template)
   }
 
   /**
@@ -226,7 +228,7 @@ export default class controlFineUploader extends controlText {
             return id
           },
           onStatusChange: (id, oldStatus, newStatus) => {
-            const uploads = wrapper.fineUploader('getUploads')
+            const uploads: any = wrapper.fineUploader('getUploads')
 
             // retrieve an array of successfully uploaded filenames
             const successful = []

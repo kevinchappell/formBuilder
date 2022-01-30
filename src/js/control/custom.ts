@@ -6,6 +6,9 @@ import mi18n from 'mi18n'
  * Implementing support for custom templates being passed as options to formBuilder/Render
  */
 export default class controlCustom extends control {
+  static customRegister: {}
+  static def: any
+  static templates: {}
   /**
    * Override the register method to allow passing 'templates' configuration data
    * @param {Object} templates an object/hash of template data as defined https://formbuilder.online/docs/formBuilder/options/templates/
@@ -114,7 +117,7 @@ export default class controlCustom extends control {
   build() {
     let custom = controlCustom.templates[this.type]
     if (!custom) {
-      return this.error(
+      return controlCustom.error(
         'Invalid custom control type. Please ensure you have registered it correctly as a template option.',
       )
     }

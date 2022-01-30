@@ -80,7 +80,7 @@ export default class controlAutocomplete extends control {
           },
         ],
       ]
-      const keyCodeMap = new Map(keyCodeMapVals)
+      const keyCodeMap: Map<any, any> = new Map(keyCodeMapVals as any)
 
       let direction = keyCodeMap.get(e.keyCode)
       if (!direction) {
@@ -267,7 +267,7 @@ export default class controlAutocomplete extends control {
       const preSelectedOption = this.config.userData[0]
       let selectedOption = null
 
-      $options.find('li').each(function() {
+      $options.find('li').each(function () {
         // eslint-disable-next-line no-invalid-this
         if ($(this).attr('value') === preSelectedOption) {
           // eslint-disable-next-line no-invalid-this

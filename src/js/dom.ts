@@ -11,13 +11,13 @@ export const defaultSubtypes = {
  * Removes a dom node
  * @param  {Object} element
  */
-export const remove = element => {
+export const remove = (element: Node) => {
   if (element.parentNode) {
     element.parentNode.removeChild(element)
   }
 }
 
-export const empty = element => {
+export const empty = (element: Node) => {
   while (element.firstChild) {
     element.removeChild(element.firstChild)
   }
@@ -52,6 +52,15 @@ export const optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`)
  * Dom class.
  */
 export default class Dom {
+  optionFields: string[]
+  optionFieldsRegEx: RegExp
+  subtypes: { text: string[]; header: string[]; button: string[]; paragraph: string[]; textarea: string[] }
+  empty: (element: any) => any
+  filter: (elems: any, term: any, show?: boolean) => any[]
+  stage: any
+  controls: any
+  editorWrap: any
+  formActions: any
   /**
    * Set defaults
    * @param  {String} formID [description]

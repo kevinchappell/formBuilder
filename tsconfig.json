@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist-ts",
+      "allowJs": true,
+      "target": "es5",
+      "resolveJsonModule": true
+    },
+    "include": ["./src/**/*"]
+  }

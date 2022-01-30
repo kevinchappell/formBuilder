@@ -1,3 +1,4 @@
+import { BaseControlAttributes } from '../../formbuilder-types'
 import control from '../control'
 import { trimObj } from '../utils'
 
@@ -6,6 +7,7 @@ import { trimObj } from '../utils'
  * Output a <input type="text" ... /> form element
  */
 export default class controlSelect extends control {
+  dom: any
   /**
    * definition
    * @return {Object} select control definition
@@ -83,7 +85,7 @@ export default class controlSelect extends control {
             delete optionAttrs.selected
           }
           const input = this.markup('input', null, Object.assign({}, data, optionAttrs))
-          const labelAttrs = { for: optionAttrs.id }
+          const labelAttrs: BaseControlAttributes = { for: optionAttrs.id }
           let output = [input, this.markup('label', labelContents, labelAttrs)]
           if (toggle) {
             labelAttrs.className = 'kc-toggle'
@@ -156,7 +158,7 @@ export default class controlSelect extends control {
       }
     }
     const toggleRequired = (checkboxes, isValid) => {
-      [].forEach.call(checkboxes, cb => {
+      ;[].forEach.call(checkboxes, cb => {
         if (isValid) {
           cb.removeAttribute('required')
         } else {
@@ -186,9 +188,7 @@ export default class controlSelect extends control {
       const selectedOptions = this.config.userData.slice()
 
       if (this.config.type === 'select') {
-        $(this.dom)
-          .val(selectedOptions)
-          .prop('selected', true)
+        $(this.dom).val(selectedOptions).prop('selected', true)
       } else if (this.config.type.endsWith('-group')) {
         this.dom.querySelectorAll('input').forEach(input => {
           if (input.classList.contains('other-val')) {
@@ -205,7 +205,7 @@ export default class controlSelect extends control {
 
           // Did not find a match for the selectedOption, see if this is an "other"
           if (input.id.endsWith('-other')) {
-            const otherVal = document.getElementById(`${input.id}-value`)
+            const otherVal = document.getElementById(`${input.id}-value`) as HTMLInputElement
             // If there is no value to set, don't check the other option
             if (selectedOptions.length === 0) {
               return

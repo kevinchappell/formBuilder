@@ -11,7 +11,7 @@ export default class controlButton extends control {
    */
   build() {
     return {
-      field: this.markup('button', this.label, this.config),
+      field: this.markup('button', controlButton.label, this.config),
       layout: 'noLabel',
     }
   }

@@ -27,6 +27,16 @@ import {
   getContentType,
 } from './utils'
 import { css_prefix_text } from '../fonts/config.json'
+import {
+  CheckboxAttributes,
+  Field,
+  GridInfo,
+  Labels,
+  Layout,
+  MarkupType,
+  SelectAttributes,
+  TextInputAttributes,
+} from '../formbuilder-types'
 
 const DEFAULT_TIMEOUT = 333
 const rowWrapperClassSelector = '.rowWrapper'
@@ -177,7 +187,7 @@ const FormBuilder = function (opts, element, $) {
 
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
-    className: `cb-wrap ${data.layout.controls}`,
+    className: `cb-wrap ${(data.layout as Layout).controls}`,
   })
 
   if (opts.showActionButtons) {
@@ -240,7 +250,7 @@ const FormBuilder = function (opts, element, $) {
 
   // builds the standard formbuilder datastructure for a field definition
   const prepFieldVars = ($field, isNew = false) => {
-    let field = {}
+    let field: Field = {}
     if ($field instanceof jQuery) {
       // get the default type etc & label for this field
       field.type = $field[0].dataset.type
@@ -259,7 +269,7 @@ const FormBuilder = function (opts, element, $) {
         // is dataType XML
         const attrs = $field[0].attributes
         if (!isNew) {
-          field.values = $field.children().map((index, elem) => {
+          field.values = ($field as JQuery).children().map((index, elem) => {
             return {
               label: $(elem).text(),
               value: $(elem).attr('value'),
@@ -306,7 +316,7 @@ const FormBuilder = function (opts, element, $) {
   formBuilder.prepFieldVars = prepFieldVars
 
   // Parse saved XML template data
-  const loadFields = function (formData) {
+  const loadFields = function (formData = null) {
     formData = h.getData(formData)
     if (formData && formData.length) {
       formData.forEach(field => {
@@ -488,7 +498,7 @@ const FormBuilder = function (opts, element, $) {
         for (key in opts.roles) {
           if (opts.roles.hasOwnProperty(key)) {
             const roleId = `fld-${data.lastID}-roles-${key}`
-            const cbAttrs = {
+            const cbAttrs: CheckboxAttributes = {
               type: 'checkbox',
               name: 'roles[]',
               value: key,
@@ -602,13 +612,25 @@ const FormBuilder = function (opts, element, $) {
    * @return {String} type of user attr
    */
   function userAttrType(attrData) {
-    return (
-      [
-        ['array', ({ options }) => !!options],
-        ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
-        [typeof attrData.value, () => true], // string, number,
-      ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
-    )
+    if (({ options }) => !!options) {
+      return 'array' || 'string'
+    }
+
+    if (({ type }) => type === 'checkbox') {
+      return 'boolean' || 'string'
+    }
+
+    if (() => true) {
+      return typeof attrData.value || 'string'
+    }
+
+    // return (
+    //   [
+    //     ['array', ({ options }) => !!options],
+    //     ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
+    //     [typeof attrData.value, () => true], // string, number,
+    //   ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
+    // )
   }
 
   /**
@@ -725,7 +747,7 @@ const FormBuilder = function (opts, element, $) {
   function selectUserAttrs(name, fieldData) {
     const { multiple, options, label: labelText, value, class: classname, className, ...restData } = fieldData
     const optis = Object.keys(options).map(val => {
-      const attrs = { value: val }
+      const attrs: SelectAttributes = { value: val }
       const optionTextVal = options[val]
       const optionText = Array.isArray(optionTextVal) ? mi18n.get(...optionTextVal) || optionTextVal[0] : optionTextVal
       if (Array.isArray(value) ? value.includes(val) : val === value) {
@@ -735,7 +757,7 @@ const FormBuilder = function (opts, element, $) {
       return m('option', optionText, attrs)
     })
 
-    const selectAttrs = {
+    const selectAttrs: SelectAttributes = {
       id: `${name}-${data.lastID}`,
       title: restData.description || labelText || name.toUpperCase(),
       name,
@@ -757,12 +779,12 @@ const FormBuilder = function (opts, element, $) {
     return `<div class="form-group ${name}-wrap">${label}${inputWrap}</div>`
   }
 
-  const boolAttribute = (name, values, labels = {}) => {
+  const boolAttribute = (name, values, labels = {} as Labels) => {
     const label = txt =>
       m('label', txt, {
         for: `${name}-${data.lastID}`,
       }).outerHTML
-    const cbAttrs = {
+    const cbAttrs: CheckboxAttributes = {
       type: 'checkbox',
       className: `fld-${name}`,
       name,
@@ -793,7 +815,7 @@ const FormBuilder = function (opts, element, $) {
   }
 
   const btnStyles = style => {
-    let styleField = ''
+    let styleField: MarkupType = ''
 
     // corrects issue where 'undefined' was saved to formData
     if (style === 'undefined') {
@@ -828,7 +850,7 @@ const FormBuilder = function (opts, element, $) {
       className: 'form-group style-wrap',
     })
 
-    return styleField.outerHTML
+    return (styleField as HTMLElement).outerHTML
   }
 
   /**
@@ -920,11 +942,11 @@ const FormBuilder = function (opts, element, $) {
     }
 
     const placeholder = mi18n.get(`placeholders.${attribute}`) || ''
-    let attributefield = ''
+    let attributefield: MarkupType = ''
     const noMakeAttr = []
 
     if (!noMakeAttr.some(elem => elem === true)) {
-      const inputConfig = {
+      const inputConfig: TextInputAttributes = {
         name: attribute,
         placeholder,
         className: `fld-${attribute} form-control`,
@@ -956,7 +978,7 @@ const FormBuilder = function (opts, element, $) {
       })
     }
 
-    return attributefield.outerHTML
+    return (attributefield as HTMLElement).outerHTML
   }
 
   const requiredField = fieldData => {
@@ -1361,7 +1383,7 @@ const FormBuilder = function (opts, element, $) {
   function CheckTinyMCETransition(fieldListItem) {
     const isTinyMCE = fieldListItem.find('textarea[type="tinymce"]')
     if (isTinyMCE.length) {
-      window.lastFormBuilderCopiedTinyMCE = window.tinymce.get(isTinyMCE.attr('id')).save()
+      window.lastFormBuilderCopiedTinyMCE = window.tinymce.get(isTinyMCE.attr('id')).save(null)
     }
   }
 
@@ -1408,7 +1430,7 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function prepareFieldRow(data) {
-    let result = {}
+    let result: GridInfo = {} as GridInfo
 
     result = h.tryParseColumnInfo(data)
     TryCreateNew()
@@ -1456,7 +1478,7 @@ const FormBuilder = function (opts, element, $) {
     }
     const optionInputTypeMap = {
       boolean: (value, prop) => {
-        const attrs = { value, type: optionInputType[prop] || 'checkbox' }
+        const attrs: CheckboxAttributes = { value, type: optionInputType[prop] || 'checkbox' }
         if (value) {
           attrs.checked = !!value
         }
@@ -1645,7 +1667,7 @@ const FormBuilder = function (opts, element, $) {
         })
       }
     } else {
-      const fieldVal = document.getElementById('value-' + field.id)
+      const fieldVal = document.getElementById('value-' + field.id) as HTMLInputElement
       if (fieldVal) {
         fieldVal.value = e.target.value
       }
@@ -1878,9 +1900,9 @@ const FormBuilder = function (opts, element, $) {
 
       let nextColSize
       if (e.originalEvent.wheelDelta / 120 > 0) {
-        nextColSize = parseInt(currentColValue) + 1
+        nextColSize = currentColValue + 1
       } else {
-        nextColSize = parseInt(currentColValue) - 1
+        nextColSize = currentColValue - 1
       }
 
       if (nextColSize > 12) {
@@ -2310,7 +2332,7 @@ const FormBuilder = function (opts, element, $) {
   formBuilder.actions = {
     getFieldTypes: activeOnly =>
       activeOnly ? subtract(controls.getRegistered(), opts.disableFields) : controls.getRegistered(),
-    clearFields: animate => h.removeAllFields(d.stage, animate),
+    clearFields: animate => h.removeAllFields(d.stage),
     showData: h.showData.bind(h),
     save: minify => {
       const formData = h.save(minify)
@@ -2320,14 +2342,14 @@ const FormBuilder = function (opts, element, $) {
       return formDataJS
     },
     addField: (field, index) => {
-      h.stopIndex = data.formData.length ? index : undefined
+      h.stopIndex = (data.formData as []).length ? index : undefined
       prepFieldVars(field)
     },
     removeField: h.removeField.bind(h),
     getData: h.getFormData.bind(h),
     setData: formData => {
       h.stopIndex = undefined
-      h.removeAllFields(d.stage, false)
+      h.removeAllFields(d.stage)
       loadFields(formData)
     },
     setLang: locale => {
@@ -2371,7 +2393,7 @@ const FormBuilder = function (opts, element, $) {
       d.stage.style.minHeight = `${d.controls.clientHeight}px`
       // If option set, controls will remain in view in editor
       if (opts.stickyControls.enable) {
-        h.stickyControls($stage)
+        h.stickyControls()
       }
 
       checkSetupBlankStage()

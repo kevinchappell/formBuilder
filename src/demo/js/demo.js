@@ -66,13 +66,13 @@ jQuery(function ($) {
   ]
 
   const replaceFields = [
-    {
-      type: 'textarea',
-      subtype: 'tinymce',
-      datatype: 'custom-tinymce',
-      label: 'tinyMCE',
-      required: true,
-    },
+    // {
+    //   type: 'textarea',
+    //   subtype: 'tinymce',
+    //   datatype: 'custom-tinymce',
+    //   label: 'tinyMCE',
+    //   required: true,
+    // },
   ]
 
   const actionButtons = [
@@ -205,7 +205,7 @@ jQuery(function ($) {
   }
 
   // test disabledAttrs
-  const disabledAttrs = ['placeholder', 'name']
+  const disabledAttrs = ['placeholder']
 
   const fbOptions = {
     defaultFields: [
@@ -216,8 +216,23 @@ jQuery(function ($) {
         name: 'default-field-1',
         type: 'text',
       },
+      {
+        className: 'form-control row-1 col-md-6',
+        label: 'Default Field 2',
+        placeholder: 'Enter your default field value',
+        name: 'default-field-2',
+        type: 'text',
+      },
+      {
+        className: 'form-control row-1 col-md-6',
+        label: 'Default Field 3 ',
+        placeholder: 'Enter your default field value',
+        name: 'default-field-3',
+        type: 'text',
+      },
     ],
     persistDefaultFields: true,
+    scrollToFieldOnAdd: false,
     disabledSubtypes: {
       text: ['password'],
     },
@@ -243,19 +258,20 @@ jQuery(function ($) {
     stickyControls: {
       enable: true,
     },
+    enableRowDrop: true,
     sortableControls: true,
     fields: fields,
     templates: templates,
     inputSets: inputSets,
+    fieldRemoveWarn: false,
     typeUserDisabledAttrs: typeUserDisabledAttrs,
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
     actionButtons: actionButtons,
-    disableFields: ['autocomplete', 'custom-tinymce'],
+    disableFields: ['autocomplete'],
     replaceFields: replaceFields,
-    disabledFieldButtons: {
-      text: ['copy'],
-    },
+    editOnAdd: true,
+    disabledFieldButtons: {},
     controlPosition: 'right', // left|right,
     i18n: {
       override: {
@@ -264,7 +280,6 @@ jQuery(function ($) {
         },
       },
     },
-    scrollToFieldOnAdd: false,
   }
   const formData = window.sessionStorage.getItem('formData')
   let editing = true

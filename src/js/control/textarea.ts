@@ -5,6 +5,7 @@ import control from '../control'
  * Output a <input type="text" ... /> form element
  */
 export default class controlTextarea extends control {
+  field: any
   /**
    * class configuration
    */
@@ -30,7 +31,7 @@ export default class controlTextarea extends control {
   /**
    * onRender callback
    */
-  onRender() {
+  onRender(evt) {
     // Set userData if available
     if (this.config.userData) {
       $('#' + this.config.name).val(this.config.userData[0])
