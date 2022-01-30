@@ -309,9 +309,15 @@ const FormBuilder = function (opts, element, $) {
   const loadFields = function (formData) {
     formData = h.getData(formData)
     if (formData && formData.length) {
+      formData.forEach(field => {
+        CaptureRowData(field)
+      })
+
       formData.forEach(fieldData => prepFieldVars(trimObj(fieldData)))
       d.stage.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
+      config.opts.defaultFields.forEach(field => CaptureRowData(field))
+
       h.addDefaultFields()
     } else if (!opts.prepend && !opts.append) {
       d.stage.classList.add('empty')
@@ -323,6 +329,14 @@ const FormBuilder = function (opts, element, $) {
     }
 
     h.save()
+  }
+
+  //Capture information of all the row- values so generating new values will not ever clash with existing data
+  function CaptureRowData(field) {
+    const gridRowValue = h.getRowValue(field.className)
+    if (gridRowValue && !formRows.includes(gridRowValue)) {
+      formRows.push(gridRowValue)
+    }
   }
 
   /**
@@ -1408,8 +1422,14 @@ const FormBuilder = function (opts, element, $) {
     function TryCreateNew() {
       if (!result.rowNumber) {
         //Column information wasn't defined, get new default configuration for one.
-        result.rowNumber = opts.defaultGridStartingRow
-        opts.defaultGridStartingRow += 1
+        let nextRow
+        if (formRows.length == 0) {
+          nextRow = 1
+        } else {
+          nextRow = Math.max(...formRows) + 1
+        }
+
+        result.rowNumber = nextRow
 
         //If inserting directly into column, use the correct rowNumber
         if (insertingNewControl && insertTargetIsColumn) {

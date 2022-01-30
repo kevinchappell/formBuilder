@@ -85,7 +85,6 @@ export const defaultOptions = {
   typeUserDisabledAttrs: {},
   typeUserEvents: {},
   defaultGridColumnClass: 'col-md-12',
-  defaultGridStartingRow: 1000,
   cancelGridModeDistance: 100,
   enableColumnInsertMenu: true,
 }
