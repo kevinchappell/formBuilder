@@ -1847,27 +1847,6 @@ const FormBuilder = function (opts, element, $) {
     toggleGridModeActive()
   })
 
-  //Use E to enter into Grid Mode for the currently active(hovered field)
-  $(document).keydown(e => {
-    if (gridModeTargetField && gridModeTargetField.hasClass('editing')) {
-      return
-    }
-
-    //Don't enter grid mode if you are on an input field of the element just typing
-    if (
-      gridModeTargetField &&
-      $(document.activeElement).is('input') &&
-      $(document.activeElement).closest('li').attr('id') == gridModeTargetField.attr('id')
-    ) {
-      return
-    }
-
-    if (e.keyCode == 69 && gridModeTargetField) {
-      e.preventDefault()
-      toggleGridModeActive()
-    }
-  })
-
   //Use mousewheel to work resizing
   $stage.bind('mousewheel', function (e) {
     if (gridMode) {
@@ -2175,9 +2154,6 @@ const FormBuilder = function (opts, element, $) {
             <td>Resize all fields within the row to be maximally equal</td>
           </tr>
           <tr>
-          <td><kbd>E</kbd></td> 
-          <td>Enter Grid Mode when hovering over a form field</td>
-        </tr>
         </tbody> 
       </table>
 
