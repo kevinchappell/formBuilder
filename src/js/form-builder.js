@@ -1768,6 +1768,10 @@ const FormBuilder = function (opts, element, $) {
     UpdatePreviewAndSave($clone)
 
     h.tmpCleanPrevHolder($clone.find('.prev-holder'))
+
+    if (opts.editOnAdd) {
+      h.closeField(data.lastID, false)
+    }
   })
 
   function prepareCloneWrappers($clone, currentItem) {
@@ -1789,7 +1793,7 @@ const FormBuilder = function (opts, element, $) {
     if (currentItem.parent().is('div')) {
       insertAfterElement = currentItem.closest(rowWrapperClassSelector)
     } else if (currentItem.parent().is('ul')) {
-      insertAfterElement = currentItem.prev(rowWrapperClassSelector)
+      insertAfterElement = currentItem
     }
 
     $(rowWrapper).insertAfter(insertAfterElement)
