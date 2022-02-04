@@ -1340,7 +1340,7 @@ const FormBuilder = function (opts, element, $) {
       },
       stop: function (event, ui) {
         $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
-        autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector))
+        autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector), true)
       },
       update: function (event, ui) {
         syncFieldWithNewRow(ui.item.attr('id'))
