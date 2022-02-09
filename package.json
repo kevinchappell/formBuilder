@@ -134,7 +134,7 @@
     "html-webpack-plugin": "^4.3.0",
     "inquirer": "^7.3.3",
     "mi18n": "^0.4.8",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "npm-run-all": "^4.1.5",
     "opener": "^1.5.1",
     "postcss-loader": "^3.0.0",
