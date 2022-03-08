@@ -86,6 +86,14 @@ const FormBuilder = function (opts, element, $) {
   let $targetInsertWrapper
   let cloneControls
 
+  function enhancedBootstrapEnabled() {
+    if (!opts.enableEnhancedBootstrapGrid) {
+      return false
+    }
+
+    return true
+  }
+
   $stage.sortable({
     cursor: 'move',
     opacity: 0.9,
@@ -103,43 +111,73 @@ const FormBuilder = function (opts, element, $) {
     $stage.sortable('disable')
   }
 
-  // ControlBox with different fields
-  $cbUL.sortable({
-    opacity: 0.9,
-    connectWith: rowWrapperClassSelector,
-    cancel: '.formbuilder-separator',
-    cursor: 'move',
-    scroll: false,
-    start: (evt, ui) => {
-      h.startMoving.call(h, evt, ui)
-      isMoving = true
-    },
-    stop: (evt, ui) => {
-      h.stopMoving.call(h, evt, ui)
-      isMoving = false
-      cleanupTempPlaceholders()
-    },
-    revert: 150,
-    beforeStop: (evt, ui) => {
-      h.beforeStop.call(h, evt, ui)
-    },
-    distance: 3,
-    update: function (event) {
-      isMoving = false
-      if (h.doCancel) {
-        return false
-      }
+  if (!enhancedBootstrapEnabled()) {
+    $cbUL.sortable({
+      helper: 'clone',
+      opacity: 0.9,
+      connectWith: $stage,
+      cancel: '.formbuilder-separator',
+      cursor: 'move',
+      scroll: false,
+      placeholder: 'ui-state-highlight',
+      start: (evt, ui) => h.startMoving.call(h, evt, ui),
+      stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
+      revert: 150,
+      beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
+      distance: 3,
+      update: function (event, ui) {
+        if (h.doCancel) {
+          return false
+        }
 
-      //If started to enter a control into row but then moved it back, hide the placeholders again
-      if ($(event.target).attr('id') == $cbUL.attr('id')) {
-        HideInvisibleRowPlaceholders()
-      }
-      h.setFieldOrder($cbUL)
-      h.doCancel = !opts.sortableControls
-    },
-  })
+        if (ui.item.parent()[0] === d.stage) {
+          h.doCancel = true
+          processControl(ui.item)
+        } else {
+          h.setFieldOrder($cbUL)
+          h.doCancel = !opts.sortableControls
+        }
+      },
+    })
+  } else {
+    // ControlBox with different fields
+    $cbUL.sortable({
+      opacity: 0.9,
+      connectWith: rowWrapperClassSelector,
+      cancel: '.formbuilder-separator',
+      cursor: 'move',
+      scroll: false,
+      start: (evt, ui) => {
+        h.startMoving.call(h, evt, ui)
+        isMoving = true
+      },
+      stop: (evt, ui) => {
+        h.stopMoving.call(h, evt, ui)
+        isMoving = false
+        cleanupTempPlaceholders()
+      },
+      revert: 150,
+      beforeStop: (evt, ui) => {
+        h.beforeStop.call(h, evt, ui)
+      },
+      distance: 3,
+      update: function (event) {
+        isMoving = false
+        if (h.doCancel) {
+          return false
+        }
 
-  $cbUL.on('mouseenter', function (e) {
+        //If started to enter a control into row but then moved it back, hide the placeholders again
+        if ($(event.target).attr('id') == $cbUL.attr('id')) {
+          HideInvisibleRowPlaceholders()
+        }
+        h.setFieldOrder($cbUL)
+        h.doCancel = !opts.sortableControls
+      },
+    })
+  }
+
+  $cbUL.on('mouseenter', function () {
     if (stageHasFields()) {
       $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
     }
@@ -1007,13 +1045,18 @@ const FormBuilder = function (opts, element, $) {
         className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
-      m('a', null, {
-        type: 'grid',
-        id: data.lastID + '-grid',
-        className: `grid-button btn ${css_prefix_text}grid`,
-        title: 'Grid Mode',
-      }),
     ]
+
+    if (enhancedBootstrapEnabled()) {
+      fieldButtons.push(
+        m('a', null, {
+          type: 'grid',
+          id: data.lastID + '-grid',
+          className: `grid-button btn ${css_prefix_text}grid`,
+          title: 'Grid Mode',
+        }),
+      )
+    }
 
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
       fieldButtons = fieldButtons.filter(btnData => !disabledFieldButtons.includes(btnData.type))
@@ -1081,65 +1124,67 @@ const FormBuilder = function (opts, element, $) {
     // generate the control, insert it into the list item & add it to the stage
     h.updatePreview($li)
 
-    const targetRow = `div.row-${columnData.rowNumber}`
-
     let rowWrapperNode
 
-    //Check if an overall row already exists for the field, else create one
-    if ($stage.children(targetRow).length) {
-      rowWrapperNode = $stage.children(targetRow)
-    } else {
-      rowWrapperNode = m('div', null, {
-        id: `${field.id}-row`,
-        className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
-      })
-    }
+    if (enhancedBootstrapEnabled()) {
+      const targetRow = `div.row-${columnData.rowNumber}`
 
-    //Turn the placeholder into the new row. Copy some attributes over
-    if (insertingNewControl && insertTargetIsRow) {
-      $targetInsertWrapper.attr('id', rowWrapperNode.id)
-      $targetInsertWrapper.attr('class', rowWrapperNode.className)
-      $targetInsertWrapper.attr('style', '')
-      rowWrapperNode = $targetInsertWrapper
-    }
-
-    //Add a wrapper div for the field itself. This div will be the rendered representation
-    const colWrapperNode = m('div', null, {
-      id: `${field.id}-cont`,
-      className: `${columnData.columnSize} ${colWrapperClass}`,
-    })
-
-    if (insertingNewControl && insertTargetIsColumn) {
-      if ($targetInsertWrapper.attr('prepend') == 'true') {
-        $(colWrapperNode).prependTo(rowWrapperNode)
+      //Check if an overall row already exists for the field, else create one
+      if ($stage.children(targetRow).length) {
+        rowWrapperNode = $stage.children(targetRow)
       } else {
-        $(colWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
+        rowWrapperNode = m('div', null, {
+          id: `${field.id}-row`,
+          className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+        })
       }
+
+      //Turn the placeholder into the new row. Copy some attributes over
+      if (insertingNewControl && insertTargetIsRow) {
+        $targetInsertWrapper.attr('id', rowWrapperNode.id)
+        $targetInsertWrapper.attr('class', rowWrapperNode.className)
+        $targetInsertWrapper.attr('style', '')
+        rowWrapperNode = $targetInsertWrapper
+      }
+
+      //Add a wrapper div for the field itself. This div will be the rendered representation
+      const colWrapperNode = m('div', null, {
+        id: `${field.id}-cont`,
+        className: `${columnData.columnSize} ${colWrapperClass}`,
+      })
+
+      if (insertingNewControl && insertTargetIsColumn) {
+        if ($targetInsertWrapper.attr('prepend') == 'true') {
+          $(colWrapperNode).prependTo(rowWrapperNode)
+        } else {
+          $(colWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
+        }
+      }
+
+      //Control insert will take care of inserting itself
+      if (!insertTargetIsColumn) {
+        $(colWrapperNode).appendTo(rowWrapperNode)
+      }
+
+      //If inserting, use the existing index, do not always append to end
+      if (!insertingNewControl) {
+        $stage.append(rowWrapperNode)
+      }
+
+      $li.appendTo(colWrapperNode)
+
+      setupSortableRowWrapper(rowWrapperNode)
+
+      SetupInvisibleRowPlaceholders(rowWrapperNode)
+
+      //Record the fact that this field did not originally have column information stored.
+      //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
+      if (columnData.addedDefaultColumnClass) {
+        $li.attr('addedDefaultColumnClass', true)
+      }
+
+      h.tmpCleanPrevHolder($(prevHolder))
     }
-
-    //Control insert will take care of inserting itself
-    if (!insertTargetIsColumn) {
-      $(colWrapperNode).appendTo(rowWrapperNode)
-    }
-
-    //If inserting, use the existing index, do not always append to end
-    if (!insertingNewControl) {
-      $stage.append(rowWrapperNode)
-    }
-
-    $li.appendTo(colWrapperNode)
-
-    setupSortableRowWrapper(rowWrapperNode)
-
-    SetupInvisibleRowPlaceholders(rowWrapperNode)
-
-    //Record the fact that this field did not originally have column information stored.
-    //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
-    if (columnData.addedDefaultColumnClass) {
-      $li.attr('addedDefaultColumnClass', true)
-    }
-
-    h.tmpCleanPrevHolder($(prevHolder))
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
       opts.typeUserEvents[type].onadd(field)
@@ -1155,12 +1200,14 @@ const FormBuilder = function (opts, element, $) {
       }
     }
 
-    //Autosize entire row when using new insert mode
-    if (insertingNewControl && insertTargetIsColumn) {
-      autoSizeRowColumns(rowWrapperNode, true)
-    }
+    if (enhancedBootstrapEnabled()) {
+      //Autosize entire row when using new insert mode
+      if (insertingNewControl && insertTargetIsColumn) {
+        autoSizeRowColumns(rowWrapperNode, true)
+      }
 
-    cleanupTempPlaceholders()
+      cleanupTempPlaceholders()
+    }
 
     insertingNewControl = false
     insertTargetIsRow = false
@@ -1168,6 +1215,10 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function AttatchColWrapperHandler(colWrapper) {
+    if (!enhancedBootstrapEnabled()) {
+      return
+    }
+
     colWrapper.mouseenter(function (e) {
       if (!gridMode) {
         HideInvisibleRowPlaceholders()
@@ -1222,6 +1273,10 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function setupSortableRowWrapper(rowWrapperNode) {
+    if (!enhancedBootstrapEnabled()) {
+      return
+    }
+
     $(rowWrapperNode).sortable({
       connectWith: [rowWrapperClassSelector],
       cursor: 'move',
@@ -1409,6 +1464,10 @@ const FormBuilder = function (opts, element, $) {
 
   function prepareFieldRow(data) {
     let result = {}
+
+    if (!enhancedBootstrapEnabled()) {
+      return result
+    }
 
     result = h.tryParseColumnInfo(data)
     TryCreateNew()
@@ -1775,6 +1834,11 @@ const FormBuilder = function (opts, element, $) {
   })
 
   function prepareCloneWrappers($clone, currentItem) {
+    if (!enhancedBootstrapEnabled()) {
+      $clone.insertAfter(currentItem)
+      return
+    }
+
     const inputClassElement = $(`#className-${currentItem.attr('id')}`)
     const columnData = prepareFieldRow({})
 
@@ -2053,7 +2117,7 @@ const FormBuilder = function (opts, element, $) {
   }
 
   function checkSetupBlankStage() {
-    if (stageHasFields()) {
+    if (stageHasFields() || !enhancedBootstrapEnabled()) {
       return
     }
 
