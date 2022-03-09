@@ -33,7 +33,12 @@ export default class controlSelect extends control {
     }
 
     if (type === 'checkbox-group' && data.required) {
-      this.onRender = this.groupRequired
+      const self = this
+      const defaultOnRender = this.onRender.bind(this)
+      this.onRender = function() {
+        self.groupRequired()
+        defaultOnRender()
+      }
     }
 
     delete data.title
@@ -197,7 +202,7 @@ export default class controlSelect extends control {
 
           for (let i = 0; i < selectedOptions.length; i++) {
             if (input.value === selectedOptions[i]) {
-              input.setAttribute('checked', true)
+              input.setAttribute('checked', 'checked')
               selectedOptions.splice(i, 1) // Remove this item from the list
               break
             }
@@ -212,7 +217,7 @@ export default class controlSelect extends control {
             }
 
             // set the other value
-            input.setAttribute('checked', true)
+            input.setAttribute('checked', 'checked')
             otherVal.value = input.value = selectedOptions[0]
             // show other value
             otherVal.style.display = 'inline-block'
