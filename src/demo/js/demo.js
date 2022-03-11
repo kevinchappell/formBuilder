@@ -329,6 +329,8 @@ jQuery(function ($) {
       getHTML: 'Get HTML',
       clearUserForm: 'Clear user form',
       testSubmit: 'Test Submit',
+      setData: 'Set template data',
+      render: 'Render data that was set',
     }
 
     const actionApi = document.getElementById('action-api')
