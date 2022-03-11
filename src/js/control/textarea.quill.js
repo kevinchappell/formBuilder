@@ -45,6 +45,8 @@ export default class controlQuill extends controlTextarea {
   build() {
     // eslint-disable-next-line no-unused-vars
     const { value = '', ...attrs } = this.config
+    //Textareas do not have an attribute 'type'
+    delete attrs['type']
     this.field = this.markup('div', null, attrs)
     return this.field
   }
