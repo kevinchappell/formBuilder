@@ -335,14 +335,15 @@ class FormRender {
   }
 }
 
-;(function () {
+;(function ($) {
   let formRenderForms
   const methods = {
     init: (forms, options = {}) => {
       formRenderForms = forms
       methods.instance = new FormRender(options)
       forms.each(index => methods.instance.render(forms[index], index))
-      return methods.instance
+
+      return { ...methods.instance, ...methods }
     },
     userData: () => methods.instance && methods.instance.userData,
     clear: () => methods.instance && methods.instance.clear(),
@@ -355,6 +356,9 @@ class FormRender {
     render: (formData, options = {}) => {
       if (methods.instance) {
         const instance = methods.instance
+        if (!formData) {
+          formData = instance.options.formData
+        }
         instance.options = Object.assign({}, instance.options, options, { formData: instance.parseFormData(formData) })
         formRenderForms.each(index => methods.instance.render(formRenderForms[index], index))
       }
@@ -362,13 +366,11 @@ class FormRender {
     html: () => formRenderForms.map(index => formRenderForms[index]).html(),
   }
 
-  jQuery.fn.formRender = function (methodOrOptions = {}, ...args) {
+  $.fn.formRender = function (methodOrOptions = {}, ...args) {
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
-      const instance = methods.init(this, methodOrOptions)
-      Object.assign(methods, instance)
-      return instance
+      return methods.init(this, methodOrOptions)
     }
   }
 
@@ -378,7 +380,7 @@ class FormRender {
    * @param {Object} options - optional subset of formRender options - doesn't support container or other form rendering based options.
    * @return {DOMElement} the rendered field
    */
-  jQuery.fn.controlRender = function (data, options = {}) {
+  $.fn.controlRender = function (data, options = {}) {
     options.formData = data
     options.dataType = typeof data === 'string' ? 'json' : 'xml'
     const formRender = new FormRender(options)
