@@ -1,3 +1,10 @@
+## [3.7.4](https://github.com/kevinchappell/formBuilder/compare/v3.7.3...v3.7.4) (2022-03-11)
+
+
+### Bug Fixes
+
+* **textarea:** remove type attribute from textarea ([bc68b3f](https://github.com/kevinchappell/formBuilder/commit/bc68b3ff939b41cd888a231b73e8a2bb13b2ca5a))
+
 ## [3.7.3](https://github.com/kevinchappell/formBuilder/compare/v3.7.2...v3.7.3) (2021-07-13)
 
 

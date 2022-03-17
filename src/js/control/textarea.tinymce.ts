@@ -60,6 +60,8 @@ export default class controlTinymce extends controlTextarea {
    */
   build() {
     const { value = '', ...attrs } = this.config
+    //Textareas do not have an attribute 'type'
+    delete attrs['type']
     this.field = this.markup('textarea', this.parsedHtml(value), attrs)
     // Make the editor read only if disabled is set on the textarea
     if (attrs.disabled) {

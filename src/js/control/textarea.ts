@@ -24,6 +24,8 @@ export default class controlTextarea extends control {
    */
   build() {
     const { value = '', ...attrs } = this.config
+    //Textareas do not have an attribute 'type'
+    delete attrs['type']
     this.field = this.markup('textarea', this.parsedHtml(value), attrs)
     return this.field
   }

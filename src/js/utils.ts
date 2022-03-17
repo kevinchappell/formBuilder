@@ -254,7 +254,13 @@ export const markup = function (tag, content: any = '', attributes: MarkupAttrib
     if (attrs.hasOwnProperty(attr)) {
       const name = safeAttrName(attr)
       const attrVal = Array.isArray(attrs[attr]) ? unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
-      field.setAttribute(name, attrVal)
+      if (typeof attrVal === 'boolean') {
+        if (attrVal === true) {
+          field.setAttribute(name, name)
+        }
+      } else {
+        field.setAttribute(name, attrVal)
+      }
     }
   }
 
