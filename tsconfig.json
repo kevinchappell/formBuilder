@@ -3,7 +3,15 @@
       "outDir": "./dist-ts",
       "allowJs": true,
       "target": "es5",
-      "resolveJsonModule": true
+			"moduleResolution": "node",
+      "isolatedModules": true,
+      "esModuleInterop": true,
+			"skipLibCheck": true,
+      "resolveJsonModule": true,
+			"sourceMap": true,
+      "allowSyntheticDefaultImports": true,
+			"lib": ["DOM","ES2015"]
     },
-    "include": ["./src/**/*"]
+		"include": ["src/**/*"],
+		"exclude": ["node_modules/*"]
   }

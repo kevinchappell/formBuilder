@@ -3,7 +3,7 @@ import control from './control'
 import controlCustom from './control/custom'
 import { unique, hyphenCase, markup as m } from './utils'
 import { empty } from './dom'
-import { css_prefix_text } from '../fonts/config.json'
+import css_prefix_text from '../fonts/config.json'
 
 /**
  * control parent class for creating control panel

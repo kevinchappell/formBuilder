@@ -26,7 +26,7 @@ import {
   forceNumber,
   getContentType,
 } from './utils'
-import { css_prefix_text } from '../fonts/config.json'
+import css_prefix_text from '../fonts/config.json'
 import {
   CheckboxAttributes,
   Field,

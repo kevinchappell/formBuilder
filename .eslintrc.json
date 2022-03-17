@@ -5,7 +5,11 @@
     "node": true,
     "es6": true
   },
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
   "plugins": [
     "prettier", 
     "@typescript-eslint",
