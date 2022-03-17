@@ -3,7 +3,7 @@ import control from './control'
 import controlCustom from './control/custom'
 import { unique, hyphenCase, markup as m } from './utils'
 import { empty } from './dom'
-import css_prefix_text from '../fonts/config.json'
+import fontConfig from '../fonts/config.json'
 
 /**
  * control parent class for creating control panel
@@ -93,7 +93,9 @@ export default class Controls {
       }
       const icon = custom.icon || controlClass.icon(type)
       let label = custom.label || controlClass.label(type)
-      const iconClassName = !icon ? custom.iconClassName || `${css_prefix_text + type.replace(/-[\d]{4}$/, '')}` : ''
+      const iconClassName = !icon
+        ? custom.iconClassName || `${fontConfig.css_prefix_text + type.replace(/-[\d]{4}$/, '')}`
+        : ''
 
       // if the class has specified a custom icon, inject it into the label
       if (icon) {

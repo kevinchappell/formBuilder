@@ -26,7 +26,8 @@ import {
   forceNumber,
   getContentType,
 } from './utils'
-import css_prefix_text from '../fonts/config.json'
+import fontConfig from '../fonts/config.json'
+
 import {
   CheckboxAttributes,
   Field,
@@ -1014,25 +1015,25 @@ const FormBuilder = function (opts, element, $) {
       m('a', null, {
         type: 'remove',
         id: 'del_' + data.lastID,
-        className: `del-button btn ${css_prefix_text}cancel delete-confirm`,
+        className: `del-button btn ${fontConfig.css_prefix_text}cancel delete-confirm`,
         title: mi18n.get('removeMessage'),
       }),
       m('a', null, {
         type: 'edit',
         id: data.lastID + '-edit',
-        className: `toggle-form btn ${css_prefix_text}pencil`,
+        className: `toggle-form btn ${fontConfig.css_prefix_text}pencil`,
         title: mi18n.get('hide'),
       }),
       m('a', null, {
         type: 'copy',
         id: data.lastID + '-copy',
-        className: `copy-button btn ${css_prefix_text}copy`,
+        className: `copy-button btn ${fontConfig.css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
       m('a', null, {
         type: 'grid',
         id: data.lastID + '-grid',
-        className: `grid-button btn ${css_prefix_text}grid`,
+        className: `grid-button btn ${fontConfig.css_prefix_text}grid`,
         title: 'Grid Mode',
       }),
     ]
@@ -1508,7 +1509,7 @@ const FormBuilder = function (opts, element, $) {
     })
 
     const removeAttrs = {
-      className: `remove btn ${css_prefix_text}cancel`,
+      className: `remove btn ${fontConfig.css_prefix_text}cancel`,
       title: mi18n.get('removeMessage'),
     }
     optionInputs.push(m('a', null, removeAttrs))
@@ -1782,7 +1783,7 @@ const FormBuilder = function (opts, element, $) {
   })
 
   // Copy field
-  $stage.on('click touchstart', `.${css_prefix_text}copy`, function (evt) {
+  $stage.on('click touchstart', `.${fontConfig.css_prefix_text}copy`, function (evt) {
     evt.preventDefault()
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
