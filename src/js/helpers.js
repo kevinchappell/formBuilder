@@ -14,6 +14,8 @@ import {
   unique,
   xmlAttrString,
   flattenArray,
+  bootstrapColumnRegex,
+  getAllGridRelatedClasses,
 } from './utils'
 import events from './events'
 import { config } from './config'
@@ -37,6 +39,7 @@ export default class Helpers {
     this.layout = layout
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.formBuilder = formBuilder
+    this.toastTimer = null
   }
 
   /**
@@ -193,58 +196,94 @@ export default class Helpers {
     const _this = this
 
     if (form.childNodes.length !== 0) {
-      // build data object
-      forEach(form.childNodes, function (index, field) {
-        const $field = $(field)
+      const fields = []
+      //Get form-fields as expected(within rowWrapper)
+      forEach(form.childNodes, function (_index, fieldWrapper) {
+        const $fieldWrapper = $(fieldWrapper)
 
-        if (!$field.hasClass('disabled-field')) {
-          let fieldData = _this.getTypes($field)
-          const $roleInputs = $('.roles-field:checked', field)
-          const roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
+        //Go one level deeper than the row container to find the li
+        $fieldWrapper.find('li.form-field').each(function (i, field) {
+          fields.push(field)
+        })
+      })
 
-          fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
-
-          if (fieldData.subtype) {
-            if (fieldData.subtype === 'quill') {
-              const id = `${fieldData.name}-preview`
-              if (window.fbEditors.quill[id]) {
-                const instance = window.fbEditors.quill[id].instance
-                const data = instance.getContents()
-                fieldData.value = window.JSON.stringify(data.ops)
-              }
-            } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
-              const id = `${fieldData.name}-preview`
-              if (window.tinymce.editors[id]) {
-                const editor = window.tinymce.editors[id]
-                fieldData.value = editor.getContent()
-              }
-            }
-          }
-
-          if (roleVals.length) {
-            fieldData.role = roleVals.join(',')
-          }
-
-          fieldData.className = fieldData.className || fieldData.class
-
-          if (fieldData.className) {
-            const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
-            if (match) {
-              fieldData.style = match[1]
-            }
-          }
-
-          fieldData = trimObj(fieldData)
-
-          const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
-
-          if (multipleField) {
-            fieldData.values = _this.fieldOptionData($field)
-          }
-
-          formData.push(fieldData)
+      //Get form-fields that might still be currently editing and are temporarily outside a rowWrapper
+      forEach(form.childNodes, function (_index, testElement) {
+        const $testElement = $(testElement)
+        if ($testElement.is('li') && $testElement.hasClass('form-field')) {
+          fields.push(testElement)
         }
       })
+
+      if (fields.length) {
+        fields.forEach(field => {
+          const $field = $(field)
+
+          if (!$field.hasClass('disabled-field')) {
+            let fieldData = _this.getTypes($field)
+            const $roleInputs = $('.roles-field:checked', field)
+            const roleVals = $roleInputs.map(index => $roleInputs[index].value).get()
+
+            fieldData = Object.assign({}, fieldData, _this.getAttrVals(field))
+
+            if (fieldData.subtype) {
+              if (fieldData.subtype === 'quill') {
+                const id = `${fieldData.name}-preview`
+                if (window.fbEditors.quill[id]) {
+                  const instance = window.fbEditors.quill[id].instance
+                  const data = instance.getContents()
+                  fieldData.value = window.JSON.stringify(data.ops)
+                }
+              } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
+                const id = `${fieldData.name}-preview`
+                if (window.tinymce.editors[id]) {
+                  const editor = window.tinymce.editors[id]
+                  fieldData.value = editor.getContent()
+                }
+              }
+            }
+
+            if (roleVals.length) {
+              fieldData.role = roleVals.join(',')
+            }
+
+            fieldData.className = fieldData.className || fieldData.class
+
+            //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
+            if (
+              fieldData.className &&
+              $field.attr('addeddefaultcolumnclass') == 'true' &&
+              $field.closest(this.formBuilder.rowWrapperClassSelector).children().length == 1 &&
+              fieldData.className.includes(config.opts.defaultGridColumnClass)
+            ) {
+              const classes = getAllGridRelatedClasses(fieldData.className)
+
+              if (classes && classes.length > 0) {
+                classes.forEach(element => {
+                  fieldData.className = fieldData.className.replace(element, '').trim()
+                })
+              }
+            }
+
+            if (fieldData.className) {
+              const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
+              if (match) {
+                fieldData.style = match[1]
+              }
+            }
+
+            fieldData = trimObj(fieldData)
+
+            const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
+
+            if (multipleField) {
+              fieldData.values = _this.fieldOptionData($field)
+            }
+
+            formData.push(fieldData)
+          }
+        })
+      }
     }
 
     return formData
@@ -676,7 +715,7 @@ export default class Helpers {
   removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
-    const fields = stage.querySelectorAll('li.form-field')
+    const fields = stage.querySelectorAll(this.formBuilder.rowWrapperClassSelector)
     const markEmptyArray = []
 
     if (!fields.length) {
@@ -736,14 +775,12 @@ export default class Helpers {
    */
   closeAllEdit() {
     const _this = this
-    const fields = $('> li.editing', _this.d.stage)
-    const toggleBtns = $('.toggle-form', _this.d.stage)
-    const editPanels = $('.frm-holder', fields)
 
-    toggleBtns.removeClass('open')
-    fields.removeClass('editing')
-    $('.prev-holder', fields).show()
-    editPanels.hide()
+    $(_this.d.stage)
+      .find('li.form-field')
+      .each((i, elem) => {
+        this.closeField(elem.id, false)
+      })
   }
 
   /**
@@ -757,10 +794,37 @@ export default class Helpers {
     if (!field) {
       return field
     }
+
+    if ($(field).hasClass('editing')) {
+      return this.closeField(fieldId, animate)
+    } else {
+      return this.openField(fieldId, animate)
+    }
+  }
+
+  closeField(fieldId, animate = true) {
+    const _this = this
+
+    const field = document.getElementById(fieldId)
+    if (!field) {
+      return field
+    }
+
     const $editPanel = $('.frm-holder', field)
     const $preview = $('.prev-holder', field)
+
+    let currentlyEditing = false
+    if ($(field).hasClass('editing')) {
+      currentlyEditing = true
+    }
+
+    if (!currentlyEditing) {
+      return field
+    }
+
     field.classList.toggle('editing')
     $('.toggle-form', field).toggleClass('open')
+
     if (animate) {
       $preview.slideToggle(250)
       $editPanel.slideToggle(250)
@@ -769,14 +833,84 @@ export default class Helpers {
       $editPanel.toggle()
     }
     this.updatePreview($(field))
-    if (field.classList.contains('editing')) {
-      this.formBuilder.currentEditPanel = $editPanel[0]
-      config.opts.onOpenFieldEdit($editPanel[0])
-      document.dispatchEvent(events.fieldEditOpened)
-    } else {
-      config.opts.onCloseFieldEdit($editPanel[0])
-      document.dispatchEvent(events.fieldEditClosed)
+
+    const liContainer = $(`#${fieldId}`)
+    const rowContainer = $(`#${fieldId}-cont`)
+
+    //Put the li back in its place
+    rowContainer.append(liContainer)
+
+    this.removeContainerProtection(rowContainer.attr('id'))
+
+    config.opts.onCloseFieldEdit($editPanel[0])
+    document.dispatchEvent(events.fieldEditClosed)
+
+    const prevHolder = liContainer.find('.prev-holder')
+    const resultsTimeout = setTimeout(() => {
+      clearTimeout(resultsTimeout)
+      const cleanResults = _this.tmpCleanPrevHolder(prevHolder)
+
+      cleanResults.forEach(result => {
+        if (result['columnInfo'].columnSize) {
+          const currentClassRow = rowContainer.attr('class')
+          if (currentClassRow != result['columnInfo'].columnSize) {
+            //Keep the wrapping column div sync'd to the column property from the field
+            rowContainer.attr('class', `${result['columnInfo'].columnSize} ${this.formBuilder.colWrapperClass}`)
+            _this.tmpCleanPrevHolder(prevHolder)
+          }
+        }
+      })
+    }, 300)
+
+    return field
+  }
+
+  openField(fieldId, animate = true) {
+    const field = document.getElementById(fieldId)
+    if (!field) {
+      return field
     }
+
+    const $editPanel = $('.frm-holder', field)
+    const $preview = $('.prev-holder', field)
+
+    let currentlyEditing = false
+    if ($(field).hasClass('editing')) {
+      currentlyEditing = true
+    }
+
+    if (currentlyEditing) {
+      return field
+    }
+
+    field.classList.toggle('editing')
+    $('.toggle-form', field).toggleClass('open')
+
+    if (animate) {
+      $preview.slideToggle(250)
+      $editPanel.slideToggle(250)
+    } else {
+      $preview.toggle()
+      $editPanel.toggle()
+    }
+    this.updatePreview($(field))
+
+    const liContainer = $(`#${fieldId}`)
+    const colWrapper = $(`#${fieldId}-cont`)
+    const rowWrapper = colWrapper.closest(this.formBuilder.rowWrapperClassSelector)
+
+    //Mark the container as something we don't want to cleanup immediately
+    this.formBuilder.preserveTempContainers.push(colWrapper.attr('id'))
+
+    //Temporarily move the li outside(keeping same relative overall spot in the form) so that the field details show in full width regardless of its column size
+    liContainer.insertAfter(rowWrapper)
+
+    this.formBuilder.currentEditPanel = $editPanel[0]
+    config.opts.onOpenFieldEdit($editPanel[0])
+    document.dispatchEvent(events.fieldEditOpened)
+
+    $(document).trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
+
     return field
   }
 
@@ -896,6 +1030,7 @@ export default class Helpers {
     }
 
     const $field = $(field)
+    const fieldRowWrapper = $field.closest(this.formBuilder.rowWrapperClassSelector)
     if (!field) {
       config.opts.notify.warning('Field not found')
       return false
@@ -919,6 +1054,13 @@ export default class Helpers {
     }
 
     document.dispatchEvent(events.fieldRemoved)
+
+    this.removeContainerProtection(`${fieldID}-cont`)
+
+    setTimeout(() => {
+      $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
+    }, 300)
+
     return fieldRemoved
   }
 
@@ -1121,6 +1263,8 @@ export default class Helpers {
    * @return {Array|String} formData
    */
   getFormData(type = 'js', formatted = false) {
+    this.closeAllEdit()
+
     const h = this
     const data = {
       js: () => h.prepData(h.d.stage),
@@ -1129,5 +1273,173 @@ export default class Helpers {
     }
 
     return data[type](formatted)
+  }
+
+  tmpCleanPrevHolder($prevHolder) {
+    const _this = this
+    const cleanedFields = []
+
+    const formGroup = $prevHolder.find('.form-group')
+    tmpCleanColumnInfo(formGroup)
+
+    formGroup.find('*').each(function (i, field) {
+      tmpCleanColumnInfo($(field))
+    })
+
+    function tmpCleanColumnInfo($field) {
+      var classAttr = $field.attr('class')
+
+      if (typeof classAttr !== 'undefined' && classAttr !== false) {
+        const parseResult = _this.tryParseColumnInfo($field[0])
+
+        $field.attr('class', $field.attr('class').replace('col-', 'tmp-col-'))
+        $field.attr('class', $field.attr('class').replace('row', 'tmp-row'))
+
+        const result = {}
+        result['field'] = $field
+        result['columnInfo'] = parseResult
+        cleanedFields.push(result)
+      }
+    }
+
+    return cleanedFields
+  }
+
+  tryParseColumnInfo(data) {
+    const result = {}
+
+    if (data.className) {
+      const classes = getAllGridRelatedClasses(data.className)
+
+      if (classes && classes.length > 0) {
+        classes.forEach(element => {
+          if (element.startsWith('row-')) {
+            result['rowNumber'] = parseInt(element.replace('row-', '').trim())
+          } else {
+            result['columnSize'] = element
+          }
+        })
+      }
+    }
+
+    return result
+  }
+
+  //Remove one reference that protected this potentially empty container. There may be other open fields needing the container
+  removeContainerProtection(containerID) {
+    var index = this.formBuilder.preserveTempContainers.indexOf(containerID)
+    if (index !== -1) {
+      this.formBuilder.preserveTempContainers.splice(index, 1)
+    }
+  }
+
+  //Briefly highlight on/off
+  toggleHighlight(field, ms = 600) {
+    field.addClass('moveHighlight')
+    setTimeout(function () {
+      field.removeClass('moveHighlight')
+    }, ms)
+  }
+
+  showToast(msg, timeout = 3000) {
+    if (this.toastTimer != null) {
+      window.clearTimeout(this.toastTimer)
+      this.toastTimer = null
+    }
+
+    this.toastTimer = setTimeout(function () {
+      $('.snackbar').removeClass('show')
+    }, timeout)
+
+    $('.snackbar').addClass('show').html(msg)
+  }
+
+  getDistanceBetweenPoints(x1, y1, x2, y2) {
+    const y = x2 - x1
+    const x = y2 - y1
+
+    return Math.floor(Math.sqrt(x * x + y * y))
+  }
+
+  //Return full row name (row-1)
+  getRowClass(className) {
+    if (!className) {
+      return
+    }
+
+    const splitClasses = className.split(' ').filter(x => x.startsWith('row-'))
+    if (splitClasses && splitClasses.length > 0) {
+      return splitClasses[0]
+    }
+  }
+
+  //Return the row value i.e row-2 would return 2
+  getRowValue(className) {
+    if (!className) {
+      return 0
+    }
+
+    const rowClass = this.getRowClass(className)
+    if (rowClass) {
+      return parseInt(rowClass.split('-')[1])
+    }
+  }
+
+  //Example className of 'row row-1' would be changed for 'row row-4' where 4 is the newValue
+  changeRowClass(className, newValue) {
+    const rowClass = this.getRowClass(className)
+    return className.replace(rowClass, `row-${newValue}`)
+  }
+
+  //Return the column size i.e col-md-6 would return 6
+  getBootstrapColumnValue(className) {
+    if (!className) {
+      return 0
+    }
+
+    const bootstrapClass = this.getBootstrapColumnClass(className)
+    if (bootstrapClass) {
+      return parseInt(bootstrapClass.split('-')[2])
+    }
+  }
+
+  //Return the prefix (col-md)
+  getBootstrapColumnPrefix(className) {
+    if (!className) {
+      return 0
+    }
+
+    const bootstrapClass = this.getBootstrapColumnClass(className)
+    if (bootstrapClass) {
+      return `${bootstrapClass.split('-')[0]}-${bootstrapClass.split('-')[1]}`
+    }
+  }
+
+  //Return full class name (col-md-6)
+  getBootstrapColumnClass(className) {
+    if (!className) {
+      return
+    }
+
+    const splitClasses = className.split(' ').filter(className => bootstrapColumnRegex.test(className))
+    if (splitClasses && splitClasses.length > 0) {
+      return splitClasses[0]
+    }
+  }
+
+  //Example className of 'row row-1 col-md-6' would be changed for 'row row-1 col-md-4' where 4 is the newValue
+  changeBootstrapClass(className, newValue) {
+    const boostrapClass = this.getBootstrapColumnClass(className)
+    return className.replace(boostrapClass, `${this.getBootstrapColumnPrefix(className)}-${newValue}`)
+  }
+
+  syncBootstrapColumnWrapperAndClassProperty(fieldID, newValue) {
+    const colWrapper = $(`#${fieldID}-cont`)
+    colWrapper.attr('class', this.changeBootstrapClass(colWrapper.attr('class'), newValue))
+
+    const inputClassElement = $(`#className-${fieldID}`)
+    if (inputClassElement.val()) {
+      inputClassElement.val(this.changeBootstrapClass(inputClassElement.val(), newValue))
+    }
   }
 }

@@ -36,7 +36,7 @@
     overflow: hidden;
   }
 
-  > li {
+  li.form-field {
     &:hover {
       .field-actions {
         opacity: 1;
@@ -54,7 +54,7 @@
     }
   }
 
-  li {
+  li.form-field {
     position: relative;
     padding: 6px;
     clear: both;
@@ -432,27 +432,29 @@
     margin-left: 2%;
     background: $input-border-color;
     margin-bottom: 0;
-    border-radius: 5px;
+    border-radius: 2px;
     list-style: none;
     padding: 0;
 
     > li {
-      display: flex;
       cursor: move;
       margin: 1px;
-      padding-right: 28px;
+
+      padding: 6px;
+      background-color: $white;
 
       &:nth-child(1) .remove {
         display: none;
       }
 
       .remove {
-        position: absolute;
+        position: relative;
         opacity: 1;
-        right: 8px;
+        float: right;
+        right: 14px;
         height: 18px;
         width: 18px;
-        top: 14px;
+        top: 8px;
         font-size: 12px;
         padding: 0;
         color: $error;
@@ -461,7 +463,7 @@
         }
 
         &:hover {
-          background-color: $error;
+          background-color: $error !important;
           text-decoration: none;
           color: $white;
         }
@@ -729,4 +731,140 @@
   margin: 0 5px;
   font-size: 12px;
   cursor: default;
+}
+
+/*   ------------   Toast Message   ------------   */
+.snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+.snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+/*   ------------   END TOOLTIP   ------------   */
+
+.ui-state-highlight {
+  border-radius: 3px;
+  border: 1px dashed #0d99f2;
+  border-radius: 3px;
+  background-color: #e5f5f8;
+  width: 12px;
+}
+
+.moveHighlight {
+  border: 1px dashed #0d99f2 !important;
+  background-color: #e5f5f8 !important;
+}
+
+.currentGridModeFieldHighlight {
+  background-color: #e5f5f8 !important;
+}
+
+.grid-mode-help {
+  background-color: $white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.grid-mode-help-row1 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 1px;
+}
+.grid-mode-help-row2 {
+  white-space: nowrap;
+}
+
+.colHoverTempStyle {
+  padding-left: 7px !important;
+  padding-right: 7px !important;
+  flex: 95 1 0% !important;
+}
+
+.rowWrapper {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.btnAddControl {
+  border: 0;
+  background-color: unset;
+}
+
+.hoverColumnDropStyle {
+  border: 1px dashed #0d99f2;
+  border-radius: 3px;
+  background-color: #e5f5f8;
+  width: 20px;
+  position: fixed;
+  margin-left: 40px;
+}
+
+.hoverDropStyleInverse {
+  background-color: #0d99f2;
+  border: 1px dashed #e5f5f8;
+}
+
+.invisibleRowPlaceholder {
+  width: 0px !important;
+  position: fixed !important;
+  left: -100px !important;
 }

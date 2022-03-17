@@ -100,7 +100,7 @@ class FormRender {
             // Check if this rowID is created yet or not.
             let rowGroupNode = document.getElementById(rowID)
             if (!rowGroupNode) {
-              rowGroupNode = utils.markup('div', null, { id: rowID, className: 'row form-inline' })
+              rowGroupNode = utils.markup('div', null, { id: rowID, className: 'row' })
               renderedFormWrap.appendChild(rowGroupNode)
             }
             rowGroupNode.appendChild(field)

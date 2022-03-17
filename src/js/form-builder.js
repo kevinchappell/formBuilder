@@ -29,6 +29,22 @@ import {
 import { css_prefix_text } from '../fonts/config.json'
 
 const DEFAULT_TIMEOUT = 333
+const rowWrapperClassSelector = '.rowWrapper'
+const rowWrapperClass = rowWrapperClassSelector.replace('.', '')
+
+const colWrapperClassSelector = '.colWrapper'
+const colWrapperClass = colWrapperClassSelector.replace('.', '')
+
+const tmpColWrapperClassSelector = '.tempColWrapper'
+const tmpColWrapperClass = tmpColWrapperClassSelector.replace('.', '')
+
+const tmpRowPlaceholderClassSelector = '.tempRowWrapper'
+const tmpRowPlaceholderClass = tmpRowPlaceholderClassSelector.replace('.', '')
+
+const invisibleRowPlaceholderClassSelector = '.invisibleRowPlaceholder'
+const invisibleRowPlaceholderClass = invisibleRowPlaceholderClassSelector.replace('.', '')
+
+let isMoving = false
 
 const FormBuilder = function (opts, element, $) {
   const formBuilder = this
@@ -36,6 +52,12 @@ const FormBuilder = function (opts, element, $) {
   const formID = `frmb-${new Date().getTime()}`
   const data = new Data(formID)
   const d = new Dom(formID)
+
+  let formRows = []
+  formBuilder.preserveTempContainers = []
+  formBuilder.rowWrapperClassSelector = rowWrapperClassSelector
+  formBuilder.colWrapperClassSelector = colWrapperClassSelector
+  formBuilder.colWrapperClass = colWrapperClass
 
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
@@ -57,7 +79,21 @@ const FormBuilder = function (opts, element, $) {
   const $stage = $(d.stage)
   const $cbUL = $(d.controls)
 
-  // Sortable fields
+  let insertingNewControl = false
+  let insertTargetIsRow = false
+  let insertTargetIsColumn = false
+
+  let $targetInsertWrapper
+  let cloneControls
+
+  function enhancedBootstrapEnabled() {
+    if (!opts.enableEnhancedBootstrapGrid) {
+      return false
+    }
+
+    return true
+  }
+
   $stage.sortable({
     cursor: 'move',
     opacity: 0.9,
@@ -75,33 +111,76 @@ const FormBuilder = function (opts, element, $) {
     $stage.sortable('disable')
   }
 
-  // ControlBox with different fields
-  $cbUL.sortable({
-    helper: 'clone',
-    opacity: 0.9,
-    connectWith: $stage,
-    cancel: '.formbuilder-separator',
-    cursor: 'move',
-    scroll: false,
-    placeholder: 'ui-state-highlight',
-    start: (evt, ui) => h.startMoving.call(h, evt, ui),
-    stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
-    revert: 150,
-    beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
-    distance: 3,
-    update: function (event, ui) {
-      if (h.doCancel) {
-        return false
-      }
+  if (!enhancedBootstrapEnabled()) {
+    $cbUL.sortable({
+      helper: 'clone',
+      opacity: 0.9,
+      connectWith: $stage,
+      cancel: '.formbuilder-separator',
+      cursor: 'move',
+      scroll: false,
+      placeholder: 'ui-state-highlight',
+      start: (evt, ui) => h.startMoving.call(h, evt, ui),
+      stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
+      revert: 150,
+      beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
+      distance: 3,
+      update: function (event, ui) {
+        if (h.doCancel) {
+          return false
+        }
 
-      if (ui.item.parent()[0] === d.stage) {
-        h.doCancel = true
-        processControl(ui.item)
-      } else {
+        if (ui.item.parent()[0] === d.stage) {
+          h.doCancel = true
+          processControl(ui.item)
+        } else {
+          h.setFieldOrder($cbUL)
+          h.doCancel = !opts.sortableControls
+        }
+      },
+    })
+  } else {
+    // ControlBox with different fields
+    $cbUL.sortable({
+      opacity: 0.9,
+      connectWith: rowWrapperClassSelector,
+      cancel: '.formbuilder-separator',
+      cursor: 'move',
+      scroll: false,
+      start: (evt, ui) => {
+        h.startMoving.call(h, evt, ui)
+        isMoving = true
+      },
+      stop: (evt, ui) => {
+        h.stopMoving.call(h, evt, ui)
+        isMoving = false
+        cleanupTempPlaceholders()
+      },
+      revert: 150,
+      beforeStop: (evt, ui) => {
+        h.beforeStop.call(h, evt, ui)
+      },
+      distance: 3,
+      update: function (event) {
+        isMoving = false
+        if (h.doCancel) {
+          return false
+        }
+
+        //If started to enter a control into row but then moved it back, hide the placeholders again
+        if ($(event.target).attr('id') == $cbUL.attr('id')) {
+          HideInvisibleRowPlaceholders()
+        }
         h.setFieldOrder($cbUL)
         h.doCancel = !opts.sortableControls
-      }
-    },
+      },
+    })
+  }
+
+  $cbUL.on('mouseenter', function () {
+    if (stageHasFields()) {
+      $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+    }
   })
 
   const processControl = control => {
@@ -132,6 +211,8 @@ const FormBuilder = function (opts, element, $) {
 
   const $editorWrap = $(d.editorWrap)
 
+  $('<div class="snackbar">').appendTo($editorWrap)
+
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
     className: `cb-wrap ${data.layout.controls}`,
@@ -140,6 +221,12 @@ const FormBuilder = function (opts, element, $) {
   if (opts.showActionButtons) {
     cbWrap.appendChild(d.formActions)
   }
+
+  const gridModeHelp = m('div', '', {
+    id: `${data.formID}-gridModeHelp`,
+    className: 'grid-mode-help',
+  })
+  cbWrap.appendChild(gridModeHelp)
 
   $editorWrap.append(d.stage, cbWrap)
 
@@ -151,6 +238,16 @@ const FormBuilder = function (opts, element, $) {
   }
 
   $(d.controls).on('click', 'li', ({ target }) => {
+    //Prevent duplicate add when click & dragging control to specific spot
+    if (isMoving) {
+      return
+    }
+
+    //Remove initial placeholder if simply clicking to add field into blank stage
+    if (!stageHasFields()) {
+      $stage.find(tmpRowPlaceholderClassSelector).eq(0).remove()
+    }
+
     const $control = $(target).closest('li')
     h.stopIndex = undefined
     processControl($control)
@@ -250,9 +347,15 @@ const FormBuilder = function (opts, element, $) {
   const loadFields = function (formData) {
     formData = h.getData(formData)
     if (formData && formData.length) {
+      formData.forEach(field => {
+        CaptureRowData(field)
+      })
+
       formData.forEach(fieldData => prepFieldVars(trimObj(fieldData)))
       d.stage.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
+      config.opts.defaultFields.forEach(field => CaptureRowData(field))
+
       h.addDefaultFields()
     } else if (!opts.prepend && !opts.append) {
       d.stage.classList.add('empty')
@@ -264,6 +367,14 @@ const FormBuilder = function (opts, element, $) {
     }
 
     h.save()
+  }
+
+  //Capture information of all the row- values so generating new values will not ever clash with existing data
+  function CaptureRowData(field) {
+    const gridRowValue = h.getRowValue(field.className)
+    if (gridRowValue && !formRows.includes(gridRowValue)) {
+      formRows.push(gridRowValue)
+    }
   }
 
   /**
@@ -906,6 +1017,7 @@ const FormBuilder = function (opts, element, $) {
 
   // Append the new field to the editor
   const appendNewField = function (values, isNew = true) {
+    const columnData = prepareFieldRow(values)
     data.lastID = h.incrementId(data.lastID)
 
     const type = values.type || 'text'
@@ -935,6 +1047,17 @@ const FormBuilder = function (opts, element, $) {
       }),
     ]
 
+    if (enhancedBootstrapEnabled()) {
+      fieldButtons.push(
+        m('a', null, {
+          type: 'grid',
+          id: data.lastID + '-grid',
+          className: `grid-button btn ${css_prefix_text}grid`,
+          title: 'Grid Mode',
+        }),
+      )
+    }
+
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
       fieldButtons = fieldButtons.filter(btnData => !disabledFieldButtons.includes(btnData.type))
     }
@@ -962,7 +1085,9 @@ const FormBuilder = function (opts, element, $) {
     }
     liContents.push(m('span', '?', descAttrs))
 
-    liContents.push(m('div', '', { className: 'prev-holder' }))
+    const prevHolder = m('div', '', { className: 'prev-holder', dataFieldId: data.lastID })
+    liContents.push(prevHolder)
+
     const formElements = m('div', [advFields(values), m('a', mi18n.get('close'), { className: 'close-field' })], {
       className: 'form-elements',
     })
@@ -984,6 +1109,8 @@ const FormBuilder = function (opts, element, $) {
     })
     const $li = $(field)
 
+    AttatchColWrapperHandler($li)
+
     $li.data('fieldData', { attrs: values })
 
     if (typeof h.stopIndex !== 'undefined') {
@@ -997,6 +1124,68 @@ const FormBuilder = function (opts, element, $) {
     // generate the control, insert it into the list item & add it to the stage
     h.updatePreview($li)
 
+    let rowWrapperNode
+
+    if (enhancedBootstrapEnabled()) {
+      const targetRow = `div.row-${columnData.rowNumber}`
+
+      //Check if an overall row already exists for the field, else create one
+      if ($stage.children(targetRow).length) {
+        rowWrapperNode = $stage.children(targetRow)
+      } else {
+        rowWrapperNode = m('div', null, {
+          id: `${field.id}-row`,
+          className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+        })
+      }
+
+      //Turn the placeholder into the new row. Copy some attributes over
+      if (insertingNewControl && insertTargetIsRow) {
+        $targetInsertWrapper.attr('id', rowWrapperNode.id)
+        $targetInsertWrapper.attr('class', rowWrapperNode.className)
+        $targetInsertWrapper.attr('style', '')
+        rowWrapperNode = $targetInsertWrapper
+      }
+
+      //Add a wrapper div for the field itself. This div will be the rendered representation
+      const colWrapperNode = m('div', null, {
+        id: `${field.id}-cont`,
+        className: `${columnData.columnSize} ${colWrapperClass}`,
+      })
+
+      if (insertingNewControl && insertTargetIsColumn) {
+        if ($targetInsertWrapper.attr('prepend') == 'true') {
+          $(colWrapperNode).prependTo(rowWrapperNode)
+        } else {
+          $(colWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
+        }
+      }
+
+      //Control insert will take care of inserting itself
+      if (!insertTargetIsColumn) {
+        $(colWrapperNode).appendTo(rowWrapperNode)
+      }
+
+      //If inserting, use the existing index, do not always append to end
+      if (!insertingNewControl) {
+        $stage.append(rowWrapperNode)
+      }
+
+      $li.appendTo(colWrapperNode)
+
+      setupSortableRowWrapper(rowWrapperNode)
+
+      SetupInvisibleRowPlaceholders(rowWrapperNode)
+
+      //Record the fact that this field did not originally have column information stored.
+      //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
+      if (columnData.addedDefaultColumnClass) {
+        $li.attr('addedDefaultColumnClass', true)
+      }
+
+      h.tmpCleanPrevHolder($(prevHolder))
+    }
+
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
       opts.typeUserEvents[type].onadd(field)
     }
@@ -1008,6 +1197,312 @@ const FormBuilder = function (opts, element, $) {
       }
       if (field.scrollIntoView && opts.scrollToFieldOnAdd) {
         field.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+
+    if (enhancedBootstrapEnabled()) {
+      //Autosize entire row when using new insert mode
+      if (insertingNewControl && insertTargetIsColumn) {
+        autoSizeRowColumns(rowWrapperNode, true)
+      }
+
+      cleanupTempPlaceholders()
+    }
+
+    insertingNewControl = false
+    insertTargetIsRow = false
+    insertTargetIsColumn = false
+  }
+
+  function AttatchColWrapperHandler(colWrapper) {
+    if (!enhancedBootstrapEnabled()) {
+      return
+    }
+
+    colWrapper.mouseenter(function (e) {
+      if (!gridMode) {
+        HideInvisibleRowPlaceholders()
+
+        //Only show the placeholder for what is above/below the rowWrapper
+        $(this)
+          .closest(rowWrapperClassSelector)
+          .prevAll(tmpRowPlaceholderClassSelector)
+          .first()
+          .removeClass(invisibleRowPlaceholderClass)
+        $(this)
+          .closest(rowWrapperClassSelector)
+          .nextAll(tmpRowPlaceholderClassSelector)
+          .first()
+          .removeClass(invisibleRowPlaceholderClass)
+
+        gridModeTargetField = $(this)
+        gridModeStartX = e.pageX
+        gridModeStartY = e.pageY
+      }
+    })
+  }
+
+  function HideInvisibleRowPlaceholders() {
+    $stage.find(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+  }
+
+  function SetupInvisibleRowPlaceholders(rowWrapperNode) {
+    const wrapperClone = $(rowWrapperNode).clone()
+    wrapperClone.addClass(invisibleRowPlaceholderClass).addClass(tmpRowPlaceholderClass).html('')
+    wrapperClone.css('height', '1px')
+
+    wrapperClone.attr('class', wrapperClone.attr('class').replace('row-', ''))
+    wrapperClone.removeAttr('id')
+
+    if ($(rowWrapperNode).index() == 0) {
+      const wrapperClone2 = $(wrapperClone).clone()
+      $stage.prepend(wrapperClone2)
+      setupSortableRowWrapper(wrapperClone2)
+    }
+
+    wrapperClone.insertAfter($(rowWrapperNode))
+    setupSortableRowWrapper(wrapperClone)
+  }
+
+  function ResetAllInvisibleRowPlaceholders() {
+    $stage.children(tmpRowPlaceholderClassSelector).remove()
+
+    $stage.children(rowWrapperClassSelector).each((i, elem) => {
+      SetupInvisibleRowPlaceholders($(elem))
+    })
+  }
+
+  function setupSortableRowWrapper(rowWrapperNode) {
+    if (!enhancedBootstrapEnabled()) {
+      return
+    }
+
+    $(rowWrapperNode).sortable({
+      connectWith: [rowWrapperClassSelector],
+      cursor: 'move',
+      opacity: 0.9,
+      revert: 150,
+      tolerance: 'pointer',
+      helper: function (e, el) {
+        //Shrink the control a little while dragging so it's not in the way as much
+        const clone = el.clone()
+        clone.find('.field-actions').remove()
+        clone.css({ width: '20%', height: '100px', minHeight: '60px', overflow: 'hidden' })
+        return clone
+      },
+      over: function (event) {
+        const overTarget = $(event.target)
+        const overTargetIsPlaceholder = overTarget.hasClass(tmpRowPlaceholderClass)
+
+        if (!overTargetIsPlaceholder) {
+          removeColumnInsertButtons(overTarget)
+        }
+
+        overTarget.addClass('hoverDropStyleInverse')
+
+        if (!overTargetIsPlaceholder) {
+          HideInvisibleRowPlaceholders()
+
+          //Only show the placeholder for what is above/below the rowWrapper
+          overTarget
+            .prevAll(tmpRowPlaceholderClassSelector)
+            .first()
+            .removeClass(invisibleRowPlaceholderClass)
+            .css('height', '40px')
+          overTarget
+            .nextAll(tmpRowPlaceholderClassSelector)
+            .first()
+            .removeClass(invisibleRowPlaceholderClass)
+            .css('height', '40px')
+        }
+      },
+      out: function (event) {
+        $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
+        $(event.target).removeClass('hoverDropStyleInverse')
+      },
+      placeholder: 'hoverDropStyleInverse',
+      receive: function (event, ui) {
+        const senderIsControlsBox = $(ui.sender).attr('id') == $cbUL.attr('id')
+
+        const droppingToNewRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+        const droppingToPlaceholderRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+        const droppingToExistingRow =
+          $(ui.item).parent().hasClass(rowWrapperClass) && !$(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+
+        if (droppingToNewRow && !senderIsControlsBox) {
+          const colWrapper = $(ui.item)
+
+          const columnData = prepareFieldRow({})
+
+          const rowWrapperNode = m('div', null, {
+            id: `${colWrapper.find('li').attr('id')}-row`,
+            className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+          })
+
+          $(ui.item).parent().replaceWith(rowWrapperNode)
+          AttatchColWrapperHandler($(ui.item))
+
+          colWrapper.appendTo(rowWrapperNode)
+
+          setupSortableRowWrapper(rowWrapperNode)
+          syncFieldWithNewRow(colWrapper.attr('id'))
+          checkRowCleanup()
+        }
+
+        if (droppingToPlaceholderRow && senderIsControlsBox) {
+          insertTargetIsRow = true
+          insertingNewControl = true
+          $targetInsertWrapper = $(ui.item).parent()
+        }
+
+        if (droppingToExistingRow && senderIsControlsBox) {
+          //Look for the closest add control button and act as if that was used to add the control
+          if ($(ui.item).prev().hasClass('btnAddControl')) {
+            $targetInsertWrapper = $(ui.item).prev()
+          } else if ($(ui.item).next().hasClass('btnAddControl')) {
+            $targetInsertWrapper = $(ui.item).next()
+          } else {
+            $targetInsertWrapper = $(ui.item).attr('prepend', 'true')
+          }
+
+          const parentRowValue = h.getRowClass($(ui.item).parent().attr('class'))
+          $targetInsertWrapper.addClass(parentRowValue)
+
+          insertTargetIsColumn = true
+          insertingNewControl = true
+
+          h.stopIndex = undefined
+        }
+
+        cleanupTempPlaceholders()
+
+        if (insertingNewControl) {
+          h.doCancel = true
+          processControl(ui.item)
+          h.save.call(h)
+        }
+
+        ResetAllInvisibleRowPlaceholders()
+
+        const listFieldItem = $(ui.item).find('li')
+        if (listFieldItem.length) {
+          CheckTinyMCETransition(listFieldItem)
+          UpdatePreviewAndSave(listFieldItem)
+        }
+      },
+      start: function () {
+        cleanupTempPlaceholders()
+      },
+      stop: function (event, ui) {
+        $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
+        autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector), true)
+      },
+      update: function (event, ui) {
+        syncFieldWithNewRow(ui.item.attr('id'))
+      },
+    })
+
+    $(rowWrapperNode).off('mouseenter')
+    $(rowWrapperNode).on('mouseenter', function (e) {
+      setupColumnInserts($(e.currentTarget))
+    })
+
+    $(rowWrapperNode).off('mouseleave')
+    $(rowWrapperNode).on('mouseleave', function (e) {
+      removeColumnInsertButtons($(e.currentTarget))
+    })
+  }
+
+  function CheckTinyMCETransition(fieldListItem) {
+    const isTinyMCE = fieldListItem.find('textarea[type="tinymce"]')
+    if (isTinyMCE.length) {
+      window.lastFormBuilderCopiedTinyMCE = window.tinymce.get(isTinyMCE.attr('id')).save()
+    }
+  }
+
+  function UpdatePreviewAndSave(fieldListItem) {
+    h.updatePreview(fieldListItem)
+    h.save.call(h)
+  }
+
+  function cleanupTempPlaceholders() {
+    $stage.find(colWrapperClassSelector).removeClass('colHoverTempStyle')
+    $stage.find(tmpColWrapperClassSelector).remove()
+  }
+
+  function setupColumnInserts(rowWrapper) {
+    if (!opts.enableColumnInsertMenu) {
+      return
+    }
+
+    $(rowWrapper)
+      .children(colWrapperClassSelector)
+      .each((i, elem) => {
+        const colWrapper = $(elem)
+        colWrapper.addClass('colHoverTempStyle')
+
+        if (colWrapper.index() == 0) {
+          $(
+            `<button type="button" class=" ${tmpColWrapperClass} formbuilder-icon-plus btnAddControl ${h.getRowClass(
+              colWrapper.parent().attr('class'),
+            )}" prepend="true"></button>`,
+          ).insertBefore(colWrapper)
+        }
+
+        $(
+          `<button type="button" class=" ${tmpColWrapperClass} formbuilder-icon-plus btnAddControl ${h.getRowClass(
+            colWrapper.parent().attr('class'),
+          )}" appendAfter="${colWrapper.attr('id')}"></button>`,
+        ).insertAfter(colWrapper)
+      })
+  }
+
+  function removeColumnInsertButtons(rowWrapper) {
+    rowWrapper.find(tmpColWrapperClassSelector).remove()
+    rowWrapper.find(colWrapperClassSelector).removeClass('colHoverTempStyle')
+  }
+
+  function prepareFieldRow(data) {
+    let result = {}
+
+    if (!enhancedBootstrapEnabled()) {
+      return result
+    }
+
+    result = h.tryParseColumnInfo(data)
+    TryCreateNew()
+
+    if (!formRows.includes(result.rowNumber)) {
+      formRows.push(result.rowNumber)
+    }
+
+    return result
+
+    function TryCreateNew() {
+      if (!result.rowNumber) {
+        //Column information wasn't defined, get new default configuration for one.
+        let nextRow
+        if (formRows.length == 0) {
+          nextRow = 1
+        } else {
+          nextRow = Math.max(...formRows) + 1
+        }
+
+        result.rowNumber = nextRow
+
+        //If inserting directly into column, use the correct rowNumber
+        if (insertingNewControl && insertTargetIsColumn) {
+          result.rowNumber = h.getRowValue($targetInsertWrapper.attr('class'))
+        }
+
+        result.columnSize = opts.defaultGridColumnClass
+
+        if (!data.className) {
+          data.className = ''
+        }
+
+        data.className += ` row-${result.rowNumber} ${result.columnSize}`
+        result.addedDefaultColumnClass = true
       }
     }
   }
@@ -1060,6 +1555,9 @@ const FormBuilder = function (opts, element, $) {
 
   const cloneItem = function cloneItem(currentItem) {
     data.lastID = h.incrementId(data.lastID)
+
+    CheckTinyMCETransition(currentItem)
+
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
     const ts = new Date().getTime()
@@ -1074,6 +1572,13 @@ const FormBuilder = function (opts, element, $) {
       const curId = elem.getAttribute('for')
       const newForId = curId.replace(currentId, data.lastID)
       elem.setAttribute('for', newForId)
+    })
+
+    //Copy selects(includes subtype if applicable)
+    const selects = currentItem.find('select')
+    selects.each(function (i) {
+      const select = this
+      $clone.find('select').eq(i).val($(select).val())
     })
 
     $clone.attr('id', data.lastID)
@@ -1099,8 +1604,7 @@ const FormBuilder = function (opts, element, $) {
         return false
       }
 
-      h.updatePreview($(evt.target).closest('.form-field'))
-      h.save.call(h)
+      UpdatePreviewAndSave($(evt.target).closest('.form-field'))
     }
   }
 
@@ -1123,8 +1627,7 @@ const FormBuilder = function (opts, element, $) {
     } else {
       $option.slideUp('250', () => {
         $option.remove()
-        h.updatePreview($field)
-        h.save.call(h)
+        UpdatePreviewAndSave($field)
       })
     }
   })
@@ -1266,15 +1769,103 @@ const FormBuilder = function (opts, element, $) {
     e.target.value = forceNumber(e.target.value)
   })
 
+  $stage.on('click touchstart', '.btnAddControl', function (evt) {
+    const btn = $(evt.currentTarget)
+
+    cloneControls = $cbUL.clone()
+
+    cloneControls.hover(
+      function () {},
+      function () {
+        cloneControls.remove()
+      },
+    )
+
+    cloneControls.on('click', 'li', ({ target }) => {
+      insertTargetIsColumn = true
+      insertingNewControl = true
+      $targetInsertWrapper = btn
+
+      const $control = $(target).closest('li')
+      h.stopIndex = undefined
+      processControl($control)
+      h.save.call(h)
+
+      cloneControls.remove()
+    })
+
+    $stage.append(cloneControls)
+
+    if (btn.index() == 0) {
+      cloneControls.css({
+        position: 'fixed',
+        left: btn.offset().left,
+        top: btn.offset().top - $(window).scrollTop(),
+      })
+    } else {
+      cloneControls.css({
+        position: 'fixed',
+        left: btn.offset().left - 80,
+        top: btn.offset().top - $(window).scrollTop(),
+      })
+    }
+
+    //Ensure the bottom of the menu is visible when close to the bottom of page
+    const bottomOfClone = cloneControls.offset().top + cloneControls.outerHeight()
+    const bottomOfScreen = $(window).scrollTop() + $(window).innerHeight()
+    if (bottomOfClone > bottomOfScreen) {
+      cloneControls.css({ top: parseInt(cloneControls.css('top')) - (bottomOfClone - bottomOfScreen) })
+    }
+  })
+
   // Copy field
   $stage.on('click touchstart', `.${css_prefix_text}copy`, function (evt) {
     evt.preventDefault()
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
-    $clone.insertAfter(currentItem)
-    h.updatePreview($clone)
-    h.save.call(h)
+    prepareCloneWrappers($clone, currentItem)
+    UpdatePreviewAndSave($clone)
+
+    h.tmpCleanPrevHolder($clone.find('.prev-holder'))
+
+    if (opts.editOnAdd) {
+      h.closeField(data.lastID, false)
+    }
   })
+
+  function prepareCloneWrappers($clone, currentItem) {
+    if (!enhancedBootstrapEnabled()) {
+      $clone.insertAfter(currentItem)
+      return
+    }
+
+    const inputClassElement = $(`#className-${currentItem.attr('id')}`)
+    const columnData = prepareFieldRow({})
+
+    const rowWrapper = m('div', null, {
+      id: `${$clone.attr('id')}-row`,
+      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+    })
+
+    const colWrapper = m('div', null, {
+      id: `${$clone.attr('id')}-cont`,
+      className: `${h.getBootstrapColumnClass(inputClassElement.val())} ${colWrapperClass}`,
+    })
+    $(colWrapper).appendTo(rowWrapper)
+
+    let insertAfterElement
+    if (currentItem.parent().is('div')) {
+      insertAfterElement = currentItem.closest(rowWrapperClassSelector)
+    } else if (currentItem.parent().is('ul')) {
+      insertAfterElement = currentItem
+    }
+
+    $(rowWrapper).insertAfter(insertAfterElement)
+    $clone.appendTo(colWrapper)
+
+    setupSortableRowWrapper(rowWrapper)
+    syncFieldWithNewRow($clone.attr('id'))
+  }
 
   // Delete field
   $stage.on('click touchstart', '.delete-confirm', e => {
@@ -1309,6 +1900,392 @@ const FormBuilder = function (opts, element, $) {
     }
   })
 
+  var gridMode = false
+  var gridModeTargetField
+  let gridModeStartX
+  let gridModeStartY
+  $stage.on('click touchstart', '.grid-button', e => {
+    e.preventDefault()
+
+    const ID = $(e.target).parents('.form-field:eq(0)').attr('id')
+    gridModeTargetField = $(document.getElementById(ID))
+    gridModeStartX = e.pageX
+    gridModeStartY = e.pageY
+
+    toggleGridModeActive()
+  })
+
+  //Use mousewheel to work resizing
+  $stage.bind('mousewheel', function (e) {
+    if (gridMode) {
+      e.preventDefault()
+
+      const parentCont = gridModeTargetField.closest('div')
+      const currentColValue = h.getBootstrapColumnValue(parentCont.attr('class'))
+
+      let nextColSize
+      if (e.originalEvent.wheelDelta / 120 > 0) {
+        nextColSize = parseInt(currentColValue) + 1
+      } else {
+        nextColSize = parseInt(currentColValue) - 1
+      }
+
+      if (nextColSize > 12) {
+        h.showToast('<b class="formbuilder-required">Column Size cannot exceed 12</b>')
+        return
+      }
+
+      if (nextColSize < 1) {
+        h.showToast('<b class="formbuilder-required">Column Size cannot be less than 1</b>')
+        return
+      }
+
+      //Check overall column value, do not allow the entire row to exceed 12
+      const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
+
+      let totalRowValueCount = nextColSize
+      rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
+        const colWrapper = $(`#${elem.id}`)
+        const fieldID = colWrapper.find('li').attr('id')
+
+        if (fieldID != gridModeTargetField.attr('id')) {
+          totalRowValueCount += h.getBootstrapColumnValue($(`#${fieldID}-cont`).attr('class'))
+        }
+      })
+
+      if (totalRowValueCount > 12) {
+        h.showToast('<b class="formbuilder-required">There is a maximum of 12 columns per row</b>')
+        return
+      }
+
+      h.syncBootstrapColumnWrapperAndClassProperty(gridModeTargetField.attr('id'), nextColSize)
+      gridModeTargetField.attr('manuallyChangedDefaultColumnClass', true)
+
+      buildGridModeCurrentRowInfo()
+      h.toggleHighlight(gridModeTargetField)
+    }
+  })
+
+  //Use W A S D or Arrow Keys to move the field up/down/left/right across the form
+  //Use R to auto-size all columns in the row equally
+  $(document).keydown(e => {
+    if (gridMode) {
+      e.preventDefault()
+      const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
+
+      if (e.keyCode == 87 || e.keyCode == 38) {
+        moveFieldUp(rowWrapper)
+      }
+
+      if (e.keyCode == 83 || e.keyCode == 40) {
+        moveFieldDown(rowWrapper)
+      }
+
+      if (e.keyCode == 65 || e.keyCode == 37) {
+        moveFieldLeft()
+      }
+
+      if (e.keyCode == 68 || e.keyCode == 39) {
+        moveFieldRight()
+      }
+
+      if (e.keyCode == 82) {
+        autoSizeRowColumns(rowWrapper, true)
+      }
+
+      buildGridModeCurrentRowInfo()
+      removeColumnInsertButtons(rowWrapper)
+    }
+  })
+
+  function moveFieldUp(rowWrapper) {
+    const previousRowSibling = rowWrapper.prevAll().not(tmpRowPlaceholderClassSelector).first()
+    if (previousRowSibling.length) {
+      $(gridModeTargetField.parent().parent()).swapWith(previousRowSibling)
+    } else {
+      return
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function moveFieldDown(rowWrapper) {
+    const nextRowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).first()
+    if (nextRowSibling.length) {
+      $(gridModeTargetField.parent().parent()).swapWith(nextRowSibling)
+    } else {
+      return
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function moveFieldLeft() {
+    const colSibling = gridModeTargetField.parent().prev()
+    if (colSibling.length) {
+      gridModeTargetField.parent().after(colSibling)
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+
+  function moveFieldRight() {
+    const colSibling = gridModeTargetField.parent().next()
+    if (colSibling.length) {
+      gridModeTargetField.parent().before(colSibling)
+    }
+    h.toggleHighlight(gridModeTargetField)
+  }
+  function autoSizeRowColumns(rowWrapper, force = false) {
+    const childRowCount = rowWrapper.children(`div${colWrapperClassSelector}`).length
+    const newAutoCalcSizeValue = Math.floor(12 / childRowCount)
+
+    rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
+      const colWrapper = $(`#${elem.id}`)
+
+      //Don't auto-size the field if the user had manually adjusted it during this session
+      if (!force && colWrapper.find('li').attr('manuallyChangedDefaultColumnClass') == 'true') {
+        h.showToast(`Preserving column size of field ${i + 1} because you had personally adjusted it`, 4000)
+        return
+      }
+
+      h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
+    })
+  }
+
+  function syncFieldWithNewRow(fieldID) {
+    if (fieldID) {
+      const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
+      if (inputClassElement.val()) {
+        const oldRow = h.getRowClass(inputClassElement.val())
+        const wrapperRow = h.getRowClass(inputClassElement.closest(rowWrapperClassSelector).attr('class'))
+        inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
+        checkRowCleanup()
+      }
+    }
+  }
+
+  //When mouse moves away a certain distance, cancel grid mode
+  $(document).mousemove(e => {
+    if (
+      gridMode &&
+      h.getDistanceBetweenPoints(gridModeStartX, gridModeStartY, e.pageX, e.pageY) > config.opts.cancelGridModeDistance
+    ) {
+      toggleGridModeActive(false)
+    }
+  })
+
+  $(document).on('checkRowCleanup', (event, data) => {
+    checkRowCleanup()
+
+    const rowWrapper = $(`#${data.rowWrapperID}`)
+    if (rowWrapper.length) {
+      autoSizeRowColumns(rowWrapper, true)
+    }
+
+    checkSetupBlankStage()
+  })
+
+  $(document).on('fieldOpened', (event, data) => {
+    const rowWrapper = $(`#${data.rowWrapperID}`)
+    if (rowWrapper.length) {
+      removeColumnInsertButtons(rowWrapper)
+    }
+  })
+
+  function checkRowCleanup() {
+    $stage.find(colWrapperClassSelector).each((i, elem) => {
+      const $colWrapper = $(elem)
+      if ($colWrapper.is(':empty') && !formBuilder.preserveTempContainers.includes($colWrapper.attr('id'))) {
+        $colWrapper.remove()
+      }
+    })
+
+    $stage
+      .children(rowWrapperClassSelector)
+      .not(tmpRowPlaceholderClassSelector)
+      .each((i, elem) => {
+        if ($(elem).children(colWrapperClassSelector).length == 0) {
+          const rowValue = h.getRowValue($(elem).attr('class'))
+          formRows = formRows.filter(x => x != rowValue)
+          $(elem).remove()
+        } else {
+          removeColumnInsertButtons($(elem))
+        }
+      })
+  }
+
+  function stageHasFields() {
+    return $stage.find('li').length > 0
+  }
+
+  function checkSetupBlankStage() {
+    if (stageHasFields() || !enhancedBootstrapEnabled()) {
+      return
+    }
+
+    const columnData = prepareFieldRow({})
+
+    const rowWrapperNode = m('div', null, {
+      id: `${h.incrementId(data.lastID)}-row`,
+      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+    })
+
+    $stage.append(rowWrapperNode)
+    setupSortableRowWrapper(rowWrapperNode)
+    ResetAllInvisibleRowPlaceholders()
+
+    //Create 1 invisible placeholder which will allow the initial drag anywhere in the stage
+    $stage
+      .find(tmpRowPlaceholderClassSelector)
+      .eq(0)
+      .removeClass(invisibleRowPlaceholderClass)
+      .css({ height: $stage.css('height'), backgroundColor: 'transparent' })
+  }
+
+  function toggleGridModeActive(active = true) {
+    if (active) {
+      gridMode = true
+      h.showToast('Starting Grid Mode - Use the mousewheel to resize.', 1500)
+
+      //Hide controls
+      $cbUL.css('display', 'none')
+      $(d.formActions).css('display', 'none')
+
+      //Cleanup temp artifacts
+      cleanupTempPlaceholders()
+
+      buildGridModeHelp()
+      h.closeAllEdit()
+      h.toggleHighlight(gridModeTargetField)
+      HideInvisibleRowPlaceholders()
+    } else {
+      h.showToast('Grid Mode Finished', 1500)
+
+      //If when exiting grid mode and the row columns end up being > 12 (This can happen if the user moved a column up/down and exited), auto-resize it.
+      const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
+      let totalRowValueCount = 0
+
+      rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
+        const colWrapper = $(`#${elem.id}`)
+        const fieldID = colWrapper.find('li').attr('id')
+        totalRowValueCount += h.getBootstrapColumnValue($(`#${fieldID}-cont`).attr('class'))
+      })
+
+      if (totalRowValueCount > 12) {
+        autoSizeRowColumns(rowWrapper, true)
+      }
+
+      gridMode = false
+      gridModeTargetField = null
+
+      $(gridModeHelp).html('')
+
+      //Show controls
+      $cbUL.css('display', 'unset')
+      $(d.formActions).css('display', 'unset')
+    }
+  }
+
+  function buildGridModeHelp() {
+    $(gridModeHelp).html(`
+    <div style='padding:5px'>    
+      <h3 class="text text-center">Grid Mode</h3>    
+      
+      <table style='border-spacing:7px;border-collapse: separate'>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>MOUSEWHEEL</kbd></td>
+            <td>Adjust the field column size</td>
+          </tr>    
+          <tr>
+            <td><kbd>W or &#x2191;</kbd></td> 
+            <td>Move entire row up</td>
+          </tr>
+          <tr>
+              <td><kbd>S or &#x2193;</kbd></td> 
+              <td>Move entire row down</td>
+          </tr>
+          <tr>
+              <td><kbd>A or &#x2190;</kbd></td>
+              <td>Move field left within the row</td>
+          </tr>
+          <tr>
+              <td><kbd>D or &#x2192;</kbd></td> 
+              <td>Move field right within the row</td>
+          </tr>
+          <tr>
+            <td><kbd>R</kbd></td> 
+            <td>Resize all fields within the row to be maximally equal</td>
+          </tr>
+          <tr>
+        </tbody> 
+      </table>
+
+      <h5 class="text text-center" style='padding-top:10px'>Current Row Fields</h5>    
+      
+      <table class='gridHelpCurrentRow'>
+        <colgroup>
+          <col width="100%" />
+          <col width="0%" />
+        </colgroup>
+        
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Size</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        </tbody> 
+      </table>
+      
+    </div>
+    `)
+
+    buildGridModeCurrentRowInfo()
+  }
+
+  function buildGridModeCurrentRowInfo() {
+    $(gridModeHelp).find('.gridHelpCurrentRow tbody').empty()
+
+    const rowWrapper = gridModeTargetField.closest(rowWrapperClassSelector)
+
+    rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
+      const colWrapper = $(`#${elem.id}`)
+      const fieldID = colWrapper.find('li').attr('id')
+      const fieldType = $(`#${fieldID}`).attr('type')
+
+      let label = $(`#label-${fieldID}`).html()
+      if (fieldType == 'hidden' || fieldType == 'paragraph') {
+        label = $(`#name-${fieldID}`).val()
+      }
+
+      if (!label) {
+        label = $(`#${fieldID}`).attr('id')
+      }
+
+      //Highlight the current field being worked on
+      let currentFieldClass = ''
+      if (gridModeTargetField.attr('id') == fieldID) {
+        currentFieldClass = 'currentGridModeFieldHighlight'
+      }
+
+      $(gridModeHelp).find('.gridHelpCurrentRow tbody').append(`
+        <tr>
+          <td class='grid-mode-help-row1 ${currentFieldClass}'>${label}</td>
+          <td class='grid-mode-help-row2 ${currentFieldClass}'>
+            ${h.getBootstrapColumnValue($(`#${fieldID}-cont`).attr('class'))}
+          </td>
+        <tr>
+      `)
+    })
+  }
+
   // Update button style selection
   $stage.on('click', '.style-wrap button', e => {
     const $button = $(e.target)
@@ -1318,8 +2295,7 @@ const FormBuilder = function (opts, element, $) {
     $btnStyle.val(styleVal)
     $button.siblings('.btn').removeClass('selected')
     $button.addClass('selected')
-    h.updatePreview($btnStyle.closest('.form-field'))
-    h.save()
+    UpdatePreviewAndSave($btnStyle.closest('.form-field'))
   })
 
   // Attach a callback to toggle required asterisk
@@ -1441,6 +2417,9 @@ const FormBuilder = function (opts, element, $) {
       if (opts.stickyControls.enable) {
         h.stickyControls($stage)
       }
+
+      checkSetupBlankStage()
+
       clearTimeout(onRenderTimeout)
     }, 0)
   })

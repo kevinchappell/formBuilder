@@ -10,8 +10,8 @@ import controlTextarea from './textarea'
  * var renderOpts = {
  *    controlConfig: {
  *      'textarea.tinymce': {
-*         paste_data_images: false
-*       }
+ *         paste_data_images: false
+ *       }
  *    }
  * };
  * ```
@@ -80,13 +80,25 @@ export default class controlTinymce extends controlTextarea {
     // define options & allow them to be overwritten in the class config
     const options = jQuery.extend(this.editorOptions, this.classConfig)
     options.target = this.field
-    // initialise the editor
-    window.tinymce.init(options)
+
+    setTimeout(() => {
+      // initialise the editor
+      window.tinymce.init(options)
+    }, 100)
 
     // Set userData
     if (this.config.userData) {
       window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]))
     }
+
+    if (window.lastFormBuilderCopiedTinyMCE) {
+      const timeout = setTimeout(() => {
+        window.tinymce.editors[this.id].setContent(this.parsedHtml(window.lastFormBuilderCopiedTinyMCE))
+        window.lastFormBuilderCopiedTinyMCE = null
+        clearTimeout(timeout)
+      }, 300)
+    }
+
     return evt
   }
 }

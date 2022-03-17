@@ -84,6 +84,10 @@ export const defaultOptions = {
   typeUserAttrs: {},
   typeUserDisabledAttrs: {},
   typeUserEvents: {},
+  defaultGridColumnClass: 'col-md-12',
+  cancelGridModeDistance: 100,
+  enableColumnInsertMenu: false,
+  enableEnhancedBootstrapGrid: false,
 }
 
 export const styles = {
