@@ -1,3 +1,10 @@
+# [3.8.0](https://github.com/kevinchappell/formBuilder/compare/v3.7.4...v3.8.0) (2022-03-17)
+
+
+### Features
+
+* enhanced column features ([023f8b7](https://github.com/kevinchappell/formBuilder/commit/023f8b7bf040b21a18f8a8e7870da8918998bdc4))
+
 ## [3.7.4](https://github.com/kevinchappell/formBuilder/compare/v3.7.3...v3.7.4) (2022-03-11)
 
 
