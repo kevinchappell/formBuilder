@@ -1272,6 +1272,8 @@ export default class Helpers {
    * @return {Array|String} formData
    */
   getFormData(type = 'js', formatted = false) {
+    this.closeAllEdit()
+
     const h = this
     const data = {
       js: () => h.prepData(h.d.stage),

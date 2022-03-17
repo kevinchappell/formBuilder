@@ -94,9 +94,10 @@ export default class controlTinymce extends controlTextarea {
     }
 
     if (window.lastFormBuilderCopiedTinyMCE) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         window.tinymce.editors[this.id].setContent(this.parsedHtml(window.lastFormBuilderCopiedTinyMCE))
         window.lastFormBuilderCopiedTinyMCE = null
+        clearTimeout(timeout)
       }, 300)
     }
 
