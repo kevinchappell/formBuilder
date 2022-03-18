@@ -311,7 +311,21 @@ jQuery(function ($) {
     return (editing = !editing)
   }
 
-  const formBuilder = $('.build-wrap').formBuilder(fbOptions)
+  let formBuilder = $('.build-wrap').formBuilder(fbOptions)
+  // //let formBuilder2 = $('.build-wrap').formBuilder({ formData })
+
+  // //formBuilder.actions.closeAllFieldEdit() // first
+  // setTimeout(() => {
+  //   //formBuilder.actions.closeAllFieldEdit()
+  //   console.log($('.build-wrap1').formBuilder('getData'))
+  //   console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
+  // }, 6000)
+
+  // formBuilder = $('.build-wrap')
+  //   .formBuilder()
+  //   .promise.then(formBuilder => {
+  //     console.log(formBuilder.formData)
+  //   })
 
   const fbPromise = formBuilder.promise
 

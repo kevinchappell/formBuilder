@@ -2382,8 +2382,8 @@ const FormBuilder = function (opts: formBuilderOptions, element, $) {
     showData: h.showData.bind(h),
     save: minify => {
       const formData = h.save(minify)
-      const formDataJS = window.JSON.parse(formData)
-      config.opts.onSave(formDataJS)
+      const formDataJS = JSON.parse(formData)
+      config.opts.onSave(undefined, formDataJS)
 
       return formDataJS
     },
@@ -2454,8 +2454,10 @@ const FormBuilder = function (opts: formBuilderOptions, element, $) {
 const methods = {
   init: (options, elems) => {
     const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
-    config.opts = opts
     const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
+
+    config.opts = opts
+
     methods.instance = {
       actions: {
         getFieldTypes: null,
@@ -2478,6 +2480,23 @@ const methods = {
         return methods.instance.actions.getData && methods.instance.actions.getData('json')
       },
       promise: new Promise(function (resolve, reject) {
+        // try {
+        //   await mi18n.init(i18nOpts)
+
+        //   elems.each(i => {
+        //     const formBuilder = new FormBuilder(opts, elems[i], jQuery)
+        //     jQuery(elems[i]).data('formBuilder', formBuilder)
+        //     Object.assign(methods, formBuilder.actions, { markup })
+        //     methods.instance.actions = formBuilder.actions
+        //   })
+
+        //   delete methods.instance.promise
+        //   resolve(methods.instance)
+        // } catch (error) {
+        //   reject(error)
+        //   opts.notify.error(error)
+        // }
+
         mi18n
           .init(i18nOpts)
           .then(() => {
@@ -2501,17 +2520,20 @@ const methods = {
   },
 }
 
-jQuery.fn.formBuilder = function (methodOrOptions = {}, ...args) {
+jQuery.fn.formBuilder = function (methodOrOptions: formBuilderOptions = {}, ...args) {
+  debugger
+
   const isMethod = typeof methodOrOptions === 'string'
   if (isMethod) {
     if (methods[methodOrOptions]) {
       if (typeof methods[methodOrOptions] === 'function') {
+        //@ts-ignore
         return methods[methodOrOptions].apply(this, args)
       }
       return methods[methodOrOptions]
     }
   } else {
-    const instance: FormBuilderType = methods.init(methodOrOptions, this)
+    const instance = methods.init(methodOrOptions, this)
     Object.assign(methods, instance)
     return instance
   }

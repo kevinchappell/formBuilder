@@ -111,9 +111,9 @@ export type MarkupType = string | HTMLElement
 export interface formBuilderOptions {
   layout?: typeof Layout
   layoutTemplates?: layoutTemplates
-  onAddField: (lastID: string, field: Field) => any
-  onAddFieldAfter: (lastID: string, field: Field) => any
-  onAddOption: (option: optionTemplate, params: optionTemplateParams) => any
+  onAddField?: (lastID: string, field: Field) => any
+  onAddFieldAfter?: (lastID: string, field: Field) => any
+  onAddOption?: (option: optionTemplate, params: optionTemplateParams) => any
   actionButtons?: actionButton[]
   disabledActionButtons?: string[]
   allowStageSort?: boolean
@@ -123,7 +123,7 @@ export interface formBuilderOptions {
   defaultFields?: Field[]
   disabledAttrs?: defaultAttributeNames[]
   disabledFieldButtons?: PartialRecord<fbControlType, layoutFieldButtons[]>
-  disabledSubtypes: PartialRecord<fbControlType, fbControlSubtype[]>
+  disabledSubtypes?: PartialRecord<fbControlType, fbControlSubtype[]>
   disableFields?: fbControlType[]
   disableHTMLLabels?: boolean
   disableInjectedStyle?: boolean
