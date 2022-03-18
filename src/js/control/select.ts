@@ -1,4 +1,4 @@
-import { BaseControlAttributes } from '../../formbuilder-types'
+import { BaseControlAttributes } from '../../types/formbuilder-types'
 import control from '../control'
 import { trimObj } from '../utils'
 
@@ -37,7 +37,7 @@ export default class controlSelect extends control {
     if (type === 'checkbox-group' && data.required) {
       const self = this
       const defaultOnRender = this.onRender.bind(this)
-      this.onRender = function() {
+      this.onRender = function () {
         self.groupRequired()
         defaultOnRender()
       }

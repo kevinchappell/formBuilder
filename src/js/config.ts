@@ -1,4 +1,5 @@
 import mi18n from 'mi18n'
+import { formBuilderOptions } from '../types/formbuilder-types'
 
 const noop = (...args: any) => null
 
@@ -6,10 +7,11 @@ const noop = (...args: any) => null
 //@ts-ignore
 mi18n.addLanguage('en-US', FB_EN_US)
 
-export const defaultOptions = {
+export const defaultOptions: formBuilderOptions = {
   actionButtons: [], // additional form action buttons- save, data, clear
   allowStageSort: true,
   append: false, // append non-editable content to the form.
+  prepend: false,
   controlOrder: [
     'autocomplete',
     'button',
@@ -64,7 +66,6 @@ export const defaultOptions = {
    */
   onSave: noop,
   persistDefaultFields: false,
-  prepend: false,
   replaceFields: [],
   roles: {
     1: 'Administrator',

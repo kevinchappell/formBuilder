@@ -3,7 +3,7 @@
  * sorting and other fun stuff
  */
 
-import { FormBuilderFormData, MarkupAttributes } from '../formbuilder-types'
+import { FormBuilderFormData, MarkupAttributes } from '../types/formbuilder-types'
 
 window.fbLoaded = {
   js: [],

@@ -21,8 +21,8 @@ import events from './events'
 import { config } from './config'
 import control from './control'
 import controlCustom from './control/custom'
-import { CheckboxAttributes, Coords, FieldData, FieldTypes, GridInfo } from '../formbuilder-types'
-
+import { CheckboxAttributes, Coords, FieldData, FieldTypes, GridInfo } from '../types/formbuilder-types'
+import { defaultOptions } from './config'
 /**
  * Utilities specific to form-builder.js
  */
@@ -1207,13 +1207,13 @@ export default class Helpers {
    * @param  {Object} options
    * @return {Object} processedOptions
    */
-  processOptions(options) {
+  processOptions(options: typeof defaultOptions) {
     const _this = this
     const { actionButtons, replaceFields, ...opts } = options
-    let fieldEditContainer = opts.fieldEditContainer
-    if (typeof opts.fieldEditContainer === 'string') {
-      fieldEditContainer = document.querySelector(opts.fieldEditContainer)
-    }
+    // let fieldEditContainer = opts.fieldEditContainer
+    // if (typeof opts.fieldEditContainer === 'string') {
+    //   fieldEditContainer = document.querySelector(opts.fieldEditContainer)
+    // }
     const mergedActionButtons = [
       {
         type: 'button',
@@ -1252,7 +1252,7 @@ export default class Helpers {
       // html labels are not available using xml dataType
       opts.disableHTMLLabels = true
     }
-    config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
+    config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, opts)
     return config.opts
   }
 
@@ -1325,7 +1325,7 @@ export default class Helpers {
           if (element.startsWith('row-')) {
             result['rowNumber'] = parseInt(element.replace('row-', '').trim())
           } else {
-            result['columnSize'] = element
+            result['columnClassSize'] = element
           }
         })
       }

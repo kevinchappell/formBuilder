@@ -193,15 +193,15 @@ jQuery(function ($) {
         max: 11,
       },
     },
-    'checkbox-group': {
-      'custom-group': {
-        customInput: {
-          label: 'Custom Text Field',
-          value: 'This field is added only to checkbox with specific subtype',
-          type: 'text',
-        },
-      },
-    },
+    // 'checkbox-group': {
+    //   'custom-group': {
+    //     customInput: {
+    //       label: 'Custom Text Field',
+    //       value: 'This field is added only to checkbox with specific subtype',
+    //       type: 'text',
+    //     },
+    //   },
+    // },
   }
 
   // test disabledAttrs
@@ -271,6 +271,8 @@ jQuery(function ($) {
     disableFields: ['autocomplete'],
     replaceFields: replaceFields,
     editOnAdd: true,
+    enableColumnInsertMenu: false,
+    enableEnhancedBootstrapGrid: true,
     disabledFieldButtons: {},
     controlPosition: 'right', // left|right,
     i18n: {

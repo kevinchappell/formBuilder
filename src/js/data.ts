@@ -1,4 +1,4 @@
-import { Layout } from '../formbuilder-types'
+import { Layout } from '../types/formbuilder-types'
 
 export const instanceData = {}
 

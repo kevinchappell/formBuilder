@@ -1,7 +1,7 @@
 // CONTROL.JS
 import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils'
 import mi18n from 'mi18n'
-import { i18nDefinition } from '../formbuilder-types'
+import { i18nDefinition } from '../types/formbuilder-types'
 
 /**
  * Base class for all control classes

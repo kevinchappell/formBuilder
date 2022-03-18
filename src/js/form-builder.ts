@@ -27,7 +27,6 @@ import {
   getContentType,
 } from './utils'
 import fontConfig from '../fonts/config.json'
-
 import {
   CheckboxAttributes,
   Field,
@@ -37,7 +36,8 @@ import {
   MarkupType,
   SelectAttributes,
   TextInputAttributes,
-} from '../formbuilder-types'
+} from '../types/formbuilder-types'
+//import { FormBuilder as FormBuilderType } from '..'
 
 const DEFAULT_TIMEOUT = 333
 const rowWrapperClassSelector = '.rowWrapper'
@@ -57,8 +57,8 @@ const invisibleRowPlaceholderClass = invisibleRowPlaceholderClassSelector.replac
 
 let isMoving = false
 
-const FormBuilder = function (opts, element, $) {
-  const formBuilder = this
+const FormBuilder = function (opts: typeof defaultOptions, element, $) {
+  const formBuilder: FormBuilderType = this
   const i18n = mi18n.current
   const formID = `frmb-${new Date().getTime()}`
   const data = new Data(formID)
@@ -1173,7 +1173,7 @@ const FormBuilder = function (opts, element, $) {
       //Add a wrapper div for the field itself. This div will be the rendered representation
       const colWrapperNode = m('div', null, {
         id: `${field.id}-cont`,
-        className: `${columnData.columnSize} ${colWrapperClass}`,
+        className: `${columnData.columnClassSize} ${colWrapperClass}`,
       })
 
       if (insertingNewControl && insertTargetIsColumn) {
@@ -1518,13 +1518,13 @@ const FormBuilder = function (opts, element, $) {
           result.rowNumber = h.getRowValue($targetInsertWrapper.attr('class'))
         }
 
-        result.columnSize = opts.defaultGridColumnClass
+        result.columnClassSize = opts.defaultGridColumnClass
 
         if (!data.className) {
           data.className = ''
         }
 
-        data.className += ` row-${result.rowNumber} ${result.columnSize}`
+        data.className += ` row-${result.rowNumber} ${result.columnClassSize}`
         result.addedDefaultColumnClass = true
       }
     }
@@ -2510,7 +2510,7 @@ jQuery.fn.formBuilder = function (methodOrOptions = {}, ...args) {
       return methods[methodOrOptions]
     }
   } else {
-    const instance = methods.init(methodOrOptions, this)
+    const instance: FormBuilderType = methods.init(methodOrOptions, this)
     Object.assign(methods, instance)
     return instance
   }
