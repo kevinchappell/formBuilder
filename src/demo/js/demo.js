@@ -158,7 +158,7 @@ jQuery(function ($) {
             'Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.',
         },
         {
-          type: 'checkbox',
+          type: 'checkbox-group',
           label: 'Do you agree to the terms and conditions?',
         },
       ],
@@ -208,31 +208,32 @@ jQuery(function ($) {
   const disabledAttrs = ['placeholder']
 
   const fbOptions = {
-    defaultFields: [
-      {
-        className: 'form-control',
-        label: 'Default Field',
-        placeholder: 'Enter your default field value',
-        name: 'default-field-1',
-        type: 'text',
-      },
-      {
-        className: 'form-control row-1 col-md-6',
-        label: 'Default Field 2',
-        placeholder: 'Enter your default field value',
-        name: 'default-field-2',
-        type: 'text',
-      },
-      {
-        className: 'form-control row-1 col-md-6',
-        label: 'Default Field 3 ',
-        placeholder: 'Enter your default field value',
-        name: 'default-field-3',
-        type: 'text',
-      },
-    ],
+    // defaultFields: [
+    //   {
+    //     className: 'form-control',
+    //     label: 'Default Field',
+    //     placeholder: 'Enter your default field value',
+    //     name: 'default-field-1',
+    //     type: 'text',
+    //   },
+    //   {
+    //     className: 'form-control row-1 col-md-6',
+    //     label: 'Default Field 2',
+    //     placeholder: 'Enter your default field value',
+    //     name: 'default-field-2',
+    //     type: 'text',
+    //   },
+    //   {
+    //     className: 'form-control row-1 col-md-6',
+    //     label: 'Default Field 3 ',
+    //     placeholder: 'Enter your default field value',
+    //     name: 'default-field-3',
+    //     type: 'text',
+    //   },
+    // ],
     persistDefaultFields: true,
     scrollToFieldOnAdd: false,
+    controlPosition: 'right',
     disabledSubtypes: {
       text: ['password'],
     },
@@ -251,6 +252,7 @@ jQuery(function ($) {
     onAddOption: (optionTemplate, { index }) => {
       optionTemplate.label = optionTemplate.label || `Option ${index + 1}`
       optionTemplate.value = optionTemplate.value || `option-${index + 1}`
+      //optionTemplate.minLevel = `min-level-${index + 1}`
 
       return optionTemplate
     },
@@ -274,7 +276,6 @@ jQuery(function ($) {
     enableColumnInsertMenu: false,
     enableEnhancedBootstrapGrid: true,
     disabledFieldButtons: {},
-    controlPosition: 'right', // left|right,
     i18n: {
       override: {
         [defaultLocale]: {

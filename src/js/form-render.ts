@@ -2,12 +2,12 @@ import mi18n from 'mi18n'
 import utils, { parseXML, forEach } from './utils'
 import { remove } from './dom'
 import events from './events'
-import layout from './layout'
 import control from './control'
 import './control/index'
 import controlCustom from './control/custom'
 import { defaultI18n } from './config'
 import '../sass/form-render.scss'
+import { Layout } from './layout'
 
 /**
  * FormRender Class
@@ -20,7 +20,7 @@ class FormRender {
   constructor(options = {}) {
     // initialise defaults & options
     const defaults = {
-      layout: layout, // by default use the layout class, but support a child class being defined & passed as an option
+      layout: Layout, // by default use the layout class, but support a child class being defined & passed as an option
       layoutTemplates: {}, // allow custom override layout templates to be defined
       controls: {}, // custom controls
       controlConfig: {}, // additional configuration for controls

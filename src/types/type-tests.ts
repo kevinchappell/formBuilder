@@ -1,8 +1,51 @@
-import { formBuilderOptions } from './formbuilder-types'
+import { Layout } from '../js/layout'
+import { actionButton, formBuilderOptions, layoutTemplates } from './formbuilder-types'
 
 //Test form builder options
+
+const myTemplates: layoutTemplates = {
+  help: function (helpText) {
+    return $('<div/>').addClass('help').append(helpText)
+  },
+  label: function (label, data) {
+    return $('<label class="bright" style="margin-top:15px;"/>').attr('for', data.id).append(label)
+  },
+}
+
+let actionButtons = [
+  {
+    type: 'button',
+    id: 'clear',
+    className: 'clear-all btn btn-danger',
+    events: {
+      click: () => {},
+    },
+  },
+  {
+    type: 'button',
+    label: 'viewJSON',
+    id: 'data',
+    className: 'btn btn-default get-data',
+    events: {
+      click: () => {},
+    },
+  },
+  {
+    type: 'button',
+    id: 'save',
+    className: 'btn btn-primary save-template',
+    events: {
+      click: evt => {
+        click: () => {}
+      },
+    },
+  },
+]
+
+class customLayoutClass extends Layout {}
+
 let options: Partial<formBuilderOptions> = {
-  actionButtons: ['clear'],
+  actionButtons: actionButtons,
   allowStageSort: true,
   controlOrder: ['autocomplete', 'checkbox-group'],
   controlPosition: 'left',
@@ -106,7 +149,7 @@ let options: Partial<formBuilderOptions> = {
     },
     warning: () => {},
   },
-  onClearAll: function (formData) {
+  onClearAll: function () {
     alert('all fields removed')
   },
   onOpenFieldEdit: function () {
@@ -180,4 +223,13 @@ let options: Partial<formBuilderOptions> = {
   cancelGridModeDistance: 3,
   enableColumnInsertMenu: true,
   enableEnhancedBootstrapGrid: true,
+  layoutTemplates: myTemplates,
+  onAddOption: (optionTemplate, params) => {
+    optionTemplate.label = `Option ${params.index + 1}`
+    optionTemplate.value = `option-${params.index + 1}`
+    return optionTemplate
+  },
+  onAddFieldAfter: function (fieldId, field) {},
+  onAddField: function (fieldId, field) {},
+  layout: customLayoutClass,
 }

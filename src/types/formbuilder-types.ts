@@ -1,7 +1,8 @@
 import { EditorManager } from 'tinymce'
+import { Layout } from '../js/layout'
 import { PartialRecord } from './helper-types'
 
-export interface Field extends FieldTypes {
+export interface Field extends FieldTypes, BaseControlAttributes, SelectAttributes {
   label?: string
   values?: [] | {}
   name?: string
@@ -32,12 +33,8 @@ export interface GridInfo {
 }
 
 export interface FieldTypes {
-  type?: string
-  subtype?: string
-}
-
-export interface Layout {
-  controls: any
+  type?: fbControlType
+  subtype?: fbControlSubtype
 }
 
 export interface i18nDefinition {
@@ -48,7 +45,7 @@ export interface i18nDefinition {
 }
 
 export interface BaseControlAttributes {
-  type?: string
+  type?: fbControlType
   id?: string
   className?: string
   name?: string
@@ -61,6 +58,8 @@ export interface BaseControlAttributes {
   rel?: string
   style?: any
   dataFieldId?: string
+  icon?: string
+  required?: boolean
 }
 
 export interface CheckboxAttributes extends BaseControlAttributes {
@@ -110,13 +109,18 @@ declare global {
 export type MarkupType = string | HTMLElement
 
 export interface formBuilderOptions {
-  actionButtons?: actionButtonTypes[]
+  layout?: typeof Layout
+  layoutTemplates?: layoutTemplates
+  onAddField: (lastID: string, field: Field) => any
+  onAddFieldAfter: (lastID: string, field: Field) => any
+  onAddOption: (option: optionTemplate, params: optionTemplateParams) => any
+  actionButtons?: actionButton[]
+  disabledActionButtons?: string[]
   allowStageSort?: boolean
   controlOrder?: fbControlType[]
   controlPosition?: 'right' | 'left'
   dataType?: 'json' | 'xml'
-  defaultFields?: fbField[]
-  disabledActionButtons?: actionButtonTypes[]
+  defaultFields?: Field[]
   disabledAttrs?: defaultAttributeNames[]
   disabledFieldButtons?: PartialRecord<fbControlType, layoutFieldButtons[]>
   disabledSubtypes: PartialRecord<fbControlType, fbControlSubtype[]>
@@ -124,18 +128,18 @@ export interface formBuilderOptions {
   disableHTMLLabels?: boolean
   disableInjectedStyle?: boolean
   editOnAdd?: boolean
-  fields?: fbField[]
+  fields?: Field[]
   fieldRemoveWarn?: boolean
   inputSets?: inputSets[]
   notify?: notify
-  onClearAll?: (formData: any) => any
+  onClearAll?: () => any
   onCloseFieldEdit?: editPanelCallback
   onOpenFieldEdit?: editPanelCallback
   onSave?: onSaveCallback
   persistDefaultFields?: boolean
   prepend?: string | HTMLElement | string[] | HTMLElement[] | boolean
   append?: string | HTMLElement | string[] | HTMLElement[] | boolean
-  replaceFields?: fbField[]
+  replaceFields?: Field[]
   roles?: Record<number, string>
   scrollToFieldOnAdd?: boolean
   showActionButtons?: boolean
@@ -152,7 +156,6 @@ export interface formBuilderOptions {
   enableColumnInsertMenu?: boolean
   enableEnhancedBootstrapGrid?: boolean
 }
-export interface DisabledFieldButtonsOrDisabledSubtypesOrNotifyOrFormDataOrSubtypesOrTemplatesOrTypeUserAttrsOrTypeUserDisabledAttrsOrTypeUserEvents {}
 
 export interface StickyControls {
   enable?: boolean
@@ -165,7 +168,18 @@ export interface Offset {
   left?: number | string
 }
 
-type actionButtonTypes = 'data' | 'save' | 'clear'
+export interface actionButton extends buttonAttributes {}
+
+export interface buttonAttributes {
+  title?: string
+  id?: string
+  className?: string
+  label?: string
+  type?: string
+  events?: {
+    click: (evt) => any
+  }
+}
 
 type defaultAttributeNames =
   | 'access'
@@ -189,32 +203,32 @@ type defaultAttributeNames =
   | 'toggle'
   | 'value'
 
-export interface fbField {
-  type: fbControlType
+// export interface fbField {
+//   type: fbControlType
 
-  className?: string
-  label?: string
-  placeholder?: string
-  name?: string
-  required?: boolean
-  value?: any
-  values?: any[]
+//   className?: string
+//   label?: string
+//   placeholder?: string
+//   name?: string
+//   required?: boolean
+//   value?: any
+//   values?: any[]
 
-  toggle?: boolean
-  rows?: number
-  other?: boolean
-  multiple?: boolean
-  min?: number
-  max?: number
-  maxlength?: number
-  access?: boolean
-  description?: string
-  inline?: boolean
-  options?: []
-  style?: string
-  subtype?: fbControlSubtype
-  icon?: string
-}
+//   toggle?: boolean
+//   rows?: number
+//   other?: boolean
+//   multiple?: boolean
+//   min?: number
+//   max?: number
+//   maxlength?: number
+//   access?: boolean
+//   description?: string
+//   inline?: boolean
+//   options?: []
+//   style?: string
+//   subtype?: fbControlSubtype
+//   icon?: string
+// }
 
 export type fbControlType =
   | 'file'
@@ -234,13 +248,13 @@ export type fbControlType =
 
 export type fbControlSubtype = 'file' | 'date' | 'number' | 'password' | 'email' | 'color' | 'tel' | 'tinymce' | 'quill'
 
-export type layoutFieldButtons = 'remove' | 'edit' | 'delete'
+export type layoutFieldButtons = 'remove' | 'edit' | 'delete' | 'grid'
 
 interface inputSets {
   label: string
   name: string
   showHeader: boolean
-  fields: fbField[]
+  fields: Field[]
 }
 
 interface notify {
@@ -256,4 +270,28 @@ type templateFunction = (fieldData: any) => ControlBase
 interface ControlBase {
   field: string
   onRender: () => any
+}
+
+//Need Kevin to review
+export interface layoutTemplates {
+  label?: (label: string, data: any) => any
+  help?: (helpText: string) => any
+  default?: (field: Field, label: JQuery<HTMLElement>, help: JQuery<HTMLElement>, data: any) => any
+  noLabel?: (field: Field, label: JQuery<HTMLElement>, help: JQuery<HTMLElement>, data: any) => any
+  hidden?: (field: Field) => any
+
+  configure?: () => any
+  build?: () => any
+}
+
+interface optionTemplate {
+  label: string
+  value?: string
+  selected?: boolean
+}
+
+interface optionTemplateParams {
+  type: fbControlType
+  index: number
+  isMultiple: boolean
 }

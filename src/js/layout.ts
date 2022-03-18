@@ -1,4 +1,4 @@
-// LAYOUT.JS
+import { layoutTemplates } from '../types/formbuilder-types'
 import utils from './utils'
 import { getAllGridRelatedClasses } from './utils'
 
@@ -28,13 +28,23 @@ const processClassName = (data, field) => {
  * Can be extended & customised with the new object being passed to FormRender as the new layout object
  * Controls things like the label, help text, and how they fit together with the control itself
  */
-export default class layout {
+export class Layout {
+  preview: boolean
+  templates: {
+    label: any // can be overridden with a function(labelDOMElements, data) to generate the label element - returns a DOM element
+    help: any // can be overridden with a function(helpText, data) to generate the help element - returns a DOM element
+    default: (field: any, label: any, help: any, data: any) => any
+    noLabel: (field: any, label: any, help: any, data: any) => any
+    hidden: (field: any) => any
+  }
+  data: any
+
   /**
    * Prepare the templates for layout
    * @param {Object} templates object containing custom or overwrite templates
    * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
    */
-  constructor(templates, preview) {
+  constructor(templates: layoutTemplates, preview: boolean) {
     this.preview = preview
 
     // supported templates for outputting a field
@@ -206,7 +216,7 @@ export default class layout {
    * @param {Object} attributes
    * @return {Object} DOM element
    */
-  markup(tag, content = '', attributes = {}) {
+  markup(tag, content: string | string[] = '', attributes = {}) {
     return utils.markup(tag, content, attributes)
   }
 }

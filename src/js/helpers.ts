@@ -21,7 +21,18 @@ import events from './events'
 import { config } from './config'
 import control from './control'
 import controlCustom from './control/custom'
-import { CheckboxAttributes, Coords, FieldData, FieldTypes, GridInfo } from '../types/formbuilder-types'
+import {
+  actionButton,
+  CheckboxAttributes,
+  Coords,
+  fbControlSubtype,
+  fbControlType,
+  FieldData,
+  FieldTypes,
+  formBuilderOptions,
+  GridInfo,
+  Offset,
+} from '../types/formbuilder-types'
 import { defaultOptions } from './config'
 /**
  * Utilities specific to form-builder.js
@@ -122,7 +133,7 @@ export default class Helpers {
     const types: FieldTypes = {
       type: $field.attr('type'),
     }
-    const subtype = $('.fld-subtype', $field).val() as string
+    const subtype = $('.fld-subtype', $field).val() as fbControlSubtype
 
     if (subtype !== types.type) {
       types.subtype = subtype
@@ -543,26 +554,6 @@ export default class Helpers {
   }
 
   /**
-   * Returns the layout data based on controlPosition option
-   * @param  {String} controlPosition 'left' or 'right'
-   * @return {Object} layout object
-   */
-  editorLayout(controlPosition) {
-    const layoutMap = {
-      left: {
-        stage: 'pull-right',
-        controls: 'pull-left',
-      },
-      right: {
-        stage: 'pull-left',
-        controls: 'pull-right',
-      },
-    }
-
-    return layoutMap[controlPosition] || ''
-  }
-
-  /**
    * Adds overlay to the page. Used for modals.
    * @return {Object} DOM Object
    */
@@ -958,7 +949,7 @@ export default class Helpers {
         left: cbPosition.left,
       }
 
-      const offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset)
+      const offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset as Record<string, string>)
 
       if (scrollTop > stageTop) {
         const style = {
@@ -1160,7 +1151,7 @@ export default class Helpers {
    * Generate stage and controls dom elements
    * @param  {String} formID [description]
    */
-  editorUI(formID) {
+  editorUI(formID, opts: formBuilderOptions) {
     const d = this.d
     const data = this.data
     const id = formID || data.formID
@@ -1172,7 +1163,7 @@ export default class Helpers {
 
     d.stage = m('ul', null, {
       id,
-      className: `frmb stage-wrap ${data.layout.stage}`,
+      className: `frmb stage-wrap pull-${opts.controlPosition == 'left' ? 'right' : 'left'}`,
     })
 
     // Create container for controls
@@ -1195,7 +1186,7 @@ export default class Helpers {
     const opts = config.opts
     return opts.actionButtons
       .map(btnData => {
-        if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
+        if (btnData.id && !opts.disabledActionButtons.includes(btnData.id)) {
           return this.processActionButtons(btnData)
         }
       })
@@ -1207,14 +1198,11 @@ export default class Helpers {
    * @param  {Object} options
    * @return {Object} processedOptions
    */
-  processOptions(options: typeof defaultOptions) {
+  processOptions(options: formBuilderOptions) {
     const _this = this
     const { actionButtons, replaceFields, ...opts } = options
-    // let fieldEditContainer = opts.fieldEditContainer
-    // if (typeof opts.fieldEditContainer === 'string') {
-    //   fieldEditContainer = document.querySelector(opts.fieldEditContainer)
-    // }
-    const mergedActionButtons = [
+
+    let mergedActionButtons: actionButton[] = [
       {
         type: 'button',
         id: 'clear',
@@ -1243,10 +1231,12 @@ export default class Helpers {
           },
         },
       },
-    ].concat(actionButtons)
+    ]
+
+    mergedActionButtons = [...mergedActionButtons, ...actionButtons]
 
     opts.fields = opts.fields.concat(replaceFields)
-    opts.disableFields = opts.disableFields.concat(replaceFields.map(({ type }) => type && type))
+    opts.disableFields = [...opts.disableFields, ...(replaceFields.map(({ type }) => type && type) as fbControlType[])]
 
     if (opts.dataType === 'xml') {
       // html labels are not available using xml dataType

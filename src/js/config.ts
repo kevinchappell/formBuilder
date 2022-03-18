@@ -16,7 +16,6 @@ export const defaultOptions: formBuilderOptions = {
     'autocomplete',
     'button',
     'checkbox-group',
-    'checkbox',
     'date',
     'file',
     'header',
@@ -41,7 +40,6 @@ export const defaultOptions: formBuilderOptions = {
   editOnAdd: false, // opens the edit panel on added field
   fields: [], // add custom control configs
   fieldRemoveWarn: false,
-  fieldEditContainer: null, // DOM node or selector
   inputSets: [], // add groups of fields at a time
   notify: {
     error: error => {

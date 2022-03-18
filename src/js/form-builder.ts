@@ -5,7 +5,6 @@ import { remove } from './dom'
 import { Data } from './data'
 import mi18n from 'mi18n'
 import events from './events'
-import layout from './layout'
 import Helpers from './helpers'
 import { defaultOptions, defaultI18n, config, styles } from './config'
 import Controls from './controls'
@@ -33,11 +32,12 @@ import {
   formBuilderOptions,
   GridInfo,
   Labels,
-  Layout,
   MarkupType,
   SelectAttributes,
   TextInputAttributes,
 } from '../types/formbuilder-types'
+import { FormBuilderClass } from './form-builder/formBuilder'
+import { Layout } from './layout'
 //import { FormBuilder as FormBuilderType } from '..'
 
 const DEFAULT_TIMEOUT = 333
@@ -59,7 +59,8 @@ const invisibleRowPlaceholderClass = invisibleRowPlaceholderClassSelector.replac
 let isMoving = false
 
 const FormBuilder = function (opts: formBuilderOptions, element, $) {
-  const formBuilder: FormBuilderType = this
+  const test = new FormBuilderClass(opts, element)
+  const formBuilder: FormBuilderClass = this
   const i18n = mi18n.current
   const formID = `frmb-${new Date().getTime()}`
   const data = new Data(formID)
@@ -73,15 +74,14 @@ const FormBuilder = function (opts: formBuilderOptions, element, $) {
 
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
-    opts.layout = layout
+    opts.layout = Layout
   }
   const layoutEngine = new opts.layout(opts.layoutTemplates, true)
 
   const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = markup
   opts = h.processOptions(opts)
-  data.layout = h.editorLayout(opts.controlPosition)
-  h.editorUI(formID)
+  h.editorUI(formID, opts)
   data.formID = formID
   data.lastID = `${data.formID}-fld-0`
   const controls = new Controls(opts, d)
@@ -227,7 +227,7 @@ const FormBuilder = function (opts: formBuilderOptions, element, $) {
 
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
-    className: `cb-wrap ${(data.layout as Layout).controls}`,
+    className: `cb-wrap pull-${opts.controlPosition}`,
   })
 
   if (opts.showActionButtons) {
@@ -539,7 +539,7 @@ const FormBuilder = function (opts: formBuilderOptions, element, $) {
           if (opts.roles.hasOwnProperty(key)) {
             const roleId = `fld-${data.lastID}-roles-${key}`
             const cbAttrs: CheckboxAttributes = {
-              type: 'checkbox',
+              type: 'checkbox-group',
               name: 'roles[]',
               value: key,
               id: roleId,
@@ -825,7 +825,7 @@ const FormBuilder = function (opts: formBuilderOptions, element, $) {
         for: `${name}-${data.lastID}`,
       }).outerHTML
     const cbAttrs: CheckboxAttributes = {
-      type: 'checkbox',
+      type: 'checkbox-group',
       className: `fld-${name}`,
       name,
       id: `${name}-${data.lastID}`,
