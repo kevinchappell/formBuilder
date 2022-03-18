@@ -30,6 +30,7 @@ import fontConfig from '../fonts/config.json'
 import {
   CheckboxAttributes,
   Field,
+  formBuilderOptions,
   GridInfo,
   Labels,
   Layout,
@@ -57,7 +58,7 @@ const invisibleRowPlaceholderClass = invisibleRowPlaceholderClassSelector.replac
 
 let isMoving = false
 
-const FormBuilder = function (opts: typeof defaultOptions, element, $) {
+const FormBuilder = function (opts: formBuilderOptions, element, $) {
   const formBuilder: FormBuilderType = this
   const i18n = mi18n.current
   const formID = `frmb-${new Date().getTime()}`

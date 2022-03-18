@@ -256,7 +256,8 @@ export const markup = function (tag, content: any = '', attributes: MarkupAttrib
       const attrVal = Array.isArray(attrs[attr]) ? unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
       if (typeof attrVal === 'boolean') {
         if (attrVal === true) {
-          field.setAttribute(name, name)
+          const val = name !== 'contenteditable' ? name : true
+          field.setAttribute(name, val)
         }
       } else {
         field.setAttribute(name, attrVal)
