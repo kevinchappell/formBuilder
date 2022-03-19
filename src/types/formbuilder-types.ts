@@ -152,7 +152,10 @@ export interface formBuilderOptions {
   templates?: Record<string, templateFunction>
   typeUserAttrs?: PartialRecord<fbControlType, any>
   typeUserDisabledAttrs?: PartialRecord<fbControlType, defaultAttributeNames[]>
-  typeUserEvents?: PartialRecord<fbControlType, PartialRecord<'onadd' | 'onclone', (field: HTMLElement) => any>>
+  typeUserEvents?: PartialRecord<
+    fbControlType,
+    PartialRecord<'onadd' | 'onclone' | 'onremove', (field: HTMLElement) => any>
+  >
   defaultGridColumnClass?: string
   cancelGridModeDistance?: number
   enableColumnInsertMenu?: boolean
