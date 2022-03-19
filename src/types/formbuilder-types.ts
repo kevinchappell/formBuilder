@@ -1,6 +1,7 @@
 import { EditorManager } from 'tinymce'
-import { Layout } from '../js/layout'
+import { Layout } from '../ts/layout'
 import { PartialRecord } from './helper-types'
+import { dataType, layoutTemplates, notify } from './shared-types'
 
 export interface Field extends FieldTypes, BaseControlAttributes, SelectAttributes {
   label?: string
@@ -100,6 +101,7 @@ declare global {
   interface JQuery {
     formBuilder({}): JQuery
     formRender({}): JQuery
+    controlRender({}): JQuery
     swapWith(that: any): JQuery
     rateYo(rating?: any): JQuery
     fineUploader(args: any): JQuery
@@ -119,7 +121,7 @@ export interface formBuilderOptions {
   allowStageSort?: boolean
   controlOrder?: fbControlType[]
   controlPosition?: 'right' | 'left'
-  dataType?: 'json' | 'xml'
+  dataType?: dataType
   defaultFields?: Field[]
   disabledAttrs?: defaultAttributeNames[]
   disabledFieldButtons?: PartialRecord<fbControlType, layoutFieldButtons[]>
@@ -257,12 +259,6 @@ interface inputSets {
   fields: Field[]
 }
 
-interface notify {
-  error?: notifyFunction
-  success?: notifyFunction
-  warning?: notifyFunction
-}
-type notifyFunction = (message: string) => any
 type editPanelCallback = (editPanel: HTMLElement) => any
 type onSaveCallback = (event: any, formData: any) => any
 
@@ -270,18 +266,6 @@ type templateFunction = (fieldData: any) => ControlBase
 interface ControlBase {
   field: string
   onRender: () => any
-}
-
-//Need Kevin to review
-export interface layoutTemplates {
-  label?: (label: string, data: any) => any
-  help?: (helpText: string) => any
-  default?: (field: Field, label: JQuery<HTMLElement>, help: JQuery<HTMLElement>, data: any) => any
-  noLabel?: (field: Field, label: JQuery<HTMLElement>, help: JQuery<HTMLElement>, data: any) => any
-  hidden?: (field: Field) => any
-
-  configure?: () => any
-  build?: () => any
 }
 
 interface optionTemplate {

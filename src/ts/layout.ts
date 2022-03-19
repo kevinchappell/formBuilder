@@ -1,6 +1,5 @@
-import { layoutTemplates } from '../types/formbuilder-types'
-import utils from './utils'
-import { getAllGridRelatedClasses } from './utils'
+import { layoutTemplates } from '../types/shared-types'
+import utils, { getAllGridRelatedClasses } from './utils'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
@@ -44,7 +43,7 @@ export class Layout {
    * @param {Object} templates object containing custom or overwrite templates
    * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
    */
-  constructor(templates: layoutTemplates, preview: boolean) {
+  constructor(templates?: layoutTemplates, preview?: boolean) {
     this.preview = preview
 
     // supported templates for outputting a field
@@ -99,7 +98,7 @@ export class Layout {
    * @param {String} forceTemplate - programatically force the template with which this control to be rendered
    * @return {Object} element
    */
-  build(renderControl, data, forceTemplate) {
+  build(renderControl, data, forceTemplate: boolean | string = false) {
     // prepare the data
     if (this.preview) {
       if (data.name) {

@@ -1,9 +1,9 @@
-import './control/index'
+import fontConfig from 'fonts/config.json'
 import control from './control'
 import controlCustom from './control/custom'
-import { unique, hyphenCase, markup as m } from './utils'
+import './control/index'
 import { empty } from './dom'
-import fontConfig from '../fonts/config.json'
+import { hyphenCase, markup as m, unique } from './utils'
 
 /**
  * control parent class for creating control panel

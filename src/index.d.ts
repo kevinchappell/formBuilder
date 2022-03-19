@@ -1,27 +1,10 @@
-// import { defaultOptions } from './js/config'
+declare module 'mi18n' {
+  function mi18n(): void
+  export function init(args?: any): any
+  export function get(arg1?: any, arg2?: any): any
+  export function setCurrent(args?: any): any
 
-// declare class FormBuilder {
-//   static defaultOptions: typeof defaultOptions
-//   preserveTempContainers: any[]
-//   rowWrapperClassSelector: string
-//   colWrapperClassSelector: string
-//   colWrapperClass: string
-//   prepFieldVars: ($field: any, isNew?: boolean) => void
-//   currentEditPanel: any
-//   actions: {
-//     getFieldTypes: (activeOnly: any) => any
-//     clearFields: (animate: any) => boolean
-//     showData: any
-//     save: (minify: any) => any
-//     addField: (field: any, index: any) => void
-//     removeField: any
-//     getData: any
-//     setData: (formData: any) => void
-//     setLang: (locale: any) => void
-//     showDialog: any
-//     toggleFieldEdit: (fieldId: any) => void
-//     toggleAllFieldEdit: () => void
-//     closeAllFieldEdit: any
-//     getCurrentFieldId: () => string
-//   }
-// }
+  export let current: any
+
+  export = mi18n
+}

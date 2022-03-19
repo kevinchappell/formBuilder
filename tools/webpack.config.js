@@ -164,6 +164,12 @@ const webpackConfig = {
   resolve: {
     modules: [resolve(__dirname, 'src'), 'node_modules'],
     extensions: ['.js', '.scss', '.ts'],
+    alias: {
+      fonts: resolve(__dirname, '../src/fonts/'),
+      ts: resolve(__dirname, '../src/ts/'),
+      form_builder: resolve(__dirname, '../src/ts/form_builder'),
+      form_render: resolve(__dirname, '../src/ts/form_render'),
+    },
   },
   devServer: {
     static: {

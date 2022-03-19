@@ -1,5 +1,5 @@
+import { insertStyle, removeStyle } from '../../ts/utils'
 import '../sass/demo.scss'
-import { insertStyle, removeStyle } from '../../js/utils'
 import { demoActions, generateActionTable, setCurrentFieldIdValues } from './actionButtons'
 
 const localeSessionKey = 'formBuilder-locale'
@@ -273,7 +273,7 @@ jQuery(function ($) {
     disableFields: ['autocomplete'],
     replaceFields: replaceFields,
     editOnAdd: true,
-    enableColumnInsertMenu: false,
+    enableColumnInsertMenu: true,
     enableEnhancedBootstrapGrid: true,
     disabledFieldButtons: {},
     i18n: {
@@ -315,11 +315,11 @@ jQuery(function ($) {
   // //let formBuilder2 = $('.build-wrap').formBuilder({ formData })
 
   // //formBuilder.actions.closeAllFieldEdit() // first
-  // setTimeout(() => {
-  //   //formBuilder.actions.closeAllFieldEdit()
-  //   console.log($('.build-wrap1').formBuilder('getData'))
-  //   console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
-  // }, 6000)
+  setTimeout(() => {
+    //formBuilder.actions.closeAllFieldEdit()
+    console.log($('.build-wrap').formBuilder('getData'))
+    //console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
+  }, 6000)
 
   // formBuilder = $('.build-wrap')
   //   .formBuilder()

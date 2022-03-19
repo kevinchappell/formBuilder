@@ -1,26 +1,4 @@
 import mi18n from 'mi18n'
-import { instanceDom, empty, remove, optionFields } from './dom'
-import { instanceData } from './data'
-import {
-  mobileClass,
-  markup as m,
-  forEach,
-  camelCase,
-  escapeHtml,
-  trimObj,
-  subtract,
-  parseXML,
-  capitalize,
-  unique,
-  xmlAttrString,
-  flattenArray,
-  bootstrapColumnRegex,
-  getAllGridRelatedClasses,
-} from './utils'
-import events from './events'
-import { config } from './config'
-import control from './control'
-import controlCustom from './control/custom'
 import {
   actionButton,
   CheckboxAttributes,
@@ -31,9 +9,29 @@ import {
   FieldTypes,
   formBuilderOptions,
   GridInfo,
-  Offset,
 } from '../types/formbuilder-types'
-import { defaultOptions } from './config'
+import { config } from './config'
+import control from './control'
+import controlCustom from './control/custom'
+import { instanceData } from './data'
+import { empty, instanceDom, optionFields, remove } from './dom'
+import events from './events'
+import {
+  bootstrapColumnRegex,
+  camelCase,
+  capitalize,
+  escapeHtml,
+  flattenArray,
+  forEach,
+  getAllGridRelatedClasses,
+  markup as m,
+  mobileClass,
+  parseXML,
+  subtract,
+  trimObj,
+  unique,
+  xmlAttrString,
+} from './utils'
 /**
  * Utilities specific to form-builder.js
  */
@@ -1361,7 +1359,7 @@ export default class Helpers {
   }
 
   //Return full row name (row-1)
-  getRowClass(className) {
+  getRowClass(className): string | undefined {
     if (!className) {
       return
     }
@@ -1373,7 +1371,7 @@ export default class Helpers {
   }
 
   //Return the row value i.e row-2 would return 2
-  getRowValue(className) {
+  getRowValue(className: string) {
     if (!className) {
       return 0
     }
@@ -1385,13 +1383,13 @@ export default class Helpers {
   }
 
   //Example className of 'row row-1' would be changed for 'row row-4' where 4 is the newValue
-  changeRowClass(className, newValue) {
+  changeRowClass(className: string, newValue: number) {
     const rowClass = this.getRowClass(className)
-    return className.replace(rowClass, `row-${newValue}`)
+    return rowClass && className.replace(rowClass, `row-${newValue}`)
   }
 
   //Return the column size i.e col-md-6 would return 6
-  getBootstrapColumnValue(className) {
+  getBootstrapColumnValue(className: string) {
     if (!className) {
       return 0
     }
@@ -1403,7 +1401,7 @@ export default class Helpers {
   }
 
   //Return the prefix (col-md)
-  getBootstrapColumnPrefix(className) {
+  getBootstrapColumnPrefix(className: string) {
     if (!className) {
       return 0
     }

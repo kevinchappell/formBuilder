@@ -34,17 +34,17 @@
       "test": [
         "test/**/*.spec.js"
       ],
-      "pluginsDir": "src/js/control_plugins/",
+      "pluginsDir": "src/ts/control_plugins/",
       "fonts": "src/fonts",
       "sass": "src/sass",
       "formBuilder": {
-        "ts": "src/js/form-builder.ts",
+        "ts": "src/ts/form-builder.ts",
         "sass": [
           "src/sass/form-builder.scss"
         ]
       },
       "formRender": {
-        "ts": "src/js/form-render.ts",
+        "ts": "src/ts/form-render.ts",
         "sass": [
           "src/sass/form-render.scss"
         ]
@@ -123,7 +123,7 @@
     "@semantic-release/npm": "^7.0.5",
     "@types/jquery": "^3.5.13",
     "@types/jqueryui": "^1.12.16",
-    "@types/tinymce": "^4.6.4",
+    "@types/tinymce": "^4.6.5",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "babel-loader": "8.2.3",

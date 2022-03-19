@@ -1,65 +1,27 @@
 import mi18n from 'mi18n'
-import utils, { parseXML, forEach } from './utils'
-import { remove } from './dom'
-import events from './events'
-import control from './control'
-import './control/index'
-import controlCustom from './control/custom'
-import { defaultI18n } from './config'
-import '../sass/form-render.scss'
-import { Layout } from './layout'
+import { defaultI18n } from 'ts/config'
+import control from 'ts/control'
+import controlCustom from 'ts/control/custom'
+import { remove } from 'ts/dom'
+import events from 'ts/events'
+import { Layout } from 'ts/layout'
+import utils, { forEach } from 'ts/utils'
+import { formRenderOptions } from 'types/formrender-types'
 
-/**
- * FormRender Class
- */
-class FormRender {
-  /**
-   * Create & configure a new FormRender instance
-   * @param {Object} options - an object hash of supported options
-   */
-  constructor(options = {}) {
-    // initialise defaults & options
-    const defaults = {
-      layout: Layout, // by default use the layout class, but support a child class being defined & passed as an option
-      layoutTemplates: {}, // allow custom override layout templates to be defined
-      controls: {}, // custom controls
-      controlConfig: {}, // additional configuration for controls
-      container: false, // string selector or Node element
-      dataType: 'json',
-      formData: false,
-      i18n: Object.assign({}, defaultI18n),
-      messages: {
-        formRendered: 'Form Rendered',
-        noFormData: 'No form data.',
-        other: 'Other',
-        selectColor: 'Select Color',
-        invalidControl: 'Invalid control',
-      },
-      onRender: () => {},
-      render: true,
-      templates: {}, // custom inline defined templates
-      notify: {
-        error: error => {
-          console.log(error)
-        },
-        success: success => {
-          console.log(success)
-        },
-        warning: warning => {
-          console.warn(warning)
-        },
-      },
-    }
-    this.options = jQuery.extend(true, defaults, options)
+export class FormRender {
+  instanceContainers: any[]
+  markup: any
+  constructor(public options: formRenderOptions = {}) {
+    this.initDefaultsAndOptions(options)
+
     this.instanceContainers = []
 
     if (!mi18n.current) {
       mi18n.init(this.options.i18n)
     }
 
-    // parse any passed formData
     if (!this.options.formData) {
-      return false
+      return
     }
 
     this.options.formData = this.parseFormData(this.options.formData)
@@ -75,11 +37,10 @@ class FormRender {
       controlCustom.register(this.options.templates)
     }
 
-    /**
-     * Extend Element prototype to allow us to append fields
-     *
-     * @param {Array} fields array of elements
-     */
+    this.SetupExtensions()
+  }
+
+  private SetupExtensions() {
     if (typeof Element.prototype.appendFormFields !== 'function') {
       Element.prototype.appendFormFields = function (fields) {
         if (!Array.isArray(fields)) {
@@ -127,13 +88,49 @@ class FormRender {
     }
   }
 
+  private initDefaultsAndOptions(options: formRenderOptions) {
+    const defaults = {
+      layout: Layout,
+      layoutTemplates: {},
+      controls: {},
+      controlConfig: {},
+      container: false,
+      dataType: 'json',
+      formData: false,
+      i18n: Object.assign({}, defaultI18n),
+      messages: {
+        formRendered: 'Form Rendered',
+        noFormData: 'No form data.',
+        other: 'Other',
+        selectColor: 'Select Color',
+        invalidControl: 'Invalid control',
+      },
+      onRender: () => {},
+      render: true,
+      templates: {},
+      notify: {
+        error: error => {
+          console.log(error)
+        },
+        success: success => {
+          console.log(success)
+        },
+        warning: warning => {
+          console.warn(warning)
+        },
+      },
+    }
+
+    this.options = jQuery.extend(true, defaults, options)
+  }
+
   /**
    * Clean up passed object configuration to prepare for use with the markup function
    * @param {Object} field - object of field configuration
    * @param {Number} instanceIndex - instance index
    * @return {Object} sanitized field object
    */
-  santizeField(field, instanceIndex) {
+  santizeField(field, instanceIndex?: number) {
     const sanitizedField = Object.assign({}, field)
     if (instanceIndex) {
       sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
@@ -188,6 +185,7 @@ class FormRender {
     if (opts.formData) {
       // instantiate the layout class & loop through the field configuration
       const engine = new opts.layout(opts.layoutTemplates)
+
       for (let i = 0; i < opts.formData.length; i++) {
         const fieldData = opts.formData[i]
         const sanitizedField = this.santizeField(fieldData, instanceIndex)
@@ -270,7 +268,7 @@ class FormRender {
     // save tinyMCE editors
     definedFields
       .filter(fieldData => fieldData.subtype === 'tinymce')
-      .forEach(fieldData => window.tinymce.get(fieldData.name).save())
+      .forEach(fieldData => window.tinymce.get(fieldData.name).save({}))
 
     this.instanceContainers.forEach(container => {
       const userDataMap = $('select, input, textarea', container)
@@ -334,58 +332,3 @@ class FormRender {
     return formData
   }
 }
-
-;(function ($) {
-  let formRenderForms
-  const methods = {
-    init: (forms, options = {}) => {
-      formRenderForms = forms
-      methods.instance = new FormRender(options)
-      forms.each(index => methods.instance.render(forms[index], index))
-
-      return { ...methods.instance, ...methods }
-    },
-    userData: () => methods.instance && methods.instance.userData,
-    clear: () => methods.instance && methods.instance.clear(),
-    setData: formData => {
-      if (methods.instance) {
-        const instance = methods.instance
-        instance.options.formData = instance.parseFormData(formData)
-      }
-    },
-    render: (formData, options = {}) => {
-      if (methods.instance) {
-        const instance = methods.instance
-        if (!formData) {
-          formData = instance.options.formData
-        }
-        instance.options = Object.assign({}, instance.options, options, { formData: instance.parseFormData(formData) })
-        formRenderForms.each(index => methods.instance.render(formRenderForms[index], index))
-      }
-    },
-    html: () => formRenderForms.map(index => formRenderForms[index]).html(),
-  }
-
-  $.fn.formRender = function (methodOrOptions = {}, ...args) {
-    if (methods[methodOrOptions]) {
-      return methods[methodOrOptions].apply(this, args)
-    } else {
-      return methods.init(this, methodOrOptions)
-    }
-  }
-
-  /**
-   * renders an individual field into the current element
-   * @param {Object} data - data structure for a single field output from formBuilder
-   * @param {Object} options - optional subset of formRender options - doesn't support container or other form rendering based options.
-   * @return {DOMElement} the rendered field
-   */
-  $.fn.controlRender = function (data, options = {}) {
-    options.formData = data
-    options.dataType = typeof data === 'string' ? 'json' : 'xml'
-    const formRender = new FormRender(options)
-    const $elems = this
-    $elems.each(i => formRender.renderControl($elems[i]))
-    return $elems
-  }
-})(jQuery)

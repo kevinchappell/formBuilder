@@ -1,5 +1,7 @@
-import { Layout } from '../js/layout'
-import { actionButton, formBuilderOptions, layoutTemplates } from './formbuilder-types'
+import { Layout } from '../ts/layout'
+import { formBuilderOptions } from './formbuilder-types'
+import { formRenderOptions } from './formrender-types'
+import { layoutTemplates } from './shared-types'
 
 //Test form builder options
 
@@ -232,4 +234,38 @@ let options: Partial<formBuilderOptions> = {
   onAddFieldAfter: function (fieldId, field) {},
   onAddField: function (fieldId, field) {},
   layout: customLayoutClass,
+}
+
+const defaults: formRenderOptions = {
+  layout: Layout,
+  layoutTemplates: {},
+  controls: {},
+  controlConfig: {},
+  container: false,
+  dataType: 'json',
+  formData: false,
+  i18n: Object.assign({}),
+  messages: {
+    formRendered: 'Form Rendered',
+    noFormData: 'No form data.',
+    other: 'Other',
+    selectColor: 'Select Color',
+    invalidControl: 'Invalid control',
+  },
+  onRender: () => {},
+  render: true,
+  templates: {},
+  notify: {
+    error: error => {
+      console.log(error)
+    },
+    success: success => {
+      console.log(success)
+    },
+    warning: warning => {
+      console.warn(warning)
+    },
+  },
+  disableInjectedStyle: true,
+  forceTemplate: 'hidden',
 }

@@ -1,16 +1,23 @@
 {
     "compilerOptions": {
-      "outDir": "./dist-ts",
       "allowJs": true,
       "target": "es5",
 			"moduleResolution": "node",
       "isolatedModules": true,
       "esModuleInterop": true,
 			"skipLibCheck": true,
+      "strict": false,
       "resolveJsonModule": true,
 			"sourceMap": true,
       "allowSyntheticDefaultImports": true,
-			"lib": ["DOM","ES2015"]
+			"lib": ["DOM","ES2015"],
+      "baseUrl": "src",
+      "paths": {
+        "fonts/*": ["fonts/*"],
+        "ts/*": ["ts/*"],
+        "form_builder/*": ["ts/form_builder/*"],
+        "form_render/*": ["ts/form_render/*"]
+      }
     },
 		"include": ["src/**/*"],
 		"exclude": ["node_modules/*"]
