@@ -36,8 +36,8 @@ export default class controlSelect extends control {
       const self = this
       const defaultOnRender = this.onRender.bind(this)
       this.onRender = function() {
-        self.groupRequired()
         defaultOnRender()
+        self.groupRequired()
       }
     }
 
