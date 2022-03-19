@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "outDir": "./dist-ts",
       "allowJs": true,
       "target": "es5",
 			"moduleResolution": "node",
