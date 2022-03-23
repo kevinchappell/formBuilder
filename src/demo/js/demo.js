@@ -1,5 +1,5 @@
+import { insertStyle, removeStyle } from '../../ts/utils'
 import '../sass/demo.scss'
-import { insertStyle, removeStyle } from '../../js/utils'
 import { demoActions, generateActionTable, setCurrentFieldIdValues } from './actionButtons'
 
 const localeSessionKey = 'formBuilder-locale'
@@ -66,13 +66,13 @@ jQuery(function ($) {
   ]
 
   const replaceFields = [
-    {
-      type: 'textarea',
-      subtype: 'tinymce',
-      datatype: 'custom-tinymce',
-      label: 'tinyMCE',
-      required: true,
-    },
+    // {
+    //   type: 'textarea',
+    //   subtype: 'tinymce',
+    //   datatype: 'custom-tinymce',
+    //   label: 'tinyMCE',
+    //   required: true,
+    // },
   ]
 
   const actionButtons = [
@@ -158,7 +158,7 @@ jQuery(function ($) {
             'Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.',
         },
         {
-          type: 'checkbox',
+          type: 'checkbox-group',
           label: 'Do you agree to the terms and conditions?',
         },
       ],
@@ -193,31 +193,47 @@ jQuery(function ($) {
         max: 11,
       },
     },
-    'checkbox-group': {
-      'custom-group': {
-        customInput: {
-          label: 'Custom Text Field',
-          value: 'This field is added only to checkbox with specific subtype',
-          type: 'text',
-        },
-      },
-    },
+    // 'checkbox-group': {
+    //   'custom-group': {
+    //     customInput: {
+    //       label: 'Custom Text Field',
+    //       value: 'This field is added only to checkbox with specific subtype',
+    //       type: 'text',
+    //     },
+    //   },
+    // },
   }
 
   // test disabledAttrs
-  const disabledAttrs = ['placeholder', 'name']
+  const disabledAttrs = ['placeholder']
 
   const fbOptions = {
-    defaultFields: [
-      {
-        className: 'form-control',
-        label: 'Default Field',
-        placeholder: 'Enter your default field value',
-        name: 'default-field-1',
-        type: 'text',
-      },
-    ],
+    // defaultFields: [
+    //   {
+    //     className: 'form-control',
+    //     label: 'Default Field',
+    //     placeholder: 'Enter your default field value',
+    //     name: 'default-field-1',
+    //     type: 'text',
+    //   },
+    //   {
+    //     className: 'form-control row-1 col-md-6',
+    //     label: 'Default Field 2',
+    //     placeholder: 'Enter your default field value',
+    //     name: 'default-field-2',
+    //     type: 'text',
+    //   },
+    //   {
+    //     className: 'form-control row-1 col-md-6',
+    //     label: 'Default Field 3 ',
+    //     placeholder: 'Enter your default field value',
+    //     name: 'default-field-3',
+    //     type: 'text',
+    //   },
+    // ],
     persistDefaultFields: true,
+    scrollToFieldOnAdd: false,
+    controlPosition: 'right',
     disabledSubtypes: {
       text: ['password'],
     },
@@ -236,6 +252,7 @@ jQuery(function ($) {
     onAddOption: (optionTemplate, { index }) => {
       optionTemplate.label = optionTemplate.label || `Option ${index + 1}`
       optionTemplate.value = optionTemplate.value || `option-${index + 1}`
+      //optionTemplate.minLevel = `min-level-${index + 1}`
 
       return optionTemplate
     },
@@ -243,20 +260,22 @@ jQuery(function ($) {
     stickyControls: {
       enable: true,
     },
+    enableRowDrop: true,
     sortableControls: true,
     fields: fields,
     templates: templates,
     inputSets: inputSets,
+    fieldRemoveWarn: false,
     typeUserDisabledAttrs: typeUserDisabledAttrs,
     typeUserAttrs: typeUserAttrs,
     disableInjectedStyle: false,
     actionButtons: actionButtons,
-    disableFields: ['autocomplete', 'custom-tinymce'],
+    disableFields: ['autocomplete'],
     replaceFields: replaceFields,
-    disabledFieldButtons: {
-      text: ['copy'],
-    },
-    controlPosition: 'right', // left|right,
+    editOnAdd: true,
+    enableColumnInsertMenu: true,
+    enableEnhancedBootstrapGrid: true,
+    disabledFieldButtons: {},
     i18n: {
       override: {
         [defaultLocale]: {
@@ -264,7 +283,6 @@ jQuery(function ($) {
         },
       },
     },
-    scrollToFieldOnAdd: false,
   }
   const formData = window.sessionStorage.getItem('formData')
   let editing = true
@@ -293,7 +311,21 @@ jQuery(function ($) {
     return (editing = !editing)
   }
 
-  const formBuilder = $('.build-wrap').formBuilder(fbOptions)
+  let formBuilder = $('.build-wrap').formBuilder(fbOptions)
+  // //let formBuilder2 = $('.build-wrap').formBuilder({ formData })
+
+  // //formBuilder.actions.closeAllFieldEdit() // first
+  setTimeout(() => {
+    //formBuilder.actions.closeAllFieldEdit()
+    console.log($('.build-wrap').formBuilder('getData'))
+    //console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
+  }, 6000)
+
+  // formBuilder = $('.build-wrap')
+  //   .formBuilder()
+  //   .promise.then(formBuilder => {
+  //     console.log(formBuilder.formData)
+  //   })
 
   const fbPromise = formBuilder.promise
 

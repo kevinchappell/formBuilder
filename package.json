@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "3.8.1",
+  "version": "3.8.0",
   "main": "dist/form-builder.min.js",
   "homepage": "https://formbuilder.online/",
   "repository": {
@@ -34,17 +34,17 @@
       "test": [
         "test/**/*.spec.js"
       ],
-      "pluginsDir": "src/js/control_plugins/",
+      "pluginsDir": "src/ts/control_plugins/",
       "fonts": "src/fonts",
       "sass": "src/sass",
       "formBuilder": {
-        "js": "src/js/form-builder.js",
+        "ts": "src/ts/form-builder.ts",
         "sass": [
           "src/sass/form-builder.scss"
         ]
       },
       "formRender": {
-        "js": "src/js/form-render.js",
+        "ts": "src/ts/form-render.ts",
         "sass": [
           "src/sass/form-render.scss"
         ]
@@ -73,14 +73,19 @@
     "comments": false,
     "plugins": [
       "@babel/plugin-proposal-object-rest-spread",
-      "@babel/plugin-proposal-class-properties"
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
     ]
   },
   "scripts": {
-    "build:analyze": "webpack --mode production -p --progress --config tools/webpack.config --analyze",
-    "build:plugins": "webpack --mode production -p --display-entrypoints --progress --config tools/webpack.plugins.config",
+    "build:analyze": "webpack --mode production --progress --config tools/webpack.config --analyze",
+    "build:plugins": "webpack --mode production --display-entrypoints --progress --config tools/webpack.plugins.config",
     "build:vendor": "babel-node tools/build-vendor",
-    "build": "webpack --mode production -p --progress --config tools/webpack.config",
+    "build": "webpack --mode production --progress --config tools/webpack.config",
     "build:all": "run-s build:plugins build:vendor build copy",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && npm run copy:lang",
     "copy:lang": "babel-node tools/copy-language-files",
@@ -104,52 +109,59 @@
     "jquery-ui-sortable": "*"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.4",
-    "@babel/node": "^7.10.5",
+    "@babel/cli": "7.17.6",
+    "@babel/core": "7.17.7",
+    "@babel/eslint-parser": "7.17.0",
+    "@babel/node": "7.16.8",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
     "@babel/plugin-transform-destructuring": "^7.10.4",
-    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-env": "7.16.11",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/npm": "^7.0.5",
-    "autoprefixer": "^9.8.6",
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
-    "clean-webpack-plugin": "^3.0.0",
+    "@types/jquery": "^3.5.13",
+    "@types/jqueryui": "^1.12.16",
+    "@types/tinymce": "^4.6.5",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "babel-loader": "8.2.3",
+    "clean-webpack-plugin": "4.0.0",
     "clui": "^0.3.6",
-    "compression-webpack-plugin": "^5.0.1",
+    "compression-webpack-plugin": "9.2.0",
     "concat-files": "^0.1.1",
     "cross-env": "^7.0.2",
-    "css-loader": "^4.2.1",
-    "eslint": "^7.7.0",
+    "css-loader": "6.7.1",
+    "esbuild-loader": "^2.18.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-loader": "^4.0.2",
     "eslint-plugin-prettier": "^3.4.0",
+    "eslint-webpack-plugin": "3.1.1",
     "formbuilder-languages": "latest",
     "fs-extra": "^9.0.1",
-    "html-webpack-harddisk-plugin": "^1.0.2",
-    "html-webpack-plugin": "^4.3.0",
+    "html-webpack-harddisk-plugin": "2.0.0",
+    "html-webpack-plugin": "5.5.0",
     "inquirer": "^7.3.3",
     "mi18n": "^0.4.8",
     "npm-run-all": "^4.1.5",
     "opener": "^1.5.1",
-    "postcss-loader": "^3.0.0",
+    "postcss-loader": "6.2.1",
+    "postcss-preset-env": "^7.4.2",
+    "prettier": "^2.5.1",
     "replace-in-file": "^6.1.0",
-    "request": "^2.88.2",
     "sass": "^1.49.9",
-    "sass-loader": "^9.0.3",
+    "sass-loader": "12.6.0",
     "semantic-release": "^17.1.1",
     "semver": "^7.3.2",
-    "style-loader": "^1.2.1",
+    "style-loader": "3.3.1",
+    "typescript": "^4.5.5",
     "unzipper": "^0.10.11",
-    "webpack": "^4.44.1",
-    "webpack-bundle-analyzer": "^3.8.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "wrapper-webpack-plugin": "^2.1.0"
+    "webpack": "5.70.0",
+    "webpack-bundle-analyzer": "4.5.0",
+    "webpack-cli": "4.9.2",
+    "webpack-dev-server": "4.7.4",
+    "wrapper-webpack-plugin": "2.1.0"
   },
   "engines": {},
   "release": {

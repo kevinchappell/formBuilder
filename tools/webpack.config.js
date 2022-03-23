@@ -1,6 +1,5 @@
 const pkg = require('../package.json')
 const { resolve, join } = require('path')
-const autoprefixer = require('autoprefixer')
 const { BannerPlugin, DefinePlugin } = require('webpack')
 const CompressionPlugin = require('compression-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
@@ -9,6 +8,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const WrapperPlugin = require('wrapper-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
+const path = require('path')
 
 // hack for Ubuntu on Windows
 try {
@@ -40,8 +41,8 @@ const bannerTemplate = ({ chunk }) => {
 const webpackConfig = {
   context: outputDir,
   entry: {
-    'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
-    'dist/form-render': resolve(__dirname, '../', pkg.config.files.formRender.js),
+    'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.ts),
+    'dist/form-render': resolve(__dirname, '../', pkg.config.files.formRender.ts),
     'demo/assets/js/demo': resolve(__dirname, '../src/demo/', 'js/demo.js'),
   },
   output: {
@@ -51,10 +52,12 @@ const webpackConfig = {
   module: {
     rules: [
       {
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
+        test: /\.ts$/,
+        loader: 'esbuild-loader',
+        options: {
+          loader: 'ts',
+          target: 'es2015',
+        },
       },
       {
         test: /\.js$/,
@@ -63,7 +66,11 @@ const webpackConfig = {
       },
       {
         test: /\.lang$/,
-        loader: 'file-loader?name=[path][name].[ext]&context=./src',
+        use: [
+          {
+            loader: 'file-loader?name=[path][name].[ext]&context=./src',
+          },
+        ],
       },
       {
         test: /\.scss$/,
@@ -83,10 +90,25 @@ const webpackConfig = {
             },
           },
           {
+            loader: 'esbuild-loader',
+            options: {
+              loader: 'css',
+              minify: true,
+            },
+          },
+          {
             loader: 'postcss-loader',
             options: {
-              plugins: [autoprefixer()],
-              sourceMap: !PRODUCTION,
+              postcssOptions: {
+                plugins: [
+                  [
+                    'postcss-preset-env',
+                    {
+                      // Options
+                    },
+                  ],
+                ],
+              },
             },
           },
           {
@@ -129,24 +151,31 @@ const webpackConfig = {
     }),
     new HtmlWebpackHarddiskPlugin({ outputPath: './demo/' }),
     new BannerPlugin({ banner: bannerTemplate, test: /\.js$/ }),
-    new CompressionPlugin({
-      filename: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: /\.(js)$/,
-      threshold: 10240,
-      minRatio: 0.8,
-    }),
+    // new CompressionPlugin({
+    //   filename: '[path].gz[query]',
+    //   algorithm: 'gzip',
+    //   test: /\.(js)$/,
+    //   threshold: 10240,
+    //   minRatio: 0.8,
+    // }),
+    new ESLintPlugin(),
   ],
   devtool,
   resolve: {
     modules: [resolve(__dirname, 'src'), 'node_modules'],
-    extensions: ['.js', '.scss'],
+    extensions: ['.js', '.scss', '.ts'],
+    alias: {
+      fonts: resolve(__dirname, '../src/fonts/'),
+      ts: resolve(__dirname, '../src/ts/'),
+      form_builder: resolve(__dirname, '../src/ts/form_builder'),
+      form_render: resolve(__dirname, '../src/ts/form_render'),
+    },
   },
   devServer: {
-    inline: true,
-    contentBase: 'demo/',
-    noInfo: true,
-    open: true
+    static: {
+      directory: path.join(__dirname, '../demo'),
+    },
+    open: true,
   },
 }
 

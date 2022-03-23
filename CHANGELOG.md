@@ -1,10 +1,3 @@
-## [3.8.1](https://github.com/kevinchappell/formBuilder/compare/v3.8.0...v3.8.1) (2022-03-18)
-
-
-### Bug Fixes
-
-* contenteditable ([4abe7a4](https://github.com/kevinchappell/formBuilder/commit/4abe7a4ca0afae74a2120653759a3e99383da65f))
-
 # [3.8.0](https://github.com/kevinchappell/formBuilder/compare/v3.7.4...v3.8.0) (2022-03-17)
 
 
