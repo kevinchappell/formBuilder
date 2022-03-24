@@ -715,7 +715,7 @@ export default class Helpers {
   removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
-    const fields = stage.querySelectorAll(this.formBuilder.rowWrapperClassSelector)
+    const fields = stage.querySelectorAll(this.formBuilder.fieldSelector)
     const markEmptyArray = []
 
     if (!fields.length) {

@@ -99,3 +99,15 @@ export const defaultI18n = {
 }
 
 export const config = {}
+
+export const gridClassNames = {
+  rowWrapperClass: 'rowWrapper',
+  colWrapperClass: 'colWrapper',
+  tmpColWrapperClass: 'tempColWrapper',
+  tmpRowPlaceholderClass: 'tempRowWrapper',
+  invisibleRowPlaceholderClass: 'invisibleRowPlaceholder',
+}
+
+export const defaultTimeout = 333
+
+export const defaultFieldSelector = 'li.form-field'
