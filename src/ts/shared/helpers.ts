@@ -1,4 +1,5 @@
 import mi18n from 'mi18n'
+import Control from 'ts/shared/control'
 import {
   actionButton,
   CheckboxAttributes,
@@ -10,7 +11,6 @@ import {
   formBuilderOptions,
   GridInfo,
 } from '../../types/formbuilder-types'
-import control from '../control'
 import controlCustom from '../control/custom'
 import { config, defaultTimeout } from '../form_builder/config'
 import { instanceData } from '../form_builder/data'
@@ -439,7 +439,7 @@ export default class Helpers {
 
     // determine the control class for this type, and then process it through the layout engine
     const custom = controlCustom.lookup(previewData.type)
-    const controlClass = custom ? custom.class : control.getClass(previewData.type, previewData.subtype)
+    const controlClass = custom ? custom.class : Control.getClass(previewData.type, previewData.subtype)
     const preview = this.layout.build(controlClass, previewData)
 
     empty($prevHolder[0])
@@ -1115,12 +1115,12 @@ export default class Helpers {
     // first register any passed subtype options against the appropriate type control class
     for (const fieldType in subtypeOpts) {
       if (subtypeOpts.hasOwnProperty(fieldType)) {
-        control.register(subtypeOpts[fieldType], control.getClass(fieldType), fieldType)
+        Control.register(subtypeOpts[fieldType], Control.getClass(fieldType), fieldType)
       }
     }
 
     // retrieve a list of all subtypes
-    const registeredSubtypes = control.getRegisteredSubtypes()
+    const registeredSubtypes = Control.getRegisteredSubtypes()
 
     // remove disabled subtypes
     const subtypeDef = Object.entries(registeredSubtypes).reduce((acc, [key, val]) => {
@@ -1135,7 +1135,7 @@ export default class Helpers {
         // loop through each defined subtype & build the formatted data structure
         const formatted = []
         for (const subtype of subtypeDef[fieldType]) {
-          const controlClass = control.getClass(fieldType, subtype)
+          const controlClass = Control.getClass(fieldType, subtype)
           const label = controlClass.mi18n(`subtype.${subtype}`) || controlClass.mi18n(subtype) || subtype
           formatted.push({
             label,

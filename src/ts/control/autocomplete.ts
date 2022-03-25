@@ -1,10 +1,10 @@
-import control from '../control'
+import Control from 'ts/shared/control'
 import { filter } from '../form_builder/dom'
 /**
  * Autocomplete class
  * Output an autocomplete form element
  */
-export default class controlAutocomplete extends control {
+export default class controlAutocomplete extends Control {
   /**
    * definition
    * @return {Object} select control definition
@@ -303,4 +303,4 @@ export default class controlAutocomplete extends control {
   }
 }
 
-control.register('autocomplete', controlAutocomplete)
+Control.register('autocomplete', controlAutocomplete)

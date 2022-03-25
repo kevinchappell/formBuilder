@@ -17,7 +17,8 @@
         "fonts/*": ["fonts/*"],
         "ts/*": ["ts/*"],
         "form_builder/*": ["ts/form_builder/*"],
-        "form_render/*": ["ts/form_render/*"]
+        "form_render/*": ["ts/form_render/*"],
+        "shared/*": ["ts/shared/*"]
       }
     },
 		"include": ["src/**/*"],

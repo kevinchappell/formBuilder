@@ -1,12 +1,12 @@
+import Control from 'ts/shared/control'
 import { BaseControlAttributes } from '../../types/formbuilder-types'
-import control from '../control'
 import { trimObj } from '../shared/utils'
 
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
-export default class controlSelect extends control {
+export default class controlSelect extends Control {
   dom: any
   /**
    * definition
@@ -155,7 +155,7 @@ export default class controlSelect extends control {
   groupRequired() {
     const checkboxes = this.element.getElementsByTagName('input')
     const setValidity = (checkbox, isValid) => {
-      const minReq = control.mi18n('minSelectionRequired', 1)
+      const minReq = Control.mi18n('minSelectionRequired', 1)
       if (!isValid) {
         checkbox.setCustomValidity(minReq)
       } else {
@@ -229,4 +229,4 @@ export default class controlSelect extends control {
 }
 
 // register this control for the following types & text subtypes
-control.register(['select', 'checkbox-group', 'radio-group', 'checkbox'], controlSelect)
+Control.register(['select', 'checkbox-group', 'radio-group', 'checkbox'], controlSelect)

@@ -1,11 +1,11 @@
 import mi18n from 'mi18n'
-import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from './shared/utils'
+import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from './utils'
 
 /**
  * Base class for all control classes
  * Defines the structure of a control class and some standard control methods
  */
-export default class control {
+export default class Control {
   static controlConfig: any
   rawConfig: any
   preview: any
@@ -61,11 +61,11 @@ export default class control {
     }
 
     // check for global class configuration
-    if (!control.controlConfig) {
-      control.controlConfig = {}
+    if (!Control.controlConfig) {
+      Control.controlConfig = {}
     }
     const classId = this.subtype ? this.type + '.' + this.subtype : this.type
-    this.classConfig = jQuery.extend({}, control.controlConfig[classId] || {})
+    this.classConfig = jQuery.extend({}, Control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
     if (this.subtype) {
@@ -111,8 +111,8 @@ export default class control {
     const prefix = parentType ? parentType + '.' : ''
 
     // initialise the register
-    if (!control.classRegister) {
-      control.classRegister = {}
+    if (!Control.classRegister) {
+      Control.classRegister = {}
     }
     if (!Array.isArray(types)) {
       types = [types]
@@ -123,11 +123,11 @@ export default class control {
       // '.' is a restricted character for type names
       if (type.indexOf('.') !== -1) {
         // eslint-disable-next-line max-len
-        control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
+        Control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
         continue
       }
 
-      control.classRegister[prefix + type] = controlClass
+      Control.classRegister[prefix + type] = controlClass
     }
   }
 
@@ -138,7 +138,7 @@ export default class control {
    * @return {Array} registered types (or subtypes)
    */
   static getRegistered(type = false) {
-    const types = Object.keys(control.classRegister)
+    const types = Object.keys(Control.classRegister)
     if (!types.length) {
       return types
     }
@@ -159,8 +159,8 @@ export default class control {
    */
   static getRegisteredSubtypes() {
     const types = {}
-    for (const key in control.classRegister) {
-      if (control.classRegister.hasOwnProperty(key)) {
+    for (const key in Control.classRegister) {
+      if (Control.classRegister.hasOwnProperty(key)) {
         const [type, subtype] = key.split('.')
         if (!subtype) {
           continue
@@ -183,9 +183,9 @@ export default class control {
    */
   static getClass(type, subtype = null) {
     const lookup = subtype ? type + '.' + subtype : type
-    const controlClass = control.classRegister[lookup] || control.classRegister[type]
+    const controlClass = Control.classRegister[lookup] || Control.classRegister[type]
     if (!controlClass) {
-      return control.error(
+      return Control.error(
         'Invalid control type. (Type: ' +
           type +
           ', Subtype: ' +
@@ -218,7 +218,7 @@ export default class control {
     // see src/js/control_plugins/ for an example
     if (!this.fbControlsLoaded) {
       for (const loadControl of controlClasses) {
-        loadControl(control, control.classRegister)
+        loadControl(Control, Control.classRegister)
       }
       this.fbControlsLoaded = true
     }

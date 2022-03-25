@@ -1,10 +1,10 @@
-import control from '../control'
+import Control from 'ts/shared/control'
 
 /**
  * Hidden input class
  * Output a <input type="hidden" ... /> form element
  */
-export default class controlHidden extends control {
+export default class controlHidden extends Control {
   /**
    * build a hidden input dom element
    * @return {Object} DOM Element to be injected into the form.
@@ -28,4 +28,4 @@ export default class controlHidden extends control {
 }
 
 // register the following controls
-control.register('hidden', controlHidden)
+Control.register('hidden', controlHidden)

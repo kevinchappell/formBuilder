@@ -1,10 +1,10 @@
-import control from '../control'
+import Control from 'ts/shared/control'
 
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
-export default class controlText extends control {
+export default class controlText extends Control {
   dom: any
   /**
    * class configuration
@@ -44,5 +44,5 @@ export default class controlText extends control {
 }
 
 // register this control for the following types & text subtypes
-control.register(['text', 'file', 'date', 'number'], controlText)
-control.register(['text', 'password', 'email', 'color', 'tel'], controlText, 'text')
+Control.register(['text', 'file', 'date', 'number'], controlText)
+Control.register(['text', 'password', 'email', 'color', 'tel'], controlText, 'text')

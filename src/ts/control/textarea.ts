@@ -1,10 +1,10 @@
-import control from '../control'
+import Control from 'ts/shared/control'
 
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
  */
-export default class controlTextarea extends control {
+export default class controlTextarea extends Control {
   field: any
   /**
    * class configuration
@@ -63,5 +63,5 @@ export default class controlTextarea extends control {
 }
 
 // register the following controls
-control.register('textarea', controlTextarea)
-control.register('textarea', controlTextarea, 'textarea')
+Control.register('textarea', controlTextarea)
+Control.register('textarea', controlTextarea, 'textarea')

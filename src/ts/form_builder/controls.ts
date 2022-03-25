@@ -1,5 +1,5 @@
 import fontConfig from 'fonts/config.json'
-import control from '../control'
+import Control from 'ts/shared/control'
 import controlCustom from '../control/custom'
 import '../control/index'
 import { hyphenCase, markup as m, unique } from '../shared/utils'
@@ -27,11 +27,11 @@ export default class Controls {
     this.opts = opts
     this.dom = d.controls
     this.custom = controlCustom
-    this.getClass = control.getClass
-    this.getRegistered = control.getRegistered
+    this.getClass = Control.getClass
+    this.getRegistered = Control.getRegistered
     // ability for controls to have their own configuration / options
     // of the format control identifier (type, or type.subtype): {options}
-    control.controlConfig = opts.controlConfig || {}
+    Control.controlConfig = opts.controlConfig || {}
     this.init()
   }
 
@@ -50,20 +50,20 @@ export default class Controls {
     const opts = this.opts
 
     // load in any custom specified controls, or preloaded plugin controls
-    control.loadCustom(opts.controls)
+    Control.loadCustom(opts.controls)
     // register any passed custom templates & fields
     if (Object.keys(opts.fields).length) {
       controlCustom.register(opts.templates, opts.fields)
     }
 
     // retrieve a full list of loaded controls
-    const registeredControls = control.getRegistered()
+    const registeredControls = Control.getRegistered()
     this.registeredControls = registeredControls
     const customFields = controlCustom.getRegistered()
     if (customFields) {
       jQuery.merge(registeredControls, customFields)
     }
-    const registeredSubtypes = control.getRegisteredSubtypes()
+    const registeredSubtypes = Control.getRegisteredSubtypes()
     this.registeredSubtypes = registeredSubtypes
 
     // if we support rearranging control order, add classes to support this
@@ -86,7 +86,7 @@ export default class Controls {
         custom = {}
 
         // determine the class, icon & label for this control
-        controlClass = control.getClass(type)
+        controlClass = Control.getClass(type)
         if (!controlClass || !controlClass.active(type)) {
           continue
         }

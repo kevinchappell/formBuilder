@@ -1,11 +1,11 @@
-import control from '../control'
 import mi18n from 'mi18n'
+import Control from 'ts/shared/control'
 
 /**
  * Support for custom controls
  * Implementing support for custom templates being passed as options to formBuilder/Render
  */
-export default class controlCustom extends control {
+export default class controlCustom extends Control {
   static customRegister: {}
   static def: any
   static templates: {}
@@ -34,7 +34,7 @@ export default class controlCustom extends control {
     }
 
     // register each defined template against this class
-    control.register(Object.keys(templates), controlCustom)
+    Control.register(Object.keys(templates), controlCustom)
 
     // build the control label & icon definitions
     for (const field of fields) {
@@ -54,7 +54,7 @@ export default class controlCustom extends control {
       // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
         // check that this type is already registered
-        const controlClass = control.getClass(type, field.subtype)
+        const controlClass = Control.getClass(type, field.subtype)
         if (!controlClass) {
           this.error(
             'Error while registering custom field: ' +
@@ -88,7 +88,7 @@ export default class controlCustom extends control {
    */
   static getRegistered(type = false) {
     if (type) {
-      return control.getRegistered(type)
+      return Control.getRegistered(type)
     }
     return Object.keys(controlCustom.customRegister)
   }
