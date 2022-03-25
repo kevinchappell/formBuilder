@@ -5,6 +5,7 @@ declare module 'mi18n' {
   export function setCurrent(args?: any): any
 
   export let current: any
+  export let locale: any
 
   export = mi18n
 }

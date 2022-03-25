@@ -6,22 +6,15 @@
     "es6": true
   },
   "extends": [
-    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
-  ],
-  "plugins": [
-    "prettier", 
-    "@typescript-eslint",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:prettier/recommended"
   ],
   "globals": {
     "jQuery": true,
     "$": true
   },
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "rules": {
@@ -29,8 +22,8 @@
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "semi": ["error", "never"],
-    "no-unused-vars": 1,
     "no-prototype-builtins": 0,
+    "no-unreachable": "warn",
     "arrow-parens": ["warn", "as-needed"],
     "prefer-const": [
       1,
@@ -38,6 +31,13 @@
         "destructuring": "any",
         "ignoreReadBeforeAssign": false
       }
-    ]
+    ],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-this-alias": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/no-empty-function": "warn",
+    "no-debugger": "warn"
+
   }
 }

@@ -2,7 +2,7 @@
     "compilerOptions": {
       "outDir": "./dist-ts",
       "allowJs": true,
-      "target": "es5",
+      "target": "ESNext",
 			"moduleResolution": "node",
       "isolatedModules": true,
       "esModuleInterop": true,
@@ -11,7 +11,7 @@
       "resolveJsonModule": true,
 			"sourceMap": true,
       "allowSyntheticDefaultImports": true,
-			"lib": ["DOM","ES2015"],
+			"lib": ["DOM","ESNext"],
       "baseUrl": "src",
       "paths": {
         "fonts/*": ["fonts/*"],

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const pkg = require('../package.json')
 const { resolve, join } = require('path')
 const { BannerPlugin, DefinePlugin } = require('webpack')
@@ -58,11 +59,6 @@ const webpackConfig = {
           loader: 'ts',
           target: 'es2015',
         },
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
       },
       {
         test: /\.lang$/,

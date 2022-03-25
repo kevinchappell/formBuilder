@@ -11,51 +11,35 @@ export class FormBuilderControlHelper {
   }
 
   processControl(control) {
-    if (control[0].classList.contains('input-set-control')) {
-      const inputSets = []
-      const inputSet = this.fb.opts.inputSets.find(set => hyphenCase(set.name || set.label) === control[0].dataset.type)
-      if (inputSet && inputSet.showHeader) {
-        const header = {
-          type: 'header',
-          subtype: 'h2',
-          id: inputSet.name,
-          label: inputSet.label,
-        }
-        inputSets.push(header)
-      }
-
-      inputSets.push(...inputSet.fields)
-      inputSets.forEach(field => {
-        this.prepFieldVars(field, true)
-        if (this.fb.h.stopIndex || this.fb.h.stopIndex === 0) {
-          this.fb.h.stopIndex++
-        }
-      })
+    if (this.IsInputSetControl(control)) {
+      this.processInputSetControl(control)
     } else {
       this.prepFieldVars(control, true)
     }
   }
 
+  private IsInputSetControl(control: any) {
+    return control[0].classList.contains('input-set-control')
+  }
+
   // builds the standard formbuilder datastructure for a field definition
   prepFieldVars($field, isNew = false) {
     let field: Field = {}
+
     if ($field instanceof jQuery) {
-      // get the default type etc & label for this field
       field.type = $field[0].dataset.type
       if (field.type) {
-        // check for a custom type
         const custom = this.fb.controls.custom.lookup(field.type)
+
         if (custom) {
           field = Object.assign({}, custom)
         } else {
           const controlClass = this.fb.controls.getClass(field.type)
           field.label = controlClass.label(field.type)
         }
-
-        // @todo: any other attrs ever set in aFields? value or selected?
       } else {
-        // is dataType XML
         const attrs = $field[0].attributes
+
         if (!isNew) {
           field.values = ($field as JQuery).children().map((index, elem) => {
             return {
@@ -99,5 +83,29 @@ export class FormBuilderControlHelper {
     this.fb.opts.onAddFieldAfter(this.fb.data.lastID, field)
 
     this.fb.d.stage.classList.remove('empty')
+  }
+
+  private processInputSetControl(control: any) {
+    const inputSets = []
+    const inputSet = this.fb.opts.inputSets.find(set => hyphenCase(set.name || set.label) === control[0].dataset.type)
+
+    if (inputSet && inputSet.showHeader) {
+      const header = {
+        type: 'header',
+        subtype: 'h2',
+        id: inputSet.name,
+        label: inputSet.label,
+      }
+      inputSets.push(header)
+    }
+
+    inputSets.push(...inputSet.fields)
+
+    inputSets.forEach(field => {
+      this.prepFieldVars(field, true)
+      if (this.fb.h.stopIndex || this.fb.h.stopIndex === 0) {
+        this.fb.h.stopIndex++
+      }
+    })
   }
 }

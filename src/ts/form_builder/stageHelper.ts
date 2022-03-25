@@ -121,6 +121,7 @@ export class FormBuilderStageHelper {
       e.preventDefault()
       const options = field.querySelector('.sortable-options')
       const optionsCount = options.childNodes.length
+
       if (optionsCount <= 2 && !type.includes('checkbox')) {
         this.fb.opts.notify.error('Error: ' + mi18n.get('minOptionMessage'))
       } else {
@@ -442,10 +443,10 @@ export class FormBuilderStageHelper {
     })
 
     // Attach a callback to toggle roles visibility
-    this.fb.$stage.on('click', 'input.fld-access', function (e) {
+    this.fb.$stage.on('click', 'input.fld-access', e => {
       const roles = $(e.target).closest('.form-field').find('.available-roles')
       const enableRolesCB = $(e.target)
-      roles.slideToggle(250, function () {
+      roles.slideToggle(250, () => {
         if (!enableRolesCB.is(':checked')) {
           $('input[type=checkbox]', roles).removeAttr('checked')
         }
@@ -739,9 +740,9 @@ export class FormBuilderStageHelper {
 
     //Copy selects(includes subtype if applicable)
     const selects = currentItem.find('select')
-    selects.each(function (i) {
-      const select = this
-      $clone.find('select').eq(i).val($(select).val())
+    selects.each((index, el) => {
+      const select = $(el)
+      $clone.find('select').eq(index).val($(select).val())
     })
 
     $clone.attr('id', this.fb.data.lastID)

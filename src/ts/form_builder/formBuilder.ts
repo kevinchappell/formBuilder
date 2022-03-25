@@ -59,26 +59,23 @@ export class FormBuilderClass {
   constructor(public opts: formBuilderOptions, public el: HTMLElement) {
     this.initBase(opts)
 
-    opts = this.h.processOptions(opts)
-    this.h.editorUI(this.formID, opts)
-    this.data.formID = this.formID
-    this.data.lastID = `${this.data.formID}-fld-0`
-
     this.controls = new Controls(opts, this.d)
-
     this.$stage = $(this.d.stage)
     this.$cbUL = $(this.d.controls)
 
-    this.gh = new GridHelper(opts, this)
-    this.ch = new FormBuilderControlHelper(opts, this)
-
-    this.sh = new FormBuilderStageHelper(opts, this)
-    this.editorHelper = new FormBuilderEditorHelper(opts, this)
+    this.loadHelpers(opts)
 
     this.loadFields()
     this.checkLoadOptions()
 
     this.doneLoading()
+  }
+
+  private loadHelpers(opts: formBuilderOptions) {
+    this.gh = new GridHelper(opts, this)
+    this.ch = new FormBuilderControlHelper(opts, this)
+    this.sh = new FormBuilderStageHelper(opts, this)
+    this.editorHelper = new FormBuilderEditorHelper(opts, this)
   }
 
   CheckTinyMCETransition(fieldListItem) {
@@ -132,7 +129,7 @@ export class FormBuilderClass {
     this.actions = {
       getFieldTypes: activeOnly =>
         activeOnly ? subtract(this.controls.getRegistered(), this.opts.disableFields) : this.controls.getRegistered(),
-      clearFields: animate => this.h.removeAllFields(this.d.stage),
+      clearFields: () => this.h.removeAllFields(this.d.stage),
       showData: this.h.showData.bind(this.h),
       save: minify => {
         const formData = this.h.save(minify)
@@ -260,8 +257,17 @@ export class FormBuilderClass {
     if (!opts.layout) {
       opts.layout = Layout
     }
+
     const layoutEngine = new opts.layout(opts.layoutTemplates, true)
     this.h = new Helpers(this.formID, layoutEngine, this)
+
+    opts = this.h.processOptions(opts)
+    this.opts = opts
+
+    this.h.editorUI(this.formID, opts)
+
+    this.data.formID = this.formID
+    this.data.lastID = `${this.data.formID}-fld-0`
   }
 }
 
