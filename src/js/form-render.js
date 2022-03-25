@@ -343,7 +343,7 @@ class FormRender {
       methods.instance = new FormRender(options)
       forms.each(index => methods.instance.render(forms[index], index))
 
-      return { ...methods.instance, ...methods }
+      return methods.instance
     },
     userData: () => methods.instance && methods.instance.userData,
     clear: () => methods.instance && methods.instance.clear(),
@@ -370,7 +370,9 @@ class FormRender {
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
-      return methods.init(this, methodOrOptions)
+      const instance = methods.init(this, methodOrOptions)
+      Object.assign(methods, instance)
+      return instance
     }
   }
 
