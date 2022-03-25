@@ -5,7 +5,7 @@ import { config, defaultI18n, defaultOptions } from './form_builder/config'
 import { FormBuilderClass } from './form_builder/formBuilder'
 import { markup } from './shared/utils'
 
-const FormBuilder = function (opts: formBuilderOptions, element, $) {
+function FormBuilder(opts: formBuilderOptions, element, $) {
   const fb = new FormBuilderClass(opts, element)
   return fb
 }

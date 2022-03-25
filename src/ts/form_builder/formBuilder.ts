@@ -1,12 +1,12 @@
 // import { defaultOptions } from '../config'
 import mi18n from 'mi18n'
-import { config } from 'ts/form_builder/config'
+import { config, defaultFieldSelector, gridClassNames } from 'ts/form_builder/config'
 import { FormBuilderEditorHelper } from 'ts/form_builder/editorHelper'
 import events from 'ts/shared/events'
 import { formBuilderOptions } from '../../types/formbuilder-types'
 import Helpers from '../shared/helpers'
 import { Layout } from '../shared/layout'
-import { forEach, markup, subtract, trimObj } from '../shared/utils'
+import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
 import { FormBuilderControlHelper } from './controlHelper'
 import Controls from './controls'
 import { Data } from './data'
@@ -15,20 +15,23 @@ import { GridHelper } from './gridHelper'
 import { FormBuilderStageHelper } from './stageHelper'
 
 export class FormBuilderClass {
-  rowWrapperClassSelector = '.rowWrapper'
-  rowWrapperClass = this.rowWrapperClassSelector.replace('.', '')
+  rowWrapperClassSelector
+  rowWrapperClass
 
-  colWrapperClassSelector = '.colWrapper'
-  colWrapperClass = this.colWrapperClassSelector.replace('.', '')
+  colWrapperClassSelector
+  colWrapperClass
 
-  tmpColWrapperClassSelector = '.tempColWrapper'
-  tmpColWrapperClass = this.tmpColWrapperClassSelector.replace('.', '')
+  tmpColWrapperClassSelector
+  tmpColWrapperClass
 
-  tmpRowPlaceholderClassSelector = '.tempRowWrapper'
-  tmpRowPlaceholderClass = this.tmpRowPlaceholderClassSelector.replace('.', '')
+  tmpRowPlaceholderClassSelector
+  tmpRowPlaceholderClass
 
-  invisibleRowPlaceholderClassSelector = '.invisibleRowPlaceholder'
-  invisibleRowPlaceholderClass = this.invisibleRowPlaceholderClassSelector.replace('.', '')
+  invisibleRowPlaceholderClassSelector
+  invisibleRowPlaceholderClass
+
+  fieldSelector = defaultFieldSelector
+
   formRows = []
   preserveTempContainers = []
   isMoving = false
@@ -69,6 +72,11 @@ export class FormBuilderClass {
     this.checkLoadOptions()
 
     this.doneLoading()
+  }
+
+  private initGridClasses() {
+    Object.assign(this, gridClassNames)
+    Object.assign(this, generateSelectorClassNames(gridClassNames))
   }
 
   private loadHelpers(opts: formBuilderOptions) {
@@ -250,8 +258,12 @@ export class FormBuilderClass {
   }
 
   private initBase(opts: formBuilderOptions) {
+    this.initGridClasses()
+
     this.data = new Data(this.formID)
     this.d = new Dom(this.formID)
+
+    this.fieldSelector = opts.enableEnhancedBootstrapGrid ? this.rowWrapperClassSelector : defaultFieldSelector
 
     // prepare a new layout object with appropriate templates
     if (!opts.layout) {

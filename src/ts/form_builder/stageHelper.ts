@@ -6,10 +6,9 @@ import { addEventListeners, closest, forceNumber, forEach, parsedHtml, safename 
 import { CustomDoubleClickEvent, CustomHandledEvent, CustomTouchHandledEvent } from 'types/helper-types'
 import { fbControlType, formBuilderOptions } from '../../types/formbuilder-types'
 import { selectFieldOptions } from './attributes/field_attributes/select'
-import { config } from './config'
+import { config, defaultTimeout } from './config'
 
 export class FormBuilderStageHelper {
-  DEFAULT_TIMEOUT = 333
   cloneControls: JQuery
 
   constructor(public opts: formBuilderOptions, public fb: FormBuilderClass) {
@@ -109,7 +108,7 @@ export class FormBuilderStageHelper {
     this.fb.$stage.on(
       'change blur keyup click',
       previewSelectors,
-      throttle(this.saveAndUpdate, this.DEFAULT_TIMEOUT, { leading: false }),
+      throttle(this.saveAndUpdate, defaultTimeout, { leading: false }),
     )
 
     // delete options

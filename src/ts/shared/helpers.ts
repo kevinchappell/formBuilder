@@ -12,7 +12,7 @@ import {
 } from '../../types/formbuilder-types'
 import control from '../control'
 import controlCustom from '../control/custom'
-import { config } from '../form_builder/config'
+import { config, defaultTimeout } from '../form_builder/config'
 import { instanceData } from '../form_builder/data'
 import { empty, instanceDom, optionFields, remove } from '../form_builder/dom'
 import events from './events'
@@ -713,7 +713,7 @@ export default class Helpers {
   removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
-    const fields = stage.querySelectorAll(this.formBuilder.rowWrapperClassSelector)
+    const fields = stage.querySelectorAll(this.formBuilder.fieldSelector)
     const markEmptyArray = []
 
     if (!fields.length) {
@@ -1055,9 +1055,13 @@ export default class Helpers {
 
     this.removeContainerProtection(`${fieldID}-cont`)
 
-    setTimeout(() => {
-      $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
-    }, 300)
+    if (fieldRowWrapper.length) {
+      this.removeContainerProtection(`${fieldID}-cont`)
+      const timeout = setTimeout(() => {
+        clearTimeout(timeout)
+        $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
+      }, defaultTimeout)
+    }
 
     return fieldRemoved
   }

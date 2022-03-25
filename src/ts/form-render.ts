@@ -11,7 +11,7 @@ import { FormRender } from './form_render/formRender'
       methods.instance = new FormRender(options)
       forms.each(index => methods.instance.render(forms[index], index))
 
-      return { ...methods.instance, ...methods }
+      return methods.instance
     },
     userData: () => methods.instance && methods.instance.userData,
     clear: () => methods.instance && methods.instance.clear(),
@@ -38,7 +38,9 @@ import { FormRender } from './form_render/formRender'
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, args)
     } else {
-      return methods.init(this, methodOrOptions)
+      const instance = methods.init(this, methodOrOptions)
+      Object.assign(methods, instance)
+      return instance
     }
   }
 
