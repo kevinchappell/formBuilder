@@ -7,7 +7,15 @@ import mi18n from 'mi18n'
 import events from './events'
 import layout from './layout'
 import Helpers from './helpers'
-import { defaultOptions, defaultI18n, config, styles } from './config'
+import {
+  defaultOptions,
+  defaultI18n,
+  config,
+  styles,
+  gridClassNames,
+  defaultTimeout,
+  defaultFieldSelector,
+} from './config'
 import Controls from './controls'
 import {
   subtract,
@@ -25,28 +33,24 @@ import {
   safename,
   forceNumber,
   getContentType,
+  generateSelectorClassNames,
 } from './utils'
 import { css_prefix_text } from '../fonts/config.json'
 
-const DEFAULT_TIMEOUT = 333
-const rowWrapperClassSelector = '.rowWrapper'
-const rowWrapperClass = rowWrapperClassSelector.replace('.', '')
+const { rowWrapperClass, colWrapperClass, tmpColWrapperClass, tmpRowPlaceholderClass, invisibleRowPlaceholderClass } =
+  gridClassNames
 
-const colWrapperClassSelector = '.colWrapper'
-const colWrapperClass = colWrapperClassSelector.replace('.', '')
-
-const tmpColWrapperClassSelector = '.tempColWrapper'
-const tmpColWrapperClass = tmpColWrapperClassSelector.replace('.', '')
-
-const tmpRowPlaceholderClassSelector = '.tempRowWrapper'
-const tmpRowPlaceholderClass = tmpRowPlaceholderClassSelector.replace('.', '')
-
-const invisibleRowPlaceholderClassSelector = '.invisibleRowPlaceholder'
-const invisibleRowPlaceholderClass = invisibleRowPlaceholderClassSelector.replace('.', '')
+const {
+  rowWrapperClassSelector,
+  colWrapperClassSelector,
+  tmpColWrapperClassSelector,
+  tmpRowPlaceholderClassSelector,
+  invisibleRowPlaceholderClassSelector,
+} = generateSelectorClassNames(gridClassNames)
 
 let isMoving = false
 
-const FormBuilder = function (opts, element, $) {
+function FormBuilder(opts, element, $) {
   const formBuilder = this
   const i18n = mi18n.current
   const formID = `frmb-${new Date().getTime()}`
@@ -58,6 +62,7 @@ const FormBuilder = function (opts, element, $) {
   formBuilder.rowWrapperClassSelector = rowWrapperClassSelector
   formBuilder.colWrapperClassSelector = colWrapperClassSelector
   formBuilder.colWrapperClass = colWrapperClass
+  formBuilder.fieldSelector = opts.enableEnhancedBootstrapGrid ? rowWrapperClassSelector : defaultFieldSelector
 
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
@@ -1611,7 +1616,7 @@ const FormBuilder = function (opts, element, $) {
   const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
 
   // Save field on change
-  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, DEFAULT_TIMEOUT, { leading: false }))
+  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, defaultTimeout, { leading: false }))
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {

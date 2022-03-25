@@ -18,7 +18,7 @@ import {
   getAllGridRelatedClasses,
 } from './utils'
 import events from './events'
-import { config } from './config'
+import { config, defaultTimeout } from './config'
 import control from './control'
 import controlCustom from './control/custom'
 
@@ -715,7 +715,7 @@ export default class Helpers {
   removeAllFields(stage) {
     const i18n = mi18n.current
     const opts = config.opts
-    const fields = stage.querySelectorAll(this.formBuilder.rowWrapperClassSelector)
+    const fields = stage.querySelectorAll(this.formBuilder.fieldSelector)
     const markEmptyArray = []
 
     if (!fields.length) {
@@ -1055,11 +1055,13 @@ export default class Helpers {
 
     document.dispatchEvent(events.fieldRemoved)
 
-    this.removeContainerProtection(`${fieldID}-cont`)
-
-    setTimeout(() => {
-      $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
-    }, 300)
+    if (fieldRowWrapper.length) {
+      this.removeContainerProtection(`${fieldID}-cont`)
+      const timeout = setTimeout(() => {
+        clearTimeout(timeout)
+        $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
+      }, defaultTimeout)
+    }
 
     return fieldRemoved
   }
