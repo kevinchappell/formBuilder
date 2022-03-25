@@ -758,4 +758,7 @@ $.fn.swapWith = function (that) {
   return $this
 }
 
+export const generateSelectorClassNames = classNamesObj =>
+  Object.entries(classNamesObj).reduce((acc, [key, val]) => ({ ...acc, [`${key}Selector`]: `.${val}` }), {})
+
 export default utils

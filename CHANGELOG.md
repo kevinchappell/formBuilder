@@ -1,3 +1,25 @@
+## [3.8.3](https://github.com/kevinchappell/formBuilder/compare/v3.8.2...v3.8.3) (2022-03-25)
+
+
+### Bug Fixes
+
+* formRender api ([05a3476](https://github.com/kevinchappell/formBuilder/commit/05a3476f2514b8b8eb238c37d971981b821f035a)), closes [#1279](https://github.com/kevinchappell/formBuilder/issues/1279)
+
+## [3.8.2](https://github.com/kevinchappell/formBuilder/compare/v3.8.1...v3.8.2) (2022-03-25)
+
+
+### Bug Fixes
+
+* clearFields ([292b54f](https://github.com/kevinchappell/formBuilder/commit/292b54f91fbb0bfeae7a61d391eea1d36dcaf450)), closes [#1276](https://github.com/kevinchappell/formBuilder/issues/1276)
+* prevent fieldRow actions when not present ([b2eeae2](https://github.com/kevinchappell/formBuilder/commit/b2eeae2b2aa0cbaf6bc6cff4d5bb6e04b78eeafc))
+
+## [3.8.1](https://github.com/kevinchappell/formBuilder/compare/v3.8.0...v3.8.1) (2022-03-18)
+
+
+### Bug Fixes
+
+* contenteditable ([4abe7a4](https://github.com/kevinchappell/formBuilder/commit/4abe7a4ca0afae74a2120653759a3e99383da65f))
+
 # [3.8.0](https://github.com/kevinchappell/formBuilder/compare/v3.7.4...v3.8.0) (2022-03-17)
 
 
