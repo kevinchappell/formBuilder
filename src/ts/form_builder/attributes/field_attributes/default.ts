@@ -1,5 +1,5 @@
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { removeFromArray } from '../../../utils'
+import { removeFromArray } from '../../../shared/utils'
 
 export const defaultFieldAttrs = (type, fb: FormBuilderClass) => {
   const defaultAttrs = ['required', 'label', 'description', 'placeholder', 'className', 'name', 'access', 'value']

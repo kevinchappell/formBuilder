@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { trimObj } from 'ts/utils'
+import { trimObj } from 'ts/shared/utils'
 
 export const numberAttribute = (attribute, values, fb: FormBuilderClass) => {
   const { class: classname, className, value, ...attrs } = values

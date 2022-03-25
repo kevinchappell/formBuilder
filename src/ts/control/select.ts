@@ -1,6 +1,6 @@
 import { BaseControlAttributes } from '../../types/formbuilder-types'
 import control from '../control'
-import { trimObj } from '../utils'
+import { trimObj } from '../shared/utils'
 
 /**
  * Text input class

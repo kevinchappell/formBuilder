@@ -1,4 +1,4 @@
-import { titleCase } from '../../ts/utils'
+import { titleCase } from '../../ts/shared/utils'
 
 export const setCurrentFieldIdValues = value => {
   const currentFieldIds = document.querySelectorAll('.current-field-id')

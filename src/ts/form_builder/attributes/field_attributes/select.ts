@@ -1,7 +1,7 @@
 import fontConfig from 'fonts/config.json'
 import mi18n from 'mi18n'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { getContentType } from 'ts/utils'
+import { getContentType } from 'ts/shared/utils'
 import { CheckboxAttributes } from 'types/formbuilder-types'
 
 export const selectFieldOptions = (optionData, multipleSelect, fb: FormBuilderClass) => {

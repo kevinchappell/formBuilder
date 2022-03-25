@@ -1,5 +1,5 @@
+import { getAllGridRelatedClasses, markup, nameAttr, parsedHtml } from 'ts/shared/utils'
 import { layoutTemplates } from '../../types/shared-types'
-import utils, { getAllGridRelatedClasses } from '../utils'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
@@ -104,7 +104,7 @@ export class Layout {
       if (data.name) {
         data.name = data.name + '-preview'
       } else {
-        data.name = utils.nameAttr(data) + '-preview'
+        data.name = nameAttr(data) + '-preview'
       }
     }
     data.id = data.name
@@ -144,7 +144,7 @@ export class Layout {
    */
   label() {
     const label = this.data.label || ''
-    const labelText = utils.parsedHtml(label)
+    const labelText = parsedHtml(label)
     const labelContents = [labelText]
     if (this.data.required) {
       labelContents.push(this.markup('span', '*', { className: 'formbuilder-required' }))
@@ -216,6 +216,6 @@ export class Layout {
    * @return {Object} DOM element
    */
   markup(tag, content: string | string[] = '', attributes = {}) {
-    return utils.markup(tag, content, attributes)
+    return markup(tag, content, attributes)
   }
 }

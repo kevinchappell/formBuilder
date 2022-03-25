@@ -15,6 +15,7 @@ import controlCustom from '../control/custom'
 import { config } from '../form_builder/config'
 import { instanceData } from '../form_builder/data'
 import { empty, instanceDom, optionFields, remove } from '../form_builder/dom'
+import events from './events'
 import {
   bootstrapColumnRegex,
   camelCase,
@@ -30,8 +31,7 @@ import {
   trimObj,
   unique,
   xmlAttrString,
-} from '../utils'
-import events from './events'
+} from './utils'
 /**
  * Utilities specific to form-builder.js
  */

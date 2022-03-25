@@ -5,7 +5,7 @@ import { defaultI18n } from 'ts/form_builder/config'
 import { remove } from 'ts/form_builder/dom'
 import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
-import utils, { forEach } from 'ts/utils'
+import { forEach, markup, parseXML, trimObj, unique } from 'ts/shared/utils'
 import { formRenderOptions } from 'types/formrender-types'
 
 export class FormRender {
@@ -46,7 +46,7 @@ export class FormRender {
         if (!Array.isArray(fields)) {
           fields = [fields]
         }
-        const renderedFormWrap = utils.markup('div', fields, {
+        const renderedFormWrap = markup('div', fields, {
           className: 'rendered-form',
         })
         this.appendChild(renderedFormWrap)
@@ -61,7 +61,7 @@ export class FormRender {
             // Check if this rowID is created yet or not.
             let rowGroupNode = document.getElementById(rowID)
             if (!rowGroupNode) {
-              rowGroupNode = utils.markup('div', null, { id: rowID, className: 'row form-inline' })
+              rowGroupNode = markup('div', null, { id: rowID, className: 'row form-inline' })
               renderedFormWrap.appendChild(rowGroupNode)
             }
             rowGroupNode.appendChild(field)
@@ -137,13 +137,13 @@ export class FormRender {
       sanitizedField.name = field.name && `${field.name}-${instanceIndex}`
     }
     sanitizedField.className = Array.isArray(field.className)
-      ? utils.unique(field.className.join(' ').split(' ')).join(' ')
+      ? unique(field.className.join(' ').split(' ')).join(' ')
       : field.className || field.class || null
     delete sanitizedField.class
     if (field.values) {
-      field.values = field.values.map(option => utils.trimObj(option))
+      field.values = field.values.map(option => trimObj(option))
     }
-    return utils.trimObj(sanitizedField)
+    return trimObj(sanitizedField)
   }
 
   /**
@@ -218,7 +218,7 @@ export class FormRender {
         formRender.markup = exportMarkup(rendered)
       }
     } else {
-      const noData = utils.markup('div', opts.messages.noFormData, {
+      const noData = markup('div', opts.messages.noFormData, {
         className: 'no-form-data',
       })
       rendered.push(noData)

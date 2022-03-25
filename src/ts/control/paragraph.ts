@@ -1,5 +1,5 @@
+import { parsedHtml } from 'ts/shared/utils'
 import control from '../control'
-import utils from '../utils'
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
@@ -23,7 +23,7 @@ export default class controlParagraph extends control {
       tag = typeMap[type]
     }
     return {
-      field: this.markup(tag, utils.parsedHtml(this.label), attrs),
+      field: this.markup(tag, parsedHtml(this.label), attrs),
       layout: 'noLabel',
     }
   }

@@ -1,7 +1,7 @@
 import mi18n from 'mi18n'
 import { config } from 'ts/form_builder/config'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { capitalize, trimObj } from 'ts/utils'
+import { capitalize, trimObj } from 'ts/shared/utils'
 
 export const subTypeAttribute = (type, values, fb: FormBuilderClass) => {
   selectAttribute('subtype', values, (config.subtypes = fb.h.processSubtypes(fb.opts.subtypes))[type], fb)

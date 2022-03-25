@@ -2,7 +2,7 @@ import fontConfig from 'fonts/config.json'
 import control from '../control'
 import controlCustom from '../control/custom'
 import '../control/index'
-import { hyphenCase, markup as m, unique } from '../utils'
+import { hyphenCase, markup as m, unique } from '../shared/utils'
 import { empty } from './dom'
 
 /**

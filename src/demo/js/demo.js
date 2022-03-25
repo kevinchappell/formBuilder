@@ -1,4 +1,4 @@
-import { insertStyle, removeStyle } from '../../ts/utils'
+import { insertStyle, removeStyle } from '../../ts/shared/utils'
 import '../sass/demo.scss'
 import { demoActions, generateActionTable, setCurrentFieldIdValues } from './actionButtons'
 

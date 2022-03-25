@@ -1,5 +1,5 @@
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { attrString } from 'ts/utils'
+import { attrString } from 'ts/shared/utils'
 
 /**
  * Text input value for attribute

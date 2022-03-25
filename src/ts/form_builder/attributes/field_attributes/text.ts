@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { attrString, parsedHtml } from 'ts/utils'
+import { attrString, parsedHtml } from 'ts/shared/utils'
 import { MarkupType, TextInputAttributes } from 'types/formbuilder-types'
 
 export const textAttribute = (attribute, values, fb: FormBuilderClass, isHidden = false) => {

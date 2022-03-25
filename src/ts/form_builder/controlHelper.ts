@@ -1,7 +1,7 @@
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
 import { Field, formBuilderOptions } from '../../types/formbuilder-types'
 import events from '../shared/events'
-import { hyphenCase, nameAttr } from '../utils'
+import { hyphenCase, nameAttr } from '../shared/utils'
 import { FormBuilderControlFieldHelper } from './fieldHelper'
 
 export class FormBuilderControlHelper {

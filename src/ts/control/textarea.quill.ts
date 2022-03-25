@@ -1,5 +1,5 @@
+import { splitObject } from 'ts/shared/utils'
 import controlTextarea from './textarea'
-import utils, { splitObject } from '../utils'
 
 /**
  * Quill rich text editor element

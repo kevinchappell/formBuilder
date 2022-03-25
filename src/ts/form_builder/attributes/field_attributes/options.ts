@@ -1,7 +1,7 @@
 import mi18n from 'mi18n'
 import { config } from 'ts/form_builder/config'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
-import { hyphenCase } from 'ts/utils'
+import { hyphenCase } from 'ts/shared/utils'
 import { selectFieldOptions } from './select'
 
 /**

@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from './utils'
+import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from './shared/utils'
 
 /**
  * Base class for all control classes

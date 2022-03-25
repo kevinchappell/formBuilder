@@ -3,7 +3,7 @@
  * sorting and other fun stuff
  */
 
-import { buttonAttributes, FormBuilderFormData, MarkupAttributes } from '../types/formbuilder-types'
+import { buttonAttributes, MarkupAttributes } from '../../types/formbuilder-types'
 
 window.fbLoaded = {
   js: [],
@@ -723,43 +723,6 @@ export const splitObject = (obj, keys) => {
   return [kept, rest]
 }
 
-const utils = {
-  addEventListeners,
-  attrString,
-  camelCase,
-  capitalize,
-  closest,
-  getContentType,
-  escapeAttr,
-  escapeAttrs,
-  escapeHtml,
-  forceNumber,
-  forEach,
-  getScripts,
-  getStyles,
-  hyphenCase,
-  isCached,
-  markup,
-  merge,
-  mobileClass,
-  nameAttr,
-  parseAttrs,
-  parsedHtml,
-  parseOptions,
-  parseUserData,
-  parseXML,
-  removeFromArray,
-  safeAttr,
-  safeAttrName,
-  safename,
-  subtract,
-  trimObj,
-  unique,
-  validAttr,
-  titleCase,
-  splitObject,
-}
-
 $.fn.swapWith = function (that) {
   const $this = this
   const $that = $(that)
@@ -774,5 +737,3 @@ $.fn.swapWith = function (that) {
 
   return $this
 }
-
-export default utils
