@@ -1,3 +1,10 @@
+## [3.8.3](https://github.com/kevinchappell/formBuilder/compare/v3.8.2...v3.8.3) (2022-03-25)
+
+
+### Bug Fixes
+
+* formRender api ([05a3476](https://github.com/kevinchappell/formBuilder/commit/05a3476f2514b8b8eb238c37d971981b821f035a)), closes [#1279](https://github.com/kevinchappell/formBuilder/issues/1279)
+
 ## [3.8.2](https://github.com/kevinchappell/formBuilder/compare/v3.8.1...v3.8.2) (2022-03-25)
 
 
