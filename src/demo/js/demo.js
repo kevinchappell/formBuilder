@@ -7,10 +7,12 @@ const defaultLocale = 'en-US'
 
 const dataTypes = document.querySelectorAll('.demo-dataType')
 const dataType = window.sessionStorage.getItem('dataType') || 'json'
+
 const changeDataType = ({ target }) => {
   window.sessionStorage.setItem('dataType', target.value)
   demoActions.resetDemo()
 }
+
 for (let i = 0; i < dataTypes.length; i++) {
   if (dataType === dataTypes[i].value) {
     dataTypes[i].checked = true
@@ -30,6 +32,7 @@ const toggleBootStrap = ({ target }) => {
 }
 
 document.getElementById('toggleBootstrap').addEventListener('click', toggleBootStrap, false)
+$('#toggleBootstrap').trigger('click')
 
 jQuery(function ($) {
   const fields = [
