@@ -1,0 +1,118 @@
+{
+  "_from": "formbuilder-languages@latest",
+  "_id": "formbuilder-languages@1.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-IeccGyLBpNEJTPBx41eB995Bob1MKqqha3uahgPhJElIqMIxjRTGlwQvvfAjef1MXczAdxwDI3yY4AARhEn3qg==",
+  "_location": "/formbuilder-languages",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "formbuilder-languages@latest",
+    "name": "formbuilder-languages",
+    "escapedName": "formbuilder-languages",
+    "rawSpec": "latest",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "https://registry.npmjs.org/formbuilder-languages/-/formbuilder-languages-1.1.0.tgz",
+  "_shasum": "af2193015ecc53afc2a595bdce079b49b5eefe6d",
+  "_spec": "formbuilder-languages@latest",
+  "_where": "/home/runner/work/formBuilder/formBuilder",
+  "author": {
+    "name": "Kevin Chappell",
+    "email": "kevin.b.chappell@gmail.com",
+    "url": "http://kevin-chappell.com"
+  },
+  "bugs": {
+    "url": "https://github.com/kevinchappell/formBuilder-languages/issues"
+  },
+  "bundleDependencies": false,
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-angular"
+    ],
+    "rules": {
+      "type-enum": [
+        2,
+        "always",
+        [
+          "build",
+          "chore",
+          "ci",
+          "docs",
+          "feat",
+          "fix",
+          "perf",
+          "refactor",
+          "revert",
+          "style",
+          "test"
+        ]
+      ]
+    }
+  },
+  "dependencies": {
+    "mi18n": "^0.4.8"
+  },
+  "deprecated": false,
+  "description": "Language files for formBuilder",
+  "devDependencies": {
+    "@commitlint/cli": "^7.6.1",
+    "@commitlint/config-angular": "^7.6.0",
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/git": "^7.0.8",
+    "@semantic-release/npm": "^5.1.9",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-mocha": "^8.0.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^6.1.4",
+    "semantic-release": "^15.13.12"
+  },
+  "files": [
+    "*.lang",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "homepage": "https://github.com/kevinchappell/formBuilder-languages#readme",
+  "keywords": [
+    "formBuilder",
+    "lang",
+    "files",
+    "i18n"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "formbuilder-languages",
+  "release": {
+    "branch": "master",
+    "verifyConditions": [
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ],
+    "prepare": [
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinchappell/formBuilder-languages.git"
+  },
+  "scripts": {
+    "lint": "eslint index.js",
+    "semantic-release": "semantic-release",
+    "test": "mocha"
+  },
+  "version": "1.1.0"
+}
