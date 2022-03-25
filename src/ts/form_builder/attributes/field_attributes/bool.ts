@@ -8,7 +8,7 @@ export const boolAttribute = (name, values, labels = {} as Labels, fb: FormBuild
     }).outerHTML
 
   const cbAttrs: CheckboxAttributes = {
-    type: 'checkbox-group',
+    type: 'checkbox',
     className: `fld-${name}`,
     name,
     id: `${name}-${fb.data.lastID}`,

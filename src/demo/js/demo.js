@@ -284,7 +284,7 @@ jQuery(function ($) {
       },
     },
   }
-  const formData = window.sessionStorage.getItem('formData')
+  const formData = {} //window.sessionStorage.getItem('formData')
   let editing = true
 
   if (formData) {
@@ -306,20 +306,20 @@ jQuery(function ($) {
         templates: templates,
         dataType,
       })
-      window.sessionStorage.setItem('formData', formRenderData)
+      //window.sessionStorage.setItem('formData', formRenderData)
     }
     return (editing = !editing)
   }
 
-  let formBuilder = $('.build-wrap').formBuilder(fbOptions)
+  const formBuilder = $('.build-wrap').formBuilder(fbOptions)
   // //let formBuilder2 = $('.build-wrap').formBuilder({ formData })
 
-  // //formBuilder.actions.closeAllFieldEdit() // first
-  setTimeout(() => {
-    //formBuilder.actions.closeAllFieldEdit()
-    console.log($('.build-wrap').formBuilder('getData'))
-    //console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
-  }, 6000)
+  // // //formBuilder.actions.closeAllFieldEdit() // first
+  // setTimeout(() => {
+  //   //formBuilder.actions.closeAllFieldEdit()
+  //   console.log($('.build-wrap').formBuilder('getData'))
+  //   //console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
+  // }, 6000)
 
   // formBuilder = $('.build-wrap')
   //   .formBuilder()

@@ -16,6 +16,7 @@ export const defaultOptions: formBuilderOptions = {
     'autocomplete',
     'button',
     'checkbox-group',
+    'checkbox',
     'date',
     'file',
     'header',

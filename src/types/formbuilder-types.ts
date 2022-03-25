@@ -240,6 +240,7 @@ export type fbControlType =
   | 'autocomplete'
   | 'button'
   | 'checkbox-group'
+  | 'checkbox'
   | 'date'
   | 'header'
   | 'hidden'
