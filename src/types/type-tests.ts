@@ -14,7 +14,7 @@ const myTemplates: layoutTemplates = {
   },
 }
 
-let actionButtons = [
+const actionButtons = [
   {
     type: 'button',
     id: 'clear',
@@ -46,7 +46,7 @@ let actionButtons = [
 
 class customLayoutClass extends Layout {}
 
-let options: Partial<formBuilderOptions> = {
+const options: Partial<formBuilderOptions> = {
   actionButtons: actionButtons,
   allowStageSort: true,
   controlOrder: ['autocomplete', 'checkbox-group'],

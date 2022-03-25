@@ -8,7 +8,7 @@ export const accessAttributes = (type, values, fb: FormBuilderClass) => {
   const rolesDisplay = values.role ? 'style="display:block"' : ''
   const availableRoles = [`<div class="available-roles" ${rolesDisplay}>`]
 
-  for (let key in fb.opts.roles) {
+  for (const key in fb.opts.roles) {
     if (fb.opts.roles.hasOwnProperty(key)) {
       const roleId = `fld-${fb.data.lastID}-roles-${key}`
       const cbAttrs: CheckboxAttributes = {

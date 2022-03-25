@@ -158,10 +158,10 @@ interface JQuery {
   trumbowyg(command: 'html', content?: string): string
 
   // noinspection JSUnusedLocalSymbols
-  trumbowyg(command: 'openModal', options: JQueryTrumbowyg.ModalOptions): JQuery
+  trumbowyg(command: 'openModal', options: ModalOptions): JQuery
 
   // noinspection JSUnusedLocalSymbols
-  trumbowyg(command: 'openModalInsert', options: JQueryTrumbowyg.ModalInsertOptions): JQuery
+  trumbowyg(command: 'openModalInsert', options: ModalInsertOptions): JQuery
 
   // noinspection JSUnusedLocalSymbols
   trumbowyg(
@@ -175,118 +175,117 @@ interface JQuery {
   trumbowyg(command: 'getRangeText'): string
 
   // noinspection JSUnusedLocalSymbols
-  trumbowyg(options?: JQueryTrumbowyg.Options): JQuery
+  trumbowyg(options?: Options): JQuery
 }
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface JQueryStatic {
-  trumbowyg: JQueryTrumbowyg.StaticOptions
+  trumbowyg: StaticOptions
 }
 
-declare namespace JQueryTrumbowyg {
-  interface Trumbowyg extends StaticOptions {
-    // noinspection JSUnusedLocalSymbols
-    openModal(title: string, content: string): JQuery
+interface Trumbowyg extends StaticOptions {
+  // noinspection JSUnusedLocalSymbols
+  openModal(title: string, content: string): JQuery
 
-    // noinspection JSUnusedLocalSymbols
-    openModalInsert(
-      title: string,
-      fields: { [fieldName: string]: ModalFields },
-      callback: (values: string[]) => boolean,
-    ): JQuery
+  // noinspection JSUnusedLocalSymbols
+  openModalInsert(
+    title: string,
+    fields: { [fieldName: string]: ModalFields },
+    callback: (values: string[]) => boolean,
+  ): JQuery
 
-    closeModal(): void
+  closeModal(): void
 
-    saveRange(): void
+  saveRange(): void
 
-    restoreRange(): void
+  restoreRange(): void
 
-    getRangeText(): string
+  getRangeText(): string
 
-    getRange(): Range
+  getRange(): Range
 
-    // noinspection JSUnusedLocalSymbols
-    html(html?: string): string
+  // noinspection JSUnusedLocalSymbols
+  html(html?: string): string
 
-    empty(): void
+  empty(): void
 
-    // noinspection JSUnusedLocalSymbols
-    setDisabled(disabled: boolean): void
+  // noinspection JSUnusedLocalSymbols
+  setDisabled(disabled: boolean): void
 
-    toggle()
+  toggle()
+}
+
+interface StaticOptions {
+  langs: any
+  plugins: any
+  svgPath: string | boolean
+  hideButtonTexts: boolean
+}
+
+interface ModalOptions {
+  title: string
+  content: string
+}
+
+interface ModalInsertOptions {
+  title: string
+  fields: {
+    [fieldName: string]: ModalFields
+  }
+  callback: (values: string[]) => boolean
+}
+
+interface ModalFields {
+  label?: string
+  name?: string
+  value?: string
+}
+
+interface Options {
+  lang?: string
+
+  fixedBtnPane?: boolean
+  fixedFullWidth?: boolean
+  autogrow?: boolean
+  autogrowOnEnter?: boolean
+  imageWidthModalEdit?: boolean
+
+  prefix?: string
+
+  semantic?: boolean
+  resetCss?: boolean
+  removeformatPasted?: boolean
+  tagsToRemove?: string[]
+  btns?: any
+  btnsDef?: {
+    [btnName: string]: ButtonDefinition
   }
 
-  interface StaticOptions {
-    langs: any
-    plugins: any
-    svgPath: string | boolean
-    hideButtonTexts: boolean
-  }
+  inlineElementsSelector?: string
 
-  interface ModalOptions {
-    title: string
-    content: string
-  }
+  pasteHandler?: ((event: any) => void)[]
+  imgDblClickHandler?: (event: any) => void
 
-  interface ModalInsertOptions {
-    title: string
-    fields: {
-      [fieldName: string]: ModalFields
-    }
-    callback: (values: string[]) => boolean
-  }
+  plugins?: any
+}
 
-  interface ModalFields {
-    label?: string
-    name?: string
-    value?: string
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface PluginDefinition {
+  init: (trumbowyg: Trumbowyg) => void
+  tagHandler?: (element: any, trumbowyg: Trumbowyg) => any[]
+  destroy?: () => void
+}
 
-  interface Options {
-    lang?: string
-
-    fixedBtnPane?: boolean
-    fixedFullWidth?: boolean
-    autogrow?: boolean
-    autogrowOnEnter?: boolean
-    imageWidthModalEdit?: boolean
-
-    prefix?: string
-
-    semantic?: boolean
-    resetCss?: boolean
-    removeformatPasted?: boolean
-    tagsToRemove?: string[]
-    btns?: any
-    btnsDef?: {
-      [btnName: string]: ButtonDefinition
-    }
-
-    inlineElementsSelector?: string
-
-    pasteHandler?: ((event: any) => void)[]
-    imgDblClickHandler?: (event: any) => void
-
-    plugins?: any
-  }
-
-  interface PluginDefinition {
-    init: (trumbowyg: Trumbowyg) => void
-    tagHandler?: (element: any, trumbowyg: Trumbowyg) => any[]
-    destroy?: () => void
-  }
-
-  interface ButtonDefinition {
-    dropdown?: string[]
-    fn?: string | (() => any)
-    tag?: string
-    title?: string
-    text?: string
-    isSupported?: () => boolean
-    key?: string
-    param?: string
-    forceCSS?: boolean
-    class?: string
-    ico?: string
-    hasIcon?: boolean
-  }
+interface ButtonDefinition {
+  dropdown?: string[]
+  fn?: string | (() => any)
+  tag?: string
+  title?: string
+  text?: string
+  isSupported?: () => boolean
+  key?: string
+  param?: string
+  forceCSS?: boolean
+  class?: string
+  ico?: string
+  hasIcon?: boolean
 }

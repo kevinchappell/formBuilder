@@ -4,7 +4,7 @@
 
 // configure the class for runtime loading
 if (!window.fbControls) window.fbControls = []
-window.fbControls.push(function(controlClass) {
+window.fbControls.push(function (controlClass) {
   /**
    * Star rating class
    */

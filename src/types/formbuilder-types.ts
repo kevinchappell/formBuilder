@@ -173,7 +173,7 @@ export interface Offset {
   left?: number | string
 }
 
-export interface actionButton extends buttonAttributes {}
+export type actionButton = buttonAttributes
 
 export interface buttonAttributes {
   title?: string

@@ -344,7 +344,7 @@ export default class Helpers {
    * @param {Boolean} minify whether to return formatted or minified data
    * @return {XML|JSON} formData
    */
-  save(minify: boolean = false) {
+  save(minify = false) {
     const _this = this
     const data = this.data
     const stage = this.d.stage
@@ -1284,7 +1284,7 @@ export default class Helpers {
     })
 
     function tmpCleanColumnInfo($field) {
-      var classAttr = $field.attr('class')
+      const classAttr = $field.attr('class')
 
       if (typeof classAttr !== 'undefined' && classAttr !== false) {
         const parseResult = _this.tryParseColumnInfo($field[0])
@@ -1324,7 +1324,7 @@ export default class Helpers {
 
   //Remove one reference that protected this potentially empty container. There may be other open fields needing the container
   removeContainerProtection(containerID) {
-    var index = this.formBuilder.preserveTempContainers.indexOf(containerID)
+    const index = this.formBuilder.preserveTempContainers.indexOf(containerID)
     if (index !== -1) {
       this.formBuilder.preserveTempContainers.splice(index, 1)
     }
