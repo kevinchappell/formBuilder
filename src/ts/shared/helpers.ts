@@ -9,13 +9,12 @@ import {
   FieldTypes,
   formBuilderOptions,
   GridInfo,
-} from '../types/formbuilder-types'
-import { config } from './config'
-import control from './control'
-import controlCustom from './control/custom'
-import { instanceData } from './data'
-import { empty, instanceDom, optionFields, remove } from './dom'
-import events from './events'
+} from '../../types/formbuilder-types'
+import control from '../control'
+import controlCustom from '../control/custom'
+import { config } from '../form_builder/config'
+import { instanceData } from '../form_builder/data'
+import { empty, instanceDom, optionFields, remove } from '../form_builder/dom'
 import {
   bootstrapColumnRegex,
   camelCase,
@@ -31,7 +30,8 @@ import {
   trimObj,
   unique,
   xmlAttrString,
-} from './utils'
+} from '../utils'
+import events from './events'
 /**
  * Utilities specific to form-builder.js
  */

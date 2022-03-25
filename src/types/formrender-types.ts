@@ -1,4 +1,4 @@
-import { Layout } from 'ts/layout'
+import { Layout } from 'ts/shared/layout'
 import { dataType, layoutTemplates, notify } from './shared-types'
 
 export interface formRenderOptions {

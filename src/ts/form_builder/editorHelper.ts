@@ -1,5 +1,5 @@
 import { formBuilderOptions } from 'types/formbuilder-types'
-import { FormBuilderClass } from './form_builder/formBuilder'
+import { FormBuilderClass } from './formBuilder'
 
 export class FormBuilderEditorHelper {
   constructor(public opts: formBuilderOptions, public fb: FormBuilderClass) {

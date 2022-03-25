@@ -1,5 +1,5 @@
 import control from '../control'
-import { filter } from '../dom'
+import { filter } from '../form_builder/dom'
 /**
  * Autocomplete class
  * Output an autocomplete form element

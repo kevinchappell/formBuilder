@@ -5,8 +5,8 @@ import { FormBuilderClass } from 'ts/form_builder/formBuilder'
 import { addEventListeners, closest, forceNumber, forEach, parsedHtml, safename } from 'ts/utils'
 import { CustomDoubleClickEvent, CustomHandledEvent, CustomTouchHandledEvent } from 'types/helper-types'
 import { fbControlType, formBuilderOptions } from '../../types/formbuilder-types'
-import { config } from '../config'
 import { selectFieldOptions } from './attributes/field_attributes/select'
+import { config } from './config'
 
 export class FormBuilderStageHelper {
   DEFAULT_TIMEOUT = 333

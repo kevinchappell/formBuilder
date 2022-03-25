@@ -173,29 +173,29 @@ jQuery(function ($) {
   }
 
   const typeUserAttrs = {
-    text: {
-      shape: {
-        label: 'Class',
-        multiple: true,
-        options: {
-          'red form-control': 'Red',
-          'green form-control': 'Green',
-          'blue form-control': 'Blue',
-        },
-        style: 'border: 1px solid red',
-      },
-      readonly: {
-        label: 'readonly',
-        value: false,
-      },
-    },
-    number: {
-      volume: {
-        label: 'Volume Level',
-        value: 1,
-        max: 11,
-      },
-    },
+    // text: {
+    //   shape: {
+    //     label: 'Class',
+    //     multiple: true,
+    //     options: {
+    //       'red form-control': 'Red',
+    //       'green form-control': 'Green',
+    //       'blue form-control': 'Blue',
+    //     },
+    //     style: 'border: 1px solid red',
+    //   },
+    //   readonly: {
+    //     label: 'readonly',
+    //     value: false,
+    //   },
+    // },
+    // number: {
+    //   volume: {
+    //     label: 'Volume Level',
+    //     value: 1,
+    //     max: 11,
+    //   },
+    // },
     // 'checkbox-group': {
     //   'custom-group': {
     //     customInput: {

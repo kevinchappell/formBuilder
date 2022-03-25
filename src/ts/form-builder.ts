@@ -1,7 +1,7 @@
 import mi18n from 'mi18n'
 import { formBuilderOptions } from 'types/formbuilder-types'
 import '../sass/form-builder.scss'
-import { config, defaultI18n, defaultOptions } from './config'
+import { config, defaultI18n, defaultOptions } from './form_builder/config'
 import { FormBuilderClass } from './form_builder/formBuilder'
 import { markup } from './utils'
 

@@ -1,5 +1,5 @@
-import { layoutTemplates } from '../types/shared-types'
-import utils, { getAllGridRelatedClasses } from './utils'
+import { layoutTemplates } from '../../types/shared-types'
+import utils, { getAllGridRelatedClasses } from '../utils'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return

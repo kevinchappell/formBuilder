@@ -1,4 +1,4 @@
-import { Layout } from '../ts/layout'
+import { Layout } from '../ts/shared/layout'
 import { formBuilderOptions } from './formbuilder-types'
 import { formRenderOptions } from './formrender-types'
 import { layoutTemplates } from './shared-types'

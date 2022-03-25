@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { formBuilderOptions } from '../types/formbuilder-types'
+import { formBuilderOptions } from '../../types/formbuilder-types'
 
 const noop = (...args: any) => null
 

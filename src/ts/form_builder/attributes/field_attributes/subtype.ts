@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { config } from 'ts/config'
+import { config } from 'ts/form_builder/config'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
 import { capitalize, trimObj } from 'ts/utils'
 

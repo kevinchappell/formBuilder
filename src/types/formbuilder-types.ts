@@ -1,5 +1,5 @@
 import { EditorManager } from 'tinymce'
-import { Layout } from '../ts/layout'
+import { Layout } from '../ts/shared/layout'
 import { PartialRecord } from './helper-types'
 import { dataType, layoutTemplates, notify } from './shared-types'
 

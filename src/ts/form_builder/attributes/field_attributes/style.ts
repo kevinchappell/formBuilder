@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { styles } from 'ts/config'
+import { styles } from 'ts/form_builder/config'
 import { FormBuilderClass } from 'ts/form_builder/formBuilder'
 import { MarkupType } from 'types/formbuilder-types'
 
