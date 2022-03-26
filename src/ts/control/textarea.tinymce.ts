@@ -1,4 +1,4 @@
-import { Editor, EditorManager, Settings } from 'tinymce'
+import { Settings } from 'tinymce'
 import controlTextarea from './textarea'
 
 /**
@@ -74,7 +74,7 @@ export default class controlTinymce extends controlTextarea {
    * When the element is rendered into the DOM, execute the following code to initialise it
    * @param {Object} evt - event
    */
-  onRender(evt) {
+  onRender() {
     if (window.tinymce.editors[this.id]) {
       window.tinymce.editors[this.id].remove()
     }
@@ -100,8 +100,6 @@ export default class controlTinymce extends controlTextarea {
         clearTimeout(timeout)
       }, 300)
     }
-
-    return evt
   }
 }
 

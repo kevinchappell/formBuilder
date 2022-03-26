@@ -44,8 +44,7 @@ export default class controlQuill extends controlTextarea {
    * @return {Object} DOM Element to be injected into the form.
    */
   build() {
-    // eslint-disable-next-line no-unused-vars
-    const { value = '', ...attrs } = this.config
+    const { ...attrs } = this.config
     //Textareas do not have an attribute 'type'
     delete attrs['type']
     this.field = this.markup('div', null, attrs)
@@ -56,7 +55,7 @@ export default class controlQuill extends controlTextarea {
    * When the element is rendered into the DOM, execute the following code to initialise it
    * @param {Object} evt - event
    */
-  onRender(evt) {
+  onRender() {
     const value = this.config.value || ''
     const Delta = window.Quill.import('delta')
     window.fbEditors.quill[this.id] = {}
@@ -69,7 +68,6 @@ export default class controlQuill extends controlTextarea {
     editor.instance.on('text-change', function (delta) {
       editor.data = editor.data.compose(delta)
     })
-    return evt
   }
 }
 

@@ -349,7 +349,7 @@ export default class Helpers {
     const data = this.data
     const stage = this.d.stage
     const doSave = {
-      xml: minify => _this.xmlSave(stage),
+      xml: () => _this.xmlSave(stage),
       json: minify => window.JSON.stringify(_this.prepData(stage), null, minify && '  '),
     }
 

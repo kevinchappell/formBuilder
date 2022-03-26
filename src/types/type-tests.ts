@@ -41,7 +41,7 @@ const actionButtons = [
     id: 'save',
     className: 'btn btn-primary save-template',
     events: {
-      click: evt => {
+      click: () => {
         click: () => {
           return
         }
@@ -168,7 +168,7 @@ const options: Partial<FormBuilderOptions> = {
   onCloseFieldEdit: function () {
     alert('a field edit panel was opened')
   },
-  onSave: function (evt, formData) {
+  onSave: function () {
     return
   },
   persistDefaultFields: true,
@@ -229,10 +229,10 @@ const options: Partial<FormBuilderOptions> = {
   },
   typeUserEvents: {
     text: {
-      onadd: function (fld) {
+      onadd: function () {
         return
       },
-      onclone: function (fld) {
+      onclone: function () {
         return
       },
     },
@@ -247,14 +247,15 @@ const options: Partial<FormBuilderOptions> = {
     optionTemplate.value = `option-${params.index + 1}`
     return optionTemplate
   },
-  onAddFieldAfter: function (fieldId, field) {
+  onAddFieldAfter: function () {
     return
   },
-  onAddField: function (fieldId, field) {
+  onAddField: function () {
     return
   },
   layout: customLayoutClass,
 }
+console.log(options)
 
 const defaults: FormRenderOptions = {
   layout: Layout,
@@ -291,3 +292,4 @@ const defaults: FormRenderOptions = {
   disableInjectedStyle: true,
   forceTemplate: 'hidden',
 }
+console.log(defaults)

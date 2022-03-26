@@ -1,7 +1,7 @@
 import mi18n from 'mi18n'
 import { FormBuilderOptions } from '../../types/formbuilder-types'
 
-const noop = (...args: any) => null
+const noop = () => null
 
 //@ts-ignore
 mi18n.addLanguage('en-US', FB_EN_US)
