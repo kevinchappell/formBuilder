@@ -3,7 +3,7 @@ import mi18n from 'mi18n'
 import { config, defaultFieldSelector, gridClassNames } from 'ts/form_builder/config'
 import { FormBuilderEditorHelper } from 'ts/form_builder/editorHelper'
 import events from 'ts/shared/events'
-import { formBuilderOptions } from '../../types/formbuilder-types'
+import { formBuilderOptions, FormBuilderPublicAPIActions } from '../../types/formbuilder-types'
 import Helpers from '../shared/helpers'
 import { Layout } from '../shared/layout'
 import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
@@ -59,6 +59,8 @@ export class FormBuilderClass {
   sh: FormBuilderStageHelper
   ch: FormBuilderControlHelper
   editorHelper: FormBuilderEditorHelper
+
+  actions: FormBuilderPublicAPIActions
   constructor(public opts: formBuilderOptions, public el: HTMLElement) {
     this.initBase(opts)
 
@@ -128,12 +130,11 @@ export class FormBuilderClass {
 
   doneLoading() {
     document.dispatchEvent(events.loaded)
-    this.setActions()
+    this.setPublicActions()
     this.handleOnRender()
   }
 
-  // Make actions accessible
-  setActions() {
+  setPublicActions() {
     this.actions = {
       getFieldTypes: activeOnly =>
         activeOnly ? subtract(this.controls.getRegistered(), this.opts.disableFields) : this.controls.getRegistered(),
@@ -238,23 +239,6 @@ export class FormBuilderClass {
 
     this.h.disabledTT(this.d.stage)
     return cancelArray.some(elem => elem === true)
-  }
-
-  actions: {
-    getFieldTypes: (activeOnly: any) => any
-    clearFields: (animate: any) => boolean
-    showData: any
-    save: (minify: any) => any
-    addField: (field: any, index: any) => void
-    removeField: any
-    getData: any
-    setData: (formData: any) => void
-    setLang: (locale: any) => void
-    showDialog: any
-    toggleFieldEdit: (fieldId: any) => void
-    toggleAllFieldEdit: () => void
-    closeAllFieldEdit: any
-    getCurrentFieldId: () => string
   }
 
   private initBase(opts: formBuilderOptions) {

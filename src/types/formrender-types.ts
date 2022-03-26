@@ -26,3 +26,11 @@ export interface formRenderOptions {
   templates?: {}
   notify?: notify
 }
+
+export interface FormRenderPublicAPIActions {
+  userData: () => any
+  clear: () => any
+  setData: (formData) => any
+  render: (formData, options) => any
+  html: () => string
+}

@@ -1,17 +1,18 @@
 import mi18n from 'mi18n'
-import control from 'ts/control'
 import controlCustom from 'ts/control/custom'
 import { defaultI18n } from 'ts/form_builder/config'
 import { remove } from 'ts/form_builder/dom'
+import control from 'ts/shared/control'
 import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
 import { forEach, markup, parseXML, trimObj, unique } from 'ts/shared/utils'
-import { formRenderOptions } from 'types/formrender-types'
+import { formRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
 
 export class FormRender {
   instanceContainers: any[]
   markup: any
-  constructor(public options: formRenderOptions = {}) {
+  actions: FormRenderPublicAPIActions
+  constructor(public options: formRenderOptions = {}, public el: HTMLElement) {
     this.initDefaultsAndOptions(options)
 
     this.instanceContainers = []
@@ -38,8 +39,32 @@ export class FormRender {
     }
 
     this.SetupExtensions()
+    this.setPublicActions()
   }
 
+  setPublicActions() {
+    this.actions = {
+      userData: () => this.userData,
+      clear: () => this.clear(),
+      setData: formData => {
+        this.options.formData = this.parseFormData(formData)
+      },
+      render: (formData, options = {}) => {
+        if (!formData) {
+          formData = this.options.formData
+        }
+
+        this.options = Object.assign({}, this.options, options, {
+          formData: this.parseFormData(formData),
+        })
+
+        this.render()
+      },
+      html: () => this.html(),
+    }
+  }
+
+  //Kevin -- what is going on with these prototypes? Is this related to https://github.com/kevinchappell/formBuilder/issues/563 ?
   private SetupExtensions() {
     if (typeof Element.prototype.appendFormFields !== 'function') {
       Element.prototype.appendFormFields = function (fields) {
@@ -167,10 +192,10 @@ export class FormRender {
    * @param {Number} instanceIndex - instance index
    * @return {Object} rendered form
    */
-  render(element = null, instanceIndex = 0) {
+  render(instanceIndex = 0) {
     const formRender = this
     const opts = this.options
-    element = this.getElement(element)
+    this.el = this.getElement(this.el)
 
     const runCallbacks = function () {
       if (opts.onRender) {
@@ -197,14 +222,14 @@ export class FormRender {
         rendered.push(field)
       }
 
-      if (element) {
-        this.instanceContainers[instanceIndex] = element
+      if (this.el) {
+        this.instanceContainers[instanceIndex] = this.el
       }
 
       // if rendering, inject the fields into the specified wrapper container/element
-      if (opts.render && element) {
-        element.emptyContainer()
-        element.appendFormFields(rendered)
+      if (opts.render && this.el) {
+        this.el.emptyContainer()
+        this.el.appendFormFields(rendered)
 
         runCallbacks()
         opts.notify.success(opts.messages.formRendered)
@@ -330,5 +355,9 @@ export class FormRender {
       formData = setData[this.options.dataType](formData) || false
     }
     return formData
+  }
+
+  html() {
+    return $(this.el).html()
   }
 }

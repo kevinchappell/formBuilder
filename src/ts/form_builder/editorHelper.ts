@@ -33,6 +33,7 @@ export class FormBuilderEditorHelper {
     if (this.fb.el.type !== 'textarea') {
       $(this.fb.el).append($editorWrap)
     } else {
+      //Kevin what does this comment mean. Can this else block be removed?
       // formBuilder no longer uses textArea for element
       $(this.fb.el).replaceWith($editorWrap)
     }

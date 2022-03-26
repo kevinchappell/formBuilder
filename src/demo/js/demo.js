@@ -318,11 +318,11 @@ jQuery(function ($) {
   // //let formBuilder2 = $('.build-wrap').formBuilder({ formData })
 
   // // //formBuilder.actions.closeAllFieldEdit() // first
-  // setTimeout(() => {
-  //   //formBuilder.actions.closeAllFieldEdit()
-  //   console.log($('.build-wrap').formBuilder('getData'))
-  //   //console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
-  // }, 6000)
+  setTimeout(() => {
+    //formBuilder.actions.closeAllFieldEdit()
+    console.log($('.build-wrap').formBuilder('getData'))
+    //console.log($('.build-wrap').formBuilder('closeAllFieldEdit'))
+  }, 6000)
 
   // formBuilder = $('.build-wrap')
   //   .formBuilder()
@@ -330,9 +330,11 @@ jQuery(function ($) {
   //     console.log(formBuilder.formData)
   //   })
 
-  const fbPromise = formBuilder.promise
+  //console.log(formBuilder.actions.getData())
 
-  fbPromise.then(function (fb) {
+  formBuilder.then(function (fb) {
+    console.log(fb.actions.getData())
+
     document.querySelectorAll('.editForm').forEach(element => element.addEventListener('click', toggleEdit), false)
     const langSelect = document.getElementById('setLanguage')
     const savedLocale = window.sessionStorage.getItem(localeSessionKey) || defaultLocale

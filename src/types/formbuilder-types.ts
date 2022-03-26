@@ -160,6 +160,14 @@ export interface formBuilderOptions {
   cancelGridModeDistance?: number
   enableColumnInsertMenu?: boolean
   enableEnhancedBootstrapGrid?: boolean
+  i18n?: i18n
+}
+
+interface i18n {
+  locale?: string
+  locations?: string
+  extension?: string
+  override?: Record<string, any>
 }
 
 export interface StickyControls {
@@ -282,4 +290,21 @@ interface optionTemplateParams {
   type: fbControlType
   index: number
   isMultiple: boolean
+}
+
+export interface FormBuilderPublicAPIActions {
+  getFieldTypes: (activeOnly: any) => any
+  clearFields: (animate: any) => boolean
+  showData: any
+  save: (minify: any) => any
+  addField: (field: any, index: any) => void
+  removeField: any
+  getData: any
+  setData: (formData: any) => void
+  setLang: (locale: any) => void
+  showDialog: any
+  toggleFieldEdit: (fieldId: any) => void
+  toggleAllFieldEdit: () => void
+  closeAllFieldEdit: any
+  getCurrentFieldId: () => string
 }
