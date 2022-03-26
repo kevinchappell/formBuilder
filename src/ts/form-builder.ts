@@ -1,6 +1,5 @@
 import mi18n from 'mi18n'
 import { FormBuilderOptions, FormBuilderPublicAPIActions } from 'types/formbuilder-types'
-import '../sass/form-builder.scss'
 import { defaultI18n, defaultOptions } from './form_builder/config'
 import { FormBuilder } from './form_builder/formBuilder'
 

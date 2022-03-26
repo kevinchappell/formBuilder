@@ -1,6 +1,4 @@
 import { FormRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
-import '../sass/form-render.scss'
-import './control/index'
 import { FormRender } from './form_render/formRender'
 
 jQuery.fn.formRender = function (methodOrOptions: FormRenderOptions | keyof FormRenderPublicAPIActions = {}, ...args) {

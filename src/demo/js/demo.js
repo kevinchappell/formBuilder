@@ -308,6 +308,7 @@ jQuery(function ($) {
         formData: formRenderData,
         templates: templates,
         dataType,
+        disableInjectedStyle: false,
       })
       //window.sessionStorage.setItem('formData', formRenderData)
     }

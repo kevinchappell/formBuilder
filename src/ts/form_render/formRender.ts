@@ -7,6 +7,8 @@ import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
 import { forEach, markup, parseXML, trimObj, unique } from 'ts/shared/utils'
 import { FormRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
+import '../../sass/form-render.scss'
+import '../control/index'
 
 export class FormRender {
   instanceContainers: any[]
@@ -38,7 +40,7 @@ export class FormRender {
       controlCustom.register(this.options.templates)
     }
 
-    this.SetupExtensions()
+    this.setupExtensions()
     this.setPublicActions()
   }
 
@@ -60,12 +62,12 @@ export class FormRender {
 
         this.render()
       },
-      html: () => this.html(),
+      html: () => $(this.el).html(),
     }
   }
 
   //Kevin -- what is going on with these prototypes? Is this related to https://github.com/kevinchappell/formBuilder/issues/563 ?
-  private SetupExtensions() {
+  private setupExtensions() {
     if (typeof Element.prototype.appendFormFields !== 'function') {
       Element.prototype.appendFormFields = function (fields) {
         if (!Array.isArray(fields)) {
@@ -353,9 +355,5 @@ export class FormRender {
       formData = setData[this.options.dataType](formData) || false
     }
     return formData
-  }
-
-  html() {
-    return $(this.el).html()
   }
 }
