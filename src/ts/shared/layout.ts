@@ -83,7 +83,9 @@ export class Layout {
    * this method is called by the constructor and should be overwritten for custom layouts that need to
    * process the configuration arguments prior to rendering
    */
-  configure() {}
+  configure() {
+    return
+  }
 
   /**
    * Process the configuration from an element from the standard formData array

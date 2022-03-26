@@ -247,7 +247,9 @@ export const markup = function (tag, content: any = '', attributes: MarkupAttrib
       contentType = getContentType(content)
       appendContent[contentType](content)
     },
-    undefined: () => {},
+    undefined: () => {
+      return
+    },
   }
 
   for (const attr in attrs) {

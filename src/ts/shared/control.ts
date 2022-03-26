@@ -293,7 +293,9 @@ export default class Control {
    * this method is called by the constructor and should be overwritten for controls that need to
    * process the configuration arguments prior to rendering
    */
-  configure() {}
+  configure() {
+    return
+  }
 
   /**
    * this is the core method for all controls to produce the form elements to be injected into the dom
@@ -309,7 +311,9 @@ export default class Control {
     return this.markup(type, parsedHtml(label), data)
   }
 
-  onRender(evt: any) {}
+  onRender(evt: any) {
+    return
+  }
 
   /**
    * code to execute for supported events

@@ -206,7 +206,9 @@ export class FormBuilderStageHelper {
       this.cloneControls = this.fb.$cbUL.clone()
 
       this.cloneControls.hover(
-        function () {},
+        function () {
+          return
+        },
         () => {
           this.cloneControls.remove()
         },

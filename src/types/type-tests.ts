@@ -20,7 +20,9 @@ const actionButtons = [
     id: 'clear',
     className: 'clear-all btn btn-danger',
     events: {
-      click: () => {},
+      click: () => {
+        return
+      },
     },
   },
   {
@@ -29,7 +31,9 @@ const actionButtons = [
     id: 'data',
     className: 'btn btn-default get-data',
     events: {
-      click: () => {},
+      click: () => {
+        return
+      },
     },
   },
   {
@@ -38,7 +42,9 @@ const actionButtons = [
     className: 'btn btn-primary save-template',
     events: {
       click: evt => {
-        click: () => {}
+        click: () => {
+          return
+        }
       },
     },
   },
@@ -149,7 +155,9 @@ const options: Partial<FormBuilderOptions> = {
     success: function (message) {
       return console.log(message)
     },
-    warning: () => {},
+    warning: () => {
+      return
+    },
   },
   onClearAll: function () {
     alert('all fields removed')
@@ -160,7 +168,9 @@ const options: Partial<FormBuilderOptions> = {
   onCloseFieldEdit: function () {
     alert('a field edit panel was opened')
   },
-  onSave: function (evt, formData) {},
+  onSave: function (evt, formData) {
+    return
+  },
   persistDefaultFields: true,
   prepend: '<h1>Profile for Miss Marple.</h1>',
   append: '<h2>All information is confidential.</h2>',
@@ -193,7 +203,9 @@ const options: Partial<FormBuilderOptions> = {
     starRating: function (fieldData) {
       return {
         field: '<span id="' + fieldData.name + '">',
-        onRender: function () {},
+        onRender: function () {
+          return
+        },
       }
     },
   },
@@ -217,8 +229,12 @@ const options: Partial<FormBuilderOptions> = {
   },
   typeUserEvents: {
     text: {
-      onadd: function (fld) {},
-      onclone: function (fld) {},
+      onadd: function (fld) {
+        return
+      },
+      onclone: function (fld) {
+        return
+      },
     },
   },
   defaultGridColumnClass: 'col-xs-12',
@@ -231,8 +247,12 @@ const options: Partial<FormBuilderOptions> = {
     optionTemplate.value = `option-${params.index + 1}`
     return optionTemplate
   },
-  onAddFieldAfter: function (fieldId, field) {},
-  onAddField: function (fieldId, field) {},
+  onAddFieldAfter: function (fieldId, field) {
+    return
+  },
+  onAddField: function (fieldId, field) {
+    return
+  },
   layout: customLayoutClass,
 }
 
@@ -252,7 +272,9 @@ const defaults: FormRenderOptions = {
     selectColor: 'Select Color',
     invalidControl: 'Invalid control',
   },
-  onRender: () => {},
+  onRender: () => {
+    return
+  },
   render: true,
   templates: {},
   notify: {

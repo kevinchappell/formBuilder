@@ -83,7 +83,9 @@ export class FormRender {
         selectColor: 'Select Color',
         invalidControl: 'Invalid control',
       },
-      onRender: () => {},
+      onRender: () => {
+        return
+      },
       render: true,
       templates: {},
       notify: {
