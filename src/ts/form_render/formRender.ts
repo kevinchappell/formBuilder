@@ -193,7 +193,6 @@ export class FormRender {
    * @return {Object} rendered form
    */
   render(instanceIndex = 0) {
-    const formRender = this
     const opts = this.options
     this.el = this.getElement(this.el)
 
@@ -240,7 +239,7 @@ export class FormRender {
          * @return {String} fields html
          */
         const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
-        formRender.markup = exportMarkup(rendered)
+        this.markup = exportMarkup(rendered)
       }
     } else {
       const noData = markup('div', opts.messages.noFormData, {
@@ -254,7 +253,8 @@ export class FormRender {
       const styleTags = document.getElementsByClassName('formBuilder-injected-style')
       forEach(styleTags, i => remove(styleTags[i]))
     }
-    return formRender
+
+    //return formRender
   }
 
   /**
@@ -263,25 +263,25 @@ export class FormRender {
    * @param {Object} element - an optional DOM element to render the field into - if not specified will just return the rendered field - note if you do this you will need to manually call element.dispatchEvent('fieldRendered') on the returned element when it is rendered into the DOM
    * @return {Object} the formRender object
    */
-  renderControl(element = null) {
-    const opts = this.options
-    const fieldData = opts.formData
-    if (!fieldData || Array.isArray(fieldData)) {
-      throw new Error(
-        'To render a single element, please specify a single object of formData for the field in question',
-      )
-    }
-    const sanitizedField = this.santizeField(fieldData)
+  // renderControl(element = null) {
+  //   const opts = this.options
+  //   const fieldData = opts.formData
+  //   if (!fieldData || Array.isArray(fieldData)) {
+  //     throw new Error(
+  //       'To render a single element, please specify a single object of formData for the field in question',
+  //     )
+  //   }
+  //   const sanitizedField = this.santizeField(fieldData)
 
-    // determine the control class for this type, and then build it
-    const engine = new opts.layout()
-    const controlClass = control.getClass(fieldData.type, fieldData.subtype)
-    const forceTemplate = opts.forceTemplate || 'hidden' // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
-    const field = engine.build(controlClass, sanitizedField, forceTemplate)
-    element.appendFormFields(field)
-    opts.notify.success(opts.messages.formRendered)
-    return this
-  }
+  //   // determine the control class for this type, and then build it
+  //   const engine = new opts.layout()
+  //   const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+  //   const forceTemplate = opts.forceTemplate || 'hidden' // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
+  //   const field = engine.build(controlClass, sanitizedField, forceTemplate)
+  //   element.appendFormFields(field)
+  //   opts.notify.success(opts.messages.formRendered)
+  //   return this
+  // }
 
   /**
    * Return user entered data
