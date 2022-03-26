@@ -4,14 +4,14 @@ import mi18n from 'mi18n'
 import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { addEventListeners, closest, forceNumber, forEach, parsedHtml, safename } from 'ts/shared/utils'
 import { CustomDoubleClickEvent, CustomHandledEvent, CustomTouchHandledEvent } from 'types/helper-types'
-import { fbControlType, formBuilderOptions } from '../../types/formbuilder-types'
+import { fbControlType, FormBuilderOptions } from '../../types/formbuilder-types'
 import { selectFieldOptions } from './attributes/field_attributes/select'
 import { config, defaultTimeout } from './config'
 
 export class FormBuilderStageHelper {
   cloneControls: JQuery
 
-  constructor(public opts: formBuilderOptions, public fb: FormBuilder) {
+  constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.setupStage()
     this.registerEventHandlers()
   }

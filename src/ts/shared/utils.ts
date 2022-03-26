@@ -3,7 +3,7 @@
  * sorting and other fun stuff
  */
 
-import { buttonAttributes, MarkupAttributes } from '../../types/formbuilder-types'
+import { ButtonAttributes, MarkupAttributes } from '../../types/formbuilder-types'
 
 window.fbLoaded = {
   js: [],
@@ -220,7 +220,7 @@ export const getContentType = content => {
  * @param  {Object}              attributes
  * @return {Object} DOM Element
  */
-export const markup = function (tag, content: any = '', attributes: MarkupAttributes | buttonAttributes = {}) {
+export const markup = function (tag, content: any = '', attributes: MarkupAttributes | ButtonAttributes = {}) {
   let contentType = getContentType(content)
   const { events, ...attrs } = attributes
   const field = document.createElement(tag)

@@ -1,12 +1,12 @@
 import { FormBuilder } from 'ts/form_builder/formBuilder'
-import { Field, formBuilderOptions } from '../../types/formbuilder-types'
+import { Field, FormBuilderOptions } from '../../types/formbuilder-types'
 import events from '../shared/events'
 import { hyphenCase, nameAttr } from '../shared/utils'
 import { FormBuilderControlFieldHelper } from './fieldHelper'
 
 export class FormBuilderControlHelper {
   fieldHelper: FormBuilderControlFieldHelper
-  constructor(public opts: formBuilderOptions, public fb: FormBuilder) {
+  constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.fieldHelper = new FormBuilderControlFieldHelper(opts, fb)
   }
 

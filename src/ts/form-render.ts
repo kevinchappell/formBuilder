@@ -1,9 +1,9 @@
-import { formRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
+import { FormRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
 import '../sass/form-render.scss'
 import './control/index'
 import { FormRender } from './form_render/formRender'
 
-jQuery.fn.formRender = function (methodOrOptions: formRenderOptions | keyof FormRenderPublicAPIActions = {}, ...args) {
+jQuery.fn.formRender = function (methodOrOptions: FormRenderOptions | keyof FormRenderPublicAPIActions = {}, ...args) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const el = this
 

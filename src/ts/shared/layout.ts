@@ -1,5 +1,5 @@
 import { getAllGridRelatedClasses, markup, nameAttr, parsedHtml } from 'ts/shared/utils'
-import { layoutTemplates } from '../../types/shared-types'
+import { LayoutTemplates } from '../../types/shared-types'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
@@ -43,7 +43,7 @@ export class Layout {
    * @param {Object} templates object containing custom or overwrite templates
    * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
    */
-  constructor(templates?: layoutTemplates, preview?: boolean) {
+  constructor(templates?: LayoutTemplates, preview?: boolean) {
     this.preview = preview
 
     // supported templates for outputting a field

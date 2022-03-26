@@ -1,7 +1,7 @@
 import { EditorManager } from 'tinymce'
 import { Layout } from '../ts/shared/layout'
 import { PartialRecord } from './helper-types'
-import { dataType, layoutTemplates, notify } from './shared-types'
+import { dataType, LayoutTemplates, notify } from './shared-types'
 
 export interface Field extends FieldTypes, BaseControlAttributes, SelectAttributes {
   label?: string
@@ -110,20 +110,20 @@ declare global {
 
 export type MarkupType = string | HTMLElement
 
-export interface formBuilderOptions {
+export interface FormBuilderOptions {
   layout?: typeof Layout
-  layoutTemplates?: layoutTemplates
+  layoutTemplates?: LayoutTemplates
   onAddField?: (lastID: string, field: Field) => any
   onAddFieldAfter?: (lastID: string, field: Field) => any
-  onAddOption?: (option: optionTemplate, params: optionTemplateParams) => any
-  actionButtons?: actionButton[]
+  onAddOption?: (option: OptionTemplate, params: OptionTemplateParams) => any
+  actionButtons?: ActionButton[]
   disabledActionButtons?: string[]
   allowStageSort?: boolean
   controlOrder?: fbControlType[]
   controlPosition?: 'right' | 'left'
   dataType?: dataType
   defaultFields?: Field[]
-  disabledAttrs?: defaultAttributeNames[]
+  disabledAttrs?: DefaultAttributeNames[]
   disabledFieldButtons?: PartialRecord<fbControlType, layoutFieldButtons[]>
   disabledSubtypes?: PartialRecord<fbControlType, fbControlSubtype[]>
   disableFields?: fbControlType[]
@@ -132,7 +132,7 @@ export interface formBuilderOptions {
   editOnAdd?: boolean
   fields?: Field[]
   fieldRemoveWarn?: boolean
-  inputSets?: inputSets[]
+  inputSets?: InputSets[]
   notify?: notify
   onClearAll?: () => any
   onCloseFieldEdit?: editPanelCallback
@@ -151,7 +151,7 @@ export interface formBuilderOptions {
   subtypes?: PartialRecord<fbControlType, fbControlSubtype[] | string[]>
   templates?: Record<string, templateFunction>
   typeUserAttrs?: PartialRecord<fbControlType, any>
-  typeUserDisabledAttrs?: PartialRecord<fbControlType, defaultAttributeNames[]>
+  typeUserDisabledAttrs?: PartialRecord<fbControlType, DefaultAttributeNames[]>
   typeUserEvents?: PartialRecord<
     fbControlType,
     PartialRecord<'onadd' | 'onclone' | 'onremove', (field: HTMLElement) => any>
@@ -181,9 +181,9 @@ export interface Offset {
   left?: number | string
 }
 
-export type actionButton = buttonAttributes
+export type ActionButton = ButtonAttributes
 
-export interface buttonAttributes {
+export interface ButtonAttributes {
   title?: string
   id?: string
   className?: string
@@ -194,7 +194,7 @@ export interface buttonAttributes {
   }
 }
 
-type defaultAttributeNames =
+type DefaultAttributeNames =
   | 'access'
   | 'className'
   | 'description'
@@ -264,7 +264,7 @@ export type fbControlSubtype = 'file' | 'date' | 'number' | 'password' | 'email'
 
 export type layoutFieldButtons = 'remove' | 'edit' | 'delete' | 'grid'
 
-interface inputSets {
+interface InputSets {
   label: string
   name: string
   showHeader: boolean
@@ -280,13 +280,13 @@ interface ControlBase {
   onRender: () => any
 }
 
-interface optionTemplate {
+interface OptionTemplate {
   label: string
   value?: string
   selected?: boolean
 }
 
-interface optionTemplateParams {
+interface OptionTemplateParams {
   type: fbControlType
   index: number
   isMultiple: boolean

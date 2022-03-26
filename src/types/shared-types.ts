@@ -1,7 +1,7 @@
 import { Field } from './formbuilder-types'
 
 //Need Kevin to review for completeness
-export interface layoutTemplates {
+export interface LayoutTemplates {
   label?: (label: string, data: any) => any
   help?: (helpText: string) => any
   default?: (field: Field, label: JQuery<HTMLElement>, help: JQuery<HTMLElement>, data: any) => any

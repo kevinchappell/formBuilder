@@ -1,11 +1,11 @@
 import { Layout } from '../ts/shared/layout'
-import { formBuilderOptions } from './formbuilder-types'
-import { formRenderOptions } from './formrender-types'
-import { layoutTemplates } from './shared-types'
+import { FormBuilderOptions } from './formbuilder-types'
+import { FormRenderOptions } from './formrender-types'
+import { LayoutTemplates } from './shared-types'
 
 //Test form builder options
 
-const myTemplates: layoutTemplates = {
+const myTemplates: LayoutTemplates = {
   help: function (helpText) {
     return $('<div/>').addClass('help').append(helpText)
   },
@@ -46,7 +46,7 @@ const actionButtons = [
 
 class customLayoutClass extends Layout {}
 
-const options: Partial<formBuilderOptions> = {
+const options: Partial<FormBuilderOptions> = {
   actionButtons: actionButtons,
   allowStageSort: true,
   controlOrder: ['autocomplete', 'checkbox-group'],
@@ -236,7 +236,7 @@ const options: Partial<formBuilderOptions> = {
   layout: customLayoutClass,
 }
 
-const defaults: formRenderOptions = {
+const defaults: FormRenderOptions = {
   layout: Layout,
   layoutTemplates: {},
   controls: {},

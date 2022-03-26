@@ -1,14 +1,14 @@
 import mi18n from 'mi18n'
 import Control from 'ts/shared/control'
 import {
-  actionButton,
+  ActionButton,
   CheckboxAttributes,
   Coords,
   fbControlSubtype,
   fbControlType,
   FieldData,
   FieldTypes,
-  formBuilderOptions,
+  FormBuilderOptions,
   GridInfo,
 } from '../../types/formbuilder-types'
 import controlCustom from '../control/custom'
@@ -1153,7 +1153,7 @@ export default class Helpers {
    * Generate stage and controls dom elements
    * @param  {String} formID [description]
    */
-  editorUI(formID, opts: formBuilderOptions) {
+  editorUI(formID, opts: FormBuilderOptions) {
     const d = this.d
     const data = this.data
     const id = formID || data.formID
@@ -1200,11 +1200,11 @@ export default class Helpers {
    * @param  {Object} options
    * @return {Object} processedOptions
    */
-  processOptions(options: formBuilderOptions) {
+  processOptions(options: FormBuilderOptions) {
     const _this = this
     const { actionButtons, replaceFields, ...opts } = options
 
-    let mergedActionButtons: actionButton[] = [
+    let mergedActionButtons: ActionButton[] = [
       {
         type: 'button',
         id: 'clear',

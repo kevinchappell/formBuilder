@@ -3,7 +3,7 @@ import mi18n from 'mi18n'
 import { config, defaultFieldSelector, gridClassNames } from 'ts/form_builder/config'
 import { FormBuilderEditorHelper } from 'ts/form_builder/editorHelper'
 import events from 'ts/shared/events'
-import { formBuilderOptions, FormBuilderPublicAPIActions } from '../../types/formbuilder-types'
+import { FormBuilderOptions, FormBuilderPublicAPIActions } from '../../types/formbuilder-types'
 import Helpers from '../shared/helpers'
 import { Layout } from '../shared/layout'
 import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
@@ -61,7 +61,7 @@ export class FormBuilder {
   editorHelper: FormBuilderEditorHelper
 
   actions: FormBuilderPublicAPIActions
-  constructor(public opts: formBuilderOptions, public el: HTMLElement) {
+  constructor(public opts: FormBuilderOptions, public el: HTMLElement) {
     this.initBase(opts)
 
     this.controls = new Controls(opts, this.d)
@@ -81,7 +81,7 @@ export class FormBuilder {
     Object.assign(this, generateSelectorClassNames(gridClassNames))
   }
 
-  private loadHelpers(opts: formBuilderOptions) {
+  private loadHelpers(opts: FormBuilderOptions) {
     this.gh = new GridHelper(opts, this)
     this.ch = new FormBuilderControlHelper(opts, this)
     this.sh = new FormBuilderStageHelper(opts, this)
@@ -241,7 +241,7 @@ export class FormBuilder {
     return cancelArray.some(elem => elem === true)
   }
 
-  private initBase(opts: formBuilderOptions) {
+  private initBase(opts: FormBuilderOptions) {
     this.initGridClasses()
 
     this.data = new Data(this.formID)

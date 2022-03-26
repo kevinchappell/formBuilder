@@ -1,11 +1,11 @@
 import { Layout } from 'ts/shared/layout'
-import { dataType, layoutTemplates, notify } from './shared-types'
+import { dataType, LayoutTemplates, notify } from './shared-types'
 
-export interface formRenderOptions {
+export interface FormRenderOptions {
   disableInjectedStyle?: boolean
   forceTemplate?: string
   layout?: typeof Layout
-  layoutTemplates?: layoutTemplates
+  layoutTemplates?: LayoutTemplates
   container?: boolean
 
   controls?: any

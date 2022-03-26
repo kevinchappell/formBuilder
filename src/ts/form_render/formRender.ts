@@ -6,13 +6,13 @@ import control from 'ts/shared/control'
 import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
 import { forEach, markup, parseXML, trimObj, unique } from 'ts/shared/utils'
-import { formRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
+import { FormRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
 
 export class FormRender {
   instanceContainers: any[]
   markup: any
   actions: FormRenderPublicAPIActions
-  constructor(public options: formRenderOptions = {}, public el: HTMLElement) {
+  constructor(public options: FormRenderOptions = {}, public el: HTMLElement) {
     this.initDefaultsAndOptions(options)
 
     this.instanceContainers = []
@@ -113,7 +113,7 @@ export class FormRender {
     }
   }
 
-  private initDefaultsAndOptions(options: formRenderOptions) {
+  private initDefaultsAndOptions(options: FormRenderOptions) {
     const defaults = {
       layout: Layout,
       layoutTemplates: {},

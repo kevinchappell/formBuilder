@@ -1,16 +1,15 @@
 import mi18n from 'mi18n'
-import { formBuilderOptions } from '../../types/formbuilder-types'
+import { FormBuilderOptions } from '../../types/formbuilder-types'
 
 const noop = (...args: any) => null
 
-// eslint-disable-next-line
 //@ts-ignore
 mi18n.addLanguage('en-US', FB_EN_US)
 
-export const defaultOptions: formBuilderOptions = {
-  actionButtons: [], // additional form action buttons- save, data, clear
+export const defaultOptions: FormBuilderOptions = {
+  actionButtons: [],
   allowStageSort: true,
-  append: false, // append non-editable content to the form.
+  append: false,
   prepend: false,
   controlOrder: [
     'autocomplete',

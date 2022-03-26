@@ -1,11 +1,11 @@
 import mi18n from 'mi18n'
-import { formBuilderOptions, FormBuilderPublicAPIActions } from 'types/formbuilder-types'
+import { FormBuilderOptions, FormBuilderPublicAPIActions } from 'types/formbuilder-types'
 import '../sass/form-builder.scss'
 import { defaultI18n, defaultOptions } from './form_builder/config'
 import { FormBuilder } from './form_builder/formBuilder'
 
 jQuery.fn.formBuilder = function (
-  methodOrOptions: formBuilderOptions | keyof FormBuilderPublicAPIActions = {},
+  methodOrOptions: FormBuilderOptions | keyof FormBuilderPublicAPIActions = {},
   ...args
 ) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -38,7 +38,7 @@ jQuery.fn.formBuilder = function (
         })
         .catch(err => {
           reject(err)
-          ;(methodOrOptions as formBuilderOptions).notify.error(err)
+          ;(methodOrOptions as FormBuilderOptions).notify.error(err)
         })
     })
   }

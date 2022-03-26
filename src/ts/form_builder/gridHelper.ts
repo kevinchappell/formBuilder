@@ -1,6 +1,6 @@
 import { config } from 'ts/form_builder/config'
 import { FormBuilder } from 'ts/form_builder/formBuilder'
-import { formBuilderOptions, GridInfo } from '../../types/formbuilder-types'
+import { FormBuilderOptions, GridInfo } from '../../types/formbuilder-types'
 
 export class GridHelper {
   gridModeHelp: HTMLElement
@@ -9,7 +9,7 @@ export class GridHelper {
   gridModeStartX: number
   gridModeStartY: number
 
-  constructor(public opts: formBuilderOptions, public fb: FormBuilder) {
+  constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.stageHandlers()
   }
 
