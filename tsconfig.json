@@ -3,6 +3,7 @@
       "outDir": "./dist-ts",
       "allowJs": true,
       "target": "ESNext",
+      "module": "ESNext",
 			"moduleResolution": "node",
       "isolatedModules": true,
       "esModuleInterop": true,

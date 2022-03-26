@@ -29,13 +29,6 @@ export class FormBuilderEditorHelper {
 
     $editorWrap.append(this.fb.d.stage, cbWrap)
 
-    //@ts-ignore
-    if (this.fb.el.type !== 'textarea') {
-      $(this.fb.el).append($editorWrap)
-    } else {
-      //Kevin what does this comment mean. Can this else block be removed?
-      // formBuilder no longer uses textArea for element
-      $(this.fb.el).replaceWith($editorWrap)
-    }
+    $(this.fb.el).append($editorWrap)
   }
 }
