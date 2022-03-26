@@ -207,14 +207,12 @@ export class FormRender {
 
     // generate field markup if we have fields
     if (opts.formData) {
-      // instantiate the layout class & loop through the field configuration
-      const engine = new opts.layout(opts.layoutTemplates)
+      const engine = new Layout(opts.layoutTemplates)
 
       for (let i = 0; i < opts.formData.length; i++) {
         const fieldData = opts.formData[i]
         const sanitizedField = this.santizeField(fieldData, instanceIndex)
 
-        // determine the control class for this type, and then process it through the layout engine
         const controlClass = control.getClass(fieldData.type, fieldData.subtype)
         const field = engine.build(controlClass, sanitizedField)
 
