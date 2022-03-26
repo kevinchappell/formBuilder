@@ -1,7 +1,7 @@
 import fontConfig from 'fonts/config.json'
 import throttle from 'lodash/throttle'
 import mi18n from 'mi18n'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { addEventListeners, closest, forceNumber, forEach, parsedHtml, safename } from 'ts/shared/utils'
 import { CustomDoubleClickEvent, CustomHandledEvent, CustomTouchHandledEvent } from 'types/helper-types'
 import { fbControlType, formBuilderOptions } from '../../types/formbuilder-types'
@@ -11,7 +11,7 @@ import { config, defaultTimeout } from './config'
 export class FormBuilderStageHelper {
   cloneControls: JQuery
 
-  constructor(public opts: formBuilderOptions, public fb: FormBuilderClass) {
+  constructor(public opts: formBuilderOptions, public fb: FormBuilder) {
     this.setupStage()
     this.registerEventHandlers()
   }

@@ -1,8 +1,8 @@
 import mi18n from 'mi18n'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { boolAttribute } from './bool'
 
-export const multipleAttribute = (type, values, fb: FormBuilderClass) => {
+export const multipleAttribute = (type, values, fb: FormBuilder) => {
   const typeLabels = {
     default: {
       first: 'Multiple',

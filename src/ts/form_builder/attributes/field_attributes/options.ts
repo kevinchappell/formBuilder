@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
 import { config } from 'ts/form_builder/config'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { hyphenCase } from 'ts/shared/utils'
 import { selectFieldOptions } from './select'
 
@@ -10,7 +10,7 @@ import { selectFieldOptions } from './select'
  * @param  {Object} fieldData
  * @return {String} field options markup
  */
-export const fieldOptions = (fieldData, fb: FormBuilderClass) => {
+export const fieldOptions = (fieldData, fb: FormBuilder) => {
   const { type, values } = fieldData
   let fieldValues
   const optionActions = [fb.m('a', mi18n.get('addOption'), { className: 'add add-opt' })]

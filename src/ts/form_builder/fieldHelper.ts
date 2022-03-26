@@ -1,6 +1,6 @@
 import fontConfig from 'fonts/config.json'
 import mi18n from 'mi18n'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { formBuilderOptions } from '../../types/formbuilder-types'
 import { parsedHtml } from '../shared/utils'
 import { accessAttributes } from './attributes/field_attributes/access'
@@ -21,7 +21,7 @@ import { inputUserAttrs } from './attributes/user_attributes/input'
 import { selectUserAttrs } from './attributes/user_attributes/select'
 
 export class FormBuilderControlFieldHelper {
-  constructor(public opts: formBuilderOptions, public fb: FormBuilderClass) {}
+  constructor(public opts: formBuilderOptions, public fb: FormBuilder) {}
 
   // Append the new field to the editor
   appendNewField(values, isNew = true) {

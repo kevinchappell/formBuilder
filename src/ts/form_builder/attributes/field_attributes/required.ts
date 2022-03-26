@@ -1,8 +1,8 @@
 import mi18n from 'mi18n'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { boolAttribute } from './bool'
 
-export const requiredAttribute = (fieldData, fb: FormBuilderClass) => {
+export const requiredAttribute = (fieldData, fb: FormBuilder) => {
   const { type } = fieldData
   const noRequire = ['header', 'paragraph', 'button']
   const noMake = []

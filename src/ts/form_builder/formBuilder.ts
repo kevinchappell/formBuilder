@@ -14,7 +14,7 @@ import Dom, { remove } from './dom'
 import { GridHelper } from './gridHelper'
 import { FormBuilderStageHelper } from './stageHelper'
 
-export class FormBuilderClass {
+export class FormBuilder {
   rowWrapperClassSelector
   rowWrapperClass
 

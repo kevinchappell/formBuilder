@@ -1,9 +1,9 @@
 import mi18n from 'mi18n'
 import { styles } from 'ts/form_builder/config'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { MarkupType } from 'types/formbuilder-types'
 
-export const btnStyles = (style, fb: FormBuilderClass) => {
+export const btnStyles = (style, fb: FormBuilder) => {
   let styleField: MarkupType = ''
 
   // corrects issue where 'undefined' was saved to formData

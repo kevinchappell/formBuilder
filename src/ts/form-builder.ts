@@ -2,7 +2,7 @@ import mi18n from 'mi18n'
 import { formBuilderOptions, FormBuilderPublicAPIActions } from 'types/formbuilder-types'
 import '../sass/form-builder.scss'
 import { defaultI18n, defaultOptions } from './form_builder/config'
-import { FormBuilderClass } from './form_builder/formBuilder'
+import { FormBuilder } from './form_builder/formBuilder'
 
 jQuery.fn.formBuilder = function (
   methodOrOptions: formBuilderOptions | keyof FormBuilderPublicAPIActions = {},
@@ -13,7 +13,7 @@ jQuery.fn.formBuilder = function (
 
   const isMethod = typeof methodOrOptions === 'string'
   if (isMethod) {
-    const formBuilder = $(el).data('formBuilder') as FormBuilderClass
+    const formBuilder = $(el).data('formBuilder') as FormBuilder
 
     if (formBuilder) {
       if (typeof formBuilder.actions[methodOrOptions] === 'function') {
@@ -31,7 +31,7 @@ jQuery.fn.formBuilder = function (
       mi18n
         .init(i18nOpts)
         .then(() => {
-          const formBuilder = new FormBuilderClass(opts, el)
+          const formBuilder = new FormBuilder(opts, el)
           jQuery(el).data('formBuilder', formBuilder)
 
           resolve(formBuilder)

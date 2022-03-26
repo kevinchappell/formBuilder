@@ -1,7 +1,7 @@
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { CheckboxAttributes, Labels } from 'types/formbuilder-types'
 
-export const boolAttribute = (name, values, labels = {} as Labels, fb: FormBuilderClass) => {
+export const boolAttribute = (name, values, labels = {} as Labels, fb: FormBuilder) => {
   const label = txt =>
     fb.m('label', txt, {
       for: `${name}-${fb.data.lastID}`,

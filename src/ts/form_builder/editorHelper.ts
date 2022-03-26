@@ -1,8 +1,8 @@
 import { formBuilderOptions } from 'types/formbuilder-types'
-import { FormBuilderClass } from './formBuilder'
+import { FormBuilder } from './formBuilder'
 
 export class FormBuilderEditorHelper {
-  constructor(public opts: formBuilderOptions, public fb: FormBuilderClass) {
+  constructor(public opts: formBuilderOptions, public fb: FormBuilder) {
     this.init()
   }
 

@@ -1,9 +1,9 @@
 import mi18n from 'mi18n'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { CheckboxAttributes } from 'types/formbuilder-types'
 import { boolAttribute } from './bool'
 
-export const accessAttributes = (type, values, fb: FormBuilderClass) => {
+export const accessAttributes = (type, values, fb: FormBuilder) => {
   const roles = values.role !== undefined ? values.role.split(',') : []
   const rolesDisplay = values.role ? 'style="display:block"' : ''
   const availableRoles = [`<div class="available-roles" ${rolesDisplay}>`]

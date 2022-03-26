@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { SelectAttributes } from 'types/formbuilder-types'
 
 /**
@@ -9,7 +9,7 @@ import { SelectAttributes } from 'types/formbuilder-types'
  * @param  {Object} fieldData
  * @return {String}         select markup
  */
-export const selectUserAttrs = (name, fieldData, fb: FormBuilderClass) => {
+export const selectUserAttrs = (name, fieldData, fb: FormBuilder) => {
   const { multiple, options, label: labelText, value, class: classname, className, ...restData } = fieldData
   const optis = Object.keys(options).map(val => {
     const attrs: SelectAttributes = { value: val }

@@ -1,7 +1,7 @@
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { removeFromArray } from '../../../shared/utils'
 
-export const defaultFieldAttrs = (type, fb: FormBuilderClass) => {
+export const defaultFieldAttrs = (type, fb: FormBuilder) => {
   const defaultAttrs = ['required', 'label', 'description', 'placeholder', 'className', 'name', 'access', 'value']
   const noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(fb.d.optionFields)
 

@@ -1,4 +1,4 @@
-import { FormBuilderClass } from 'ts/form_builder/formBuilder'
+import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { attrString } from 'ts/shared/utils'
 
 /**
@@ -7,7 +7,7 @@ import { attrString } from 'ts/shared/utils'
  * @param  {Object} inputAttrs also known as values
  * @return {String}       input markup
  */
-export const inputUserAttrs = (name, inputAttrs, fb: FormBuilderClass) => {
+export const inputUserAttrs = (name, inputAttrs, fb: FormBuilder) => {
   const { class: classname, className, ...attrs } = inputAttrs
   let textAttrs = {
     id: name + '-' + fb.data.lastID,
