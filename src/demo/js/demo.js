@@ -309,6 +309,15 @@ jQuery(function ($) {
         templates: templates,
         dataType,
         disableInjectedStyle: false,
+        overrideMethods: {
+          emptyContainer: () => {
+            console.log('custom empty container')
+            const el = $('.render-wrap')
+            while (el.lastChild) {
+              el.removeChild(el.lastChild)
+            }
+          },
+        },
       })
       //window.sessionStorage.setItem('formData', formRenderData)
     }

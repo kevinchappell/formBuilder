@@ -6,7 +6,7 @@ import control from 'ts/shared/control'
 import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
 import { forEach, markup, parseXML, trimObj, unique } from 'ts/shared/utils'
-import { FormRenderOptions, FormRenderPublicAPIActions } from 'types/formrender-types'
+import { FormRenderOptions, FormRenderPublicAPIActions, FormRenderPublicAPIOverrides } from 'types/formrender-types'
 import '../../sass/form-render.scss'
 import '../control/index'
 
@@ -14,6 +14,7 @@ export class FormRender {
   instanceContainers: any[]
   markup: any
   actions: FormRenderPublicAPIActions
+  overrideMethods: FormRenderPublicAPIOverrides
   constructor(public options: FormRenderOptions = {}, public el: HTMLElement) {
     this.initDefaultsAndOptions(options)
 
@@ -40,7 +41,6 @@ export class FormRender {
       controlCustom.register(this.options.templates)
     }
 
-    this.setupExtensions()
     this.setPublicActions()
   }
 
@@ -63,55 +63,6 @@ export class FormRender {
         this.render()
       },
       html: () => $(this.el).html(),
-    }
-  }
-
-  //Kevin -- what is going on with these prototypes? Is this related to https://github.com/kevinchappell/formBuilder/issues/563 ?
-  private setupExtensions() {
-    if (typeof Element.prototype.appendFormFields !== 'function') {
-      Element.prototype.appendFormFields = function (fields) {
-        if (!Array.isArray(fields)) {
-          fields = [fields]
-        }
-        const renderedFormWrap = markup('div', fields, {
-          className: 'rendered-form',
-        })
-        this.appendChild(renderedFormWrap)
-
-        fields.forEach(field => {
-          // Determine if rows are being used. If so, create the row and append to its row-{group}
-          // If the fields have row-, create & append to the appropriate row
-          const [rowGroup] = field.className.match(/row-([^\s]+)/) || []
-          if (rowGroup) {
-            const rowID = this.id ? `${this.id}-row-${rowGroup}` : `row-${rowGroup}`
-
-            // Check if this rowID is created yet or not.
-            let rowGroupNode = document.getElementById(rowID)
-            if (!rowGroupNode) {
-              rowGroupNode = markup('div', null, { id: rowID, className: 'row form-inline' })
-              renderedFormWrap.appendChild(rowGroupNode)
-            }
-            rowGroupNode.appendChild(field)
-          } else {
-            // Append without row
-            renderedFormWrap.appendChild(field)
-          }
-
-          field.dispatchEvent(events.fieldRendered)
-        })
-      }
-    }
-
-    /**
-     * Extend Element prototype to remove content
-     */
-    if (typeof Element.prototype.emptyContainer !== 'function') {
-      Element.prototype.emptyContainer = function () {
-        const element = this
-        while (element.lastChild) {
-          element.removeChild(element.lastChild)
-        }
-      }
     }
   }
 
@@ -227,8 +178,8 @@ export class FormRender {
 
       // if rendering, inject the fields into the specified wrapper container/element
       if (opts.render && this.el) {
-        this.el.emptyContainer()
-        this.el.appendFormFields(rendered)
+        this.emptyContainer()
+        this.appendFormFields(rendered)
 
         runCallbacks()
         opts.notify.success(opts.messages.formRendered)
@@ -255,6 +206,56 @@ export class FormRender {
     }
 
     //return formRender
+  }
+
+  emptyContainer() {
+    if (this.options?.overrideMethods?.emptyContainer) {
+      this.options.overrideMethods.emptyContainer()
+      return
+    }
+
+    while (this.el.lastChild) {
+      this.el.removeChild(this.el.lastChild)
+    }
+  }
+
+  appendFormFields(fields) {
+    if (this.options?.overrideMethods?.appendFormFields) {
+      this.options.overrideMethods.appendFormFields(fields)
+      return
+    }
+
+    if (!Array.isArray(fields)) {
+      fields = [fields]
+    }
+    const renderedFormWrap = markup('div', fields, {
+      className: 'rendered-form',
+    })
+
+    this.el.appendChild(renderedFormWrap)
+
+    fields.forEach(field => {
+      // Determine if rows are being used. If so, create the row and append to its row-{group}
+      // If the fields have row-, create & append to the appropriate row
+      const [rowGroup] = field.className.match(/row-([^\s]+)/) || []
+      if (rowGroup) {
+        const rowID = this.el.id ? `${this.el.id}-row-${rowGroup}` : `row-${rowGroup}`
+
+        // Check if this rowID is created yet or not.
+        let rowGroupNode = document.getElementById(rowID)
+        if (!rowGroupNode) {
+          rowGroupNode = markup('div', null, { id: rowID, className: 'row form-inline' })
+          renderedFormWrap.appendChild(rowGroupNode)
+        }
+
+        rowGroupNode.appendChild(field)
+      } else {
+        // Append without row
+        renderedFormWrap.appendChild(field)
+      }
+
+      field.dispatchEvent(events.fieldRendered)
+    })
   }
 
   /**

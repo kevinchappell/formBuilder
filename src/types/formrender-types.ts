@@ -25,6 +25,7 @@ export interface FormRenderOptions {
 
   templates?: {}
   notify?: notify
+  overrideMethods?: FormRenderPublicAPIOverrides
 }
 
 export interface FormRenderPublicAPIActions {
@@ -33,4 +34,9 @@ export interface FormRenderPublicAPIActions {
   setData: (formData) => any
   render: (formData, options) => any
   html: () => string
+}
+
+export interface FormRenderPublicAPIOverrides {
+  appendFormFields?: (fields: any) => any
+  emptyContainer?: () => any
 }
