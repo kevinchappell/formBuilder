@@ -310,6 +310,7 @@ export default class Control {
     return this.markup(type, parsedHtml(label), data)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onRender(evt: any) {
     return
   }

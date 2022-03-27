@@ -10,7 +10,7 @@ import {
   FormBuilderOptions,
   FormBuilderPublicAPIActions,
 } from '../../types/formbuilder-types'
-import Helpers from '../shared/helpers'
+import { Helpers } from '../shared/helpers'
 import { Layout } from '../shared/layout'
 import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
 import { FormBuilderControlHelper } from './controlHelper'
@@ -260,8 +260,7 @@ export class FormBuilder {
       opts.layout = Layout
     }
 
-    const layoutEngine = new opts.layout(opts.layoutTemplates, true)
-    this.h = new Helpers(this.formID, layoutEngine, this)
+    this.h = new Helpers(opts, this)
 
     opts = this.processActionButtons(opts)
     this.opts = opts
@@ -290,7 +289,7 @@ export class FormBuilder {
         id: 'data',
         className: 'btn btn-default get-data',
         events: {
-          click: e => this.h.showData(),
+          click: () => this.h.showData(),
         },
       },
       {
