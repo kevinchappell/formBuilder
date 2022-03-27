@@ -97,7 +97,7 @@ jQuery(function ($) {
   const templates = {
     starRating: function (fieldData) {
       return {
-        field: '<span id="' + fieldData.name + '">',
+        field: `<span id="${fieldData.name}">`,
         onRender: () => {
           $(document.getElementById(fieldData.name)).rateYo({ rating: 3.6 })
         },

@@ -50,7 +50,7 @@ export interface BaseControlAttributes {
   id?: string
   className?: string
   name?: string
-  placeholder?: any
+  placeholder?: string
   value?: any
   title?: string
   for?: string
@@ -73,7 +73,7 @@ export interface SelectAttributes extends BaseControlAttributes {
 }
 
 export interface TextInputAttributes extends BaseControlAttributes {
-  contenteditable?: any
+  contenteditable?: boolean
 }
 
 export interface Labels {
@@ -89,13 +89,18 @@ export interface FormBuilderFormData {
 
 declare global {
   interface Window {
-    fbLoaded: any
+    fbLoaded: fbLoaded
     fbEditors: any
     opera: any
     tinymce: EditorManager
     fbControls: any
     lastFormBuilderCopiedTinyMCE?: any
     Quill?: any
+  }
+
+  interface fbLoaded {
+    js: string[]
+    css: string[]
   }
 
   interface JQuery {
