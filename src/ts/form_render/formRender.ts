@@ -173,10 +173,12 @@ export class FormRender {
         rendered.push(field)
       }
 
+      //Kevin -- what is instanceIndex all about? If you had multiple forms wouldnt you load this separately?
       if (this.el) {
         this.instanceContainers[instanceIndex] = this.el
       }
 
+      //Kevin -- why would we not be rendering? does this really need an if/else?
       // if rendering, inject the fields into the specified wrapper container/element
       if (opts.render && this.el) {
         this.emptyContainer()
@@ -188,6 +190,7 @@ export class FormRender {
 
         opts.notify.success(opts.messages.formRendered)
       } else {
+        //Kevin - is there any point to this else block? this.markup doesn't appear to be used anywhere else so not sure why this is happening
         /**
          * Retrieve the html markup for a passed array of DomElements
          * @param {Array} fields - array of dom elements
