@@ -6,6 +6,7 @@ import control from 'ts/shared/control'
 import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
 import { forEach, markup, parseXML, trimObj, unique } from 'ts/shared/utils'
+import { Field } from 'types/formbuilder-types'
 import { FormRenderOptions, FormRenderPublicAPIActions, FormRenderPublicAPIOverrides } from 'types/formrender-types'
 import '../../sass/form-render.scss'
 import '../control/index'
@@ -36,34 +37,8 @@ export class FormRender {
     // load in any custom specified controls, or preloaded plugin controls
     control.loadCustom(options.controls)
 
-    // register any passed custom templates
-    if (Object.keys(this.options.templates).length) {
-      controlCustom.register(this.options.templates)
-    }
-
+    this.registerCustomTemplates()
     this.setPublicActions()
-  }
-
-  setPublicActions() {
-    this.actions = {
-      userData: () => this.userData,
-      clear: () => this.clear(),
-      setData: formData => {
-        this.options.formData = this.parseFormData(formData)
-      },
-      render: (formData, options = {}) => {
-        if (!formData) {
-          formData = this.options.formData
-        }
-
-        this.options = Object.assign({}, this.options, options, {
-          formData: this.parseFormData(formData),
-        })
-
-        this.render()
-      },
-      html: () => $(this.el).html(),
-    }
   }
 
   private initDefaultsAndOptions(options: FormRenderOptions) {
@@ -104,25 +79,57 @@ export class FormRender {
     this.options = jQuery.extend(true, defaults, options)
   }
 
+  setPublicActions() {
+    this.actions = {
+      userData: () => this.userData,
+      clear: () => this.clear(),
+      setData: formData => {
+        this.options.formData = this.parseFormData(formData)
+      },
+      render: (formData, options = {}) => {
+        if (!formData) {
+          formData = this.options.formData
+        }
+
+        this.options = Object.assign({}, this.options, options, {
+          formData: this.parseFormData(formData),
+        })
+
+        this.render()
+      },
+      html: () => $(this.el).html(),
+    }
+  }
+
+  private registerCustomTemplates() {
+    if (Object.keys(this.options.templates).length) {
+      controlCustom.register(this.options.templates)
+    }
+  }
+
   /**
    * Clean up passed object configuration to prepare for use with the markup function
    * @param {Object} field - object of field configuration
    * @param {Number} instanceIndex - instance index
    * @return {Object} sanitized field object
    */
-  santizeField(field, instanceIndex?: number) {
+  santizeField(field: Field, instanceIndex?: number) {
     const sanitizedField = Object.assign({}, field)
     if (instanceIndex) {
       sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
       sanitizedField.name = field.name && `${field.name}-${instanceIndex}`
     }
+
     sanitizedField.className = Array.isArray(field.className)
       ? unique(field.className.join(' ').split(' ')).join(' ')
       : field.className || field.class || null
+
     delete sanitizedField.class
+
     if (field.values) {
-      field.values = field.values.map(option => trimObj(option))
+      field.values = (field.values as []).map(option => trimObj(option))
     }
+
     return trimObj(sanitizedField)
   }
 
@@ -151,12 +158,6 @@ export class FormRender {
     const opts = this.options
     this.el = this.getElement(this.el)
 
-    const runCallbacks = function () {
-      if (opts.onRender) {
-        opts.onRender()
-      }
-    }
-
     // Begin the core plugin
     const rendered = []
 
@@ -165,7 +166,7 @@ export class FormRender {
       const engine = new Layout(opts.layoutTemplates)
 
       for (let i = 0; i < opts.formData.length; i++) {
-        const fieldData = opts.formData[i]
+        const fieldData: Field = opts.formData[i]
         const sanitizedField = this.santizeField(fieldData, instanceIndex)
 
         const controlClass = control.getClass(fieldData.type, fieldData.subtype)
@@ -183,7 +184,10 @@ export class FormRender {
         this.emptyContainer()
         this.appendFormFields(rendered)
 
-        runCallbacks()
+        if (opts.onRender) {
+          opts.onRender()
+        }
+
         opts.notify.success(opts.messages.formRendered)
       } else {
         /**
@@ -206,8 +210,6 @@ export class FormRender {
       const styleTags = document.getElementsByClassName('formBuilder-injected-style')
       forEach(styleTags, i => remove(styleTags[i]))
     }
-
-    //return formRender
   }
 
   emptyContainer() {
@@ -344,6 +346,7 @@ export class FormRender {
       })
     })
   }
+
   /**
    * ensure formData is correct type
    * @param {Object|String} formData
@@ -354,9 +357,11 @@ export class FormRender {
       xml: formData => parseXML(formData),
       json: formData => window.JSON.parse(formData),
     }
+
     if (typeof formData !== 'object') {
       formData = setData[this.options.dataType](formData) || false
     }
+
     return formData
   }
 }
