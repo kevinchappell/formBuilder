@@ -1,6 +1,6 @@
 import { Layout } from 'ts/shared/layout'
 import { CustomControlTemplate } from './formbuilder-types'
-import { dataType, LayoutTemplates, notify } from './shared-types'
+import { ControlConfig, dataType, LayoutTemplates, notify } from './shared-types'
 
 export interface FormRenderOptions {
   disableInjectedStyle?: boolean
@@ -10,7 +10,7 @@ export interface FormRenderOptions {
   container?: boolean
 
   controls?: any
-  controlConfig?: any
+  controlConfig?: ControlConfig
   dataType?: dataType
   formData?: any
   i18n?: any

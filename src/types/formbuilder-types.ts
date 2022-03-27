@@ -1,7 +1,7 @@
 import { EditorManager } from 'tinymce'
 import { Layout } from '../ts/shared/layout'
 import { PartialRecord } from './helper-types'
-import { dataType, LayoutTemplates, notify } from './shared-types'
+import { ControlConfig, dataType, LayoutTemplates, notify } from './shared-types'
 
 export interface Field extends FieldTypes, BaseControlAttributes, SelectAttributes {
   label?: string
@@ -165,6 +165,7 @@ export interface FormBuilderOptions {
   enableColumnInsertMenu?: boolean
   enableEnhancedBootstrapGrid?: boolean
   i18n?: i18n
+  controlConfig?: ControlConfig
 }
 
 export type fbAllControlTypes = fbControlType | fbControlSubtype

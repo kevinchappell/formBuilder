@@ -261,7 +261,11 @@ const defaults: FormRenderOptions = {
   layout: Layout,
   layoutTemplates: {},
   controls: {},
-  controlConfig: {},
+  controlConfig: {
+    'textarea.tinymce': {
+      paste_data_images: false,
+    },
+  },
   container: false,
   dataType: 'json',
   formData: false,

@@ -1,5 +1,6 @@
 import fontConfig from 'fonts/config.json'
 import Control from 'ts/shared/control'
+import { FormBuilderOptions } from 'types/formbuilder-types'
 import controlCustom from '../control/custom'
 import '../control/index'
 import { hyphenCase, markup as m, unique } from '../shared/utils'
@@ -23,7 +24,7 @@ export default class Controls {
    * @param {Object} opts
    * @param {Object} d dom instance
    */
-  constructor(opts, d) {
+  constructor(opts: FormBuilderOptions, d) {
     this.opts = opts
     this.dom = d.controls
     this.custom = controlCustom

@@ -42,7 +42,7 @@ export class FormRender {
   }
 
   private initDefaultsAndOptions(options: FormRenderOptions) {
-    const defaults = {
+    const defaults: FormRenderOptions = {
       layout: Layout,
       layoutTemplates: {},
       controls: {},

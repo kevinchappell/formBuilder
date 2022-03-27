@@ -1,6 +1,7 @@
 import mi18n from 'mi18n'
 import { fbAllControlTypes, fbControlSubtype, fbControlType, SubTypeOptions } from 'types/formbuilder-types'
 import { PartialRecord } from 'types/helper-types'
+import { ControlConfig } from 'types/shared-types'
 import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from './utils'
 
 /**
@@ -8,13 +9,13 @@ import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from '
  * Defines the structure of a control class and some standard control methods
  */
 export default class Control {
-  static controlConfig: any
+  static controlConfig: ControlConfig
   rawConfig: any
   preview: any
   id: any
-  type: any
+  type: fbControlType
   description: any
-  subtype: any
+  subtype: fbControlSubtype
   classConfig: any
   required: any
   disabled: any
@@ -212,7 +213,7 @@ export default class Control {
 
     // loop through each defined custom control.
     // expects a function that receives the master control class to inherit from (or optional classRegister to inherit from subclass)
-    // see src/js/control_plugins/ for an example
+    // see src/ts/control_plugins/ for an example
     if (!this.fbControlsLoaded) {
       for (const loadControl of controlClasses) {
         loadControl(Control, Control.classRegister)

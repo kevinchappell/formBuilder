@@ -1,4 +1,5 @@
-import { fbAllControlTypes, Field } from './formbuilder-types'
+import { fbAllControlTypes, fbControlSubtype, fbControlType, Field } from './formbuilder-types'
+import { PartialRecord } from './helper-types'
 
 //Need Kevin to review for completeness
 export interface LayoutTemplates {
@@ -26,3 +27,5 @@ export interface ControlTypeLabel {
   value: fbAllControlTypes
   label: string
 }
+
+export type ControlConfig = PartialRecord<`${fbControlType}.${fbControlSubtype}`, {}>
