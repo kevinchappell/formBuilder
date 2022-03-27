@@ -110,6 +110,10 @@ declare global {
 
 export type MarkupType = string | HTMLElement
 
+export type SubTypeOptions = PartialRecord<fbControlType, fbAllControlTypes[] | string[]>
+
+export type CustomControlTemplate = Record<string, templateFunction>
+
 export interface FormBuilderOptions {
   layout?: typeof Layout
   layoutTemplates?: LayoutTemplates
@@ -148,8 +152,8 @@ export interface FormBuilderOptions {
   sortableControls?: boolean
   stickyControls?: StickyControls
   formData?: any
-  subtypes?: PartialRecord<fbControlType, fbControlSubtype[] | string[]>
-  templates?: Record<string, templateFunction>
+  subtypes?: SubTypeOptions
+  templates?: CustomControlTemplate
   typeUserAttrs?: PartialRecord<fbControlType, any>
   typeUserDisabledAttrs?: PartialRecord<fbControlType, DefaultAttributeNames[]>
   typeUserEvents?: PartialRecord<
@@ -162,6 +166,8 @@ export interface FormBuilderOptions {
   enableEnhancedBootstrapGrid?: boolean
   i18n?: i18n
 }
+
+export type fbAllControlTypes = fbControlType | fbControlSubtype
 
 interface i18n {
   locale?: string

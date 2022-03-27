@@ -1,5 +1,6 @@
 import mi18n from 'mi18n'
 import Control from 'ts/shared/control'
+import { CustomControlTemplate } from 'types/formbuilder-types'
 
 /**
  * Support for custom controls
@@ -14,7 +15,7 @@ export default class controlCustom extends Control {
    * @param {Object} templates an object/hash of template data as defined https://formbuilder.online/docs/formBuilder/options/templates/
    * @param {Array} fields
    */
-  static register(templates = {}, fields = []) {
+  static registerCustom(templates: CustomControlTemplate = {}, fields = []) {
     controlCustom.customRegister = {}
 
     if (!controlCustom.def) {
@@ -54,7 +55,7 @@ export default class controlCustom extends Control {
       // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
         // check that this type is already registered
-        const controlClass = Control.getClass(type, field.subtype)
+        const controlClass = Control.getRegisteredClassControl(type, field.subtype)
         if (!controlClass) {
           this.error(
             'Error while registering custom field: ' +
@@ -86,10 +87,11 @@ export default class controlCustom extends Control {
    * subtypes of. If not specified will return all types
    * @return {Array} registered custom lookup keys
    */
-  static getRegistered(type = false) {
+  getRegistered(type = false) {
     if (type) {
       return Control.getRegistered(type)
     }
+
     return Object.keys(controlCustom.customRegister)
   }
 

@@ -27,7 +27,7 @@ export default class Controls {
     this.opts = opts
     this.dom = d.controls
     this.custom = controlCustom
-    this.getClass = Control.getClass
+    this.getClass = Control.getRegisteredClassControl
     this.getRegistered = Control.getRegistered
     // ability for controls to have their own configuration / options
     // of the format control identifier (type, or type.subtype): {options}
@@ -53,7 +53,7 @@ export default class Controls {
     Control.loadCustom(opts.controls)
     // register any passed custom templates & fields
     if (Object.keys(opts.fields).length) {
-      controlCustom.register(opts.templates, opts.fields)
+      controlCustom.registerCustom(opts.templates, opts.fields)
     }
 
     // retrieve a full list of loaded controls
@@ -86,7 +86,7 @@ export default class Controls {
         custom = {}
 
         // determine the class, icon & label for this control
-        controlClass = Control.getClass(type)
+        controlClass = Control.getRegisteredClassControl(type)
         if (!controlClass || !controlClass.active(type)) {
           continue
         }

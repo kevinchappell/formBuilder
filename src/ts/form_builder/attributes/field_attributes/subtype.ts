@@ -1,21 +1,23 @@
 import mi18n from 'mi18n'
-import { config } from 'ts/form_builder/config'
 import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { capitalize, trimObj } from 'ts/shared/utils'
+import { fbControlType, Field } from 'types/formbuilder-types'
+import { ControlTypeLabel } from 'types/shared-types'
 
-export const subTypeAttribute = (type, values, fb: FormBuilder) => {
-  selectAttribute('subtype', values, (config.subtypes = fb.h.processSubtypes(fb.opts.subtypes))[type], fb)
+export const subTypeAttribute = (type: fbControlType, values, fb: FormBuilder) => {
+  selectAttribute('subtype', values, fb.h.processSubtypes(fb.opts.subtypes)[type], fb)
 }
 
-const selectAttribute = (attribute, values, optionData, fb: FormBuilder) => {
+const selectAttribute = (attribute, values, optionData: ControlTypeLabel[], fb: FormBuilder) => {
   const selectOptions = optionData.map((option, i) => {
-    let optionAttrs = Object.assign(
+    let optionAttrs: Field = Object.assign(
       {
         label: `${fb.i18n.option} ${i}`,
         value: undefined,
       },
       option,
     )
+
     if (option.value === values[attribute]) {
       optionAttrs.selected = true
     }

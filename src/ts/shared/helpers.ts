@@ -1,5 +1,6 @@
 import mi18n from 'mi18n'
 import Control from 'ts/shared/control'
+import { ControlTypeLabel } from 'types/shared-types'
 import {
   ActionButton,
   CheckboxAttributes,
@@ -10,6 +11,7 @@ import {
   FieldTypes,
   FormBuilderOptions,
   GridInfo,
+  SubTypeOptions,
 } from '../../types/formbuilder-types'
 import controlCustom from '../control/custom'
 import { config, defaultTimeout } from '../form_builder/config'
@@ -439,7 +441,9 @@ export default class Helpers {
 
     // determine the control class for this type, and then process it through the layout engine
     const custom = controlCustom.lookup(previewData.type)
-    const controlClass = custom ? custom.class : Control.getClass(previewData.type, previewData.subtype)
+    const controlClass = custom
+      ? custom.class
+      : Control.getRegisteredClassControl(previewData.type, previewData.subtype)
     const preview = this.layout.build(controlClass, previewData)
 
     empty($prevHolder[0])
@@ -1110,12 +1114,16 @@ export default class Helpers {
    * @param  {Array} subtypeOpts
    * @return {Array} subtypes
    */
-  processSubtypes(subtypeOpts) {
+  processSubtypes(subtypeOpts: SubTypeOptions) {
     const disabledSubtypes = config.opts.disabledSubtypes
     // first register any passed subtype options against the appropriate type control class
     for (const fieldType in subtypeOpts) {
       if (subtypeOpts.hasOwnProperty(fieldType)) {
-        Control.register(subtypeOpts[fieldType], Control.getClass(fieldType), fieldType)
+        Control.register(
+          subtypeOpts[fieldType],
+          Control.getRegisteredClassControl(fieldType as fbControlType),
+          fieldType,
+        )
       }
     }
 
@@ -1123,19 +1131,19 @@ export default class Helpers {
     const registeredSubtypes = Control.getRegisteredSubtypes()
 
     // remove disabled subtypes
-    const subtypeDef = Object.entries(registeredSubtypes).reduce((acc, [key, val]) => {
+    const subtypeDef: SubTypeOptions = Object.entries(registeredSubtypes).reduce((acc, [key, val]) => {
       acc[key] = (disabledSubtypes[key] && subtract(disabledSubtypes[key], val)) || val
       return acc
     }, {})
 
     // reformat the subtypes for each fieldType
-    const subtypes = {}
+    const subtypes: ControlTypeLabel[] = []
     for (const fieldType in subtypeDef) {
       if (subtypeDef.hasOwnProperty(fieldType)) {
         // loop through each defined subtype & build the formatted data structure
-        const formatted = []
+        const formatted: ControlTypeLabel[] = []
         for (const subtype of subtypeDef[fieldType]) {
-          const controlClass = Control.getClass(fieldType, subtype)
+          const controlClass = Control.getRegisteredClassControl(fieldType as fbControlType, subtype)
           const label = controlClass.mi18n(`subtype.${subtype}`) || controlClass.mi18n(subtype) || subtype
           formatted.push({
             label,

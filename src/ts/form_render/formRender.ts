@@ -103,7 +103,7 @@ export class FormRender {
 
   private registerCustomTemplates() {
     if (Object.keys(this.options.templates).length) {
-      controlCustom.register(this.options.templates)
+      controlCustom.registerCustom(this.options.templates)
     }
   }
 
@@ -169,7 +169,7 @@ export class FormRender {
         const fieldData: Field = opts.formData[i]
         const sanitizedField = this.santizeField(fieldData, instanceIndex)
 
-        const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+        const controlClass = control.getRegisteredClassControl(fieldData.type, fieldData.subtype)
         const field = engine.build(controlClass, sanitizedField)
 
         rendered.push(field)

@@ -1,4 +1,5 @@
 import { Layout } from 'ts/shared/layout'
+import { CustomControlTemplate } from './formbuilder-types'
 import { dataType, LayoutTemplates, notify } from './shared-types'
 
 export interface FormRenderOptions {
@@ -23,7 +24,7 @@ export interface FormRenderOptions {
   onRender?: () => any
   render?: boolean
 
-  templates?: {}
+  templates?: CustomControlTemplate
   notify?: notify
   overrideMethods?: FormRenderPublicAPIOverrides
 }

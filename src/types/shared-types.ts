@@ -1,4 +1,4 @@
-import { Field } from './formbuilder-types'
+import { fbAllControlTypes, Field } from './formbuilder-types'
 
 //Need Kevin to review for completeness
 export interface LayoutTemplates {
@@ -20,4 +20,9 @@ export interface notify {
   error?: notifyFunction
   success?: notifyFunction
   warning?: notifyFunction
+}
+
+export interface ControlTypeLabel {
+  value: fbAllControlTypes
+  label: string
 }

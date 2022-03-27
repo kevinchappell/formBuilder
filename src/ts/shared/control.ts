@@ -1,4 +1,6 @@
 import mi18n from 'mi18n'
+import { fbAllControlTypes, fbControlSubtype, fbControlType, SubTypeOptions } from 'types/formbuilder-types'
+import { PartialRecord } from 'types/helper-types'
 import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from './utils'
 
 /**
@@ -17,7 +19,7 @@ export default class Control {
   required: any
   disabled: any
   config: any
-  static classRegister: any
+  static classRegister: PartialRecord<fbAllControlTypes, typeof Control>
   static fbControlsLoaded: any
   css: any
   js: boolean | []
@@ -106,7 +108,7 @@ export default class Control {
    * @param {String} parentType - optional - if defined, any classes registered
    * will be registered as subtypes of this parent
    */
-  static register(types, controlClass, parentType = null) {
+  static register(types: string | string[], controlClass: typeof Control, parentType: string = null) {
     // store subtypes as <type>.<subtype> in the register
     const prefix = parentType ? parentType + '.' : ''
 
@@ -122,7 +124,6 @@ export default class Control {
     for (const type of types) {
       // '.' is a restricted character for type names
       if (type.indexOf('.') !== -1) {
-        // eslint-disable-next-line max-len
         Control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
         continue
       }
@@ -138,7 +139,7 @@ export default class Control {
    * @return {Array} registered types (or subtypes)
    */
   static getRegistered(type = false) {
-    const types = Object.keys(Control.classRegister)
+    const types = Object.keys(Control.classRegister) as fbControlType[]
     if (!types.length) {
       return types
     }
@@ -157,7 +158,7 @@ export default class Control {
    * Only returns types that have subtypes
    * @return {Object} an object containing {type: array of subtypes}.
    */
-  static getRegisteredSubtypes() {
+  static getRegisteredSubtypes(): SubTypeOptions {
     const types = {}
     for (const key in Control.classRegister) {
       if (Control.classRegister.hasOwnProperty(key)) {
@@ -171,6 +172,7 @@ export default class Control {
         types[type].push(subtype)
       }
     }
+
     return types
   }
 
@@ -181,21 +183,16 @@ export default class Control {
    * a class mapped to this subtype. If none found, fall back to the type.
    * @return {Class} control subclass as defined in the call to register
    */
-  static getClass(type, subtype = null) {
+  static getRegisteredClassControl(type: fbControlType, subtype: fbControlSubtype = null): typeof Control {
     const lookup = subtype ? type + '.' + subtype : type
-    const controlClass = Control.classRegister[lookup] || Control.classRegister[type]
-    if (!controlClass) {
-      return Control.error(
-        'Invalid control type. (Type: ' +
-          type +
-          ', Subtype: ' +
-          subtype +
-          '). Please ensure you have registered it, and imported it correctly.',
+    const control = Control.classRegister[lookup] || Control.classRegister[type]
+    if (!control) {
+      throw new Error(
+        `Invalid control type. (Type: ${type}, Subtype: ${subtype}). Please ensure you have registered it, and imported it correctly.`,
       )
     }
 
-    // set the _type field on the control class so we never lose it
-    return controlClass
+    return control
   }
 
   /**
