@@ -82,7 +82,7 @@ export class FormRender {
   setPublicActions() {
     this.actions = {
       userData: () => this.userData,
-      clear: () => this.clear(),
+      clear: () => this.clearFormData(),
       setData: formData => {
         this.options.formData = this.parseFormData(formData)
       },
@@ -327,8 +327,7 @@ export class FormRender {
     return definedFields
   }
 
-  /** Clear all rendered fields */
-  clear() {
+  clearFormData() {
     this.instanceContainers.forEach(container => {
       // clear tinyMCE editors
       this.options.formData
@@ -346,6 +345,7 @@ export class FormRender {
     })
   }
 
+  //Kevin -- how is this method different than helpers.ts getData() ?
   /**
    * ensure formData is correct type
    * @param {Object|String} formData
