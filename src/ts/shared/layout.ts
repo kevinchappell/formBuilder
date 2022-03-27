@@ -102,7 +102,7 @@ export class Layout {
    * @param {String} forceTemplate - programatically force the template with which this control to be rendered
    * @return {Object} element
    */
-  build(renderControl: typeof Control, data: Field, forceTemplate: boolean | string = false) {
+  build(renderControl: typeof Control, data: Field, forceTemplate: boolean | string = false): HTMLElement {
     // prepare the data
     if (this.preview) {
       if (data.name) {
@@ -115,10 +115,10 @@ export class Layout {
     data.id = data.name
     this.data = jQuery.extend({}, data)
 
-    // instantiate the control
+    // instantiate and build the control
     const control = new renderControl(data, this.preview)
-
     let field = control.build()
+
     if (typeof field !== 'object' || !field.field) {
       field = { field: field }
     }
@@ -140,7 +140,7 @@ export class Layout {
     control.on('prerender')
 
     // bind control on render events
-    element.addEventListener('fieldRendered', control.on('render'))
+    element.addEventListener('fieldRendered', control.on('render') as EventListener)
     return element
   }
 
@@ -204,12 +204,13 @@ export class Layout {
    * @param {Array} args - any number of args that should be passed to the template. this.data is sent as the last parameter to any template.
    * @return {DOMElement}
    */
-  processTemplate(template, ...args) {
+  processTemplate(template, ...args): HTMLElement {
     let processed = this.templates[template](...args, this.data)
 
     if (processed.jquery) {
       processed = processed[0]
     }
+
     return processed
   }
 

@@ -159,7 +159,7 @@ export class FormRender {
     this.el = this.getElement(this.el)
 
     if (opts.formData) {
-      const rendered = []
+      const rendered: HTMLElement[] = []
 
       const engine = new Layout(opts.layoutTemplates)
 
@@ -221,7 +221,7 @@ export class FormRender {
     }
   }
 
-  appendFormFields(fields) {
+  appendFormFields(fields: HTMLElement[]) {
     if (this.options?.overrideMethods?.appendFormFields) {
       this.options.overrideMethods.appendFormFields(fields)
       return
@@ -230,6 +230,7 @@ export class FormRender {
     if (!Array.isArray(fields)) {
       fields = [fields]
     }
+
     const renderedFormWrap = markup('div', fields, {
       className: 'rendered-form',
     })
