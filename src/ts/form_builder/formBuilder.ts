@@ -94,13 +94,6 @@ export class FormBuilder {
     this.editorHelper = new FormBuilderEditorHelper(opts, this)
   }
 
-  CheckTinyMCETransition(fieldListItem) {
-    const isTinyMCE = fieldListItem.find('textarea[type="tinymce"]')
-    if (isTinyMCE.length) {
-      window.lastFormBuilderCopiedTinyMCE = window.tinymce.get(isTinyMCE.attr('id')).save(null)
-    }
-  }
-
   // Parse saved XML template data
   loadFields(formData = null) {
     formData = this.h.getData(formData)

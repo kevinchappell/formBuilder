@@ -693,7 +693,7 @@ export class FormBuilderStageHelper {
 
         const listFieldItem = $(ui.item).find('li')
         if (listFieldItem.length) {
-          this.fb.CheckTinyMCETransition(listFieldItem)
+          this.checkTinyMCETransition(listFieldItem)
           this.fb.sh.UpdatePreviewAndSave(listFieldItem)
         }
       },
@@ -723,7 +723,7 @@ export class FormBuilderStageHelper {
   cloneItem(currentItem) {
     this.fb.data.lastID = this.incrementId(this.fb.data.lastID)
 
-    this.fb.CheckTinyMCETransition(currentItem)
+    this.checkTinyMCETransition(currentItem)
 
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
@@ -873,5 +873,12 @@ export class FormBuilderStageHelper {
     }
 
     this.doCancel = cancelArray.some(elem => elem === true)
+  }
+
+  checkTinyMCETransition(fieldListItem) {
+    const isTinyMCE = fieldListItem.find('textarea[type="tinymce"]')
+    if (isTinyMCE.length) {
+      window.lastFormBuilderCopiedTinyMCE = window.tinymce.get(isTinyMCE.attr('id')).save(null)
+    }
   }
 }

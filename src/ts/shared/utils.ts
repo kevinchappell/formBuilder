@@ -726,6 +726,7 @@ export const splitObject = (obj, keys) => {
 }
 
 $.fn.swapWith = function (that) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const $this = this
   const $that = $(that)
 
