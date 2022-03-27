@@ -318,7 +318,7 @@ export default class Control {
    * @param {String} eventType - optional type of event to retrieve an event function for. If not specified all events returned
    * @return {Function/Object} - function to execute for specified event, or all events of no eventType is specified
    */
-  on(eventType) {
+  on(eventType: 'prerender' | 'render') {
     const events = {
       // executed just prior to the row being returned by the layout class. Receives the DOMelement about to be passed back
       /**

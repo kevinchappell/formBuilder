@@ -1,5 +1,7 @@
 import { getAllGridRelatedClasses, markup, nameAttr, parsedHtml } from 'ts/shared/utils'
+import { Field } from 'types/formbuilder-types'
 import { LayoutTemplates } from '../../types/shared-types'
+import Control from './control'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
@@ -100,7 +102,7 @@ export class Layout {
    * @param {String} forceTemplate - programatically force the template with which this control to be rendered
    * @return {Object} element
    */
-  build(renderControl, data, forceTemplate: boolean | string = false) {
+  build(renderControl: typeof Control, data: Field, forceTemplate: boolean | string = false) {
     // prepare the data
     if (this.preview) {
       if (data.name) {
@@ -109,19 +111,20 @@ export class Layout {
         data.name = nameAttr(data) + '-preview'
       }
     }
+
     data.id = data.name
     this.data = jQuery.extend({}, data)
 
-    // build the control
+    // instantiate the control
     const control = new renderControl(data, this.preview)
+
     let field = control.build()
     if (typeof field !== 'object' || !field.field) {
       field = { field: field }
     }
 
-    // build the label & help text
-    const label = this.label()
-    const help = this.help()
+    const label = this.buildLabel()
+    const help = this.buildHelp()
 
     // process the relevant layout template
     let elementTemplate
@@ -130,10 +133,11 @@ export class Layout {
     } else {
       elementTemplate = this.isTemplate(field.layout) ? field.layout : 'default'
     }
+
     const element = this.processTemplate(elementTemplate, field.field, label, help)
 
     // execute prerender events
-    control.on('prerender')(element)
+    control.on('prerender')
 
     // bind control on render events
     element.addEventListener('fieldRendered', control.on('render'))
@@ -144,7 +148,7 @@ export class Layout {
    * Build a label element
    * @return {Object} dom element to render the label
    */
-  label() {
+  buildLabel() {
     const label = this.data.label || ''
     const labelText = parsedHtml(label)
     const labelContents = [labelText]
@@ -168,7 +172,7 @@ export class Layout {
    * Build a help element
    * @return {Object} dom element to render the help text
    */
-  help() {
+  buildHelp() {
     if (!this.data.description) {
       return null
     }

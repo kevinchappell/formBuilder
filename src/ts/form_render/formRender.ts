@@ -113,7 +113,7 @@ export class FormRender {
    * @param {Number} instanceIndex - instance index
    * @return {Object} sanitized field object
    */
-  santizeField(field: Field, instanceIndex?: number) {
+  santizeField(field: Field, instanceIndex?: number): Field {
     const sanitizedField = Object.assign({}, field)
     if (instanceIndex) {
       sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
