@@ -158,11 +158,9 @@ export class FormRender {
     const opts = this.options
     this.el = this.getElement(this.el)
 
-    // Begin the core plugin
-    const rendered = []
-
-    // generate field markup if we have fields
     if (opts.formData) {
+      const rendered = []
+
       const engine = new Layout(opts.layoutTemplates)
 
       for (let i = 0; i < opts.formData.length; i++) {
@@ -199,13 +197,10 @@ export class FormRender {
         this.markup = exportMarkup(rendered)
       }
     } else {
-      const noData = markup('div', opts.messages.noFormData, {
-        className: 'no-form-data',
-      })
-      rendered.push(noData)
       opts.notify.error(opts.messages.noFormData)
     }
 
+    //Kevin -- does this section below really need to be done if there is no form data?
     if (opts.disableInjectedStyle) {
       const styleTags = document.getElementsByClassName('formBuilder-injected-style')
       forEach(styleTags, i => remove(styleTags[i]))
