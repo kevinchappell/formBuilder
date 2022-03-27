@@ -168,7 +168,7 @@ export default class controlFineUploader extends controlText {
    */
   build() {
     this.input = this.markup('input', null, { type: 'hidden', name: this.config.name, id: this.config.name })
-    this.wrapper = this.markup('div', '', { id: this.config.name + '-wrapper' })
+    this.wrapper = this.markup('div', '', { id: `${this.config.name}-wrapper` })
     return [this.input, this.wrapper]
   }
 
@@ -200,7 +200,7 @@ export default class controlFineUploader extends controlText {
             enabled: true,
           },
           success: {
-            endpoint: this.handler + (this.handler.indexOf('?') == -1 ? '?' : '&') + 'done',
+            endpoint: `${this.handler + (this.handler.indexOf('?') == -1 ? '?' : '&')}done`,
           },
         },
         resume: {

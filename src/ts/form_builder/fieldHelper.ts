@@ -40,19 +40,19 @@ export class FormBuilderControlFieldHelper {
     let fieldButtons = [
       this.fb.m('a', null, {
         type: 'remove',
-        id: 'del_' + this.fb.data.lastID,
+        id: `del_${this.fb.data.lastID}`,
         className: `del-button btn ${fontConfig.css_prefix_text}cancel delete-confirm`,
         title: mi18n.get('removeMessage'),
       }),
       this.fb.m('a', null, {
         type: 'edit',
-        id: this.fb.data.lastID + '-edit',
+        id: `${this.fb.data.lastID}-edit`,
         className: `toggle-form btn ${fontConfig.css_prefix_text}pencil`,
         title: mi18n.get('hide'),
       }),
       this.fb.m('a', null, {
         type: 'copy',
-        id: this.fb.data.lastID + '-copy',
+        id: `${this.fb.data.lastID}-copy`,
         className: `copy-button btn ${fontConfig.css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
@@ -62,7 +62,7 @@ export class FormBuilderControlFieldHelper {
       fieldButtons.push(
         this.fb.m('a', null, {
           type: 'grid',
-          id: this.fb.data.lastID + '-grid',
+          id: `${this.fb.data.lastID}-grid`,
           className: `grid-button btn ${fontConfig.css_prefix_text}grid`,
           title: 'Grid Mode',
         }),

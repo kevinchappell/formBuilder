@@ -31,7 +31,7 @@ export default class controlSelect extends Control {
     const optionType = type.replace('-group', '')
     const isSelect = type === 'select'
     if (data.multiple || type === 'checkbox-group') {
-      data.name = data.name + '[]'
+      data.name = `${data.name}[]`
     }
 
     if (type === 'checkbox-group' && data.required) {

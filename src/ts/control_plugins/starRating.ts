@@ -43,7 +43,7 @@ window.fbControls.push(function (controlClass) {
      */
     onRender() {
       const value = this.config.value || 3.6
-      $('#' + this.config.name).rateYo({ rating: value })
+      $(`#${this.config.name}`).rateYo({ rating: value })
     }
   }
 

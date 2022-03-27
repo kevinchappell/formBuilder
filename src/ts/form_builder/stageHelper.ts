@@ -122,7 +122,7 @@ export class FormBuilderStageHelper {
       const optionsCount = options.childNodes.length
 
       if (optionsCount <= 2 && !type.includes('checkbox')) {
-        this.fb.opts.notify.error('Error: ' + mi18n.get('minOptionMessage'))
+        this.fb.opts.notify.error(`Error: ${mi18n.get('minOptionMessage')}`)
       } else {
         $option.slideUp('250', () => {
           $option.remove()
@@ -332,7 +332,7 @@ export class FormBuilderStageHelper {
           })
         }
       } else {
-        const fieldVal = document.getElementById('value-' + field.id) as HTMLInputElement
+        const fieldVal = document.getElementById(`value-${field.id}`) as HTMLInputElement
         if (fieldVal) {
           fieldVal.value = e.target.value
         }
@@ -726,7 +726,7 @@ export class FormBuilderStageHelper {
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
     const ts = new Date().getTime()
-    const cloneName = type + '-' + ts
+    const cloneName = `${type}-${ts}`
     const $clone = currentItem.clone()
 
     $('.fld-name', $clone).val(cloneName)

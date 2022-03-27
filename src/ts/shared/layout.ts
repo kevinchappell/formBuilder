@@ -1,4 +1,4 @@
-import { getAllGridRelatedClasses, markup, nameAttr, parsedHtml } from 'ts/shared/utils'
+import { getAllGridRelatedClasses, nameAttr } from 'ts/shared/utils'
 import { Field } from 'types/formbuilder-types'
 import { LayoutTemplates } from '../../types/shared-types'
 import Control from './control'
@@ -106,9 +106,9 @@ export class Layout {
     // prepare the data
     if (this.preview) {
       if (data.name) {
-        data.name = data.name + '-preview'
+        data.name = `${data.name}-preview`
       } else {
-        data.name = nameAttr(data) + '-preview'
+        data.name = `${nameAttr(data)}-preview`
       }
     }
 

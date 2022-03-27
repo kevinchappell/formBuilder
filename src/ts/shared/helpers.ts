@@ -505,9 +505,9 @@ export default class Helpers {
         const re = new RegExp(`^${primaryType}-.*`, 'g')
         const match = classes[i].match(re)
         if (match) {
-          classes.splice(i, 1, primaryType + '-' + style)
+          classes.splice(i, 1, `${primaryType}-${style}`)
         } else {
-          classes.push(primaryType + '-' + style)
+          classes.push(`${primaryType}-${style}`)
         }
       }
 
@@ -603,7 +603,7 @@ export default class Helpers {
 
     const btnWrap = m('div', [no, yes], { className: 'button-wrap' })
 
-    className = 'form-builder-dialog ' + className
+    className = `form-builder-dialog ${className}`
 
     const miniModal = m('div', [message, btnWrap], { className })
     if (!coords) {
@@ -617,8 +617,8 @@ export default class Helpers {
       miniModal.classList.add('positioned')
     }
 
-    miniModal.style.left = coords.pageX + 'px'
-    miniModal.style.top = coords.pageY + 'px'
+    miniModal.style.left = `${coords.pageX}px`
+    miniModal.style.top = `${coords.pageY}px`
 
     document.body.appendChild(miniModal)
 
@@ -639,7 +639,7 @@ export default class Helpers {
     const clientHeight = document.documentElement.clientHeight
     _this.showOverlay()
 
-    className = 'form-builder-dialog ' + className
+    className = `form-builder-dialog ${className}`
 
     const miniModal = m('div', content, { className: className })
     if (!coords) {
@@ -652,8 +652,8 @@ export default class Helpers {
       miniModal.classList.add('positioned')
     }
 
-    miniModal.style.left = coords.pageX + 'px'
-    miniModal.style.top = coords.pageY + 'px'
+    miniModal.style.left = `${coords.pageX}px`
+    miniModal.style.top = `${coords.pageY}px`
 
     document.body.appendChild(miniModal)
 
@@ -1027,7 +1027,7 @@ export default class Helpers {
       })
       config.opts.notify.warning('fieldID required to remove specific fields.')
       config.opts.notify.warning('Removing last field since no ID was supplied.')
-      config.opts.notify.warning('Available IDs: ' + availableIds.join(', '))
+      config.opts.notify.warning(`Available IDs: ${availableIds.join(', ')}`)
       fieldID = form.lastChild.id
     }
 

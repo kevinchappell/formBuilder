@@ -56,7 +56,7 @@ window.fbControls.push(function (controlClass, allControlClasses) {
       this.field = this.markup('div', null, attrs)
 
       // hidden input for storing the current HTML value of the div
-      this.inputId = this.id + '-input'
+      this.inputId = `${this.id}-input`
       this.input = this.markup('input', null, {
         name: name,
         id: this.inputId,

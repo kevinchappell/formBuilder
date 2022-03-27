@@ -202,7 +202,7 @@ const options: Partial<FormBuilderOptions> = {
   templates: {
     starRating: function (fieldData) {
       return {
-        field: '<span id="' + fieldData.name + '">',
+        field: `<span id="${fieldData.name}">`,
         onRender: function () {
           return
         },

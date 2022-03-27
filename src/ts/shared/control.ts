@@ -54,7 +54,7 @@ export default class Control {
       if (config.name) {
         config.id = config.name
       } else {
-        config.id = 'control-' + Math.floor(Math.random() * 10000000 + 1)
+        config.id = `control-${Math.floor(Math.random() * 10000000 + 1)}`
       }
     }
     this.id = config.id
@@ -67,7 +67,7 @@ export default class Control {
     if (!Control.controlConfig) {
       Control.controlConfig = {}
     }
-    const classId = this.subtype ? this.type + '.' + this.subtype : this.type
+    const classId = this.subtype ? `${this.type}.${this.subtype}` : this.type
     this.classConfig = jQuery.extend({}, Control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
@@ -111,7 +111,7 @@ export default class Control {
    */
   static register(types: string | string[], controlClass: typeof Control, parentType: string = null) {
     // store subtypes as <type>.<subtype> in the register
-    const prefix = parentType ? parentType + '.' : ''
+    const prefix = parentType ? `${parentType}.` : ''
 
     // initialise the register
     if (!Control.classRegister) {
@@ -148,7 +148,7 @@ export default class Control {
       // if type is specified, then we want to return all subtypes
       // of that type (registered with the key <type>.<subtype>)
       if (type) {
-        return key.indexOf(type + '.') > -1
+        return key.indexOf(`${type}.`) > -1
       }
       return key.indexOf('.') == -1
     })
@@ -185,7 +185,7 @@ export default class Control {
    * @return {Class} control subclass as defined in the call to register
    */
   static getRegisteredClassControl(type: fbControlType, subtype: fbControlSubtype = null): typeof Control {
-    const lookup = subtype ? type + '.' + subtype : type
+    const lookup = subtype ? `${type}.${subtype}` : type
     const control = Control.classRegister[lookup] || Control.classRegister[type]
     if (!control) {
       throw new Error(

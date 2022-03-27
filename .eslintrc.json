@@ -38,7 +38,8 @@
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/ban-types": "off",
-    "no-debugger": "warn"
+    "no-debugger": "warn",
+    "prefer-template":"error"
 
 
   }

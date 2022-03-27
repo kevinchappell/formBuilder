@@ -58,10 +58,9 @@ export default class controlCustom extends Control {
         const controlClass = Control.getRegisteredClassControl(type, field.subtype)
         if (!controlClass) {
           this.error(
-            'Error while registering custom field: ' +
-              type +
-              (field.subtype ? ':' + field.subtype : '') +
-              '. Unable to find any existing defined control or template for rendering.',
+            `Error while registering custom field: ${type}${
+              field.subtype ? `:${field.subtype}` : ''
+            }. Unable to find any existing defined control or template for rendering.`,
           )
           continue
         }

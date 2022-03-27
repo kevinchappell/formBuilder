@@ -177,7 +177,7 @@ export default class controlAutocomplete extends Control {
   showList(list, selectedOption) {
     this.selectOption(list, selectedOption)
     list.style.display = 'block'
-    list.style.width = list.parentElement.offsetWidth + 'px'
+    list.style.width = `${list.parentElement.offsetWidth}px`
   }
 
   /**
@@ -261,7 +261,7 @@ export default class controlAutocomplete extends Control {
   onRender(evt) {
     // Set userData if available
     if (this.config.userData) {
-      const $el = $('#' + this.config.name)
+      const $el = $(`#${this.config.name}`)
       const $options = $el.next()
 
       const preSelectedOption = this.config.userData[0]

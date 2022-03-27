@@ -130,7 +130,7 @@ export const hyphenCase = str => {
   // eslint-disable-next-line no-useless-escape
   str = str.replace(/[^\w\s\-]/gi, '')
   str = str.replace(/([A-Z])/g, function ($1) {
-    return '-' + $1.toLowerCase()
+    return `-${$1.toLowerCase()}`
   })
 
   return str.replace(/\s/g, '-').replace(/^-+/g, '')
@@ -176,7 +176,7 @@ export const nameAttr = (function () {
       lepoch = epoch
     }
     const prefix = field.type || hyphenCase(field.label)
-    return prefix + '-' + epoch + '-' + counter
+    return `${prefix}-${epoch}-${counter}`
   }
 })()
 

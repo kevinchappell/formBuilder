@@ -26,7 +26,7 @@ const selectAttribute = (attribute, values, optionData: ControlTypeLabel[], fb: 
   })
 
   const selectAttrs = {
-    id: attribute + '-' + fb.data.lastID,
+    id: `${attribute}-${fb.data.lastID}`,
     name: attribute,
     className: `fld-${attribute} form-control`,
   }
