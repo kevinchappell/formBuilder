@@ -10,7 +10,6 @@ import {
   FormBuilderOptions,
   FormBuilderPublicAPIActions,
 } from '../../types/formbuilder-types'
-import { Helpers } from '../shared/helpers'
 import { Layout } from '../shared/layout'
 import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
 import { FormBuilderControlHelper } from './controlHelper'
@@ -18,6 +17,7 @@ import Controls from './controls'
 import { Data } from './data'
 import Dom, { remove } from './dom'
 import { GridHelper } from './gridHelper'
+import { Helpers } from './helpers'
 import { FormBuilderStageHelper } from './stageHelper'
 
 export class FormBuilder {

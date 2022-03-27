@@ -13,12 +13,8 @@ import {
   SubTypeOptions,
 } from '../../types/formbuilder-types'
 import controlCustom from '../control/custom'
-import { config, defaultTimeout } from '../form_builder/config'
-import { instanceData } from '../form_builder/data'
-import { empty, instanceDom, optionFields, remove } from '../form_builder/dom'
-import { FormBuilder } from '../form_builder/formBuilder'
-import events from './events'
-import { Layout } from './layout'
+import events from '../shared/events'
+import { Layout } from '../shared/layout'
 import {
   bootstrapColumnRegex,
   camelCase,
@@ -34,7 +30,11 @@ import {
   trimObj,
   unique,
   xmlAttrString,
-} from './utils'
+} from '../shared/utils'
+import { config, defaultTimeout } from './config'
+import { instanceData } from './data'
+import { empty, instanceDom, optionFields, remove } from './dom'
+import { FormBuilder } from './formBuilder'
 /**
  * Utilities specific to form-builder.js
  */
