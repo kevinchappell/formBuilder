@@ -2,7 +2,6 @@ import mi18n from 'mi18n'
 import Control from 'ts/shared/control'
 import { ControlTypeLabel } from 'types/shared-types'
 import {
-  ActionButton,
   CheckboxAttributes,
   Coords,
   fbControlSubtype,
@@ -1201,59 +1200,6 @@ export default class Helpers {
         }
       })
       .filter(Boolean)
-  }
-
-  /**
-   * Process user options for actionButtons
-   * @param  {Object} options
-   * @return {Object} processedOptions
-   */
-  processOptions(options: FormBuilderOptions) {
-    const _this = this
-    const { actionButtons, replaceFields, ...opts } = options
-
-    let mergedActionButtons: ActionButton[] = [
-      {
-        type: 'button',
-        id: 'clear',
-        className: 'clear-all btn btn-danger',
-        events: {
-          click: _this.confirmRemoveAll.bind(_this),
-        },
-      },
-      {
-        type: 'button',
-        label: 'viewJSON',
-        id: 'data',
-        className: 'btn btn-default get-data',
-        events: {
-          click: _this.showData.bind(_this),
-        },
-      },
-      {
-        type: 'button',
-        id: 'save',
-        className: 'btn btn-primary save-template',
-        events: {
-          click: evt => {
-            _this.save()
-            config.opts.onSave(evt, _this.data.formData)
-          },
-        },
-      },
-    ]
-
-    mergedActionButtons = [...mergedActionButtons, ...actionButtons]
-
-    opts.fields = opts.fields.concat(replaceFields)
-    opts.disableFields = [...opts.disableFields, ...(replaceFields.map(({ type }) => type && type) as fbControlType[])]
-
-    if (opts.dataType === 'xml') {
-      // html labels are not available using xml dataType
-      opts.disableHTMLLabels = true
-    }
-    config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, opts)
-    return config.opts
   }
 
   /**

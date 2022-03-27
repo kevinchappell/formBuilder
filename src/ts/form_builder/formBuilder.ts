@@ -4,7 +4,12 @@ import { config, defaultFieldSelector, gridClassNames } from 'ts/form_builder/co
 import { FormBuilderEditorHelper } from 'ts/form_builder/editorHelper'
 import events from 'ts/shared/events'
 import '../../sass/form-builder.scss'
-import { FormBuilderOptions, FormBuilderPublicAPIActions } from '../../types/formbuilder-types'
+import {
+  ActionButton,
+  fbControlType,
+  FormBuilderOptions,
+  FormBuilderPublicAPIActions,
+} from '../../types/formbuilder-types'
 import Helpers from '../shared/helpers'
 import { Layout } from '../shared/layout'
 import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
@@ -258,13 +263,60 @@ export class FormBuilder {
     const layoutEngine = new opts.layout(opts.layoutTemplates, true)
     this.h = new Helpers(this.formID, layoutEngine, this)
 
-    opts = this.h.processOptions(opts)
+    opts = this.processActionButtons(opts)
     this.opts = opts
 
     this.h.editorUI(this.formID, opts)
 
     this.data.formID = this.formID
     this.data.lastID = `${this.data.formID}-fld-0`
+  }
+
+  private processActionButtons(options: FormBuilderOptions) {
+    const { actionButtons, replaceFields, ...opts } = options
+
+    let mergedActionButtons: ActionButton[] = [
+      {
+        type: 'button',
+        id: 'clear',
+        className: 'clear-all btn btn-danger',
+        events: {
+          click: e => this.h.confirmRemoveAll(e),
+        },
+      },
+      {
+        type: 'button',
+        label: 'viewJSON',
+        id: 'data',
+        className: 'btn btn-default get-data',
+        events: {
+          click: e => this.h.showData(),
+        },
+      },
+      {
+        type: 'button',
+        id: 'save',
+        className: 'btn btn-primary save-template',
+        events: {
+          click: evt => {
+            this.h.save()
+            config.opts.onSave(evt, this.h.data.formData)
+          },
+        },
+      },
+    ]
+
+    mergedActionButtons = [...mergedActionButtons, ...actionButtons]
+
+    opts.fields = opts.fields.concat(replaceFields)
+    opts.disableFields = [...opts.disableFields, ...(replaceFields.map(({ type }) => type && type) as fbControlType[])]
+
+    if (opts.dataType === 'xml') {
+      // html labels are not available using xml dataType
+      opts.disableHTMLLabels = true
+    }
+    config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, opts)
+    return config.opts
   }
 }
 
