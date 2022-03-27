@@ -35,87 +35,22 @@ import { config, defaultTimeout } from './config'
 import { instanceData } from './data'
 import { empty, instanceDom, optionFields, remove } from './dom'
 import { FormBuilder } from './formBuilder'
-/**
- * Utilities specific to form-builder.js
- */
+
 export class Helpers {
   data: any
   d: any
-  doCancel: boolean
   layout: Layout
   toastTimer: any
-  from: any
   stopIndex: number
 
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.data = instanceData[this.fb.formID]
     this.d = instanceDom[this.fb.formID]
 
-    this.doCancel = false
     this.layout = new opts.layout(opts.layoutTemplates, true)
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.toastTimer = null
-  }
-
-  /**
-   * Callback for when a drag begins
-   *
-   * @param  {Object} event
-   * @param  {Object} ui
-   */
-  startMoving(event, ui) {
-    ui.item.show().addClass('moving')
-    this.doCancel = true
-    this.from = ui.item.parent()
-  }
-
-  /**
-   * Callback for when a drag ends
-   *
-   * @param  {Object} event
-   * @param  {Object} ui
-   */
-  stopMoving(event, ui) {
-    ui.item.removeClass('moving')
-    if (this.doCancel) {
-      if (ui.sender) {
-        $(ui.sender).sortable('cancel')
-      }
-      this.from.sortable('cancel')
-    }
-
-    this.save()
-    this.doCancel = false
-  }
-
-  /**
-   * jQuery UI sortable beforeStop callback used for both lists.
-   * Logic for canceling the sort or drop.
-   * @param  {Object} event
-   * @param  {Object} ui
-   * @return {void}
-   */
-  beforeStop(event, ui) {
-    const opts = config.opts
-    const form = this.d.stage
-    const lastIndex = form.childNodes.length - 1
-    const cancelArray = []
-    this.stopIndex = ui.placeholder.index() - 1
-
-    if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
-      cancelArray.push(true)
-    }
-
-    if (opts.prepend) {
-      cancelArray.push(this.stopIndex === 0)
-    }
-
-    if (opts.append) {
-      cancelArray.push(this.stopIndex + 1 === lastIndex)
-    }
-
-    this.doCancel = cancelArray.some(elem => elem === true)
   }
 
   /**
@@ -357,24 +292,11 @@ export class Helpers {
   }
 
   /**
-   * increments the field ids with support for multiple editors
-   * @param  {String} id field ID
-   * @return {String}    incremented field ID
-   */
-  incrementId(id) {
-    const split = id.lastIndexOf('-')
-    const newFieldNumber = parseInt(id.substring(split + 1)) + 1
-    const baseString = id.substring(0, split)
-
-    return `${baseString}-${newFieldNumber}`
-  }
-
-  /**
    * Set the values for field attributes in the editor
    * @param {Object} field
    * @return {Object} fieldData
    */
-  getAttrVals(field) {
+  private getAttrVals(field) {
     const fieldData = Object.create(null)
     const attrs = field.querySelectorAll('[class*="fld-"]')
     forEach(attrs, index => {
@@ -392,6 +314,7 @@ export class Helpers {
       ].find(([condition]) => !!condition)[1]()
       fieldData[name] = value
     })
+
     return fieldData
   }
 
@@ -988,7 +911,7 @@ export class Helpers {
    * @param  {Number}  animationSpeed
    * @return {Boolean} fieldRemoved returns true if field is removed
    */
-  removeField(fieldID, animationSpeed = 250) {
+  removeField(fieldID: string, animationSpeed = 250) {
     let fieldRemoved = false
     const form = this.d.stage
     const fields = form.getElementsByClassName('form-field')
@@ -1287,13 +1210,6 @@ export class Helpers {
     $('.snackbar').addClass('show').html(msg)
   }
 
-  getDistanceBetweenPoints(x1, y1, x2, y2) {
-    const y = x2 - x1
-    const x = y2 - y1
-
-    return Math.floor(Math.sqrt(x * x + y * y))
-  }
-
   //Return full row name (row-1)
   getRowClass(className): string | undefined {
     if (!className) {
@@ -1316,12 +1232,6 @@ export class Helpers {
     if (rowClass) {
       return parseInt(rowClass.split('-')[1])
     }
-  }
-
-  //Example className of 'row row-1' would be changed for 'row row-4' where 4 is the newValue
-  changeRowClass(className: string, newValue: number) {
-    const rowClass = this.getRowClass(className)
-    return rowClass && className.replace(rowClass, `row-${newValue}`)
   }
 
   //Return the column size i.e col-md-6 would return 6
@@ -1364,15 +1274,5 @@ export class Helpers {
   changeBootstrapClass(className, newValue) {
     const boostrapClass = this.getBootstrapColumnClass(className)
     return className.replace(boostrapClass, `${this.getBootstrapColumnPrefix(className)}-${newValue}`)
-  }
-
-  syncBootstrapColumnWrapperAndClassProperty(fieldID, newValue) {
-    const colWrapper = $(`#${fieldID}-cont`)
-    colWrapper.attr('class', this.changeBootstrapClass(colWrapper.attr('class'), newValue))
-
-    const inputClassElement = $(`#className-${fieldID}`)
-    if (inputClassElement.val()) {
-      inputClassElement.val(this.changeBootstrapClass(inputClassElement.val(), newValue))
-    }
   }
 }

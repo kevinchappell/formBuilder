@@ -157,7 +157,7 @@ export class FormBuilder {
         this.h.stopIndex = (this.data.formData as []).length ? index : undefined
         this.ch.prepFieldVars(field)
       },
-      removeField: this.h.removeField.bind(this.h),
+      removeField: fieldID => this.h.removeField(fieldID),
       getData: this.h.getFormData.bind(this.h),
       setData: formData => {
         this.h.stopIndex = undefined
@@ -244,6 +244,7 @@ export class FormBuilder {
     }
 
     this.h.disabledTT(this.d.stage)
+
     return cancelArray.some(elem => elem === true)
   }
 

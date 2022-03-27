@@ -10,6 +10,8 @@ import { config, defaultTimeout } from './config'
 
 export class FormBuilderStageHelper {
   cloneControls: JQuery
+  doCancel = false
+  from: any
 
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.setupStage()
@@ -21,9 +23,9 @@ export class FormBuilderStageHelper {
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
-      beforeStop: (evt, ui) => this.fb.h.beforeStop.call(this.fb.h, evt, ui),
-      start: (evt, ui) => this.fb.h.startMoving.call(this.fb.h, evt, ui),
-      stop: (evt, ui) => this.fb.h.stopMoving.call(this.fb.h, evt, ui),
+      beforeStop: (evt, ui) => this.beforeStop(evt, ui),
+      start: (evt, ui) => this.startMoving(evt, ui),
+      stop: (evt, ui) => this.stopMoving(evt, ui),
       cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(
         ', ',
       ),
@@ -43,22 +45,22 @@ export class FormBuilderStageHelper {
         cursor: 'move',
         scroll: false,
         placeholder: 'ui-state-highlight',
-        start: (evt, ui) => this.fb.h.startMoving.call(this.fb.h, evt, ui),
-        stop: (evt, ui) => this.fb.h.stopMoving.call(this.fb.h, evt, ui),
+        start: (evt, ui) => this.startMoving(evt, ui),
+        stop: (evt, ui) => this.stopMoving(evt, ui),
         revert: 150,
-        beforeStop: (evt, ui) => this.fb.h.beforeStop.call(this.fb.h, evt, ui),
+        beforeStop: (evt, ui) => this.beforeStop(evt, ui),
         distance: 3,
         update: (event, ui) => {
-          if (this.fb.h.doCancel) {
+          if (this.doCancel) {
             return false
           }
 
           if (ui.item.parent()[0] === this.fb.d.stage) {
-            this.fb.h.doCancel = true
+            this.doCancel = true
             this.fb.ch.processControl(ui.item)
           } else {
             this.fb.h.setFieldOrder(this.fb.$cbUL)
-            this.fb.h.doCancel = !this.fb.opts.sortableControls
+            this.doCancel = !this.fb.opts.sortableControls
           }
         },
       })
@@ -71,22 +73,22 @@ export class FormBuilderStageHelper {
         cursor: 'move',
         scroll: false,
         start: (evt, ui) => {
-          this.fb.h.startMoving.call(this.fb.h, evt, ui)
+          this.startMoving(evt, ui)
           this.fb.isMoving = true
         },
         stop: (evt, ui) => {
-          this.fb.h.stopMoving.call(this.fb.h, evt, ui)
+          this.stopMoving(evt, ui)
           this.fb.isMoving = false
           this.fb.sh.cleanupTempPlaceholders()
         },
         revert: 150,
         beforeStop: (evt, ui) => {
-          this.fb.h.beforeStop.call(this.fb.h, evt, ui)
+          this.beforeStop(evt, ui)
         },
         distance: 3,
         update: event => {
           this.fb.isMoving = false
-          if (this.fb.h.doCancel) {
+          if (this.doCancel) {
             return false
           }
 
@@ -95,7 +97,7 @@ export class FormBuilderStageHelper {
             this.fb.sh.HideInvisibleRowPlaceholders()
           }
           this.fb.h.setFieldOrder(this.fb.$cbUL)
-          this.fb.h.doCancel = !this.fb.opts.sortableControls
+          this.doCancel = !this.fb.opts.sortableControls
         },
       })
     }
@@ -682,7 +684,7 @@ export class FormBuilderStageHelper {
         this.cleanupTempPlaceholders()
 
         if (this.fb.insertingNewControl) {
-          this.fb.h.doCancel = true
+          this.doCancel = true
           this.fb.ch.processControl(ui.item)
           this.fb.h.save.call(this.fb.h)
         }
@@ -719,7 +721,7 @@ export class FormBuilderStageHelper {
   }
 
   cloneItem(currentItem) {
-    this.fb.data.lastID = this.fb.h.incrementId(this.fb.data.lastID)
+    this.fb.data.lastID = this.incrementId(this.fb.data.lastID)
 
     this.fb.CheckTinyMCETransition(currentItem)
 
@@ -758,6 +760,19 @@ export class FormBuilderStageHelper {
     return $clone
   }
 
+  /**
+   * increments the field ids with support for multiple editors
+   * @param  {String} id field ID
+   * @return {String}    incremented field ID
+   */
+  incrementId(id) {
+    const split = id.lastIndexOf('-')
+    const newFieldNumber = parseInt(id.substring(split + 1)) + 1
+    const baseString = id.substring(0, split)
+
+    return `${baseString}-${newFieldNumber}`
+  }
+
   saveAndUpdate = evt => {
     if (evt) {
       const isDisabled = [({ type, target }) => type === 'keyup' && target.name === 'className'].some(typeCondition =>
@@ -784,7 +799,7 @@ export class FormBuilderStageHelper {
     const columnData = this.fb.gh.prepareFieldRow({})
 
     const rowWrapperNode = this.fb.m('div', null, {
-      id: `${this.fb.h.incrementId(this.fb.data.lastID)}-row`,
+      id: `${this.incrementId(this.fb.data.lastID)}-row`,
       className: `row row-${columnData.rowNumber} ${this.fb.rowWrapperClass}`,
     })
 
@@ -798,5 +813,65 @@ export class FormBuilderStageHelper {
       .eq(0)
       .removeClass(this.fb.invisibleRowPlaceholderClass)
       .css({ height: this.fb.$stage.css('height'), backgroundColor: 'transparent' })
+  }
+
+  /**
+   * Callback for when a drag begins
+   *
+   * @param  {Object} event
+   * @param  {Object} ui
+   */
+  startMoving(event, ui) {
+    ui.item.show().addClass('moving')
+    this.doCancel = true
+    this.from = ui.item.parent()
+  }
+
+  /**
+   * Callback for when a drag ends
+   *
+   * @param  {Object} event
+   * @param  {Object} ui
+   */
+  stopMoving(event, ui) {
+    ui.item.removeClass('moving')
+    if (this.doCancel) {
+      if (ui.sender) {
+        $(ui.sender).sortable('cancel')
+      }
+      this.from.sortable('cancel')
+    }
+
+    this.fb.h.save()
+    this.doCancel = false
+  }
+
+  /**
+   * jQuery UI sortable beforeStop callback used for both lists.
+   * Logic for canceling the sort or drop.
+   * @param  {Object} event
+   * @param  {Object} ui
+   * @return {void}
+   */
+  beforeStop(event, ui) {
+    const opts = config.opts
+    const form = this.fb.d.stage
+    const lastIndex = form.childNodes.length - 1
+    const cancelArray = []
+    this.fb.h.stopIndex = ui.placeholder.index() - 1
+
+    if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
+      cancelArray.push(true)
+    }
+
+    if (opts.prepend) {
+      cancelArray.push(this.fb.h.stopIndex === 0)
+    }
+
+    if (opts.append) {
+      cancelArray.push(this.fb.h.stopIndex + 1 === lastIndex)
+    }
+
+    this.doCancel = cancelArray.some(elem => elem === true)
   }
 }

@@ -105,8 +105,18 @@ export class GridHelper {
         return
       }
 
-      this.fb.h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
+      this.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
     })
+  }
+
+  syncBootstrapColumnWrapperAndClassProperty(fieldID, newValue) {
+    const colWrapper = $(`#${fieldID}-cont`)
+    colWrapper.attr('class', this.fb.h.changeBootstrapClass(colWrapper.attr('class'), newValue))
+
+    const inputClassElement = $(`#className-${fieldID}`)
+    if (inputClassElement.val()) {
+      inputClassElement.val(this.fb.h.changeBootstrapClass(inputClassElement.val(), newValue))
+    }
   }
 
   setupColumnInserts(rowWrapper) {
@@ -342,7 +352,7 @@ export class GridHelper {
           return
         }
 
-        this.fb.h.syncBootstrapColumnWrapperAndClassProperty(this.fb.gh.gridModeTargetField.attr('id'), nextColSize)
+        this.syncBootstrapColumnWrapperAndClassProperty(this.fb.gh.gridModeTargetField.attr('id'), nextColSize)
         this.fb.gh.gridModeTargetField.attr('manuallyChangedDefaultColumnClass', 'true')
 
         this.buildGridModeCurrentRowInfo()
@@ -386,7 +396,7 @@ export class GridHelper {
     $(document).mousemove(e => {
       if (
         this.fb.gh.gridMode &&
-        this.fb.h.getDistanceBetweenPoints(this.fb.gh.gridModeStartX, this.fb.gh.gridModeStartY, e.pageX, e.pageY) >
+        this.getDistanceBetweenPoints(this.fb.gh.gridModeStartX, this.fb.gh.gridModeStartY, e.pageX, e.pageY) >
           config.opts.cancelGridModeDistance
       ) {
         this.toggleGridModeActive(false)
@@ -403,6 +413,13 @@ export class GridHelper {
 
       this.fb.sh.checkSetupBlankStage()
     })
+  }
+
+  getDistanceBetweenPoints(x1, y1, x2, y2) {
+    const y = x2 - x1
+    const x = y2 - y1
+
+    return Math.floor(Math.sqrt(x * x + y * y))
   }
 
   private moveFieldUp(rowWrapper) {

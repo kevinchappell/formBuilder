@@ -310,7 +310,7 @@ export interface FormBuilderPublicAPIActions {
   showData: any
   save: (minify: any) => any
   addField: (field: any, index: any) => void
-  removeField: any
+  removeField: (fieldID: string) => void
   getData: any
   setData: (formData: any) => void
   setLang: (locale: any) => void
