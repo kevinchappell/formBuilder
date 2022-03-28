@@ -56,7 +56,7 @@ export class FormBuilderStageHelper {
             return false
           }
 
-          if (ui.item.parent()[0] === this.fb.d.stage) {
+          if (ui.item.parent()[0] === this.fb.stage) {
             this.doCancel = true
             this.fb.ch.processControl(ui.item)
           } else {
@@ -186,7 +186,7 @@ export class FormBuilderStageHelper {
       $sortableOptions.append(selectFieldOptions(optionData, isMultiple, this.fb))
     })
 
-    $(this.fb.d.controls).on('click', 'li', ({ target }) => {
+    $(this.fb.control).on('click', 'li', ({ target }) => {
       //Prevent duplicate add when click & dragging control to specific spot
       if (this.fb.isMoving) {
         return
@@ -345,7 +345,7 @@ export class FormBuilderStageHelper {
     })
 
     // update preview to label
-    addEventListeners(this.fb.d.stage, 'keyup change', ({ target }) => {
+    addEventListeners(this.fb.stage, 'keyup change', ({ target }) => {
       if (!target.classList.contains('fld-label')) return
       const value = target.value || target.innerHTML
       const label = closest(target, '.form-field').querySelector('.field-label')
@@ -844,7 +844,7 @@ export class FormBuilderStageHelper {
    */
   beforeStop(event, ui) {
     const opts = config.opts
-    const form = this.fb.d.stage
+    const form = this.fb.stage
     const lastIndex = form.childNodes.length - 1
     const cancelArray = []
     this.fb.h.stopIndex = ui.placeholder.index() - 1

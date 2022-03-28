@@ -12,10 +12,18 @@ import {
   FormBuilderPublicAPIActions,
 } from '../../types/formbuilder-types'
 import { Layout } from '../shared/layout'
-import { forEach, generateSelectorClassNames, markup, remove, subtract, trimObj } from '../shared/utils'
+import {
+  empty,
+  forEach,
+  generateSelectorClassNames,
+  markup,
+  mobileClass,
+  remove,
+  subtract,
+  trimObj,
+} from '../shared/utils'
+import ControlPanel from './control-panel'
 import { FormBuilderControlHelper } from './controlHelper'
-import Controls from './controls'
-import Dom from './dom'
 import { GridHelper } from './gridHelper'
 import { Helpers } from './helpers'
 import { FormBuilderStageHelper } from './stageHelper'
@@ -52,11 +60,16 @@ export class FormBuilder {
   formID = `frmb-${new Date().getTime()}`
   lastID: string
   formData: any
-  d: Dom
+
+  stage: HTMLElement
+  control: HTMLElement
+  editorWrap: HTMLElement
+  formActions: HTMLElement
+
   h: Helpers
   m = markup
   gh: GridHelper
-  controls: Controls
+  controlPanel: ControlPanel
 
   $stage: JQuery<HTMLElement>
   $cbUL: JQuery<HTMLElement>
@@ -71,9 +84,9 @@ export class FormBuilder {
   constructor(public opts: FormBuilderOptions, public el: HTMLElement) {
     this.initBase(opts)
 
-    this.controls = new Controls(opts, this)
-    this.$stage = $(this.d.stage)
-    this.$cbUL = $(this.d.controls)
+    this.controlPanel = new ControlPanel(opts, this)
+    this.$stage = $(this.stage)
+    this.$cbUL = $(this.control)
 
     this.loadHelpers(opts)
 
@@ -104,18 +117,18 @@ export class FormBuilder {
       })
 
       formData.forEach(fieldData => this.ch.prepFieldVars(trimObj(fieldData)))
-      this.d.stage.classList.remove('empty')
+      this.stage.classList.remove('empty')
     } else if (this.opts.defaultFields && this.opts.defaultFields.length) {
       config.opts.defaultFields.forEach(field => this.CaptureRowData(field))
 
       this.h.addDefaultFields()
     } else if (!this.opts.prepend && !this.opts.append) {
-      this.d.stage.classList.add('empty')
-      this.d.stage.dataset.content = mi18n.get('getStarted')
+      this.stage.classList.add('empty')
+      this.stage.dataset.content = mi18n.get('getStarted')
     }
 
     if (this.nonEditableFields()) {
-      this.d.stage.classList.remove('empty')
+      this.stage.classList.remove('empty')
     }
 
     this.h.save()
@@ -137,8 +150,10 @@ export class FormBuilder {
   setPublicActions() {
     this.actions = {
       getFieldTypes: activeOnly =>
-        activeOnly ? subtract(this.controls.getRegistered(), this.opts.disableFields) : this.controls.getRegistered(),
-      clearFields: () => this.h.removeAllFields(this.d.stage),
+        activeOnly
+          ? subtract(this.controlPanel.getRegistered(), this.opts.disableFields)
+          : this.controlPanel.getRegistered(),
+      clearFields: () => this.h.removeAllFields(this.stage),
       showData: this.h.showData.bind(this.h),
       save: minify => {
         const formData = this.h.save(minify)
@@ -155,15 +170,15 @@ export class FormBuilder {
       getData: this.h.getFormData.bind(this.h),
       setData: formData => {
         this.h.stopIndex = undefined
-        this.h.removeAllFields(this.d.stage)
+        this.h.removeAllFields(this.stage)
         this.loadFields(formData)
       },
       setLang: locale => {
         mi18n.setCurrent.call(mi18n, locale).then(() => {
-          this.d.stage.dataset.content = mi18n.get('getStarted')
-          this.controls.init()
-          this.d.empty(this.d.formActions)
-          this.h.formActionButtons().forEach(button => this.d.formActions.appendChild(button))
+          this.stage.dataset.content = mi18n.get('getStarted')
+          this.controlPanel.init()
+          empty(this.formActions)
+          this.h.formActionButtons().forEach(button => this.formActions.appendChild(button))
         })
       },
       showDialog: this.h.dialog.bind(this.h),
@@ -174,16 +189,16 @@ export class FormBuilder {
             return
           }
           if (typeof fId === 'number') {
-            fId = this.d.stage.children[fId].id
+            fId = this.stage.children[fId].id
           } else if (!/^frmb-/.test(fId)) {
-            fId = this.d.stage.querySelector(fId).id
+            fId = this.stage.querySelector(fId).id
           }
           this.h.toggleEdit(fId)
         })
       },
       toggleAllFieldEdit: () => {
-        forEach(this.d.stage.children, index => {
-          this.h.toggleEdit(this.d.stage.children[index].id)
+        forEach(this.stage.children, index => {
+          this.h.toggleEdit(this.stage.children[index].id)
         })
       },
       closeAllFieldEdit: this.h.closeAllEdit.bind(this.h),
@@ -195,10 +210,10 @@ export class FormBuilder {
 
   handleOnRender() {
     // set min-height on stage onRender
-    this.d.onRender(this.d.controls, () => {
+    this.h.onRender(this.control, () => {
       // Ensure style has loaded
       const onRenderTimeout = setTimeout(() => {
-        this.d.stage.style.minHeight = `${this.d.controls.clientHeight}px`
+        this.stage.style.minHeight = `${this.control.clientHeight}px`
         // If option set, controls will remain in view in editor
         if (this.opts.stickyControls.enable) {
           this.h.stickyControls()
@@ -227,25 +242,23 @@ export class FormBuilder {
         className: `disabled-field form-${type}`,
       })
 
-    if (this.opts.prepend && !$('.disabled-field.form-prepend', this.d.stage).length) {
+    if (this.opts.prepend && !$('.disabled-field.form-prepend', this.stage).length) {
       cancelArray.push(true)
       this.$stage.prepend(disabledField('prepend'))
     }
 
-    if (this.opts.append && !$('.disabled-field.form-.append', this.d.stage).length) {
+    if (this.opts.append && !$('.disabled-field.form-.append', this.stage).length) {
       cancelArray.push(true)
       this.$stage.append(disabledField('append'))
     }
 
-    this.h.disabledTT(this.d.stage)
+    this.h.disabledTT(this.stage)
 
     return cancelArray.some(elem => elem === true)
   }
 
   private initBase(opts: FormBuilderOptions) {
     this.initGridClasses()
-
-    this.d = new Dom()
 
     this.fieldSelector = opts.enableEnhancedBootstrapGrid ? this.rowWrapperClassSelector : defaultFieldSelector
 
@@ -259,9 +272,37 @@ export class FormBuilder {
     opts = this.processActionButtons(opts)
     this.opts = opts
 
-    this.h.editorUI(this.formID, opts)
+    this.editorUI()
 
     this.lastID = `${this.formID}-fld-0`
+  }
+
+  /**
+   * Generate stage and controls dom elements
+   * @param  {String} formID [description]
+   */
+  private editorUI() {
+    this.editorWrap = this.m('div', null, {
+      id: `${this.formID}-form-wrap`,
+      className: `form-wrap form-builder ${mobileClass()}`,
+    })
+
+    const id = this.formID
+    this.stage = this.m('ul', null, {
+      id,
+      className: `frmb stage-wrap pull-${this.opts.controlPosition == 'left' ? 'right' : 'left'}`,
+    })
+
+    // Create container for controls
+    this.control = this.m('ul', null, {
+      id: `${this.formID}-control-box`,
+      className: 'frmb-control',
+    })
+
+    const buttons = this.h.formActionButtons()
+    this.formActions = this.m('div', buttons, {
+      className: 'form-actions btn-group',
+    })
   }
 
   private processActionButtons(options: FormBuilderOptions) {

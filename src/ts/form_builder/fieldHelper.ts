@@ -131,7 +131,7 @@ export class FormBuilderControlFieldHelper {
     $li.data('fieldData', { attrs: values })
 
     if (typeof this.fb.h.stopIndex !== 'undefined') {
-      $('> li', this.fb.d.stage).eq(this.fb.h.stopIndex).before($li)
+      $('> li', this.fb.stage).eq(this.fb.h.stopIndex).before($li)
     } else {
       this.fb.$stage.append($li)
     }
@@ -236,7 +236,7 @@ export class FormBuilderControlFieldHelper {
   advFields(values) {
     const { type } = values
     const advFields = []
-    const typeClass = this.fb.controls.getClass(type)
+    const typeClass = this.fb.controlPanel.getClass(type)
     const fieldAttrs = defaultFieldAttrs(type, this.fb)
 
     const advFieldMap = {

@@ -157,7 +157,7 @@ export class GridHelper {
 
       //Hide controls
       this.fb.$cbUL.css('display', 'none')
-      $(this.fb.d.formActions).css('display', 'none')
+      $(this.fb.formActions).css('display', 'none')
 
       //Cleanup temp artifacts
       this.fb.sh.cleanupTempPlaceholders()
@@ -190,7 +190,7 @@ export class GridHelper {
 
       //Show controls
       this.fb.$cbUL.css('display', 'unset')
-      $(this.fb.d.formActions).css('display', 'unset')
+      $(this.fb.formActions).css('display', 'unset')
     }
   }
 

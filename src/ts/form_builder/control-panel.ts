@@ -9,7 +9,7 @@ import { FormBuilder } from './formBuilder'
 /**
  * control parent class for creating control panel
  */
-export default class Controls {
+export default class ControlPanel {
   controlsElement: HTMLElement
   custom: typeof controlCustom
   getClass: (type: any, subtype?: any) => any
@@ -20,7 +20,7 @@ export default class Controls {
   allControls: {}
 
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
-    this.controlsElement = this.fb.d.controls
+    this.controlsElement = this.fb.control
     this.custom = controlCustom
     this.getClass = Control.getRegisteredClassControl
     this.getRegistered = Control.getRegistered

@@ -7,17 +7,17 @@ export class FormBuilderEditorHelper {
   }
 
   init() {
-    const $editorWrap = $(this.fb.d.editorWrap)
+    const $editorWrap = $(this.fb.editorWrap)
 
     $('<div class="snackbar">').appendTo($editorWrap)
 
-    const cbWrap: HTMLElement = this.fb.m('div', this.fb.d.controls, {
+    const cbWrap: HTMLElement = this.fb.m('div', this.fb.control, {
       id: `${this.fb.formID}-cb-wrap`,
       className: `cb-wrap pull-${this.fb.opts.controlPosition}`,
     })
 
     if (this.fb.opts.showActionButtons) {
-      cbWrap.appendChild(this.fb.d.formActions)
+      cbWrap.appendChild(this.fb.formActions)
     }
 
     this.fb.gh.gridModeHelp = this.fb.m('div', '', {
@@ -27,7 +27,7 @@ export class FormBuilderEditorHelper {
 
     cbWrap.appendChild(this.fb.gh.gridModeHelp)
 
-    $editorWrap.append(this.fb.d.stage, cbWrap)
+    $editorWrap.append(this.fb.stage, cbWrap)
 
     $(this.fb.el).append($editorWrap)
   }

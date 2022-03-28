@@ -1,9 +1,10 @@
 import { FormBuilder } from 'ts/form_builder/formBuilder'
+import { optionFields } from 'ts/shared/constants'
 import { removeFromArray } from '../../../shared/utils'
 
 export const defaultFieldAttrs = (type, fb: FormBuilder) => {
   const defaultAttrs = ['required', 'label', 'description', 'placeholder', 'className', 'name', 'access', 'value']
-  const noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(fb.d.optionFields)
+  const noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(optionFields)
 
   const valueField = !noValFields.includes(type)
 
@@ -33,7 +34,7 @@ export const defaultFieldAttrs = (type, fb: FormBuilder) => {
     textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
   }
 
-  if (type in fb.controls.registeredSubtypes && !(type in typeAttrsMap)) {
+  if (type in fb.controlPanel.registeredSubtypes && !(type in typeAttrsMap)) {
     typeAttrsMap[type] = defaultAttrs.concat(['subtype'])
   }
 

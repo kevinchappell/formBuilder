@@ -29,12 +29,12 @@ export class FormBuilderControlHelper {
     if ($field instanceof jQuery) {
       field.type = $field[0].dataset.type as fbControlType
       if (field.type) {
-        const custom = this.fb.controls.custom.lookup(field.type)
+        const custom = this.fb.controlPanel.custom.lookup(field.type)
 
         if (custom) {
           field = Object.assign({}, custom)
         } else {
-          const controlClass = this.fb.controls.getClass(field.type)
+          const controlClass = this.fb.controlPanel.getClass(field.type)
           field.label = controlClass.label(field.type)
         }
       } else {
@@ -82,7 +82,7 @@ export class FormBuilderControlHelper {
     this.fieldHelper.appendNewField(field, isNew)
     this.fb.opts.onAddFieldAfter(this.fb.lastID, field)
 
-    this.fb.d.stage.classList.remove('empty')
+    this.fb.stage.classList.remove('empty')
   }
 
   private processInputSetControl(control: JQuery) {

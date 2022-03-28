@@ -26,7 +26,6 @@ import {
   forEach,
   getAllGridRelatedClasses,
   markup as m,
-  mobileClass,
   parseXML,
   remove,
   subtract,
@@ -138,7 +137,6 @@ export class Helpers {
    */
   prepData(form) {
     const formData = []
-    const d = this.fb.d
 
     if (form.childNodes.length !== 0) {
       const fields = []
@@ -219,7 +217,7 @@ export class Helpers {
 
             fieldData = trimObj(fieldData)
 
-            const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
+            const multipleField = fieldData.type && fieldData.type.match(this.isFieldWithOptions())
 
             if (multipleField) {
               fieldData.values = this.fieldOptionData($field)
@@ -270,7 +268,7 @@ export class Helpers {
    * @return {XML|JSON} formData
    */
   save(minify = false) {
-    const stage = this.fb.d.stage
+    const stage = this.fb.stage
     const doSave = {
       xml: () => this.xmlSave(stage),
       json: minify => window.JSON.stringify(this.prepData(stage), null, minify && '  '),
@@ -316,7 +314,6 @@ export class Helpers {
    * @param  {Object} $field jQuery DOM element
    */
   updatePreview($field) {
-    const d = this.fb.d
     const fieldClass = $field.attr('class')
     const field = $field[0]
     if (fieldClass.includes('input-control')) {
@@ -327,7 +324,7 @@ export class Helpers {
     const $prevHolder = $('.prev-holder', field)
     let previewData = Object.assign({}, this.getAttrVals(field), { type: fieldType })
 
-    if (fieldType.match(d.optionFieldsRegEx)) {
+    if (fieldType.match(this.isFieldWithOptions())) {
       previewData.values = []
       previewData.multiple = $('[name="multiple"]', field).is(':checked')
 
@@ -605,7 +602,7 @@ export class Helpers {
   addDefaultFields() {
     // Load default fields if none are set
     config.opts.defaultFields.forEach(field => this.fb.prepFieldVars(field))
-    this.fb.d.stage.classList.remove('empty')
+    this.fb.stage.classList.remove('empty')
   }
 
   /**
@@ -676,7 +673,7 @@ export class Helpers {
    * @param  {Object} stage
    */
   closeAllEdit() {
-    $(this.fb.d.stage)
+    $(this.fb.stage)
       .find('li.form-field')
       .each((i, elem) => {
         this.closeField(elem.id, false)
@@ -833,10 +830,9 @@ export class Helpers {
    * Controls follow scroll to the bottom of the editor
    */
   stickyControls() {
-    const { controls, stage } = this.fb.d
-    const $cbWrap = $(controls).parent()
-    const cbPosition = controls.getBoundingClientRect()
-    const { top: stageTop } = stage.getBoundingClientRect()
+    const $cbWrap = $(this.fb.control).parent()
+    const cbPosition = this.fb.control.getBoundingClientRect()
+    const { top: stageTop } = this.fb.stage.getBoundingClientRect()
 
     $(window).scroll(evt => {
       const scrollTop = $(evt.target).scrollTop()
@@ -856,8 +852,8 @@ export class Helpers {
 
         const cbStyle = Object.assign(style, offset)
 
-        const cbPosition = controls.getBoundingClientRect()
-        const stagePosition = stage.getBoundingClientRect()
+        const cbPosition = this.fb.control.getBoundingClientRect()
+        const stagePosition = this.fb.stage.getBoundingClientRect()
         const cbBottom = cbPosition.top + cbPosition.height
         const stageBottom = stagePosition.top + stagePosition.height
         const atBottom = cbBottom === stageBottom && cbPosition.top > scrollTop
@@ -876,7 +872,7 @@ export class Helpers {
           $cbWrap.css(cbStyle)
         }
       } else {
-        controls.parentElement.removeAttribute('style')
+        this.fb.control.parentElement.removeAttribute('style')
       }
     })
   }
@@ -906,7 +902,7 @@ export class Helpers {
    */
   removeField(fieldID: string, animationSpeed = 250) {
     let fieldRemoved = false
-    const form = this.fb.d.stage
+    const form = this.fb.stage
     const fields = form.getElementsByClassName('form-field')
 
     if (!fields.length) {
@@ -1053,36 +1049,6 @@ export class Helpers {
   }
 
   /**
-   * Generate stage and controls dom elements
-   * @param  {String} formID [description]
-   */
-  editorUI(formID, opts: FormBuilderOptions) {
-    const d = this.fb.d
-    const id = formID || this.fb.formID
-
-    d.editorWrap = m('div', null, {
-      id: `${this.fb.formID}-form-wrap`,
-      className: `form-wrap form-builder ${mobileClass()}`,
-    })
-
-    d.stage = m('ul', null, {
-      id,
-      className: `frmb stage-wrap pull-${opts.controlPosition == 'left' ? 'right' : 'left'}`,
-    })
-
-    // Create container for controls
-    d.controls = m('ul', null, {
-      id: `${id}-control-box`,
-      className: 'frmb-control',
-    })
-
-    const buttons = this.formActionButtons()
-    d.formActions = m('div', buttons, {
-      className: 'form-actions btn-group',
-    })
-  }
-
-  /**
    * Generates form action buttons
    * @return {Object} formActions btn-group
    */
@@ -1116,9 +1082,9 @@ export class Helpers {
     this.closeAllEdit()
 
     const data = {
-      js: () => this.prepData(this.fb.d.stage),
-      xml: () => this.xmlSave(this.fb.d.stage),
-      json: formatted => window.JSON.stringify(this.prepData(this.fb.d.stage), null, formatted && '  '),
+      js: () => this.prepData(this.fb.stage),
+      xml: () => this.xmlSave(this.fb.stage),
+      json: formatted => window.JSON.stringify(this.prepData(this.fb.stage), null, formatted && '  '),
     }
 
     return data[type](formatted)
@@ -1279,5 +1245,22 @@ export class Helpers {
     const baseString = id.substring(0, split)
 
     return `${baseString}-${newFieldNumber}`
+  }
+
+  isFieldWithOptions() {
+    return new RegExp(`(${optionFields.join('|')})`)
+  }
+
+  /**
+   * Do something when a specific dom element renders
+   * @param {Object} node
+   * @param {Function} cb
+   */
+  onRender(node, cb) {
+    if (!node.parentElement) {
+      window.requestAnimationFrame(() => this.onRender(node, cb))
+    } else {
+      cb(node)
+    }
   }
 }
