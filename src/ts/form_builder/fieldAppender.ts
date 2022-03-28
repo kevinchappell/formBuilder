@@ -20,7 +20,7 @@ import { userAttrType } from './attributes/field_attributes/user-defined'
 import { inputUserAttrs } from './attributes/user_attributes/input'
 import { selectUserAttrs } from './attributes/user_attributes/select'
 
-export class FormBuilderControlFieldHelper {
+export class FormBuilderControlFieldAppender {
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {}
 
   // Append the new field to the editor

@@ -2,12 +2,12 @@ import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { fbControlType, Field, FormBuilderOptions } from '../../types/formbuilder-types'
 import events from '../shared/events'
 import { hyphenCase, nameAttr } from '../shared/utils'
-import { FormBuilderControlFieldHelper } from './fieldHelper'
+import { FormBuilderControlFieldAppender } from './fieldAppender'
 
 export class FormBuilderControlHelper {
-  fieldHelper: FormBuilderControlFieldHelper
+  fieldAppender: FormBuilderControlFieldAppender
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
-    this.fieldHelper = new FormBuilderControlFieldHelper(opts, fb)
+    this.fieldAppender = new FormBuilderControlFieldAppender(opts, fb)
   }
 
   processControl(control: JQuery) {
@@ -79,7 +79,7 @@ export class FormBuilderControlHelper {
     }
 
     this.fb.opts.onAddField(this.fb.lastID, field)
-    this.fieldHelper.appendNewField(field, isNew)
+    this.fieldAppender.appendNewField(field, isNew)
     this.fb.opts.onAddFieldAfter(this.fb.lastID, field)
 
     this.fb.stage.classList.remove('empty')
