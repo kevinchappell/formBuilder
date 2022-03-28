@@ -62,7 +62,9 @@ export class FormBuilder {
   formData: any
 
   stage: HTMLElement
+  $stage: JQuery<HTMLElement>
   control: HTMLElement
+  $control: JQuery<HTMLElement>
   editorWrap: HTMLElement
   formActions: HTMLElement
 
@@ -70,9 +72,6 @@ export class FormBuilder {
   m = markup
   gh: GridHelper
   controlPanel: ControlPanel
-
-  $stage: JQuery<HTMLElement>
-  $cbUL: JQuery<HTMLElement>
 
   prepFieldVars: ($field: any, isNew?: boolean) => void
   currentEditPanel: HTMLElement
@@ -86,7 +85,7 @@ export class FormBuilder {
 
     this.controlPanel = new ControlPanel(opts, this)
     this.$stage = $(this.stage)
-    this.$cbUL = $(this.control)
+    this.$control = $(this.control)
 
     this.loadHelpers(opts)
 

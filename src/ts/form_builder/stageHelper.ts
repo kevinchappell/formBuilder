@@ -38,7 +38,7 @@ export class FormBuilderStageHelper {
     }
 
     if (!this.fb.gh.enhancedBootstrapEnabled()) {
-      this.fb.$cbUL.sortable({
+      this.fb.$control.sortable({
         helper: 'clone',
         opacity: 0.9,
         connectWith: this.fb.$stage,
@@ -60,14 +60,14 @@ export class FormBuilderStageHelper {
             this.doCancel = true
             this.fb.ch.processControl(ui.item)
           } else {
-            this.fb.h.setFieldOrder(this.fb.$cbUL)
+            this.fb.h.setFieldOrder(this.fb.$control)
             this.doCancel = !this.fb.opts.sortableControls
           }
         },
       })
     } else {
       // ControlBox with different fields
-      this.fb.$cbUL.sortable({
+      this.fb.$control.sortable({
         opacity: 0.9,
         connectWith: this.fb.rowWrapperClassSelector,
         cancel: '.formbuilder-separator',
@@ -94,10 +94,10 @@ export class FormBuilderStageHelper {
           }
 
           //If started to enter a control into row but then moved it back, hide the placeholders again
-          if ($(event.target).attr('id') == this.fb.$cbUL.attr('id')) {
+          if ($(event.target).attr('id') == this.fb.$control.attr('id')) {
             this.fb.sh.HideInvisibleRowPlaceholders()
           }
-          this.fb.h.setFieldOrder(this.fb.$cbUL)
+          this.fb.h.setFieldOrder(this.fb.$control)
           this.doCancel = !this.fb.opts.sortableControls
         },
       })
@@ -206,7 +206,7 @@ export class FormBuilderStageHelper {
     this.fb.$stage.on('click touchstart', '.btnAddControl', evt => {
       const btn = $(evt.currentTarget)
 
-      this.cloneControls = this.fb.$cbUL.clone()
+      this.cloneControls = this.fb.$control.clone()
 
       this.cloneControls.hover(
         function () {
@@ -254,7 +254,7 @@ export class FormBuilderStageHelper {
       }
     })
 
-    this.fb.$cbUL.on('mouseenter', () => {
+    this.fb.$control.on('mouseenter', () => {
       if (this.fb.sh.stageHasFields()) {
         this.fb.$stage.children(this.fb.tmpRowPlaceholderClassSelector).addClass(this.fb.invisibleRowPlaceholderClass)
       }
@@ -630,7 +630,7 @@ export class FormBuilderStageHelper {
       },
       placeholder: 'hoverDropStyleInverse',
       receive: (event, ui) => {
-        const senderIsControlsBox = $(ui.sender).attr('id') == this.fb.$cbUL.attr('id')
+        const senderIsControlsBox = $(ui.sender).attr('id') == this.fb.$control.attr('id')
 
         const droppingToNewRow = $(ui.item).parent().hasClass(this.fb.tmpRowPlaceholderClass)
         const droppingToPlaceholderRow = $(ui.item).parent().hasClass(this.fb.tmpRowPlaceholderClass)

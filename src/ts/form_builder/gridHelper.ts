@@ -156,7 +156,7 @@ export class GridHelper {
       this.fb.h.showToast('Starting Grid Mode - Use the mousewheel to resize.', 1500)
 
       //Hide controls
-      this.fb.$cbUL.css('display', 'none')
+      this.fb.$control.css('display', 'none')
       $(this.fb.formActions).css('display', 'none')
 
       //Cleanup temp artifacts
@@ -189,7 +189,7 @@ export class GridHelper {
       $(this.gridModeHelp).html('')
 
       //Show controls
-      this.fb.$cbUL.css('display', 'unset')
+      this.fb.$control.css('display', 'unset')
       $(this.fb.formActions).css('display', 'unset')
     }
   }
