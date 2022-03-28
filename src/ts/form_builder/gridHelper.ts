@@ -3,7 +3,6 @@ import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { FormBuilderOptions, GridInfo } from '../../types/formbuilder-types'
 
 export class GridHelper {
-  gridModeHelp: HTMLElement
   gridMode = false
   gridModeTargetField: JQuery<HTMLElement>
   gridModeStartX: number
@@ -186,7 +185,7 @@ export class GridHelper {
       this.fb.gh.gridMode = false
       this.fb.gh.gridModeTargetField = null
 
-      $(this.gridModeHelp).html('')
+      $(this.fb.gridModeHelp).html('')
 
       //Show controls
       this.fb.$control.css('display', 'unset')
@@ -195,7 +194,7 @@ export class GridHelper {
   }
 
   buildGridModeHelp() {
-    $(this.gridModeHelp).html(`
+    $(this.fb.gridModeHelp).html(`
     <div style='padding:5px'>    
       <h3 class="text text-center">Grid Mode</h3>    
       
@@ -261,7 +260,7 @@ export class GridHelper {
   }
 
   buildGridModeCurrentRowInfo() {
-    $(this.gridModeHelp).find('.gridHelpCurrentRow tbody').empty()
+    $(this.fb.gridModeHelp).find('.gridHelpCurrentRow tbody').empty()
 
     const rowWrapper = this.fb.gh.gridModeTargetField.closest(this.fb.rowWrapperClassSelector)
 
@@ -285,7 +284,7 @@ export class GridHelper {
         currentFieldClass = 'currentGridModeFieldHighlight'
       }
 
-      $(this.gridModeHelp).find('.gridHelpCurrentRow tbody').append(`
+      $(this.fb.gridModeHelp).find('.gridHelpCurrentRow tbody').append(`
         <tr>
           <td class='grid-mode-help-row1 ${currentFieldClass}'>${label}</td>
           <td class='grid-mode-help-row2 ${currentFieldClass}'>

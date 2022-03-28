@@ -1,7 +1,6 @@
 // import { defaultOptions } from '../config'
 import mi18n from 'mi18n'
 import { config } from 'ts/form_builder/config'
-import { FormBuilderEditorHelper } from 'ts/form_builder/editorHelper'
 import { defaultFieldSelector, gridClassNames } from 'ts/shared/constants'
 import events from 'ts/shared/events'
 import '../../sass/form-builder.scss'
@@ -67,6 +66,7 @@ export class FormBuilder {
   $control: JQuery<HTMLElement>
   editorWrap: HTMLElement
   formActions: HTMLElement
+  gridModeHelp: HTMLElement
 
   h: Helpers
   m = markup
@@ -77,7 +77,6 @@ export class FormBuilder {
   currentEditPanel: HTMLElement
   sh: FormBuilderStageHelper
   ch: FormBuilderControlHelper
-  editorHelper: FormBuilderEditorHelper
 
   actions: FormBuilderPublicAPIActions
   constructor(public opts: FormBuilderOptions, public el: HTMLElement) {
@@ -104,7 +103,7 @@ export class FormBuilder {
     this.gh = new GridHelper(opts, this)
     this.ch = new FormBuilderControlHelper(opts, this)
     this.sh = new FormBuilderStageHelper(opts, this)
-    this.editorHelper = new FormBuilderEditorHelper(opts, this)
+    //this.editorHelper = new FormBuilderEditorHelper(opts, this)
   }
 
   // Parse saved XML template data
@@ -302,6 +301,31 @@ export class FormBuilder {
     this.formActions = this.m('div', buttons, {
       className: 'form-actions btn-group',
     })
+
+    const $editorWrap = $(this.editorWrap)
+
+    $('<div class="snackbar">').appendTo($editorWrap)
+
+    const cbWrap: HTMLElement = this.m('div', this.control, {
+      id: `${this.formID}-cb-wrap`,
+      className: `cb-wrap pull-${this.opts.controlPosition}`,
+    })
+
+    if (this.opts.showActionButtons) {
+      cbWrap.appendChild(this.formActions)
+    }
+
+    if (this.opts.enableEnhancedBootstrapGrid) {
+      this.gridModeHelp = this.m('div', '', {
+        id: `${this.formID}-gridModeHelp`,
+        className: 'grid-mode-help',
+      })
+      cbWrap.appendChild(this.gridModeHelp)
+    }
+
+    $editorWrap.append(this.stage, cbWrap)
+
+    $(this.el).append($editorWrap)
   }
 
   private processActionButtons(options: FormBuilderOptions) {
