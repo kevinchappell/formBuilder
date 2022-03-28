@@ -804,7 +804,7 @@ export class Helpers {
     config.opts.onOpenFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditOpened)
 
-    $(document).trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
+    this.fb.$stage.trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
 
     return field
   }
@@ -954,7 +954,7 @@ export class Helpers {
       this.removeContainerProtection(`${fieldID}-cont`)
       const timeout = setTimeout(() => {
         clearTimeout(timeout)
-        $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
+        this.fb.$stage.trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
       }, defaultTimeout)
     }
 

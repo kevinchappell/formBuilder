@@ -82,28 +82,33 @@ export class FormBuilder {
   constructor(public opts: FormBuilderOptions, public el: HTMLElement) {
     this.initBase(opts)
 
-    this.controlPanel = new ControlPanel(opts, this)
-    this.$stage = $(this.stage)
-    this.$control = $(this.control)
-
-    this.loadHelpers(opts)
-
     this.loadFields()
-    this.checkLoadOptions()
 
     this.doneLoading()
   }
 
-  private initGridClasses() {
-    Object.assign(this, gridClassNames)
-    Object.assign(this, generateSelectorClassNames(gridClassNames))
-  }
+  private initBase(opts: FormBuilderOptions) {
+    this.initGridClasses()
 
-  private loadHelpers(opts: FormBuilderOptions) {
+    this.fieldSelector = opts.enableEnhancedBootstrapGrid ? this.rowWrapperClassSelector : defaultFieldSelector
+
+    // prepare a new layout object with appropriate templates
+    if (!opts.layout) {
+      opts.layout = Layout
+    }
+
+    this.h = new Helpers(opts, this)
+
+    opts = this.processActionButtons(opts)
+    this.opts = opts
+
+    this.lastID = `${this.formID}-fld-0`
+
+    this.initEditorUI()
+    this.controlPanel = new ControlPanel(opts, this)
     this.gh = new GridHelper(opts, this)
     this.ch = new FormBuilderControlHelper(opts, this)
     this.sh = new FormBuilderStageHelper(opts, this)
-    //this.editorHelper = new FormBuilderEditorHelper(opts, this)
   }
 
   // Parse saved XML template data
@@ -130,9 +135,11 @@ export class FormBuilder {
     }
 
     this.h.save()
+
+    this.checkLoadOptions()
   }
 
-  checkLoadOptions() {
+  private checkLoadOptions() {
     if (this.opts.disableInjectedStyle) {
       const styleTags = document.getElementsByClassName('formBuilder-injected-style')
       forEach(styleTags, i => remove(styleTags[i]))
@@ -255,31 +262,11 @@ export class FormBuilder {
     return cancelArray.some(elem => elem === true)
   }
 
-  private initBase(opts: FormBuilderOptions) {
-    this.initGridClasses()
-
-    this.fieldSelector = opts.enableEnhancedBootstrapGrid ? this.rowWrapperClassSelector : defaultFieldSelector
-
-    // prepare a new layout object with appropriate templates
-    if (!opts.layout) {
-      opts.layout = Layout
-    }
-
-    this.h = new Helpers(opts, this)
-
-    opts = this.processActionButtons(opts)
-    this.opts = opts
-
-    this.editorUI()
-
-    this.lastID = `${this.formID}-fld-0`
-  }
-
   /**
    * Generate stage and controls dom elements
    * @param  {String} formID [description]
    */
-  private editorUI() {
+  private initEditorUI() {
     this.editorWrap = this.m('div', null, {
       id: `${this.formID}-form-wrap`,
       className: `form-wrap form-builder ${mobileClass()}`,
@@ -326,6 +313,9 @@ export class FormBuilder {
     $editorWrap.append(this.stage, cbWrap)
 
     $(this.el).append($editorWrap)
+
+    this.$stage = $(this.stage)
+    this.$control = $(this.control)
   }
 
   private processActionButtons(options: FormBuilderOptions) {
@@ -373,6 +363,11 @@ export class FormBuilder {
     }
     config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, opts)
     return config.opts
+  }
+
+  private initGridClasses() {
+    Object.assign(this, gridClassNames)
+    Object.assign(this, generateSelectorClassNames(gridClassNames))
   }
 }
 

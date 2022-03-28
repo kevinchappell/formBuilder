@@ -361,7 +361,7 @@ export class GridHelper {
 
     //Use W A S D or Arrow Keys to move the field up/down/left/right across the form
     //Use R to auto-size all columns in the row equally
-    $(document).keydown(e => {
+    $(document).on('keydown', e => {
       if (this.fb.gh.gridMode) {
         e.preventDefault()
         const rowWrapper = this.fb.gh.gridModeTargetField.closest(this.fb.rowWrapperClassSelector)
@@ -392,7 +392,7 @@ export class GridHelper {
     })
 
     //When mouse moves away a certain distance, cancel grid mode
-    $(document).mousemove(e => {
+    this.fb.$stage.mousemove(e => {
       if (
         this.fb.gh.gridMode &&
         this.getDistanceBetweenPoints(this.fb.gh.gridModeStartX, this.fb.gh.gridModeStartY, e.pageX, e.pageY) >
@@ -402,7 +402,7 @@ export class GridHelper {
       }
     })
 
-    $(document).on('checkRowCleanup', (event, data) => {
+    this.fb.$stage.on('checkRowCleanup', (event, data) => {
       this.fb.sh.checkRowCleanup()
 
       const rowWrapper = $(`#${data.rowWrapperID}`)

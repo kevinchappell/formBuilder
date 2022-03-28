@@ -12,7 +12,7 @@ import { config } from './config'
 export class FormBuilderStageHelper {
   cloneControls: JQuery
   doCancel = false
-  from: any
+  from: JQuery
 
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.setupStage()
@@ -434,7 +434,7 @@ export class FormBuilderStageHelper {
       }
     })
 
-    $(document).on('fieldOpened', (event, data) => {
+    this.fb.$stage.on('fieldOpened', (event, data) => {
       const rowWrapper = $(`#${data.rowWrapperID}`)
       if (rowWrapper.length) {
         this.fb.sh.removeColumnInsertButtons(rowWrapper)
