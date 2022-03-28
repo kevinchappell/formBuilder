@@ -26,7 +26,6 @@ export class FormBuilderControlFieldAppender {
   // Append the new field to the editor
   appendNewField(values, isNew = true) {
     const columnData = this.fb.gh.prepareFieldRow(values)
-    this.fb.lastID = this.fb.h.incrementId(this.fb.lastID)
 
     const type = values.type || 'text'
     let label = values.label || (isNew ? this.fb.i18n.get(type) || mi18n.get('label') : '')

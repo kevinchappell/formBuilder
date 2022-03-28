@@ -78,6 +78,9 @@ export class FormBuilderControlHelper {
       }, 10)
     }
 
+    //Get next ID before appending
+    this.fb.lastID = this.fb.h.incrementId(this.fb.lastID)
+
     this.fb.opts.onAddField(this.fb.lastID, field)
     this.fieldAppender.appendNewField(field, isNew)
     this.fb.opts.onAddFieldAfter(this.fb.lastID, field)
