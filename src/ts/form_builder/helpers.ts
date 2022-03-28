@@ -1,5 +1,5 @@
 import mi18n from 'mi18n'
-import { optionFields } from 'ts/shared/constants'
+import { defaultTimeout, optionFields } from 'ts/shared/constants'
 import Control from 'ts/shared/control'
 import { ControlTypeLabel } from 'types/shared-types'
 import {
@@ -34,7 +34,7 @@ import {
   unique,
   xmlAttrString,
 } from '../shared/utils'
-import { config, defaultTimeout } from './config'
+import { config } from './config'
 import { FormBuilder } from './formBuilder'
 
 export class Helpers {

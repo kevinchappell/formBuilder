@@ -91,27 +91,7 @@ export const defaultOptions: FormBuilderOptions = {
   enableEnhancedBootstrapGrid: false,
 }
 
-export const styles = {
-  btn: ['default', 'danger', 'info', 'primary', 'success', 'warning'],
-}
-
-export const defaultI18n = {
-  location: 'assets/lang/',
-}
-
 export const config = {
   opts: defaultOptions,
   subtypes: {},
 }
-
-export const gridClassNames = {
-  rowWrapperClass: 'rowWrapper',
-  colWrapperClass: 'colWrapper',
-  tmpColWrapperClass: 'tempColWrapper',
-  tmpRowPlaceholderClass: 'tempRowWrapper',
-  invisibleRowPlaceholderClass: 'invisibleRowPlaceholder',
-}
-
-export const defaultTimeout = 333
-
-export const defaultFieldSelector = 'li.form-field'

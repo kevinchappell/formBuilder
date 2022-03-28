@@ -2,11 +2,12 @@ import fontConfig from 'fonts/config.json'
 import throttle from 'lodash/throttle'
 import mi18n from 'mi18n'
 import { FormBuilder } from 'ts/form_builder/formBuilder'
+import { defaultTimeout } from 'ts/shared/constants'
 import { addEventListeners, closest, forceNumber, forEach, parsedHtml, safename } from 'ts/shared/utils'
 import { CustomDoubleClickEvent, CustomHandledEvent, CustomTouchHandledEvent } from 'types/helper-types'
 import { fbControlType, FormBuilderOptions } from '../../types/formbuilder-types'
 import { selectFieldOptions } from './attributes/field_attributes/select'
-import { config, defaultTimeout } from './config'
+import { config } from './config'
 
 export class FormBuilderStageHelper {
   cloneControls: JQuery

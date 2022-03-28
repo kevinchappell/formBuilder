@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
-import { styles } from 'ts/form_builder/config'
 import { FormBuilder } from 'ts/form_builder/formBuilder'
+import { styles } from 'ts/shared/constants'
 import { MarkupType } from 'types/formbuilder-types'
 
 export const btnStyles = (style, fb: FormBuilder) => {

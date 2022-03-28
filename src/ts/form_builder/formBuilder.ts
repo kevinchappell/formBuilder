@@ -1,7 +1,8 @@
 // import { defaultOptions } from '../config'
 import mi18n from 'mi18n'
-import { config, defaultFieldSelector, gridClassNames } from 'ts/form_builder/config'
+import { config } from 'ts/form_builder/config'
 import { FormBuilderEditorHelper } from 'ts/form_builder/editorHelper'
+import { defaultFieldSelector, gridClassNames } from 'ts/shared/constants'
 import events from 'ts/shared/events'
 import '../../sass/form-builder.scss'
 import {

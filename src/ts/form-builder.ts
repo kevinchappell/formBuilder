@@ -1,7 +1,8 @@
 import mi18n from 'mi18n'
 import { FormBuilderOptions, FormBuilderPublicAPIActions } from 'types/formbuilder-types'
-import { defaultI18n, defaultOptions } from './form_builder/config'
+import { defaultOptions } from './form_builder/config'
 import { FormBuilder } from './form_builder/formBuilder'
+import { defaultI18n } from './shared/constants'
 
 jQuery.fn.formBuilder = function (
   methodOrOptions: FormBuilderOptions | keyof FormBuilderPublicAPIActions = {},

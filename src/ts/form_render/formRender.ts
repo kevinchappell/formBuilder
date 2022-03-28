@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
 import controlCustom from 'ts/control/custom'
-import { defaultI18n } from 'ts/form_builder/config'
+import { defaultI18n } from 'ts/shared/constants'
 import control from 'ts/shared/control'
 import events from 'ts/shared/events'
 import { Layout } from 'ts/shared/layout'
