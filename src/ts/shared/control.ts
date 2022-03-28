@@ -11,20 +11,20 @@ import { camelCase, getScripts, getStyles, isCached, markup, parsedHtml } from '
 export default class Control {
   static controlConfig: ControlConfig
   rawConfig: any
-  preview: any
+  preview: boolean
   id: any
   type: fbControlType
-  description: any
+  description: string
   subtype: fbControlSubtype
   classConfig: any
-  required: any
-  disabled: any
+  required: boolean
+  disabled: boolean
   config: any
   static classRegister: PartialRecord<fbAllControlTypes, typeof Control>
   static fbControlsLoaded: any
   css: any
   js: boolean | []
-  element: any
+  element: HTMLElement
   /**
    * initialise the control object
    * @param {Object} config each control class receives a control configuration

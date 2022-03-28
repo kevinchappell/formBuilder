@@ -5,7 +5,7 @@ import { fbControlType, Field } from 'types/formbuilder-types'
 import { ControlTypeLabel } from 'types/shared-types'
 
 export const subTypeAttribute = (type: fbControlType, values, fb: FormBuilder) => {
-  selectAttribute('subtype', values, fb.h.processSubtypes(fb.opts.subtypes)[type], fb)
+  return selectAttribute('subtype', values, fb.h.processSubtypes(fb.opts.subtypes)[type], fb)
 }
 
 const selectAttribute = (attribute, values, optionData: ControlTypeLabel[], fb: FormBuilder) => {

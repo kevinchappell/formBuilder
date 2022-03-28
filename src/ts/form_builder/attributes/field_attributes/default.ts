@@ -1,15 +1,25 @@
 import { FormBuilder } from 'ts/form_builder/formBuilder'
 import { optionFields } from 'ts/shared/constants'
+import { fbControlType, FieldAttributes, TypeAttributeMap } from 'types/formbuilder-types'
 import { removeFromArray } from '../../../shared/utils'
 
-export const defaultFieldAttrs = (type, fb: FormBuilder) => {
-  const defaultAttrs = ['required', 'label', 'description', 'placeholder', 'className', 'name', 'access', 'value']
-  const noValFields = ['header', 'paragraph', 'file', 'autocomplete'].concat(optionFields)
+export const defaultFieldAttrs = (type: fbControlType, fb: FormBuilder) => {
+  const defaultAttrs: FieldAttributes[] = [
+    'required',
+    'label',
+    'description',
+    'placeholder',
+    'className',
+    'name',
+    'access',
+    'value',
+  ]
+  const noValFields: fbControlType[] = ['header', 'paragraph', 'file', 'autocomplete', ...optionFields]
 
   const valueField = !noValFields.includes(type)
 
-  const typeAttrsMap = {
-    autocomplete: defaultAttrs.concat(['options', 'requireValidOption']),
+  const typeAttrsMap: TypeAttributeMap = {
+    autocomplete: [...defaultAttrs, 'options', 'requireValidOption'],
     button: ['label', 'subtype', 'style', 'className', 'name', 'value', 'access'],
     checkbox: [
       'required',
@@ -23,19 +33,19 @@ export const defaultFieldAttrs = (type, fb: FormBuilder) => {
       'other',
       'options',
     ],
-    text: defaultAttrs.concat(['subtype', 'maxlength']),
+    text: [...defaultAttrs, 'subtype', 'maxlength'],
     date: defaultAttrs,
-    file: defaultAttrs.concat(['subtype', 'multiple']),
+    file: [...defaultAttrs, 'subtype', 'multiple'],
     header: ['label', 'subtype', 'className', 'access'],
     hidden: ['name', 'value', 'access'],
     paragraph: ['label', 'subtype', 'className', 'access'],
-    number: defaultAttrs.concat(['min', 'max', 'step']),
-    select: defaultAttrs.concat(['multiple', 'options']),
-    textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
+    number: [...defaultAttrs, 'min', 'max', 'step'],
+    select: [...defaultAttrs, 'multiple', 'options'],
+    textarea: [...defaultAttrs, 'subtype', 'maxlength', 'rows'],
   }
 
   if (type in fb.controlPanel.registeredSubtypes && !(type in typeAttrsMap)) {
-    typeAttrsMap[type] = defaultAttrs.concat(['subtype'])
+    typeAttrsMap[type] = [...defaultAttrs, 'subtype']
   }
 
   typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox

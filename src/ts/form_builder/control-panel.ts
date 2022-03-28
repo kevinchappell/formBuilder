@@ -12,7 +12,7 @@ import { FormBuilder } from './formBuilder'
 export default class ControlPanel {
   controlsElement: HTMLElement
   custom: typeof controlCustom
-  getClass: (type: any, subtype?: any) => any
+  getClass: (type: any, subtype?: any) => typeof Control
   getRegistered: (type?: boolean) => string[]
   registeredControls: string[]
   registeredSubtypes: {}

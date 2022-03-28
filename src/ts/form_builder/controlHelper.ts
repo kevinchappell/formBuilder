@@ -5,10 +5,7 @@ import { hyphenCase, nameAttr } from '../shared/utils'
 import { FormBuilderControlFieldAppender } from './fieldAppender'
 
 export class FormBuilderControlHelper {
-  fieldAppender: FormBuilderControlFieldAppender
-  constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
-    this.fieldAppender = new FormBuilderControlFieldAppender(opts, fb)
-  }
+  constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {}
 
   processControl(control: JQuery) {
     if (this.IsInputSetControl(control)) {
@@ -82,7 +79,7 @@ export class FormBuilderControlHelper {
     this.fb.lastID = this.fb.h.incrementId(this.fb.lastID)
 
     this.fb.opts.onAddField(this.fb.lastID, field)
-    this.fieldAppender.appendNewField(field, isNew)
+    new FormBuilderControlFieldAppender(this.opts, this.fb, field, isNew).appendNewField()
     this.fb.opts.onAddFieldAfter(this.fb.lastID, field)
 
     this.fb.stage.classList.remove('empty')

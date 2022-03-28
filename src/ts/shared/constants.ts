@@ -1,4 +1,6 @@
-export const optionFields = ['select', 'checkbox-group', 'checkbox', 'radio-group', 'autocomplete']
+import { fbControlType } from 'types/formbuilder-types'
+
+export const optionFields: fbControlType[] = ['select', 'checkbox-group', 'checkbox', 'radio-group', 'autocomplete']
 
 export const styles = {
   btn: ['default', 'danger', 'info', 'primary', 'success', 'warning'],

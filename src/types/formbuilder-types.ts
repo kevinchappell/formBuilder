@@ -51,6 +51,7 @@ export interface BaseControlAttributes {
   className?: string
   name?: string
   placeholder?: string
+  description?: string
   value?: any
   title?: string
   for?: string
@@ -132,7 +133,7 @@ export interface FormBuilderOptions {
   controlPosition?: 'right' | 'left'
   dataType?: dataType
   defaultFields?: Field[]
-  disabledAttrs?: DefaultAttributeNames[]
+  disabledAttrs?: FieldAttributes[]
   disabledFieldButtons?: PartialRecord<fbControlType, layoutFieldButtons[]>
   disabledSubtypes?: PartialRecord<fbControlType, fbControlSubtype[]>
   disableFields?: fbControlType[]
@@ -160,7 +161,7 @@ export interface FormBuilderOptions {
   subtypes?: SubTypeOptions
   templates?: CustomControlTemplate
   typeUserAttrs?: PartialRecord<fbControlType, any>
-  typeUserDisabledAttrs?: PartialRecord<fbControlType, DefaultAttributeNames[]>
+  typeUserDisabledAttrs?: PartialRecord<fbControlType, FieldAttributes[]>
   typeUserEvents?: PartialRecord<
     fbControlType,
     PartialRecord<'onadd' | 'onclone' | 'onremove', (field: HTMLElement) => any>
@@ -206,54 +207,28 @@ export interface ButtonAttributes {
   }
 }
 
-type DefaultAttributeNames =
-  | 'access'
-  | 'className'
-  | 'description'
-  | 'inline'
-  | 'label'
-  | 'max'
-  | 'maxlength'
-  | 'min'
-  | 'multiple'
-  | 'name'
-  | 'options'
-  | 'other'
-  | 'placeholder'
+export type FieldAttributes =
   | 'required'
-  | 'rows'
-  | 'step'
-  | 'style'
-  | 'subtype'
-  | 'toggle'
+  | 'label'
+  | 'description'
+  | 'placeholder'
+  | 'className'
+  | 'name'
+  | 'access'
   | 'value'
-
-// export interface fbField {
-//   type: fbControlType
-
-//   className?: string
-//   label?: string
-//   placeholder?: string
-//   name?: string
-//   required?: boolean
-//   value?: any
-//   values?: any[]
-
-//   toggle?: boolean
-//   rows?: number
-//   other?: boolean
-//   multiple?: boolean
-//   min?: number
-//   max?: number
-//   maxlength?: number
-//   access?: boolean
-//   description?: string
-//   inline?: boolean
-//   options?: []
-//   style?: string
-//   subtype?: fbControlSubtype
-//   icon?: string
-// }
+  | 'options'
+  | 'requireValidOption'
+  | 'subtype'
+  | 'style'
+  | 'toggle'
+  | 'inline'
+  | 'other'
+  | 'maxlength'
+  | 'multiple'
+  | 'min'
+  | 'max'
+  | 'step'
+  | 'rows'
 
 export type fbControlType =
   | 'file'
@@ -321,3 +296,5 @@ export interface FormBuilderPublicAPIActions {
   closeAllFieldEdit: any
   getCurrentFieldId: () => string
 }
+
+export type TypeAttributeMap = PartialRecord<fbControlType, FieldAttributes[]>
