@@ -35,18 +35,14 @@ import {
   xmlAttrString,
 } from '../shared/utils'
 import { config, defaultTimeout } from './config'
-import { instanceData } from './data'
 import { FormBuilder } from './formBuilder'
 
 export class Helpers {
-  data: any
   layout: Layout
   toastTimer: any
   stopIndex: number
 
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
-    this.data = instanceData[this.fb.formID]
-
     this.layout = new opts.layout(opts.layoutTemplates, true)
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -245,8 +241,6 @@ export class Helpers {
    * @return {Object} formData
    */
   getData(formData) {
-    const data = this.data
-
     if (!formData) {
       formData = config.opts.formData
     }
@@ -265,9 +259,9 @@ export class Helpers {
       },
     }
 
-    data.formData = setData[config.opts.dataType](formData) || []
+    this.fb.formData = setData[config.opts.dataType](formData) || []
 
-    return data.formData
+    return this.fb.formData
   }
 
   /**
@@ -276,7 +270,6 @@ export class Helpers {
    * @return {XML|JSON} formData
    */
   save(minify = false) {
-    const data = this.data
     const stage = this.fb.d.stage
     const doSave = {
       xml: () => this.xmlSave(stage),
@@ -284,11 +277,11 @@ export class Helpers {
     }
 
     // save action for current `dataType`
-    data.formData = doSave[config.opts.dataType](minify)
+    this.fb.formData = doSave[config.opts.dataType](minify)
 
     // trigger formSaved event
     document.dispatchEvent(events.formSaved)
-    return data.formData
+    return this.fb.formData
   }
 
   /**
@@ -980,7 +973,7 @@ export class Helpers {
   processActionButtons(buttonData) {
     const { label, events, ...attrs } = buttonData
     let labelText = label
-    const data = this.data
+
     if (!labelText) {
       if (attrs.id) {
         labelText = mi18n.current[attrs.id] || capitalize(attrs.id)
@@ -992,9 +985,9 @@ export class Helpers {
     }
 
     if (!attrs.id) {
-      attrs.id = `${data.formID}-action-${Math.round(Math.random() * 1000)}`
+      attrs.id = `${this.fb.formID}-action-${Math.round(Math.random() * 1000)}`
     } else {
-      attrs.id = `${data.formID}-${attrs.id}-action`
+      attrs.id = `${this.fb.formID}-${attrs.id}-action`
     }
 
     const button = m('button', labelText, attrs)
@@ -1065,11 +1058,10 @@ export class Helpers {
    */
   editorUI(formID, opts: FormBuilderOptions) {
     const d = this.fb.d
-    const data = this.data
-    const id = formID || data.formID
+    const id = formID || this.fb.formID
 
     d.editorWrap = m('div', null, {
-      id: `${data.formID}-form-wrap`,
+      id: `${this.fb.formID}-form-wrap`,
       className: `form-wrap form-builder ${mobileClass()}`,
     })
 

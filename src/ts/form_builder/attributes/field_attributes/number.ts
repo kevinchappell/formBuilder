@@ -14,7 +14,7 @@ export const numberAttribute = (attribute, values, fb: FormBuilder) => {
     name: attribute,
     placeholder,
     className: `fld-${attribute} form-control ${classname || className || ''}`.trim(),
-    id: `${attribute}-${fb.data.lastID}`,
+    id: `${attribute}-${fb.lastID}`,
   }
   const numberAttribute = fb.h.input(trimObj(inputConfig)).outerHTML
   const inputWrap = `<div class="input-wrap">${numberAttribute}</div>`

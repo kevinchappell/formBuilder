@@ -4,14 +4,14 @@ import { CheckboxAttributes, Labels } from 'types/formbuilder-types'
 export const boolAttribute = (name, values, labels = {} as Labels, fb: FormBuilder) => {
   const label = txt =>
     fb.m('label', txt, {
-      for: `${name}-${fb.data.lastID}`,
+      for: `${name}-${fb.lastID}`,
     }).outerHTML
 
   const cbAttrs: CheckboxAttributes = {
     type: 'checkbox',
     className: `fld-${name}`,
     name,
-    id: `${name}-${fb.data.lastID}`,
+    id: `${name}-${fb.lastID}`,
   }
 
   if (values[name]) {

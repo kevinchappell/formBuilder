@@ -14,7 +14,6 @@ import { Layout } from '../shared/layout'
 import { forEach, generateSelectorClassNames, markup, remove, subtract, trimObj } from '../shared/utils'
 import { FormBuilderControlHelper } from './controlHelper'
 import Controls from './controls'
-import { Data } from './data'
 import Dom from './dom'
 import { GridHelper } from './gridHelper'
 import { Helpers } from './helpers'
@@ -50,7 +49,8 @@ export class FormBuilder {
 
   i18n = mi18n.current
   formID = `frmb-${new Date().getTime()}`
-  data: Data
+  lastID: string
+  formData: any
   d: Dom
   h: Helpers
   m = markup
@@ -147,7 +147,7 @@ export class FormBuilder {
         return formDataJS
       },
       addField: (field, index) => {
-        this.h.stopIndex = (this.data.formData as []).length ? index : undefined
+        this.h.stopIndex = (this.formData as []).length ? index : undefined
         this.ch.prepFieldVars(field)
       },
       removeField: fieldID => this.h.removeField(fieldID),
@@ -187,7 +187,7 @@ export class FormBuilder {
       },
       closeAllFieldEdit: this.h.closeAllEdit.bind(this.h),
       getCurrentFieldId: () => {
-        return this.data.lastID
+        return this.lastID
       },
     }
   }
@@ -244,8 +244,7 @@ export class FormBuilder {
   private initBase(opts: FormBuilderOptions) {
     this.initGridClasses()
 
-    this.data = new Data(this.formID)
-    this.d = new Dom(this.formID)
+    this.d = new Dom()
 
     this.fieldSelector = opts.enableEnhancedBootstrapGrid ? this.rowWrapperClassSelector : defaultFieldSelector
 
@@ -261,8 +260,7 @@ export class FormBuilder {
 
     this.h.editorUI(this.formID, opts)
 
-    this.data.formID = this.formID
-    this.data.lastID = `${this.data.formID}-fld-0`
+    this.lastID = `${this.formID}-fld-0`
   }
 
   private processActionButtons(options: FormBuilderOptions) {
@@ -293,7 +291,7 @@ export class FormBuilder {
         events: {
           click: evt => {
             this.h.save()
-            config.opts.onSave(evt, this.h.data.formData)
+            config.opts.onSave(evt, this.h.fb.formData)
           },
         },
       },

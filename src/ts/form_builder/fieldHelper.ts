@@ -26,7 +26,7 @@ export class FormBuilderControlFieldHelper {
   // Append the new field to the editor
   appendNewField(values, isNew = true) {
     const columnData = this.fb.gh.prepareFieldRow(values)
-    this.fb.data.lastID = this.fb.h.incrementId(this.fb.data.lastID)
+    this.fb.lastID = this.fb.h.incrementId(this.fb.lastID)
 
     const type = values.type || 'text'
     let label = values.label || (isNew ? this.fb.i18n.get(type) || mi18n.get('label') : '')
@@ -40,19 +40,19 @@ export class FormBuilderControlFieldHelper {
     let fieldButtons = [
       this.fb.m('a', null, {
         type: 'remove',
-        id: `del_${this.fb.data.lastID}`,
+        id: `del_${this.fb.lastID}`,
         className: `del-button btn ${fontConfig.css_prefix_text}cancel delete-confirm`,
         title: mi18n.get('removeMessage'),
       }),
       this.fb.m('a', null, {
         type: 'edit',
-        id: `${this.fb.data.lastID}-edit`,
+        id: `${this.fb.lastID}-edit`,
         className: `toggle-form btn ${fontConfig.css_prefix_text}pencil`,
         title: mi18n.get('hide'),
       }),
       this.fb.m('a', null, {
         type: 'copy',
-        id: `${this.fb.data.lastID}-copy`,
+        id: `${this.fb.lastID}-copy`,
         className: `copy-button btn ${fontConfig.css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
@@ -62,7 +62,7 @@ export class FormBuilderControlFieldHelper {
       fieldButtons.push(
         this.fb.m('a', null, {
           type: 'grid',
-          id: `${this.fb.data.lastID}-grid`,
+          id: `${this.fb.lastID}-grid`,
           className: `grid-button btn ${fontConfig.css_prefix_text}grid`,
           title: 'Grid Mode',
         }),
@@ -97,7 +97,7 @@ export class FormBuilderControlFieldHelper {
 
     liContents.push(this.fb.m('span', '?', descAttrs))
 
-    const prevHolder = this.fb.m('div', '', { className: 'prev-holder', dataFieldId: this.fb.data.lastID })
+    const prevHolder = this.fb.m('div', '', { className: 'prev-holder', dataFieldId: this.fb.lastID })
     liContents.push(prevHolder)
 
     const formElements = this.fb.m(
@@ -109,9 +109,9 @@ export class FormBuilderControlFieldHelper {
     )
 
     const editPanel = this.fb.m('div', formElements, {
-      id: `${this.fb.data.lastID}-holder`,
+      id: `${this.fb.lastID}-holder`,
       className: 'frm-holder',
-      dataFieldId: this.fb.data.lastID,
+      dataFieldId: this.fb.lastID,
     })
 
     this.fb.currentEditPanel = editPanel
@@ -121,7 +121,7 @@ export class FormBuilderControlFieldHelper {
     const field = this.fb.m('li', liContents, {
       class: `${type}-field form-field`,
       type: type,
-      id: this.fb.data.lastID,
+      id: this.fb.lastID,
     })
 
     const $li = $(field)
@@ -211,7 +211,7 @@ export class FormBuilderControlFieldHelper {
     if (isNew) {
       if (this.fb.opts.editOnAdd) {
         this.fb.h.closeAllEdit()
-        this.fb.h.toggleEdit(this.fb.data.lastID, false)
+        this.fb.h.toggleEdit(this.fb.lastID, false)
       }
 
       if (field.scrollIntoView && this.fb.opts.scrollToFieldOnAdd) {

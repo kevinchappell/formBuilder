@@ -144,7 +144,7 @@ export class FormBuilderStageHelper {
       this.fb.h.tmpCleanPrevHolder($clone.find('.prev-holder'))
 
       if (this.fb.opts.editOnAdd) {
-        this.fb.h.closeField(this.fb.data.lastID, false)
+        this.fb.h.closeField(this.fb.lastID, false)
       }
     })
 
@@ -722,7 +722,7 @@ export class FormBuilderStageHelper {
   }
 
   cloneItem(currentItem) {
-    this.fb.data.lastID = this.fb.h.incrementId(this.fb.data.lastID)
+    this.fb.lastID = this.fb.h.incrementId(this.fb.lastID)
 
     this.checkTinyMCETransition(currentItem)
 
@@ -734,11 +734,11 @@ export class FormBuilderStageHelper {
 
     $('.fld-name', $clone).val(cloneName)
     $clone.find('[id]').each((i, elem) => {
-      elem.id = elem.id.replace(currentId, this.fb.data.lastID)
+      elem.id = elem.id.replace(currentId, this.fb.lastID)
     })
     $clone.find('[for]').each((index, elem) => {
       const curId = elem.getAttribute('for')
-      const newForId = curId.replace(currentId, this.fb.data.lastID)
+      const newForId = curId.replace(currentId, this.fb.lastID)
       elem.setAttribute('for', newForId)
     })
 
@@ -749,7 +749,7 @@ export class FormBuilderStageHelper {
       $clone.find('select').eq(index).val($(select).val())
     })
 
-    $clone.attr('id', this.fb.data.lastID)
+    $clone.attr('id', this.fb.lastID)
     $clone.attr('name', cloneName)
     $clone.addClass('cloned')
     $('.sortable-options', $clone).sortable()
@@ -787,7 +787,7 @@ export class FormBuilderStageHelper {
     const columnData = this.fb.gh.prepareFieldRow({})
 
     const rowWrapperNode = this.fb.m('div', null, {
-      id: `${this.fb.h.incrementId(this.fb.data.lastID)}-row`,
+      id: `${this.fb.h.incrementId(this.fb.lastID)}-row`,
       className: `row row-${columnData.rowNumber} ${this.fb.rowWrapperClass}`,
     })
 

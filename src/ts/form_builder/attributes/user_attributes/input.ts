@@ -10,7 +10,7 @@ import { attrString } from 'ts/shared/utils'
 export const inputUserAttrs = (name, inputAttrs, fb: FormBuilder) => {
   const { class: classname, className, ...attrs } = inputAttrs
   let textAttrs = {
-    id: `${name}-${fb.data.lastID}`,
+    id: `${name}-${fb.lastID}`,
     title: attrs.description || attrs.label || name.toUpperCase(),
     name: name,
     type: attrs.type || 'text',

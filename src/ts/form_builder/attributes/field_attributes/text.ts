@@ -26,7 +26,7 @@ export const textAttribute = (attribute, values, fb: FormBuilder, isHidden = fal
       name: attribute,
       placeholder,
       className: `fld-${attribute} form-control`,
-      id: `${attribute}-${fb.data.lastID}`,
+      id: `${attribute}-${fb.lastID}`,
     }
     const attributeLabel = fb.m('label', attrLabel, {
       for: inputConfig.id,

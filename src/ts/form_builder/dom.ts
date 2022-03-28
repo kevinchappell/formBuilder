@@ -1,8 +1,6 @@
 import { optionFields } from 'ts/shared/constants'
 import { empty, filter } from 'ts/shared/utils'
 
-export const instanceDom = {}
-
 export default class Dom {
   defaultSubtypes = {
     text: ['text', 'password', 'email', 'color', 'tel'],
@@ -21,12 +19,8 @@ export default class Dom {
   controls: HTMLElement
   editorWrap: HTMLElement
   formActions: HTMLElement
-  /**
-   * Set defaults
-   * @param  {String} formID [description]
-   * @return {Object} Dom Instance
-   */
-  constructor(formID) {
+
+  constructor() {
     this.optionFields = optionFields
     this.optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`)
 
@@ -47,9 +41,6 @@ export default class Dom {
      * @return {Array}         filtered elements
      */
     this.filter = filter
-
-    instanceDom[formID] = this
-    return instanceDom[formID]
   }
 
   /**

@@ -78,9 +78,9 @@ export class FormBuilderControlHelper {
       }, 10)
     }
 
-    this.fb.opts.onAddField(this.fb.data.lastID, field)
+    this.fb.opts.onAddField(this.fb.lastID, field)
     this.fieldHelper.appendNewField(field, isNew)
-    this.fb.opts.onAddFieldAfter(this.fb.data.lastID, field)
+    this.fb.opts.onAddFieldAfter(this.fb.lastID, field)
 
     this.fb.d.stage.classList.remove('empty')
   }

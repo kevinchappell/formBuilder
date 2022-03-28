@@ -12,7 +12,7 @@ export class FormBuilderEditorHelper {
     $('<div class="snackbar">').appendTo($editorWrap)
 
     const cbWrap: HTMLElement = this.fb.m('div', this.fb.d.controls, {
-      id: `${this.fb.data.formID}-cb-wrap`,
+      id: `${this.fb.formID}-cb-wrap`,
       className: `cb-wrap pull-${this.fb.opts.controlPosition}`,
     })
 
@@ -21,7 +21,7 @@ export class FormBuilderEditorHelper {
     }
 
     this.fb.gh.gridModeHelp = this.fb.m('div', '', {
-      id: `${this.fb.data.formID}-gridModeHelp`,
+      id: `${this.fb.formID}-gridModeHelp`,
       className: 'grid-mode-help',
     })
 

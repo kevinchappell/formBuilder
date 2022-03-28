@@ -23,7 +23,7 @@ export const selectUserAttrs = (name, fieldData, fb: FormBuilder) => {
   })
 
   const selectAttrs: SelectAttributes = {
-    id: `${name}-${fb.data.lastID}`,
+    id: `${name}-${fb.lastID}`,
     title: restData.description || labelText || name.toUpperCase(),
     name,
     className: `fld-${name} form-control ${classname || className || ''}`.trim(),
