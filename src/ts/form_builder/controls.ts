@@ -3,36 +3,32 @@ import Control from 'ts/shared/control'
 import { FormBuilderOptions } from 'types/formbuilder-types'
 import controlCustom from '../control/custom'
 import '../control/index'
-import { hyphenCase, markup as m, unique } from '../shared/utils'
-import { empty } from './dom'
+import { empty, hyphenCase, markup as m, unique } from '../shared/utils'
+import { FormBuilder } from './formBuilder'
 
 /**
  * control parent class for creating control panel
  */
 export default class Controls {
-  opts: any
-  dom: any
+  controlsElement: HTMLElement
   custom: typeof controlCustom
   getClass: (type: any, subtype?: any) => any
   getRegistered: (type?: boolean) => string[]
   registeredControls: string[]
   registeredSubtypes: {}
-  controlList: any[]
+  controlList: string[]
   allControls: {}
-  /**
-   * setup instance
-   * @param {Object} opts
-   * @param {Object} d dom instance
-   */
-  constructor(opts: FormBuilderOptions, d) {
-    this.opts = opts
-    this.dom = d.controls
+
+  constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
+    this.controlsElement = this.fb.d.controls
     this.custom = controlCustom
     this.getClass = Control.getRegisteredClassControl
     this.getRegistered = Control.getRegistered
+
     // ability for controls to have their own configuration / options
     // of the format control identifier (type, or type.subtype): {options}
     Control.controlConfig = opts.controlConfig || {}
+
     this.init()
   }
 
@@ -51,7 +47,7 @@ export default class Controls {
     const opts = this.opts
 
     // load in any custom specified controls, or preloaded plugin controls
-    Control.loadCustom(opts.controls)
+    Control.loadCustom(opts.controls) //Kevin, so does the formbuilder options actually include customcontrols?
     // register any passed custom templates & fields
     if (Object.keys(opts.fields).length) {
       controlCustom.registerCustom(opts.templates, opts.fields)
@@ -69,7 +65,7 @@ export default class Controls {
 
     // if we support rearranging control order, add classes to support this
     if (opts.sortableControls) {
-      this.dom.classList.add('sort-enabled')
+      this.controlsElement.classList.add('sort-enabled')
     }
 
     // add each control to the interface
@@ -185,7 +181,7 @@ export default class Controls {
    */
   appendControls() {
     const fragment = document.createDocumentFragment()
-    empty(this.dom)
+    empty(this.controlsElement)
     // append controls to list
     this.orderFields(this.controlList).forEach(controlKey => {
       const control = this.allControls[controlKey]
@@ -193,6 +189,6 @@ export default class Controls {
         fragment.appendChild(control)
       }
     })
-    this.dom.appendChild(fragment)
+    this.controlsElement.appendChild(fragment)
   }
 }

@@ -1,66 +1,26 @@
+import { optionFields } from 'ts/shared/constants'
+import { empty, filter } from 'ts/shared/utils'
+
 export const instanceDom = {}
-export const defaultSubtypes = {
-  text: ['text', 'password', 'email', 'color', 'tel'],
-  header: ['h1', 'h2', 'h3'],
-  button: ['button', 'submit', 'reset'],
-  paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
-  textarea: ['textarea', 'quill'],
-}
 
-/**
- * Removes a dom node
- * @param  {Object} element
- */
-export const remove = (element: Node) => {
-  if (element.parentNode) {
-    element.parentNode.removeChild(element)
-  }
-}
-
-export const empty = (element: Node) => {
-  while (element.firstChild) {
-    element.removeChild(element.firstChild)
-  }
-  return element
-}
-
-export const filter = (elems, term, show = true) => {
-  const filteredElems = []
-  let toggle = ['none', 'block']
-
-  if (show) {
-    toggle = toggle.reverse()
-  }
-
-  for (let i = elems.length - 1; i >= 0; i--) {
-    const txt = elems[i].textContent.toLowerCase()
-    if (txt.indexOf(term.toLowerCase()) !== -1) {
-      elems[i].style.display = toggle[0]
-      filteredElems.push(elems[i])
-    } else {
-      elems[i].style.display = toggle[1]
-    }
-  }
-
-  return filteredElems
-}
-
-export const optionFields = ['select', 'checkbox-group', 'checkbox', 'radio-group', 'autocomplete']
-
-export const optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`)
-/**
- * Dom class.
- */
 export default class Dom {
+  defaultSubtypes = {
+    text: ['text', 'password', 'email', 'color', 'tel'],
+    header: ['h1', 'h2', 'h3'],
+    button: ['button', 'submit', 'reset'],
+    paragraph: ['p', 'address', 'blockquote', 'canvas', 'output'],
+    textarea: ['textarea', 'quill'],
+  }
+
   optionFields: string[]
   optionFieldsRegEx: RegExp
   subtypes: { text: string[]; header: string[]; button: string[]; paragraph: string[]; textarea: string[] }
   empty: (element: any) => any
   filter: (elems: any, term: any, show?: boolean) => any[]
-  stage: any
-  controls: any
-  editorWrap: any
-  formActions: any
+  stage: HTMLElement
+  controls: HTMLElement
+  editorWrap: HTMLElement
+  formActions: HTMLElement
   /**
    * Set defaults
    * @param  {String} formID [description]
@@ -68,9 +28,9 @@ export default class Dom {
    */
   constructor(formID) {
     this.optionFields = optionFields
-    this.optionFieldsRegEx = optionFieldsRegEx
+    this.optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`)
 
-    this.subtypes = defaultSubtypes
+    this.subtypes = this.defaultSubtypes
 
     /**
      * Util to remove contents of DOM Object

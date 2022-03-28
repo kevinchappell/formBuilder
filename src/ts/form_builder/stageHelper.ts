@@ -544,28 +544,29 @@ export class FormBuilderStageHelper {
       })
   }
 
-  AttatchColWrapperHandler(colWrapper) {
+  AttatchColWrapperHandler(colWrapper: JQuery<HTMLElement>) {
     if (!this.fb.gh.enhancedBootstrapEnabled()) {
       return
     }
 
-    colWrapper.mouseenter(e => {
+    colWrapper.on('mouseenter', e => {
+      const $el = $(e.currentTarget)
       if (!this.fb.gh.gridMode) {
         this.fb.sh.HideInvisibleRowPlaceholders()
 
         //Only show the placeholder for what is above/below the rowWrapper
-        $(this)
+        $el
           .closest(this.fb.rowWrapperClassSelector)
           .prevAll(this.fb.tmpRowPlaceholderClassSelector)
           .first()
           .removeClass(this.fb.invisibleRowPlaceholderClass)
-        $(this)
+        $el
           .closest(this.fb.rowWrapperClassSelector)
           .nextAll(this.fb.tmpRowPlaceholderClassSelector)
           .first()
           .removeClass(this.fb.invisibleRowPlaceholderClass)
 
-        this.fb.gh.gridModeTargetField = $(this)
+        this.fb.gh.gridModeTargetField = $el
         this.fb.gh.gridModeStartX = e.pageX
         this.fb.gh.gridModeStartY = e.pageY
       }
@@ -721,7 +722,7 @@ export class FormBuilderStageHelper {
   }
 
   cloneItem(currentItem) {
-    this.fb.data.lastID = this.incrementId(this.fb.data.lastID)
+    this.fb.data.lastID = this.fb.h.incrementId(this.fb.data.lastID)
 
     this.checkTinyMCETransition(currentItem)
 
@@ -760,19 +761,6 @@ export class FormBuilderStageHelper {
     return $clone
   }
 
-  /**
-   * increments the field ids with support for multiple editors
-   * @param  {String} id field ID
-   * @return {String}    incremented field ID
-   */
-  incrementId(id) {
-    const split = id.lastIndexOf('-')
-    const newFieldNumber = parseInt(id.substring(split + 1)) + 1
-    const baseString = id.substring(0, split)
-
-    return `${baseString}-${newFieldNumber}`
-  }
-
   saveAndUpdate = evt => {
     if (evt) {
       const isDisabled = [({ type, target }) => type === 'keyup' && target.name === 'className'].some(typeCondition =>
@@ -799,7 +787,7 @@ export class FormBuilderStageHelper {
     const columnData = this.fb.gh.prepareFieldRow({})
 
     const rowWrapperNode = this.fb.m('div', null, {
-      id: `${this.incrementId(this.fb.data.lastID)}-row`,
+      id: `${this.fb.h.incrementId(this.fb.data.lastID)}-row`,
       className: `row row-${columnData.rowNumber} ${this.fb.rowWrapperClass}`,
     })
 

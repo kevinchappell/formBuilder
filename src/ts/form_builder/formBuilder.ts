@@ -11,11 +11,11 @@ import {
   FormBuilderPublicAPIActions,
 } from '../../types/formbuilder-types'
 import { Layout } from '../shared/layout'
-import { forEach, generateSelectorClassNames, markup, subtract, trimObj } from '../shared/utils'
+import { forEach, generateSelectorClassNames, markup, remove, subtract, trimObj } from '../shared/utils'
 import { FormBuilderControlHelper } from './controlHelper'
 import Controls from './controls'
 import { Data } from './data'
-import Dom, { remove } from './dom'
+import Dom from './dom'
 import { GridHelper } from './gridHelper'
 import { Helpers } from './helpers'
 import { FormBuilderStageHelper } from './stageHelper'
@@ -61,7 +61,7 @@ export class FormBuilder {
   $cbUL: JQuery<HTMLElement>
 
   prepFieldVars: ($field: any, isNew?: boolean) => void
-  currentEditPanel: any
+  currentEditPanel: HTMLElement
   sh: FormBuilderStageHelper
   ch: FormBuilderControlHelper
   editorHelper: FormBuilderEditorHelper
@@ -70,7 +70,7 @@ export class FormBuilder {
   constructor(public opts: FormBuilderOptions, public el: HTMLElement) {
     this.initBase(opts)
 
-    this.controls = new Controls(opts, this.d)
+    this.controls = new Controls(opts, this)
     this.$stage = $(this.d.stage)
     this.$cbUL = $(this.d.controls)
 

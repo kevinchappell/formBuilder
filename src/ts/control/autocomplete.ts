@@ -1,5 +1,5 @@
 import Control from 'ts/shared/control'
-import { filter } from '../form_builder/dom'
+import { filter } from 'ts/shared/utils'
 /**
  * Autocomplete class
  * Output an autocomplete form element

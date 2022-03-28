@@ -278,6 +278,7 @@ export type layoutFieldButtons = 'remove' | 'edit' | 'delete' | 'grid'
 
 interface InputSets {
   label: string
+  icon?: string
   name: string
   showHeader: boolean
   fields: Field[]

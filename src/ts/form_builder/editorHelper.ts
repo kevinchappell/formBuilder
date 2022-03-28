@@ -11,7 +11,7 @@ export class FormBuilderEditorHelper {
 
     $('<div class="snackbar">').appendTo($editorWrap)
 
-    const cbWrap = this.fb.m('div', this.fb.d.controls, {
+    const cbWrap: HTMLElement = this.fb.m('div', this.fb.d.controls, {
       id: `${this.fb.data.formID}-cb-wrap`,
       className: `cb-wrap pull-${this.fb.opts.controlPosition}`,
     })

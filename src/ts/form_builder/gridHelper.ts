@@ -5,7 +5,7 @@ import { FormBuilderOptions, GridInfo } from '../../types/formbuilder-types'
 export class GridHelper {
   gridModeHelp: HTMLElement
   gridMode = false
-  gridModeTargetField
+  gridModeTargetField: JQuery<HTMLElement>
   gridModeStartX: number
   gridModeStartY: number
 

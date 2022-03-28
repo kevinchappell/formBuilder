@@ -742,3 +742,41 @@ $.fn.swapWith = function (that) {
 }
 export const generateSelectorClassNames = classNamesObj =>
   Object.entries(classNamesObj).reduce((acc, [key, val]) => ({ ...acc, [`${key}Selector`]: `.${val}` }), {})
+
+/**
+ * Removes a dom node
+ * @param  {Object} element
+ */
+export const remove = (element: Node) => {
+  if (element.parentNode) {
+    element.parentNode.removeChild(element)
+  }
+}
+
+export const empty = (element: Node) => {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild)
+  }
+  return element
+}
+
+export const filter = (elems, term, show = true) => {
+  const filteredElems = []
+  let toggle = ['none', 'block']
+
+  if (show) {
+    toggle = toggle.reverse()
+  }
+
+  for (let i = elems.length - 1; i >= 0; i--) {
+    const txt = elems[i].textContent.toLowerCase()
+    if (txt.indexOf(term.toLowerCase()) !== -1) {
+      elems[i].style.display = toggle[0]
+      filteredElems.push(elems[i])
+    } else {
+      elems[i].style.display = toggle[1]
+    }
+  }
+
+  return filteredElems
+}

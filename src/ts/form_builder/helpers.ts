@@ -1,4 +1,5 @@
 import mi18n from 'mi18n'
+import { optionFields } from 'ts/shared/constants'
 import Control from 'ts/shared/control'
 import { ControlTypeLabel } from 'types/shared-types'
 import {
@@ -19,6 +20,7 @@ import {
   bootstrapColumnRegex,
   camelCase,
   capitalize,
+  empty,
   escapeHtml,
   flattenArray,
   forEach,
@@ -26,6 +28,7 @@ import {
   markup as m,
   mobileClass,
   parseXML,
+  remove,
   subtract,
   trimObj,
   unique,
@@ -33,19 +36,16 @@ import {
 } from '../shared/utils'
 import { config, defaultTimeout } from './config'
 import { instanceData } from './data'
-import { empty, instanceDom, optionFields, remove } from './dom'
 import { FormBuilder } from './formBuilder'
 
 export class Helpers {
   data: any
-  d: any
   layout: Layout
   toastTimer: any
   stopIndex: number
 
   constructor(public opts: FormBuilderOptions, public fb: FormBuilder) {
     this.data = instanceData[this.fb.formID]
-    this.d = instanceDom[this.fb.formID]
 
     this.layout = new opts.layout(opts.layoutTemplates, true)
 
@@ -142,7 +142,7 @@ export class Helpers {
    */
   prepData(form) {
     const formData = []
-    const d = this.d
+    const d = this.fb.d
 
     if (form.childNodes.length !== 0) {
       const fields = []
@@ -277,7 +277,7 @@ export class Helpers {
    */
   save(minify = false) {
     const data = this.data
-    const stage = this.d.stage
+    const stage = this.fb.d.stage
     const doSave = {
       xml: () => this.xmlSave(stage),
       json: minify => window.JSON.stringify(this.prepData(stage), null, minify && '  '),
@@ -323,7 +323,7 @@ export class Helpers {
    * @param  {Object} $field jQuery DOM element
    */
   updatePreview($field) {
-    const d = this.d
+    const d = this.fb.d
     const fieldClass = $field.attr('class')
     const field = $field[0]
     if (fieldClass.includes('input-control')) {
@@ -612,7 +612,7 @@ export class Helpers {
   addDefaultFields() {
     // Load default fields if none are set
     config.opts.defaultFields.forEach(field => this.fb.prepFieldVars(field))
-    this.d.stage.classList.remove('empty')
+    this.fb.d.stage.classList.remove('empty')
   }
 
   /**
@@ -683,7 +683,7 @@ export class Helpers {
    * @param  {Object} stage
    */
   closeAllEdit() {
-    $(this.d.stage)
+    $(this.fb.d.stage)
       .find('li.form-field')
       .each((i, elem) => {
         this.closeField(elem.id, false)
@@ -840,7 +840,7 @@ export class Helpers {
    * Controls follow scroll to the bottom of the editor
    */
   stickyControls() {
-    const { controls, stage } = this.d
+    const { controls, stage } = this.fb.d
     const $cbWrap = $(controls).parent()
     const cbPosition = controls.getBoundingClientRect()
     const { top: stageTop } = stage.getBoundingClientRect()
@@ -913,7 +913,7 @@ export class Helpers {
    */
   removeField(fieldID: string, animationSpeed = 250) {
     let fieldRemoved = false
-    const form = this.d.stage
+    const form = this.fb.d.stage
     const fields = form.getElementsByClassName('form-field')
 
     if (!fields.length) {
@@ -930,7 +930,7 @@ export class Helpers {
       config.opts.notify.warning('fieldID required to remove specific fields.')
       config.opts.notify.warning('Removing last field since no ID was supplied.')
       config.opts.notify.warning(`Available IDs: ${availableIds.join(', ')}`)
-      fieldID = form.lastChild.id
+      fieldID = form.lastElementChild.id //FYI Kevin this might have been a bug. lastChild is not supposed to have the id property
     }
 
     const $field = $(field)
@@ -1064,7 +1064,7 @@ export class Helpers {
    * @param  {String} formID [description]
    */
   editorUI(formID, opts: FormBuilderOptions) {
-    const d = this.d
+    const d = this.fb.d
     const data = this.data
     const id = formID || data.formID
 
@@ -1124,9 +1124,9 @@ export class Helpers {
     this.closeAllEdit()
 
     const data = {
-      js: () => this.prepData(this.d.stage),
-      xml: () => this.xmlSave(this.d.stage),
-      json: formatted => window.JSON.stringify(this.prepData(this.d.stage), null, formatted && '  '),
+      js: () => this.prepData(this.fb.d.stage),
+      xml: () => this.xmlSave(this.fb.d.stage),
+      json: formatted => window.JSON.stringify(this.prepData(this.fb.d.stage), null, formatted && '  '),
     }
 
     return data[type](formatted)
@@ -1274,5 +1274,18 @@ export class Helpers {
   changeBootstrapClass(className, newValue) {
     const boostrapClass = this.getBootstrapColumnClass(className)
     return className.replace(boostrapClass, `${this.getBootstrapColumnPrefix(className)}-${newValue}`)
+  }
+
+  /**
+   * increments the field ids with support for multiple editors
+   * @param  {String} id field ID
+   * @return {String}    incremented field ID
+   */
+  incrementId(id) {
+    const split = id.lastIndexOf('-')
+    const newFieldNumber = parseInt(id.substring(split + 1)) + 1
+    const baseString = id.substring(0, split)
+
+    return `${baseString}-${newFieldNumber}`
   }
 }

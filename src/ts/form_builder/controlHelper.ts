@@ -1,5 +1,5 @@
 import { FormBuilder } from 'ts/form_builder/formBuilder'
-import { Field, FormBuilderOptions } from '../../types/formbuilder-types'
+import { fbControlType, Field, FormBuilderOptions } from '../../types/formbuilder-types'
 import events from '../shared/events'
 import { hyphenCase, nameAttr } from '../shared/utils'
 import { FormBuilderControlFieldHelper } from './fieldHelper'
@@ -10,7 +10,7 @@ export class FormBuilderControlHelper {
     this.fieldHelper = new FormBuilderControlFieldHelper(opts, fb)
   }
 
-  processControl(control) {
+  processControl(control: JQuery) {
     if (this.IsInputSetControl(control)) {
       this.processInputSetControl(control)
     } else {
@@ -18,16 +18,16 @@ export class FormBuilderControlHelper {
     }
   }
 
-  private IsInputSetControl(control: any) {
+  private IsInputSetControl(control: JQuery) {
     return control[0].classList.contains('input-set-control')
   }
 
   // builds the standard formbuilder datastructure for a field definition
-  prepFieldVars($field, isNew = false) {
+  prepFieldVars($field: JQuery, isNew = false) {
     let field: Field = {}
 
     if ($field instanceof jQuery) {
-      field.type = $field[0].dataset.type
+      field.type = $field[0].dataset.type as fbControlType
       if (field.type) {
         const custom = this.fb.controls.custom.lookup(field.type)
 
@@ -55,7 +55,7 @@ export class FormBuilderControlHelper {
         }
       }
     } else {
-      field = Object.assign({}, $field)
+      field = Object.assign({}, $field) as Field
     }
 
     if (!field.name) {
@@ -85,7 +85,7 @@ export class FormBuilderControlHelper {
     this.fb.d.stage.classList.remove('empty')
   }
 
-  private processInputSetControl(control: any) {
+  private processInputSetControl(control: JQuery) {
     const inputSets = []
     const inputSet = this.fb.opts.inputSets.find(set => hyphenCase(set.name || set.label) === control[0].dataset.type)
 
