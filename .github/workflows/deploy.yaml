@@ -21,9 +21,9 @@ jobs:
         run: npm install
       - name: Build the plugin
         run: npm run build:all
-      - name: API Demo Deploy - https://kevinchappell.github.io/formBuilder/
+      - name: Deploy Demo 🚀 https://kevinchappell.github.io/formBuilder/
         if: success()
-        uses: maxheld83/ghpages@v0.2.1
-        env:
-          BUILD_DIR: demo/
-          GH_PAT: ${{ secrets.GH_TOKEN }}
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        with:
+          branch: gh-pages
+          folder: demo
