@@ -1079,8 +1079,6 @@ export class Helpers {
    * @return {Array|String} formData
    */
   getFormData(type = 'js', formatted = false) {
-    this.closeAllEdit()
-
     const data = {
       js: () => this.prepData(this.fb.stage),
       xml: () => this.xmlSave(this.fb.stage),
