@@ -1,7 +1,7 @@
-import { Layout } from '../ts/shared/layout'
-import { FormBuilderOptions } from './formbuilder-types'
-import { FormRenderOptions } from './formrender-types'
-import { LayoutTemplates } from './shared-types'
+import controlCustom from 'ts/control/custom'
+import { Layout } from '../../ts/shared/layout'
+import { FormBuilderOptions } from '../formbuilder-types'
+import { LayoutTemplates } from '../shared-types'
 
 //Test form builder options
 
@@ -49,6 +49,26 @@ const actionButtons = [
     },
   },
 ]
+
+class control1 extends controlCustom {
+  configure() {
+    console.log('')
+  }
+
+  onRender() {
+    console.log('')
+  }
+}
+
+class control2 extends controlCustom {
+  configure() {
+    console.log('')
+  }
+
+  onRender() {
+    console.log('')
+  }
+}
 
 class customLayoutClass extends Layout {}
 
@@ -254,46 +274,6 @@ const options: Partial<FormBuilderOptions> = {
     return
   },
   layout: customLayoutClass,
+  controls: [control1, control2],
 }
 console.log(options)
-
-const defaults: FormRenderOptions = {
-  layout: Layout,
-  layoutTemplates: {},
-  controls: {},
-  controlConfig: {
-    'textarea.tinymce': {
-      paste_data_images: false,
-    },
-  },
-  container: false,
-  dataType: 'json',
-  formData: false,
-  i18n: Object.assign({}),
-  messages: {
-    formRendered: 'Form Rendered',
-    noFormData: 'No form data.',
-    other: 'Other',
-    selectColor: 'Select Color',
-    invalidControl: 'Invalid control',
-  },
-  onRender: () => {
-    return
-  },
-  render: true,
-  templates: {},
-  notify: {
-    error: error => {
-      console.log(error)
-    },
-    success: success => {
-      console.log(success)
-    },
-    warning: warning => {
-      console.warn(warning)
-    },
-  },
-  disableInjectedStyle: true,
-  forceTemplate: 'hidden',
-}
-console.log(defaults)

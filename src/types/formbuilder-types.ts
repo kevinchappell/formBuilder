@@ -1,4 +1,5 @@
 import { EditorManager } from 'tinymce'
+import controlCustom from 'ts/control/custom'
 import { Layout } from '../ts/shared/layout'
 import { PartialRecord } from './helper-types'
 import { ControlConfig, dataType, LayoutTemplates, notify } from './shared-types'
@@ -172,6 +173,7 @@ export interface FormBuilderOptions {
   enableEnhancedBootstrapGrid?: boolean
   i18n?: i18n
   controlConfig?: ControlConfig
+  controls?: typeof controlCustom[]
 }
 
 export type fbAllControlTypes = fbControlType | fbControlSubtype

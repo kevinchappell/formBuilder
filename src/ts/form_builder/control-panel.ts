@@ -47,7 +47,7 @@ export default class ControlPanel {
     const opts = this.opts
 
     // load in any custom specified controls, or preloaded plugin controls
-    Control.loadCustom(opts.controls) //Kevin, so does the formbuilder options actually include customcontrols?
+    Control.loadCustom(opts.controls)
     // register any passed custom templates & fields
     if (Object.keys(opts.fields).length) {
       controlCustom.registerCustom(opts.templates, opts.fields)

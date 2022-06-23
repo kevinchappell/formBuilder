@@ -1,4 +1,5 @@
 import mi18n from 'mi18n'
+import controlCustom from 'ts/control/custom'
 import { fbAllControlTypes, fbControlSubtype, fbControlType, SubTypeOptions } from 'types/formbuilder-types'
 import { PartialRecord } from 'types/helper-types'
 import { ControlConfig } from 'types/shared-types'
@@ -109,7 +110,11 @@ export default class Control {
    * @param {String} parentType - optional - if defined, any classes registered
    * will be registered as subtypes of this parent
    */
-  static register(types: string | string[], controlClass: typeof Control, parentType: string = null) {
+  static register(
+    types: string | string[],
+    controlClass: typeof Control | typeof controlCustom,
+    parentType: string = null,
+  ) {
     // store subtypes as <type>.<subtype> in the register
     const prefix = parentType ? `${parentType}.` : ''
 
@@ -305,7 +310,7 @@ export default class Control {
    *   - hidden - this control shouldn't render anything visible to the page
    * @return {Object} DOM Element to be injected into the form, or an object/hash of configuration as above
    */
-  build() {
+  build(): HTMLElement | void | { field: any; layout: any } {
     const { label, type, ...data } = this.config
     return this.markup(type, parsedHtml(label), data)
   }
