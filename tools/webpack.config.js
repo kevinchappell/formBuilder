@@ -10,7 +10,7 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const path = require('path')
-const WrapperPlugin = require('wrapper-webpack-plugin')
+const WrapperPlugin = require('./wrapper-webpack-plugin.js')
 
 // hack for Ubuntu on Windows
 try {
