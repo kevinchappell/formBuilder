@@ -10,6 +10,7 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const path = require('path')
+const WrapperPlugin = require('./wrapper-webpack-plugin.js')
 
 // hack for Ubuntu on Windows
 try {
@@ -123,6 +124,11 @@ const webpackConfig = {
         root: join(__dirname, '..'),
       },
     ),
+    new WrapperPlugin({
+      test: /\.js$/, // only wrap output of bundle files with '.js' extension
+      header: '(function ($) { "use strict";\n',
+      footer: '\n})(jQuery);',
+    }),
     new DefinePlugin({
       FB_EN_US: JSON.stringify(langFiles['en-US']),
     }),
