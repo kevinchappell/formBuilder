@@ -221,7 +221,6 @@ export default class Control {
     // see src/ts/control_plugins/ for an example
     if (!this.fbControlsLoaded) {
       for (const loadControl of controlClasses) {
-        //Kevin - is there an example of how do this whole custom Control process via passing into the controls configuration? I didn't find anything on the website
         loadControl(Control, Control.classRegister)
       }
       this.fbControlsLoaded = true
