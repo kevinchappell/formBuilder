@@ -1704,6 +1704,7 @@ function FormBuilder(opts, element, $) {
       } else {
         prevOptions = document.getElementsByName(e.target.name)
         forEach(prevOptions, i => {
+          if (prevOptions[i].classList.contains('other-option')) return //Cannot set other as a default checked
           const selectedOption = options[i].parentElement.childNodes[0]
           selectedOption.checked = prevOptions[i].checked
         })
