@@ -124,7 +124,6 @@ export default class controlSelect extends control {
               const otherInput = evt.target
               const other = otherInput.parentElement.previousElementSibling
               other.value = otherInput.value
-              other.name = `${data.id}[]`
             },
           },
           id: `${otherOptionAttrs.id}-value`,
