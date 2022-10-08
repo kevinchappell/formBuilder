@@ -1639,7 +1639,7 @@ function FormBuilder(opts, element, $) {
 
   // touch focus
   $stage.on('touchstart', 'input', e => {
-    const $input = $(this)
+    const $input = $(e.target)
     if (e.handled !== true) {
       if ($input.attr('type') === 'checkbox') {
         $input.trigger('click')
