@@ -882,7 +882,7 @@ function FormBuilder(opts, element, $) {
    */
   const numberAttribute = (attribute, values) => {
     const { class: classname, className, value, ...attrs } = values
-    const attrVal = attrs[attribute] || value
+    const attrVal = (isNaN(attrs[attribute])) ? value : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
 
