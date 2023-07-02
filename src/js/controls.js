@@ -4,6 +4,7 @@ import controlCustom from './control/custom'
 import { unique, hyphenCase, markup as m } from './utils'
 import { empty } from './dom'
 import { css_prefix_text } from '../fonts/config.json'
+import storageAvailable from 'storage-available'
 
 /**
  * control parent class for creating control panel
@@ -129,7 +130,7 @@ export default class Controls {
     let fieldOrder
 
     // retrieve any saved ordering from the session
-    if (window.sessionStorage) {
+    if (storageAvailable('sessionStorage')) {
       if (opts.sortableControls) {
         fieldOrder = window.sessionStorage.getItem('fieldOrder')
       } else {

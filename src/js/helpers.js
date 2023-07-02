@@ -21,6 +21,7 @@ import events from './events'
 import { config, defaultTimeout } from './config'
 import control from './control'
 import controlCustom from './control/custom'
+import storageAvailable from 'storage-available'
 
 /**
  * Utilities specific to form-builder.js
@@ -752,7 +753,7 @@ export default class Helpers {
     if (!config.opts.sortableControls) {
       return false
     }
-    const { sessionStorage, JSON } = window
+    const JSON = window.JSON
 
     const fieldOrder = []
 
@@ -763,8 +764,8 @@ export default class Helpers {
       }
     })
 
-    if (sessionStorage) {
-      sessionStorage.setItem('fieldOrder', JSON.stringify(fieldOrder))
+    if (storageAvailable('sessionStorage')) {
+      window.sessionStorage.setItem('fieldOrder', JSON.stringify(fieldOrder))
     }
     return fieldOrder
   }
