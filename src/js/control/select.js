@@ -105,7 +105,7 @@ export default class controlSelect extends control {
       if (!isSelect && other) {
         const otherOptionAttrs = {
           id: `${data.id}-other`,
-          className: `${data.className} other-option`,
+          className: `${data.className ?? ''} other-option`,
           value: '',
         }
 
