@@ -422,9 +422,10 @@ function FormBuilder(opts, element, $) {
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
     const options = m(
       'ol',
-      fieldValues.map((option, index) => {
+      fieldValues.map((option, index, _, fieldName = fieldData.name) => {
         const optionData = config.opts.onAddOption(option, { type, index, isMultiple })
-        return selectFieldOptions(optionData, isMultiple)
+        const optionGroupName = fieldName + '-options'
+        return selectFieldOptions(optionGroupName, optionData, isMultiple)
       }),
       {
         className: 'sortable-options',
@@ -1513,7 +1514,7 @@ function FormBuilder(opts, element, $) {
   }
 
   // Select field html, since there may be multiple
-  const selectFieldOptions = function (optionData, multipleSelect) {
+  const selectFieldOptions = function (optionGroupName, optionData, multipleSelect) {
     const optionTemplate = { selected: false, label: '', value: '' }
     const optionInputType = {
       selected: multipleSelect ? 'checkbox' : 'radio',
@@ -1524,6 +1525,7 @@ function FormBuilder(opts, element, $) {
         if (value) {
           attrs.checked = !!value
         }
+        attrs.name = optionGroupName //Set a name for the boolean checks to ensure radio-group can only have a maximum of one option selected
         return ['input', null, attrs]
       },
       number: value => ['input', null, { value, type: 'number' }],
@@ -2342,7 +2344,7 @@ function FormBuilder(opts, element, $) {
       index: $sortableOptions.children().length,
       isMultiple,
     })
-    $sortableOptions.append(selectFieldOptions(optionData, isMultiple))
+    $sortableOptions.append(selectFieldOptions($firstOption.attr('name'), optionData, isMultiple))
   })
 
   $stage.on('mouseover mouseout', '.remove, .del-button', e => $(e.target).closest('li').toggleClass('delete'))
