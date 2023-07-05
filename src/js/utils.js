@@ -495,8 +495,8 @@ export const getStyles = (scriptScr, path) => {
     if (typeof src == 'object') {
       type = src.type || (src.style ? 'inline' : 'href')
       id = src.id
-      src = type == 'inline' ? src.style : src.href
       key = id || src.href || src.style
+      src = type == 'inline' ? src.style : src.href
     }
 
     // check we haven't already loaded this css
