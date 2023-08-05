@@ -130,7 +130,7 @@ export default class controlSelect extends control {
           className: 'other-val',
         }
         const primaryInput = this.markup('input', null, optionAttrs)
-        const otherInputs = [document.createTextNode('Other'), this.markup('input', null, otherValAttrs)]
+        const otherInputs = [document.createTextNode(control.mi18n('other')), this.markup('input', null, otherValAttrs)]
         const inputLabel = this.markup('label', otherInputs, { for: optionAttrs.id })
         const wrapper = this.markup('div', [primaryInput, inputLabel], { className: wrapperClass })
         options.push(wrapper)
