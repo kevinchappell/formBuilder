@@ -35,7 +35,7 @@ export default class controlTextarea extends control {
   onRender() {
     // Set userData if available
     if (this.config.userData) {
-      $('#' + this.config.name).val(this.config.userData[0])
+      $(this.field).val(this.config.userData[0])
     }
   }
 
