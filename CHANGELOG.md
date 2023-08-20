@@ -1,3 +1,10 @@
+## [3.9.1](https://github.com/kevinchappell/formBuilder/compare/v3.9.0...v3.9.1) (2023-08-20)
+
+
+### Bug Fixes
+
+* publish github action ([39a73fb](https://github.com/kevinchappell/formBuilder/commit/39a73fb826fe81eae5398480d52d2f7a34267eaf))
+
 # [3.9.0](https://github.com/kevinchappell/formBuilder/compare/v3.8.3...v3.9.0) (2023-08-20)
 
 
