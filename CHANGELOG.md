@@ -1,3 +1,10 @@
+# [3.9.0](https://github.com/kevinchappell/formBuilder/compare/v3.8.3...v3.9.0) (2023-08-20)
+
+
+### Features
+
+* update readme ([2379b5b](https://github.com/kevinchappell/formBuilder/commit/2379b5baba75df148afa1eba8e2d9bf4b4a3cdbb))
+
 ## [3.8.3](https://github.com/kevinchappell/formBuilder/compare/v3.8.2...v3.8.3) (2022-03-25)
 
 
