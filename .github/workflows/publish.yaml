@@ -5,28 +5,42 @@ on:
     branches:
       - master
 
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  FORMBUILDER_WEBSITE_DIR: ${{ secrets.FORMBUILDER_WEBSITE_DIR }}
+  FORMBUILDER_WEBSITE_REPO: ${{ secrets.FORMBUILDER_WEBSITE_REPO }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [12]
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+      packages: write
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Nodejs ${{ matrix.node }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
       - name: Install dependencies
         env:
           CI: true
         run: npm install
       - name: Build the plugin
         run: npm run build
+
       - name: Publish the plugin
         if: success()
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          FORMBUILDER_WEBSITE_DIR: ${{ secrets.FORMBUILDER_WEBSITE_DIR }}
-          FORMBUILDER_WEBSITE_REPO: ${{ secrets.FORMBUILDER_WEBSITE_REPO }}
         run: npx semantic-release
+
+      - name: Deploy the website
+        if: success()
+        run: npm run deploy:site
