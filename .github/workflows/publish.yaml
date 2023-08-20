@@ -49,6 +49,7 @@ jobs:
       - name: Deploy the website
         env:
           VERSION: ${{ steps.get_version.outputs.version }}
+          TOKEN: ${{ secrets.FORMBUILDER_SITE_PAT }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -59,4 +60,4 @@ jobs:
 
           # Commit and push the changes
           git commit -am "Update site to ${{ env.VERSION }}"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kevinchappell/formBuilder-site.git master
+          git push https://${{ secrets.TOKEN }}@github.com/kevinchappell/formBuilder-site.git master
