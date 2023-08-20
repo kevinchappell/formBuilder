@@ -54,10 +54,10 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-          git clone https://$TOKEN@github.com/kevinchappell/formBuilder-site.git
+          git clone https://${TOKEN}@github.com/kevinchappell/formBuilder-site.git
           cd formBuilder-site
           npm version ${{ env.VERSION }}
 
           # Commit and push the changes
           git commit -am "Update site to ${{ env.VERSION }}"
-          git push https://$TOKEN@github.com/kevinchappell/formBuilder-site.git master
+          git push https://${TOKEN}@github.com/kevinchappell/formBuilder-site.git master
