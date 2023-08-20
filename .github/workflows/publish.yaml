@@ -55,8 +55,8 @@ jobs:
 
           git clone https://github.com/kevinchappell/formBuilder-site.git
           cd formBuilder-site
-          npm version ${{ env.version }}
+          npm version ${{ env.VERSION }}
 
           # Commit and push the changes
-          git commit -am "Update site to ${{ env.version }}"
+          git commit -am "Update site to ${{ env.VERSION }}"
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/kevinchappell/formBuilder-site.git master
