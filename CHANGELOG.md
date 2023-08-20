@@ -1,3 +1,10 @@
+## [3.9.6](https://github.com/kevinchappell/formBuilder/compare/v3.9.5...v3.9.6) (2023-08-20)
+
+
+### Bug Fixes
+
+* auto deploy site ([3fc6e0d](https://github.com/kevinchappell/formBuilder/commit/3fc6e0daeb44082443d3afc5b973b7ecb5b15f0b))
+
 ## [3.9.5](https://github.com/kevinchappell/formBuilder/compare/v3.9.4...v3.9.5) (2023-08-20)
 
 
