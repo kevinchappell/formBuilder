@@ -1,12 +1,8 @@
 const { exec } = require('child_process')
 const pkg = require('../package.json')
 
-const siteReo = pkg.repository.url.replace(/.git$/, '-site.git')
-const siteDir = process.env.FORMBUILDER_WEBSITE_DIR || 'site'
-
 const commands = [
-  `git clone ${siteReo} ${siteDir}`,
-  `cd ${siteDir}/`,
+  `cd ${process.env.FORMBUILDER_WEBSITE_DIR || 'site'}/`,
   `npm version ${pkg.version}`,
   'git push origin master',
 ]

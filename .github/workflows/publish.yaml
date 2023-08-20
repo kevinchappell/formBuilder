@@ -9,8 +9,6 @@ env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  FORMBUILDER_WEBSITE_DIR: ${{ secrets.FORMBUILDER_WEBSITE_DIR }}
-  FORMBUILDER_WEBSITE_REPO: ${{ secrets.FORMBUILDER_WEBSITE_REPO }}
 
 jobs:
   build:
@@ -41,6 +39,24 @@ jobs:
         if: success()
         run: npx semantic-release
 
-      - name: Deploy the website
+      - name: Get npm package version using jq
         if: success()
-        run: npm run deploy:site
+        id: get_version
+        run: |
+          VERSION=$(jq -r ".version" package.json)
+          echo "::set-output name=version::$VERSION"
+
+      - name: Deploy the website
+        env:
+          VERSION: ${{ steps.get_version.outputs.version }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          git clone https://github.com/kevinchappell/formBuilder-site.git
+          cd formBuilder-site
+          npm version ${{ env.version }}
+
+          # Commit and push the changes
+          git commit -am "Update site to ${{ env.version }}"
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/kevinchappell/formBuilder-site.git master
