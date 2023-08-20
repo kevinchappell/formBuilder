@@ -1,0 +1,58 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - deploy
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies
+        env:
+          CI: true
+        run: npm install
+      - name: Build the plugin
+        run: npm run build
+
+      - name: Get npm package version using jq
+        if: success()
+        id: get_version
+        run: |
+          VERSION=$(jq -r ".version" package.json)
+          echo "::set-output name=version::$VERSION"
+
+      - name: Deploy the website
+        env:
+          VERSION: ${{ steps.get_version.outputs.version }}
+          TOKEN: ${{ secrets.FORMBUILDER_SITE_PAT }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          git clone https://${TOKEN}@github.com/kevinchappell/formBuilder-site.git
+          cd formBuilder-site
+          npm version ${{ env.VERSION }}
+
+          # Commit and push the changes
+          git commit -am "Update site to ${{ env.VERSION }}"
+          git push https://${TOKEN}@github.com/kevinchappell/formBuilder-site.git master
