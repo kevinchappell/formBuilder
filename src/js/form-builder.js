@@ -412,9 +412,10 @@ function FormBuilder(opts, element, $) {
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
     const options = m(
       'ol',
-      fieldValues.map((option, index) => {
+      fieldValues.map((option, index, _, fieldName = fieldData.name) => {
         const optionData = config.opts.onAddOption(option, { type, index, isMultiple })
-        return selectFieldOptions(optionData, isMultiple)
+        const optionGroupName = fieldName + '-options'
+        return selectFieldOptions(optionGroupName, optionData, isMultiple)
       }),
       {
         className: 'sortable-options',
@@ -872,7 +873,7 @@ function FormBuilder(opts, element, $) {
    */
   const numberAttribute = (attribute, values) => {
     const { class: classname, className, value, ...attrs } = values
-    const attrVal = attrs[attribute] || value
+    const attrVal = (isNaN(attrs[attribute])) ? value : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
 
@@ -1503,7 +1504,7 @@ function FormBuilder(opts, element, $) {
   }
 
   // Select field html, since there may be multiple
-  const selectFieldOptions = function (optionData, multipleSelect) {
+  const selectFieldOptions = function (optionGroupName, optionData, multipleSelect) {
     const optionTemplate = { selected: false, label: '', value: '' }
     const optionInputType = {
       selected: multipleSelect ? 'checkbox' : 'radio',
@@ -1514,6 +1515,7 @@ function FormBuilder(opts, element, $) {
         if (value) {
           attrs.checked = !!value
         }
+        attrs.name = optionGroupName //Set a name for the boolean checks to ensure radio-group can only have a maximum of one option selected
         return ['input', null, attrs]
       },
       number: value => ['input', null, { value, type: 'number' }],
@@ -1629,7 +1631,7 @@ function FormBuilder(opts, element, $) {
 
   // touch focus
   $stage.on('touchstart', 'input', e => {
-    const $input = $(this)
+    const $input = $(e.target)
     if (e.handled !== true) {
       if ($input.attr('type') === 'checkbox') {
         $input.trigger('click')
@@ -1694,6 +1696,7 @@ function FormBuilder(opts, element, $) {
       } else {
         prevOptions = document.getElementsByName(e.target.name)
         forEach(prevOptions, i => {
+          if (prevOptions[i].classList.contains('other-option')) return //Cannot set other as a default checked
           const selectedOption = options[i].parentElement.childNodes[0]
           selectedOption.checked = prevOptions[i].checked
         })
@@ -2331,7 +2334,7 @@ function FormBuilder(opts, element, $) {
       index: $sortableOptions.children().length,
       isMultiple,
     })
-    $sortableOptions.append(selectFieldOptions(optionData, isMultiple))
+    $sortableOptions.append(selectFieldOptions($firstOption.attr('name'), optionData, isMultiple))
   })
 
   $stage.on('mouseover mouseout', '.remove, .del-button', e => $(e.target).closest('li').toggleClass('delete'))

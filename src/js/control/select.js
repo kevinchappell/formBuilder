@@ -105,7 +105,7 @@ export default class controlSelect extends control {
       if (!isSelect && other) {
         const otherOptionAttrs = {
           id: `${data.id}-other`,
-          className: `${data.className} other-option`,
+          className: `${data.className ?? ''} other-option`,
           value: '',
         }
 
@@ -124,14 +124,13 @@ export default class controlSelect extends control {
               const otherInput = evt.target
               const other = otherInput.parentElement.previousElementSibling
               other.value = otherInput.value
-              other.name = `${data.id}[]`
             },
           },
           id: `${otherOptionAttrs.id}-value`,
           className: 'other-val',
         }
         const primaryInput = this.markup('input', null, optionAttrs)
-        const otherInputs = [document.createTextNode('Other'), this.markup('input', null, otherValAttrs)]
+        const otherInputs = [document.createTextNode(control.mi18n('other')), this.markup('input', null, otherValAttrs)]
         const inputLabel = this.markup('label', otherInputs, { for: optionAttrs.id })
         const wrapper = this.markup('div', [primaryInput, inputLabel], { className: wrapperClass })
         options.push(wrapper)

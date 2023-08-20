@@ -40,6 +40,9 @@ const bannerTemplate = ({ chunk }) => {
 }
 
 const webpackConfig = {
+  node: {
+    global: false,
+  },
   context: outputDir,
   entry: {
     'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.ts),
