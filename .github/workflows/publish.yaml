@@ -59,4 +59,4 @@ jobs:
 
           # Commit and push the changes
           git commit -am "Update site to ${{ env.VERSION }}"
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/kevinchappell/formBuilder-site.git master
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kevinchappell/formBuilder-site.git master
