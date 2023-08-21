@@ -3,8 +3,10 @@ import control from './control'
 import controlCustom from './control/custom'
 import { unique, hyphenCase, markup as m } from './utils'
 import { empty } from './dom'
-import { css_prefix_text } from '../fonts/config.json'
+import fontConfig from '../fonts/config.json'
 import storageAvailable from 'storage-available'
+
+const css_prefix_text = fontConfig.css_prefix_text
 
 /**
  * control parent class for creating control panel
