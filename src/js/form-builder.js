@@ -686,7 +686,7 @@ function FormBuilder(opts, element, $) {
         } else if (attrData.hasOwnProperty('value') || attrData.hasOwnProperty('checked')) {
           isChecked = attrData.value || attrData.checked || false
         }
-        return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: attrData.label })
+        return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: i18n[attr] })
       },
     }
 
