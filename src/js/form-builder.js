@@ -882,8 +882,8 @@ function FormBuilder(opts, element, $) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const { class: classname, className, value, ...attrs } = values
-    const attrVal = (isNaN(attrs[attribute])) ? value : attrs[attribute]
+    const { class: classname, className, ...attrs } = values
+    const attrVal = (isNaN(attrs[attribute])) ? undefined : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
 
