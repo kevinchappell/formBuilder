@@ -1027,7 +1027,7 @@ function FormBuilder(opts, element, $) {
     data.lastID = h.incrementId(data.lastID)
 
     const type = values.type || 'text'
-    let label = values.label || (isNew ? i18n.get(type) || mi18n.get('label') : '')
+    let label = values.label || (isNew ? i18n[type] || mi18n.get('label') : '')
     if (type === 'hidden') {
       label = `${mi18n.get(type)}: ${values.name}`
     }
