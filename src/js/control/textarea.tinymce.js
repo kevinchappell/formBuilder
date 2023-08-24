@@ -82,6 +82,18 @@ export default class controlTinymce extends controlTextarea {
     const options = jQuery.extend(this.editorOptions, this.classConfig)
     options.target = this.field
 
+    //Remove any defined plugins from the list if they have been removed or moved to Core as part of major version updates
+    const removedPlugins = []
+    if (Number(window.tinymce.majorVersion) >= 5) {
+      removedPlugins.push('contextmenu')
+    }
+    if (Number(window.tinymce.majorVersion) >= 6) {
+      removedPlugins.push('paste','print')
+    }
+    options.plugins = options.plugins.filter(plugin => {
+      return (removedPlugins.indexOf(plugin) === -1)
+    })
+
     const userData = this.config.userData ? this.parsedHtml(this.config.userData[0]) : undefined
     const copiedData = window.lastFormBuilderCopiedTinyMCE ? this.parsedHtml(window.lastFormBuilderCopiedTinyMCE) : undefined
     window.lastFormBuilderCopiedTinyMCE = null
