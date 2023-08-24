@@ -32,7 +32,7 @@ export default class controlTinymce extends controlTextarea {
       if (!Array.isArray(js)) {
         js = new Array(js)
       }
-      this.js.concat(js)
+      this.js = this.js.concat(js)
       delete this.classConfig.js
     }
 
