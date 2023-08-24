@@ -70,36 +70,33 @@ export default class controlTinymce extends controlTextarea {
 
   /**
    * When the element is rendered into the DOM, execute the following code to initialise it
-   * @param {Object} evt - event
    */
-  onRender(evt) {
-    if (window.tinymce.editors[this.id]) {
-      window.tinymce.editors[this.id].remove()
+  onRender() {
+    const oldInst = window.tinymce.get(this.id)
+    if (oldInst) {
+      window.tinymce.remove(oldInst)
     }
 
     // define options & allow them to be overwritten in the class config
     const options = jQuery.extend(this.editorOptions, this.classConfig)
     options.target = this.field
 
+    const userData = this.config.userData ? this.parsedHtml(this.config.userData[0]) : undefined
+    const copiedData = window.lastFormBuilderCopiedTinyMCE ? this.parsedHtml(window.lastFormBuilderCopiedTinyMCE) : undefined
+    window.lastFormBuilderCopiedTinyMCE = null
+    const afterInit = function (inst) {
+      // Set userData
+      if (copiedData) {
+        inst.setContent(copiedData)
+      } else if (userData) {
+        inst.setContent(userData)
+      }
+    }
+
     setTimeout(() => {
       // initialise the editor
-      window.tinymce.init(options)
-    }, 100)
-
-    // Set userData
-    if (this.config.userData) {
-      window.tinymce.editors[this.id].setContent(this.parsedHtml(this.config.userData[0]))
-    }
-
-    if (window.lastFormBuilderCopiedTinyMCE) {
-      const timeout = setTimeout(() => {
-        window.tinymce.editors[this.id].setContent(this.parsedHtml(window.lastFormBuilderCopiedTinyMCE))
-        window.lastFormBuilderCopiedTinyMCE = null
-        clearTimeout(timeout)
-      }, 300)
-    }
-
-    return evt
+      window.tinymce.init(options).then(afterInit)
+    }, 0)
   }
 }
 
