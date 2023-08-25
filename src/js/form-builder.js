@@ -1051,6 +1051,18 @@ function FormBuilder(opts, element, $) {
         className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
+      m('a', null, {
+        type: 'sort',
+        id: data.lastID + '-sort-higher',
+        className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
+        title: 'Move Higher',
+      }),
+      m('a', null, {
+        type: 'sort',
+        id: data.lastID + '-sort-lower',
+        className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
+        title: 'Move Lower',
+      })
     ]
 
     if (enhancedBootstrapEnabled()) {
@@ -1827,7 +1839,7 @@ function FormBuilder(opts, element, $) {
   })
 
   // Copy field
-  $stage.on('click touchstart', `.${css_prefix_text}copy`, function (evt) {
+  $stage.on('click', `.${css_prefix_text}copy`, function (evt) {
     evt.preventDefault()
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
@@ -1876,7 +1888,7 @@ function FormBuilder(opts, element, $) {
   }
 
   // Delete field
-  $stage.on('click touchstart', '.delete-confirm', e => {
+  $stage.on('click', '.delete-confirm', e => {
     e.preventDefault()
 
     const buttonPosition = e.target.getBoundingClientRect()
@@ -2293,6 +2305,43 @@ function FormBuilder(opts, element, $) {
       `)
     })
   }
+
+  //Mobile support for sortable fields
+  $stage.on('click', '.field-actions .sort-button', function (evt) {
+    evt.preventDefault()
+    const currentItem = $(evt.target).parent().parent('li')
+    let swap
+    if ($(evt.target).hasClass('sort-button-higher')) {
+      swap = currentItem.prev('li')
+      if (swap.length) {
+        currentItem.insertBefore(swap)
+      }
+    } else {
+      swap = currentItem.next('li')
+      if (swap.length) {
+        currentItem.insertAfter(swap)
+      }
+    }
+
+    if (swap.length) {
+      //Animate the flashing of the background and border of the element was moved
+      currentItem.css({
+        'border-color': '#66afe9',
+        'outline': 0,
+        'box-shadow': 'inset 0 1px 1px rgba(0,0,0,.1),0 0 8px rgba(102,175,233,.6)',
+        'background-color': '#b7d6f5',
+      }).delay('fast')
+        .queue(function(next) {
+          $(this).css({
+            'border-color': '',
+            'outline': '',
+            'box-shadow': '',
+            'background-color': ''
+          })
+          next()
+        })
+    }
+  })
 
   // Update button style selection
   $stage.on('click', '.style-wrap button', e => {
