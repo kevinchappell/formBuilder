@@ -35,7 +35,8 @@ import {
   getContentType,
   generateSelectorClassNames,
 } from './utils'
-import { css_prefix_text } from '../fonts/config.json'
+import fontConfig from '../fonts/config.json'
+const css_prefix_text = fontConfig.css_prefix_text
 
 const { rowWrapperClass, colWrapperClass, tmpColWrapperClass, tmpRowPlaceholderClass, invisibleRowPlaceholderClass } =
   gridClassNames
