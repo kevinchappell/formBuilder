@@ -194,6 +194,12 @@ export default class controlSelect extends control {
           .val(selectedOptions)
           .prop('selected', true)
       } else if (this.config.type.endsWith('-group')) {
+        if (this.config.type === 'checkbox-group') {
+          //clear all checked elements prior to setting them from userData
+          this.dom.querySelectorAll('input[type=checkbox]').forEach(input => {
+            input.removeAttribute('checked')
+          })
+        }
         this.dom.querySelectorAll('input').forEach(input => {
           if (input.classList.contains('other-val')) {
             return
