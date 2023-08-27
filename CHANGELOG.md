@@ -1,3 +1,11 @@
+## [3.9.10](https://github.com/kevinchappell/formBuilder/compare/v3.9.9...v3.9.10) (2023-08-27)
+
+
+### Bug Fixes
+
+* Ensure that default selected checkboxes are unselected when loading userData that doesn't contain them. ([2d284c9](https://github.com/kevinchappell/formBuilder/commit/2d284c95114235b2a541f96611e25f47ea4c0086))
+* The major browsers handle new lines in contenteditable blocks by inserting <div> tags. This causes invalid HTML when inserting the content into a <p> with the paragraph control and when constructing <label> tags. Setting display: inline-block forces the browsers to use a <br> tag instead for new lines. ([5b700cb](https://github.com/kevinchappell/formBuilder/commit/5b700cbd757643dce55f343bda2ed91d34e98336))
+
 ## [3.9.9](https://github.com/kevinchappell/formBuilder/compare/v3.9.8...v3.9.9) (2023-08-20)
 
 
