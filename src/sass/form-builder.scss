@@ -104,14 +104,6 @@ textarea {
   }
 }
 
-.frmb-xml .ui-dialog-content {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-size: 12px;
-  padding: 0 30px;
-  margin-top: 0;
-}
-
 .toggle-form {
   opacity: 0;
 
@@ -121,20 +113,6 @@ textarea {
 
   &::before {
     margin: 0;
-  }
-}
-
-.formb-field-vars .copy-var {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  background: $grey-light-30;
-  text-indent: -9999px;
-}
-
-.ui-button {
-  .ui-button-text {
-    line-height: 0;
   }
 }
 
