@@ -110,7 +110,7 @@ export default class Controls {
         if (set.icon) {
           label = `<span class="control-icon">${set.icon}</span>${label}`
         }
-        const inputSet = m('li', label, {
+        const inputSet = m('li', m('span', label), {
           className: `input-set-control input-set-${i}`,
         })
         inputSet.dataset.type = name
