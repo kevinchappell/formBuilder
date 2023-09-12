@@ -1002,7 +1002,7 @@ export default class Helpers {
   }
 
   /**
-   * Remove a field from the stage
+   * Remove a given field from the stage or the last field if no fieldID is provided
    * @param  {String}  fieldID ID of the field to be removed
    * @param  {Number}  animationSpeed
    * @return {Boolean} fieldRemoved returns true if field is removed
@@ -1018,9 +1018,7 @@ export default class Helpers {
       return false
     }
 
-    const field = fieldID && document.getElementById(fieldID)
-
-    if (!fieldID || !field) {
+    if (!fieldID) {
       const availableIds = [].slice.call(fields).map(field => {
         return field.id
       })
@@ -1030,12 +1028,14 @@ export default class Helpers {
       fieldID = form.lastChild.id
     }
 
-    const $field = $(field)
-    const fieldRowWrapper = $field.closest(this.formBuilder.rowWrapperClassSelector)
+    const field = document.getElementById(fieldID)
     if (!field) {
       config.opts.notify.warning('Field not found')
       return false
     }
+
+    const $field = $(field)
+    const fieldRowWrapper = $field.closest(this.formBuilder.rowWrapperClassSelector)
 
     $field.slideUp(animationSpeed, function () {
       $field.removeClass('deleting')
