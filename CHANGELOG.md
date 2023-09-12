@@ -1,3 +1,12 @@
+## [3.9.16](https://github.com/kevinchappell/formBuilder/compare/v3.9.15...v3.9.16) (2023-09-12)
+
+
+### Bug Fixes
+
+* cleanup duplicate and invalid declarations ([d1f07e9](https://github.com/kevinchappell/formBuilder/commit/d1f07e973859f48a921975ec3da2febc31a6c814))
+* ensure that input[type=number] cannot overflow the stage on narrow window ([38684f3](https://github.com/kevinchappell/formBuilder/commit/38684f3fc7193435591d5a1feb16766de14bfd46))
+* Remove unused CSS ([c8da5e6](https://github.com/kevinchappell/formBuilder/commit/c8da5e667e368ab6f833b7088c96226a27d565a5))
+
 ## [3.9.15](https://github.com/kevinchappell/formBuilder/compare/v3.9.14...v3.9.15) (2023-09-12)
 
 
