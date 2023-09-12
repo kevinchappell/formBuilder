@@ -1,3 +1,10 @@
+## [3.9.14](https://github.com/kevinchappell/formBuilder/compare/v3.9.13...v3.9.14) (2023-09-12)
+
+
+### Bug Fixes
+
+* Implement field action buttons to sort form elements from touch screen devices not supported by jQuery sortable ([54fa332](https://github.com/kevinchappell/formBuilder/commit/54fa3323420e7e3d80c5e7847373752fae27363c))
+
 ## [3.9.13](https://github.com/kevinchappell/formBuilder/compare/v3.9.12...v3.9.13) (2023-09-12)
 
 
