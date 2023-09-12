@@ -1,3 +1,12 @@
+## [3.9.11](https://github.com/kevinchappell/formBuilder/compare/v3.9.10...v3.9.11) (2023-09-12)
+
+
+### Bug Fixes
+
+* i18n is a straight key/value pair, it does not contain a get() function ([ebe59ce](https://github.com/kevinchappell/formBuilder/commit/ebe59ce47c69573ded91cf1d3a69ccc1328097de))
+* If no value was set for a numberAttribute the value attribute's value was used instead. This causes min/max/step/rows/maxLen number attributes to incorrectly be assigned a value if they are not set in formData but a number exists in the value attribute ([28b1a6f](https://github.com/kevinchappell/formBuilder/commit/28b1a6f0215c39c76e68da819d6747a5d1d7d13e))
+* Use the i18n translated label for boolean typeUserAttrs. Fixes [#1391](https://github.com/kevinchappell/formBuilder/issues/1391) ([bc04612](https://github.com/kevinchappell/formBuilder/commit/bc04612ee32d6fe69dc9db37b12cd66faa20df85))
+
 ## [3.9.10](https://github.com/kevinchappell/formBuilder/compare/v3.9.9...v3.9.10) (2023-08-27)
 
 
