@@ -1,3 +1,12 @@
+## [3.9.15](https://github.com/kevinchappell/formBuilder/compare/v3.9.14...v3.9.15) (2023-09-12)
+
+
+### Bug Fixes
+
+* Ensure generation of CSS rules for .formbuilder-mobile place the selector at the .form-wrap.form-builder level ([a364136](https://github.com/kevinchappell/formBuilder/commit/a364136411432bbde2a9da58621b1f625a9dae79))
+* Show icon for custom controls on mobile phone screen sizes ([0f7a786](https://github.com/kevinchappell/formBuilder/commit/0f7a7867a0a188b49d83368d165c63287289a2de))
+* Wrap the inputSet control in a span in the same way as custom controls to ensure CSS selectors are applied correctly ([2c42831](https://github.com/kevinchappell/formBuilder/commit/2c42831147c5f3cc18c40e106eb0f70ce25194a3))
+
 ## [3.9.14](https://github.com/kevinchappell/formBuilder/compare/v3.9.13...v3.9.14) (2023-09-12)
 
 
