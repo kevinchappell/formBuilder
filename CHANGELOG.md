@@ -1,3 +1,10 @@
+## [3.9.12](https://github.com/kevinchappell/formBuilder/compare/v3.9.11...v3.9.12) (2023-09-12)
+
+
+### Bug Fixes
+
+* revert change made in https://github.com/kevinchappell/formBuilder/commit/e0c0f2ea8f204da6e11d8de938e27ca6687d5588 which declared field as a const prior to the fallback to selecting the last field in the form. This change also prevents incorrect removing of the last field in the case where a fieldID is provided but which was not found in the form ([0b7e1bb](https://github.com/kevinchappell/formBuilder/commit/0b7e1bb3cbd85884c22e484e4f234426a4ba38d0))
+
 ## [3.9.11](https://github.com/kevinchappell/formBuilder/compare/v3.9.10...v3.9.11) (2023-09-12)
 
 
