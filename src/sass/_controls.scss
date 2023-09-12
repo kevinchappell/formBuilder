@@ -129,7 +129,7 @@
   }
 }
 
-.formbuilder-mobile {
+@at-root #{selector-append(".formbuilder-mobile", &)} {
   .form-actions {
     width: 100%;
 
