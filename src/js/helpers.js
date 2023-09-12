@@ -237,8 +237,8 @@ export default class Helpers {
                 }
               } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
                 const id = `${fieldData.name}-preview`
-                if (window.tinymce.editors[id]) {
-                  const editor = window.tinymce.editors[id]
+                const editor = window.tinymce.get(id)
+                if (editor) {
                   fieldData.value = editor.getContent()
                 }
               }
