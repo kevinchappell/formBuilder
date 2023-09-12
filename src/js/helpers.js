@@ -18,7 +18,7 @@ import {
   getAllGridRelatedClasses,
 } from './utils'
 import events from './events'
-import { config, defaultTimeout } from './config'
+import { config, defaultTimeout, styles } from './config'
 import control from './control'
 import controlCustom from './control/custom'
 import storageAvailable from 'storage-available'
@@ -267,7 +267,8 @@ export default class Helpers {
             }
 
             if (fieldData.className) {
-              const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
+              const regex = new RegExp('(?:^|\\s)btn-(' + styles.btn.join('|') + ')(?:\\s|$)', 'g')
+              const match = regex.exec(fieldData.className)
               if (match) {
                 fieldData.style = match[1]
               }
@@ -481,15 +482,14 @@ export default class Helpers {
 
     if (primaryType && style) {
       for (let i = 0; i < classes.length; i++) {
-        const re = new RegExp(`^${primaryType}-.*`, 'g')
+        const re = new RegExp(`^${primaryType}-(?:` + styles.btn.join('|') + ')$')
         const match = classes[i].match(re)
         if (match) {
           classes.splice(i, 1, primaryType + '-' + style)
-        } else {
-          classes.push(primaryType + '-' + style)
         }
       }
 
+      classes.push(primaryType + '-' + style)
       classes.push(primaryType)
     }
 
