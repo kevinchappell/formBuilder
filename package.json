@@ -79,7 +79,7 @@
   },
   "scripts": {
     "build:analyze": "webpack --mode production --progress --config tools/webpack.config --analyze",
-    "build:plugins": "webpack --mode production --display-entrypoints --progress --config tools/webpack.plugins.config",
+    "build:plugins": "webpack --mode production --progress --config tools/webpack.plugins.config",
     "build:vendor": "babel-node tools/build-vendor",
     "build": "webpack --mode production --progress --config tools/webpack.config",
     "build:all": "run-s build:plugins build:vendor build copy",
@@ -150,7 +150,7 @@
     "unzipper": "^0.10.11",
     "webpack": "^5.88.0",
     "webpack-bundle-analyzer": "^4.9.0",
-    "webpack-cli": "^4.10.0",
+    "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.0",
     "wrapper-webpack-plugin": "^2.2.2"
   },
