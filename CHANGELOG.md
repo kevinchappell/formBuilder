@@ -1,3 +1,16 @@
+## [3.9.13](https://github.com/kevinchappell/formBuilder/compare/v3.9.12...v3.9.13) (2023-09-12)
+
+
+### Bug Fixes
+
+* Array of strings was removed from support in TinyMCE6, use a plugin definition format supported my all versions (https://www.tiny.cloud/docs/tinymce/6/migration-from-5x/#plugin-loading-format-change) ([92a8a72](https://github.com/kevinchappell/formBuilder/commit/92a8a720ce3b4c92414fd91a6a4ac10fe96c3ba1))
+* Array.concat does not modify the existing arrays, return value was previously discarded ([92496e3](https://github.com/kevinchappell/formBuilder/commit/92496e3f45ed6ca109fd8d8c4b572fa9fc652a26))
+* helper.js classNames was overzealous in removing classNames starting with btn- when syncing with style field, only remove those that are one of the config.js styles.btn styles ([922ca80](https://github.com/kevinchappell/formBuilder/commit/922ca80361c7a8ac8c4cf9e9148479fcd73a17bf))
+* Only load TinyMCE if it hasn't already been loaded by the page, this allows specific versions to be loaded outside the hardcoded version in the plugin ([241a83a](https://github.com/kevinchappell/formBuilder/commit/241a83a91619b7a9784f79ace0cf5ff65debc150))
+* Remove any plugins we define by default from the options if they have been removed in the loaded version of TinyMCE ([de061b2](https://github.com/kevinchappell/formBuilder/commit/de061b2ef36bd9401c95d11c7dafe62bd5367e62))
+* use the Promise interface for initialising tinymce. tinymce.editors is removed in TinyMCE6 so use the tinymce.get() and tinymce.remove() interfaces which is forwards compatible ([4583b88](https://github.com/kevinchappell/formBuilder/commit/4583b88197f2288f6ab0feea4d1c86d273998b70))
+* window.tinymce.editors[] is not forward compatible with later versions of TinyMCE. Use the get() method instead to retrieve the Editor instance ([255ed88](https://github.com/kevinchappell/formBuilder/commit/255ed88e13fd1541d908e032f7040c16ea70a439))
+
 ## [3.9.12](https://github.com/kevinchappell/formBuilder/compare/v3.9.11...v3.9.12) (2023-09-12)
 
 
