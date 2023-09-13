@@ -1,3 +1,11 @@
+## [3.9.18](https://github.com/kevinchappell/formBuilder/compare/v3.9.17...v3.9.18) (2023-09-13)
+
+
+### Bug Fixes
+
+* Apply the removal of row- and col- to child elements if field is more than just and input element (e.g. checkbox-group) ([323ac64](https://github.com/kevinchappell/formBuilder/commit/323ac64081fa28423f24edec14fcdb13349a30f0))
+* tmpCleanColumnInfo may be called multiple times, remove previous work to ensure we don't keep appending tmp- to class names. Adjust class to include a __fb- prefix. ([6fd7018](https://github.com/kevinchappell/formBuilder/commit/6fd701869bbac74e921283507227d5060ccad0ea))
+
 ## [3.9.17](https://github.com/kevinchappell/formBuilder/compare/v3.9.16...v3.9.17) (2023-09-13)
 
 
