@@ -1,3 +1,12 @@
+## [3.9.17](https://github.com/kevinchappell/formBuilder/compare/v3.9.16...v3.9.17) (2023-09-13)
+
+
+### Bug Fixes
+
+* --display-entrypoints doesn't exist in webpack v5 ([d7de595](https://github.com/kevinchappell/formBuilder/commit/d7de595c914ab04c8b72417ac53d6050c2251c0e))
+* Bump semantic-release to latest ([b3ca67b](https://github.com/kevinchappell/formBuilder/commit/b3ca67b9cca07418c3cd85f398573ad99091bc55))
+* remove deprecated package "request" and replace with build-in Node fetch API. Add "colors" dependency as it is no longer implicityly required by semantic-release ([a07ec5a](https://github.com/kevinchappell/formBuilder/commit/a07ec5aa0e2effa484b37d9b2374346f199c131a))
+
 ## [3.9.16](https://github.com/kevinchappell/formBuilder/compare/v3.9.15...v3.9.16) (2023-09-12)
 
 
