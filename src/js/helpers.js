@@ -854,7 +854,7 @@ export default class Helpers {
       cleanResults.forEach(result => {
         if (result['columnInfo'].columnSize) {
           const currentClassRow = rowContainer.attr('class')
-          if (currentClassRow != result['columnInfo'].columnSize) {
+          if (currentClassRow !== result['columnInfo'].columnSize) {
             //Keep the wrapping column div sync'd to the column property from the field
             rowContainer.attr('class', `${result['columnInfo'].columnSize} ${this.formBuilder.colWrapperClass}`)
             _this.tmpCleanPrevHolder(prevHolder)
@@ -1288,13 +1288,16 @@ export default class Helpers {
     })
 
     function tmpCleanColumnInfo($field) {
-      var classAttr = $field.attr('class')
+      const classAttr = $field.attr('class')
 
       if (typeof classAttr !== 'undefined' && classAttr !== false) {
         const parseResult = _this.tryParseColumnInfo($field[0])
 
-        $field.attr('class', $field.attr('class').replace('col-', 'tmp-col-'))
-        $field.attr('class', $field.attr('class').replace('row', 'tmp-row'))
+        //tmpCleanColumnInfo may be called multiple times, remove previous work to ensure we don't keep appending tmp- to class names
+        $field.attr('class', $field.attr('class').replace('__fb-tmp-col-', 'col-' ))
+        $field.attr('class', $field.attr('class').replace('__fb-tmp-row-', 'row-' ))
+        $field.attr('class', $field.attr('class').replace('col-', '__fb-tmp-col-'))
+        $field.attr('class', $field.attr('class').replace('row-', '__fb-tmp-row-'))
 
         const result = {}
         result['field'] = $field
