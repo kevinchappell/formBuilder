@@ -697,8 +697,8 @@ function FormBuilder(opts, element, $) {
         if (attrValType !== 'undefined') {
           const orig = mi18n.get(attribute)
           const tUA = typeUserAttr[attribute]
-          const origValue = tUA.value || ''
-          tUA.value = values[attribute] || tUA.value || ''
+          const origValue = attrValType === 'boolean' ? tUA.value : (tUA.value || '')
+          tUA.value = values[attribute] || origValue
 
           if (tUA.label) {
             i18n[attribute] = Array.isArray(tUA.label) ? mi18n.get(...tUA.label) || tUA.label[0] : tUA.label
