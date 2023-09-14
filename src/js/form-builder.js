@@ -652,7 +652,7 @@ function FormBuilder(opts, element, $) {
         ['array', ({ options }) => !!options],
         ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
         [typeof attrData.value, () => true], // string, number,
-      ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
+      ].find(typeCondition => typeCondition[1](attrData))[0]
     )
   }
 
