@@ -713,7 +713,9 @@ function FormBuilder(opts, element, $) {
         } else if (attrValType === 'undefined' && hasSubType(values, attribute)) {
           advField.push(processTypeUserAttrs(typeUserAttr[attribute], values))
         } else {
-          continue
+          const def = {}
+          def[attribute] = typeUserAttr[attribute]
+          opts.notify.warning('Warning: unable to process typeUserAttr definition : ' + JSON.stringify(def))
         }
       }
     }
