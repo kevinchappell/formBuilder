@@ -26,6 +26,7 @@ class FormRender {
       controlConfig: {}, // additional configuration for controls
       container: false, // string selector or Node element
       dataType: 'json',
+      disableHTMLLabels: false,
       formData: false,
       i18n: Object.assign({}, defaultI18n),
       messages: {
@@ -187,7 +188,7 @@ class FormRender {
     // generate field markup if we have fields
     if (opts.formData) {
       // instantiate the layout class & loop through the field configuration
-      const engine = new opts.layout(opts.layoutTemplates)
+      const engine = new opts.layout(opts.layoutTemplates, false, opts.disableHTMLLabels)
       for (let i = 0; i < opts.formData.length; i++) {
         const fieldData = opts.formData[i]
         const sanitizedField = this.santizeField(fieldData, instanceIndex)

@@ -1,0 +1,2 @@
+# disableHTMLLabels
+Disables HTML labels.

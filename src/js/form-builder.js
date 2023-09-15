@@ -69,7 +69,7 @@ function FormBuilder(opts, element, $) {
   if (!opts.layout) {
     opts.layout = layout
   }
-  const layoutEngine = new opts.layout(opts.layoutTemplates, true)
+  const layoutEngine = new opts.layout(opts.layoutTemplates, true, opts.disableHTMLLabels)
 
   const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = markup
@@ -1083,8 +1083,9 @@ function FormBuilder(opts, element, $) {
 
     const liContents = [m('div', fieldButtons, { className: 'field-actions' })]
 
+    const labelValue = opts.disableHTMLLabels ? document.createTextNode(label) : parsedHtml(label)
     liContents.push(
-      m('label', parsedHtml(label), {
+      m('label', labelValue, {
         className: 'field-label',
       }),
     )
@@ -1739,7 +1740,11 @@ function FormBuilder(opts, element, $) {
     if (!target.classList.contains('fld-label')) return
     const value = target.value || target.innerHTML
     const label = closest(target, '.form-field').querySelector('.field-label')
-    label.innerHTML = parsedHtml(value)
+    if (config.opts.disableHTMLLabels) {
+      label.textContent = value
+    } else {
+      label.innerHTML = parsedHtml(value)
+    }
   })
 
   // remove error styling when users tries to correct mistake

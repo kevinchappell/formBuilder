@@ -5,6 +5,7 @@ var defaults = {
   container: false,
   formData: false,
   dataType: 'json', // 'xml' | 'json'
+  disableHTMLLabels: false,
   label: {
     formRendered: 'Form Rendered',
     noFormData: 'No form data.',
