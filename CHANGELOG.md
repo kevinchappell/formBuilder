@@ -1,3 +1,10 @@
+# [3.10.0](https://github.com/kevinchappell/formBuilder/compare/v3.9.18...v3.10.0) (2023-09-15)
+
+
+### Features
+
+* Add disableHTMLLabels option to formRender ([0fc2a91](https://github.com/kevinchappell/formBuilder/commit/0fc2a917874e2e6b83cac712124bc0c85cac2f5b))
+
 ## [3.9.18](https://github.com/kevinchappell/formBuilder/compare/v3.9.17...v3.9.18) (2023-09-13)
 
 

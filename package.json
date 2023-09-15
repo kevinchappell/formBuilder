@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "3.9.18",
+  "version": "3.10.0",
   "main": "dist/form-builder.min.js",
   "homepage": "https://formbuilder.online/",
   "repository": {
