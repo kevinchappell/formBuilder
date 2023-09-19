@@ -255,7 +255,7 @@ function FormBuilder(opts, element, $) {
     }
 
     const $control = $(target).closest('li')
-    h.stopIndex = undefined
+    h.stopIndex = opts.append ? d.stage.childNodes.length - 1 : undefined
     processControl($control)
     h.save.call(h)
   })
