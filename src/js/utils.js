@@ -1,3 +1,4 @@
+import { setElementContent } from './sanitizer'
 /**
  * Cross file utilities for working with arrays,
  * sorting and other fun stuff
@@ -211,7 +212,7 @@ export const markup = function (tag, content = '', attributes = {}) {
 
   const appendContent = {
     string: content => {
-      field.innerHTML += content
+      setElementContent(field,field.innerHTML + content)
     },
     object: config => {
       const { tag, content, ...data } = config

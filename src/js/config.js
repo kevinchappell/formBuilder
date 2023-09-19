@@ -68,6 +68,7 @@ export const defaultOptions = {
   roles: {
     1: 'Administrator',
   },
+  sanitizerOptions: {},
   scrollToFieldOnAdd: true,
   showActionButtons: true,
   sortableControls: false,
