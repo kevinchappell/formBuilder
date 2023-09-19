@@ -2326,12 +2326,12 @@ function FormBuilder(opts, element, $) {
     let swap
     if ($(evt.target).hasClass('sort-button-higher')) {
       swap = currentItem.prev('li')
-      if (swap.length) {
+      if (swap.length && !swap.hasClass('form-prepend')) {
         currentItem.insertBefore(swap)
       }
     } else {
       swap = currentItem.next('li')
-      if (swap.length) {
+      if (swap.length && !swap.hasClass('form-append')) {
         currentItem.insertAfter(swap)
       }
     }
