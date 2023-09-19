@@ -131,6 +131,13 @@ function FormBuilder(opts, element, $) {
       revert: 150,
       beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
       distance: 3,
+      change: function(event, ui) {
+        if (opts.prepend && ui.placeholder.index() < 1) {
+          $('li.form-prepend').after(ui.placeholder)
+        } else if (opts.append && ui.placeholder.index() >=(d.stage.childNodes.length - 1)) {
+          $('li.form-append').before(ui.placeholder)
+        }
+      },
       update: function (event, ui) {
         if (h.doCancel) {
           return false
