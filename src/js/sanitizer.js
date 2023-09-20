@@ -132,7 +132,7 @@ export const setElementContent = (element, content, asText = false) => {
     element.textContent = content
   } else {
     const proxyElem = document.createElement(element.tagName)
-    const performedBy = ['sanitizer','dompurify','fallback'].find(type => sanitizersCallbacks[type](proxyElem, content))
+    const performedBy = ['dompurify','sanitizer','fallback'].find(type => sanitizersCallbacks[type](proxyElem, content))
     if (performedBy !== undefined) {
       sanitizeDomClobbering(proxyElem, '')
     }
