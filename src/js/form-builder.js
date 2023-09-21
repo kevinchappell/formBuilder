@@ -280,7 +280,7 @@ function FormBuilder(opts, element, $) {
       $stage.prepend(disabledField('prepend'))
     }
 
-    if (opts.append && !$('.disabled-field.form-.append', d.stage).length) {
+    if (opts.append && !$('.disabled-field.form-append', d.stage).length) {
       cancelArray.push(true)
       $stage.append(disabledField('append'))
     }
