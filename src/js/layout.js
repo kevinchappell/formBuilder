@@ -19,11 +19,15 @@ const processClassName = (data, field) => {
       field.classList.remove(...classes)
     }
 
-    field.querySelectorAll('[class*=row-],[class*=col-]').forEach(element => {
+    //field may be a single element, dom fragment, or an array of elements
+    if (!Array.isArray(field)) {
+      field = [field]
+    }
+    field.forEach(item => item.querySelectorAll('[class*=row-],[class*=col-]').forEach(element => {
       if (element.classList) {
         element.classList.remove(...classes)
       }
-    })
+    }))
   }
 
   return className
