@@ -1,9 +1,9 @@
 name: Deploy Website
 
 on:
-  push:
-    branches:
-      - deploy
+  release:
+    types:
+      - published
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
