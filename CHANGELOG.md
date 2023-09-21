@@ -1,3 +1,122 @@
+## [3.10.4](https://github.com/kevinchappell/formBuilder/compare/v3.10.3...v3.10.4) (2023-09-21)
+
+
+### Bug Fixes
+
+* Handle the case of Autocomplete providing field as an array of HTMLElements ([d1b9b51](https://github.com/kevinchappell/formBuilder/commit/d1b9b51ee6d74904b2356559c799a9fbf8037447))
+
+## [3.10.3](https://github.com/kevinchappell/formBuilder/compare/v3.10.2...v3.10.3) (2023-09-21)
+
+
+### Bug Fixes
+
+* Cancel stage sort if it would place the field before an appended field or after a prepended field ([82242e5](https://github.com/kevinchappell/formBuilder/commit/82242e55492490f71dddeecf900281c6f942af3b))
+* Controls added by clicking need to be added as the second last item if opts.append is set ([478dbc5](https://github.com/kevinchappell/formBuilder/commit/478dbc53a98b365e8be132f6e89845a465528a71))
+* invalid selector ([a153525](https://github.com/kevinchappell/formBuilder/commit/a15352538feb534e610a6301e72ffaa8726832c8))
+* Remove unreachable branch in condition. $().closest can be used for both cases as closest() starts traversal from the current element ([619005a](https://github.com/kevinchappell/formBuilder/commit/619005a76cf8e2576905ee3bc518efcb856aafbe))
+* When dragging a new control onto the stage, ensure the placeholder is placed after any prepended field and before any appended field ([d9cf010](https://github.com/kevinchappell/formBuilder/commit/d9cf010edb8a32fb0410f2eef21676af6993aba2))
+
+## [3.10.2](https://github.com/kevinchappell/formBuilder/compare/v3.10.1...v3.10.2) (2023-09-21)
+
+
+### Bug Fixes
+
+* typeof will always return a string therefore fallback is never called ([4ca0dc9](https://github.com/kevinchappell/formBuilder/commit/4ca0dc9bd8f3505faaef3609d52432c7ab4fcb8b))
+* warn when the typeUserAttr is unable to be processed instead of silently ignoring ([b54ff0d](https://github.com/kevinchappell/formBuilder/commit/b54ff0d7b5e9d3e03a96e8f350702fdbe9201407))
+
+## [3.10.1](https://github.com/kevinchappell/formBuilder/compare/v3.10.0...v3.10.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* Ensure boolean false values are kept as boolean false when getting the original value ([317d778](https://github.com/kevinchappell/formBuilder/commit/317d7781205286ced4d7445897e557afef3f42f4))
+
+# [3.10.0](https://github.com/kevinchappell/formBuilder/compare/v3.9.18...v3.10.0) (2023-09-15)
+
+
+### Features
+
+* Add disableHTMLLabels option to formRender ([0fc2a91](https://github.com/kevinchappell/formBuilder/commit/0fc2a917874e2e6b83cac712124bc0c85cac2f5b))
+
+## [3.9.18](https://github.com/kevinchappell/formBuilder/compare/v3.9.17...v3.9.18) (2023-09-13)
+
+
+### Bug Fixes
+
+* Apply the removal of row- and col- to child elements if field is more than just and input element (e.g. checkbox-group) ([323ac64](https://github.com/kevinchappell/formBuilder/commit/323ac64081fa28423f24edec14fcdb13349a30f0))
+* tmpCleanColumnInfo may be called multiple times, remove previous work to ensure we don't keep appending tmp- to class names. Adjust class to include a __fb- prefix. ([6fd7018](https://github.com/kevinchappell/formBuilder/commit/6fd701869bbac74e921283507227d5060ccad0ea))
+
+## [3.9.17](https://github.com/kevinchappell/formBuilder/compare/v3.9.16...v3.9.17) (2023-09-13)
+
+
+### Bug Fixes
+
+* --display-entrypoints doesn't exist in webpack v5 ([d7de595](https://github.com/kevinchappell/formBuilder/commit/d7de595c914ab04c8b72417ac53d6050c2251c0e))
+* Bump semantic-release to latest ([b3ca67b](https://github.com/kevinchappell/formBuilder/commit/b3ca67b9cca07418c3cd85f398573ad99091bc55))
+* remove deprecated package "request" and replace with build-in Node fetch API. Add "colors" dependency as it is no longer implicityly required by semantic-release ([a07ec5a](https://github.com/kevinchappell/formBuilder/commit/a07ec5aa0e2effa484b37d9b2374346f199c131a))
+
+## [3.9.16](https://github.com/kevinchappell/formBuilder/compare/v3.9.15...v3.9.16) (2023-09-12)
+
+
+### Bug Fixes
+
+* cleanup duplicate and invalid declarations ([d1f07e9](https://github.com/kevinchappell/formBuilder/commit/d1f07e973859f48a921975ec3da2febc31a6c814))
+* ensure that input[type=number] cannot overflow the stage on narrow window ([38684f3](https://github.com/kevinchappell/formBuilder/commit/38684f3fc7193435591d5a1feb16766de14bfd46))
+* Remove unused CSS ([c8da5e6](https://github.com/kevinchappell/formBuilder/commit/c8da5e667e368ab6f833b7088c96226a27d565a5))
+
+## [3.9.15](https://github.com/kevinchappell/formBuilder/compare/v3.9.14...v3.9.15) (2023-09-12)
+
+
+### Bug Fixes
+
+* Ensure generation of CSS rules for .formbuilder-mobile place the selector at the .form-wrap.form-builder level ([a364136](https://github.com/kevinchappell/formBuilder/commit/a364136411432bbde2a9da58621b1f625a9dae79))
+* Show icon for custom controls on mobile phone screen sizes ([0f7a786](https://github.com/kevinchappell/formBuilder/commit/0f7a7867a0a188b49d83368d165c63287289a2de))
+* Wrap the inputSet control in a span in the same way as custom controls to ensure CSS selectors are applied correctly ([2c42831](https://github.com/kevinchappell/formBuilder/commit/2c42831147c5f3cc18c40e106eb0f70ce25194a3))
+
+## [3.9.14](https://github.com/kevinchappell/formBuilder/compare/v3.9.13...v3.9.14) (2023-09-12)
+
+
+### Bug Fixes
+
+* Implement field action buttons to sort form elements from touch screen devices not supported by jQuery sortable ([54fa332](https://github.com/kevinchappell/formBuilder/commit/54fa3323420e7e3d80c5e7847373752fae27363c))
+
+## [3.9.13](https://github.com/kevinchappell/formBuilder/compare/v3.9.12...v3.9.13) (2023-09-12)
+
+
+### Bug Fixes
+
+* Array of strings was removed from support in TinyMCE6, use a plugin definition format supported my all versions (https://www.tiny.cloud/docs/tinymce/6/migration-from-5x/#plugin-loading-format-change) ([92a8a72](https://github.com/kevinchappell/formBuilder/commit/92a8a720ce3b4c92414fd91a6a4ac10fe96c3ba1))
+* Array.concat does not modify the existing arrays, return value was previously discarded ([92496e3](https://github.com/kevinchappell/formBuilder/commit/92496e3f45ed6ca109fd8d8c4b572fa9fc652a26))
+* helper.js classNames was overzealous in removing classNames starting with btn- when syncing with style field, only remove those that are one of the config.js styles.btn styles ([922ca80](https://github.com/kevinchappell/formBuilder/commit/922ca80361c7a8ac8c4cf9e9148479fcd73a17bf))
+* Only load TinyMCE if it hasn't already been loaded by the page, this allows specific versions to be loaded outside the hardcoded version in the plugin ([241a83a](https://github.com/kevinchappell/formBuilder/commit/241a83a91619b7a9784f79ace0cf5ff65debc150))
+* Remove any plugins we define by default from the options if they have been removed in the loaded version of TinyMCE ([de061b2](https://github.com/kevinchappell/formBuilder/commit/de061b2ef36bd9401c95d11c7dafe62bd5367e62))
+* use the Promise interface for initialising tinymce. tinymce.editors is removed in TinyMCE6 so use the tinymce.get() and tinymce.remove() interfaces which is forwards compatible ([4583b88](https://github.com/kevinchappell/formBuilder/commit/4583b88197f2288f6ab0feea4d1c86d273998b70))
+* window.tinymce.editors[] is not forward compatible with later versions of TinyMCE. Use the get() method instead to retrieve the Editor instance ([255ed88](https://github.com/kevinchappell/formBuilder/commit/255ed88e13fd1541d908e032f7040c16ea70a439))
+
+## [3.9.12](https://github.com/kevinchappell/formBuilder/compare/v3.9.11...v3.9.12) (2023-09-12)
+
+
+### Bug Fixes
+
+* revert change made in https://github.com/kevinchappell/formBuilder/commit/e0c0f2ea8f204da6e11d8de938e27ca6687d5588 which declared field as a const prior to the fallback to selecting the last field in the form. This change also prevents incorrect removing of the last field in the case where a fieldID is provided but which was not found in the form ([0b7e1bb](https://github.com/kevinchappell/formBuilder/commit/0b7e1bb3cbd85884c22e484e4f234426a4ba38d0))
+
+## [3.9.11](https://github.com/kevinchappell/formBuilder/compare/v3.9.10...v3.9.11) (2023-09-12)
+
+
+### Bug Fixes
+
+* i18n is a straight key/value pair, it does not contain a get() function ([ebe59ce](https://github.com/kevinchappell/formBuilder/commit/ebe59ce47c69573ded91cf1d3a69ccc1328097de))
+* If no value was set for a numberAttribute the value attribute's value was used instead. This causes min/max/step/rows/maxLen number attributes to incorrectly be assigned a value if they are not set in formData but a number exists in the value attribute ([28b1a6f](https://github.com/kevinchappell/formBuilder/commit/28b1a6f0215c39c76e68da819d6747a5d1d7d13e))
+* Use the i18n translated label for boolean typeUserAttrs. Fixes [#1391](https://github.com/kevinchappell/formBuilder/issues/1391) ([bc04612](https://github.com/kevinchappell/formBuilder/commit/bc04612ee32d6fe69dc9db37b12cd66faa20df85))
+
+## [3.9.10](https://github.com/kevinchappell/formBuilder/compare/v3.9.9...v3.9.10) (2023-08-27)
+
+
+### Bug Fixes
+
+* Ensure that default selected checkboxes are unselected when loading userData that doesn't contain them. ([2d284c9](https://github.com/kevinchappell/formBuilder/commit/2d284c95114235b2a541f96611e25f47ea4c0086))
+* The major browsers handle new lines in contenteditable blocks by inserting <div> tags. This causes invalid HTML when inserting the content into a <p> with the paragraph control and when constructing <label> tags. Setting display: inline-block forces the browsers to use a <br> tag instead for new lines. ([5b700cb](https://github.com/kevinchappell/formBuilder/commit/5b700cbd757643dce55f343bda2ed91d34e98336))
+
 ## [3.9.9](https://github.com/kevinchappell/formBuilder/compare/v3.9.8...v3.9.9) (2023-08-20)
 
 

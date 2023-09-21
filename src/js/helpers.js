@@ -18,7 +18,7 @@ import {
   getAllGridRelatedClasses,
 } from './utils'
 import events from './events'
-import { config, defaultTimeout } from './config'
+import { config, defaultTimeout, styles } from './config'
 import control from './control'
 import controlCustom from './control/custom'
 import storageAvailable from 'storage-available'
@@ -237,8 +237,8 @@ export default class Helpers {
                 }
               } else if (fieldData.subtype === 'tinymce' && window.tinymce) {
                 const id = `${fieldData.name}-preview`
-                if (window.tinymce.editors[id]) {
-                  const editor = window.tinymce.editors[id]
+                const editor = window.tinymce.get(id)
+                if (editor) {
                   fieldData.value = editor.getContent()
                 }
               }
@@ -267,7 +267,8 @@ export default class Helpers {
             }
 
             if (fieldData.className) {
-              const match = /(?:^|\s)btn-(.*?)(?:\s|$)/g.exec(fieldData.className)
+              const regex = new RegExp('(?:^|\\s)btn-(' + styles.btn.join('|') + ')(?:\\s|$)', 'g')
+              const match = regex.exec(fieldData.className)
               if (match) {
                 fieldData.style = match[1]
               }
@@ -481,15 +482,14 @@ export default class Helpers {
 
     if (primaryType && style) {
       for (let i = 0; i < classes.length; i++) {
-        const re = new RegExp(`^${primaryType}-.*`, 'g')
+        const re = new RegExp(`^${primaryType}-(?:` + styles.btn.join('|') + ')$')
         const match = classes[i].match(re)
         if (match) {
           classes.splice(i, 1, primaryType + '-' + style)
-        } else {
-          classes.push(primaryType + '-' + style)
         }
       }
 
+      classes.push(primaryType + '-' + style)
       classes.push(primaryType)
     }
 
@@ -854,7 +854,7 @@ export default class Helpers {
       cleanResults.forEach(result => {
         if (result['columnInfo'].columnSize) {
           const currentClassRow = rowContainer.attr('class')
-          if (currentClassRow != result['columnInfo'].columnSize) {
+          if (currentClassRow !== result['columnInfo'].columnSize) {
             //Keep the wrapping column div sync'd to the column property from the field
             rowContainer.attr('class', `${result['columnInfo'].columnSize} ${this.formBuilder.colWrapperClass}`)
             _this.tmpCleanPrevHolder(prevHolder)
@@ -1002,7 +1002,7 @@ export default class Helpers {
   }
 
   /**
-   * Remove a field from the stage
+   * Remove a given field from the stage or the last field if no fieldID is provided
    * @param  {String}  fieldID ID of the field to be removed
    * @param  {Number}  animationSpeed
    * @return {Boolean} fieldRemoved returns true if field is removed
@@ -1018,9 +1018,7 @@ export default class Helpers {
       return false
     }
 
-    const field = fieldID && document.getElementById(fieldID)
-
-    if (!fieldID || !field) {
+    if (!fieldID) {
       const availableIds = [].slice.call(fields).map(field => {
         return field.id
       })
@@ -1030,12 +1028,14 @@ export default class Helpers {
       fieldID = form.lastChild.id
     }
 
-    const $field = $(field)
-    const fieldRowWrapper = $field.closest(this.formBuilder.rowWrapperClassSelector)
+    const field = document.getElementById(fieldID)
     if (!field) {
       config.opts.notify.warning('Field not found')
       return false
     }
+
+    const $field = $(field)
+    const fieldRowWrapper = $field.closest(this.formBuilder.rowWrapperClassSelector)
 
     $field.slideUp(animationSpeed, function () {
       $field.removeClass('deleting')
@@ -1288,13 +1288,16 @@ export default class Helpers {
     })
 
     function tmpCleanColumnInfo($field) {
-      var classAttr = $field.attr('class')
+      const classAttr = $field.attr('class')
 
       if (typeof classAttr !== 'undefined' && classAttr !== false) {
         const parseResult = _this.tryParseColumnInfo($field[0])
 
-        $field.attr('class', $field.attr('class').replace('col-', 'tmp-col-'))
-        $field.attr('class', $field.attr('class').replace('row', 'tmp-row'))
+        //tmpCleanColumnInfo may be called multiple times, remove previous work to ensure we don't keep appending tmp- to class names
+        $field.attr('class', $field.attr('class').replace('__fb-tmp-col-', 'col-' ))
+        $field.attr('class', $field.attr('class').replace('__fb-tmp-row-', 'row-' ))
+        $field.attr('class', $field.attr('class').replace('col-', '__fb-tmp-col-'))
+        $field.attr('class', $field.attr('class').replace('row-', '__fb-tmp-row-'))
 
         const result = {}
         result['field'] = $field

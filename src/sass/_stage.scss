@@ -295,6 +295,7 @@
 
     input[type='number'] {
       width: auto;
+      max-width: 100%;
     }
 
     input[type='color'] {
@@ -543,6 +544,10 @@
       height: auto;
     }
 
+    [contenteditable].form-control {
+      display: inline-block;
+    }
+
     [contenteditable].form-control,
     input[type='text'],
     input[type='number'],
@@ -677,7 +682,7 @@
   }
 }
 
-.formbuilder-mobile {
+@at-root #{selector-append(".formbuilder-mobile", &)} {
   .field-actions {
     opacity: 1;
   }
@@ -803,7 +808,6 @@
 .ui-state-highlight {
   border-radius: 3px;
   border: 1px dashed #0d99f2;
-  border-radius: 3px;
   background-color: #e5f5f8;
   width: 12px;
 }
@@ -840,8 +844,8 @@
 }
 
 .rowWrapper {
-  margin-left: 0px !important;
-  margin-right: 0px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .btnAddControl {
@@ -864,7 +868,7 @@
 }
 
 .invisibleRowPlaceholder {
-  width: 0px !important;
+  width: 0 !important;
   position: fixed !important;
   left: -100px !important;
 }

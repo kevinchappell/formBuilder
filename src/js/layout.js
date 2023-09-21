@@ -14,10 +14,20 @@ const processClassName = (data, field) => {
       className += ` ${classes.join(' ')}`
     }
 
-    // Now that the col- types were lifted, remove from the actual input field
+    // Now that the row- & col- types were lifted, remove from the actual input field and any child elements
     if (field.classList) {
       field.classList.remove(...classes)
     }
+
+    //field may be a single element, dom fragment, or an array of elements
+    if (!Array.isArray(field)) {
+      field = [field]
+    }
+    field.forEach(item => item.querySelectorAll('[class*=row-],[class*=col-]').forEach(element => {
+      if (element.classList) {
+        element.classList.remove(...classes)
+      }
+    }))
   }
 
   return className
@@ -33,9 +43,11 @@ export default class layout {
    * Prepare the templates for layout
    * @param {Object} templates object containing custom or overwrite templates
    * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
+   * @param {Boolean} disableHTMLLabels - do we render labels as HTML or plain text
    */
-  constructor(templates, preview) {
-    this.preview = preview
+  constructor(templates, preview = false, disableHTMLLabels = false) {
+    this.preview = preview ?? false
+    this.disableHTMLLabels = disableHTMLLabels ?? false
 
     // supported templates for outputting a field
     // preferred layout template can be indicated by specifying a 'layout' in the return object of control::build
@@ -135,7 +147,7 @@ export default class layout {
    */
   label() {
     const label = this.data.label || ''
-    const labelText = utils.parsedHtml(label)
+    const labelText = this.disableHTMLLabels ? document.createTextNode(label) : utils.parsedHtml(label)
     const labelContents = [labelText]
     if (this.data.required) {
       labelContents.push(this.markup('span', '*', { className: 'formbuilder-required' }))

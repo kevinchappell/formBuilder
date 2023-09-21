@@ -35,7 +35,8 @@ import {
   getContentType,
   generateSelectorClassNames,
 } from './utils'
-import { css_prefix_text } from '../fonts/config.json'
+import fontConfig from '../fonts/config.json'
+const css_prefix_text = fontConfig.css_prefix_text
 
 const { rowWrapperClass, colWrapperClass, tmpColWrapperClass, tmpRowPlaceholderClass, invisibleRowPlaceholderClass } =
   gridClassNames
@@ -68,7 +69,7 @@ function FormBuilder(opts, element, $) {
   if (!opts.layout) {
     opts.layout = layout
   }
-  const layoutEngine = new opts.layout(opts.layoutTemplates, true)
+  const layoutEngine = new opts.layout(opts.layoutTemplates, true, opts.disableHTMLLabels)
 
   const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = markup
@@ -130,6 +131,13 @@ function FormBuilder(opts, element, $) {
       revert: 150,
       beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
       distance: 3,
+      change: function(event, ui) {
+        if (opts.prepend && ui.placeholder.index() < 1) {
+          $('li.form-prepend').after(ui.placeholder)
+        } else if (opts.append && ui.placeholder.index() >=(d.stage.childNodes.length - 1)) {
+          $('li.form-append').before(ui.placeholder)
+        }
+      },
       update: function (event, ui) {
         if (h.doCancel) {
           return false
@@ -254,7 +262,7 @@ function FormBuilder(opts, element, $) {
     }
 
     const $control = $(target).closest('li')
-    h.stopIndex = undefined
+    h.stopIndex = opts.append ? d.stage.childNodes.length - 1 : undefined
     processControl($control)
     h.save.call(h)
   })
@@ -272,7 +280,7 @@ function FormBuilder(opts, element, $) {
       $stage.prepend(disabledField('prepend'))
     }
 
-    if (opts.append && !$('.disabled-field.form-.append', d.stage).length) {
+    if (opts.append && !$('.disabled-field.form-append', d.stage).length) {
       cancelArray.push(true)
       $stage.append(disabledField('append'))
     }
@@ -651,7 +659,7 @@ function FormBuilder(opts, element, $) {
         ['array', ({ options }) => !!options],
         ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
         [typeof attrData.value, () => true], // string, number,
-      ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
+      ].find(typeCondition => typeCondition[1](attrData))[0]
     )
   }
 
@@ -686,7 +694,7 @@ function FormBuilder(opts, element, $) {
         } else if (attrData.hasOwnProperty('value') || attrData.hasOwnProperty('checked')) {
           isChecked = attrData.value || attrData.checked || false
         }
-        return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: attrData.label })
+        return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: i18n[attr] })
       },
     }
 
@@ -696,8 +704,8 @@ function FormBuilder(opts, element, $) {
         if (attrValType !== 'undefined') {
           const orig = mi18n.get(attribute)
           const tUA = typeUserAttr[attribute]
-          const origValue = tUA.value || ''
-          tUA.value = values[attribute] || tUA.value || ''
+          const origValue = attrValType === 'boolean' ? tUA.value : (tUA.value || '')
+          tUA.value = values[attribute] || origValue
 
           if (tUA.label) {
             i18n[attribute] = Array.isArray(tUA.label) ? mi18n.get(...tUA.label) || tUA.label[0] : tUA.label
@@ -712,7 +720,9 @@ function FormBuilder(opts, element, $) {
         } else if (attrValType === 'undefined' && hasSubType(values, attribute)) {
           advField.push(processTypeUserAttrs(typeUserAttr[attribute], values))
         } else {
-          continue
+          const def = {}
+          def[attribute] = typeUserAttr[attribute]
+          opts.notify.warning('Warning: unable to process typeUserAttr definition : ' + JSON.stringify(def))
         }
       }
     }
@@ -882,8 +892,8 @@ function FormBuilder(opts, element, $) {
    * @return {String} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const { class: classname, className, value, ...attrs } = values
-    const attrVal = (isNaN(attrs[attribute])) ? value : attrs[attribute]
+    const { class: classname, className, ...attrs } = values
+    const attrVal = (isNaN(attrs[attribute])) ? undefined : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
 
@@ -1027,7 +1037,7 @@ function FormBuilder(opts, element, $) {
     data.lastID = h.incrementId(data.lastID)
 
     const type = values.type || 'text'
-    let label = values.label || (isNew ? i18n.get(type) || mi18n.get('label') : '')
+    let label = values.label || (isNew ? i18n[type] || mi18n.get('label') : '')
     if (type === 'hidden') {
       label = `${mi18n.get(type)}: ${values.name}`
     }
@@ -1051,6 +1061,18 @@ function FormBuilder(opts, element, $) {
         className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
+      m('a', null, {
+        type: 'sort',
+        id: data.lastID + '-sort-higher',
+        className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
+        title: 'Move Higher',
+      }),
+      m('a', null, {
+        type: 'sort',
+        id: data.lastID + '-sort-lower',
+        className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
+        title: 'Move Lower',
+      })
     ]
 
     if (enhancedBootstrapEnabled()) {
@@ -1070,8 +1092,9 @@ function FormBuilder(opts, element, $) {
 
     const liContents = [m('div', fieldButtons, { className: 'field-actions' })]
 
+    const labelValue = opts.disableHTMLLabels ? document.createTextNode(label) : parsedHtml(label)
     liContents.push(
-      m('label', parsedHtml(label), {
+      m('label', labelValue, {
         className: 'field-label',
       }),
     )
@@ -1675,8 +1698,7 @@ function FormBuilder(opts, element, $) {
     e.stopPropagation()
     e.preventDefault()
     if (e.handled !== true) {
-      const targetID =
-        e.target.tagName == 'li' ? $(e.target).attr('id') : $(e.target).closest('li.form-field').attr('id')
+      const targetID = $(e.target).closest('li.form-field').attr('id')
       h.toggleEdit(targetID)
       e.handled = true
     }
@@ -1726,7 +1748,11 @@ function FormBuilder(opts, element, $) {
     if (!target.classList.contains('fld-label')) return
     const value = target.value || target.innerHTML
     const label = closest(target, '.form-field').querySelector('.field-label')
-    label.innerHTML = parsedHtml(value)
+    if (config.opts.disableHTMLLabels) {
+      label.textContent = value
+    } else {
+      label.innerHTML = parsedHtml(value)
+    }
   })
 
   // remove error styling when users tries to correct mistake
@@ -1827,7 +1853,7 @@ function FormBuilder(opts, element, $) {
   })
 
   // Copy field
-  $stage.on('click touchstart', `.${css_prefix_text}copy`, function (evt) {
+  $stage.on('click', `.${css_prefix_text}copy`, function (evt) {
     evt.preventDefault()
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
@@ -1876,7 +1902,7 @@ function FormBuilder(opts, element, $) {
   }
 
   // Delete field
-  $stage.on('click touchstart', '.delete-confirm', e => {
+  $stage.on('click', '.delete-confirm', e => {
     e.preventDefault()
 
     const buttonPosition = e.target.getBoundingClientRect()
@@ -2293,6 +2319,43 @@ function FormBuilder(opts, element, $) {
       `)
     })
   }
+
+  //Mobile support for sortable fields
+  $stage.on('click', '.field-actions .sort-button', function (evt) {
+    evt.preventDefault()
+    const currentItem = $(evt.target).parent().parent('li')
+    let swap
+    if ($(evt.target).hasClass('sort-button-higher')) {
+      swap = currentItem.prev('li')
+      if (swap.length && !swap.hasClass('form-prepend')) {
+        currentItem.insertBefore(swap)
+      }
+    } else {
+      swap = currentItem.next('li')
+      if (swap.length && !swap.hasClass('form-append')) {
+        currentItem.insertAfter(swap)
+      }
+    }
+
+    if (swap.length) {
+      //Animate the flashing of the background and border of the element was moved
+      currentItem.css({
+        'border-color': '#66afe9',
+        'outline': 0,
+        'box-shadow': 'inset 0 1px 1px rgba(0,0,0,.1),0 0 8px rgba(102,175,233,.6)',
+        'background-color': '#b7d6f5',
+      }).delay('fast')
+        .queue(function(next) {
+          $(this).css({
+            'border-color': '',
+            'outline': '',
+            'box-shadow': '',
+            'background-color': ''
+          })
+          next()
+        })
+    }
+  })
 
   // Update button style selection
   $stage.on('click', '.style-wrap button', e => {

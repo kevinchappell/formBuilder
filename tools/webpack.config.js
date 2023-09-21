@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
+const path = require('path')
 const WrapperPlugin = require('wrapper-webpack-plugin')
 
 // hack for Ubuntu on Windows
@@ -66,7 +67,11 @@ const webpackConfig = {
       },
       {
         test: /\.lang$/,
-        loader: 'file-loader?name=[path][name].[ext]&context=./src',
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+          content: './src',
+        },
       },
       {
         test: /\.scss$/,
@@ -133,7 +138,7 @@ const webpackConfig = {
     new HtmlWebpackHarddiskPlugin({ outputPath: './demo/' }),
     new BannerPlugin({ banner: bannerTemplate, test: /\.js$/ }),
     new CompressionPlugin({
-      filename: '[path].gz[query]',
+      filename: '[path][base].gz[query]',
       algorithm: 'gzip',
       test: /\.(js)$/,
       threshold: 10240,
@@ -146,9 +151,9 @@ const webpackConfig = {
     extensions: ['.js', '.scss'],
   },
   devServer: {
-    inline: true,
-    contentBase: 'demo/',
-    noInfo: true,
+    static: {
+      directory: path.join(__dirname, '../demo'),
+    },
     open: true
   },
 }

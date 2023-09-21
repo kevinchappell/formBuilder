@@ -6,7 +6,6 @@ import unzip from 'unzipper'
 import opener from 'opener'
 import inquirer from 'inquirer'
 import replace from 'replace-in-file'
-import request from 'request'
 import { updatePackageJSON, spinner } from './utils'
 import pkg from '../package.json'
 
@@ -16,17 +15,12 @@ const {
 
 // Fetch current session token from fontServer
 const getFontelloToken = () => {
-  return new Promise((resolve, reject) => {
-    const req = request.post(fontServer, (err, resp, body) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(body.trim())
-      }
-    })
-    const form = req.form()
-    form.append('config', fs.createReadStream(`${files.fonts}/config.json`))
-  })
+  const formBody = new FormData()
+  formBody.append('config', new Blob([fs.readFileSync(`${files.fonts}/config.json`, 'utf8')], { type : 'plain/text' }), 'config.js')
+  return fetch(fontServer, {
+    method: 'POST',
+    body: formBody
+  }).then(response => response.text())
 }
 
 // Process entries in downloaded zip file

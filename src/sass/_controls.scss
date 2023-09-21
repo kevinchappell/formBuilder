@@ -107,8 +107,17 @@
         font-size: 30px;
       }
 
+      & {
+        text-overflow: clip;
+      }
+
       span {
-        display: none;
+        visibility: hidden;
+        span {
+          visibility: visible;
+          font-size: 30px;
+          width: auto !important;
+        }
       }
     }
   }
@@ -129,7 +138,7 @@
   }
 }
 
-.formbuilder-mobile {
+@at-root #{selector-append(".formbuilder-mobile", &)} {
   .form-actions {
     width: 100%;
 
