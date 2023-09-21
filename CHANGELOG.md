@@ -1,3 +1,11 @@
+## [3.10.2](https://github.com/kevinchappell/formBuilder/compare/v3.10.1...v3.10.2) (2023-09-21)
+
+
+### Bug Fixes
+
+* typeof will always return a string therefore fallback is never called ([4ca0dc9](https://github.com/kevinchappell/formBuilder/commit/4ca0dc9bd8f3505faaef3609d52432c7ab4fcb8b))
+* warn when the typeUserAttr is unable to be processed instead of silently ignoring ([b54ff0d](https://github.com/kevinchappell/formBuilder/commit/b54ff0d7b5e9d3e03a96e8f350702fdbe9201407))
+
 ## [3.10.1](https://github.com/kevinchappell/formBuilder/compare/v3.10.0...v3.10.1) (2023-09-21)
 
 
