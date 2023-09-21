@@ -1,3 +1,10 @@
+## [3.10.4](https://github.com/kevinchappell/formBuilder/compare/v3.10.3...v3.10.4) (2023-09-21)
+
+
+### Bug Fixes
+
+* Handle the case of Autocomplete providing field as an array of HTMLElements ([d1b9b51](https://github.com/kevinchappell/formBuilder/commit/d1b9b51ee6d74904b2356559c799a9fbf8037447))
+
 ## [3.10.3](https://github.com/kevinchappell/formBuilder/compare/v3.10.2...v3.10.3) (2023-09-21)
 
 
