@@ -1,16 +1,17 @@
 name: Deploy Website
 
 on:
-  release:
+  workflow_run:
+    workflows: [Publish]
     types:
-      - published
+      - completed
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  build:
+  on-success:
     runs-on: ubuntu-latest
     permissions:
       contents: write
