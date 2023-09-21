@@ -652,7 +652,7 @@ function FormBuilder(opts, element, $) {
         ['array', ({ options }) => !!options],
         ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
         [typeof attrData.value, () => true], // string, number,
-      ].find(typeCondition => typeCondition[1](attrData))[0] || 'string'
+      ].find(typeCondition => typeCondition[1](attrData))[0]
     )
   }
 
@@ -713,7 +713,9 @@ function FormBuilder(opts, element, $) {
         } else if (attrValType === 'undefined' && hasSubType(values, attribute)) {
           advField.push(processTypeUserAttrs(typeUserAttr[attribute], values))
         } else {
-          continue
+          const def = {}
+          def[attribute] = typeUserAttr[attribute]
+          opts.notify.warning('Warning: unable to process typeUserAttr definition : ' + JSON.stringify(def))
         }
       }
     }
