@@ -1,0 +1,48 @@
+name: Deploy Website
+
+on:
+  release:
+    types:
+      - published
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout formBuilder
+        uses: actions/checkout@v4
+        with:
+          repository: kevinchappell/formBuilder
+          fetch-depth: 1
+          ref: master
+          path: formBuilder
+
+      - name: Extract version from FormBuilder's package.json
+        id: get-version
+        run: |
+          VERSION=$(jq -r .version formBuilder/package.json)
+          echo "::set-output name=version::$VERSION"
+
+      - name: Checkout formBuilder-site
+        uses: actions/checkout@v4
+        with:
+          repository: kevinchappell/formBuilder-site
+          path: formBuilder-site
+          fetch-depth: 1
+          ref: master
+          token: ${{ secrets.FORMBUILDER_SITE_PAT }}
+
+      - name: Update website dependencies
+        run: |
+          cd formBuilder-site
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          npm update formBuilder formBuilder-languages
+          npm version ${{ steps.get-version.outputs.version }}
+          git push --follow-tags
