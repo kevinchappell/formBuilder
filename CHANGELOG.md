@@ -1,3 +1,14 @@
+## [3.10.3](https://github.com/kevinchappell/formBuilder/compare/v3.10.2...v3.10.3) (2023-09-21)
+
+
+### Bug Fixes
+
+* Cancel stage sort if it would place the field before an appended field or after a prepended field ([82242e5](https://github.com/kevinchappell/formBuilder/commit/82242e55492490f71dddeecf900281c6f942af3b))
+* Controls added by clicking need to be added as the second last item if opts.append is set ([478dbc5](https://github.com/kevinchappell/formBuilder/commit/478dbc53a98b365e8be132f6e89845a465528a71))
+* invalid selector ([a153525](https://github.com/kevinchappell/formBuilder/commit/a15352538feb534e610a6301e72ffaa8726832c8))
+* Remove unreachable branch in condition. $().closest can be used for both cases as closest() starts traversal from the current element ([619005a](https://github.com/kevinchappell/formBuilder/commit/619005a76cf8e2576905ee3bc518efcb856aafbe))
+* When dragging a new control onto the stage, ensure the placeholder is placed after any prepended field and before any appended field ([d9cf010](https://github.com/kevinchappell/formBuilder/commit/d9cf010edb8a32fb0410f2eef21676af6993aba2))
+
 ## [3.10.2](https://github.com/kevinchappell/formBuilder/compare/v3.10.1...v3.10.2) (2023-09-21)
 
 
