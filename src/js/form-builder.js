@@ -131,6 +131,13 @@ function FormBuilder(opts, element, $) {
       revert: 150,
       beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
       distance: 3,
+      change: function(event, ui) {
+        if (opts.prepend && ui.placeholder.index() < 1) {
+          $('li.form-prepend').after(ui.placeholder)
+        } else if (opts.append && ui.placeholder.index() >=(d.stage.childNodes.length - 1)) {
+          $('li.form-append').before(ui.placeholder)
+        }
+      },
       update: function (event, ui) {
         if (h.doCancel) {
           return false
@@ -255,7 +262,7 @@ function FormBuilder(opts, element, $) {
     }
 
     const $control = $(target).closest('li')
-    h.stopIndex = undefined
+    h.stopIndex = opts.append ? d.stage.childNodes.length - 1 : undefined
     processControl($control)
     h.save.call(h)
   })
@@ -273,7 +280,7 @@ function FormBuilder(opts, element, $) {
       $stage.prepend(disabledField('prepend'))
     }
 
-    if (opts.append && !$('.disabled-field.form-.append', d.stage).length) {
+    if (opts.append && !$('.disabled-field.form-append', d.stage).length) {
       cancelArray.push(true)
       $stage.append(disabledField('append'))
     }
@@ -2321,12 +2328,12 @@ function FormBuilder(opts, element, $) {
     let swap
     if ($(evt.target).hasClass('sort-button-higher')) {
       swap = currentItem.prev('li')
-      if (swap.length) {
+      if (swap.length && !swap.hasClass('form-prepend')) {
         currentItem.insertBefore(swap)
       }
     } else {
       swap = currentItem.next('li')
-      if (swap.length) {
+      if (swap.length && !swap.hasClass('form-append')) {
         currentItem.insertAfter(swap)
       }
     }
