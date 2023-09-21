@@ -1,3 +1,10 @@
+## [3.10.6](https://github.com/kevinchappell/formBuilder/compare/v3.10.5...v3.10.6) (2023-09-21)
+
+
+### Bug Fixes
+
+* Due to recursion protection GitHub actions does not trigger the publish event when the release is created via another action. Instead use the workflow_run event to chain Publish with Deploy Website ([a702686](https://github.com/kevinchappell/formBuilder/commit/a702686770e526bbfa6c69b5b255ef52399f630b))
+
 ## [3.10.5](https://github.com/kevinchappell/formBuilder/compare/v3.10.4...v3.10.5) (2023-09-21)
 
 
