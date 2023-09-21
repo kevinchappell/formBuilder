@@ -45,5 +45,7 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           npm update formBuilder formBuilder-languages
+          git add .
+          git commit -m "Update formBuilder to ${{ steps.get-version.outputs.version }}"
           npm version ${{ steps.get-version.outputs.version }}
           git push --follow-tags
