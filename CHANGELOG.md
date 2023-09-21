@@ -1,3 +1,10 @@
+## [3.10.1](https://github.com/kevinchappell/formBuilder/compare/v3.10.0...v3.10.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* Ensure boolean false values are kept as boolean false when getting the original value ([317d778](https://github.com/kevinchappell/formBuilder/commit/317d7781205286ced4d7445897e557afef3f42f4))
+
 # [3.10.0](https://github.com/kevinchappell/formBuilder/compare/v3.9.18...v3.10.0) (2023-09-15)
 
 
