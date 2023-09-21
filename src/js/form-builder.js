@@ -1698,8 +1698,7 @@ function FormBuilder(opts, element, $) {
     e.stopPropagation()
     e.preventDefault()
     if (e.handled !== true) {
-      const targetID =
-        e.target.tagName == 'li' ? $(e.target).attr('id') : $(e.target).closest('li.form-field').attr('id')
+      const targetID = $(e.target).closest('li.form-field').attr('id')
       h.toggleEdit(targetID)
       e.handled = true
     }
