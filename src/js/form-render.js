@@ -39,7 +39,15 @@ class FormRender {
       },
       onRender: () => {},
       render: true,
-      sanitizerOptions: {},
+      sanitizerOptions: {
+        clobberingProtection: {
+          document: true,
+          form: false,
+          namespaceAttributes: true, //clobbered names will be prefixed with user-content-
+        },
+        backendOrder: ['dompurify','sanitizer','fallback'],
+
+      },
       templates: {}, // custom inline defined templates
       notify: {
         error: error => {

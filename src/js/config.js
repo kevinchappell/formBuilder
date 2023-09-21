@@ -68,7 +68,13 @@ export const defaultOptions = {
   roles: {
     1: 'Administrator',
   },
-  sanitizerOptions: {},
+  sanitizerOptions: {
+    clobberingProtection: {
+      document: true,
+      form: false,
+    },
+    backendOrder: ['dompurify','sanitizer','fallback'],
+  },
   scrollToFieldOnAdd: true,
   showActionButtons: true,
   sortableControls: false,
