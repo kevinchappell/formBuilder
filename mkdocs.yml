@@ -77,7 +77,7 @@ nav:
   - persistDefaultFields: formBuilder/options/persistDefaultFields.md
   - replaceFields: formBuilder/options/replaceFields.md
   - roles: formBuilder/options/roles.md
-  - sanitizerOptions: formRender/options/sanitizerOptions.md
+  - sanitizerOptions: formBuilder/options/sanitizerOptions.md
   - scrollToFieldOnAdd: formBuilder/options/scrollToFieldOnAdd.md
   - showActionButtons: formBuilder/options/showActionButtons.md
   - sortableControls: formBuilder/options/sortableControls.md
