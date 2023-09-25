@@ -2425,7 +2425,7 @@ function FormBuilder(opts, element, $) {
   formBuilder.actions = {
     getFieldTypes: activeOnly =>
       activeOnly ? subtract(controls.getRegistered(), opts.disableFields) : controls.getRegistered(),
-    clearFields: animate => h.removeAllFields(d.stage, animate),
+    clearFields: () => h.removeAllFields(d.stage),
     showData: h.showData.bind(h),
     save: minify => {
       const formData = h.save(minify)
@@ -2442,7 +2442,7 @@ function FormBuilder(opts, element, $) {
     getData: h.getFormData.bind(h),
     setData: formData => {
       h.stopIndex = undefined
-      h.removeAllFields(d.stage, false)
+      h.removeAllFields(d.stage)
       loadFields(formData)
     },
     setLang: locale => {

@@ -708,8 +708,7 @@ export default class Helpers {
 
   /**
    * Removes all fields from the form
-   * @param {Object} stage to remove fields form
-   * @param {Boolean} animate whether to animate or not
+   * @param {HTMLElement} stage to remove fields form
    * @return {void}
    */
   removeAllFields(stage) {
@@ -719,7 +718,7 @@ export default class Helpers {
     const markEmptyArray = []
 
     if (!fields.length) {
-      return false
+      return
     }
 
     if (opts.prepend) {
