@@ -504,8 +504,8 @@ export default class Helpers {
   /**
    * Closes and open dialog
    *
-   * @param  {Object} [overlay] Existing overlay if there is one
-   * @param  {Object} [dialog]  Existing dialog
+   * @param  {HTMLElement} [overlay] Existing overlay if there is one
+   * @param  {HTMLElement} [dialog]  Existing dialog
    */
   closeConfirm(overlay, dialog) {
     if (!overlay) {
@@ -522,8 +522,7 @@ export default class Helpers {
 
   /**
    *
-   * @param {Object} e keydown event object
-   * @param {Function} cb callback
+   * @param {KeyboardEvent} e keydown event object
    */
   handleKeyDown(e) {
     const keyCode = e.keyCode || e.which
