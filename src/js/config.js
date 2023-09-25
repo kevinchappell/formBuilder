@@ -70,10 +70,10 @@ export const defaultOptions = {
   },
   sanitizerOptions: {
     clobberingProtection: {
-      document: true,
+      document: false,
       form: false,
     },
-    backendOrder: ['dompurify','sanitizer','fallback'],
+    backendOrder: [], //'dompurify','sanitizer','fallback'
   },
   scrollToFieldOnAdd: true,
   showActionButtons: true,
