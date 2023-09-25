@@ -325,15 +325,15 @@ export default class Helpers {
 
   /**
    * Saves and returns formData
-   * @param {Boolean} minify whether to return formatted or minified data
-   * @return {XML|JSON} formData
+   * @param {boolean} [minify=false] whether to return formatted or minified data
+   * @return {string} formData FormData formatted in either XML or JSON depending on the current config.opts.dataType value
    */
-  save(minify) {
+  save(minify = false) {
     const _this = this
     const data = this.data
     const stage = this.d.stage
     const doSave = {
-      xml: minify => _this.xmlSave(stage, minify),
+      xml: () => _this.xmlSave(stage),
       json: minify => window.JSON.stringify(_this.prepData(stage), null, minify && '  '),
     }
 
