@@ -35,7 +35,7 @@ import {
   getContentType,
   generateSelectorClassNames,
 } from './utils'
-import { setElementContent, setSanitizerConfig } from './sanitizer'
+import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
 import fontConfig from '../fonts/config.json'
 const css_prefix_text = fontConfig.css_prefix_text
 
@@ -1714,10 +1714,9 @@ function FormBuilder(opts, element, $) {
     $valWrap.toggle(e.target.value !== 'quill')
   })
 
-  const testForm = document.createElement('form')
   $stage.on('change', '[name="name"]', e => {
     const name = e.target.value
-    if (name in document || name in testForm) {
+    if (attributeWillClobber(name)) {
       //@TODO Notify the user of this potential issue
       opts.notify.error('Potential for Dom Clobbering with field name ' + name)
     }

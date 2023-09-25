@@ -130,16 +130,19 @@ export const setSanitizerConfig = config => {
   }
 }
 
+export const attributeWillClobber = value => {
+  const check_doc = document
+  const check_form = document.createElement('form')
+
+  return (value in check_doc || value in check_form)
+}
+
 export const sanitizeNamedAttribute = value => {
   const check_doc = sanitizerConfig.clobberingProtection.document ? document : false
   const check_form = sanitizerConfig.clobberingProtection.form ? document.createElement('form') : false
 
   if ((check_doc && value in check_doc) || (check_form && value in check_form)) {
-    if (sanitizerConfig.clobberingProtection.namespaceAttributes) {
-      return 'user-content-' + value
-    } else {
-      return undefined
-    }
+    return (sanitizerConfig.clobberingProtection.namespaceAttributes) ? 'user-content-' + value : undefined
   }
   return value
 }
@@ -213,7 +216,8 @@ const sanitizer = {
   setElementContent,
   setSanitizerConfig,
   sanitizeNamedAttribute,
-  isPotentiallyDangerousAttribute
+  isPotentiallyDangerousAttribute,
+  attributeWillClobber,
 }
 
 export default sanitizer
