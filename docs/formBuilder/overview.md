@@ -9,6 +9,7 @@ Key files / folders:
   * `form-render.js` - the library & code for rendering formData json/xml created by formbuilder
   * `helper.js` - reusable methods that are used throughout `form-builder.js`
   * `layout.js` - the layout engine that produces each row of the form, and determines how the label, help text, and control widget will each fit together.
+  * `sanitizer.js` - Script injection and DOM clobbering protection library for formbuilder
   * `utils.js` - resuable methods thare are used in both `form-builder.js` and `form-render.js`
   
 # Controls

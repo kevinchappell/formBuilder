@@ -86,7 +86,7 @@ const sanitizerConfig = {
     dompurify: window.DOMPurify ? (purify => {
       purify.setConfig({
         //USE_PROFILES: { html: true }, //Only process HTML (exclude SVG and MATHML)
-        SANITIZE_DOM: false, //formBuilder uses inputs with names that clash built-in attributes of Form element, we use our modified DomClobbing function instead
+        SANITIZE_DOM: false, //formBuilder uses inputs with names that clash built-in attributes of Form element, we use our modified DomClobbering function instead
         ADD_ATTR: ['contenteditable'] //label input requires this to be allowed
       })
       return purify
