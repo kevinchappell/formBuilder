@@ -504,8 +504,8 @@ export default class Helpers {
   /**
    * Closes and open dialog
    *
-   * @param  {Object} overlay Existing overlay if there is one
-   * @param  {Object} dialog  Existing dialog
+   * @param  {Object} [overlay] Existing overlay if there is one
+   * @param  {Object} [dialog]  Existing dialog
    */
   closeConfirm(overlay, dialog) {
     if (!overlay) {
