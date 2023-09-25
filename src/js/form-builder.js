@@ -2392,13 +2392,7 @@ function FormBuilder(opts, element, $) {
     const $optionWrap = $(e.target).closest('.field-options')
     const $multiple = $('[name="multiple"]', $optionWrap)
     const $firstOption = $('.option-selected:eq(0)', $optionWrap)
-    let isMultiple = false
-
-    if ($multiple.length) {
-      isMultiple = $multiple.prop('checked')
-    } else {
-      isMultiple = $firstOption.attr('type') === 'checkbox'
-    }
+    const isMultiple = ($multiple.length) ? $multiple.prop('checked') : $firstOption.attr('type') === 'checkbox'
 
     const optionTemplate = { selected: false, label: '', value: '' }
     const $sortableOptions = $('.sortable-options', $optionWrap)
