@@ -369,7 +369,7 @@ export default class Helpers {
     forEach(attrs, index => {
       const attr = attrs[index]
       const name = camelCase(attr.getAttribute('name'))
-      const value = [
+      fieldData[name] = [
         [
           attr.attributes.contenteditable,
           () => (config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML),
@@ -379,7 +379,6 @@ export default class Helpers {
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
       ].find(([condition]) => !!condition)[1]()
-      fieldData[name] = value
     })
     return fieldData
   }
