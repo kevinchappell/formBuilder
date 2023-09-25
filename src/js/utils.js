@@ -13,11 +13,15 @@ window.fbEditors = {
 }
 
 /**
- * Remove null or undefined values
- * @param  {Object} attrs {attrName: attrValue}
- * @return {Object}       Object trimmed of null or undefined values
+ * Remove null or undefined values from an object, original object is not modified
+ * @param  {Object} obj {attrName: attrValue}
+ * @param {boolean} [removeFalse=false] Remove values === false
+ * @return {Object} Object trimmed of null or undefined values
  */
-export const trimObj = function (attrs, removeFalse = false) {
+export const trimObj = function (obj, removeFalse = false) {
+  if (null == obj || typeof obj !== 'object') return obj
+  const attrs = (typeof window.structuredClone === 'function') ? window.structuredClone(obj) : Object.assign({}, obj)
+  /** @type {(null|undefined|''|false)[]} xmlRemove */
   const xmlRemove = [null, undefined, '']
   if (removeFalse) {
     xmlRemove.push(false)
