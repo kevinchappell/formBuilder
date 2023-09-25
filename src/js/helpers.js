@@ -1150,7 +1150,7 @@ export default class Helpers {
 
   /**
    * Generate stage and controls dom elements
-   * @param  {String} formID [description]
+   * @param  {string} formID
    */
   editorUI(formID) {
     const d = this.d
