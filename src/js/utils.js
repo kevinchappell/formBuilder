@@ -239,6 +239,7 @@ export const markup = function (tag, content = '', attributes = {}) {
     if (attrs.hasOwnProperty(attr)) {
       const name = safeAttrName(attr)
       let attrVal = Array.isArray(attrs[attr]) ? unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
+      //If the Sanitizer is disabled this will always return false
       if (isPotentiallyDangerousAttribute(name, attrVal)) {
         continue
       }

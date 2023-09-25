@@ -2,7 +2,67 @@
  * Sanitizer utility for handling untrusted HTML
  */
 
+const sanitizerConfig = {
+  clobberingProtection: {
+    document: true,
+    form: true,
+    namespaceAttributes: false, //whether to prefix with user-content-
+  },
+  backendOrder: ['dompurify','sanitizer','fallback'],
+  backends: {
+    sanitizer: typeof window['Sanitizer'] === 'function' ? new window.Sanitizer() : false,
+    dompurify: window.DOMPurify ? (purify => {
+      purify.setConfig({
+        //USE_PROFILES: { html: true }, //Only process HTML (exclude SVG and MATHML)
+        SANITIZE_DOM: false, //formBuilder uses inputs with names that clash built-in attributes of Form element, we use our modified DomClobbering function instead
+        ADD_ATTR: ['contenteditable'] //label input requires this to be allowed
+      })
+      return purify
+    })(window.DOMPurify) : false,
+    fallback: fallbackSanitizer,
+  }
+}
+
+export const setSanitizerConfig = config => {
+  if (typeof config !== 'object') {
+    throw 'Invalid value given to setSanitizerConfig, expected config object'
+  }
+
+  if (config.hasOwnProperty('clobberingProtection')) {
+    ['document','form','namespaceAttributes'].forEach(type => {
+      if (config.clobberingProtection.hasOwnProperty(type) && typeof config.clobberingProtection[type] === 'boolean') {
+        sanitizerConfig.clobberingProtection[type] = config.clobberingProtection[type]
+      }
+    })
+  }
+  if (config.hasOwnProperty('backends')) {
+    if (typeof config.backends === 'object') {
+      Object.keys(config.backends).forEach(implementation => sanitizerConfig.backends[implementation] = config.backends[implementation])
+    } else {
+      throw 'backends config expected to be an Object'
+    }
+  }
+  if (config.hasOwnProperty('backendOrder')) {
+    sanitizerConfig.backendOrder = []
+    if (Array.isArray(config.backendOrder)) {
+      config.backendOrder.forEach(backend => {
+        if (sanitizerConfig.backends.hasOwnProperty(backend)) {
+          sanitizerConfig.backendOrder.push(backend)
+        } else {
+          throw 'unknown sanitizer backend ' + backend
+        }
+      })
+    } else {
+      throw 'backendOrder config expected to be an Array of backend keys as strings'
+    }
+  }
+}
+
 export const isPotentiallyDangerousAttribute = (attrName, attrValue) => {
+  if (sanitizerConfig.backendOrder.length === 0) {
+    //All backends disabled so no sanitization checks to be performed
+    return false
+  }
   const attrNameLc = attrName.toLowerCase()
   attrValue = attrValue ? attrValue+'' : ''
   return (
@@ -72,62 +132,6 @@ const fallbackSanitizer = content => {
   const tmp = context.createElement('div')
   $(tmp).html(output)
   return tmp.innerHTML
-}
-
-const sanitizerConfig = {
-  clobberingProtection: {
-    document: true,
-    form: true,
-    namespaceAttributes: false, //whether to prefix with user-content-
-  },
-  backendOrder: ['dompurify','sanitizer','fallback'],
-  backends: {
-    sanitizer: typeof window['Sanitizer'] === 'function' ? new window.Sanitizer() : false,
-    dompurify: window.DOMPurify ? (purify => {
-      purify.setConfig({
-        //USE_PROFILES: { html: true }, //Only process HTML (exclude SVG and MATHML)
-        SANITIZE_DOM: false, //formBuilder uses inputs with names that clash built-in attributes of Form element, we use our modified DomClobbering function instead
-        ADD_ATTR: ['contenteditable'] //label input requires this to be allowed
-      })
-      return purify
-    })(window.DOMPurify) : false,
-    fallback: fallbackSanitizer,
-  }
-}
-
-export const setSanitizerConfig = config => {
-  if (typeof config !== 'object') {
-    throw 'Invalid value given to setSanitizerConfig, expected config object'
-  }
-
-  if (config.hasOwnProperty('clobberingProtection')) {
-    ['document','form','namespaceAttributes'].forEach(type => {
-      if (config.clobberingProtection.hasOwnProperty(type) && typeof config.clobberingProtection[type] === 'boolean') {
-        sanitizerConfig.clobberingProtection[type] = config.clobberingProtection[type]
-      }
-    })
-  }
-  if (config.hasOwnProperty('backends')) {
-    if (typeof config.backends === 'object') {
-      Object.keys(config.backends).forEach(implementation => sanitizerConfig.backends[implementation] = config.backends[implementation])
-    } else {
-      throw 'backends config expected to be an Object'
-    }
-  }
-  if (config.hasOwnProperty('backendOrder')) {
-    sanitizerConfig.backendOrder = []
-    if (Array.isArray(config.backendOrder)) {
-      config.backendOrder.forEach(backend => {
-        if (sanitizerConfig.backends.hasOwnProperty(backend)) {
-          sanitizerConfig.backendOrder.push(backend)
-        } else {
-          throw 'unknown sanitizer backend ' + backend
-        }
-      })
-    } else {
-      throw 'backendOrder config expected to be an Array of backend keys as strings'
-    }
-  }
 }
 
 export const attributeWillClobber = value => {
