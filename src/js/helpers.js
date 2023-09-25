@@ -460,7 +460,7 @@ export default class Helpers {
    * Process classNames for field
    * @param  {Object} field
    * @param  {Object} previewData
-   * @return {String} classNames
+   * @return {String|void} classNames
    */
   classNames(field, previewData) {
     const className = field.querySelector('.fld-className')
@@ -626,7 +626,7 @@ export default class Helpers {
 
   /**
    * Popup dialog the does not require confirmation.
-   * @param  {String|DOM|Array}  content
+   * @param  {String|HTMLElement|Array}  content
    * @param  {Boolean} coords    screen coordinates to position dialog
    * @param  {String}  className classname to be added to the dialog
    * @return {Object}            dom
