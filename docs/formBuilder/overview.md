@@ -18,9 +18,9 @@ Key files / folders:
 
  Each control is represented by a class which inherits from the `control` class defined in `control.js`. A control class may be used by multiple types of controls.
  
- For an example in of how to [**create a new control**](controls), check out the Readme.md in the `control/` directory. 
+ For an example in of how to [**create a new control**](controls.md), check out the Readme.md in the `control/` directory. 
  
- For an example in of how to [**create a new control plugin**](control-plugins), check out the Readme.md in the `control/` directory.
+ For an example in of how to [**create a new control plugin**](control-plugins.md), check out the Readme.md in the `control/` directory.
  
  The parent class defined in `control.js` has two types of methods:
    * object level methods which are used to manipulate and create an instance of that control on a form
