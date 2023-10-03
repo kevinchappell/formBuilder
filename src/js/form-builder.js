@@ -1197,7 +1197,7 @@ function FormBuilder(opts, element, $) {
 
       //If inserting, use the existing index, do not always append to end
       if (!insertingNewControl) {
-        $stage.append(rowWrapperNode)
+        $li.after(rowWrapperNode)
       }
 
       $li.appendTo(colWrapperNode)
