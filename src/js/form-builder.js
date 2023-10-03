@@ -1899,6 +1899,7 @@ function FormBuilder(opts, element, $) {
     $clone.appendTo(colWrapper)
 
     setupSortableRowWrapper(rowWrapper)
+    ResetAllInvisibleRowPlaceholders()
     syncFieldWithNewRow($clone.attr('id'))
   }
 
