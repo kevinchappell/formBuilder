@@ -1061,18 +1061,6 @@ function FormBuilder(opts, element, $) {
         className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
-      m('a', null, {
-        type: 'sort',
-        id: data.lastID + '-sort-higher',
-        className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
-        title: 'Move Higher',
-      }),
-      m('a', null, {
-        type: 'sort',
-        id: data.lastID + '-sort-lower',
-        className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
-        title: 'Move Lower',
-      })
     ]
 
     if (enhancedBootstrapEnabled()) {
@@ -1084,6 +1072,19 @@ function FormBuilder(opts, element, $) {
           title: 'Grid Mode',
         }),
       )
+    } else {
+      m('a', null, {
+        type: 'sort',
+        id: data.lastID + '-sort-higher',
+        className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
+        title: 'Move Higher',
+      }),
+        m('a', null, {
+          type: 'sort',
+          id: data.lastID + '-sort-lower',
+          className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
+          title: 'Move Lower',
+        })
     }
 
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
