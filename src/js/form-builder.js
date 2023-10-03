@@ -2034,23 +2034,19 @@ function FormBuilder(opts, element, $) {
   })
 
   function moveFieldUp(rowWrapper) {
-    const previousRowSibling = rowWrapper.prevAll().not(tmpRowPlaceholderClassSelector).first()
+    const previousRowSibling = rowWrapper.prevAll().not(tmpRowPlaceholderClassSelector).not('.form-prepend').first()
     if (previousRowSibling.length) {
       $(gridModeTargetField.parent().parent()).swapWith(previousRowSibling)
-    } else {
-      return
+      h.toggleHighlight(gridModeTargetField)
     }
-    h.toggleHighlight(gridModeTargetField)
   }
 
   function moveFieldDown(rowWrapper) {
-    const nextRowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).first()
+    const nextRowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).not('.form-append').first()
     if (nextRowSibling.length) {
       $(gridModeTargetField.parent().parent()).swapWith(nextRowSibling)
-    } else {
-      return
+      h.toggleHighlight(gridModeTargetField)
     }
-    h.toggleHighlight(gridModeTargetField)
   }
 
   function moveFieldLeft() {
