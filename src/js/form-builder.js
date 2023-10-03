@@ -134,7 +134,7 @@ function FormBuilder(opts, element, $) {
       change: function(event, ui) {
         if (opts.prepend && ui.placeholder.index() < 1) {
           $('li.form-prepend').after(ui.placeholder)
-        } else if (opts.append && ui.placeholder.index() >=(d.stage.childNodes.length - 1)) {
+        } else if (opts.append && ui.placeholder.index() >= ($stage.children('li').length - 1)) {
           $('li.form-append').before(ui.placeholder)
         }
       },
@@ -262,7 +262,7 @@ function FormBuilder(opts, element, $) {
     }
 
     const $control = $(target).closest('li')
-    h.stopIndex = opts.append ? d.stage.childNodes.length - 1 : undefined
+    h.stopIndex = opts.append ? $stage.children('li').length - 1 : undefined
     processControl($control)
     h.save.call(h)
   })
