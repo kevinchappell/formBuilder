@@ -1256,13 +1256,11 @@ function FormBuilder(opts, element, $) {
         //Only show the placeholder for what is above/below the rowWrapper
         $(this)
           .closest(rowWrapperClassSelector)
-          .prevAll(tmpRowPlaceholderClassSelector)
-          .first()
+          .prev(tmpRowPlaceholderClassSelector)
           .removeClass(invisibleRowPlaceholderClass)
         $(this)
           .closest(rowWrapperClassSelector)
-          .nextAll(tmpRowPlaceholderClassSelector)
-          .first()
+          .next(tmpRowPlaceholderClassSelector)
           .removeClass(invisibleRowPlaceholderClass)
 
         gridModeTargetField = $(this)
@@ -1335,13 +1333,11 @@ function FormBuilder(opts, element, $) {
 
           //Only show the placeholder for what is above/below the rowWrapper
           overTarget
-            .prevAll(tmpRowPlaceholderClassSelector)
-            .first()
+            .prev(tmpRowPlaceholderClassSelector)
             .removeClass(invisibleRowPlaceholderClass)
             .css('height', '40px')
           overTarget
-            .nextAll(tmpRowPlaceholderClassSelector)
-            .first()
+            .next(tmpRowPlaceholderClassSelector)
             .removeClass(invisibleRowPlaceholderClass)
             .css('height', '40px')
         }
