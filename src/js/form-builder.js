@@ -1073,18 +1073,20 @@ function FormBuilder(opts, element, $) {
         }),
       )
     } else {
-      m('a', null, {
-        type: 'sort',
-        id: data.lastID + '-sort-higher',
-        className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
-        title: 'Move Higher',
-      }),
+      fieldButtons.push(
+        m('a', null, {
+          type: 'sort',
+          id: data.lastID + '-sort-higher',
+          className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
+          title: 'Move Higher',
+        }),
         m('a', null, {
           type: 'sort',
           id: data.lastID + '-sort-lower',
           className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
           title: 'Move Lower',
         })
+      )
     }
 
     if (disabledFieldButtons && Array.isArray(disabledFieldButtons)) {
@@ -2331,24 +2333,7 @@ function FormBuilder(opts, element, $) {
       }
     }
 
-    if (swap.length) {
-      //Animate the flashing of the background and border of the element was moved
-      currentItem.css({
-        'border-color': '#66afe9',
-        'outline': 0,
-        'box-shadow': 'inset 0 1px 1px rgba(0,0,0,.1),0 0 8px rgba(102,175,233,.6)',
-        'background-color': '#b7d6f5',
-      }).delay('fast')
-        .queue(function(next) {
-          $(this).css({
-            'border-color': '',
-            'outline': '',
-            'box-shadow': '',
-            'background-color': ''
-          })
-          next()
-        })
-    }
+    h.toggleHighlight(currentItem)
   })
 
   // Update button style selection
