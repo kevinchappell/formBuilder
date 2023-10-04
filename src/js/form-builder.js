@@ -1946,9 +1946,9 @@ function FormBuilder(opts, element, $) {
 
       let nextColSize
       if (e.originalEvent.wheelDelta / 120 > 0) {
-        nextColSize = parseInt(currentColValue) + 1
+        nextColSize = currentColValue + 1
       } else {
-        nextColSize = parseInt(currentColValue) - 1
+        nextColSize = currentColValue - 1
       }
 
       if (nextColSize > 12) {
