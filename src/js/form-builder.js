@@ -1273,7 +1273,7 @@ function FormBuilder(opts, element, $) {
   }
 
   function HideInvisibleRowPlaceholders() {
-    $stage.find(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+    $stage.find(tmpRowPlaceholderClassSelector).css('height','1px').addClass(invisibleRowPlaceholderClass)
   }
 
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
