@@ -1921,10 +1921,11 @@ function FormBuilder(opts, element, $) {
     }
   })
 
-  var gridMode = false
-  var gridModeTargetField
+  let gridMode = false
+  let gridModeTargetField
   let gridModeStartX
   let gridModeStartY
+  let wheelDelta = 0
   $stage.on('click touchstart', '.grid-button', e => {
     e.preventDefault()
 
@@ -1933,23 +1934,33 @@ function FormBuilder(opts, element, $) {
     gridModeStartX = e.pageX
     gridModeStartY = e.pageY
 
+    //Reset wheelDelta
+    wheelDelta = 0
+
     toggleGridModeActive()
   })
 
   //Use mousewheel to work resizing
-  $stage.on('mousewheel', function (e) {
+  $stage.on('wheel', function (e) {
+    if (e.originalEvent.deltaY === 0) {
+      return
+    }
     if (gridMode) {
       e.preventDefault()
+
+      wheelDelta += e.originalEvent.deltaY
+      const deltaPerShift = 120
+      if ((wheelDelta > 0 && wheelDelta < deltaPerShift) || (wheelDelta < 0 && wheelDelta > -deltaPerShift)) {
+        return
+      }
 
       const parentCont = gridModeTargetField.closest('div')
       const currentColValue = h.getBootstrapColumnValue(parentCont.attr('class'))
 
-      let nextColSize
-      if (e.originalEvent.wheelDelta / 120 > 0) {
-        nextColSize = currentColValue + 1
-      } else {
-        nextColSize = currentColValue - 1
-      }
+      const change = Math.round(wheelDelta / deltaPerShift)
+      wheelDelta = wheelDelta % deltaPerShift
+
+      const nextColSize = currentColValue + change
 
       if (nextColSize > 12) {
         h.showToast('<b class="formbuilder-required">Column Size cannot exceed 12</b>')
