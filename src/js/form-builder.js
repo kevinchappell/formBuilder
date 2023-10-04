@@ -1251,18 +1251,6 @@ function FormBuilder(opts, element, $) {
 
     colWrapper.mouseenter(function (e) {
       if (!gridMode) {
-        HideInvisibleRowPlaceholders()
-
-        //Only show the placeholder for what is above/below the rowWrapper
-        $(this)
-          .closest(rowWrapperClassSelector)
-          .prev(tmpRowPlaceholderClassSelector)
-          .removeClass(invisibleRowPlaceholderClass)
-        $(this)
-          .closest(rowWrapperClassSelector)
-          .next(tmpRowPlaceholderClassSelector)
-          .removeClass(invisibleRowPlaceholderClass)
-
         gridModeTargetField = $(this)
         gridModeStartX = e.pageX
         gridModeStartY = e.pageY
