@@ -1418,6 +1418,7 @@ function FormBuilder(opts, element, $) {
         if (listFieldItem.length) {
           CheckTinyMCETransition(listFieldItem)
           UpdatePreviewAndSave(listFieldItem)
+          h.tmpCleanPrevHolder($(ui.item).find('.prev-holder'))
         }
       },
       start: function () {
