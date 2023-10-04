@@ -1937,7 +1937,7 @@ function FormBuilder(opts, element, $) {
   })
 
   //Use mousewheel to work resizing
-  $stage.bind('mousewheel', function (e) {
+  $stage.on('mousewheel', function (e) {
     if (gridMode) {
       e.preventDefault()
 
