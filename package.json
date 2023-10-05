@@ -169,6 +169,6 @@
     ]
   },
   "browserslist": [
-    "> 1%"
+    "defaults"
   ]
 }
