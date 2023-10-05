@@ -96,10 +96,10 @@ export default class layout {
    *   - field - the DOM element
    *   - noLabel - this control shouldn't have a label (nor a space for a label)
    *   - hidden - this control shouldn't render anything visible to the page
-   * @param {Object} renderControl - the relevant control class
+   * @param {Class} renderControl - the relevant control class
    * @param {Object} data - configuration data passed through formData for this control
-   * @param {String} forceTemplate - programatically force the template with which this control to be rendered
-   * @return {Object} element
+   * @param {String} forceTemplate - programmatically force the template with which this control to be rendered
+   * @return {HTMLElement} element
    */
   build(renderControl, data, forceTemplate) {
     // prepare the data
@@ -199,7 +199,7 @@ export default class layout {
    * Process a template & prepare the results
    * @param {String} template - template key to execute
    * @param {Array} args - any number of args that should be passed to the template. this.data is sent as the last parameter to any template.
-   * @return {DOMElement}
+   * @return {HTMLElement}
    */
   processTemplate(template, ...args) {
     let processed = this.templates[template](...args, this.data)

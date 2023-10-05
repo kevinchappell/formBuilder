@@ -119,7 +119,7 @@ export default class control {
 
   /**
    * Looks up the classRegister & returns registered types or subtypes
-   * @param  {String} type optional type of control we want to look up
+   * @param  {string|false} type optional type of control we want to look up
    * subtypes of. If not specified will return all types
    * @return {Array} registered types (or subtypes)
    */
@@ -134,7 +134,7 @@ export default class control {
       if (type) {
         return key.indexOf(type + '.') > -1
       }
-      return key.indexOf('.') == -1
+      return key.indexOf('.') === -1
     })
   }
 
@@ -215,7 +215,7 @@ export default class control {
    * By default looks for translations defined against the class (for plugin controls)
    * Expects {locale1: {type: label}, locale2: {type: label}}, or {default: label}, or {local1: label, local2: label2}
    * @param {String} lookup string to retrieve the label / translated string for
-   * @param {Object|Number|String} args - string or key/val pairs for string lookups with variables
+   * @param {Object|Number|String} [args] - string or key/val pairs for string lookups with variables
    * @return {String} the translated label
    */
   static mi18n(lookup, args) {
@@ -248,7 +248,7 @@ export default class control {
    * @return {Boolean} isActive
    */
   static active(type) {
-    return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) == -1
+    return !Array.isArray(this.definition.inactive) || this.definition.inactive.indexOf(type) === -1
   }
 
   /**
@@ -311,7 +311,7 @@ export default class control {
 
       /**
        * onRender event to execute code each time an instance of this control is injected into the DOM
-       * @param {Node} element
+       * @param {Node} evt
        */
       render: evt => {
         // check for a class render event - default to an empty function

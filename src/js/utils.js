@@ -445,7 +445,7 @@ export const removeFromArray = (val, arr) => {
 /**
  * Loads an array of scripts using jQuery's `getScript`
  * @param  {Array|String}  scriptScr    scripts
- * @param  {String} path   optional to load form
+ * @param  {String} [path='']   optional to load form
  * @return {Promise}       a promise
  */
 export const getScripts = (scriptScr, path) => {
@@ -492,7 +492,7 @@ export const isCached = (src, type = 'js') => {
 /**
  * Appends stylesheets to the head
  * @param  {Array} scriptScr
- * @param  {String} path
+ * @param  {String} [path='']
  * @return {void}
  */
 export const getStyles = (scriptScr, path) => {
@@ -510,7 +510,7 @@ export const getStyles = (scriptScr, path) => {
       type = src.type || (src.style ? 'inline' : 'href')
       id = src.id
       key = id || src.href || src.style
-      src = type == 'inline' ? src.style : src.href
+      src = type === 'inline' ? src.style : src.href
     }
 
     // check we haven't already loaded this css
@@ -519,7 +519,7 @@ export const getStyles = (scriptScr, path) => {
     }
 
     // append the style into the head
-    if (type == 'href') {
+    if (type === 'href') {
       const link = document.createElement('link')
       link.type = 'text/css'
       link.rel = 'stylesheet'

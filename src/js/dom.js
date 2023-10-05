@@ -9,7 +9,7 @@ export const defaultSubtypes = {
 
 /**
  * Removes a dom node
- * @param  {Object} element
+ * @param {Node} element
  */
 export const remove = element => {
   if (element.parentNode) {
@@ -17,6 +17,12 @@ export const remove = element => {
   }
 }
 
+
+/**
+ * Util to remove contents of DOM Node
+ * @param  {HTMLElement} element
+ * @return {HTMLElement} element with its children removed
+ */
 export const empty = element => {
   while (element.firstChild) {
     element.removeChild(element.firstChild)
@@ -24,6 +30,13 @@ export const empty = element => {
   return element
 }
 
+/**
+ * Hide or show an Array|HTMLCollection of elements containing a case-insensitive string
+ * @param  {HTMLElement[]|HTMLCollection}   elems
+ * @param  {string}  term  match textContent to this term
+ * @param  {boolean} [show=true] show or hide elements
+ * @return {HTMLElement[]}         filtered elements
+ */
 export const filter = (elems, term, show = true) => {
   const filteredElems = []
   let toggle = ['none', 'block']
@@ -53,9 +66,26 @@ export const optionFieldsRegEx = new RegExp(`(${optionFields.join('|')})`)
  */
 export default class Dom {
   /**
+   * @type {HTMLUListElement}
+   */
+  stage
+  /**
+   * @type {HTMLElement}
+   */
+  controls
+  /**
+   * @type {HTMLElement}
+   */
+  formActions
+  /**
+   * @type {HTMLElement}
+   */
+  editorWrap
+
+  /**
    * Set defaults
-   * @param  {String} formID [description]
-   * @return {Object} Dom Instance
+   * @param {string} formID
+   * @return {Dom} Dom Instance
    */
   constructor(formID) {
     this.optionFields = optionFields
@@ -65,17 +95,17 @@ export default class Dom {
 
     /**
      * Util to remove contents of DOM Object
-     * @param  {Object} element
-     * @return {Object} element with its children removed
+     * @param  {HTMLElement} element
+     * @return {HTMLElement} element with its children removed
      */
     this.empty = empty
 
     /**
-     * Hide or show an Array or HTMLCollection of elements
-     * @param  {Array}   elems
-     * @param  {String}  term  match textContent to this term
-     * @param  {Boolean} show  or hide elements
-     * @return {Array}         filtered elements
+     * Hide or show an Array|HTMLCollection of elements containing a case-insensitive string
+     * @param  {HTMLElement[]|HTMLCollection}   elems
+     * @param  {string}  term  match textContent to this term
+     * @param  {boolean} show  or hide elements
+     * @return {HTMLElement[]}         filtered elements
      */
     this.filter = filter
 
@@ -84,9 +114,15 @@ export default class Dom {
   }
 
   /**
+   * @callback onRenderCallback
+   * @param {HTMLElement} evt - rendered node
+   */
+
+  /**
    * Do something when a specific dom element renders
-   * @param {Object} node
-   * @param {Function} cb
+   *
+   * @param {HTMLElement} node
+   * @param {onRenderCallback} cb
    */
   onRender(node, cb) {
     if (!node.parentElement) {

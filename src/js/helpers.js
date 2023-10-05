@@ -325,15 +325,15 @@ export default class Helpers {
 
   /**
    * Saves and returns formData
-   * @param {Boolean} minify whether to return formatted or minified data
-   * @return {XML|JSON} formData
+   * @param {boolean} [minify=false] whether to return formatted or minified data
+   * @return {string} formData FormData formatted in either XML or JSON depending on the current config.opts.dataType value
    */
-  save(minify) {
+  save(minify = false) {
     const _this = this
     const data = this.data
     const stage = this.d.stage
     const doSave = {
-      xml: minify => _this.xmlSave(stage, minify),
+      xml: () => _this.xmlSave(stage),
       json: minify => window.JSON.stringify(_this.prepData(stage), null, minify && '  '),
     }
 
@@ -369,7 +369,7 @@ export default class Helpers {
     forEach(attrs, index => {
       const attr = attrs[index]
       const name = camelCase(attr.getAttribute('name'))
-      const value = [
+      fieldData[name] = [
         [
           attr.attributes.contenteditable,
           () => (config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML),
@@ -379,7 +379,6 @@ export default class Helpers {
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
       ].find(([condition]) => !!condition)[1]()
-      fieldData[name] = value
     })
     return fieldData
   }
@@ -461,7 +460,7 @@ export default class Helpers {
    * Process classNames for field
    * @param  {Object} field
    * @param  {Object} previewData
-   * @return {String} classNames
+   * @return {String|void} classNames
    */
   classNames(field, previewData) {
     const className = field.querySelector('.fld-className')
@@ -505,8 +504,8 @@ export default class Helpers {
   /**
    * Closes and open dialog
    *
-   * @param  {Object} overlay Existing overlay if there is one
-   * @param  {Object} dialog  Existing dialog
+   * @param  {HTMLElement} [overlay] Existing overlay if there is one
+   * @param  {HTMLElement} [dialog]  Existing dialog
    */
   closeConfirm(overlay, dialog) {
     if (!overlay) {
@@ -523,8 +522,7 @@ export default class Helpers {
 
   /**
    *
-   * @param {Object} e keydown event object
-   * @param {Function} cb callback
+   * @param {KeyboardEvent} e keydown event object
    */
   handleKeyDown(e) {
     const keyCode = e.keyCode || e.which
@@ -627,7 +625,7 @@ export default class Helpers {
 
   /**
    * Popup dialog the does not require confirmation.
-   * @param  {String|DOM|Array}  content
+   * @param  {String|HTMLElement|Array}  content
    * @param  {Boolean} coords    screen coordinates to position dialog
    * @param  {String}  className classname to be added to the dialog
    * @return {Object}            dom
@@ -709,8 +707,7 @@ export default class Helpers {
 
   /**
    * Removes all fields from the form
-   * @param {Object} stage to remove fields form
-   * @param {Boolean} animate whether to animate or not
+   * @param {HTMLElement} stage to remove fields form
    * @return {void}
    */
   removeAllFields(stage) {
@@ -720,7 +717,7 @@ export default class Helpers {
     const markEmptyArray = []
 
     if (!fields.length) {
-      return false
+      return
     }
 
     if (opts.prepend) {
@@ -1152,7 +1149,7 @@ export default class Helpers {
 
   /**
    * Generate stage and controls dom elements
-   * @param  {String} formID [description]
+   * @param  {string} formID
    */
   editorUI(formID) {
     const d = this.d
