@@ -9,6 +9,7 @@ Key files / folders:
   * `form-render.js` - the library & code for rendering formData json/xml created by formbuilder
   * `helper.js` - reusable methods that are used throughout `form-builder.js`
   * `layout.js` - the layout engine that produces each row of the form, and determines how the label, help text, and control widget will each fit together.
+  * `sanitizer.js` - Script injection and DOM clobbering protection library for formbuilder
   * `utils.js` - resuable methods thare are used in both `form-builder.js` and `form-render.js`
   
 # Controls
@@ -17,9 +18,9 @@ Key files / folders:
 
  Each control is represented by a class which inherits from the `control` class defined in `control.js`. A control class may be used by multiple types of controls.
  
- For an example in of how to [**create a new control**](controls), check out the Readme.md in the `control/` directory. 
+ For an example in of how to [**create a new control**](controls.md), check out the Readme.md in the `control/` directory. 
  
- For an example in of how to [**create a new control plugin**](control-plugins), check out the Readme.md in the `control/` directory.
+ For an example in of how to [**create a new control plugin**](control-plugins.md), check out the Readme.md in the `control/` directory.
  
  The parent class defined in `control.js` has two types of methods:
    * object level methods which are used to manipulate and create an instance of that control on a form

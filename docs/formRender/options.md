@@ -23,6 +23,13 @@ var defaults = {
     warning: function(message) {
       return console.warn(message);
     }
-  }
+  },
+  sanitizerOptions: {
+    clobberingProtection: {
+      document: false,
+      form: false,
+    },
+    backendOrder: ['dompurify','sanitizer','fallback'],
+  },
 }
 </code></pre>

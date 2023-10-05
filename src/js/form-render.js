@@ -8,6 +8,7 @@ import './control/index'
 import controlCustom from './control/custom'
 import { defaultI18n } from './config'
 import '../sass/form-render.scss'
+import { setSanitizerConfig } from './sanitizer'
 
 /**
  * FormRender Class
@@ -38,6 +39,15 @@ class FormRender {
       },
       onRender: () => {},
       render: true,
+      sanitizerOptions: {
+        clobberingProtection: {
+          document: true,
+          form: false,
+          namespaceAttributes: true, //clobbered names will be prefixed with user-content-
+        },
+        backendOrder: ['dompurify','sanitizer','fallback'],
+
+      },
       templates: {}, // custom inline defined templates
       notify: {
         error: error => {
@@ -53,6 +63,9 @@ class FormRender {
     }
     this.options = jQuery.extend(true, defaults, options)
     this.instanceContainers = []
+
+    //Override any sanitizer configuration
+    setSanitizerConfig(this.options.sanitizerOptions)
 
     if (!mi18n.current) {
       mi18n.init(this.options.i18n)
@@ -134,7 +147,7 @@ class FormRender {
    * @param {Number} instanceIndex - instance index
    * @return {Object} sanitized field object
    */
-  santizeField(field, instanceIndex) {
+  sanitizeField(field, instanceIndex) {
     const sanitizedField = Object.assign({}, field)
     if (instanceIndex) {
       sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
@@ -191,7 +204,7 @@ class FormRender {
       const engine = new opts.layout(opts.layoutTemplates, false, opts.disableHTMLLabels)
       for (let i = 0; i < opts.formData.length; i++) {
         const fieldData = opts.formData[i]
-        const sanitizedField = this.santizeField(fieldData, instanceIndex)
+        const sanitizedField = this.sanitizeField(fieldData, instanceIndex)
 
         // determine the control class for this type, and then process it through the layout engine
         const controlClass = control.getClass(fieldData.type, fieldData.subtype)
@@ -249,7 +262,7 @@ class FormRender {
         'To render a single element, please specify a single object of formData for the field in question',
       )
     }
-    const sanitizedField = this.santizeField(fieldData)
+    const sanitizedField = this.sanitizeField(fieldData)
 
     // determine the control class for this type, and then build it
     const engine = new opts.layout()

@@ -35,6 +35,7 @@ import {
   getContentType,
   generateSelectorClassNames,
 } from './utils'
+import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
 import fontConfig from '../fonts/config.json'
 const css_prefix_text = fontConfig.css_prefix_text
 
@@ -65,6 +66,13 @@ function FormBuilder(opts, element, $) {
   formBuilder.colWrapperClass = colWrapperClass
   formBuilder.fieldSelector = opts.enableEnhancedBootstrapGrid ? rowWrapperClassSelector : defaultFieldSelector
 
+  //Initialise HTML sanitizer
+  setSanitizerConfig(opts.sanitizerOptions)
+  if ($(element).closest('form').length) {
+    //Due to Dom Clobbering potential with the stage and the lack of requirement for a Form element, warn for this type of setup
+    opts.notify.warning('WARNING: FormBuilder does not support being contained with a <form> Element')
+  }
+
   // prepare a new layout object with appropriate templates
   if (!opts.layout) {
     opts.layout = layout
@@ -93,11 +101,7 @@ function FormBuilder(opts, element, $) {
   let cloneControls
 
   function enhancedBootstrapEnabled() {
-    if (!opts.enableEnhancedBootstrapGrid) {
-      return false
-    }
-
-    return true
+    return !!opts.enableEnhancedBootstrapGrid
   }
 
   $stage.sortable({
@@ -1710,6 +1714,14 @@ function FormBuilder(opts, element, $) {
     $valWrap.toggle(e.target.value !== 'quill')
   })
 
+  $stage.on('change', '[name="name"]', e => {
+    const name = e.target.value
+    if (attributeWillClobber(name)) {
+      //@TODO Notify the user of this potential issue
+      opts.notify.error('Potential for Dom Clobbering with field name ' + name)
+    }
+  })
+
   const stageOnChangeSelectors = ['.prev-holder input', '.prev-holder select', '.prev-holder textarea']
   $stage.on('change', stageOnChangeSelectors.join(', '), e => {
     let prevOptions
@@ -1748,11 +1760,7 @@ function FormBuilder(opts, element, $) {
     if (!target.classList.contains('fld-label')) return
     const value = target.value || target.innerHTML
     const label = closest(target, '.form-field').querySelector('.field-label')
-    if (config.opts.disableHTMLLabels) {
-      label.textContent = value
-    } else {
-      label.innerHTML = parsedHtml(value)
-    }
+    setElementContent(label, parsedHtml(value), config.opts.disableHTMLLabels)
   })
 
   // remove error styling when users tries to correct mistake
@@ -2210,7 +2218,7 @@ function FormBuilder(opts, element, $) {
       gridMode = false
       gridModeTargetField = null
 
-      $(gridModeHelp).html('')
+      $(gridModeHelp).empty()
 
       //Show controls
       $cbUL.css('display', 'unset')
@@ -2220,7 +2228,7 @@ function FormBuilder(opts, element, $) {
 
   function buildGridModeHelp() {
     $(gridModeHelp).html(`
-    <div style='padding:5px'>    
+    <div style='padding:5px'>
       <h3 class="text text-center">Grid Mode</h3>    
       
       <table style='border-spacing:7px;border-collapse: separate'>

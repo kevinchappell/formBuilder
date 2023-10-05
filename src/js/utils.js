@@ -1,3 +1,4 @@
+import { setElementContent, sanitizeNamedAttribute, isPotentiallyDangerousAttribute } from './sanitizer'
 /**
  * Cross file utilities for working with arrays,
  * sorting and other fun stuff
@@ -211,7 +212,7 @@ export const markup = function (tag, content = '', attributes = {}) {
 
   const appendContent = {
     string: content => {
-      field.innerHTML += content
+      setElementContent(field,field.innerHTML + content)
     },
     object: config => {
       const { tag, content, ...data } = config
@@ -237,14 +238,23 @@ export const markup = function (tag, content = '', attributes = {}) {
   for (const attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
       const name = safeAttrName(attr)
-      const attrVal = Array.isArray(attrs[attr]) ? unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
+      let attrVal = Array.isArray(attrs[attr]) ? unique(attrs[attr].join(' ').split(' ')).join(' ') : attrs[attr]
+      //If the Sanitizer is disabled this will always return false
+      if (isPotentiallyDangerousAttribute(name, attrVal)) {
+        continue
+      }
       if (typeof attrVal === 'boolean') {
         if (attrVal === true) {
           const val = name !== 'contenteditable' ? name : true
           field.setAttribute(name, val)
         }
       } else {
-        field.setAttribute(name, attrVal)
+        if (name === 'id' || name === 'name') {
+          attrVal = sanitizeNamedAttribute(attrVal)
+        }
+        if (attrVal !== undefined) {
+          field.setAttribute(name, attrVal)
+        }
       }
     }
   }
