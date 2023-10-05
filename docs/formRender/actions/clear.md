@@ -11,5 +11,7 @@ const html = formRenderInstance('html'); // HTML DOM nodes
 const htmlString = html.outerHTML;
 </code></pre>
 // User enters data
-<pre><code class="js">formRenderInstance('clear');</code></pre>
+<pre><code class="js">formRenderInstance.clear();
+// or
+$('#render-container').formRender('clear')</code></pre>
 // User entered data is cleared
