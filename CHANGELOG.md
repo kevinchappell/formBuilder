@@ -1,3 +1,10 @@
+## [3.12.3](https://github.com/kevinchappell/formBuilder/compare/v3.12.2...v3.12.3) (2023-10-05)
+
+
+### Bug Fixes
+
+* fallbackSantizer used before defined ([4fe4937](https://github.com/kevinchappell/formBuilder/commit/4fe49372f021353cf68d89e79267cc5581fa28a2))
+
 ## [3.12.2](https://github.com/kevinchappell/formBuilder/compare/v3.12.1...v3.12.2) (2023-10-05)
 
 
