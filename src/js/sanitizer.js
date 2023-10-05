@@ -8,7 +8,7 @@ const sanitizerConfig = {
     form: true,
     namespaceAttributes: false, //whether to prefix with user-content-
   },
-  backendOrder: ['dompurify','sanitizer','fallback'],
+  backendOrder: ['dompurify', 'sanitizer', 'fallback'],
   backends: {
     sanitizer: typeof window['Sanitizer'] === 'function' ? new window.Sanitizer() : false,
     dompurify: window.DOMPurify ? (purify => {
@@ -29,7 +29,7 @@ export const setSanitizerConfig = config => {
   }
 
   if (config.hasOwnProperty('clobberingProtection')) {
-    ['document','form','namespaceAttributes'].forEach(type => {
+    ['document', 'form', 'namespaceAttributes'].forEach(type => {
       if (config.clobberingProtection.hasOwnProperty(type) && typeof config.clobberingProtection[type] === 'boolean') {
         sanitizerConfig.clobberingProtection[type] = config.clobberingProtection[type]
       }
@@ -64,7 +64,7 @@ export const isPotentiallyDangerousAttribute = (attrName, attrValue) => {
     return false
   }
   const attrNameLc = attrName.toLowerCase()
-  attrValue = attrValue ? attrValue+'' : ''
+  attrValue = attrValue ? attrValue + '' : ''
   return (
     attrNameLc.startsWith('on')
     || ['form', 'formaction'].includes(attrNameLc)
@@ -72,7 +72,7 @@ export const isPotentiallyDangerousAttribute = (attrName, attrValue) => {
   )
 }
 
-const fallbackSanitizer = content => {
+function fallbackSanitizer(content) {
   //Fallback function if no other sanitizer is available
 
   //jQuery < 3.5 doesn't have this safety feature, so we implement it here
@@ -197,7 +197,7 @@ const sanitizersCallbacks = {
   sanitizer: (element, content) => {
     const sanitizer = sanitizerConfig.backends.sanitizer
     if (sanitizer) {
-      element.setHTML(content, {sanitizer: sanitizer})
+      element.setHTML(content, { sanitizer: sanitizer })
     }
     return false
   }
