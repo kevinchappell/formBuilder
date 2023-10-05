@@ -1,3 +1,21 @@
+# [3.11.0](https://github.com/kevinchappell/formBuilder/compare/v3.10.6...v3.11.0) (2023-10-05)
+
+
+### Bug Fixes
+
+* Add missing options to documentation config ([b903345](https://github.com/kevinchappell/formBuilder/commit/b90334509442dea96fa29b62cc6d7ecea30ef6f4))
+* doc link ([d5648d1](https://github.com/kevinchappell/formBuilder/commit/d5648d179a3b78bb2e1e95ad85e5bbdce9ed7088))
+* fix broken documentation links ([fa6b69f](https://github.com/kevinchappell/formBuilder/commit/fa6b69fe46f8619ac375eeddb871b3ebb31dce91))
+* fix link to translation demo page from i18n option page in docs ([a4de783](https://github.com/kevinchappell/formBuilder/commit/a4de7837dcee08369593c10c8a524bfb33b07e59))
+* Improve the definition of utils.trimObj() to not modify the source object ([b807646](https://github.com/kevinchappell/formBuilder/commit/b8076460ddeb9d9b3bd6652de96ad2201c1d5765))
+* isPotentiallyDangerousAttribute returns false if the Sanitizer backends have been disabled via config ([c75ccdb](https://github.com/kevinchappell/formBuilder/commit/c75ccdb9c8ddbd5d3e262b6581bd41f9a8f8eb03))
+* make dompurify the primary sanitizer backend if it is available. Sanitizer API is still experimental and not support by all browsers therefore it should only be used if DomPurify isn't included ([d0043d0](https://github.com/kevinchappell/formBuilder/commit/d0043d0432520ebc64059d86d0c8bd9c2c7ecc50))
+
+
+### Features
+
+* Implement XSS and DOM Clobbering protection ([a268a0a](https://github.com/kevinchappell/formBuilder/commit/a268a0a21d5e9ac620bef0758bc3a541968fe0f1))
+
 ## [3.10.6](https://github.com/kevinchappell/formBuilder/compare/v3.10.5...v3.10.6) (2023-09-21)
 
 
