@@ -1,3 +1,16 @@
+# [3.12.0](https://github.com/kevinchappell/formBuilder/compare/v3.11.1...v3.12.0) (2023-10-05)
+
+
+### Bug Fixes
+
+* correct the documentation for formRender action clear() ([21c206a](https://github.com/kevinchappell/formBuilder/commit/21c206a7e82836dab0591d41b2d031e7993a9b40))
+* Improve browserslist target from '> 1%' which has less than 80% global coverage, to 'defaults' which improves coverage to 85.4% global and is equivalent to '> 0.5%, last 2 versions, Firefox ESR, not dead' ([01ca0fa](https://github.com/kevinchappell/formBuilder/commit/01ca0fa5cae6038b1d086e60a47463f907c032a3))
+
+
+### Features
+
+* Remove Internet Explorer from the supported browser list. It is no longer part of Browserslist >1% ([6c2e23f](https://github.com/kevinchappell/formBuilder/commit/6c2e23f137419d1456b31c161b7d12e99f0d9114))
+
 ## [3.11.1](https://github.com/kevinchappell/formBuilder/compare/v3.11.0...v3.11.1) (2023-10-05)
 
 
