@@ -211,8 +211,13 @@ export const setElementContent = (element, content, asText = false) => {
     const performedBy = sanitizerConfig.backendOrder.find(type => sanitizersCallbacks[type](proxyElem, content))
     if (performedBy !== undefined) {
       sanitizeDomClobbering(proxyElem)
+      element.innerHTML = proxyElem.innerHTML
+      return element
     }
-    element.innerHTML = proxyElem.innerHTML
+
+    element.innerHTML = content
+
+    return element
   }
 }
 
