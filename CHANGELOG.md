@@ -1,3 +1,10 @@
+## [3.12.4](https://github.com/kevinchappell/formBuilder/compare/v3.12.3...v3.12.4) (2023-10-05)
+
+
+### Bug Fixes
+
+* Setup of fallBack Sanitizer and processing of content when sanitizer is not enabled ([69c4a10](https://github.com/kevinchappell/formBuilder/commit/69c4a10a462d2ab27103cdb0eccda011c8e393fd))
+
 ## [3.12.3](https://github.com/kevinchappell/formBuilder/compare/v3.12.2...v3.12.3) (2023-10-05)
 
 
