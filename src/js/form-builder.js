@@ -138,7 +138,7 @@ function FormBuilder(opts, element, $) {
       change: function(event, ui) {
         if (opts.prepend && ui.placeholder.index() < 1) {
           $('li.form-prepend').after(ui.placeholder)
-        } else if (opts.append && ui.placeholder.index() >=(d.stage.childNodes.length - 1)) {
+        } else if (opts.append && ui.placeholder.index() >= ($stage.children('li').length - 1)) {
           $('li.form-append').before(ui.placeholder)
         }
       },
@@ -266,7 +266,7 @@ function FormBuilder(opts, element, $) {
     }
 
     const $control = $(target).closest('li')
-    h.stopIndex = opts.append ? d.stage.childNodes.length - 1 : undefined
+    h.stopIndex = opts.append ? $stage.children('li').length - 1 : undefined
     processControl($control)
     h.save.call(h)
   })
@@ -1065,18 +1065,6 @@ function FormBuilder(opts, element, $) {
         className: `copy-button btn ${css_prefix_text}copy`,
         title: mi18n.get('copyButtonTooltip'),
       }),
-      m('a', null, {
-        type: 'sort',
-        id: data.lastID + '-sort-higher',
-        className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
-        title: 'Move Higher',
-      }),
-      m('a', null, {
-        type: 'sort',
-        id: data.lastID + '-sort-lower',
-        className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
-        title: 'Move Lower',
-      })
     ]
 
     if (enhancedBootstrapEnabled()) {
@@ -1087,6 +1075,21 @@ function FormBuilder(opts, element, $) {
           className: `grid-button btn ${css_prefix_text}grid`,
           title: 'Grid Mode',
         }),
+      )
+    } else {
+      fieldButtons.push(
+        m('a', null, {
+          type: 'sort',
+          id: data.lastID + '-sort-higher',
+          className: `sort-button sort-button-higher btn ${css_prefix_text}sort-higher`,
+          title: 'Move Higher',
+        }),
+        m('a', null, {
+          type: 'sort',
+          id: data.lastID + '-sort-lower',
+          className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
+          title: 'Move Lower',
+        })
       )
     }
 
@@ -1201,7 +1204,7 @@ function FormBuilder(opts, element, $) {
 
       //If inserting, use the existing index, do not always append to end
       if (!insertingNewControl) {
-        $stage.append(rowWrapperNode)
+        $li.after(rowWrapperNode)
       }
 
       $li.appendTo(colWrapperNode)
@@ -1254,20 +1257,6 @@ function FormBuilder(opts, element, $) {
 
     colWrapper.mouseenter(function (e) {
       if (!gridMode) {
-        HideInvisibleRowPlaceholders()
-
-        //Only show the placeholder for what is above/below the rowWrapper
-        $(this)
-          .closest(rowWrapperClassSelector)
-          .prevAll(tmpRowPlaceholderClassSelector)
-          .first()
-          .removeClass(invisibleRowPlaceholderClass)
-        $(this)
-          .closest(rowWrapperClassSelector)
-          .nextAll(tmpRowPlaceholderClassSelector)
-          .first()
-          .removeClass(invisibleRowPlaceholderClass)
-
         gridModeTargetField = $(this)
         gridModeStartX = e.pageX
         gridModeStartY = e.pageY
@@ -1276,7 +1265,7 @@ function FormBuilder(opts, element, $) {
   }
 
   function HideInvisibleRowPlaceholders() {
-    $stage.find(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+    $stage.find(tmpRowPlaceholderClassSelector).css('height','1px').addClass(invisibleRowPlaceholderClass)
   }
 
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
@@ -1338,13 +1327,11 @@ function FormBuilder(opts, element, $) {
 
           //Only show the placeholder for what is above/below the rowWrapper
           overTarget
-            .prevAll(tmpRowPlaceholderClassSelector)
-            .first()
+            .prev(tmpRowPlaceholderClassSelector)
             .removeClass(invisibleRowPlaceholderClass)
             .css('height', '40px')
           overTarget
-            .nextAll(tmpRowPlaceholderClassSelector)
-            .first()
+            .next(tmpRowPlaceholderClassSelector)
             .removeClass(invisibleRowPlaceholderClass)
             .css('height', '40px')
         }
@@ -1421,6 +1408,7 @@ function FormBuilder(opts, element, $) {
         if (listFieldItem.length) {
           CheckTinyMCETransition(listFieldItem)
           UpdatePreviewAndSave(listFieldItem)
+          h.tmpCleanPrevHolder($(ui.item).find('.prev-holder'))
         }
       },
       start: function () {
@@ -1906,6 +1894,7 @@ function FormBuilder(opts, element, $) {
     $clone.appendTo(colWrapper)
 
     setupSortableRowWrapper(rowWrapper)
+    ResetAllInvisibleRowPlaceholders()
     syncFieldWithNewRow($clone.attr('id'))
   }
 
@@ -1942,10 +1931,11 @@ function FormBuilder(opts, element, $) {
     }
   })
 
-  var gridMode = false
-  var gridModeTargetField
+  let gridMode = false
+  let gridModeTargetField
   let gridModeStartX
   let gridModeStartY
+  let wheelDelta = 0
   $stage.on('click touchstart', '.grid-button', e => {
     e.preventDefault()
 
@@ -1954,23 +1944,33 @@ function FormBuilder(opts, element, $) {
     gridModeStartX = e.pageX
     gridModeStartY = e.pageY
 
+    //Reset wheelDelta
+    wheelDelta = 0
+
     toggleGridModeActive()
   })
 
   //Use mousewheel to work resizing
-  $stage.bind('mousewheel', function (e) {
+  $stage.on('wheel', function (e) {
+    if (e.originalEvent.deltaY === 0) {
+      return
+    }
     if (gridMode) {
       e.preventDefault()
+
+      wheelDelta += e.originalEvent.deltaY
+      const deltaPerShift = 120
+      if ((wheelDelta > 0 && wheelDelta < deltaPerShift) || (wheelDelta < 0 && wheelDelta > -deltaPerShift)) {
+        return
+      }
 
       const parentCont = gridModeTargetField.closest('div')
       const currentColValue = h.getBootstrapColumnValue(parentCont.attr('class'))
 
-      let nextColSize
-      if (e.originalEvent.wheelDelta / 120 > 0) {
-        nextColSize = parseInt(currentColValue) + 1
-      } else {
-        nextColSize = parseInt(currentColValue) - 1
-      }
+      const change = Math.round(wheelDelta / deltaPerShift)
+      wheelDelta = wheelDelta % deltaPerShift
+
+      const nextColSize = currentColValue + change
 
       if (nextColSize > 12) {
         h.showToast('<b class="formbuilder-required">Column Size cannot exceed 12</b>')
@@ -2041,23 +2041,19 @@ function FormBuilder(opts, element, $) {
   })
 
   function moveFieldUp(rowWrapper) {
-    const previousRowSibling = rowWrapper.prevAll().not(tmpRowPlaceholderClassSelector).first()
+    const previousRowSibling = rowWrapper.prevAll().not(tmpRowPlaceholderClassSelector).not('.form-prepend').first()
     if (previousRowSibling.length) {
       $(gridModeTargetField.parent().parent()).swapWith(previousRowSibling)
-    } else {
-      return
+      h.toggleHighlight(gridModeTargetField)
     }
-    h.toggleHighlight(gridModeTargetField)
   }
 
   function moveFieldDown(rowWrapper) {
-    const nextRowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).first()
+    const nextRowSibling = rowWrapper.nextAll().not(invisibleRowPlaceholderClassSelector).not('.form-append').first()
     if (nextRowSibling.length) {
       $(gridModeTargetField.parent().parent()).swapWith(nextRowSibling)
-    } else {
-      return
+      h.toggleHighlight(gridModeTargetField)
     }
-    h.toggleHighlight(gridModeTargetField)
   }
 
   function moveFieldLeft() {
@@ -2345,24 +2341,7 @@ function FormBuilder(opts, element, $) {
       }
     }
 
-    if (swap.length) {
-      //Animate the flashing of the background and border of the element was moved
-      currentItem.css({
-        'border-color': '#66afe9',
-        'outline': 0,
-        'box-shadow': 'inset 0 1px 1px rgba(0,0,0,.1),0 0 8px rgba(102,175,233,.6)',
-        'background-color': '#b7d6f5',
-      }).delay('fast')
-        .queue(function(next) {
-          $(this).css({
-            'border-color': '',
-            'outline': '',
-            'box-shadow': '',
-            'background-color': ''
-          })
-          next()
-        })
-    }
+    h.toggleHighlight(currentItem)
   })
 
   // Update button style selection
