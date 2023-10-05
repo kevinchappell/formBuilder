@@ -1,3 +1,20 @@
+## [3.12.1](https://github.com/kevinchappell/formBuilder/compare/v3.12.0...v3.12.1) (2023-10-05)
+
+
+### Bug Fixes
+
+* Calculation of next control insertion point took into account any divs created by enableEnhancedBootstrapGrid, appendNewField expects only LIs in the calculation and therefore inserts in the wrong position if the EnhancedBootstrap feature is enabled ([fd83248](https://github.com/kevinchappell/formBuilder/commit/fd8324861aeeedaa79b552da21464e8a95507364))
+* changing column width in enhancedBootstrap feature did not work will with a touchpad. Mousemove event will fire multiple times (especially on MacOS with accelerated/decelerated scrolling) cauing the columns to erratically increase/decrease in size. ([eb4fd68](https://github.com/kevinchappell/formBuilder/commit/eb4fd6848acdf80595ee6d83dfaff2111c3eeafa))
+* correctly show sort buttons in non-bootstrap mode. Use helpers.toggleHighlight when sorting elements rather than a custom animation ([a1f6638](https://github.com/kevinchappell/formBuilder/commit/a1f663897ee6e5c7191084ad6309d42cf4d5b629))
+* Don't allow rows moved via the keyboard in the enhancedBootstrap feature to swap with prepended or appended fields ([5af6feb](https://github.com/kevinchappell/formBuilder/commit/5af6feba6bf0cfaa04807ae02b607232b261259a))
+* enableEnhancedBootstrapGrid inserts the rowWrapperNode at the end of the stage instead of using the last position causing controls to always be inserted at the end even if prepend option is set. Use the location of the added Field's LI to append the rowWrapper before moving the LI within the row ([5990b67](https://github.com/kevinchappell/formBuilder/commit/5990b6725f24878f2ce9b5aac6bd998ef0ea34fa))
+* helpers.getBootstrapColumnValue return value is an int, no need to parseInt on int ([8caa6a2](https://github.com/kevinchappell/formBuilder/commit/8caa6a25259f566bf777e14f01903612c9f21b3e))
+* Only enable mobile sorting action buttons when enhancedBootstrap feature is not enabled. Bootstrap feature has functionality to move rows up and down and the two are incompatible ([f7fa676](https://github.com/kevinchappell/formBuilder/commit/f7fa67658af037528cbbffb3a29c3409a9638777))
+* Reset the height of the InvisibleRowPlaceholders in enhancedBootstrap feature when hiding them ([40bf3fe](https://github.com/kevinchappell/formBuilder/commit/40bf3fe664e31bfd6bd991813b07ba4373f9cff4))
+* When cloning a field in enhancedBootstrap mode invisible row placeholders need to be setup for the new fields ([49b3363](https://github.com/kevinchappell/formBuilder/commit/49b3363e2ccf8900cceb31853c2810be747f8ca7))
+* When drag and dropping a Header field (and other types) in enhancedBootstrap mode the preview needs to be cleaned of row- and col- classes otherwise and invalid field element is placed on the stage. ([35d8ea5](https://github.com/kevinchappell/formBuilder/commit/35d8ea54138a61d6419db4fe563b3d5f9c550b6b))
+* When drag and dropping elements in enhancedBootstrap mode the colWrapper mouseenter could fire after dragging a field onto another field, this would cause the rowPlaceholders to be hidden and then shown with 1px height ([ea91499](https://github.com/kevinchappell/formBuilder/commit/ea9149986c6852451d7882e2b8bf0b5d10978b99))
+
 # [3.12.0](https://github.com/kevinchappell/formBuilder/compare/v3.11.1...v3.12.0) (2023-10-05)
 
 
