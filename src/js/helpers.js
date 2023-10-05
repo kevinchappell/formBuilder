@@ -988,11 +988,7 @@ export default class Helpers {
    * Open a dialog with the form's data
    */
   showData() {
-    let formData = this.getFormData(config.opts.dataType, true)
-
-    if (config.opts.dataType === 'xml') {
-      formData = escapeHtml(formData)
-    }
+    const formData = escapeHtml(this.getFormData(config.opts.dataType, true))
 
     const code = m('code', formData, {
       className: `formData-${config.opts.dataType}`,
