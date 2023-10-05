@@ -8,35 +8,35 @@
   label {
     font-weight: normal;
   }
-}
 
-.form-group .formbuilder-required {
-  color: $error;
-}
-
-.other-option:checked + label {
-  input {
-    display: inline-block;
-  }
-}
-
-.other-val {
-  margin-left: 5px;
-  display: none;
-}
-
-.form-control {
-  &.number {
-    width: auto;
+  .form-group .formbuilder-required {
+    color: $error;
   }
 
-  &[type='color'] {
-    width: 60px;
-    padding: 2px;
-    display: inline-block;
+  .other-option:checked + label {
+    input {
+      display: inline-block;
+    }
   }
 
-  &[multiple] {
-    height: auto;
+  .other-val {
+    margin-left: 5px;
+    display: none;
+  }
+
+  .form-control {
+    &.number {
+      width: auto;
+    }
+
+    &[type='color'] {
+      width: 60px;
+      padding: 2px;
+      display: inline-block;
+    }
+
+    &[multiple] {
+      height: auto;
+    }
   }
 }
