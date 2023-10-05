@@ -1,3 +1,11 @@
+## [3.11.1](https://github.com/kevinchappell/formBuilder/compare/v3.11.0...v3.11.1) (2023-10-05)
+
+
+### Bug Fixes
+
+* helpers.clearFields no longer supports an animate flag, update calls to this function ([ec9aa51](https://github.com/kevinchappell/formBuilder/commit/ec9aa51eea27a2790e5603a2b607d2c8ea3826b3))
+* helpers.save() is called with and without minify being set, make false by default. Fix call to xmlSave which does not accept a minify parameter. Fix return type of helpers.save() ([41b10f0](https://github.com/kevinchappell/formBuilder/commit/41b10f0511455b3e9e01c903d9996eba86065a54))
+
 # [3.11.0](https://github.com/kevinchappell/formBuilder/compare/v3.10.6...v3.11.0) (2023-10-05)
 
 
