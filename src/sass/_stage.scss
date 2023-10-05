@@ -370,8 +370,13 @@
 
     .toggle-form {
       &:hover {
+        border-color: lighten($grey, 40%);
         background-color: $edit;
         color: $white;
+      }
+
+      &::before {
+        margin: 0;
       }
     }
 
