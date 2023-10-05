@@ -87,7 +87,7 @@ class FormRender {
           fields = [fields]
         }
         const renderedFormWrap = utils.markup('div', fields, {
-          className: 'rendered-form',
+          className: 'rendered-form formbuilder-embedded-bootstrap',
         })
         this.appendChild(renderedFormWrap)
 
@@ -228,9 +228,11 @@ class FormRender {
       opts.notify.error(opts.messages.noFormData)
     }
 
-    if (opts.disableInjectedStyle) {
+    if (opts.disableInjectedStyle === true) {
       const styleTags = document.getElementsByClassName('formBuilder-injected-style')
       forEach(styleTags, i => remove(styleTags[i]))
+    } else if (opts.disableInjectedStyle === 'bootstrap' && opts.render && element) {
+      element.getElementsByClassName('formbuilder-embedded-bootstrap').item(0)?.classList.remove('formbuilder-embedded-bootstrap')
     }
     return formRender
   }

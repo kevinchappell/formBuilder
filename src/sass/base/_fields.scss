@@ -1,0 +1,56 @@
+.formbuilder-required,
+.required-asterisk {
+  color: $error;
+}
+
+.formbuilder-checkbox-group,
+.formbuilder-radio-group {
+  input[type='checkbox'],
+  input[type='radio'] {
+    margin: 0 4px 0 0;
+  }
+}
+
+.formbuilder-checkbox-inline,
+.formbuilder-radio-inline {
+  margin-right: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  padding-left: 0;
+  label {
+    input[type='text'] {
+      margin-top: 0;
+    }
+  }
+}
+
+.formbuilder-checkbox-inline:first-child,
+.formbuilder-radio-inline:first-child {
+  padding-left: 0;
+}
+
+.formbuilder-autocomplete-list {
+  background-color: $white;
+  display: none;
+  list-style: none;
+  padding: 0;
+  border: 1px solid $grey-light;
+  border-width: 0 1px 1px;
+  position: absolute;
+  z-index: 20;
+  max-height: 200px;
+  overflow-y: auto;
+
+  li {
+    display: none;
+    cursor: default;
+    padding: 5px;
+    margin: 0;
+    transition: background-color 200ms ease-in-out;
+
+    &:hover,
+    &.active-option {
+      background-color: $input-box-shadow-color;
+    }
+  }
+}

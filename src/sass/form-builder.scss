@@ -3,7 +3,14 @@
 @import 'base/mixins';
 
 .form-wrap.form-builder {
-  @import 'base/bs';
+  * {
+    box-sizing: border-box;
+  }
+
+  &.formbuilder-embedded-bootstrap {
+    @import 'base/bs';
+  }
+  @import 'base/fields';
   @import 'base/animation';
   @import 'controls';
   @import 'stage';

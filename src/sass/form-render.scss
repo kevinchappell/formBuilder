@@ -1,7 +1,14 @@
 @import 'base/variables';
 
 .rendered-form {
-  @import 'base/bs';
+  * {
+    box-sizing: border-box;
+  }
+
+  &.formbuilder-embedded-bootstrap {
+    @import 'base/bs';
+  }
+  @import 'base/fields';
   @import 'tooltip';
   @import 'kc-toggle';
 
