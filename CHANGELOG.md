@@ -1,3 +1,10 @@
+## [3.12.2](https://github.com/kevinchappell/formBuilder/compare/v3.12.1...v3.12.2) (2023-10-05)
+
+
+### Bug Fixes
+
+* formData may contain HTML (eg Labels), need to escape for all dataTypes before adding into the code element. JSON is invalid if copy-paste from showData dialog ([c6f89d1](https://github.com/kevinchappell/formBuilder/commit/c6f89d1847c4dbd4a80c6ad2b43332f1f4e01ded))
+
 ## [3.12.1](https://github.com/kevinchappell/formBuilder/compare/v3.12.0...v3.12.1) (2023-10-05)
 
 
