@@ -19,7 +19,7 @@ const sanitizerConfig = {
       })
       return purify
     })(window.DOMPurify) : false,
-    fallback: fallbackSanitizer,
+    fallback: content => content,
   }
 }
 
@@ -134,6 +134,8 @@ function fallbackSanitizer(content) {
   return tmp.innerHTML
 }
 
+sanitizerConfig.backends.fallback = fallbackSanitizer
+
 export const attributeWillClobber = value => {
   const check_doc = document
   const check_form = document.createElement('form')
@@ -211,8 +213,12 @@ export const setElementContent = (element, content, asText = false) => {
     const performedBy = sanitizerConfig.backendOrder.find(type => sanitizersCallbacks[type](proxyElem, content))
     if (performedBy !== undefined) {
       sanitizeDomClobbering(proxyElem)
+      element.innerHTML = proxyElem.innerHTML
+      return element
     }
-    element.innerHTML = proxyElem.innerHTML
+    element.innerHTML = content
+
+    return element
   }
 }
 
