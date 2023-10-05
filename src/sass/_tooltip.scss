@@ -1,0 +1,48 @@
+// TOOLTIP   ------------
+*[tooltip] {
+  position: relative;
+}
+
+*[tooltip]:hover::after {
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px 5px 5px 0;
+  bottom: 23px;
+  color: $white;
+  content: attr(tooltip);
+  padding: 10px 5px;
+  position: absolute;
+  z-index: 98;
+  left: 2px;
+  width: 230px;
+  text-shadow: none;
+  font-size: 12px;
+  line-height: 1.5em;
+  cursor: default;
+}
+
+*[tooltip]:hover::before {
+  border: solid;
+  border-color: $grey-dark transparent;
+  border-width: 6px 6px 0;
+  bottom: 17px;
+  content: '';
+  left: 2px;
+  position: absolute;
+  z-index: 99;
+  cursor: default;
+}
+
+.tooltip-element {
+  visibility: visible;
+  color: $white;
+  background: $black;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  line-height: 16px;
+  margin: 0 5px;
+  font-size: 12px;
+  cursor: default;
+}
