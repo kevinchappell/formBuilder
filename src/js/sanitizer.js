@@ -200,6 +200,7 @@ const sanitizersCallbacks = {
     const sanitizer = sanitizerConfig.backends.sanitizer
     if (sanitizer) {
       element.setHTML(content, { sanitizer: sanitizer })
+      return true
     }
     return false
   }
