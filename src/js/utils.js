@@ -274,10 +274,10 @@ export const markup = function (tag, content = '', attributes = {}) {
 
 /**
  * Convert html element attributes to key/value object
- * @param  {Object} elem DOM element
+ * @param  {Element} elem DOM element
  * @return {Object} ex: {attrName: attrValue}
  */
-export const parseAttrs = elem => {
+export const xmlParseAttrs = elem => {
   const attrs = elem.attributes
   const data = {}
   forEach(attrs, attr => {
@@ -301,12 +301,12 @@ export const parseAttrs = elem => {
  * @param  {NodeList} options  DOM elements
  * @return {Array} optionData array
  */
-export const parseOptions = options => {
+export const xmlParseOptions = options => {
   const data = []
 
   for (let i = 0; i < options.length; i++) {
     const optionData = {
-      ...parseAttrs(options[i]),
+      ...xmlParseAttrs(options[i]),
       label: options[i].textContent,
     }
     data.push(optionData)
@@ -320,7 +320,7 @@ export const parseOptions = options => {
  * @param  {NodeList} userData  DOM elements
  * @return {Array} optionData array
  */
-export const parseUserData = userData => {
+export const xmlParseUserData = userData => {
   const data = []
 
   if (userData.length) {
@@ -336,7 +336,7 @@ export const parseUserData = userData => {
 
 /**
  * Parse XML formData
- * @param  {String} xmlString
+ * @param  {string} xmlString
  * @return {Array}            formData array
  */
 export const parseXML = xmlString => {
@@ -347,16 +347,16 @@ export const parseXML = xmlString => {
   if (xml) {
     const fields = xml.getElementsByTagName('field')
     for (let i = 0; i < fields.length; i++) {
-      const fieldData = parseAttrs(fields[i])
+      const fieldData = xmlParseAttrs(fields[i])
       const options = fields[i].getElementsByTagName('option')
       const userData = fields[i].getElementsByTagName('userData')
 
       if (options && options.length) {
-        fieldData.values = parseOptions(options)
+        fieldData.values = xmlParseOptions(options)
       }
 
       if (userData && userData.length) {
-        fieldData.userData = parseUserData(userData)
+        fieldData.userData = xmlParseUserData(userData)
       }
 
       formData.push(fieldData)
@@ -715,10 +715,7 @@ const utils = {
   merge,
   mobileClass,
   nameAttr,
-  parseAttrs,
   parsedHtml,
-  parseOptions,
-  parseUserData,
   parseXML,
   removeFromArray,
   safeAttr,
@@ -729,6 +726,9 @@ const utils = {
   unique,
   validAttr,
   titleCase,
+  xmlParseAttrs,
+  xmlParseOptions,
+  xmlParseUserData,
 }
 
 /**
