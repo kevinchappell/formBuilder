@@ -249,7 +249,7 @@ export const markup = function (tag, content = '', attributes = {}) {
       }
       if (typeof attrVal === 'boolean') {
         if (attrVal === true) {
-          const val = name !== 'contenteditable' ? name : true
+          const val = name === 'contenteditable' ? true : name
           field.setAttribute(name, val)
         }
       } else {
