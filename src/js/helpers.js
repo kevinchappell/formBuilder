@@ -1154,7 +1154,7 @@ export default class Helpers {
 
     d.editorWrap = m('div', null, {
       id: `${data.formID}-form-wrap`,
-      className: `form-wrap form-builder ${mobileClass()}`,
+      className: `form-wrap form-builder formbuilder-embedded-bootstrap ${mobileClass()}`,
     })
 
     d.stage = m('ul', null, {

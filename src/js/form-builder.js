@@ -2395,9 +2395,11 @@ function FormBuilder(opts, element, $) {
 
   loadFields()
 
-  if (opts.disableInjectedStyle) {
+  if (opts.disableInjectedStyle === true) {
     const styleTags = document.getElementsByClassName('formBuilder-injected-style')
     forEach(styleTags, i => remove(styleTags[i]))
+  } else if (opts.disableInjectedStyle === 'bootstrap') {
+    d.editorWrap.classList.remove('formbuilder-embedded-bootstrap')
   }
 
   document.dispatchEvent(events.loaded)

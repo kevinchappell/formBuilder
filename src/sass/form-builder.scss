@@ -3,10 +3,18 @@
 @import 'base/mixins';
 
 .form-wrap.form-builder {
-  @import 'base/bs';
+  * {
+    box-sizing: border-box;
+  }
+
+  &.formbuilder-embedded-bootstrap {
+    @import 'base/bs';
+  }
+  @import 'base/fields';
   @import 'base/animation';
   @import 'controls';
   @import 'stage';
+  @import 'tooltip';
   @import 'kc-toggle';
   position: relative;
 
@@ -15,104 +23,82 @@
     display: table;
     clear: both;
   }
-}
 
-.cb-wrap,
-.stage-wrap {
-  vertical-align: top;
+  .cb-wrap,
+  .stage-wrap {
+    vertical-align: top;
 
-  &.pull-right {
-    float: right;
-  }
+    &.pull-right {
+      float: right;
+    }
 
-  &.pull-left {
-    float: left;
-  }
-}
-
-.form-elements,
-.form-group,
-.multi-row span,
-textarea {
-  display: block;
-}
-
-.form-elements::after,
-.form-group::after {
-  content: '.';
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-
-.form-elements .field-options div:hover,
-.frmb .legend,
-.frmb .prev-holder {
-  cursor: move;
-}
-
-// tooltips
-.frmb-tt {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid darken($grey, 25%);
-  background-color: $grey;
-  border-radius: 5px;
-  padding: 5px;
-  color: $white;
-  z-index: 20;
-  text-align: left;
-  font-size: 12px;
-  pointer-events: none;
-
-  &::before {
-    border-color: darken($grey, 25%) transparent;
-    bottom: -11px;
-  }
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    border-style: solid;
-    border-width: 10px 10px 0;
-    border-color: $grey transparent;
-    display: block;
-    width: 0;
-    z-index: 1;
-    margin-left: -10px;
-    bottom: -10px;
-    left: 20px;
-  }
-
-  a {
-    text-decoration: underline;
-    color: $white;
-  }
-}
-
-.frmb li {
-  &:hover,
-  .formbuilder-mobile & {
-    .del-button,
-    .toggle-form {
-      opacity: 1;
+    &.pull-left {
+      float: left;
     }
   }
-}
 
-.toggle-form {
-  opacity: 0;
-
-  &:hover {
-    border-color: lighten($grey, 40%);
+  .form-elements,
+  .form-group,
+  .multi-row span,
+  textarea {
+    display: block;
   }
 
-  &::before {
-    margin: 0;
+  .form-elements::after,
+  .form-group::after {
+    content: '.';
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+
+  .form-elements .field-options div:hover,
+  .frmb .legend,
+  .frmb .prev-holder {
+    cursor: move;
+  }
+
+  // tooltips
+  .frmb-tt {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid darken($grey, 25%);
+    background-color: $grey;
+    border-radius: 5px;
+    padding: 5px;
+    color: $white;
+    z-index: 20;
+    text-align: left;
+    font-size: 12px;
+    pointer-events: none;
+
+    &::before {
+      border-color: darken($grey, 25%) transparent;
+      bottom: -11px;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 10px 10px 0;
+      border-color: $grey transparent;
+      display: block;
+      width: 0;
+      z-index: 1;
+      margin-left: -10px;
+      bottom: -10px;
+      left: 20px;
+    }
+
+    a {
+      text-decoration: underline;
+      color: $white;
+    }
   }
 }
 
