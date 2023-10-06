@@ -1,3 +1,16 @@
+# [3.13.0](https://github.com/kevinchappell/formBuilder/compare/v3.12.4...v3.13.0) (2023-10-06)
+
+
+### Bug Fixes
+
+* Fix GH-594 and GH-727 Bring non-namespaced css selectors under .form-wrap.form-builder. Consolidate two definitions for .toggle-form. ([da89a92](https://github.com/kevinchappell/formBuilder/commit/da89a92beb1f2e59bf056805ab00734087226a00)), closes [#594](https://github.com/kevinchappell/formBuilder/issues/594) [#727](https://github.com/kevinchappell/formBuilder/issues/727)
+* Fix GH-594 and GH-727 Bring non-namespaced css selectors under .rendered-form ([0caf26e](https://github.com/kevinchappell/formBuilder/commit/0caf26e74e53f2f1b92069d0a537c495d28183a3)), closes [#594](https://github.com/kevinchappell/formBuilder/issues/594) [#727](https://github.com/kevinchappell/formBuilder/issues/727)
+
+
+### Features
+
+* Extend disableInjectedStyle option to excluded only the embedded Bootstrap 3 classes while allow the formBuilder styles to be included. ([60524bc](https://github.com/kevinchappell/formBuilder/commit/60524bc108831141be9929c6d0f8e3979a699254))
+
 ## [3.12.4](https://github.com/kevinchappell/formBuilder/compare/v3.12.3...v3.12.4) (2023-10-05)
 
 
