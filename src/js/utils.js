@@ -691,7 +691,7 @@ export function titleCase(str) {
   const regex = new RegExp(`(?!${lowers.join('|')})\\w\\S*`, 'g')
   return `${str}`.replace(
     regex,
-    txt => txt.charAt(0).toUpperCase() + txt.substr(1).replace(/[A-Z]/g, word => ` ${word}`),
+    txt => txt.charAt(0).toUpperCase() + txt.slice(1).replace(/[A-Z]/g, word => ` ${word}`),
   )
 }
 
