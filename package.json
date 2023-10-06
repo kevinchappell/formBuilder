@@ -83,6 +83,7 @@
     "build:vendor": "babel-node tools/build-vendor",
     "build": "webpack --mode production --progress --config tools/webpack.config",
     "build:all": "run-s build:plugins build:vendor build copy",
+    "build:dev": "webpack --mode development --progress --config tools/webpack.config",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && npm run copy:lang",
     "copy:lang": "babel-node tools/copy-language-files",
     "deploy:all": "run-s deploy:demo deploy:site",
@@ -98,7 +99,7 @@
     "start:devServer": "webpack-dev-server --mode development --config tools/webpack.config",
     "prestart": "run-p build:vendor copy:lang",
     "start": "npm run start:devServer",
-    "test": "npm run-script build"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "jquery": ">=3.4.1",
@@ -136,6 +137,9 @@
     "html-webpack-harddisk-plugin": "^2.0.0",
     "html-webpack-plugin": "^5.5.0",
     "inquirer": "^7.3.3",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jest-scss-transform": "^1.0.3",
     "mi18n": "^0.4.8",
     "npm-run-all": "^4.1.5",
     "opener": "^1.5.1",
@@ -170,5 +174,16 @@
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": ".jest/coverage",
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "./tests/setup-jest.js"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss)$": "<rootDir>/tests/__mocks__/styleMock.js"
+    }
+  }
 }

@@ -6,3 +6,5 @@ dist/
 site
 .DS_Store
 yarn-error.log
+.idea
+.jest
