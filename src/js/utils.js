@@ -758,11 +758,11 @@ utils.splitObject = (obj, keys) => {
 }
 
 $.fn.swapWith = function (that) {
-  var $this = this
-  var $that = $(that)
+  const $this = this
+  const $that = $(that)
 
   // create temporary placeholder
-  var $temp = $('<div>')
+  const $temp = $('<div>')
 
   // 3-step swap
   $this.before($temp)
