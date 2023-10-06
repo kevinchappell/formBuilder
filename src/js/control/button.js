@@ -3,11 +3,12 @@ import control from '../control'
 /**
  * Button class
  * Output a <button>Label</button> form element
+ * @extends control
  */
 export default class controlButton extends control {
   /**
    * build a text DOM element, supporting other jquery text form-control's
-   * @return {Object} DOM Element to be injected into the form.
+   * @return {{field: HTMLElement, layout: string}} DOM Element to be injected into the form.
    */
   build() {
     return {

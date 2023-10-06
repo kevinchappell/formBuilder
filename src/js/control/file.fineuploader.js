@@ -30,6 +30,8 @@ import controlText from './text'
  *
  * If you wish to define a custom uploader handler URL, define controlConfig.file.handler in the formbuilder options. Defaults to /upload
  * If you wish to define a custom template for the interface, this can be defined in controlConfig.file.template. It defaults to the gallery template provided by the Fineuploader project
+ *
+ * @extends control
  */
 export default class controlFineUploader extends controlText {
   /**

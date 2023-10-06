@@ -11,6 +11,7 @@ window.fbControls.push(function(controlClass, allControlClasses) {
   const controlTextarea = allControlClasses.textarea
   /**
    * Trumbowyg control class
+   * @extends controlTextarea
    */
   class controlTrumbowyg extends controlTextarea {
     /**

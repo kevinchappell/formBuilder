@@ -15,6 +15,7 @@ import controlTextarea from './textarea'
  *    }
  * };
  * ```
+ * @extends controlTextarea
  */
 export default class controlTinymce extends controlTextarea {
   /**

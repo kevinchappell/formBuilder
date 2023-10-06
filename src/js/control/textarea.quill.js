@@ -4,6 +4,7 @@ import utils from '../utils'
 /**
  * Quill rich text editor element
  * See https://quilljs.com/ for more info
+ * @extends controlTextarea
  */
 export default class controlQuill extends controlTextarea {
   /**

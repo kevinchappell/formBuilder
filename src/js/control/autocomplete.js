@@ -3,6 +3,7 @@ import { filter } from '../dom'
 /**
  * Autocomplete class
  * Output an autocomplete form element
+ * @extends control
  */
 export default class controlAutocomplete extends control {
   /**

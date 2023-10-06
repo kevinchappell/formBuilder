@@ -4,6 +4,7 @@ import { trimObj } from '../utils'
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
+ * @extends control
  */
 export default class controlSelect extends control {
   /**

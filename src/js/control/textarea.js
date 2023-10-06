@@ -3,6 +3,7 @@ import control from '../control'
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
+ * @extends control
  */
 export default class controlTextarea extends control {
   /**
@@ -41,7 +42,7 @@ export default class controlTextarea extends control {
 
   /**
    * extend the default events to add a prerender for textareas
-   * @param {String} eventType
+   * @param {string} eventType
    * @return {Function} prerender function
    */
   on(eventType) {

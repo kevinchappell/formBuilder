@@ -144,7 +144,7 @@ class FormRender {
   /**
    * Clean up passed object configuration to prepare for use with the markup function
    * @param {Object} field - object of field configuration
-   * @param {Number} instanceIndex - instance index
+   * @param {number} instanceIndex - instance index
    * @return {Object} sanitized field object
    */
   sanitizeField(field, instanceIndex) {
@@ -165,8 +165,8 @@ class FormRender {
 
   /**
    * parses `container` option or returns element
-   * @param  {Object} element
-   * @return {Object} parsedElement
+   * @param  {Object|string|HTMLElement} element
+   * @return {HTMLElement} parsedElement
    */
   getElement(element) {
     element = this.options.container || element
@@ -181,7 +181,7 @@ class FormRender {
   /**
    * Main render method which produces the form from passed configuration
    * @param {Object} element - an html element to render the form into (optional)
-   * @param {Number} instanceIndex - instance index
+   * @param {number} instanceIndex - instance index
    * @return {Object} rendered form
    */
   render(element = null, instanceIndex = 0) {
@@ -228,7 +228,7 @@ class FormRender {
         /**
          * Retrieve the html markup for a passed array of DomElements
          * @param {Array} fields - array of dom elements
-         * @return {String} fields html
+         * @return {string} fields html
          */
         const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
         formRender.markup = exportMarkup(rendered)
@@ -278,6 +278,7 @@ class FormRender {
 
   /**
    * Return user entered data
+   * @return {Object[]}
    */
   get userData() {
     const options = this.options
@@ -336,7 +337,7 @@ class FormRender {
   }
   /**
    * ensure formData is correct type
-   * @param {Object|String} formData
+   * @param {Object|string} formData
    * @return {Object} formData
    */
   parseFormData(formData) {

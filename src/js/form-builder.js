@@ -398,7 +398,7 @@ function FormBuilder(opts, element, $) {
    * Add data for field with options [select, checkbox-group, radio-group]
    *
    * @param  {Object} fieldData
-   * @return {String} field options markup
+   * @return {string} field options markup
    */
   const fieldOptions = function (fieldData) {
     const { type, values } = fieldData
@@ -509,8 +509,8 @@ function FormBuilder(opts, element, $) {
 
   /**
    * Build the editable properties for the field
-   * @param  {object} values configuration object for advanced fields
-   * @return {String}        markup for advanced fields
+   * @param  {Object} values configuration object for advanced fields
+   * @return {string}        markup for advanced fields
    */
   const advFields = values => {
     const { type } = values
@@ -655,7 +655,7 @@ function FormBuilder(opts, element, $) {
   /**
    * Detects the type of user defined attribute
    * @param {Object} attrData attribute config
-   * @return {String} type of user attr
+   * @return {string} type of user attr
    */
   function userAttrType(attrData) {
     return (
@@ -670,8 +670,8 @@ function FormBuilder(opts, element, $) {
   /**
    *
    * @param {Object} values    field attributes
-   * @param {String} subType   subType
-   * @return {Boolean}         indicates whether or not the field has a subtype
+   * @param {string} subType   subType
+   * @return {boolean}         indicates whether or not the field has a subtype
    */
   function hasSubType(values, subType) {
     return values.subtype && values.subtype === subType
@@ -681,7 +681,7 @@ function FormBuilder(opts, element, $) {
    * Processes typeUserAttrs
    * @param  {Object} typeUserAttr option
    * @param  {Object} values       field attributes
-   * @return {String}              markup for custom user attributes
+   * @return {string}              markup for custom user attributes
    */
   function processTypeUserAttrs(typeUserAttr, values) {
     const advField = []
@@ -736,9 +736,9 @@ function FormBuilder(opts, element, $) {
 
   /**
    * Text input value for attribute
-   * @param  {String} name
+   * @param  {string} name
    * @param  {Object} inputAttrs also known as values
-   * @return {String}       input markup
+   * @return {string}       input markup
    */
   function inputUserAttrs(name, inputAttrs) {
     const { class: classname, className, ...attrs } = inputAttrs
@@ -776,9 +776,9 @@ function FormBuilder(opts, element, $) {
   /**
    * Select input for multiple choice user attributes
    * @todo  replace with selectAttr
-   * @param  {String} name
+   * @param  {string} name
    * @param  {Object} fieldData
-   * @return {String}         select markup
+   * @return {string}         select markup
    */
   function selectUserAttrs(name, fieldData) {
     const { multiple, options, label: labelText, value, class: classname, className, ...restData } = fieldData
@@ -891,9 +891,9 @@ function FormBuilder(opts, element, $) {
 
   /**
    * Add a number attribute to a field.
-   * @param  {String} attribute
+   * @param  {string} attribute
    * @param  {Object} values
-   * @return {String} markup for number attribute
+   * @return {string} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
     const { class: classname, className, ...attrs } = values
@@ -920,10 +920,10 @@ function FormBuilder(opts, element, $) {
 
   /**
    * selectAttribute
-   * @param  {String} attribute  attribute name
+   * @param  {string} attribute  attribute name
    * @param  {Object} values     aka attrs
    * @param  {Array} optionData  select field option data
-   * @return {String}            select input makrup
+   * @return {string}            select input makrup
    */
   const selectAttribute = (attribute, values, optionData) => {
     const selectOptions = optionData.map((option, i) => {
@@ -958,10 +958,10 @@ function FormBuilder(opts, element, $) {
 
   /**
    * Generate some text inputs for field attributes, **will be replaced**
-   * @param  {String} attribute
+   * @param  {string} attribute
    * @param  {Object} values
-   * @param  {Boolean} isHidden
-   * @return {String}
+   * @param  {boolean} isHidden
+   * @return {string}
    */
   const textAttribute = (attribute, values, isHidden = false) => {
     const textArea = ['paragraph']
@@ -1776,7 +1776,7 @@ function FormBuilder(opts, element, $) {
   /**
    * Toggle multiple select options
    * @param  {Object} e click event
-   * @return {String} newType
+   * @return {string} newType
    */
   $stage.on('change', '.fld-multiple', e => {
     const newType = e.target.checked ? 'checkbox' : 'radio'
@@ -2296,15 +2296,16 @@ function FormBuilder(opts, element, $) {
     rowWrapper.children(`div${colWrapperClassSelector}`).each((i, elem) => {
       const colWrapper = $(`#${elem.id}`)
       const fieldID = colWrapper.find('li').attr('id')
-      const fieldType = $(`#${fieldID}`).attr('type')
+      const field = $(`#${fieldID}`)
+      const fieldType = field.attr('type')
 
-      let label = $(`#label-${fieldID}`).html()
-      if (fieldType == 'hidden' || fieldType == 'paragraph') {
-        label = $(`#name-${fieldID}`).val()
+      let label = field.html()
+      if (fieldType === 'hidden' || fieldType === 'paragraph') {
+        label = field.val()
       }
 
       if (!label) {
-        label = $(`#${fieldID}`).attr('id')
+        label = field.attr('id')
       }
 
       //Highlight the current field being worked on

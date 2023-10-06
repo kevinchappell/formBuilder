@@ -4,6 +4,7 @@ import mi18n from 'mi18n'
 /**
  * Support for custom controls
  * Implementing support for custom templates being passed as options to formBuilder/Render
+ * @extends control
  */
 export default class controlCustom extends control {
   /**
@@ -79,7 +80,7 @@ export default class controlCustom extends control {
 
   /**
    * Returns any custom fields that map to an existing type/subtype combination
-   * @param  {String} type optional type of control we want to look up
+   * @param  {string|false} type optional type of control we want to look up
    * subtypes of. If not specified will return all types
    * @return {Array} registered custom lookup keys
    */
@@ -92,7 +93,7 @@ export default class controlCustom extends control {
 
   /**
    * Retrieve the class for a specified control type
-   * @param {String} lookup - custom control lookup to check for
+   * @param {string} lookup - custom control lookup to check for
    * @return {Class} control subclass as defined in the call to register
    */
   static lookup(lookup) {
@@ -101,7 +102,7 @@ export default class controlCustom extends control {
 
   /**
    * Class configuration - return the icons & label translations defined in register
-   * @return {Class} definition object
+   * @return {object} definition object
    */
   static get definition() {
     return controlCustom.def
@@ -109,7 +110,7 @@ export default class controlCustom extends control {
 
   /**
    * build a custom control defined in the templates option
-   * @return {Object} DOM Element to be injected into the form.
+   * @return {{field: any, layout: any}} DOM Element to be injected into the form.
    */
   build() {
     let custom = controlCustom.templates[this.type]
@@ -149,7 +150,7 @@ export default class controlCustom extends control {
       this.css = custom.css
     }
 
-    // handle onrender events & return
+    // handle onRender events & return
     this.onRender = custom.onRender
     return {
       field: custom.field,
