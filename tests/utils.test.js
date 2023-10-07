@@ -116,15 +116,24 @@ describe('Test Util functions', () => {
   })
 
   test('nameAttr', () => {
-    const n1 = nameAttr({type: 'text'})
-    const n2 =  nameAttr({type: 'text'})
-    const n3 =  nameAttr({type: 'textarea'})
-    const n4 =  nameAttr({label: 'starControl'})
+    const origDateNow = Date.now
+    try {
+      Date.now = jest.fn(() => 1696669493206)
+      const n1 = nameAttr({ type: 'text' })
+      const n2 = nameAttr({ type: 'text' })
+      const n3 = nameAttr({ type: 'textarea' })
+      const n4 = nameAttr({ label: 'starControl' })
+      Date.now = jest.fn(() => 1696669493207)
+      const n5 = nameAttr({ type: 'text' })
 
-    expect(n1).toMatch(new RegExp('text-\\d*-0'))
-    expect(n2).toMatch(new RegExp('text-\\d*-1')) //@TODO check timing, epoch could tick over and reset
-    expect(n3).toMatch(new RegExp('textarea-\\d*-2'))
-    expect(n4).toMatch(new RegExp('star-control-\\d*-3'))
+      expect(n1).toMatch(new RegExp('text-1696669493206-0'))
+      expect(n2).toMatch(new RegExp('text-1696669493206-1'))
+      expect(n3).toMatch(new RegExp('textarea-1696669493206-2'))
+      expect(n4).toMatch(new RegExp('star-control-1696669493206-3'))
+      expect(n5).toMatch(new RegExp('text-1696669493207-0'))
+    } finally {
+      Date.now = origDateNow
+    }
   })
 
   test.todo('merge')

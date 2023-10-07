@@ -171,7 +171,7 @@ export const nameAttr = (function () {
   let lepoch
   let counter = 0
   return function (field) {
-    const epoch = new Date().getTime()
+    const epoch = Date.now()
     if (epoch === lepoch) {
       ++counter
     } else {
