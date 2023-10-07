@@ -25,5 +25,6 @@ jobs:
       - name: Build the plugin
         run: npm run build:all
 
-      - name: Run Jest
-        run: npm run test
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          test-script: npm test
