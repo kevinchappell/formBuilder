@@ -769,7 +769,6 @@ export default class Helpers {
 
   /**
    * Close fields being editing
-   * @param  {Object} stage
    */
   closeAllEdit() {
     const _this = this
