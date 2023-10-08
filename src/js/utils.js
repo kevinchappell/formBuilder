@@ -274,6 +274,7 @@ export const markup = function (tag, content = '', attributes = {}) {
 
 /**
  * Convert html element attributes to key/value object
+ * @private
  * @param  {Element} elem DOM element
  * @return {Object} ex: {attrName: attrValue}
  */
@@ -298,6 +299,7 @@ export const xmlParseAttrs = elem => {
 
 /**
  * Convert field options to optionData
+ * @private
  * @param  {NodeList} options  DOM elements
  * @return {Array} optionData array
  */
@@ -317,6 +319,7 @@ export const xmlParseOptions = options => {
 
 /**
  * Convert field user data to userData
+ * @private
  * @param  {NodeList} userData  DOM elements
  * @return {Array} optionData array
  */
@@ -726,9 +729,6 @@ const utils = {
   unique,
   validAttr,
   titleCase,
-  xmlParseAttrs,
-  xmlParseOptions,
-  xmlParseUserData,
 }
 
 /**
