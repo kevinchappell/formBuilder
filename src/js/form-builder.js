@@ -472,12 +472,12 @@ function FormBuilder(opts, element, $) {
         'options',
       ],
       text: defaultAttrs.concat(['subtype', 'maxlength']),
-      date: defaultAttrs,
+      date: defaultAttrs.concat(['subtype','min', 'max', 'step']),
       file: defaultAttrs.concat(['subtype', 'multiple']),
       header: ['label', 'subtype', 'className', 'access'],
       hidden: ['name', 'value', 'access'],
       paragraph: ['label', 'subtype', 'className', 'access'],
-      number: defaultAttrs.concat(['min', 'max', 'step']),
+      number: defaultAttrs.concat(['subtype','min', 'max', 'step']),
       select: defaultAttrs.concat(['multiple', 'options']),
       textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
     }
@@ -600,10 +600,11 @@ function FormBuilder(opts, element, $) {
     }
     let key
     const roles = values.role !== undefined ? values.role.split(',') : []
+
     const numAttrs = ['min', 'max', 'step']
 
     numAttrs.forEach(numAttr => {
-      advFieldMap[numAttr] = () => numberAttribute(numAttr, values)
+      advFieldMap[numAttr] = type === 'number' ? () => numberAttribute(numAttr, values) :  () => textAttribute(numAttr, values)
     })
 
     const noDisable = ['name', 'className']
@@ -967,7 +968,7 @@ function FormBuilder(opts, element, $) {
     const textArea = ['paragraph']
 
     let attrVal = values[attribute] || ''
-    let attrLabel = mi18n.get(attribute)
+    let attrLabel = mi18n.get(attribute) || attribute
 
     if (attribute === 'label') {
       if (textArea.includes(values.type)) {
