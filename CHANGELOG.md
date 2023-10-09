@@ -1,3 +1,10 @@
+## [3.13.2](https://github.com/kevinchappell/formBuilder/compare/v3.13.1...v3.13.2) (2023-10-09)
+
+
+### Bug Fixes
+
+* Bumps postcss to 8.4.31 and updates ancestor dependencies postcss, autoprefixer, css-loader and postcss-loader. Update to postcss is a breaking update due to configuration changes preventing dependabot PR from being merged ([9d974b1](https://github.com/kevinchappell/formBuilder/commit/9d974b135d9e32bc1b6b81240a65243c42ab6a29))
+
 ## [3.13.1](https://github.com/kevinchappell/formBuilder/compare/v3.13.0...v3.13.1) (2023-10-09)
 
 
