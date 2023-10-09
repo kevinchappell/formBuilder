@@ -3,6 +3,7 @@ import control from '../control'
 /**
  * Hidden input class
  * Output a <input type="hidden" ... /> form element
+ * @extends control
  */
 export default class controlHidden extends control {
   /**

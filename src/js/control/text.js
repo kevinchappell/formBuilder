@@ -3,6 +3,7 @@ import control from '../control'
 /**
  * Text input class
  * Output a <input type="text" ... /> form element
+ * @extends control
  */
 export default class controlText extends control {
   /**

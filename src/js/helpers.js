@@ -29,7 +29,7 @@ import storageAvailable from 'storage-available'
 export default class Helpers {
   /**
    * Setup defaults, get instance data and dom
-   * @param  {String} formId
+   * @param  {string} formId
    * @param {Object} layout object instance used by various helpers
    * @param {Object} formBuilder instance
    */
@@ -159,11 +159,12 @@ export default class Helpers {
   /**
    * XML save
    * @param  {Object} form sortableFields node
-   * @return {String} xml in string
+   * @return {string} xml in string
    */
   xmlSave(form) {
     const formData = this.prepData(form)
     const xmlSerializer = new XMLSerializer()
+    /** @type {Array.<string|string[]>} fields */
     const fields = ['<fields>']
 
     formData.forEach(field => {
@@ -347,8 +348,8 @@ export default class Helpers {
 
   /**
    * increments the field ids with support for multiple editors
-   * @param  {String} id field ID
-   * @return {String}    incremented field ID
+   * @param  {string} id field ID
+   * @return {string}    incremented field ID
    */
   incrementId(id) {
     const split = id.lastIndexOf('-')
@@ -534,7 +535,7 @@ export default class Helpers {
 
   /**
    * Returns the layout data based on controlPosition option
-   * @param  {String} controlPosition 'left' or 'right'
+   * @param  {string} controlPosition 'left' or 'right'
    * @return {Object} layout object
    */
   editorLayout(controlPosition) {
@@ -554,7 +555,7 @@ export default class Helpers {
 
   /**
    * Adds overlay to the page. Used for modals.
-   * @return {Object} DOM Object
+   * @return {HTMLElement} DOM Object
    */
   showOverlay() {
     const overlay = m('div', null, {
@@ -573,10 +574,10 @@ export default class Helpers {
    * Custom confirmation dialog
    *
    * @param  {Object}  message   Content to be displayed in the dialog
-   * @param  {Func}  yesAction callback to fire if they confirm
-   * @param  {Boolean} coords    location to put the dialog
-   * @param  {String}  className Custom class to be added to the dialog
-   * @return {Object}            Reference to the modal
+   * @param  {Function}  yesAction callback to fire if they confirm
+   * @param  {{pageX: Number, pageY: Number}|false} [coords=false]    location to put the dialog
+   * @param  {string}  [className=''] Custom class to be added to the dialog
+   * @return {HTMLElement}            Reference to the modal
    */
   confirm(message, yesAction, coords = false, className = '') {
     const _this = this
@@ -625,10 +626,10 @@ export default class Helpers {
 
   /**
    * Popup dialog the does not require confirmation.
-   * @param  {String|HTMLElement|Array}  content
-   * @param  {Boolean} coords    screen coordinates to position dialog
-   * @param  {String}  className classname to be added to the dialog
-   * @return {Object}            dom
+   * @param  {string|HTMLElement|Array}  content
+   * @param  {{pageX: Number, pageY: Number}|false} [coords=false]   screen coordinates to position dialog
+   * @param  {string} [className=''] classname to be added to the dialog
+   * @return {HTMLElement}            dom
    */
   dialog(content, coords = false, className = '') {
     const _this = this
@@ -736,6 +737,9 @@ export default class Helpers {
     this.emptyStage(stage)
   }
 
+  /**
+   * @param {HTMLElement} stage
+   */
   emptyStage(stage) {
     empty(stage).classList.remove('removing')
     this.save()
@@ -744,7 +748,7 @@ export default class Helpers {
   /**
    * If user re-orders the elements their order should be saved.
    * @param {Object} $cbUL our list of elements
-   * @return {Array} fieldOrder
+   * @return {Array|false} fieldOrder
    */
   setFieldOrder($cbUL) {
     if (!config.opts.sortableControls) {
@@ -782,14 +786,14 @@ export default class Helpers {
 
   /**
    * Toggles the edit mode for the given field
-   * @param  {String} fieldId
-   * @param  {Boolean} animate
-   * @return {Node|null} field
+   * @param  {string} fieldId
+   * @param  {boolean} animate
+   * @return {HTMLElement|void} field
    */
   toggleEdit(fieldId, animate = true) {
     const field = document.getElementById(fieldId)
     if (!field) {
-      return field
+      return
     }
 
     if ($(field).hasClass('editing')) {
@@ -799,6 +803,12 @@ export default class Helpers {
     }
   }
 
+  /**
+   * Close the editing panel of the field
+   * @param {string} fieldId
+   * @param {boolean} animate
+   * @returns {HTMLElement}
+   */
   closeField(fieldId, animate = true) {
     const _this = this
 
@@ -862,6 +872,12 @@ export default class Helpers {
     return field
   }
 
+  /**
+   * Open the editing panel of the field
+   * @param {string} fieldId
+   * @param {boolean} animate
+   * @returns {HTMLElement}
+   */
   openField(fieldId, animate = true) {
     const field = document.getElementById(fieldId)
     if (!field) {
@@ -912,16 +928,17 @@ export default class Helpers {
   }
 
   /**
-   * Get the computed style for DOM element
-   * @param  {Object}  elem     dom element
-   * @param  {Boolean} property style eg. width, height, opacity
-   * @return {String}           computed style
+   * Get the computed style for DOM element @TODO Find usage?
+   * @param  {Element}  elem     dom element
+   * @param  {boolean} property style eg. width, height, opacity
+   * @return {string}           computed style
+   * @deprecated Function is not called anywhere
    */
   getStyle(elem, property = false) {
     let style
     if (window.getComputedStyle) {
       style = window.getComputedStyle(elem, null)
-    } else if (elem.currentStyle) {
+    } else if (elem.currentStyle) { //@ie-6 only feature
       style = elem.currentStyle
     }
 
@@ -990,14 +1007,14 @@ export default class Helpers {
       className: `formData-${config.opts.dataType}`,
     })
 
-    this.dialog(m('pre', code), null, 'data-dialog')
+    this.dialog(m('pre', code), false, 'data-dialog')
   }
 
   /**
    * Remove a given field from the stage or the last field if no fieldID is provided
-   * @param  {String}  fieldID ID of the field to be removed
+   * @param  {string}  fieldID ID of the field to be removed
    * @param  {Number}  animationSpeed
-   * @return {Boolean} fieldRemoved returns true if field is removed
+   * @return {boolean} fieldRemoved returns true if field is removed
    */
   removeField(fieldID, animationSpeed = 250) {
     let fieldRemoved = false
@@ -1062,7 +1079,7 @@ export default class Helpers {
   /**
    * Generate markup for form action buttons
    * @param  {Object} buttonData
-   * @return {Object} DOM element for action button
+   * @return {HTMLElement} DOM element for action button
    */
   processActionButtons(buttonData) {
     const { label, events, ...attrs } = buttonData
@@ -1175,7 +1192,7 @@ export default class Helpers {
 
   /**
    * Generates form action buttons
-   * @return {Object} formActions btn-group
+   * @return {HTMLElement[]} formActions btn-group
    */
   formActionButtons() {
     const opts = config.opts
@@ -1253,9 +1270,9 @@ export default class Helpers {
 
   /**
    * Gets the data for current instance of formBuilder
-   * @param  {String} type
-   * @param  {Boolean} formatted
-   * @return {Array|String} formData
+   * @param  {string} type
+   * @param  {boolean} formatted
+   * @return {Array|string} formData
    */
   getFormData(type = 'js', formatted = false) {
     const h = this
@@ -1268,6 +1285,10 @@ export default class Helpers {
     return data[type](formatted)
   }
 
+  /**
+   * @param $prevHolder
+   * @returns {Object[]}
+   */
   tmpCleanPrevHolder($prevHolder) {
     const _this = this
     const cleanedFields = []
@@ -1301,6 +1322,16 @@ export default class Helpers {
     return cleanedFields
   }
 
+  /**
+   * @typedef BsColumnInfo
+   * @param {number} [rowNumber]
+   * @param {string} [columnSize]
+   */
+
+  /**
+   * @param data
+   * @returns {BsColumnInfo}
+   */
   tryParseColumnInfo(data) {
     const result = {}
 
@@ -1321,7 +1352,10 @@ export default class Helpers {
     return result
   }
 
-  //Remove one reference that protected this potentially empty container. There may be other open fields needing the container
+  /**
+   *  Remove one reference that protected this potentially empty container. There may be other open fields needing the container
+   *  @param {string} containerID
+   */
   removeContainerProtection(containerID) {
     const index = this.formBuilder.preserveTempContainers.indexOf(containerID)
     if (index !== -1) {
@@ -1329,7 +1363,11 @@ export default class Helpers {
     }
   }
 
-  //Briefly highlight on/off
+  /**
+   * Briefly highlight on/off
+   * @param {jQuery} field
+   * @param {number} ms
+   */
   toggleHighlight(field, ms = 600) {
     field.addClass('moveHighlight')
     setTimeout(function () {
@@ -1337,6 +1375,11 @@ export default class Helpers {
     }, ms)
   }
 
+  /**
+   * Show a message in the snackbar
+   * @param {string} msg
+   * @param {number} timeout
+   */
   showToast(msg, timeout = 3000) {
     if (this.toastTimer != null) {
       window.clearTimeout(this.toastTimer)
@@ -1350,6 +1393,14 @@ export default class Helpers {
     $('.snackbar').addClass('show').html(msg)
   }
 
+  /**
+   * Calculate the 2D distance between two points
+   * @param x1
+   * @param y1
+   * @param x2
+   * @param y2
+   * @returns {number}
+   */
   getDistanceBetweenPoints(x1, y1, x2, y2) {
     const y = x2 - x1
     const x = y2 - y1
@@ -1357,7 +1408,11 @@ export default class Helpers {
     return Math.floor(Math.sqrt(x * x + y * y))
   }
 
-  //Return full row name (row-1)
+  /**
+   * Return full row name (row-1)
+   * @param className
+   * @returns {string|void}
+   */
   getRowClass(className) {
     if (!className) {
       return
@@ -1369,7 +1424,11 @@ export default class Helpers {
     }
   }
 
-  //Return the row value i.e row-2 would return 2
+  /**
+   * Return the row value i.e row-2 would return 2
+   * @param {string} className
+   * @returns {number} Row number or 0 for invalid definitions
+   */
   getRowValue(className) {
     if (!className) {
       return 0
@@ -1379,15 +1438,23 @@ export default class Helpers {
     if (rowClass) {
       return parseInt(rowClass.split('-')[1])
     }
+    return 0
   }
 
-  //Example className of 'row row-1' would be changed for 'row row-4' where 4 is the newValue
+  /**
+   * Example className of 'row row-1' would be changed for 'row row-4' where 4 is the newValue
+   * @deprecated Function is not called anywhere
+   */
   changeRowClass(className, newValue) {
     const rowClass = this.getRowClass(className)
     return className.replace(rowClass, `row-${newValue}`)
   }
 
-  //Return the column size i.e col-md-6 would return 6
+  /**
+   * Return the column size i.e col-md-6 would return 6
+   * @param {string} className
+   * @return {number} Column value between 1-12 or 0 for invalid definitions
+   */
   getBootstrapColumnValue(className) {
     if (!className) {
       return 0
@@ -1397,9 +1464,14 @@ export default class Helpers {
     if (bootstrapClass) {
       return parseInt(bootstrapClass.split('-')[2])
     }
+    return 0
   }
 
-  //Return the prefix (col-md)
+  /**
+   * /Return the prefix (col-md)
+   * @param {string} className
+   * @returns {number|string}
+   */
   getBootstrapColumnPrefix(className) {
     if (!className) {
       return 0
@@ -1423,12 +1495,22 @@ export default class Helpers {
     }
   }
 
-  //Example className of 'row row-1 col-md-6' would be changed for 'row row-1 col-md-4' where 4 is the newValue
+  /**
+   * Example className of 'row row-1 col-md-6' would be changed for 'row row-1 col-md-4' where 4 is the newValue
+   * @param {string} className
+   * @param {number} newValue
+   * @returns {string}
+   */
   changeBootstrapClass(className, newValue) {
     const boostrapClass = this.getBootstrapColumnClass(className)
     return className.replace(boostrapClass, `${this.getBootstrapColumnPrefix(className)}-${newValue}`)
   }
 
+  /**
+   *
+   * @param {string} fieldID
+   * @param {number} newValue
+   */
   syncBootstrapColumnWrapperAndClassProperty(fieldID, newValue) {
     const colWrapper = $(`#${fieldID}-cont`)
     colWrapper.attr('class', this.changeBootstrapClass(colWrapper.attr('class'), newValue))

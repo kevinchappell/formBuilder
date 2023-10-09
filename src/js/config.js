@@ -1,5 +1,6 @@
 import mi18n from 'mi18n'
 
+/* istanbul ignore next */
 const noop = () => null
 
 // eslint-disable-next-line
@@ -41,19 +42,19 @@ export const defaultOptions = {
   fieldEditContainer: null, // DOM node or selector
   inputSets: [], // add groups of fields at a time
   notify: {
-    error: error => {
+    error: /* istanbul ignore next */ error => {
       console.log(error)
     },
-    success: success => {
+    success:  /* istanbul ignore next */ success => {
       console.log(success)
     },
-    warning: warning => {
+    warning: /* istanbul ignore next */ warning => {
       console.warn(warning)
     },
   },
-  onAddField: (fieldId, fieldData) => fieldData,
-  onAddFieldAfter: (fieldId, fieldData) => fieldData,
-  onAddOption: obj => obj,
+  onAddField: /* istanbul ignore next */ (fieldId, fieldData) => fieldData,
+  onAddFieldAfter: /* istanbul ignore next */ (fieldId, fieldData) => fieldData,
+  onAddOption: /* istanbul ignore next */ obj => obj,
   onClearAll: noop,
   onCloseFieldEdit: noop,
   onOpenFieldEdit: noop,
