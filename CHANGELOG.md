@@ -1,3 +1,16 @@
+## [3.13.1](https://github.com/kevinchappell/formBuilder/compare/v3.13.0...v3.13.1) (2023-10-09)
+
+
+### Bug Fixes
+
+* Add dompurify to dev requirements so that we can test the Sanitizer using the domPurify backend ([c342558](https://github.com/kevinchappell/formBuilder/commit/c342558ac6c87d95fc6c3a44af03ded348abcc16))
+* Control may not be instered into the DOM at the time of onRender, keep a reference to the element in build() and use in onRender() ([33ea8c4](https://github.com/kevinchappell/formBuilder/commit/33ea8c479a094abf8b33e1a6f13ea13aeab327fe))
+* Fix JSDoc ([d2b8629](https://github.com/kevinchappell/formBuilder/commit/d2b86295dab3a606829aab6dc5a33394ee9949d5))
+* Mark XML helper functions as private and don't export them from utils module ([74d19a2](https://github.com/kevinchappell/formBuilder/commit/74d19a2345356e81b398d6367abb57ae4f529fc9))
+* Remove unused local variable ([53649ae](https://github.com/kevinchappell/formBuilder/commit/53649aef3abfc32e3a4fdccd63333341c31baaa2))
+* Replace non-standard and deprecated call to String.substr() with String.slice() ([813cecf](https://github.com/kevinchappell/formBuilder/commit/813cecfab3df50cb5ba93837b937055b2ab785ca))
+* Return true from SanatizerAPI backend when successfully setting HTML ([c5d24c8](https://github.com/kevinchappell/formBuilder/commit/c5d24c849c2d8c7240012e6879eb5cd447d47364))
+
 # [3.13.0](https://github.com/kevinchappell/formBuilder/compare/v3.12.4...v3.13.0) (2023-10-06)
 
 
