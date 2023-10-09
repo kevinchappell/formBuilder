@@ -769,7 +769,6 @@ export default class Helpers {
 
   /**
    * Close fields being editing
-   * @param  {Object} stage
    */
   closeAllEdit() {
     const _this = this
@@ -1324,7 +1323,7 @@ export default class Helpers {
 
   //Remove one reference that protected this potentially empty container. There may be other open fields needing the container
   removeContainerProtection(containerID) {
-    var index = this.formBuilder.preserveTempContainers.indexOf(containerID)
+    const index = this.formBuilder.preserveTempContainers.indexOf(containerID)
     if (index !== -1) {
       this.formBuilder.preserveTempContainers.splice(index, 1)
     }

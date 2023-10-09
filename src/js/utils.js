@@ -249,7 +249,7 @@ export const markup = function (tag, content = '', attributes = {}) {
       }
       if (typeof attrVal === 'boolean') {
         if (attrVal === true) {
-          const val = name !== 'contenteditable' ? name : true
+          const val = name === 'contenteditable' ? true : name
           field.setAttribute(name, val)
         }
       } else {
@@ -274,10 +274,11 @@ export const markup = function (tag, content = '', attributes = {}) {
 
 /**
  * Convert html element attributes to key/value object
- * @param  {Object} elem DOM element
+ * @private
+ * @param  {Element} elem DOM element
  * @return {Object} ex: {attrName: attrValue}
  */
-export const parseAttrs = elem => {
+export const xmlParseAttrs = elem => {
   const attrs = elem.attributes
   const data = {}
   forEach(attrs, attr => {
@@ -298,15 +299,16 @@ export const parseAttrs = elem => {
 
 /**
  * Convert field options to optionData
+ * @private
  * @param  {NodeList} options  DOM elements
  * @return {Array} optionData array
  */
-export const parseOptions = options => {
+export const xmlParseOptions = options => {
   const data = []
 
   for (let i = 0; i < options.length; i++) {
     const optionData = {
-      ...parseAttrs(options[i]),
+      ...xmlParseAttrs(options[i]),
       label: options[i].textContent,
     }
     data.push(optionData)
@@ -317,10 +319,11 @@ export const parseOptions = options => {
 
 /**
  * Convert field user data to userData
+ * @private
  * @param  {NodeList} userData  DOM elements
  * @return {Array} optionData array
  */
-export const parseUserData = userData => {
+export const xmlParseUserData = userData => {
   const data = []
 
   if (userData.length) {
@@ -336,7 +339,7 @@ export const parseUserData = userData => {
 
 /**
  * Parse XML formData
- * @param  {String} xmlString
+ * @param  {string} xmlString
  * @return {Array}            formData array
  */
 export const parseXML = xmlString => {
@@ -347,16 +350,16 @@ export const parseXML = xmlString => {
   if (xml) {
     const fields = xml.getElementsByTagName('field')
     for (let i = 0; i < fields.length; i++) {
-      const fieldData = parseAttrs(fields[i])
+      const fieldData = xmlParseAttrs(fields[i])
       const options = fields[i].getElementsByTagName('option')
       const userData = fields[i].getElementsByTagName('userData')
 
       if (options && options.length) {
-        fieldData.values = parseOptions(options)
+        fieldData.values = xmlParseOptions(options)
       }
 
       if (userData && userData.length) {
-        fieldData.userData = parseUserData(userData)
+        fieldData.userData = xmlParseUserData(userData)
       }
 
       formData.push(fieldData)
@@ -691,7 +694,7 @@ export function titleCase(str) {
   const regex = new RegExp(`(?!${lowers.join('|')})\\w\\S*`, 'g')
   return `${str}`.replace(
     regex,
-    txt => txt.charAt(0).toUpperCase() + txt.substr(1).replace(/[A-Z]/g, word => ` ${word}`),
+    txt => txt.charAt(0).toUpperCase() + txt.slice(1).replace(/[A-Z]/g, word => ` ${word}`),
   )
 }
 
@@ -715,10 +718,7 @@ const utils = {
   merge,
   mobileClass,
   nameAttr,
-  parseAttrs,
   parsedHtml,
-  parseOptions,
-  parseUserData,
   parseXML,
   removeFromArray,
   safeAttr,
@@ -758,11 +758,11 @@ utils.splitObject = (obj, keys) => {
 }
 
 $.fn.swapWith = function (that) {
-  var $this = this
-  var $that = $(that)
+  const $this = this
+  const $that = $(that)
 
   // create temporary placeholder
-  var $temp = $('<div>')
+  const $temp = $('<div>')
 
   // 3-step swap
   $this.before($temp)

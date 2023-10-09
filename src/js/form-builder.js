@@ -55,7 +55,7 @@ let isMoving = false
 function FormBuilder(opts, element, $) {
   const formBuilder = this
   const i18n = mi18n.current
-  const formID = `frmb-${new Date().getTime()}`
+  const formID = `frmb-${Date.now()}`
   const data = new Data(formID)
   const d = new Dom(formID)
 

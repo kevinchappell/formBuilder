@@ -7,11 +7,12 @@ if (!window.fbControls) window.fbControls = []
 window.fbControls.push(function(controlClass) {
   /**
    * Star rating class
+   * @extends control
    */
   class controlStarRating extends controlClass {
     /**
      * Class configuration - return the icons & label related to this control
-     * @returndefinition object
+     * @return {Object} definition object
      */
     static get definition() {
       return {
@@ -32,10 +33,11 @@ window.fbControls.push(function(controlClass) {
 
     /**
      * build a text DOM element, supporting other jquery text form-control's
-     * @return {Object} DOM Element to be injected into the form.
+     * @return {HTMLElement} DOM Element to be injected into the form.
      */
     build() {
-      return this.markup('span', null, { id: this.config.name })
+      this.dom = this.markup('span', null, { id: this.config.name })
+      return this.dom
     }
 
     /**
@@ -43,7 +45,7 @@ window.fbControls.push(function(controlClass) {
      */
     onRender() {
       const value = this.config.value || 3.6
-      $('#' + this.config.name).rateYo({ rating: value })
+      $(this.dom).rateYo({ rating: value })
     }
   }
 
