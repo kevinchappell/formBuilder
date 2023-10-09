@@ -27,25 +27,32 @@ window.fbControls.push(function(controlClass) {
      * javascript & css to load
      */
     configure() {
-      this.js = '//cdnjs.cloudflare.com/ajax/libs/rateYo/2.2.0/jquery.rateyo.min.js'
-      this.css = '//cdnjs.cloudflare.com/ajax/libs/rateYo/2.2.0/jquery.rateyo.min.css'
+      this.js = 'https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js'
+      this.css = 'https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css'
     }
 
     /**
      * build a text DOM element, supporting other jquery text form-control's
-     * @return {HTMLElement} DOM Element to be injected into the form.
+     * @return {HTMLElement|Object|HTMLElement[]} DOM Element to be injected into the form.
      */
     build() {
-      this.dom = this.markup('span', null, { id: this.config.name })
-      return this.dom
+      this.input = this.markup('input', null, { ...this.config, type: 'hidden', })
+      this.field = this.markup('span')
+      return [this.input, this.field]
     }
 
     /**
      * onRender callback
      */
     onRender() {
-      const value = this.config.value || 3.6
-      $(this.dom).rateYo({ rating: value })
+      const value = this.config.userData ? this.config.userData[0] : this.config.value || 3.6
+      const input = $(this.input)
+      $(this.field).rateYo({
+        rating: value,
+        onSet: function(rating) {
+          input.val(rating)
+        }
+      })
     }
   }
 
