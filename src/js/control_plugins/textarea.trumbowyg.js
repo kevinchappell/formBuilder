@@ -32,16 +32,16 @@ window.fbControls.push(function(controlClass, allControlClasses) {
     configure() {
       window.fbEditors.trumbowyg = {}
       this.js = [
-        '//cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/trumbowyg.min.js',
-        '//cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/base64/trumbowyg.base64.min.js',
-        '//cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/pasteimage/trumbowyg.pasteimage.min.js',
-        '//cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/preformatted/trumbowyg.preformatted.min.js',
-        '//cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/upload/trumbowyg.upload.min.js',
-        '//cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/plugins/colors/trumbowyg.colors.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/trumbowyg.min.js',
+        'https://cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/base64/trumbowyg.base64.min.js',
+        'https://cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/pasteimage/trumbowyg.pasteimage.min.js',
+        'https://cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/preformatted/trumbowyg.preformatted.min.js',
+        'https://cdn.rawgit.com/Alex-D/Trumbowyg/v2.5.1/dist/plugins/upload/trumbowyg.upload.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/plugins/colors/trumbowyg.colors.min.js',
       ]
       this.css = [
-        '//cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/ui/trumbowyg.min.css',
-        '//cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/plugins/colors/ui/trumbowyg.colors.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/ui/trumbowyg.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.5.1/plugins/colors/ui/trumbowyg.colors.min.css',
       ]
     }
 
