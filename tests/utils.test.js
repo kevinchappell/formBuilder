@@ -267,12 +267,11 @@ describe('Test util Asset inclusion', () => {
     expect(window.fbLoaded.css).toContain('test2')
   })
 
-  test.failing('include js', () => {
-    return getScripts('http://example.com/test.js').then(data => {
-      expect(data).toBe('peanut butter')
-      expect(window.fbLoaded.js).toContain('/test.js')
+  test('include js', async () => {
+    await getScripts('https://formbuilder.online/assets/js/form-builder.min.js').then(() => {
+      expect(window.fbLoaded.js).toContain('https://formbuilder.online/assets/js/form-builder.min.js')
     })
-  }, 1)
+  })
 })
 
 describe('enhancedBootstrap feature utils', () => {
