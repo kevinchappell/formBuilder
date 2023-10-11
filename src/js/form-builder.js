@@ -608,6 +608,8 @@ function FormBuilder(opts, element, $) {
 
     const noDisable = ['name', 'className']
 
+    const typeUserAttrs = Object.assign({}, opts.typeUserAttrs['*'], opts.typeUserAttrs[type])
+
     Object.keys(fieldAttrs).forEach(index => {
       const attr = fieldAttrs[index]
       const useDefaultAttr = [true]
@@ -623,8 +625,8 @@ function FormBuilder(opts, element, $) {
         useDefaultAttr.push(!userAttrs.includes(attr))
       }
 
-      if (opts.typeUserAttrs[type]) {
-        const userAttrs = Object.keys(opts.typeUserAttrs[type])
+      if (typeUserAttrs) {
+        const userAttrs = Object.keys(typeUserAttrs)
         useDefaultAttr.push(!userAttrs.includes(attr))
       }
 
@@ -644,8 +646,8 @@ function FormBuilder(opts, element, $) {
     }
 
     // Append custom attributes as defined in typeUserAttrs option
-    if (opts.typeUserAttrs[type]) {
-      const customAttr = processTypeUserAttrs(opts.typeUserAttrs[type], values)
+    if (typeUserAttrs) {
+      const customAttr = processTypeUserAttrs(typeUserAttrs, values)
       advFields.push(customAttr)
     }
 
@@ -1224,6 +1226,8 @@ function FormBuilder(opts, element, $) {
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onadd) {
       opts.typeUserEvents[type].onadd(field)
+    } else if (opts.typeUserEvents['*'] && opts.typeUserEvents['*'].onadd) {
+      opts.typeUserEvents['*'].onadd(field)
     }
 
     if (isNew) {
@@ -1610,6 +1614,8 @@ function FormBuilder(opts, element, $) {
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
       opts.typeUserEvents[type].onclone($clone[0])
+    } else if (opts.typeUserEvents['*'] && opts.typeUserEvents['*'].onclone) {
+      opts.typeUserEvents['*'].onclone($clone[0])
     }
 
     return $clone

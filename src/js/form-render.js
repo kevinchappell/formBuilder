@@ -50,13 +50,13 @@ class FormRender {
       },
       templates: {}, // custom inline defined templates
       notify: {
-        error: error => {
+        error: /* istanbul ignore next */ error => {
           console.log(error)
         },
-        success: success => {
+        success: /* istanbul ignore next */ success => {
           console.log(success)
         },
-        warning: warning => {
+        warning: /* istanbul ignore next */ warning => {
           console.warn(warning)
         },
       },

@@ -54,6 +54,74 @@ describe('FormBuilder Add/Remove from Stage', () => {
     fb.actions.clearFields() //Test no error on empty stage
     expect($('.frmb.stage-wrap li', fbWrap).length).toBe(0)
   })
+
+  test('typeUserEvents onadd called for wildcard', async () => {
+    const fbWrap = $('<div>')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({
+      typeUserEvents: {
+        '*': {
+          onadd: cb,
+        },
+      },
+    }).promise
+    const field = {
+      type: 'text',
+      class: 'form-control',
+      name: 'on-add-test'
+    }
+    fb.actions.addField(field)
+    expect(cb.mock.calls).toHaveLength(1)
+    expect(cb.mock.calls[0]).toHaveLength(1)
+    expect(typeof cb.mock.calls[0][0]).toBe('object')
+  })
+
+  test('typeUserEvents onadd called for type', async () => {
+    const fbWrap = $('<div>')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({
+      typeUserEvents: {
+        'text': {
+          onadd: cb,
+        },
+      },
+    }).promise
+    const field = {
+      type: 'text',
+      class: 'form-control',
+      name: 'on-add-test'
+    }
+    fb.actions.addField(field)
+    expect(cb.mock.calls).toHaveLength(1)
+    expect(cb.mock.calls[0]).toHaveLength(1)
+    expect(typeof cb.mock.calls[0][0]).toBe('object')
+  })
+
+  test('typeUserEvents onadd called for type when wildcard and type keys exist', async () => {
+    const fbWrap = $('<div>')
+    const cbType = jest.fn()
+    const cbWildcard = jest.fn()
+    const fb = await $(fbWrap).formBuilder({
+      typeUserEvents: {
+        '*': {
+          onadd: cbWildcard,
+        },
+        'text': {
+          onadd: cbType,
+        },
+      },
+    }).promise
+    const field = {
+      type: 'text',
+      class: 'form-control',
+      name: 'on-add-test'
+    }
+    fb.actions.addField(field)
+    expect(cbType.mock.calls).toHaveLength(1)
+    expect(cbType.mock.calls[0]).toHaveLength(1)
+    expect(typeof cbType.mock.calls[0][0]).toBe('object')
+    expect(cbWildcard.mock.calls).toHaveLength(0)
+  })
 })
 
 describe('FormBuilder can add all default fields via clicking on control panel',  () => {
@@ -131,7 +199,7 @@ describe('FormBuilder stage names translated', () => {
   })
 })
 
-describe('FormBuilder userAttrType detection', () => {
+describe('FormBuilder typeUserAttrs detection', () => {
   test('renders text/string user attribute', async () => {
     const config = {
       typeUserAttrs: {
@@ -206,6 +274,64 @@ describe('FormBuilder userAttrType detection', () => {
     const input = fbWrap.find('.testAttribute-wrap select')
     expect(input.length).toBe(1)
     expect(input[0].options.length).toBe(2)
+  })
+  test('renders text/string user attribute when set by wildcard', async () => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testAttribute: {
+            label: 'test',
+            value: '',
+          },
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.addField({ type: 'text'})
+    let input = fbWrap.find('.text-field .testAttribute-wrap input')
+    expect(input.attr('type')).toBe('text')
+    expect(input.val()).toBe('')
+    fb.actions.addField({ type: 'button'})
+    input = fbWrap.find('.button-field .testAttribute-wrap input')
+    expect(input.attr('type')).toBe('text')
+    expect(input.val()).toBe('')
+  })
+  test('user attribute definition by type takes precedence over wildcard definition', async () => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testAttribute: {
+            label: 'test',
+            value: '',
+          },
+        },
+        button: {
+          testAttribute: {
+            label: 'override',
+            value: 'buttonOverride',
+          },
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.addField({ type: 'text'})
+    let input = fbWrap.find('.text-field .testAttribute-wrap input')
+    expect(input.attr('type')).toBe('text')
+    expect(input.val()).toBe('')
+
+    input = fbWrap.find('.text-field .testAttribute-wrap label')
+    expect(input.text()).toBe('test')
+
+    fb.actions.addField({ type: 'button'})
+    input = fbWrap.find('.button-field .testAttribute-wrap input')
+    console.log(input)
+    expect(input.attr('type')).toBe('text')
+    expect(input.val()).toBe('buttonOverride')
+
+    input = fbWrap.find('.button-field .testAttribute-wrap label')
+    expect(input.text()).toBe('override')
   })
 })
 

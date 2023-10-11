@@ -1,6 +1,10 @@
 # typeUserEvents
 Add functionality to existing and custom attributes using `onclone` and `onadd` events. Events return JavaScript DOM elements.
 
+For all types the wildcard type **_*_** exists.
+
+`onremove` event exists for removal events
+
 ## Usage
 ```javascript
 var options = {
@@ -14,6 +18,11 @@ var options = {
     }
   },
   typeUserEvents: {
+    '*': {
+      onclone: (fld) => {
+        console.log('field cloned');
+      }
+    },
     text: {
       onadd: function(fld) {
         var $patternField = $('.fld-pattern', fld);

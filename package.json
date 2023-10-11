@@ -179,6 +179,7 @@
   "jest": {
     "collectCoverage": true,
     "coverageDirectory": ".jest/coverage",
+    "coveragePathIgnorePatterns": [ "tests/" ],
     "testEnvironment": "jsdom",
     "setupFiles": [
       "./tests/setup-jest.js"
