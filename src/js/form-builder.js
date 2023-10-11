@@ -1853,7 +1853,11 @@ function FormBuilder(opts, element, $) {
     evt.preventDefault()
     const currentItem = $(evt.target).parent().parent('li')
     const $clone = cloneItem(currentItem)
-    prepareCloneWrappers($clone, currentItem)
+    if (enhancedBootstrapEnabled()) {
+      prepareCloneWrappers($clone, currentItem)
+    } else {
+      $clone.insertAfter(currentItem)
+    }
     UpdatePreviewAndSave($clone)
 
     h.tmpCleanPrevHolder($clone.find('.prev-holder'))
@@ -1863,12 +1867,12 @@ function FormBuilder(opts, element, $) {
     }
   })
 
+  /**
+   * enhancedBootstrap feature helper post field clone
+   * @param $clone
+   * @param currentItem
+   */
   function prepareCloneWrappers($clone, currentItem) {
-    if (!enhancedBootstrapEnabled()) {
-      $clone.insertAfter(currentItem)
-      return
-    }
-
     const inputClassElement = $(`#className-${currentItem.attr('id')}`)
     const columnData = prepareFieldRow({})
 
@@ -2154,6 +2158,9 @@ function FormBuilder(opts, element, $) {
     return $stage.find('li').length > 0
   }
 
+  /**
+   * enhancedBootstrap feature helper
+   */
   function checkSetupBlankStage() {
     if (stageHasFields() || !enhancedBootstrapEnabled()) {
       return
