@@ -1421,17 +1421,16 @@ export default class Helpers {
   /**
    * Return full row name (row-1)
    * @param className
-   * @returns {string|void}
+   * @returns {string}
    */
   getRowClass(className) {
-    if (!className) {
-      return
+    if (className) {
+      const splitClasses = className.split(' ').filter(x => x.startsWith('row-'))
+      if (splitClasses && splitClasses.length > 0) {
+        return splitClasses[0]
+      }
     }
-
-    const splitClasses = className.split(' ').filter(x => x.startsWith('row-'))
-    if (splitClasses && splitClasses.length > 0) {
-      return splitClasses[0]
-    }
+    return ''
   }
 
   /**
@@ -1440,13 +1439,11 @@ export default class Helpers {
    * @returns {number} Row number or 0 for invalid definitions
    */
   getRowValue(className) {
-    if (!className) {
-      return 0
-    }
-
-    const rowClass = this.getRowClass(className)
-    if (rowClass) {
-      return parseInt(rowClass.split('-')[1])
+    if (className) {
+      const rowClass = this.getRowClass(className)
+      if (rowClass) {
+        return parseInt(rowClass.split('-')[1])
+      }
     }
     return 0
   }
@@ -1466,43 +1463,43 @@ export default class Helpers {
    * @return {number} Column value between 1-12 or 0 for invalid definitions
    */
   getBootstrapColumnValue(className) {
-    if (!className) {
-      return 0
-    }
-
-    const bootstrapClass = this.getBootstrapColumnClass(className)
-    if (bootstrapClass) {
-      return parseInt(bootstrapClass.split('-')[2])
+    if (className) {
+      const bootstrapClass = this.getBootstrapColumnClass(className)
+      if (bootstrapClass) {
+        return parseInt(bootstrapClass.split('-')[2])
+      }
     }
     return 0
   }
 
   /**
-   * /Return the prefix (col-md)
+   * Return the prefix (col-md)
    * @param {string} className
-   * @returns {number|string}
+   * @returns {string}
    */
   getBootstrapColumnPrefix(className) {
-    if (!className) {
-      return 0
+    if (className) {
+      const bootstrapClass = this.getBootstrapColumnClass(className)
+      if (bootstrapClass) {
+        return `${bootstrapClass.split('-')[0]}-${bootstrapClass.split('-')[1]}`
+      }
     }
-
-    const bootstrapClass = this.getBootstrapColumnClass(className)
-    if (bootstrapClass) {
-      return `${bootstrapClass.split('-')[0]}-${bootstrapClass.split('-')[1]}`
-    }
+    return ''
   }
 
-  //Return full class name (col-md-6)
+  /**
+   * Return full class name (col-md-6)
+   * @param {string} className
+   * @returns {string}
+   */
   getBootstrapColumnClass(className) {
-    if (!className) {
-      return
+    if (className) {
+      const splitClasses = className.split(' ').filter(className => bootstrapColumnRegex.test(className))
+      if (splitClasses && splitClasses.length > 0) {
+        return splitClasses[0]
+      }
     }
-
-    const splitClasses = className.split(' ').filter(className => bootstrapColumnRegex.test(className))
-    if (splitClasses && splitClasses.length > 0) {
-      return splitClasses[0]
-    }
+    return ''
   }
 
   /**
