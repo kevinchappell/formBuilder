@@ -2037,21 +2037,38 @@ function FormBuilder(opts, element, $) {
       if (e.keyCode == 87 || e.keyCode == 38) {
         moveFieldUp(rowWrapper)
       }
+      switch (event.code) {
+        case 'KeyW':
+        case 'ArrowUp':
+          moveFieldUp(rowWrapper)
+          break
 
       if (e.keyCode == 83 || e.keyCode == 40) {
         moveFieldDown(rowWrapper)
       }
+        case 'KeyS':
+        case 'ArrowDown':
+          moveFieldDown(rowWrapper)
+          break
 
       if (e.keyCode == 65 || e.keyCode == 37) {
         moveFieldLeft()
       }
+        case 'KeyA':
+        case 'ArrowLeft':
+          moveFieldLeft()
+          break
 
       if (e.keyCode == 68 || e.keyCode == 39) {
         moveFieldRight()
-      }
+        case 'KeyD':
+        case 'ArrowRight':
+          moveFieldRight()
+          break
 
-      if (e.keyCode == 82) {
-        autoSizeRowColumns(rowWrapper, true)
+        case 'KeyR':
+          autoSizeRowColumns(rowWrapper, true)
+          break
       }
 
       buildGridModeCurrentRowInfo()
