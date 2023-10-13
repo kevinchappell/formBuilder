@@ -1146,7 +1146,7 @@ function FormBuilder(opts, element, $) {
     })
     const $li = $(field)
 
-    AttatchColWrapperHandler($li)
+    AttachColWrapperHandler($li)
 
     $li.data('fieldData', { attrs: values })
 
@@ -1251,7 +1251,7 @@ function FormBuilder(opts, element, $) {
     insertTargetIsColumn = false
   }
 
-  function AttatchColWrapperHandler(colWrapper) {
+  function AttachColWrapperHandler(colWrapper) {
     if (!enhancedBootstrapEnabled()) {
       return
     }
@@ -1361,7 +1361,7 @@ function FormBuilder(opts, element, $) {
           })
 
           $(ui.item).parent().replaceWith(rowWrapperNode)
-          AttatchColWrapperHandler($(ui.item))
+          AttachColWrapperHandler($(ui.item))
 
           colWrapper.appendTo(rowWrapperNode)
 
