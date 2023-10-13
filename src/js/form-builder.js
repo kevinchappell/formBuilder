@@ -111,6 +111,13 @@ function FormBuilder(opts, element, $) {
     beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
     start: (evt, ui) => h.startMoving.call(h, evt, ui),
     stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
+    change: function(event, ui) {
+      if (opts.prepend && ui.placeholder.index() < 1) {
+        $('li.form-prepend').after(ui.placeholder)
+      } else if (opts.append && ui.placeholder.index() >= ($stage.children('li').length - 1)) {
+        $('li.form-append').before(ui.placeholder)
+      }
+    },
     cancel: ['input', 'select', 'textarea', '.disabled-field', '.form-elements', '.btn', 'button', '.is-locked'].join(
       ', ',
     ),
