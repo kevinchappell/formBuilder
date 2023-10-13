@@ -2334,9 +2334,9 @@ function FormBuilder(opts, element, $) {
       const field = $(`#${fieldID}`)
       const fieldType = field.attr('type')
 
-      let label = field.html()
+      let label = $(`#label-${fieldID}`).html()
       if (fieldType === 'hidden' || fieldType === 'paragraph') {
-        label = field.val()
+        label = $(`#name-${fieldID}`).val()
       }
 
       if (!label) {
