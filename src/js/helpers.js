@@ -743,6 +743,7 @@ export default class Helpers {
    */
   emptyStage(stage) {
     empty(stage).classList.remove('removing')
+    stage.dispatchEvent(events.stageEmptied)
     this.save()
   }
 

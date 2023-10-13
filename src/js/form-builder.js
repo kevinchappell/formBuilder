@@ -1868,6 +1868,13 @@ function FormBuilder(opts, element, $) {
     }
   })
 
+  if (enhancedBootstrapEnabled()) {
+    $stage.on('stageEmptied', () => {
+      formRows = [] //Reset row count
+      checkSetupBlankStage()
+    })
+  }
+
   /**
    * enhancedBootstrap feature helper post field clone
    * @param $clone
