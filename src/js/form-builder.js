@@ -197,6 +197,7 @@ function FormBuilder(opts, element, $) {
   $cbUL.on('mouseenter', function () {
     if (stageHasFields()) {
       $stage.children(tmpRowPlaceholderClassSelector).addClass(invisibleRowPlaceholderClass)
+    if (!h.stageIsEmpty()) {
     }
   })
 
@@ -261,7 +262,7 @@ function FormBuilder(opts, element, $) {
     }
 
     //Remove initial placeholder if simply clicking to add field into blank stage
-    if (!stageHasFields()) {
+    if (h.stageIsEmpty()) {
       $stage.find(tmpRowPlaceholderClassSelector).eq(0).remove()
     }
 
@@ -2154,15 +2155,11 @@ function FormBuilder(opts, element, $) {
       })
   }
 
-  function stageHasFields() {
-    return $stage.find('li').length > 0
-  }
-
   /**
    * enhancedBootstrap feature helper
    */
   function checkSetupBlankStage() {
-    if (stageHasFields() || !enhancedBootstrapEnabled()) {
+    if (!(enhancedBootstrapEnabled() && h.stageIsEmpty())) {
       return
     }
 

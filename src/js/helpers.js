@@ -746,6 +746,14 @@ export default class Helpers {
   }
 
   /**
+   * Check if stage is empty
+   * @return {boolean}
+   */
+  stageIsEmpty() {
+    return $(this.d.stage).find('li').length === 0
+  }
+
+  /**
    * If user re-orders the elements their order should be saved.
    * @param {Object} $cbUL our list of elements
    * @return {Array|false} fieldOrder
