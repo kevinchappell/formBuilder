@@ -1,4 +1,6 @@
 .stage-wrap {
+  display: flex;
+  flex-direction: column;
   position: relative;
   padding: 0;
   margin: 0;
@@ -792,15 +794,24 @@
   white-space: nowrap;
 }
 
-.colHoverTempStyle {
-  padding-left: 7px !important;
-  padding-right: 7px !important;
+.colWithInsertButtons {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   flex: 95 1 0% !important;
 }
 
 .rowWrapper {
   margin-left: 0 !important;
   margin-right: 0 !important;
+}
+
+.rowWrapper:last-child {
+  flex-grow: 1;
+}
+
+.rowWrapper:not(.tempRowWrapper) {
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 .btnAddControl {
@@ -820,6 +831,24 @@
 .hoverDropStyleInverse {
   background-color: #0d99f2;
   border: 1px dashed #e5f5f8;
+  min-height: 20px;
+}
+
+.hoverDropStyleInverse .colWrapper {
+  max-width: calc(100% - 40px);
+}
+
+.stage-wrap > .hoverDropStyleInverse {
+  width: 100%;
+}
+
+.rowWrapper > .hoverDropStyleInverse {
+  min-width: 40px;
+  flex-grow: 1;
+}
+
+.hoverDropStyleInverse:last-child {
+  flex-grow: 1;
 }
 
 .invisibleRowPlaceholder {
