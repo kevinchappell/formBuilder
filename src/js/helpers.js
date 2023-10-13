@@ -87,7 +87,8 @@ export default class Helpers {
     const form = _this.d.stage
     const lastIndex = form.childNodes.length - 1
     const cancelArray = []
-    _this.stopIndex = ui.placeholder.index() - 1
+    //Find the index within the stage even if the placeholder is not a direct descendant
+    _this.stopIndex = ui.placeholder.closest('ul.stage-wrap > *').index() - 1
 
     if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true)

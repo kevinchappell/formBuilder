@@ -267,7 +267,7 @@ function FormBuilder(opts, element, $) {
     }
 
     const $control = $(target).closest('li')
-    h.stopIndex = opts.append ? $stage.children('li').length - 1 : undefined
+    h.stopIndex = opts.append ? $stage.children().length - 1 : undefined
     processControl($control)
     h.save.call(h)
   })
@@ -1151,7 +1151,7 @@ function FormBuilder(opts, element, $) {
     $li.data('fieldData', { attrs: values })
 
     if (typeof h.stopIndex !== 'undefined') {
-      $('> li', d.stage).eq(h.stopIndex).before($li)
+      $(d.stage).children().eq(h.stopIndex).before($li)
     } else {
       $stage.append($li)
     }
