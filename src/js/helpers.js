@@ -869,10 +869,10 @@ export default class Helpers {
 
       cleanResults.forEach(result => {
         if (result['columnInfo'].columnSize) {
-          const currentClassRow = rowContainer.attr('class')
+          const currentClassRow = _this.getBootstrapColumnClass(rowContainer.attr('class'))
           if (currentClassRow !== result['columnInfo'].columnSize) {
             //Keep the wrapping column div sync'd to the column property from the field
-            rowContainer.attr('class', `${result['columnInfo'].columnSize} ${this.formBuilder.colWrapperClass}`)
+            rowContainer.removeClass(currentClassRow).addClass(result['columnInfo'].columnSize)
             _this.tmpCleanPrevHolder(prevHolder)
           }
         }
