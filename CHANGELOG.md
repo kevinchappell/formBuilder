@@ -1,3 +1,10 @@
+# [3.15.0](https://github.com/kevinchappell/formBuilder/compare/v3.14.0...v3.15.0) (2023-10-14)
+
+
+### Features
+
+* Support typeUserAttrs and typeUserEvents for all types with a wildcard '*' key ([ac0dcf3](https://github.com/kevinchappell/formBuilder/commit/ac0dcf35aa54def0a832bb205d0e48c00f93c40a))
+
 # [3.14.0](https://github.com/kevinchappell/formBuilder/compare/v3.13.2...v3.14.0) (2023-10-14)
 
 

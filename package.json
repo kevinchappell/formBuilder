@@ -1,6 +1,6 @@
 {
   "name": "formBuilder",
-  "version": "3.14.0",
+  "version": "3.15.0",
   "main": "dist/form-builder.min.js",
   "homepage": "https://formbuilder.online/",
   "repository": {
@@ -179,7 +179,9 @@
   "jest": {
     "collectCoverage": true,
     "coverageDirectory": ".jest/coverage",
-    "coveragePathIgnorePatterns": [ "tests/" ],
+    "coveragePathIgnorePatterns": [
+      "tests/"
+    ],
     "testEnvironment": "jsdom",
     "setupFiles": [
       "./tests/setup-jest.js"
