@@ -27,8 +27,10 @@ describe('Test Custom Control', () => {
     expect(typeof controlInstance).toBe('object')
     expect(controlInstance.constructor.name).toBe('controlStarRating')
 
-    const element = controlInstance.build()
-    expect(element.constructor.name).toBe('HTMLSpanElement')
+    const controlBuild = controlInstance.build()
+    const element = controlBuild[0]
+    expect(element.constructor.name).toBe('HTMLInputElement')
     expect(element.id).toBe('star-1492424082853')
+    expect(element.type).toBe('hidden')
   })
 })
