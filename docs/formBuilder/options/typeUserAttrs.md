@@ -64,5 +64,17 @@ const typeUserAttrs = {
 };
 ```
 
+## Example Input for all types
+```javascript
+const typeUserAttrs = {
+  '*': {
+    title: {
+      label: 'Title',
+      value: 'Field Title',
+    }
+  }
+};
+```
+
 ### Usage
 <p data-height="525" data-embed-version="2" data-theme-id="22927" data-slug-hash="yaJbZZ" data-default-tab="js,result" data-user="kevinchappell" class="codepen"></p>

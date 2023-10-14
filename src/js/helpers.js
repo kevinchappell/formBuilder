@@ -1057,7 +1057,7 @@ export default class Helpers {
       }
     })
 
-    const userEvents = config.opts.typeUserEvents[field.type]
+    const userEvents = Object.assign({}, config.opts.typeUserEvents['*'], config.opts.typeUserEvents[field.type])
 
     if (userEvents && userEvents.onremove) {
       userEvents.onremove(field)
