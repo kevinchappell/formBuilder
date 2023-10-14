@@ -1,3 +1,16 @@
+# [3.14.0](https://github.com/kevinchappell/formBuilder/compare/v3.13.2...v3.14.0) (2023-10-14)
+
+
+### Bug Fixes
+
+* starControl did not save nor load userData ([a12603d](https://github.com/kevinchappell/formBuilder/commit/a12603d14e1d6dc24fbb10e6d85822f101f0ba1d))
+* update tests for starRating ([f34a259](https://github.com/kevinchappell/formBuilder/commit/f34a259bf82e24c670381872dcc85edb027c186a))
+
+
+### Features
+
+* Add in additional HTML5 inputs time, datetime-local and range [supported by all major browsers]. For BC reasons time and datetime-local implemented as a subtype of date. ([0a1c141](https://github.com/kevinchappell/formBuilder/commit/0a1c14164a760cc66995f77ea1c6560b9227be00))
+
 ## [3.13.2](https://github.com/kevinchappell/formBuilder/compare/v3.13.1...v3.13.2) (2023-10-09)
 
 
