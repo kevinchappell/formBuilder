@@ -473,7 +473,7 @@ function FormBuilder(opts, element, $) {
       ],
       text: defaultAttrs.concat(['subtype', 'maxlength']),
       date: defaultAttrs.concat(['subtype','min', 'max', 'step']),
-      file: defaultAttrs.concat(['subtype', 'multiple']),
+      file: defaultAttrs.concat(['multiple']),
       header: ['label', 'subtype', 'className', 'access'],
       hidden: ['name', 'value', 'access'],
       paragraph: ['label', 'subtype', 'className', 'access'],
