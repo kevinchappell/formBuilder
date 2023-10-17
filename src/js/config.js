@@ -111,7 +111,6 @@ export const config = {}
 export const gridClassNames = {
   rowWrapperClass: 'rowWrapper',
   colWrapperClass: 'colWrapper',
-  tmpColWrapperClass: 'tempColWrapper',
   tmpRowPlaceholderClass: 'tempRowWrapper',
   invisibleRowPlaceholderClass: 'invisibleRowPlaceholder',
 }

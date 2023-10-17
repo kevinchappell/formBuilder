@@ -32,6 +32,7 @@ const events = {
   fieldRendered: createNewEvent('fieldRendered'),
   fieldEditOpened: createNewEvent('fieldEditOpened'),
   fieldEditClosed: createNewEvent('fieldEditClosed'),
+  stageEmptied: createNewEvent('stageEmptied'),
 }
 
 export default events
