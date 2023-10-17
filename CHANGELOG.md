@@ -1,3 +1,17 @@
+## [3.15.1](https://github.com/kevinchappell/formBuilder/compare/v3.15.0...v3.15.1) (2023-10-17)
+
+
+### Bug Fixes
+
+* add missing call to getBootstrapColumnClass otherwise check will always fail. Ensure we retain additional styles set on colWrappers by only removing and adding the requested col-* classes ([10067e6](https://github.com/kevinchappell/formBuilder/commit/10067e6f5baf56e6448a71a12c4d0c7cabde678d))
+* add test cases for Bootstrap helper methods and align functions with sane return values ([2fa6c0b](https://github.com/kevinchappell/formBuilder/commit/2fa6c0b9cbf26ca180c3d88c35547066781e1657))
+* emit an event when clearing the stage, use this to reset formRow counter and stage setup for enhancedBootstrap function ([edd5500](https://github.com/kevinchappell/formBuilder/commit/edd55001af0fb6c9bd583ba1a67812938825dec3))
+* revert change that incorrectly grabbed the description of the fields ([7d61aaf](https://github.com/kevinchappell/formBuilder/commit/7d61aaf4f2590a93874bfb859e97dc15887a6083))
+* stopIndex is incorrectly calculated when in enhancedBootstrap mode. Fix this by always referring to children of the stage rather than LIs ([052a761](https://github.com/kevinchappell/formBuilder/commit/052a76163cee67c2c0a6f044368c51717b058601))
+* Unify the regular and enhancedBootstrap UX ([c0e6d71](https://github.com/kevinchappell/formBuilder/commit/c0e6d71a0ba9295c16ed67ab4bab04a36fe497e6))
+* use non-deprecated keyboardEvent.code instead of keyboardEvent.keycode. ([0881cff](https://github.com/kevinchappell/formBuilder/commit/0881cff68a27c67ff64781b92b551a36cf3e5f56))
+* when sorting stage items don't allow the placeholder to go before a prepended and after an appended item ([6da23a2](https://github.com/kevinchappell/formBuilder/commit/6da23a2e442192c8b4ffb3d532afa3a3e3e1022b))
+
 # [3.15.0](https://github.com/kevinchappell/formBuilder/compare/v3.14.0...v3.15.0) (2023-10-14)
 
 
