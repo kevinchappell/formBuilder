@@ -2437,7 +2437,7 @@ function FormBuilder(opts, element, $) {
       loadFields(formData)
     },
     setLang: locale => {
-      mi18n.setCurrent.call(mi18n, locale).then(() => {
+      return mi18n.setCurrent.call(mi18n, locale).then(() => {
         d.stage.dataset.content = mi18n.get('getStarted')
         controls.init()
         d.empty(d.formActions)
