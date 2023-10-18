@@ -20,7 +20,6 @@ import {
 import events from './events'
 import { config, defaultTimeout, styles } from './config'
 import control from './control'
-import controlCustom from './control/custom'
 import storageAvailable from 'storage-available'
 
 /**
@@ -422,8 +421,9 @@ export default class Helpers {
     $field.data('fieldData', previewData)
 
     // determine the control class for this type, and then process it through the layout engine
-    const custom = controlCustom.lookup(previewData.type)
-    const controlClass = custom ? custom.class : control.getClass(previewData.type, previewData.subtype)
+    const custom = _this.formBuilder.controls.custom.lookup(previewData.type)
+    const template = _this.formBuilder.controls.custom.getClass(previewData.type)
+    const controlClass = custom ? custom.class : template || control.getClass(previewData.type, previewData.subtype)
     const preview = this.layout.build(controlClass, previewData)
 
     empty($prevHolder[0])

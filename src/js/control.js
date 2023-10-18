@@ -163,7 +163,7 @@ export default class control {
   /**
    * Retrieve the class for a specified control type
    * @param {String} type type of control we are looking up
-   * @param {String} subtype if specified we'll try to find
+   * @param {String} [subtype] if specified we'll try to find
    * a class mapped to this subtype. If none found, fall back to the type.
    * @return {Class} control subclass as defined in the call to register
    */

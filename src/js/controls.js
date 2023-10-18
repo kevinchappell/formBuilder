@@ -1,6 +1,6 @@
 import './control/index'
 import control from './control'
-import controlCustom from './control/custom'
+import customControls from './customControls'
 import { unique, hyphenCase, markup as m } from './utils'
 import { empty } from './dom'
 import fontConfig from '../fonts/config.json'
@@ -20,8 +20,6 @@ export default class Controls {
   constructor(opts, d) {
     this.opts = opts
     this.dom = d.controls
-    this.custom = controlCustom
-    this.getClass = control.getClass
     this.getRegistered = control.getRegistered
     // ability for controls to have their own configuration / options
     // of the format control identifier (type, or type.subtype): {options}
@@ -46,14 +44,11 @@ export default class Controls {
     // load in any custom specified controls, or preloaded plugin controls
     control.loadCustom(opts.controls)
     // register any passed custom templates & fields
-    if (Object.keys(opts.fields).length) {
-      controlCustom.register(opts.templates, opts.fields)
-    }
+    this.custom =  new customControls(opts.templates, opts.fields)
 
     // retrieve a full list of loaded controls
     const registeredControls = control.getRegistered()
-    this.registeredControls = registeredControls
-    const customFields = controlCustom.getRegistered()
+    const customFields = this.custom.getRegistered()
     if (customFields) {
       jQuery.merge(registeredControls, customFields)
     }
@@ -72,7 +67,7 @@ export default class Controls {
     for (let i = 0; i < registeredControls.length; i++) {
       const type = registeredControls[i]
       // first check if this is a custom control
-      let custom = controlCustom.lookup(type)
+      let custom = this.custom.lookup(type)
       let controlClass
       if (custom) {
         controlClass = custom.class
@@ -185,5 +180,16 @@ export default class Controls {
       }
     })
     this.dom.appendChild(fragment)
+  }
+
+  /**
+   * Retrieve the class for a specified control type
+   * @param {String} type type of control we are looking up
+   * @param {String} [subtype] if specified we'll try to find
+   * a class mapped to this subtype. If none found, fall back to the type.
+   * @return {Class} control subclass as defined in the call to register
+   */
+  getClass(type, subtype) {
+    return this.custom.getClass(type) || control.getClass(type, subtype)
   }
 }

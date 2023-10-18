@@ -326,7 +326,6 @@ describe('FormBuilder typeUserAttrs detection', () => {
 
     fb.actions.addField({ type: 'button'})
     input = fbWrap.find('.button-field .testAttribute-wrap input')
-    console.log(input)
     expect(input.attr('type')).toBe('text')
     expect(input.val()).toBe('buttonOverride')
 
