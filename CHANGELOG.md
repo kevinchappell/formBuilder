@@ -1,3 +1,10 @@
+## [3.16.1](https://github.com/kevinchappell/formBuilder/compare/v3.16.0...v3.16.1) (2023-10-19)
+
+
+### Bug Fixes
+
+* move custom control registration into its own class and initialise it per formBuilder instance. This ensures definitions set in one formBuilder do not interact with definitions in other formBuilder instances ([203cac7](https://github.com/kevinchappell/formBuilder/commit/203cac7125c187652ee995e10521d8a8d47eef7c))
+
 # [3.16.0](https://github.com/kevinchappell/formBuilder/compare/v3.15.1...v3.16.0) (2023-10-19)
 
 
