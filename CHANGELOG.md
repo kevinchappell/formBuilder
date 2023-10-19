@@ -1,3 +1,12 @@
+## [3.16.2](https://github.com/kevinchappell/formBuilder/compare/v3.16.1...v3.16.2) (2023-10-19)
+
+
+### Bug Fixes
+
+* don't bother lifting col/row classes if we don't have any to lift ([e012b8b](https://github.com/kevinchappell/formBuilder/commit/e012b8b105e843429c1eb63139c732333c0a95aa))
+* fix lifting bootstrap col/row fields for autocomplete ([62b8e3b](https://github.com/kevinchappell/formBuilder/commit/62b8e3bf03b618103c871a1c3975553bc5d877c6))
+* initialise formRender with an empty formData in cases when no formData is provided, otherwise we are unable to perform setData/render functions on the container ([48700de](https://github.com/kevinchappell/formBuilder/commit/48700de9984295a77c8e7a7f45350cfbe9f7f928))
+
 ## [3.16.1](https://github.com/kevinchappell/formBuilder/compare/v3.16.0...v3.16.1) (2023-10-19)
 
 
