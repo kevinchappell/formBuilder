@@ -332,6 +332,23 @@ describe('FormBuilder typeUserAttrs detection', () => {
     input = fbWrap.find('.button-field .testAttribute-wrap label')
     expect(input.text()).toBe('override')
   })
+  test('lifts bootstrap classes from field', async () => {
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder({}).promise
+    fb.actions.addField({ type: 'text', className: 'form-control row-1 col-md-4'})
+    const input = fbWrap.find('.form-field[type="text"] .prev-holder input')
+    expect(input.attr('class')).toContain('form-control')
+    expect(input.attr('class')).not.toContain('row-1')
+    expect(input.attr('class')).not.toContain('col-md-4')
+    fb.actions.addField({ type: 'select', className: 'form-control row-1 col-md-4', values: {'yes':'yes','no':'no'}})
+    const select = fbWrap.find('.form-field[type="select"] .prev-holder select')
+    expect(select.attr('class')).toContain('form-control')
+    expect(select.attr('class')).not.toContain('row-1')
+    expect(select.attr('class')).not.toContain('col-md-4')
+    fb.actions.addField({ type: 'autocomplete', className: 'form-control row-1 col-md-4'})
+    const auto = fbWrap.find('.form-field[type="autocomplete"] .prev-holder .form-group')
+    expect(auto.find('[class*=row-],[class*=col-]')).toHaveLength(0)
+  })
 })
 
 describe('FormBuilder can return formData', () => {

@@ -28,7 +28,7 @@ class FormRender {
       container: false, // string selector or Node element
       dataType: 'json',
       disableHTMLLabels: false,
-      formData: false,
+      formData: [],
       i18n: Object.assign({}, defaultI18n),
       messages: {
         formRendered: 'Form Rendered',
@@ -72,11 +72,11 @@ class FormRender {
     }
 
     // parse any passed formData
-    if (!this.options.formData) {
-      return false
+    if (this.options.formData) {
+      this.options.formData = this.parseFormData(this.options.formData)
+    } else {
+      this.options.formData = []
     }
-
-    this.options.formData = this.parseFormData(this.options.formData)
 
     // ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
     control.controlConfig = options.controlConfig || {}
@@ -142,7 +142,7 @@ class FormRender {
   /**
    * Clean up passed object configuration to prepare for use with the markup function
    * @param {Object} field - object of field configuration
-   * @param {number} instanceIndex - instance index
+   * @param {number} [instanceIndex] - instance index
    * @return {Object} sanitized field object
    */
   sanitizeField(field, instanceIndex) {
@@ -196,10 +196,9 @@ class FormRender {
     // Begin the core plugin
     const rendered = []
 
-    // generate field markup if we have fields
-    if (opts.formData) {
-      // instantiate the layout class & loop through the field configuration
-      const engine = new opts.layout(opts.layoutTemplates, false, opts.disableHTMLLabels)
+    // instantiate the layout class & loop through the field configuration
+    const engine = new opts.layout(opts.layoutTemplates, false, opts.disableHTMLLabels)
+    if (opts.formData.length) {
       for (let i = 0; i < opts.formData.length; i++) {
         const fieldData = opts.formData[i]
         const sanitizedField = this.sanitizeField(fieldData, instanceIndex)
@@ -210,33 +209,29 @@ class FormRender {
 
         rendered.push(field)
       }
-
-      if (element) {
-        this.instanceContainers[instanceIndex] = element
-      }
-
-      // if rendering, inject the fields into the specified wrapper container/element
-      if (opts.render && element) {
-        element.emptyContainer()
-        element.appendFormFields(rendered)
-
-        runCallbacks()
-        opts.notify.success(opts.messages.formRendered)
-      } else {
-        /**
-         * Retrieve the html markup for a passed array of DomElements
-         * @param {Array} fields - array of dom elements
-         * @return {string} fields html
-         */
-        const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
-        formRender.markup = exportMarkup(rendered)
-      }
     } else {
-      const noData = utils.markup('div', opts.messages.noFormData, {
-        className: 'no-form-data',
-      })
-      rendered.push(noData)
-      opts.notify.error(opts.messages.noFormData)
+      opts.notify.warning(opts.messages.noFormData)
+    }
+
+    if (element) {
+      this.instanceContainers[instanceIndex] = element
+    }
+
+    // if rendering, inject the fields into the specified wrapper container/element
+    if (opts.render && element) {
+      element.emptyContainer()
+      element.appendFormFields(rendered)
+
+      runCallbacks()
+      opts.notify.success(opts.messages.formRendered)
+    } else {
+      /**
+       * Retrieve the html markup for a passed array of DomElements
+       * @param {Array} fields - array of dom elements
+       * @return {string} fields html
+       */
+      const exportMarkup = fields => fields.map(elem => elem.innerHTML).join('')
+      formRender.markup = exportMarkup(rendered)
     }
 
     if (opts.disableInjectedStyle === true) {

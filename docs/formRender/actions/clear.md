@@ -3,15 +3,18 @@
 Clears all user data from the form, even tinyMCE.
 
 ## Usage
-<pre><code class="js">const formRenderOptions = {
+```javascript
+const formRenderOptions = {
   formData: '[{"type":"text","label":"Text Field","name":"text-1526099104236","subtype":"text"}]';
 }
-const formRenderInstance = $('#render-container').formRender(formRenderOptions);
-const html = formRenderInstance('html'); // HTML DOM nodes
+const renderContainer = $('#render-container')
+const formRenderInstance = renderContainer.formRender(formRenderOptions);
+const html = renderContainer.formRender('html'); // HTML DOM nodes
 const htmlString = html.outerHTML;
-</code></pre>
+```
 // User enters data
-<pre><code class="js">formRenderInstance.clear();
-// or
-$('#render-container').formRender('clear')</code></pre>
+
+```javascript
+$('#render-container').formRender('clear')
+```
 // User entered data is cleared

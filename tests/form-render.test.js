@@ -6,20 +6,12 @@ const basicTextAreaDef = {
   'required': false,
   'label': 'Text Area',
   'className': 'form-control',
+  'description': 'A nice help bubble',
   'name': 'textarea-elem',
   'access': false,
   'subtype': 'textarea',
   'userData': ['AValue'],
 }
-
-describe('FormRender invalid setup', () => {
-  test('will fail on no formData', () => {
-    const errors = [], warnings = [], success = []
-    $('<div>').formRender({notify: errorHandler(errors,warnings,success)})
-    expect(errors[0]).toBe('No form data.')
-    expect(success).toHaveLength(0)
-  })
-})
 
 describe('Form Rendering', () => {
   test('can render json form document', () => {
@@ -31,7 +23,7 @@ describe('Form Rendering', () => {
     const html = container.formRender('html')
 
     expect(success[0]).toBe('Form Rendered')
-    expect(html).toContain('<textarea class="form-control" name="textarea-elem" user-data="AValue" id="textarea-elem"></textarea>')
+    expect(html).toContain('<textarea class="form-control" name="textarea-elem" user-data="AValue" id="textarea-elem" title="A nice help bubble"></textarea>')
     expect(container.find('textarea[name=textarea-elem]').val()).toBe('AValue')
   })
 
@@ -80,5 +72,45 @@ describe('Form Rendering', () => {
     container.find('#textarea-elem').val('string to find')
     fb.clear()
     expect(fb.userData[0].userData).not.toEqual(['string to find'])
+  })
+
+  test('will load empty form on no formData', () => {
+    const errors = [], warnings = [], success = []
+    $('<div>').formRender({notify: errorHandler(errors,warnings,success)})
+    expect(warnings[0]).toBe('No form data.')
+    expect(success).toHaveLength(1)
+  })
+
+  test('will load empty form on undefined formData', () => {
+    const errors = [], warnings = [], success = []
+    $('<div>').formRender({notify: errorHandler(errors,warnings,success), formData: undefined})
+    expect(warnings[0]).toBe('No form data.')
+    expect(success).toHaveLength(1)
+  })
+
+  test('Can set data then render after initialisation of empty form', () => {
+    const errors = [], warnings = [], success = []
+    const container = $('<div>')
+    container.formRender({notify: errorHandler(errors,warnings,success)})
+    container.formRender('setData', [basicTextAreaDef])
+    let textarea = container.find('#textarea-elem')
+    expect(textarea).toHaveLength(0)
+
+    container.formRender('render')
+
+    textarea = container.find('#textarea-elem')
+    expect(textarea).not.toHaveLength(0)
+  })
+
+  test('Can render after initialisation of empty form', () => {
+    const errors = [], warnings = [], success = []
+    const container = $('<div>')
+    container.formRender({notify: errorHandler(errors,warnings,success)})
+    let textarea = container.find('#textarea-elem')
+    expect(textarea).toHaveLength(0)
+
+    container.formRender('render', [basicTextAreaDef])
+    textarea = container.find('#textarea-elem')
+    expect(textarea).not.toHaveLength(0)
   })
 })
