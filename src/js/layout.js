@@ -14,19 +14,20 @@ const processClassName = (data, field) => {
       className += ` ${classes.join(' ')}`
 
       // Now that the row- & col- types were lifted, remove from the actual input field and any child elements
-      if (field.classList) {
-        field.classList.remove(...classes)
-      }
-
       //field may be a single element, dom fragment, or an array of elements
       if (!Array.isArray(field)) {
         field = [field]
       }
-      field.forEach(item => item.querySelectorAll('[class*=row-],[class*=col-]').forEach(element => {
-        if (element.classList) {
-          element.classList.remove(...classes)
+      field.forEach(item => {
+        if (item.classList) {
+          item.classList.remove(...classes)
         }
-      }))
+        item.querySelectorAll('[class*=row-],[class*=col-]').forEach(element => {
+          if (element.classList) {
+            element.classList.remove(...classes)
+          }
+        })
+      })
     }
   }
 
