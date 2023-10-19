@@ -1,3 +1,11 @@
+## [3.16.4](https://github.com/kevinchappell/formBuilder/compare/v3.16.3...v3.16.4) (2023-10-19)
+
+
+### Bug Fixes
+
+* Refactor initialisation of the formBuilder plugin to ensure that two or more concurrent initialisations cannot interfere with each other ([199c1cd](https://github.com/kevinchappell/formBuilder/commit/199c1cd2601594b84c305c17a0c62fb81e51d9d4))
+* subtype is critical to defining the control, add subtype to the list of attributes that are hidden rather than removed when disabled via disabledAttrs ([28208fa](https://github.com/kevinchappell/formBuilder/commit/28208faefa7ba06a755118842652517ba7ee8ac5))
+
 ## [3.16.3](https://github.com/kevinchappell/formBuilder/compare/v3.16.2...v3.16.3) (2023-10-19)
 
 
