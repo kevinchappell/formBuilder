@@ -2488,6 +2488,8 @@ function FormBuilder(opts, element, $) {
   return formBuilder
 }
 
+const notInitialised = () => { console.error('formBuilder is still initialising') }
+
 const methods = {
   init: (options, elems) => {
     const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
@@ -2495,24 +2497,24 @@ const methods = {
     const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
     methods.instance = {
       actions: {
-        getFieldTypes: null,
-        addField: null,
-        clearFields: null,
-        closeAllFieldEdit: null,
-        getData: null,
-        removeField: null,
-        save: null,
-        setData: null,
-        setLang: null,
-        showData: null,
-        showDialog: null,
-        toggleAllFieldEdit: null,
-        toggleFieldEdit: null,
-        getCurrentFieldId: null,
+        getFieldTypes: notInitialised,
+        addField: notInitialised,
+        clearFields: notInitialised,
+        closeAllFieldEdit: notInitialised,
+        getData: notInitialised,
+        removeField: notInitialised,
+        save: notInitialised,
+        setData: notInitialised,
+        setLang: notInitialised,
+        showData: notInitialised,
+        showDialog: notInitialised,
+        toggleAllFieldEdit: notInitialised,
+        toggleFieldEdit: notInitialised,
+        getCurrentFieldId: notInitialised,
       },
       markup,
       get formData() {
-        return methods.instance.actions.getData && methods.instance.actions.getData('json')
+        return methods.instance.actions.getData !== notInitialised && methods.instance.actions.getData('json')
       },
       promise: new Promise(function (resolve, reject) {
         mi18n
