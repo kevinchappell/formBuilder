@@ -2489,68 +2489,72 @@ function FormBuilder(opts, element, $) {
   return formBuilder
 }
 
-const methods = {
-  init: (options, elems) => {
-    const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
-    config.opts = opts
-    const i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
-    methods.instance = {
-      actions: {
-        getFieldTypes: null,
-        addField: null,
-        clearFields: null,
-        closeAllFieldEdit: null,
-        getData: null,
-        removeField: null,
-        save: null,
-        setData: null,
-        setLang: null,
-        showData: null,
-        showDialog: null,
-        toggleAllFieldEdit: null,
-        toggleFieldEdit: null,
-        getCurrentFieldId: null,
-      },
-      markup,
-      get formData() {
-        return methods.instance.actions.getData && methods.instance.actions.getData('json')
-      },
-      promise: new Promise(function (resolve, reject) {
-        mi18n
-          .init(i18nOpts)
-          .then(() => {
-            elems.each(i => {
-              const formBuilder = new FormBuilder(opts, elems[i], jQuery)
-              jQuery(elems[i]).data('formBuilder', formBuilder)
-              Object.assign(methods, formBuilder.actions, { markup })
-              methods.instance.actions = formBuilder.actions
-            })
-            delete methods.instance.promise
-            resolve(methods.instance)
-          })
-          .catch(err => {
-            reject(err)
-            opts.notify.error(err)
-          })
-      }),
-    }
+const pluginInit = function(options,elem) {
+  const _this = this
+  const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
+  config.opts = opts
+  this.i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
 
-    return methods.instance
-  },
+  const notInitialised = () => {
+    console.error('formBuilder is still initialising')
+    console.info('See https://formbuilder.online/docs/formBuilder/actions/getData/#wont-work and https://formbuilder.online/docs/formBuilder/promise/ for more information on formBuilder asynchronous loading')
+  }
+
+  const actionList = [
+    'getFieldTypes',
+    'addField',
+    'clearFields',
+    'closeAllFieldEdit',
+    'getData',
+    'removeField',
+    'save',
+    'setData',
+    'setLang',
+    'showData',
+    'showDialog',
+    'toggleAllFieldEdit',
+    'toggleFieldEdit',
+    'getCurrentFieldId',
+  ]
+
+  this.instance = {
+    actions: actionList.reduce((actions, currentAction) => { actions[currentAction] = notInitialised; return actions }, {}),
+    markup,
+    get formData() {
+      return _this.instance.actions.getData !== notInitialised && _this.instance.actions.getData('json')
+    },
+    promise: new Promise(function(resolve, reject) {
+      mi18n
+        .init(_this.i18nOpts)
+        .then(() => {
+          const formBuilder = new FormBuilder(opts, elem[0], jQuery)
+          jQuery(elem[0]).data('formBuilder', formBuilder)
+          Object.assign(_this.instance, formBuilder.actions)
+          _this.instance.actions = formBuilder.actions
+          delete _this.instance.promise
+          resolve(_this.instance)
+        })
+        .catch(err => {
+          reject(err)
+          opts.notify.error(err)
+        })
+    })
+  }
 }
 
 jQuery.fn.formBuilder = function (methodOrOptions = {}, ...args) {
   const isMethod = typeof methodOrOptions === 'string'
   if (isMethod) {
-    if (methods[methodOrOptions]) {
-      if (typeof methods[methodOrOptions] === 'function') {
-        return methods[methodOrOptions].apply(this, args)
+    const instance = this.data('fbInstance')
+    if (instance[methodOrOptions]) {
+      if (typeof instance[methodOrOptions] === 'function') {
+        return instance[methodOrOptions].apply(this, args)
       }
-      return methods[methodOrOptions]
+      return instance[methodOrOptions]
     }
   } else {
-    const instance = methods.init(methodOrOptions, this)
-    Object.assign(methods, instance)
-    return instance
+    const plugin = new pluginInit(methodOrOptions, this)
+    this.data('fbInstance', plugin.instance)
+    return plugin.instance
   }
 }

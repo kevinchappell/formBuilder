@@ -391,3 +391,49 @@ describe('FormBuilder can return formData', () => {
     expect(fb.actions.getData('xml')).toEqual('<form-template xmlns="http://www.w3.org/1999/xhtml"><fields><field type="header" subtype="h1" label="MyHeader" access="false"></field><field type="textarea" required="false" label="Comments" class-name="form-control" name="textarea-1696482495077" access="false" subtype="textarea"></field></fields></form-template>')
   })
 })
+
+describe('async loading tests', () => {
+  test('Will be log uninitialised errors if actions are called until the plugin has initialised', async () => {
+    const errorLogSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    const infoLogSpy = jest.spyOn(console, 'info').mockImplementation(() => {})
+    const fbWrap = $('<div>')
+    const fb = $(fbWrap).formBuilder()
+    fb.actions.getData()
+    expect(errorLogSpy).toHaveBeenCalledWith('formBuilder is still initialising')
+
+    await fb.promise
+    fb.actions.getData()
+    expect(errorLogSpy).toHaveBeenCalledTimes(1)
+  })
+
+  test('Can load multiple formBuilders concurrently via promise interface without interference', async () => {
+    const wrap1 = $('<div>')
+    const wrap2 = $('<div>')
+    const p1 = wrap1.formBuilder().promise
+    const p2 = wrap2.formBuilder().promise
+
+    const fb1 = await p1
+    const fb2 = await p2
+
+    const field = {
+      type: 'text',
+      class: 'form-control'
+    }
+    fb1.actions.addField(field)
+
+    expect(fb1.actions.getData()).toHaveLength(1)
+    expect(fb2.actions.getData()).toHaveLength(0)
+    expect(fb1.formData).toHaveLength(96)
+    expect(fb2.formData).toHaveLength(2)
+
+    fb2.actions.addField(field)
+    fb2.actions.addField(field)
+
+    expect(wrap1.formBuilder('getData')).toHaveLength(1)
+    expect(wrap2.formBuilder('getData')).toHaveLength(2)
+    expect(wrap1.formBuilder('formData')).toHaveLength(96)
+    expect(wrap2.formBuilder('formData')).toHaveLength(191)
+
+    expect(wrap2.formBuilder('markup', 'div').outerHTML).toBe('<div></div>')
+  })
+})
