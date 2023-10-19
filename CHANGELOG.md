@@ -1,3 +1,10 @@
+# [3.16.0](https://github.com/kevinchappell/formBuilder/compare/v3.15.1...v3.16.0) (2023-10-19)
+
+
+### Features
+
+* Remove unmaintained Find Uploader ([3243ce3](https://github.com/kevinchappell/formBuilder/commit/3243ce35a20b01ecaba75ba6bf2d88234e8f868c))
+
 ## [3.15.1](https://github.com/kevinchappell/formBuilder/compare/v3.15.0...v3.15.1) (2023-10-17)
 
 
