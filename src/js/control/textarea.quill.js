@@ -12,8 +12,8 @@ export default class controlQuill extends controlTextarea {
    */
   configure() {
     const defaultClassConfig = {
-      js: '//cdn.quilljs.com/1.2.4/quill.js',
-      css: '//cdn.quilljs.com/1.2.4/quill.snow.css',
+      js: 'https://cdn.quilljs.com/1.2.4/quill.js',
+      css: 'https://cdn.quilljs.com/1.2.4/quill.snow.css',
     }
 
     const defaultEditorConfig = {

@@ -17,7 +17,7 @@ describe('Initialise Custom Control', () => {
 })
 
 describe('Test Custom Control', () => {
-  test('test building control element', () => {
+  test('test building control element', async () => {
     const controlInstance = new controlStarRating({
       'type': 'starRating',
       'label': 'Rating',
@@ -32,5 +32,12 @@ describe('Test Custom Control', () => {
     expect(element.constructor.name).toBe('HTMLInputElement')
     expect(element.id).toBe('star-1492424082853')
     expect(element.type).toBe('hidden')
+
+    controlInstance.on('render')(controlBuild)
+
+    await new Promise(r => setTimeout(r, 2000))
+
+    const rateYoInstance = controlBuild[1]
+    expect(rateYoInstance.classList.contains('jq-ry-container')).toBeTruthy()
   })
 })

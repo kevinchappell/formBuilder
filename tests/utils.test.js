@@ -238,21 +238,19 @@ describe('Test escaping', () => {
 
 describe('Test util Asset inclusion', () => {
   test('can include style via href link', () => {
-    utils.getStyles('/teststylelink')
-    const linkTag = document.querySelector('head > link[href="/teststylelink"]')
+    utils.getStyles('https://formbuilder.online/assets/css/site.min.css?1')
+    const linkTag = document.querySelector('head > link[href="https://formbuilder.online/assets/css/site.min.css?1"]')
     expect(linkTag).toBeInstanceOf(HTMLLinkElement)
-    expect(linkTag.getAttribute('href')).toBe('/teststylelink')
-    expect(window.fbLoaded.css).toContain('/teststylelink')
+    expect(window.fbLoaded.css).toContain('https://formbuilder.online/assets/css/site.min.css?1')
   })
   test('can include style via href object', () => {
     utils.getStyles({
       'id': 'test1',
       'type': 'href',
-      'href': '/teststylelinkobj'
+      'href': 'https://formbuilder.online/assets/css/site.min.css?2'
     })
-    const linkTag = document.querySelector('head > link[href="/teststylelinkobj"]')
+    const linkTag = document.querySelector('head > link[href="https://formbuilder.online/assets/css/site.min.css?2"]')
     expect(linkTag).toBeInstanceOf(HTMLLinkElement)
-    expect(linkTag.getAttribute('href')).toBe('/teststylelinkobj')
     expect(window.fbLoaded.css).toContain('test1')
   })
   test('can include style via inline', () => {
@@ -267,12 +265,11 @@ describe('Test util Asset inclusion', () => {
     expect(window.fbLoaded.css).toContain('test2')
   })
 
-  test.failing('include js', () => {
-    return getScripts('http://example.com/test.js').then(data => {
-      expect(data).toBe('peanut butter')
-      expect(window.fbLoaded.js).toContain('/test.js')
+  test('include js', async () => {
+    await getScripts('https://formbuilder.online/assets/js/form-builder.min.js').then(() => {
+      expect(window.fbLoaded.js).toContain('https://formbuilder.online/assets/js/form-builder.min.js')
     })
-  }, 1)
+  })
 })
 
 describe('enhancedBootstrap feature utils', () => {

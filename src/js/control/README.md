@@ -57,8 +57,8 @@ var renderOpts = {
 var renderOpts = {
   controlConfig: {
     'textarea.quill': {
-      js: '//cdn.quilljs.com/1.3.4/quill.js',
-      css: '//cdn.quilljs.com/1.3.4/quill.snow.css',
+      js: 'https://cdn.quilljs.com/1.3.4/quill.js',
+      css: 'https://cdn.quilljs.com/1.3.4/quill.snow.css',
     }
   }
 }

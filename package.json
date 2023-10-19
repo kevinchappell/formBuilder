@@ -183,6 +183,10 @@
       "tests/"
     ],
     "testEnvironment": "jsdom",
+    "testEnvironmentOptions": {
+      "resources": "usable",
+      "runScripts": "dangerously"
+    },
     "setupFiles": [
       "./tests/setup-jest.js"
     ],
