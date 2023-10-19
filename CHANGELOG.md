@@ -1,3 +1,13 @@
+## [3.16.3](https://github.com/kevinchappell/formBuilder/compare/v3.16.2...v3.16.3) (2023-10-19)
+
+
+### Bug Fixes
+
+* Configure JSDOM to load script tags injected into the dom by getScripts ([41c0b20](https://github.com/kevinchappell/formBuilder/commit/41c0b20a613f3cb790f48446d3da6313ee95d04e))
+* Ensure we load these files via https otherwise these controls cannot be loaded when running from file:// ([56602ff](https://github.com/kevinchappell/formBuilder/commit/56602ffc1d3474c69a756a2eca45feb2bf51f2d0))
+* formBuilder.actions.setLang now returns a promise ([58ec7e5](https://github.com/kevinchappell/formBuilder/commit/58ec7e54183226f739898d422bc863dfdd95aad5))
+* load css files that exist when testing ([ad8147a](https://github.com/kevinchappell/formBuilder/commit/ad8147a9a533122a3cf4249adea1be23a74604db))
+
 ## [3.16.2](https://github.com/kevinchappell/formBuilder/compare/v3.16.1...v3.16.2) (2023-10-19)
 
 
