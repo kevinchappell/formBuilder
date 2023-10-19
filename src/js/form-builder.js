@@ -574,7 +574,7 @@ function FormBuilder(opts, element, $) {
       advFieldMap[numAttr] = type === 'number' ? () => numberAttribute(numAttr, values) :  () => textAttribute(numAttr, values)
     })
 
-    const noDisable = ['name', 'className']
+    const noDisable = ['name', 'className', 'subtype', ]
 
     const typeUserAttrs = Object.assign({}, opts.typeUserAttrs['*'], opts.typeUserAttrs[type])
 
