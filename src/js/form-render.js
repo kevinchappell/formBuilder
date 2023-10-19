@@ -5,10 +5,10 @@ import events from './events'
 import layout from './layout'
 import control from './control'
 import './control/index'
-import controlCustom from './control/custom'
 import { defaultI18n } from './config'
 import '../sass/form-render.scss'
 import { setSanitizerConfig } from './sanitizer'
+import customControls from './customControls'
 
 /**
  * FormRender Class
@@ -85,9 +85,7 @@ class FormRender {
     control.loadCustom(options.controls)
 
     // register any passed custom templates
-    if (Object.keys(this.options.templates).length) {
-      controlCustom.register(this.options.templates)
-    }
+    this.templatedControls = new customControls(this.options.templates)
 
     /**
      * Extend Element prototype to allow us to append fields
@@ -207,7 +205,7 @@ class FormRender {
         const sanitizedField = this.sanitizeField(fieldData, instanceIndex)
 
         // determine the control class for this type, and then process it through the layout engine
-        const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+        const controlClass = this.templatedControls.getClass(fieldData.type) || control.getClass(fieldData.type, fieldData.subtype)
         const field = engine.build(controlClass, sanitizedField)
 
         rendered.push(field)
@@ -268,7 +266,7 @@ class FormRender {
 
     // determine the control class for this type, and then build it
     const engine = new opts.layout()
-    const controlClass = control.getClass(fieldData.type, fieldData.subtype)
+    const controlClass = this.templatedControls.getClass(fieldData.type) || control.getClass(fieldData.type, fieldData.subtype)
     const forceTemplate = opts.forceTemplate || 'hidden' // support the ability to override what layout template the control is rendered using. This can be used to output the whole row (including label, help etc) using the standard templates if desired.
     const field = engine.build(controlClass, sanitizedField, forceTemplate)
     element.appendFormFields(field)

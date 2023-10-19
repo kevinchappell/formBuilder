@@ -84,6 +84,7 @@ function FormBuilder(opts, element, $) {
   data.formID = formID
   data.lastID = `${data.formID}-fld-0`
   const controls = new Controls(opts, d)
+  formBuilder.controls = controls
 
   const subtypes = (config.subtypes = h.processSubtypes(opts.subtypes))
 
