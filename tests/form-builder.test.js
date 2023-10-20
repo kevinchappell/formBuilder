@@ -398,12 +398,11 @@ describe('async loading tests', () => {
     const infoLogSpy = jest.spyOn(console, 'info').mockImplementation(() => {})
     const fbWrap = $('<div>')
     const fb = $(fbWrap).formBuilder()
-    fb.actions.getData()
+    expect(fb.actions.getData()).toBeUndefined()
     expect(errorLogSpy).toHaveBeenCalledWith('formBuilder is still initialising')
 
     await fb.promise
-    fb.actions.getData()
-    expect(errorLogSpy).toHaveBeenCalledTimes(1)
+    expect(fb.actions.getData()).toStrictEqual([])
   })
 
   test('Can load multiple formBuilders concurrently via promise interface without interference', async () => {
