@@ -1334,7 +1334,7 @@ export default class Helpers {
 
   /**
    * @typedef BsColumnInfo
-   * @param {number} [rowNumber]
+   * @param {string} [rowUniqueId]
    * @param {string} [columnSize]
    */
 
@@ -1351,7 +1351,7 @@ export default class Helpers {
       if (classes && classes.length > 0) {
         classes.forEach(element => {
           if (element.startsWith('row-')) {
-            result['rowNumber'] = parseInt(element.replace('row-', '').trim())
+            result['rowUniqueId'] = element.replace('row-', '').trim()
           } else {
             result['columnSize'] = element
           }
@@ -1434,18 +1434,18 @@ export default class Helpers {
   }
 
   /**
-   * Return the row value i.e row-2 would return 2
+   * Return the row value i.e row-2 would return '2'
    * @param {string} className
-   * @returns {number} Row number or 0 for invalid definitions
+   * @returns {string} Row value as string or '0' for invalid definitions
    */
   getRowValue(className) {
     if (className) {
       const rowClass = this.getRowClass(className)
       if (rowClass) {
-        return parseInt(rowClass.split('-')[1])
+        return rowClass.split('-')[1]
       }
     }
-    return 0
+    return '0'
   }
 
   /**

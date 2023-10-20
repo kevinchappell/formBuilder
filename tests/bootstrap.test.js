@@ -15,7 +15,8 @@ describe('Test Boostrap Helper functions', () => {
   })
 
   test('tryParseColumnInfo', () => {
-    expect(helper.tryParseColumnInfo({className: 'col-md-5 row-1 random-class row col'})).toEqual({ 'columnSize': 'col-md-5', 'rowNumber': 1, })
+    expect(helper.tryParseColumnInfo({className: 'col-md-5 row-1 random-class row col'})).toEqual({ 'columnSize': 'col-md-5', 'rowUniqueId': '1', })
+    expect(helper.tryParseColumnInfo({className: 'col-md-5 row-unique random-class row col'})).toEqual({ 'columnSize': 'col-md-5', 'rowUniqueId': 'unique', })
     expect(helper.tryParseColumnInfo({className: ''})).toEqual({ })
   })
 
@@ -25,6 +26,7 @@ describe('Test Boostrap Helper functions', () => {
     expect(helper.getDistanceBetweenPoints(100,2,35,5)).toBe(65)
   })
 
+  //Returns first matching row-* value
   test('getRowClass', () => {
     expect(helper.getRowClass('')).toBe('')
     expect(helper.getRowClass('row row-4 col-md-2')).toBe('row-4')
@@ -32,8 +34,9 @@ describe('Test Boostrap Helper functions', () => {
   })
 
   test('getRowValue', () => {
-    expect(helper.getRowValue('row row-4 col-md-2')).toBe(4)
-    expect(helper.getRowValue('row row-5 row-me col-md-2')).toBe(5)
+    expect(helper.getRowValue('row row-4 col-md-2')).toBe('4')
+    expect(helper.getRowValue('row row-5 row-me col-md-2')).toBe('5')
+    expect(helper.getRowValue('row row-myrow row-me col-md-2')).toBe('myrow')
   })
 
   test('changeRowClass', () => {
