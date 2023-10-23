@@ -53,6 +53,7 @@ export default class customControls {
       }
       templateControl.definition = {}
       templateControl.label = type => _this.label(type)
+      templateControl.icon = type => _this.icon(type)
       this.templateControlRegister[templateName] = templateControl
     })
 
