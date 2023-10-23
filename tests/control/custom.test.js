@@ -224,4 +224,33 @@ describe('Test Custom Control', () => {
     expect(renderedCtl.eq(1).attr('type')).toBe('text')
     expect(renderedCtl.eq(1).attr('id')).toMatch(new RegExp('^text-.*'))
   })
+
+  test('custom control with no icon', async () => {
+    const fbWrap = $('<div>')
+    const fields = [
+      {
+        className: 'form-control custom-class',
+        label: 'Custom Text Field',
+        type: 'customText',
+        //icon: '🔢'
+      },
+    ]
+    const templates = {
+      customText: function(fieldData) {
+        return {
+          field: this.markup('input', null, fieldData)
+        }
+      },
+    }
+
+    const fb = await $(fbWrap).formBuilder({fields, templates, }).promise
+    const field = {
+      type: 'customText',
+      className: 'form-control api-class',
+      value: 'Added by API',
+    }
+    fb.actions.addField(field)
+
+    expect(fbWrap.find('.stage-wrap li')).toHaveLength(1)
+  })
 })
