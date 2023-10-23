@@ -1,3 +1,10 @@
+## [3.16.5](https://github.com/kevinchappell/formBuilder/compare/v3.16.4...v3.16.5) (2023-10-23)
+
+
+### Bug Fixes
+
+* define icon() on templateControl ([9364525](https://github.com/kevinchappell/formBuilder/commit/93645250bd1998e625a9cd637c4fbd6f82f3e83b))
+
 ## [3.16.4](https://github.com/kevinchappell/formBuilder/compare/v3.16.3...v3.16.4) (2023-10-19)
 
 
