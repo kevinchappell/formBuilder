@@ -251,6 +251,71 @@ describe('Test Custom Control', () => {
     }
     fb.actions.addField(field)
 
-    expect(fbWrap.find('.stage-wrap li')).toHaveLength(1)
+    expect(fbWrap.find('.stage-wrap li[type="customText"]')).toHaveLength(1)
+  })
+
+  test('test add custom field defined as html string and row/col set', async () => {
+    const fbWrap = $('<div>')
+
+    const fields = [{
+      label: 'Custom with string field',
+      attrs: {
+        type: 'customString'
+      },
+      icon: '🌟'
+    }]
+    const templates = {
+      customString: function(fieldData) {
+        return {
+          field: `<span class="${fieldData.className}">Placeholder</span>`,
+        }
+      }
+    }
+
+    const fb = await $(fbWrap).formBuilder({fields, templates}).promise
+    const field = {
+      type: 'customString',
+      className: 'form-control row-1 col-md-12'
+    }
+    fb.actions.addField(field)
+
+    expect(fbWrap.find('.stage-wrap li[type="customString"]')).toHaveLength(1)
+    const renderedCtl = $(fbWrap).find('.prev-holder span')
+    expect(renderedCtl.attr('class')).toBe('form-control')
+    expect(renderedCtl.text()).toBe('Placeholder')
+  })
+
+  test('test add custom field defined as complex html string and row/col set', async () => {
+    const fbWrap = $('<div>')
+
+    const fields = [{
+      label: 'Custom with string field',
+      attrs: {
+        type: 'customString'
+      },
+      icon: '🌟'
+    }]
+    const templates = {
+      customString: function(fieldData) {
+        return {
+          field: `<div><span class="${fieldData.className}">Placeholder</span></div><input />`,
+        }
+      }
+    }
+
+    const fb = await $(fbWrap).formBuilder({fields, templates}).promise
+    const field = {
+      type: 'customString',
+      className: 'form-control row-1 col-md-12'
+    }
+    fb.actions.addField(field)
+
+    expect(fbWrap.find('.stage-wrap li[type="customString"]')).toHaveLength(1)
+    expect($(fbWrap).find('.prev-holder div')).toHaveLength(2)
+    expect($(fbWrap).find('.prev-holder input')).toHaveLength(1)
+    expect($(fbWrap).find('.prev-holder span')).toHaveLength(1)
+    const renderedCtl = $(fbWrap).find('.prev-holder span')
+    expect(renderedCtl.attr('class')).toBe('form-control')
+    expect(renderedCtl.text()).toBe('Placeholder')
   })
 })
