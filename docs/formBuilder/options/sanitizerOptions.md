@@ -2,8 +2,8 @@
 `sanitizerOptions` provides the configuration of the built-in script injection, DOM Clobbering and Form hijacking protection.
 
 This protection is disabled by default, however should be enabled when any of the following apply:
-* Input into fields may be copy/pasted from untrusted sources (especially Label field or paragraph Content field)
-* Untrusted users may build forms
+- Input into fields may be copy/pasted from untrusted sources (especially Label field or paragraph Content field)
+- Untrusted users may build forms
 
 In a future version of FormBuilder protections may be enabled by default.
 
