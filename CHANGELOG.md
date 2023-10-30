@@ -1,3 +1,10 @@
+## [3.16.6](https://github.com/kevinchappell/formBuilder/compare/v3.16.5...v3.16.6) (2023-10-30)
+
+
+### Bug Fixes
+
+* allow Bootstrap row identifiers to be any string value after row- (eg row-myrow). This allows default fields or inputSets to be pre-configured with named rows which can then be targeted with CSS rules. ([e06f85d](https://github.com/kevinchappell/formBuilder/commit/e06f85d350fbd1fc0d1873551e4bf16b5d24f495))
+
 ## [3.16.5](https://github.com/kevinchappell/formBuilder/compare/v3.16.4...v3.16.5) (2023-10-23)
 
 
