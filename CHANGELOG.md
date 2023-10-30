@@ -1,3 +1,10 @@
+## [3.16.7](https://github.com/kevinchappell/formBuilder/compare/v3.16.6...v3.16.7) (2023-10-30)
+
+
+### Bug Fixes
+
+* convert raw HTML strings received from control.build() into HTMLElement(s) to ensure processClassName() can strip bootstrap classes ([03e657f](https://github.com/kevinchappell/formBuilder/commit/03e657f6d90cf58ab63d340258f1a4aa7b08c30f))
+
 ## [3.16.6](https://github.com/kevinchappell/formBuilder/compare/v3.16.5...v3.16.6) (2023-10-30)
 
 
