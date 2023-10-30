@@ -56,6 +56,7 @@ function FormBuilder(opts, element, $) {
   const data = new Data(formID)
   const d = new Dom(formID)
 
+  /** @var formRows Allocated rows IDs in the builder */
   let formRows = []
   formBuilder.preserveTempContainers = []
   formBuilder.rowWrapperClassSelector = rowWrapperClassSelector
@@ -331,10 +332,7 @@ function FormBuilder(opts, element, $) {
   const loadFields = function (formData) {
     formData = h.getData(formData)
     if (formData && formData.length) {
-      formData.forEach(field => {
-        CaptureRowData(field)
-      })
-
+      formData.forEach(field => CaptureRowData(field))
       formData.forEach(fieldData => prepFieldVars(trimObj(fieldData)))
       d.stage.classList.remove('empty')
     } else if (opts.defaultFields && opts.defaultFields.length) {
@@ -1133,7 +1131,7 @@ function FormBuilder(opts, element, $) {
     let rowWrapperNode
 
     if (enhancedBootstrapEnabled()) {
-      const targetRow = `div.row-${columnData.rowNumber}`
+      const targetRow = `div.row-${columnData.rowUniqueId}`
 
       //Check if an overall row already exists for the field, else create one
       if ($stage.children(targetRow).length) {
@@ -1141,7 +1139,7 @@ function FormBuilder(opts, element, $) {
       } else {
         rowWrapperNode = m('div', null, {
           id: `${field.id}-row`,
-          className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+          className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
         })
       }
 
@@ -1329,7 +1327,7 @@ function FormBuilder(opts, element, $) {
 
           const rowWrapperNode = m('div', null, {
             id: `${colWrapper.find('li').attr('id')}-row`,
-            className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+            className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
           })
 
           $(ui.item).parent().replaceWith(rowWrapperNode)
@@ -1465,48 +1463,43 @@ function FormBuilder(opts, element, $) {
   }
 
   function prepareFieldRow(data) {
-    let result = {}
-
     if (!enhancedBootstrapEnabled()) {
-      return result
+      return {}
     }
 
-    result = h.tryParseColumnInfo(data)
-    TryCreateNew()
-
-    if (!formRows.includes(result.rowNumber)) {
-      formRows.push(result.rowNumber)
-    }
-
-    return result
-
-    function TryCreateNew() {
-      if (!result.rowNumber) {
+    const result = h.tryParseColumnInfo(data)
+    if (!result.rowUniqueId) {
+      //If inserting directly into column, use the correct rowUniqueId
+      if (insertingNewControl && insertTargetIsColumn) {
+        result.rowUniqueId = h.getRowValue($targetInsertWrapper.attr('class'))
+      } else {
         //Column information wasn't defined, get new default configuration for one.
         let nextRow
         if (formRows.length === 0) {
           nextRow = 1
         } else {
-          nextRow = Math.max(...formRows) + 1
+          const numericalRows = formRows.filter(value => !isNaN(value) && !isNaN(parseInt(value))).map(str => parseInt(str))
+          nextRow = (Math.max(...numericalRows) + 1)
         }
 
-        result.rowNumber = nextRow
-
-        //If inserting directly into column, use the correct rowNumber
-        if (insertingNewControl && insertTargetIsColumn) {
-          result.rowNumber = h.getRowValue($targetInsertWrapper.attr('class'))
-        }
-
-        result.columnSize = opts.defaultGridColumnClass
-
-        if (!data.className) {
-          data.className = ''
-        }
-
-        data.className += ` row-${result.rowNumber} ${result.columnSize}`
-        result.addedDefaultColumnClass = true
+        result.rowUniqueId = nextRow.toString()
       }
+
+      result.columnSize = opts.defaultGridColumnClass
+
+      if (!data.className) {
+        data.className = ''
+      }
+
+      data.className += ` row-${result.rowUniqueId} ${result.columnSize}`
+      result.addedDefaultColumnClass = true
     }
+
+    if (!formRows.includes(result.rowUniqueId)) {
+      formRows.push(result.rowUniqueId)
+    }
+
+    return result
   }
 
   // Select field html, since there may be multiple
@@ -1868,7 +1861,7 @@ function FormBuilder(opts, element, $) {
 
     const rowWrapper = m('div', null, {
       id: `${$clone.attr('id')}-row`,
-      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+      className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
     })
 
     const colWrapper = m('div', null, {
@@ -2173,7 +2166,7 @@ function FormBuilder(opts, element, $) {
 
     const rowWrapperNode = m('div', null, {
       id: `${h.incrementId(data.lastID)}-row`,
-      className: `row row-${columnData.rowNumber} ${rowWrapperClass}`,
+      className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
     })
 
     $stage.append(rowWrapperNode)
