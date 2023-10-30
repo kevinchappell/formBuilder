@@ -121,6 +121,16 @@ export default class layout {
       field = { field: field }
     }
 
+    // If field is a raw HTML string, convert to HTMLElement(s)
+    if (typeof field.field === 'string') {
+      const tmpField = this.markup('div', field.field, {})
+      if (tmpField.childElementCount === 1) {
+        field.field = tmpField.children.item(0)
+      } else {
+        field.field = Array.from(tmpField.children)
+      }
+    }
+
     // build the label & help text
     const label = this.label()
     const help = this.help()
