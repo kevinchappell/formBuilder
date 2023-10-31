@@ -1,3 +1,10 @@
+## [3.16.10](https://github.com/kevinchappell/formBuilder/compare/v3.16.9...v3.16.10) (2023-10-31)
+
+
+### Bug Fixes
+
+* set the preview property for custom controls ([de67461](https://github.com/kevinchappell/formBuilder/commit/de6746102004cbfbd57b18857c56ae9d9dff4379))
+
 ## [3.16.9](https://github.com/kevinchappell/formBuilder/compare/v3.16.8...v3.16.9) (2023-10-31)
 
 
