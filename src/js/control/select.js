@@ -49,8 +49,9 @@ export default class controlSelect extends control {
       if (placeholder && isSelect) {
         options.push(
           this.markup('option', placeholder, {
-            disabled: null,
-            selected: null,
+            disabled: true,
+            selected: true,
+            value: '',
           }),
         )
       }
