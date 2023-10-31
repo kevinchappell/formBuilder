@@ -1,3 +1,10 @@
+## [3.16.8](https://github.com/kevinchappell/formBuilder/compare/v3.16.7...v3.16.8) (2023-10-31)
+
+
+### Bug Fixes
+
+* When setting a placeholder option a select field set the value to an empty string '' to allow for required validation to occur ([924ca5c](https://github.com/kevinchappell/formBuilder/commit/924ca5ca32576ef4b9fef68df4d8eba335ec7b50))
+
 ## [3.16.7](https://github.com/kevinchappell/formBuilder/compare/v3.16.6...v3.16.7) (2023-10-30)
 
 
