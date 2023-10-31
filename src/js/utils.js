@@ -663,7 +663,7 @@ export const bootstrapColumnRegex = /^col-(xs|sm|md|lg)-([^\s]+)/
  * @returns {string[]}
  */
 export const getAllGridRelatedClasses = className => {
-  return className.split(' ').filter(x => bootstrapColumnRegex.test(x) || x.startsWith('row-'))
+  return (typeof className === 'string') ? className.split(' ').filter(x => bootstrapColumnRegex.test(x) || x.startsWith('row-')) : []
 }
 
 /**

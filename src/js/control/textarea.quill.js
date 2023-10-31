@@ -49,6 +49,9 @@ export default class controlQuill extends controlTextarea {
     //Textareas do not have an attribute 'type'
     delete attrs['type']
     this.field = this.markup('div', null, attrs)
+    if (this.field.classList.contains('form-control')) {
+      this.field.classList.remove('form-control')
+    }
     return this.field
   }
 
