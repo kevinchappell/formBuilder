@@ -216,12 +216,8 @@ export default class controlSelect extends control {
           }
 
           // Did not find a match for the selectedOption, see if this is an "other"
-          if (input.id.endsWith('-other')) {
-            const otherVal = document.getElementById(`${input.id}-value`)
-            // If there is no value to set, don't check the other option
-            if (selectedOptions.length === 0) {
-              return
-            }
+          if (input.id.endsWith('-other') && selectedOptions.length > 0) {
+            const otherVal = this.dom.querySelector(`#${input.id}-value`)
 
             // set the other value
             input.setAttribute('checked', 'checked')
