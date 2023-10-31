@@ -1,3 +1,14 @@
+## [3.16.9](https://github.com/kevinchappell/formBuilder/compare/v3.16.8...v3.16.9) (2023-10-31)
+
+
+### Bug Fixes
+
+* Add test cases for checkbox group ([36c7d0e](https://github.com/kevinchappell/formBuilder/commit/36c7d0e62484de4b0d3d340ecf4809354dad3825))
+* Don't pull grid classes from SVG elements, The SVG className property is a SVGAnimatedString not a string. Controls like textarea.quill have SVG graphics in their element list. ([db27e06](https://github.com/kevinchappell/formBuilder/commit/db27e067c849bceb40e60da6acdf8b395ab8f0eb))
+* prevent togging the edit field if double-clicking within a textarea. Additionally, use the property isContentEditable to check if the element double-clicked is a descendant of a contenteditable field (eg a paragraph withing a div[contenteditable]) ([a44ef6e](https://github.com/kevinchappell/formBuilder/commit/a44ef6e77d4f7d4001083a9228fa961af0b22333))
+* strip form-control from the quill container div if it is set, this class is incompatible with the quill control ([533ae80](https://github.com/kevinchappell/formBuilder/commit/533ae8020cbdc07689fc2f8129562d844526a0ef))
+* use the correct selector for the checkbox-group other value input, control may not have been added to the document dom at the time of onRender. ([0768868](https://github.com/kevinchappell/formBuilder/commit/0768868be4b90964d31c9eab13e5b975621559c2))
+
 ## [3.16.8](https://github.com/kevinchappell/formBuilder/compare/v3.16.7...v3.16.8) (2023-10-31)
 
 
