@@ -33,7 +33,7 @@ export default class controlCustom extends control {
       'description',
       'subtype',
       'id',
-      'isPreview',
+      'preview',
       'required',
       'title',
       'aria-required',
