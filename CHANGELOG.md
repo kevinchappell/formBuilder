@@ -1,3 +1,10 @@
+## [3.16.12](https://github.com/kevinchappell/formBuilder/compare/v3.16.11...v3.16.12) (2023-11-01)
+
+
+### Bug Fixes
+
+* ensure a default value is set for when rows exists but none have numerical indices ([e963748](https://github.com/kevinchappell/formBuilder/commit/e96374833e549c6ca9bfc9acd90d225939b25f3e))
+
 ## [3.16.11](https://github.com/kevinchappell/formBuilder/compare/v3.16.10...v3.16.11) (2023-11-01)
 
 
