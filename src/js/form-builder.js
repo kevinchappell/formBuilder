@@ -1479,7 +1479,7 @@ function FormBuilder(opts, element, $) {
           nextRow = 1
         } else {
           const numericalRows = formRows.filter(value => !isNaN(value) && !isNaN(parseInt(value))).map(str => parseInt(str))
-          nextRow = (Math.max(...numericalRows) + 1)
+          nextRow = (Math.max(...numericalRows, 0) + 1)
         }
 
         result.rowUniqueId = nextRow.toString()
