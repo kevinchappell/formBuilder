@@ -1,3 +1,10 @@
+## [3.16.11](https://github.com/kevinchappell/formBuilder/compare/v3.16.10...v3.16.11) (2023-11-01)
+
+
+### Bug Fixes
+
+* For input[type=checkbox], no selection should result in an empty userData otherwise there is no ability to save state when default selected checkboxes are all unchecked ([2744a68](https://github.com/kevinchappell/formBuilder/commit/2744a6840a47771486fbdfd3bd05ea0432bfa2f6))
+
 ## [3.16.10](https://github.com/kevinchappell/formBuilder/compare/v3.16.9...v3.16.10) (2023-10-31)
 
 
