@@ -303,7 +303,7 @@ class FormRender {
         // Skip disabled fields -- This will not have user data available
         if (definedField.disabled) continue
 
-        definedField.userData = userDataMap[definedField.name]
+        definedField.userData = userDataMap[definedField.name] ?? []
       }
     })
 

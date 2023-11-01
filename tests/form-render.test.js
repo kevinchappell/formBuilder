@@ -113,4 +113,30 @@ describe('Form Rendering', () => {
     textarea = container.find('#textarea-elem')
     expect(textarea).not.toHaveLength(0)
   })
+
+  test('check userData when no value set', () => {
+    const container = $('<div>')
+    const formData = [
+      {type: 'textarea', name: 'input-textarea'},
+      {type: 'text', name: 'input-text'},
+      {type: 'checkbox-group', name: 'input-checkbox-group', 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': false }, ]},
+      {type: 'radio-group', name: 'input-radio-group', 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': false }, ]},
+      {type: 'select', name: 'input-select', placeholder: 'Select...', 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': false }, ]},
+      {type: 'select', name: 'input-select-multiple', placeholder: 'Select...', multiple: true, 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': false }, ]},
+    ]
+    container.formRender({ formData })
+
+    const userData = {}
+
+    container.formRender('userData').forEach(elem => {
+        userData[elem.name] = elem.userData
+    })
+
+    expect(userData['input-textarea']).toStrictEqual([''])
+    expect(userData['input-text']).toStrictEqual([''])
+    expect(userData['input-checkbox-group']).toStrictEqual([])
+    expect(userData['input-radio-group']).toStrictEqual([])
+    expect(userData['input-select']).toStrictEqual([])
+    expect(userData['input-select-multiple']).toStrictEqual([])
+  })
 })
