@@ -21,9 +21,6 @@ export default class Controls {
     this.opts = opts
     this.dom = d.controls
     this.getRegistered = control.getRegistered
-    // ability for controls to have their own configuration / options
-    // of the format control identifier (type, or type.subtype): {options}
-    control.controlConfig = opts.controlConfig || {}
     this.init()
   }
 

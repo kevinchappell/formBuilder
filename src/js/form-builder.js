@@ -75,7 +75,7 @@ function FormBuilder(opts, element, $) {
   if (!opts.layout) {
     opts.layout = layout
   }
-  const layoutEngine = new opts.layout(opts.layoutTemplates, true, opts.disableHTMLLabels)
+  const layoutEngine = new opts.layout(opts.layoutTemplates, true, opts.disableHTMLLabels, opts.controlConfig)
 
   const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = markup

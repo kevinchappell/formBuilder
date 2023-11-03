@@ -197,7 +197,7 @@ class FormRender {
     const rendered = []
 
     // instantiate the layout class & loop through the field configuration
-    const engine = new opts.layout(opts.layoutTemplates, false, opts.disableHTMLLabels)
+    const engine = new opts.layout(opts.layoutTemplates, false, opts.disableHTMLLabels, opts.controlConfig)
     if (opts.formData.length) {
       for (let i = 0; i < opts.formData.length; i++) {
         const fieldData = opts.formData[i]

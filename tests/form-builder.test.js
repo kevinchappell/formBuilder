@@ -435,4 +435,54 @@ describe('async loading tests', () => {
 
     expect(wrap2.formBuilder('markup', 'div').outerHTML).toBe('<div></div>')
   })
+
+  test('controlConfig is loaded per instance', async () => {
+    const wrap1 = $('<div>')
+    const wrap2 = $('<div>')
+    const templates = {
+      text: function(fieldData) {
+        this.classConfig.callback()
+        return {
+          field: '<span>preview</span>'
+        }
+      }
+    }
+    const cb1 = jest.fn()
+    const cb2 = jest.fn()
+    const config1 = {
+      templates,
+      controlConfig: {
+        'text.text': {
+          callback: cb1
+        }
+      }
+    }
+    const config2 = {
+      templates,
+      controlConfig: {
+        'text.text': {
+          callback: cb2
+        }
+      }
+    }
+    const p1 = wrap1.formBuilder(config1).promise
+    const p2 = wrap2.formBuilder(config2).promise
+
+    const fb1 = await p1
+    const fb2 = await p2
+
+    const field = {
+      type: 'text',
+      class: 'form-control'
+    }
+    fb1.actions.addField(field)
+
+    expect(cb1.mock.calls).toHaveLength(1)
+    expect(cb2.mock.calls).toHaveLength(0)
+
+    fb2.actions.addField(field)
+    expect(cb1.mock.calls).toHaveLength(1)
+    expect(cb2.mock.calls).toHaveLength(1)
+  })
+
 })

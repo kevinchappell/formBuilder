@@ -1,6 +1,7 @@
 // LAYOUT.JS
 import utils from './utils'
 import { getAllGridRelatedClasses } from './utils'
+import control from './control'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return
@@ -43,12 +44,14 @@ export default class layout {
   /**
    * Prepare the templates for layout
    * @param {Object} templates object containing custom or overwrite templates
-   * @param {Boolean} preview - are we rendering a preview for the formBuilder stage
-   * @param {Boolean} disableHTMLLabels - do we render labels as HTML or plain text
+   * @param {Boolean} [preview=false] - are we rendering a preview for the formBuilder stage
+   * @param {Boolean} [disableHTMLLabels=false] - do we render labels as HTML or plain text
+   * @param {Array} [controlConfig={}] - ability for controls to have their own configuration / options of the format control identifier (type, or type.subtype): {options}
    */
-  constructor(templates, preview = false, disableHTMLLabels = false) {
+  constructor(templates, preview = false, disableHTMLLabels = false, controlConfig = {}) {
     this.preview = preview ?? false
     this.disableHTMLLabels = disableHTMLLabels ?? false
+    this.controlConfig = controlConfig ?? {}
 
     // supported templates for outputting a field
     // preferred layout template can be indicated by specifying a 'layout' in the return object of control::build
@@ -115,8 +118,9 @@ export default class layout {
     this.data = jQuery.extend({}, data)
 
     // build the control
-    const control = new renderControl(data, this.preview)
-    let field = control.build()
+    control.controlConfig = this.controlConfig
+    const controlInstance = new renderControl(data, this.preview)
+    let field = controlInstance.build()
     if (typeof field !== 'object' || !field.field) {
       field = { field: field }
     }
@@ -145,10 +149,10 @@ export default class layout {
     const element = this.processTemplate(elementTemplate, field.field, label, help)
 
     // execute prerender events
-    control.on('prerender')(element)
+    controlInstance.on('prerender')(element)
 
     // bind control on render events
-    element.addEventListener('fieldRendered', control.on('render'))
+    element.addEventListener('fieldRendered', controlInstance.on('render'))
     return element
   }
 
