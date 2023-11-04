@@ -1846,7 +1846,6 @@ function FormBuilder(opts, element, $) {
   if (enhancedBootstrapEnabled()) {
     $stage.on('stageEmptied', () => {
       formRows = [] //Reset row count
-      checkSetupBlankStage()
     })
   }
 
@@ -2116,8 +2115,6 @@ function FormBuilder(opts, element, $) {
     if (rowWrapper.length) {
       autoSizeRowColumns(rowWrapper, true)
     }
-
-    checkSetupBlankStage()
   })
 
   $(document).on('fieldOpened', (event, data) => {
@@ -2152,33 +2149,6 @@ function FormBuilder(opts, element, $) {
           setupColumnInserts($(elem),true)
         }
       })
-  }
-
-  /**
-   * enhancedBootstrap feature helper
-   */
-  function checkSetupBlankStage() {
-    if (!(enhancedBootstrapEnabled() && h.stageIsEmpty())) {
-      return
-    }
-
-    const columnData = prepareFieldRow({})
-
-    const rowWrapperNode = m('div', null, {
-      id: `${h.incrementId(data.lastID)}-row`,
-      className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
-    })
-
-    $stage.append(rowWrapperNode)
-    setupSortableRowWrapper(rowWrapperNode)
-    ResetAllInvisibleRowPlaceholders()
-
-    //Create 1 invisible placeholder which will allow the initial drag anywhere in the stage
-    $stage
-      .find(tmpRowPlaceholderClassSelector)
-      .eq(0)
-      .removeClass(invisibleRowPlaceholderClass)
-      .css({ backgroundColor: 'transparent' })
   }
 
   function toggleGridModeActive(active = true) {
@@ -2472,9 +2442,6 @@ function FormBuilder(opts, element, $) {
       if (opts.stickyControls.enable) {
         h.stickyControls($stage)
       }
-
-      checkSetupBlankStage()
-
       clearTimeout(onRenderTimeout)
     }, 0)
   })
