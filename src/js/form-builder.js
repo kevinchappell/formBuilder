@@ -1316,34 +1316,32 @@ function FormBuilder(opts, element, $) {
         const senderIsControlsBox = $(ui.sender).attr('id') === $cbUL.attr('id')
 
         const droppingToNewRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
-        const droppingToPlaceholderRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
-        const droppingToExistingRow =
-          $(ui.item).parent().hasClass(rowWrapperClass) && !$(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+        const droppingToExistingRow = !droppingToNewRow && $(ui.item).parent().hasClass(rowWrapperClass)
 
-        if (droppingToNewRow && !senderIsControlsBox) {
-          const colWrapper = $(ui.item)
+        if (droppingToNewRow) {
+          if (senderIsControlsBox) {
+            insertTargetIsRow = true
+            insertingNewControl = true
+            $targetInsertWrapper = $(ui.item).parent()
+          } else {
+            const colWrapper = $(ui.item)
 
-          const columnData = prepareFieldRow({})
+            const columnData = prepareFieldRow({})
 
-          const rowWrapperNode = m('div', null, {
-            id: `${colWrapper.find('li').attr('id')}-row`,
-            className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
-          })
+            const rowWrapperNode = m('div', null, {
+              id: `${colWrapper.find('li').attr('id')}-row`,
+              className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
+            })
 
-          $(ui.item).parent().replaceWith(rowWrapperNode)
-          AttachColWrapperHandler($(ui.item))
+            $(ui.item).parent().replaceWith(rowWrapperNode)
+            AttachColWrapperHandler($(ui.item))
 
-          colWrapper.appendTo(rowWrapperNode)
+            colWrapper.appendTo(rowWrapperNode)
 
-          setupSortableRowWrapper(rowWrapperNode)
-          syncFieldWithNewRow(colWrapper.attr('id'))
-          checkRowCleanup()
-        }
-
-        if (droppingToPlaceholderRow && senderIsControlsBox) {
-          insertTargetIsRow = true
-          insertingNewControl = true
-          $targetInsertWrapper = $(ui.item).parent()
+            setupSortableRowWrapper(rowWrapperNode)
+            syncFieldWithNewRow(colWrapper.attr('id'))
+            checkRowCleanup()
+          }
         }
 
         if (droppingToExistingRow && senderIsControlsBox) {
