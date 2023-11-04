@@ -1148,6 +1148,7 @@ function FormBuilder(opts, element, $) {
         $targetInsertWrapper.attr('id', rowWrapperNode.id)
         $targetInsertWrapper.attr('class', rowWrapperNode.className)
         $targetInsertWrapper.attr('style', '')
+        $targetInsertWrapper.attr('data-row-id', columnData.rowUniqueId)
         rowWrapperNode = $targetInsertWrapper
       }
 
@@ -1392,6 +1393,11 @@ function FormBuilder(opts, element, $) {
         syncFieldWithNewRow(ui.item.attr('id'))
       },
     })
+
+    const rowId = h.getRowValue(rowWrapperNode.className)
+    if (rowId !== '0') {
+      $(rowWrapperNode).attr('data-row-id',rowId)
+    }
 
     setupColumnInserts(rowWrapperNode, true)
     if (opts.enableColumnInsertMenu) {
