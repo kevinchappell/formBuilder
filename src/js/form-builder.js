@@ -1369,6 +1369,7 @@ function FormBuilder(opts, element, $) {
           h.save.call(h)
         }
 
+        checkRowCleanup()
         ResetAllInvisibleRowPlaceholders()
 
         const listFieldItem = $(ui.item).find('li')
