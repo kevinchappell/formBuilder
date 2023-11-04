@@ -1010,8 +1010,8 @@ function FormBuilder(opts, element, $) {
 
     const type = values.type || 'text'
     let label = values.label || (isNew ? i18n[type] || mi18n.get('label') : '')
-    if (type === 'hidden') {
-      label = `${mi18n.get(type)}: ${values.name}`
+    if (type === 'hidden' || label === '') {
+      label = `${mi18n.get(type) ?? type}: ${values.name}`
     }
     const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
     let fieldButtons = [
