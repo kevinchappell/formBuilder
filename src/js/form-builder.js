@@ -1010,8 +1010,8 @@ function FormBuilder(opts, element, $) {
 
     const type = values.type || 'text'
     let label = values.label || (isNew ? i18n[type] || mi18n.get('label') : '')
-    if (type === 'hidden') {
-      label = `${mi18n.get(type)}: ${values.name}`
+    if (type === 'hidden' || label === '') {
+      label = `${mi18n.get(type) ?? type}: ${values.name}`
     }
     const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons
     let fieldButtons = [
@@ -1148,6 +1148,7 @@ function FormBuilder(opts, element, $) {
         $targetInsertWrapper.attr('id', rowWrapperNode.id)
         $targetInsertWrapper.attr('class', rowWrapperNode.className)
         $targetInsertWrapper.attr('style', '')
+        $targetInsertWrapper.attr('data-row-id', columnData.rowUniqueId)
         rowWrapperNode = $targetInsertWrapper
       }
 
@@ -1316,34 +1317,31 @@ function FormBuilder(opts, element, $) {
         const senderIsControlsBox = $(ui.sender).attr('id') === $cbUL.attr('id')
 
         const droppingToNewRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
-        const droppingToPlaceholderRow = $(ui.item).parent().hasClass(tmpRowPlaceholderClass)
-        const droppingToExistingRow =
-          $(ui.item).parent().hasClass(rowWrapperClass) && !$(ui.item).parent().hasClass(tmpRowPlaceholderClass)
+        const droppingToExistingRow = !droppingToNewRow && $(ui.item).parent().hasClass(rowWrapperClass)
 
-        if (droppingToNewRow && !senderIsControlsBox) {
-          const colWrapper = $(ui.item)
+        if (droppingToNewRow) {
+          if (senderIsControlsBox) {
+            insertTargetIsRow = true
+            insertingNewControl = true
+            $targetInsertWrapper = $(ui.item).parent()
+          } else {
+            const colWrapper = $(ui.item)
 
-          const columnData = prepareFieldRow({})
+            const columnData = prepareFieldRow({})
 
-          const rowWrapperNode = m('div', null, {
-            id: `${colWrapper.find('li').attr('id')}-row`,
-            className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
-          })
+            const rowWrapperNode = m('div', null, {
+              id: `${colWrapper.find('li').attr('id')}-row`,
+              className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
+            })
 
-          $(ui.item).parent().replaceWith(rowWrapperNode)
-          AttachColWrapperHandler($(ui.item))
+            $(ui.item).parent().replaceWith(rowWrapperNode)
+            AttachColWrapperHandler($(ui.item))
 
-          colWrapper.appendTo(rowWrapperNode)
+            colWrapper.appendTo(rowWrapperNode)
 
-          setupSortableRowWrapper(rowWrapperNode)
-          syncFieldWithNewRow(colWrapper.attr('id'))
-          checkRowCleanup()
-        }
-
-        if (droppingToPlaceholderRow && senderIsControlsBox) {
-          insertTargetIsRow = true
-          insertingNewControl = true
-          $targetInsertWrapper = $(ui.item).parent()
+            setupSortableRowWrapper(rowWrapperNode)
+            syncFieldWithNewRow(colWrapper.attr('id'))
+          }
         }
 
         if (droppingToExistingRow && senderIsControlsBox) {
@@ -1371,6 +1369,7 @@ function FormBuilder(opts, element, $) {
           h.save.call(h)
         }
 
+        checkRowCleanup()
         ResetAllInvisibleRowPlaceholders()
 
         const listFieldItem = $(ui.item).find('li')
@@ -1393,6 +1392,11 @@ function FormBuilder(opts, element, $) {
         syncFieldWithNewRow(ui.item.attr('id'))
       },
     })
+
+    const rowId = h.getRowValue(rowWrapperNode.className)
+    if (rowId !== '0') {
+      $(rowWrapperNode).attr('data-row-id',rowId)
+    }
 
     setupColumnInserts(rowWrapperNode, true)
     if (opts.enableColumnInsertMenu) {
@@ -1846,7 +1850,6 @@ function FormBuilder(opts, element, $) {
   if (enhancedBootstrapEnabled()) {
     $stage.on('stageEmptied', () => {
       formRows = [] //Reset row count
-      checkSetupBlankStage()
     })
   }
 
@@ -2116,8 +2119,6 @@ function FormBuilder(opts, element, $) {
     if (rowWrapper.length) {
       autoSizeRowColumns(rowWrapper, true)
     }
-
-    checkSetupBlankStage()
   })
 
   $(document).on('fieldOpened', (event, data) => {
@@ -2152,33 +2153,6 @@ function FormBuilder(opts, element, $) {
           setupColumnInserts($(elem),true)
         }
       })
-  }
-
-  /**
-   * enhancedBootstrap feature helper
-   */
-  function checkSetupBlankStage() {
-    if (!(enhancedBootstrapEnabled() && h.stageIsEmpty())) {
-      return
-    }
-
-    const columnData = prepareFieldRow({})
-
-    const rowWrapperNode = m('div', null, {
-      id: `${h.incrementId(data.lastID)}-row`,
-      className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
-    })
-
-    $stage.append(rowWrapperNode)
-    setupSortableRowWrapper(rowWrapperNode)
-    ResetAllInvisibleRowPlaceholders()
-
-    //Create 1 invisible placeholder which will allow the initial drag anywhere in the stage
-    $stage
-      .find(tmpRowPlaceholderClassSelector)
-      .eq(0)
-      .removeClass(invisibleRowPlaceholderClass)
-      .css({ backgroundColor: 'transparent' })
   }
 
   function toggleGridModeActive(active = true) {
@@ -2472,9 +2446,6 @@ function FormBuilder(opts, element, $) {
       if (opts.stickyControls.enable) {
         h.stickyControls($stage)
       }
-
-      checkSetupBlankStage()
-
       clearTimeout(onRenderTimeout)
     }, 0)
   })
