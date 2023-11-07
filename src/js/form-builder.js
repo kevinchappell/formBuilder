@@ -1341,7 +1341,6 @@ function FormBuilder(opts, element, $) {
 
             setupSortableRowWrapper(rowWrapperNode)
             syncFieldWithNewRow(colWrapper.attr('id'))
-            checkRowCleanup()
           }
         }
 
