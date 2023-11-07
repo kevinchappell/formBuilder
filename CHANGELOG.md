@@ -1,3 +1,19 @@
+# [3.17.0](https://github.com/kevinchappell/formBuilder/compare/v3.16.13...v3.17.0) (2023-11-07)
+
+
+### Bug Fixes
+
+* add additional row cleanup check to ensure no artifacts are left in the DOM ([612d009](https://github.com/kevinchappell/formBuilder/commit/612d0093217fe98b0f1f79f74afecb977e3b724f))
+* If label is intentionally blank or label is not enabled we fallback to 'type: name' for the control label to ensure a value is visible on the stage ([fcff9e9](https://github.com/kevinchappell/formBuilder/commit/fcff9e94e6b88b2f146c55f2c4abab09fb53406f))
+* remove bootstrap initialisation of blank row on empty form. It is not required. ([b8fd49a](https://github.com/kevinchappell/formBuilder/commit/b8fd49af02905dafeb95b025072d870f9e59168d))
+* remove redundant checkRowCleanup() ([9b27a6e](https://github.com/kevinchappell/formBuilder/commit/9b27a6e2dcf1871d98da3454e8e3cb5ee6888a54))
+* remove redundant droppingToPlaceholderRow which uses the same check as droppingToNewRow, and simplify the logic. ([62c0562](https://github.com/kevinchappell/formBuilder/commit/62c0562e18751f653470c5317c53cd395edf6016))
+
+
+### Features
+
+* store the bootstrap row's id to the rowWapper via data-row-id ([dd68b52](https://github.com/kevinchappell/formBuilder/commit/dd68b52e5ac9521c4b78aab5bb04e07c08651241))
+
 ## [3.16.13](https://github.com/kevinchappell/formBuilder/compare/v3.16.12...v3.16.13) (2023-11-07)
 
 
