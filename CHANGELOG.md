@@ -1,3 +1,10 @@
+## [3.16.13](https://github.com/kevinchappell/formBuilder/compare/v3.16.12...v3.16.13) (2023-11-07)
+
+
+### Bug Fixes
+
+* ensure that controlConfig is loaded per formBuilder instance. We delay setting the static property controlConfig on class control until we construct the control class in layout. ([5f8de00](https://github.com/kevinchappell/formBuilder/commit/5f8de00ee6c546edf1fdb663b534b676d5dca0dd))
+
 ## [3.16.12](https://github.com/kevinchappell/formBuilder/compare/v3.16.11...v3.16.12) (2023-11-01)
 
 
