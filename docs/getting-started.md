@@ -2,7 +2,7 @@
 
 ## Download and install
 
-formBuilder and formRender are available directly from [GitHub](https://github.com/kevinchappell/formBuilder/tree/master/dist) and through npm.
+formBuilder and formRender are available directly from [GitHub](https://github.com/kevinchappell/formBuilder/tree/master) and through npm.
 
 Install module from package manager:
 
