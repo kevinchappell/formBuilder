@@ -486,3 +486,40 @@ describe('async loading tests', () => {
   })
 
 })
+
+describe('FormBuilder disabling attributes', () => {
+  test('attributes not on stage when disabled via disableAttr', async () => {
+    const config = {
+      disabledAttrs: ['label','description'],
+    }
+
+    const fbWrap = $('<div>')
+    const fb = await $(fbWrap).formBuilder(config).promise
+    const field = {
+      type: 'text',
+      class: 'form-control'
+    }
+    fb.actions.addField(field)
+    expect(fbWrap.find('.subtype-wrap')).toHaveLength(1)
+    expect(fbWrap.find('.label-wrap')).toHaveLength(0)
+    expect(fbWrap.find('.description-wrap')).toHaveLength(0)
+  })
+
+  test('special attributes hidden when disabled via disableAttr', async () => {
+    const config = {
+      disabledAttrs: ['subtype','name','className'],
+    }
+
+    const fbWrap = $('<div>')
+    const fb = await $(fbWrap).formBuilder(config).promise
+    const field = {
+      type: 'text',
+      class: 'form-control'
+    }
+    fb.actions.addField(field)
+    expect(fbWrap.find('.subtype-wrap').css('display')).toBe('none')
+    expect(fbWrap.find('.name-wrap').css('display')).toBe('none')
+    expect(fbWrap.find('.className-wrap').css('display')).toBe('none')
+    expect(fbWrap.find('.label-wrap').css('display')).toBe('block')
+  })
+})
