@@ -936,6 +936,7 @@ function FormBuilder(opts, element, $) {
 
     let attrVal = values[attribute] || ''
     let attrLabel = mi18n.get(attribute) || attribute
+    const typeVal = values['type'] || ''
 
     if (attribute === 'label') {
       if (textArea.includes(values.type)) {
@@ -963,6 +964,10 @@ function FormBuilder(opts, element, $) {
       if (attribute === 'label' && !opts.disableHTMLLabels) {
         inputConfig.contenteditable = true
         attributefield += m('div', attrVal, inputConfig).outerHTML
+      } else if (typeVal.includes('textarea') && attribute === 'value') {
+        inputConfig.contenteditable = true
+        inputConfig.value = attrVal
+        attributefield += `<textarea ${attrString(inputConfig)}>${inputConfig.value}</textarea>`
       } else {
         inputConfig.value = attrVal
         inputConfig.type = 'text'
@@ -1713,6 +1718,11 @@ function FormBuilder(opts, element, $) {
           selectedOption.checked = prevOptions[i].checked
         })
       }
+    } else if (field.type === 'textarea') {
+      const fieldVal = document.getElementById('value-' + field.id)
+      if (fieldVal) {
+        fieldVal.innerHTML = e.target.value
+      } 
     } else {
       const fieldVal = document.getElementById('value-' + field.id)
       if (fieldVal) {
