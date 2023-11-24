@@ -1716,11 +1716,6 @@ function FormBuilder(opts, element, $) {
           selectedOption.checked = prevOptions[i].checked
         })
       }
-    } else if (field.type === 'textarea') {
-      const fieldVal = document.getElementById('value-' + field.id)
-      if (fieldVal) {
-        fieldVal.innerHTML = e.target.value
-      } 
     } else {
       const fieldVal = document.getElementById('value-' + field.id)
       if (fieldVal) {
