@@ -936,7 +936,6 @@ function FormBuilder(opts, element, $) {
 
     let attrVal = values[attribute] || ''
     let attrLabel = mi18n.get(attribute) || attribute
-    const typeVal = values['type'] || ''
 
     if (attribute === 'label') {
       if (textArea.includes(values.type)) {
