@@ -1268,7 +1268,7 @@ function FormBuilder(opts, element, $) {
 
     wrapperClone.insertAfter($(rowWrapperNode))
     setupSortableRowWrapper(wrapperClone)
-    $stage.find(rowWrapperClassSelector + ':last-child').removeClass(invisibleRowPlaceholderClass)
+    $stage.find(rowWrapperClassSelector + ':last-of-type').removeClass(invisibleRowPlaceholderClass)
   }
 
   function ResetAllInvisibleRowPlaceholders() {
@@ -1278,7 +1278,7 @@ function FormBuilder(opts, element, $) {
       SetupInvisibleRowPlaceholders($(elem))
     })
 
-    $stage.find(rowWrapperClassSelector + ':last-child').removeClass(invisibleRowPlaceholderClass)
+    $stage.find(rowWrapperClassSelector + ':last-of-type').removeClass(invisibleRowPlaceholderClass)
   }
 
   function setupSortableRowWrapper(rowWrapperNode) {
