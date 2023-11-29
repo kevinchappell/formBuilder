@@ -135,6 +135,7 @@ function FormBuilder(opts, element, $) {
     cursor: 'move',
     scroll: false,
     placeholder: 'hoverDropStyleInverse ui-state-highlight',
+    tolerance: 'pointer',
     start: (evt, ui) => h.startMoving.call(h, evt, ui),
     stop: (evt, ui) => {
       h.stopMoving.call(h, evt, ui)
