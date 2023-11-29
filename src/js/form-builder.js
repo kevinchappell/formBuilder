@@ -1182,6 +1182,7 @@ function FormBuilder(opts, element, $) {
 
       if (newRowCreated) {
         setupSortableRowWrapper(rowWrapperNode)
+        hideInvisibleRowPlaceholders()
         SetupInvisibleRowPlaceholders(rowWrapperNode)
         if (opts.enableColumnInsertMenu) {
           $(rowWrapperNode).off('mouseenter')
