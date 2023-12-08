@@ -1,3 +1,10 @@
+## [3.17.1](https://github.com/kevinchappell/formBuilder/compare/v3.17.0...v3.17.1) (2023-12-08)
+
+
+### Bug Fixes
+
+* Ensure subtype attribute is hidden when disabled via disableAttr ([4572fe6](https://github.com/kevinchappell/formBuilder/commit/4572fe6ad9230dd57a8dd488e72e19612c0016c4))
+
 # [3.17.0](https://github.com/kevinchappell/formBuilder/compare/v3.16.13...v3.17.0) (2023-11-07)
 
 
