@@ -1,3 +1,13 @@
+## [3.17.3](https://github.com/kevinchappell/formBuilder/compare/v3.17.2...v3.17.3) (2023-12-08)
+
+
+### Bug Fixes
+
+* Only setup sortable row wrapper and invisible row placeholders when adding a row to the stage ([25a27e6](https://github.com/kevinchappell/formBuilder/commit/25a27e6ced109bbfc745dace16175f80a00b40b1))
+* Use last-of-type instead of last-child due to drag/drop placeholder occupying last-child position ([dc4f312](https://github.com/kevinchappell/formBuilder/commit/dc4f3128372076bba4056f89d22160fd83f8a949))
+* Use the pointer to for sortable intersect detection when dragging controls from the control panel onto a bootstrap row. jQuery.ui sortable used tolerance: intersect which caused the placeholder in a row to jump around when near the edges and the new control is less than 50% contained. ([995fc2e](https://github.com/kevinchappell/formBuilder/commit/995fc2e5ac75b146b4565d3eb24c08c39d45a3f6))
+* When adding rows, reset the hidden flag for all placeholders ([939341c](https://github.com/kevinchappell/formBuilder/commit/939341ce9c4aff39183527202fbe7fb643b3bb9f))
+
 ## [3.17.2](https://github.com/kevinchappell/formBuilder/compare/v3.17.1...v3.17.2) (2023-12-08)
 
 
