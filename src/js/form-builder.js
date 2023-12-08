@@ -966,6 +966,8 @@ function FormBuilder(opts, element, $) {
       if (attribute === 'label' && !opts.disableHTMLLabels) {
         inputConfig.contenteditable = true
         attributefield += m('div', attrVal, inputConfig).outerHTML
+      } else if (values.type === 'textarea' && attribute === 'value') {
+        attributefield += m('textarea', attrVal, inputConfig).outerHTML
       } else {
         inputConfig.value = attrVal
         inputConfig.type = 'text'
