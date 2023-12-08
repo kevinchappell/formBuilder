@@ -135,6 +135,7 @@ function FormBuilder(opts, element, $) {
     cursor: 'move',
     scroll: false,
     placeholder: 'hoverDropStyleInverse ui-state-highlight',
+    tolerance: 'pointer',
     start: (evt, ui) => h.startMoving.call(h, evt, ui),
     stop: (evt, ui) => {
       h.stopMoving.call(h, evt, ui)
@@ -1138,6 +1139,7 @@ function FormBuilder(opts, element, $) {
     if (enhancedBootstrapEnabled()) {
       const targetRow = `div.row-${columnData.rowUniqueId}`
 
+      let newRowCreated = false
       //Check if an overall row already exists for the field, else create one
       if ($stage.children(targetRow).length) {
         rowWrapperNode = $stage.children(targetRow)
@@ -1146,6 +1148,7 @@ function FormBuilder(opts, element, $) {
           id: `${field.id}-row`,
           className: `row row-${columnData.rowUniqueId} ${rowWrapperClass}`,
         })
+        newRowCreated = true
       }
 
       //Turn the placeholder into the new row. Copy some attributes over
@@ -1164,7 +1167,7 @@ function FormBuilder(opts, element, $) {
       })
 
       if (insertingNewControl && insertTargetIsColumn) {
-        if ($targetInsertWrapper.attr('prepend') == 'true') {
+        if ($targetInsertWrapper.attr('prepend') === 'true') {
           $(colWrapperNode).prependTo(rowWrapperNode)
         } else {
           $(colWrapperNode).insertAfter(`#${$targetInsertWrapper.attr('appendAfter')}`)
@@ -1177,15 +1180,29 @@ function FormBuilder(opts, element, $) {
       }
 
       //If inserting, use the existing index, do not always append to end
-      if (!insertingNewControl) {
+      if (!insertingNewControl && newRowCreated) {
         $li.after(rowWrapperNode)
       }
 
       $li.appendTo(colWrapperNode)
 
-      setupSortableRowWrapper(rowWrapperNode)
+      if (newRowCreated) {
+        setupSortableRowWrapper(rowWrapperNode)
+        hideInvisibleRowPlaceholders()
+        SetupInvisibleRowPlaceholders(rowWrapperNode)
+        if (opts.enableColumnInsertMenu) {
+          $(rowWrapperNode).off('mouseenter')
+          $(rowWrapperNode).on('mouseenter', function(e) {
+            setupColumnInserts($(e.currentTarget))
+          })
 
-      SetupInvisibleRowPlaceholders(rowWrapperNode)
+          $(rowWrapperNode).off('mouseleave')
+          $(rowWrapperNode).on('mouseleave', function(e) {
+            hideColumnInsertButtons($(e.currentTarget))
+          })
+        }
+      }
+      setupColumnInserts(rowWrapperNode, true)
 
       //Record the fact that this field did not originally have column information stored.
       //If no other fields were added to the same row and the user did not do anything with this information, then remove it when exporting the config
@@ -1258,7 +1275,7 @@ function FormBuilder(opts, element, $) {
 
     wrapperClone.insertAfter($(rowWrapperNode))
     setupSortableRowWrapper(wrapperClone)
-    $stage.find(rowWrapperClassSelector + ':last-child').removeClass(invisibleRowPlaceholderClass)
+    $stage.find(rowWrapperClassSelector + ':last-of-type').removeClass(invisibleRowPlaceholderClass)
   }
 
   function ResetAllInvisibleRowPlaceholders() {
@@ -1268,7 +1285,7 @@ function FormBuilder(opts, element, $) {
       SetupInvisibleRowPlaceholders($(elem))
     })
 
-    $stage.find(rowWrapperClassSelector + ':last-child').removeClass(invisibleRowPlaceholderClass)
+    $stage.find(rowWrapperClassSelector + ':last-of-type').removeClass(invisibleRowPlaceholderClass)
   }
 
   function setupSortableRowWrapper(rowWrapperNode) {
@@ -1401,19 +1418,6 @@ function FormBuilder(opts, element, $) {
     const rowId = h.getRowValue(rowWrapperNode.className)
     if (rowId !== '0') {
       $(rowWrapperNode).attr('data-row-id',rowId)
-    }
-
-    setupColumnInserts(rowWrapperNode, true)
-    if (opts.enableColumnInsertMenu) {
-      $(rowWrapperNode).off('mouseenter')
-      $(rowWrapperNode).on('mouseenter', function(e) {
-        setupColumnInserts($(e.currentTarget))
-      })
-
-      $(rowWrapperNode).off('mouseleave')
-      $(rowWrapperNode).on('mouseleave', function(e) {
-        hideColumnInsertButtons($(e.currentTarget))
-      })
     }
   }
 
