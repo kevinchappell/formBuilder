@@ -495,7 +495,7 @@ function FormBuilder(opts, element, $) {
       },
       label: () => textAttribute('label', values),
       description: () => textAttribute('description', values),
-      subtype: () => selectAttribute('subtype', values, subtypes[type]),
+      subtype: isHidden => selectAttribute('subtype', values, subtypes[type], isHidden),
       style: () => btnStyles(values.style),
       placeholder: () => textAttribute('placeholder', values),
       rows: () => numberAttribute('rows', values),
@@ -891,9 +891,10 @@ function FormBuilder(opts, element, $) {
    * @param  {string} attribute  attribute name
    * @param  {Object} values     aka attrs
    * @param  {Array} optionData  select field option data
+   * @param  {boolean} [isHidden=false] field should be hidden on the stage
    * @return {string}            select input makrup
    */
-  const selectAttribute = (attribute, values, optionData) => {
+  const selectAttribute = (attribute, values, optionData, isHidden = false) => {
     const selectOptions = optionData.map((option, i) => {
       let optionAttrs = Object.assign(
         {
@@ -917,8 +918,10 @@ function FormBuilder(opts, element, $) {
     const label = m('label', labelText, { for: selectAttrs.id })
     const select = m('select', selectOptions, selectAttrs)
     const inputWrap = m('div', select, { className: 'input-wrap' })
+    const visibility = isHidden ? 'none' : 'block'
     const attrWrap = m('div', [label, inputWrap], {
       className: `form-group ${selectAttrs.name}-wrap`,
+      style: `display: ${visibility}`,
     })
 
     return attrWrap.outerHTML
@@ -928,7 +931,7 @@ function FormBuilder(opts, element, $) {
    * Generate some text inputs for field attributes, **will be replaced**
    * @param  {string} attribute
    * @param  {Object} values
-   * @param  {boolean} isHidden
+   * @param  {boolean} [isHidden=false] field should be hidden on the stage
    * @return {string}
    */
   const textAttribute = (attribute, values, isHidden = false) => {
