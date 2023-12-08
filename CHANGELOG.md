@@ -1,3 +1,11 @@
+## [3.17.2](https://github.com/kevinchappell/formBuilder/compare/v3.17.1...v3.17.2) (2023-12-08)
+
+
+### Bug Fixes
+
+* For TextArea control have made the value input a textarea and not a single input[type=text] value. Formatting of TextAreas is now preserved. ([0b64d37](https://github.com/kevinchappell/formBuilder/commit/0b64d37c62ad44966817db3371b4e75f3da9da40))
+* For TextArea control have made the value input a textarea and not a single input[type=text] value. Formatting of TextAreas is now preserved. ([8da4cb5](https://github.com/kevinchappell/formBuilder/commit/8da4cb54a08f5ea5386c3f9b7565cd20b20b4b33))
+
 ## [3.17.1](https://github.com/kevinchappell/formBuilder/compare/v3.17.0...v3.17.1) (2023-12-08)
 
 
