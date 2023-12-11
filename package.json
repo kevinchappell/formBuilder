@@ -205,11 +205,6 @@
       "npm run lint:fix"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
