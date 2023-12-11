@@ -10,6 +10,7 @@ const originalConsoleError = console.error
 const jsIgnoreErrors = [
   'Error: AggregateError',
   'Error: connect ECONNREFUSED ::1:80',
+  'Error: connect ECONNREFUSED 127.0.0.1:80',
 ]
 console.error = (...params) => {
   if (!params.find(p => jsIgnoreErrors.find(ignore => p.toString().includes(ignore)))) {
