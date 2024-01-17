@@ -186,7 +186,8 @@
     "collectCoverage": true,
     "coverageDirectory": ".jest/coverage",
     "coveragePathIgnorePatterns": [
-      "tests/"
+      "tests/",
+      "<rootDir>/src/js/control/index.js"
     ],
     "testEnvironment": "jsdom",
     "testEnvironmentOptions": {
