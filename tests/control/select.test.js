@@ -78,4 +78,38 @@ describe('Test Text Control', () => {
     element.value = 'option-1'
     expect(element.validity.valid).toBeTruthy()
   })
+
+  test('userData overrides default selections', async () => {
+    const controlInstance = new controlSelect({
+      'type': 'select',
+      'required': true,
+      'label': 'Select',
+      'className': 'form-control',
+      'placeholder': 'Select an option...',
+      'name': 'test-select',
+      'multiple': false,
+      'values': [
+        {
+          'label': 'Option 1',
+          'value': 'option-1',
+          'selected': true
+        },
+        {
+          'label': 'Option 2',
+          'value': 'option-2',
+          'selected': false
+        },
+        {
+          'label': 'Option 3',
+          'value': 'option-3',
+          'selected': false
+        }
+      ],
+      userData: ['option-2']
+    }, false)
+
+    const element = controlInstance.build()
+    controlInstance.onRender()
+    expect(element.value).toBe('option-2')
+  })
 })
