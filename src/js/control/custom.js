@@ -18,8 +18,8 @@ export default class controlCustom extends control {
    */
   build() {
     let custom = this.template
+    /* istanbul ignore next */
     if (!custom) {
-      /* istanbul ignore next */
       return control.error(
         `Invalid custom control type '${this.type}'. Please ensure you have registered it correctly as a template option.`,
       )

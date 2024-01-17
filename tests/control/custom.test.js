@@ -366,4 +366,42 @@ describe('Test Custom Control', () => {
     fbWrap.formRender({formData, templates})
     expect(fbWrap.find('span')[0].textContent).toBe('not preview')
   })
+
+  test('test loading js/css from custom template', async () => {
+    const fbWrap = $('<div>')
+    const cbOnRender = jest.fn()
+
+    const formData = [
+      {
+        'type': 'starRating',
+        'required': false,
+        'label': 'Star Rating',
+        'name': 'starRating-1697591966052-0'
+      },
+    ]
+    const templates = {
+      starRating: function(fieldData) {
+        const control = this
+        control.field = `<span id="${fieldData.name}">`
+        return {
+          field: control.field,
+          onRender: () => {
+            $(control.field).rateYo( {rating: 2} )
+            cbOnRender()
+          },
+          js: 'https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js',
+          css: 'https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css'
+        }
+      }
+    }
+
+    fbWrap.formRender({formData, templates})
+
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    expect(cbOnRender.mock.calls).toHaveLength(1)
+
+    expect(fbWrap.find('#starRating-1697591966052-0')[0].outerHTML).toBe('<span id="starRating-1697591966052-0"></span>')
+
+  })
 })

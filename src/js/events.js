@@ -10,6 +10,7 @@
  */
 function createNewEvent(eventName) {
   let event
+  /* istanbul ignore else - historical InternetExplorer only */
   if (typeof Event === 'function') {
     event = new Event(eventName)
   } else {

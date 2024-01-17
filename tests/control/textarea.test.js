@@ -1,6 +1,21 @@
 import controlTextarea from '../../src/js/control/textarea.js'
 import controlTinymce from '../../src/js/control/textarea.tinymce'
 import controlQuill from '../../src/js/control/textarea.quill'
+import { getScripts, getStyles, isCached } from '../../src/js/utils'
+
+const sleep = milliseconds => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+const loadResources = async (js, css) => {
+  if (css) {
+    getStyles(css)
+  }
+  if (js && !isCached(js)) {
+    await getScripts(js)
+  }
+}
+
 describe('Test Text Control', () => {
   test('test building control element', async () => {
     const controlInstance = new controlTextarea({
@@ -35,7 +50,7 @@ describe('Test Text Control', () => {
 })
 
 describe('Test building text variations and subtypes', () => {
-    test('can render TinyMCE', () => {
+    test('can render TinyMCE', async () => {
       const controlInstance = new controlTinymce({
         'type': 'textarea',
         'required': false,
@@ -45,12 +60,22 @@ describe('Test building text variations and subtypes', () => {
         'access': false,
         'subtype': 'tinymce',
       }, false)
+      controlInstance.configure()
       const element = controlInstance.build()
       expect(element.constructor.name).toBe('HTMLTextAreaElement')
       expect(element.type).toBe('textarea')
+
+      window.document.body.appendChild(element) //Element must be attached to dom for tinymce theme to work otherwise exception thrown
+
+      await loadResources(controlInstance.js, controlInstance.css)
+
+      expect(window.tinymce).not.toBeUndefined()
+      controlInstance.onRender()
+      await sleep(2000)
+      expect(window.tinymce.get('tinymce-elem')).not.toBeNull()
     })
 
-    test('can render Quill', () => {
+    test('can render Quill', async () => {
       const controlInstance = new controlQuill({
         'type': 'textarea',
         'required': false,
@@ -60,7 +85,13 @@ describe('Test building text variations and subtypes', () => {
         'access': false,
         'subtype': 'quill',
       }, false)
+      controlInstance.configure()
       const element = controlInstance.build()
       expect(element.constructor.name).toBe('HTMLDivElement')
+
+      window.document.body.appendChild(element) //Element must be attached to dom for quill to work otherwise exception thrown
+
+      await loadResources(controlInstance.js, controlInstance.css)
+      controlInstance.onRender()
     })
 })

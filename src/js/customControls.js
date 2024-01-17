@@ -133,17 +133,17 @@ export default class customControls {
       const value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[type] : i18n
       if (value) {
         return value
+      } else {
+        // otherwise check the mi18n object - allow for mapping a lookup to a custom mi18n lookup
+        let mapped = def.mi18n
+        if (typeof mapped === 'object') {
+          mapped = mapped[lookupCamel] || mapped[type]
+        }
+        if (!mapped) {
+          mapped = lookupCamel
+        }
+        return mi18n.get(mapped)
       }
-
-      // otherwise check the mi18n object - allow for mapping a lookup to a custom mi18n lookup
-      let mapped = def.mi18n
-      if (typeof mapped === 'object') {
-        mapped = mapped[lookupCamel] || mapped[type]
-      }
-      if (!mapped) {
-        mapped = lookupCamel
-      }
-      return mi18n.get(mapped)
   }
 
   get definition() {
