@@ -522,4 +522,30 @@ describe('FormBuilder disabling attributes', () => {
     expect(fbWrap.find('.className-wrap').css('display')).toBe('none')
     expect(fbWrap.find('.label-wrap').css('display')).toBe('block')
   })
+
+  test('attributes not on stage when disabled via typeUserDisabledAttrs', async () => {
+    const config = {
+      typeUserDisabledAttrs: {'text': ['label','description']},
+    }
+
+    const fbWrap = $('<div>')
+    const fb = await $(fbWrap).formBuilder(config).promise
+    const field = {
+      type: 'text',
+      class: 'form-control'
+    }
+    fb.actions.addField(field)
+    const field2 = {
+      type: 'textarea',
+      class: 'form-control'
+    }
+    fb.actions.addField(field2)
+    expect(fbWrap.find('.form-field[type="text"] .subtype-wrap')).toHaveLength(1)
+    expect(fbWrap.find('.form-field[type="text"] .label-wrap')).toHaveLength(0)
+    expect(fbWrap.find('.form-field[type="text"] .description-wrap')).toHaveLength(0)
+
+    expect(fbWrap.find('.form-field[type="textarea"] .subtype-wrap')).toHaveLength(1)
+    expect(fbWrap.find('.form-field[type="textarea"] .label-wrap')).toHaveLength(1)
+    expect(fbWrap.find('.form-field[type="textarea"] .description-wrap')).toHaveLength(1)
+  })
 })
