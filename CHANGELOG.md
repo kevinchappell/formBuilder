@@ -1,3 +1,10 @@
+# [3.18.0](https://github.com/kevinchappell/formBuilder/compare/v3.17.3...v3.18.0) (2024-01-19)
+
+
+### Features
+
+* Allow control plugins to disable default attributes via the disableAttr key in the plugin definition ([54bc369](https://github.com/kevinchappell/formBuilder/commit/54bc3691aca242416ef254e76d32c111b97e632e))
+
 ## [3.17.3](https://github.com/kevinchappell/formBuilder/compare/v3.17.2...v3.17.3) (2023-12-08)
 
 
