@@ -3,14 +3,14 @@
 
 ### Features
 
-* Allow control plugins to disable default attributes via the disableAttr key in the plugin definition ([54bc369](https://github.com/kevinchappell/formBuilder/commit/54bc3691aca242416ef254e76d32c111b97e632e))
+* Allow control plugins to disable default attributes via the disableAttr key in the plugin definition ([54bc369](https://github.com/kevinchappell/formBuilder/commit/54bc3691aca242416ef254e76d32c111b97e632e)).
 
 ## [3.17.3](https://github.com/kevinchappell/formBuilder/compare/v3.17.2...v3.17.3) (2023-12-08)
 
 
 ### Bug Fixes
 
-* Only setup sortable row wrapper and invisible row placeholders when adding a row to the stage ([25a27e6](https://github.com/kevinchappell/formBuilder/commit/25a27e6ced109bbfc745dace16175f80a00b40b1))
+* Only set sortable row wrapper and invisible row placeholders when adding a row to the stage ([25a27e6](https://github.com/kevinchappell/formBuilder/commit/25a27e6ced109bbfc745dace16175f80a00b40b1))
 * Use last-of-type instead of last-child due to drag/drop placeholder occupying last-child position ([dc4f312](https://github.com/kevinchappell/formBuilder/commit/dc4f3128372076bba4056f89d22160fd83f8a949))
 * Use the pointer to for sortable intersect detection when dragging controls from the control panel onto a bootstrap row. jQuery.ui sortable used tolerance: intersect which caused the placeholder in a row to jump around when near the edges and the new control is less than 50% contained. ([995fc2e](https://github.com/kevinchappell/formBuilder/commit/995fc2e5ac75b146b4565d3eb24c08c39d45a3f6))
 * When adding rows, reset the hidden flag for all placeholders ([939341c](https://github.com/kevinchappell/formBuilder/commit/939341ce9c4aff39183527202fbe7fb643b3bb9f))
@@ -36,29 +36,29 @@
 ### Bug Fixes
 
 * add additional row cleanup check to ensure no artifacts are left in the DOM ([612d009](https://github.com/kevinchappell/formBuilder/commit/612d0093217fe98b0f1f79f74afecb977e3b724f))
-* If label is intentionally blank or label is not enabled we fallback to 'type: name' for the control label to ensure a value is visible on the stage ([fcff9e9](https://github.com/kevinchappell/formBuilder/commit/fcff9e94e6b88b2f146c55f2c4abab09fb53406f))
-* remove bootstrap initialisation of blank row on empty form. It is not required. ([b8fd49a](https://github.com/kevinchappell/formBuilder/commit/b8fd49af02905dafeb95b025072d870f9e59168d))
+* If the label is intentionally blank or the label is not enabled we fall to 'type: name' for the control label to ensure a value is visible on the stage ([fcff9e9](https://github.com/kevinchappell/formBuilder/commit/fcff9e94e6b88b2f146c55f2c4abab09fb53406f))
+* remove bootstrap initialization of blank row on the empty form. It is not required. ([b8fd49a](https://github.com/kevinchappell/formBuilder/commit/b8fd49af02905dafeb95b025072d870f9e59168d))
 * remove redundant checkRowCleanup() ([9b27a6e](https://github.com/kevinchappell/formBuilder/commit/9b27a6e2dcf1871d98da3454e8e3cb5ee6888a54))
-* remove redundant droppingToPlaceholderRow which uses the same check as droppingToNewRow, and simplify the logic. ([62c0562](https://github.com/kevinchappell/formBuilder/commit/62c0562e18751f653470c5317c53cd395edf6016))
+* Remove redundant droppingToPlaceholderRow which uses the same check as droppingToNewRow, and simplify the logic. ([62c0562](https://github.com/kevinchappell/formBuilder/commit/62c0562e18751f653470c5317c53cd395edf6016))
 
 
 ### Features
 
-* store the bootstrap row's id to the rowWapper via data-row-id ([dd68b52](https://github.com/kevinchappell/formBuilder/commit/dd68b52e5ac9521c4b78aab5bb04e07c08651241))
+* store the bootstrap row's ID to the rapper via data-row-id ([dd68b52](https://github.com/kevinchappell/formBuilder/commit/dd68b52e5ac9521c4b78aab5bb04e07c08651241))
 
 ## [3.16.13](https://github.com/kevinchappell/formBuilder/compare/v3.16.12...v3.16.13) (2023-11-07)
 
 
 ### Bug Fixes
 
-* ensure that controlConfig is loaded per formBuilder instance. We delay setting the static property controlConfig on class control until we construct the control class in layout. ([5f8de00](https://github.com/kevinchappell/formBuilder/commit/5f8de00ee6c546edf1fdb663b534b676d5dca0dd))
+* Ensure that controlConfig is loaded per formBuilder instance. We delay setting the static property controlConfig on class control until we construct the control class in layout. ([5f8de00](https://github.com/kevinchappell/formBuilder/commit/5f8de00ee6c546edf1fdb663b534b676d5dca0dd))
 
 ## [3.16.12](https://github.com/kevinchappell/formBuilder/compare/v3.16.11...v3.16.12) (2023-11-01)
 
 
 ### Bug Fixes
 
-* ensure a default value is set for when rows exists but none have numerical indices ([e963748](https://github.com/kevinchappell/formBuilder/commit/e96374833e549c6ca9bfc9acd90d225939b25f3e))
+* Ensure a default value is set for when rows exist but none have numerical indices ([e963748](https://github.com/kevinchappell/formBuilder/commit/e96374833e549c6ca9bfc9acd90d225939b25f3e))
 
 ## [3.16.11](https://github.com/kevinchappell/formBuilder/compare/v3.16.10...v3.16.11) (2023-11-01)
 
@@ -80,8 +80,8 @@
 ### Bug Fixes
 
 * Add test cases for checkbox group ([36c7d0e](https://github.com/kevinchappell/formBuilder/commit/36c7d0e62484de4b0d3d340ecf4809354dad3825))
-* Don't pull grid classes from SVG elements, The SVG className property is a SVGAnimatedString not a string. Controls like textarea.quill have SVG graphics in their element list. ([db27e06](https://github.com/kevinchappell/formBuilder/commit/db27e067c849bceb40e60da6acdf8b395ab8f0eb))
-* prevent togging the edit field if double-clicking within a textarea. Additionally, use the property isContentEditable to check if the element double-clicked is a descendant of a contenteditable field (eg a paragraph withing a div[contenteditable]) ([a44ef6e](https://github.com/kevinchappell/formBuilder/commit/a44ef6e77d4f7d4001083a9228fa961af0b22333))
+* Don't pull grid classes from SVG elements, The SVG className property is an SVGAnimatedString, not a string. Controls like textarea. quill have SVG graphics in their element list. ([db27e06](https://github.com/kevinchappell/formBuilder/commit/db27e067c849bceb40e60da6acdf8b395ab8f0eb))
+* prevent togging the edit field if double-clicking within a text area. Additionally, use the property isContentEditable to check if the element double-clicked is a descendant of a content editable field (eg a paragraph within a div[contenteditable]) ([a44ef6e](https://github.com/kevinchappell/formBuilder/commit/a44ef6e77d4f7d4001083a9228fa961af0b22333))
 * strip form-control from the quill container div if it is set, this class is incompatible with the quill control ([533ae80](https://github.com/kevinchappell/formBuilder/commit/533ae8020cbdc07689fc2f8129562d844526a0ef))
 * use the correct selector for the checkbox-group other value input, control may not have been added to the document dom at the time of onRender. ([0768868](https://github.com/kevinchappell/formBuilder/commit/0768868be4b90964d31c9eab13e5b975621559c2))
 
@@ -90,7 +90,7 @@
 
 ### Bug Fixes
 
-* When setting a placeholder option a select field set the value to an empty string '' to allow for required validation to occur ([924ca5c](https://github.com/kevinchappell/formBuilder/commit/924ca5ca32576ef4b9fef68df4d8eba335ec7b50))
+* When setting a placeholder option a select field sets the value to an empty string '' to allow for required validation to occur ([924ca5c](https://github.com/kevinchappell/formBuilder/commit/924ca5ca32576ef4b9fef68df4d8eba335ec7b50))
 
 ## [3.16.7](https://github.com/kevinchappell/formBuilder/compare/v3.16.6...v3.16.7) (2023-10-30)
 
@@ -104,7 +104,7 @@
 
 ### Bug Fixes
 
-* allow Bootstrap row identifiers to be any string value after row- (eg row-myrow). This allows default fields or inputSets to be pre-configured with named rows which can then be targeted with CSS rules. ([e06f85d](https://github.com/kevinchappell/formBuilder/commit/e06f85d350fbd1fc0d1873551e4bf16b5d24f495))
+* allow Bootstrap row identifiers to be any string value after row- (eg row-my row). This allows default fields or inputSets to be pre-configured with named rows which can then be targeted with CSS rules. ([e06f85d](https://github.com/kevinchappell/formBuilder/commit/e06f85d350fbd1fc0d1873551e4bf16b5d24f495))
 
 ## [3.16.5](https://github.com/kevinchappell/formBuilder/compare/v3.16.4...v3.16.5) (2023-10-23)
 
@@ -118,7 +118,7 @@
 
 ### Bug Fixes
 
-* Refactor initialisation of the formBuilder plugin to ensure that two or more concurrent initialisations cannot interfere with each other ([199c1cd](https://github.com/kevinchappell/formBuilder/commit/199c1cd2601594b84c305c17a0c62fb81e51d9d4))
+* Refactor initialization of the form builder plugin to ensure that two or more concurrent initializations cannot interfere with each other ([199c1cd](https://github.com/kevinchappell/formBuilder/commit/199c1cd2601594b84c305c17a0c62fb81e51d9d4))
 * subtype is critical to defining the control, add subtype to the list of attributes that are hidden rather than removed when disabled via disabledAttrs ([28208fa](https://github.com/kevinchappell/formBuilder/commit/28208faefa7ba06a755118842652517ba7ee8ac5))
 
 ## [3.16.3](https://github.com/kevinchappell/formBuilder/compare/v3.16.2...v3.16.3) (2023-10-19)
@@ -126,26 +126,26 @@
 
 ### Bug Fixes
 
-* Configure JSDOM to load script tags injected into the dom by getScripts ([41c0b20](https://github.com/kevinchappell/formBuilder/commit/41c0b20a613f3cb790f48446d3da6313ee95d04e))
-* Ensure we load these files via https otherwise these controls cannot be loaded when running from file:// ([56602ff](https://github.com/kevinchappell/formBuilder/commit/56602ffc1d3474c69a756a2eca45feb2bf51f2d0))
-* formBuilder.actions.setLang now returns a promise ([58ec7e5](https://github.com/kevinchappell/formBuilder/commit/58ec7e54183226f739898d422bc863dfdd95aad5))
-* load css files that exist when testing ([ad8147a](https://github.com/kevinchappell/formBuilder/commit/ad8147a9a533122a3cf4249adea1be23a74604db))
+* Configure JSDOM to load script tags injected into the dom by get scripts ([41c0b20](https://github.com/kevinchappell/formBuilder/commit/41c0b20a613f3cb790f48446d3da6313ee95d04e))
+* Ensure we load these files via HTTP otherwise these controls cannot be loaded when running from file:// ([56602ff](https://github.com/kevinchappell/formBuilder/commit/56602ffc1d3474c69a756a2eca45feb2bf51f2d0))
+* formBuilder.actions.setting now returns a promise ([58ec7e5](https://github.com/kevinchappell/formBuilder/commit/58ec7e54183226f739898d422bc863dfdd95aad5))
+* load CSS files that exist when testing ([ad8147a](https://github.com/kevinchappell/formBuilder/commit/ad8147a9a533122a3cf4249adea1be23a74604db))
 
 ## [3.16.2](https://github.com/kevinchappell/formBuilder/compare/v3.16.1...v3.16.2) (2023-10-19)
 
 
 ### Bug Fixes
 
-* don't bother lifting col/row classes if we don't have any to lift ([e012b8b](https://github.com/kevinchappell/formBuilder/commit/e012b8b105e843429c1eb63139c732333c0a95aa))
+* Don't bother lifting col/row classes if we don't have any to lift ([e012b8b](https://github.com/kevinchappell/formBuilder/commit/e012b8b105e843429c1eb63139c732333c0a95aa))
 * fix lifting bootstrap col/row fields for autocomplete ([62b8e3b](https://github.com/kevinchappell/formBuilder/commit/62b8e3bf03b618103c871a1c3975553bc5d877c6))
-* initialise formRender with an empty formData in cases when no formData is provided, otherwise we are unable to perform setData/render functions on the container ([48700de](https://github.com/kevinchappell/formBuilder/commit/48700de9984295a77c8e7a7f45350cfbe9f7f928))
+* initialize formRender with an empty formData in cases when no formData is provided, otherwise, we are unable to perform setData/render functions on the container ([48700de](https://github.com/kevinchappell/formBuilder/commit/48700de9984295a77c8e7a7f45350cfbe9f7f928))
 
 ## [3.16.1](https://github.com/kevinchappell/formBuilder/compare/v3.16.0...v3.16.1) (2023-10-19)
 
 
 ### Bug Fixes
 
-* move custom control registration into its own class and initialise it per formBuilder instance. This ensures definitions set in one formBuilder do not interact with definitions in other formBuilder instances ([203cac7](https://github.com/kevinchappell/formBuilder/commit/203cac7125c187652ee995e10521d8a8d47eef7c))
+* move custom control registration into its own class and initialize it per formBuilder instance. This ensures definitions set in one form builder do not interact with definitions in other form builder instances ([203cac7](https://github.com/kevinchappell/formBuilder/commit/203cac7125c187652ee995e10521d8a8d47eef7c))
 
 # [3.16.0](https://github.com/kevinchappell/formBuilder/compare/v3.15.1...v3.16.0) (2023-10-19)
 
@@ -159,14 +159,14 @@
 
 ### Bug Fixes
 
-* add missing call to getBootstrapColumnClass otherwise check will always fail. Ensure we retain additional styles set on colWrappers by only removing and adding the requested col-* classes ([10067e6](https://github.com/kevinchappell/formBuilder/commit/10067e6f5baf56e6448a71a12c4d0c7cabde678d))
+* add a missing call to getBootstrapColumnClass otherwise check will always fail. Ensure we retain additional styles set on colWrappers by only removing and adding the requested col-* classes ([10067e6](https://github.com/kevinchappell/formBuilder/commit/10067e6f5baf56e6448a71a12c4d0c7cabde678d))
 * add test cases for Bootstrap helper methods and align functions with sane return values ([2fa6c0b](https://github.com/kevinchappell/formBuilder/commit/2fa6c0b9cbf26ca180c3d88c35547066781e1657))
-* emit an event when clearing the stage, use this to reset formRow counter and stage setup for enhancedBootstrap function ([edd5500](https://github.com/kevinchappell/formBuilder/commit/edd55001af0fb6c9bd583ba1a67812938825dec3))
-* revert change that incorrectly grabbed the description of the fields ([7d61aaf](https://github.com/kevinchappell/formBuilder/commit/7d61aaf4f2590a93874bfb859e97dc15887a6083))
-* stopIndex is incorrectly calculated when in enhancedBootstrap mode. Fix this by always referring to children of the stage rather than LIs ([052a761](https://github.com/kevinchappell/formBuilder/commit/052a76163cee67c2c0a6f044368c51717b058601))
+* emit an event when clearing the stage, use this to reset formRow counter and stage setup for enhanced bootstrap function ([edd5500](https://github.com/kevinchappell/formBuilder/commit/edd55001af0fb6c9bd583ba1a67812938825dec3))
+* Revert change that incorrectly grabbed the description of the fields ([7d61aaf](https://github.com/kevinchappell/formBuilder/commit/7d61aaf4f2590a93874bfb859e97dc15887a6083))
+* stopIndex is incorrectly calculated when in enhanced bootstrap mode. Fix this by always referring to children of the stage rather than LIs ([052a761](https://github.com/kevinchappell/formBuilder/commit/052a76163cee67c2c0a6f044368c51717b058601))
 * Unify the regular and enhancedBootstrap UX ([c0e6d71](https://github.com/kevinchappell/formBuilder/commit/c0e6d71a0ba9295c16ed67ab4bab04a36fe497e6))
 * use non-deprecated keyboardEvent.code instead of keyboardEvent.keycode. ([0881cff](https://github.com/kevinchappell/formBuilder/commit/0881cff68a27c67ff64781b92b551a36cf3e5f56))
-* when sorting stage items don't allow the placeholder to go before a prepended and after an appended item ([6da23a2](https://github.com/kevinchappell/formBuilder/commit/6da23a2e442192c8b4ffb3d532afa3a3e3e1022b))
+* When sorting stage items don't allow the placeholder to go before a prepended and after an appended item ([6da23a2](https://github.com/kevinchappell/formBuilder/commit/6da23a2e442192c8b4ffb3d532afa3a3e3e1022b))
 
 # [3.15.0](https://github.com/kevinchappell/formBuilder/compare/v3.14.0...v3.15.0) (2023-10-14)
 
@@ -186,24 +186,24 @@
 
 ### Features
 
-* Add in additional HTML5 inputs time, datetime-local and range [supported by all major browsers]. For BC reasons time and datetime-local implemented as a subtype of date. ([0a1c141](https://github.com/kevinchappell/formBuilder/commit/0a1c14164a760cc66995f77ea1c6560b9227be00))
+* Add in additional HTML5 inputs time, datetime-local, and range [supported by all major browsers]. For BC reasons time and datetime-local are implemented as a subtype of date. ([0a1c141](https://github.com/kevinchappell/formBuilder/commit/0a1c14164a760cc66995f77ea1c6560b9227be00))
 
 ## [3.13.2](https://github.com/kevinchappell/formBuilder/compare/v3.13.1...v3.13.2) (2023-10-09)
 
 
 ### Bug Fixes
 
-* Bumps postcss to 8.4.31 and updates ancestor dependencies postcss, autoprefixer, css-loader and postcss-loader. Update to postcss is a breaking update due to configuration changes preventing dependabot PR from being merged ([9d974b1](https://github.com/kevinchappell/formBuilder/commit/9d974b135d9e32bc1b6b81240a65243c42ab6a29))
+* Bumps postcss to 8.4.31 and updates ancestor dependencies postcss, autoprefixer, css-loader and postcss-loader. Update to postcss is a breaking update due to configuration changes preventing dependable PR from being merged ([9d974b1](https://github.com/kevinchappell/formBuilder/commit/9d974b135d9e32bc1b6b81240a65243c42ab6a29))
 
 ## [3.13.1](https://github.com/kevinchappell/formBuilder/compare/v3.13.0...v3.13.1) (2023-10-09)
 
 
 ### Bug Fixes
 
-* Add dompurify to dev requirements so that we can test the Sanitizer using the domPurify backend ([c342558](https://github.com/kevinchappell/formBuilder/commit/c342558ac6c87d95fc6c3a44af03ded348abcc16))
-* Control may not be instered into the DOM at the time of onRender, keep a reference to the element in build() and use in onRender() ([33ea8c4](https://github.com/kevinchappell/formBuilder/commit/33ea8c479a094abf8b33e1a6f13ea13aeab327fe))
+* Add do purify to dev requirements so that we can test the Sanitizer using the domPurify backend ([c342558](https://github.com/kevinchappell/formBuilder/commit/c342558ac6c87d95fc6c3a44af03ded348abcc16))
+* Control may not be inserted into the DOM at the time of contender, keep a reference to the element in build() and use in render() ([33ea8c4](https://github.com/kevinchappell/formBuilder/commit/33ea8c479a094abf8b33e1a6f13ea13aeab327fe))
 * Fix JSDoc ([d2b8629](https://github.com/kevinchappell/formBuilder/commit/d2b86295dab3a606829aab6dc5a33394ee9949d5))
-* Mark XML helper functions as private and don't export them from utils module ([74d19a2](https://github.com/kevinchappell/formBuilder/commit/74d19a2345356e81b398d6367abb57ae4f529fc9))
+* Mark XML helper functions as private and don't export them from the utils module ([74d19a2](https://github.com/kevinchappell/formBuilder/commit/74d19a2345356e81b398d6367abb57ae4f529fc9))
 * Remove unused local variable ([53649ae](https://github.com/kevinchappell/formBuilder/commit/53649aef3abfc32e3a4fdccd63333341c31baaa2))
 * Replace non-standard and deprecated call to String.substr() with String.slice() ([813cecf](https://github.com/kevinchappell/formBuilder/commit/813cecfab3df50cb5ba93837b937055b2ab785ca))
 * Return true from SanatizerAPI backend when successfully setting HTML ([c5d24c8](https://github.com/kevinchappell/formBuilder/commit/c5d24c849c2d8c7240012e6879eb5cd447d47364))
@@ -219,7 +219,7 @@
 
 ### Features
 
-* Extend disableInjectedStyle option to excluded only the embedded Bootstrap 3 classes while allow the formBuilder styles to be included. ([60524bc](https://github.com/kevinchappell/formBuilder/commit/60524bc108831141be9929c6d0f8e3979a699254))
+* Extend the disableInjectedStyle option to exclude only the embedded Bootstrap 3 classes while allowing the formBuilder styles to be included. ([60524bc](https://github.com/kevinchappell/formBuilder/commit/60524bc108831141be9929c6d0f8e3979a699254))
 
 ## [3.12.4](https://github.com/kevinchappell/formBuilder/compare/v3.12.3...v3.12.4) (2023-10-05)
 
@@ -240,32 +240,32 @@
 
 ### Bug Fixes
 
-* formData may contain HTML (eg Labels), need to escape for all dataTypes before adding into the code element. JSON is invalid if copy-paste from showData dialog ([c6f89d1](https://github.com/kevinchappell/formBuilder/commit/c6f89d1847c4dbd4a80c6ad2b43332f1f4e01ded))
+* formData may contain HTML (eg Labels), which need to escape for all dataTypes before adding into the code element. JSON is invalid if copy-paste from showData dialog ([c6f89d1](https://github.com/kevinchappell/formBuilder/commit/c6f89d1847c4dbd4a80c6ad2b43332f1f4e01ded))
 
 ## [3.12.1](https://github.com/kevinchappell/formBuilder/compare/v3.12.0...v3.12.1) (2023-10-05)
 
 
 ### Bug Fixes
 
-* Calculation of next control insertion point took into account any divs created by enableEnhancedBootstrapGrid, appendNewField expects only LIs in the calculation and therefore inserts in the wrong position if the EnhancedBootstrap feature is enabled ([fd83248](https://github.com/kevinchappell/formBuilder/commit/fd8324861aeeedaa79b552da21464e8a95507364))
-* changing column width in enhancedBootstrap feature did not work will with a touchpad. Mousemove event will fire multiple times (especially on MacOS with accelerated/decelerated scrolling) cauing the columns to erratically increase/decrease in size. ([eb4fd68](https://github.com/kevinchappell/formBuilder/commit/eb4fd6848acdf80595ee6d83dfaff2111c3eeafa))
+* Calculation of the next control insertion point took into account any divs created by enableEnhancedBootstrapGrid, appendNewField expects only LIs in the calculation and therefore inserts in the wrong position if the EnhancedBootstrap feature is enabled ([fd83248](https://github.com/kevinchappell/formBuilder/commit/fd8324861aeeedaa79b552da21464e8a95507364))
+* changing the column width in the enhanced bootstrap feature did not work well with a touchpad. Mousemove event will fire multiple times (especially on MacOS with accelerated/decelerated scrolling) causing the columns to erratically increase/decrease in size. ([eb4fd68](https://github.com/kevinchappell/formBuilder/commit/eb4fd6848acdf80595ee6d83dfaff2111c3eeafa))
 * correctly show sort buttons in non-bootstrap mode. Use helpers.toggleHighlight when sorting elements rather than a custom animation ([a1f6638](https://github.com/kevinchappell/formBuilder/commit/a1f663897ee6e5c7191084ad6309d42cf4d5b629))
-* Don't allow rows moved via the keyboard in the enhancedBootstrap feature to swap with prepended or appended fields ([5af6feb](https://github.com/kevinchappell/formBuilder/commit/5af6feba6bf0cfaa04807ae02b607232b261259a))
-* enableEnhancedBootstrapGrid inserts the rowWrapperNode at the end of the stage instead of using the last position causing controls to always be inserted at the end even if prepend option is set. Use the location of the added Field's LI to append the rowWrapper before moving the LI within the row ([5990b67](https://github.com/kevinchappell/formBuilder/commit/5990b6725f24878f2ce9b5aac6bd998ef0ea34fa))
+* Don't allow rows moved via the keyboard in the enhanced bootstrap feature to swap with prepended or appended fields ([5af6feb](https://github.com/kevinchappell/formBuilder/commit/5af6feba6bf0cfaa04807ae02b607232b261259a))
+* enableEnhancedBootstrapGrid inserts the rowWrapperNode at the end of the stage instead of using the last position causing controls to always be inserted at the end even if the prepend option is set. Use the location of the added Field's LI to append the rowWrapper before moving the LI within the row ([5990b67](https://github.com/kevinchappell/formBuilder/commit/5990b6725f24878f2ce9b5aac6bd998ef0ea34fa))
 * helpers.getBootstrapColumnValue return value is an int, no need to parseInt on int ([8caa6a2](https://github.com/kevinchappell/formBuilder/commit/8caa6a25259f566bf777e14f01903612c9f21b3e))
-* Only enable mobile sorting action buttons when enhancedBootstrap feature is not enabled. Bootstrap feature has functionality to move rows up and down and the two are incompatible ([f7fa676](https://github.com/kevinchappell/formBuilder/commit/f7fa67658af037528cbbffb3a29c3409a9638777))
-* Reset the height of the InvisibleRowPlaceholders in enhancedBootstrap feature when hiding them ([40bf3fe](https://github.com/kevinchappell/formBuilder/commit/40bf3fe664e31bfd6bd991813b07ba4373f9cff4))
-* When cloning a field in enhancedBootstrap mode invisible row placeholders need to be setup for the new fields ([49b3363](https://github.com/kevinchappell/formBuilder/commit/49b3363e2ccf8900cceb31853c2810be747f8ca7))
-* When drag and dropping a Header field (and other types) in enhancedBootstrap mode the preview needs to be cleaned of row- and col- classes otherwise and invalid field element is placed on the stage. ([35d8ea5](https://github.com/kevinchappell/formBuilder/commit/35d8ea54138a61d6419db4fe563b3d5f9c550b6b))
-* When drag and dropping elements in enhancedBootstrap mode the colWrapper mouseenter could fire after dragging a field onto another field, this would cause the rowPlaceholders to be hidden and then shown with 1px height ([ea91499](https://github.com/kevinchappell/formBuilder/commit/ea9149986c6852451d7882e2b8bf0b5d10978b99))
+* Only enable mobile sorting action buttons when the enhanced bootstrap feature is not enabled. The bootstrap feature has the functionality to move rows up and down and the two are incompatible ([f7fa676](https://github.com/kevinchappell/formBuilder/commit/f7fa67658af037528cbbffb3a29c3409a9638777))
+* Reset the height of the InvisibleRowPlaceholders in enhanced bootstrap feature when hiding them ([40bf3fe](https://github.com/kevinchappell/formBuilder/commit/40bf3fe664e31bfd6bd991813b07ba4373f9cff4))
+* When cloning a field in enhanced mode invisible row placeholders need to be set for the new fields ([49b3363](https://github.com/kevinchappell/formBuilder/commit/49b3363e2ccf8900cceb31853c2810be747f8ca7))
+* When dragging and dropping a Header field (and other types) in enhanced bootstrap mode the preview needs to be cleaned of row- and col- classes otherwise an invalid field element is placed on the stage. ([35d8ea5](https://github.com/kevinchappell/formBuilder/commit/35d8ea54138a61d6419db4fe563b3d5f9c550b6b))
+* When drag and dropping elements in enhanced bootstrap mode the colWrapper mouse enter could fire after dragging a field onto another field, this would cause the rowPlaceholders to be hidden and then shown with 1px height ([ea91499](https://github.com/kevinchappell/formBuilder/commit/ea9149986c6852451d7882e2b8bf0b5d10978b99))
 
 # [3.12.0](https://github.com/kevinchappell/formBuilder/compare/v3.11.1...v3.12.0) (2023-10-05)
 
 
 ### Bug Fixes
 
-* correct the documentation for formRender action clear() ([21c206a](https://github.com/kevinchappell/formBuilder/commit/21c206a7e82836dab0591d41b2d031e7993a9b40))
-* Improve browserslist target from '> 1%' which has less than 80% global coverage, to 'defaults' which improves coverage to 85.4% global and is equivalent to '> 0.5%, last 2 versions, Firefox ESR, not dead' ([01ca0fa](https://github.com/kevinchappell/formBuilder/commit/01ca0fa5cae6038b1d086e60a47463f907c032a3))
+* Correct the documentation for formRender action clear() ([21c206a](https://github.com/kevinchappell/formBuilder/commit/21c206a7e82836dab0591d41b2d031e7993a9b40))
+* Improve browsers list target from '> 1%' which has less than 80% global coverage, to 'defaults' which improves coverage to 85.4% global and is equivalent to '> 0.5%, last 2 versions, Firefox ESR, not dead' ([01ca0fa](https://github.com/kevinchappell/formBuilder/commit/01ca0fa5cae6038b1d086e60a47463f907c032a3))
 
 
 ### Features
@@ -277,8 +277,8 @@
 
 ### Bug Fixes
 
-* helpers.clearFields no longer supports an animate flag, update calls to this function ([ec9aa51](https://github.com/kevinchappell/formBuilder/commit/ec9aa51eea27a2790e5603a2b607d2c8ea3826b3))
-* helpers.save() is called with and without minify being set, make false by default. Fix call to xmlSave which does not accept a minify parameter. Fix return type of helpers.save() ([41b10f0](https://github.com/kevinchappell/formBuilder/commit/41b10f0511455b3e9e01c903d9996eba86065a54))
+* helpers.Clearfield no longer supports an animate flag, update calls to this function ([ec9aa51](https://github.com/kevinchappell/formBuilder/commit/ec9aa51eea27a2790e5603a2b607d2c8ea3826b3))
+* helpers. save() is called with and without minify being set, make false by default. Fix call to xmlSave which does not accept a minify parameter. Fix return type of helpers.save() ([41b10f0](https://github.com/kevinchappell/formBuilder/commit/41b10f0511455b3e9e01c903d9996eba86065a54))
 
 # [3.11.0](https://github.com/kevinchappell/formBuilder/compare/v3.10.6...v3.11.0) (2023-10-05)
 
@@ -291,7 +291,7 @@
 * fix link to translation demo page from i18n option page in docs ([a4de783](https://github.com/kevinchappell/formBuilder/commit/a4de7837dcee08369593c10c8a524bfb33b07e59))
 * Improve the definition of utils.trimObj() to not modify the source object ([b807646](https://github.com/kevinchappell/formBuilder/commit/b8076460ddeb9d9b3bd6652de96ad2201c1d5765))
 * isPotentiallyDangerousAttribute returns false if the Sanitizer backends have been disabled via config ([c75ccdb](https://github.com/kevinchappell/formBuilder/commit/c75ccdb9c8ddbd5d3e262b6581bd41f9a8f8eb03))
-* make dompurify the primary sanitizer backend if it is available. Sanitizer API is still experimental and not support by all browsers therefore it should only be used if DomPurify isn't included ([d0043d0](https://github.com/kevinchappell/formBuilder/commit/d0043d0432520ebc64059d86d0c8bd9c2c7ecc50))
+* make do purify the primary sanitizer backend if it is available. Sanitizer API is still experimental and not supported by all browsers therefore it should only be used if DomPurify isn't included ([d0043d0](https://github.com/kevinchappell/formBuilder/commit/d0043d0432520ebc64059d86d0c8bd9c2c7ecc50))
 
 
 ### Features
@@ -303,7 +303,7 @@
 
 ### Bug Fixes
 
-* Due to recursion protection GitHub actions does not trigger the publish event when the release is created via another action. Instead use the workflow_run event to chain Publish with Deploy Website ([a702686](https://github.com/kevinchappell/formBuilder/commit/a702686770e526bbfa6c69b5b255ef52399f630b))
+* Due to recursion protection GitHub actions do not trigger the publish event when the release is created via another action. Instead use the workflow_run event to chain Publish with Deploy Website ([a702686](https://github.com/kevinchappell/formBuilder/commit/a702686770e526bbfa6c69b5b255ef52399f630b))
 
 ## [3.10.5](https://github.com/kevinchappell/formBuilder/compare/v3.10.4...v3.10.5) (2023-09-21)
 
@@ -318,7 +318,7 @@
 
 ### Bug Fixes
 
-* Handle the case of Autocomplete providing field as an array of HTMLElements ([d1b9b51](https://github.com/kevinchappell/formBuilder/commit/d1b9b51ee6d74904b2356559c799a9fbf8037447))
+* Handle the case of Autocomplete providing field as an array of HTML elements ([d1b9b51](https://github.com/kevinchappell/formBuilder/commit/d1b9b51ee6d74904b2356559c799a9fbf8037447))
 
 ## [3.10.3](https://github.com/kevinchappell/formBuilder/compare/v3.10.2...v3.10.3) (2023-09-21)
 
@@ -326,7 +326,7 @@
 ### Bug Fixes
 
 * Cancel stage sort if it would place the field before an appended field or after a prepended field ([82242e5](https://github.com/kevinchappell/formBuilder/commit/82242e55492490f71dddeecf900281c6f942af3b))
-* Controls added by clicking need to be added as the second last item if opts.append is set ([478dbc5](https://github.com/kevinchappell/formBuilder/commit/478dbc53a98b365e8be132f6e89845a465528a71))
+* Controls added by clicking need to be added as the second last item if opts. append is set ([478dbc5](https://github.com/kevinchappell/formBuilder/commit/478dbc53a98b365e8be132f6e89845a465528a71))
 * invalid selector ([a153525](https://github.com/kevinchappell/formBuilder/commit/a15352538feb534e610a6301e72ffaa8726832c8))
 * Remove unreachable branch in condition. $().closest can be used for both cases as closest() starts traversal from the current element ([619005a](https://github.com/kevinchappell/formBuilder/commit/619005a76cf8e2576905ee3bc518efcb856aafbe))
 * When dragging a new control onto the stage, ensure the placeholder is placed after any prepended field and before any appended field ([d9cf010](https://github.com/kevinchappell/formBuilder/commit/d9cf010edb8a32fb0410f2eef21676af6993aba2))
@@ -336,7 +336,7 @@
 
 ### Bug Fixes
 
-* typeof will always return a string therefore fallback is never called ([4ca0dc9](https://github.com/kevinchappell/formBuilder/commit/4ca0dc9bd8f3505faaef3609d52432c7ab4fcb8b))
+* type of will always return a string therefore fallback is never called ([4ca0dc9](https://github.com/kevinchappell/formBuilder/commit/4ca0dc9bd8f3505faaef3609d52432c7ab4fcb8b))
 * warn when the typeUserAttr is unable to be processed instead of silently ignoring ([b54ff0d](https://github.com/kevinchappell/formBuilder/commit/b54ff0d7b5e9d3e03a96e8f350702fdbe9201407))
 
 ## [3.10.1](https://github.com/kevinchappell/formBuilder/compare/v3.10.0...v3.10.1) (2023-09-21)
@@ -358,7 +358,7 @@
 
 ### Bug Fixes
 
-* Apply the removal of row- and col- to child elements if field is more than just and input element (e.g. checkbox-group) ([323ac64](https://github.com/kevinchappell/formBuilder/commit/323ac64081fa28423f24edec14fcdb13349a30f0))
+* Apply the removal of row- and col- to child elements if the field is more than just an input element (e.g. checkbox-group) ([323ac64](https://github.com/kevinchappell/formBuilder/commit/323ac64081fa28423f24edec14fcdb13349a30f0))
 * tmpCleanColumnInfo may be called multiple times, remove previous work to ensure we don't keep appending tmp- to class names. Adjust class to include a __fb- prefix. ([6fd7018](https://github.com/kevinchappell/formBuilder/commit/6fd701869bbac74e921283507227d5060ccad0ea))
 
 ## [3.9.17](https://github.com/kevinchappell/formBuilder/compare/v3.9.16...v3.9.17) (2023-09-13)
@@ -366,9 +366,9 @@
 
 ### Bug Fixes
 
-* --display-entrypoints doesn't exist in webpack v5 ([d7de595](https://github.com/kevinchappell/formBuilder/commit/d7de595c914ab04c8b72417ac53d6050c2251c0e))
+* --display-entry points doesn't exist in web pack v5 ([d7de595](https://github.com/kevinchappell/formBuilder/commit/d7de595c914ab04c8b72417ac53d6050c2251c0e))
 * Bump semantic-release to latest ([b3ca67b](https://github.com/kevinchappell/formBuilder/commit/b3ca67b9cca07418c3cd85f398573ad99091bc55))
-* remove deprecated package "request" and replace with build-in Node fetch API. Add "colors" dependency as it is no longer implicityly required by semantic-release ([a07ec5a](https://github.com/kevinchappell/formBuilder/commit/a07ec5aa0e2effa484b37d9b2374346f199c131a))
+* Remove deprecated package "request" and replace it with build-in Node fetch API. Add "colors" dependency as it is no longer implicitly required by semantic-release ([a07ec5a](https://github.com/kevinchappell/formBuilder/commit/a07ec5aa0e2effa484b37d9b2374346f199c131a))
 
 ## [3.9.16](https://github.com/kevinchappell/formBuilder/compare/v3.9.15...v3.9.16) (2023-09-12)
 
@@ -401,11 +401,11 @@
 ### Bug Fixes
 
 * Array of strings was removed from support in TinyMCE6, use a plugin definition format supported my all versions (https://www.tiny.cloud/docs/tinymce/6/migration-from-5x/#plugin-loading-format-change) ([92a8a72](https://github.com/kevinchappell/formBuilder/commit/92a8a720ce3b4c92414fd91a6a4ac10fe96c3ba1))
-* Array.concat does not modify the existing arrays, return value was previously discarded ([92496e3](https://github.com/kevinchappell/formBuilder/commit/92496e3f45ed6ca109fd8d8c4b572fa9fc652a26))
-* helper.js classNames was overzealous in removing classNames starting with btn- when syncing with style field, only remove those that are one of the config.js styles.btn styles ([922ca80](https://github.com/kevinchappell/formBuilder/commit/922ca80361c7a8ac8c4cf9e9148479fcd73a17bf))
+* Array. concat does not modify the existing arrays, return value was previously discarded ([92496e3](https://github.com/kevinchappell/formBuilder/commit/92496e3f45ed6ca109fd8d8c4b572fa9fc652a26))
+* helper.js classNames was overzealous in removing classNames starting with btn- when syncing with the style field, only remove those that are one of the config.js styles.btn styles ([922ca80](https://github.com/kevinchappell/formBuilder/commit/922ca80361c7a8ac8c4cf9e9148479fcd73a17bf))
 * Only load TinyMCE if it hasn't already been loaded by the page, this allows specific versions to be loaded outside the hardcoded version in the plugin ([241a83a](https://github.com/kevinchappell/formBuilder/commit/241a83a91619b7a9784f79ace0cf5ff65debc150))
 * Remove any plugins we define by default from the options if they have been removed in the loaded version of TinyMCE ([de061b2](https://github.com/kevinchappell/formBuilder/commit/de061b2ef36bd9401c95d11c7dafe62bd5367e62))
-* use the Promise interface for initialising tinymce. tinymce.editors is removed in TinyMCE6 so use the tinymce.get() and tinymce.remove() interfaces which is forwards compatible ([4583b88](https://github.com/kevinchappell/formBuilder/commit/4583b88197f2288f6ab0feea4d1c86d273998b70))
+* use the Promise interface for initializing TinyMCE. tinymce.editors is removed in TinyMCE6 so use the tinymce.get() and tinymce.remove() interfaces which is forwards compatible ([4583b88](https://github.com/kevinchappell/formBuilder/commit/4583b88197f2288f6ab0feea4d1c86d273998b70))
 * window.tinymce.editors[] is not forward compatible with later versions of TinyMCE. Use the get() method instead to retrieve the Editor instance ([255ed88](https://github.com/kevinchappell/formBuilder/commit/255ed88e13fd1541d908e032f7040c16ea70a439))
 
 ## [3.9.12](https://github.com/kevinchappell/formBuilder/compare/v3.9.11...v3.9.12) (2023-09-12)
@@ -413,7 +413,7 @@
 
 ### Bug Fixes
 
-* revert change made in https://github.com/kevinchappell/formBuilder/commit/e0c0f2ea8f204da6e11d8de938e27ca6687d5588 which declared field as a const prior to the fallback to selecting the last field in the form. This change also prevents incorrect removing of the last field in the case where a fieldID is provided but which was not found in the form ([0b7e1bb](https://github.com/kevinchappell/formBuilder/commit/0b7e1bb3cbd85884c22e484e4f234426a4ba38d0))
+* revert the change made in https://github.com/kevinchappell/formBuilder/commit/e0c0f2ea8f204da6e11d8de938e27ca6687d5588 which declared the field as a const prior to the fallback to selecting the last field in the form. This change also prevents incorrect removing of the last field in the case where a field is provided but which was not found in the form ([0b7e1bb](https://github.com/kevinchappell/formBuilder/commit/0b7e1bb3cbd85884c22e484e4f234426a4ba38d0))
 
 ## [3.9.11](https://github.com/kevinchappell/formBuilder/compare/v3.9.10...v3.9.11) (2023-09-12)
 
@@ -421,7 +421,7 @@
 ### Bug Fixes
 
 * i18n is a straight key/value pair, it does not contain a get() function ([ebe59ce](https://github.com/kevinchappell/formBuilder/commit/ebe59ce47c69573ded91cf1d3a69ccc1328097de))
-* If no value was set for a numberAttribute the value attribute's value was used instead. This causes min/max/step/rows/maxLen number attributes to incorrectly be assigned a value if they are not set in formData but a number exists in the value attribute ([28b1a6f](https://github.com/kevinchappell/formBuilder/commit/28b1a6f0215c39c76e68da819d6747a5d1d7d13e))
+* If no value was set for a number attribute the value attribute's value was used instead. This causes min/max/step/rows/maxLen number attributes to incorrectly be assigned a value if they are not set in formData but a number exists in the value attribute ([28b1a6f](https://github.com/kevinchappell/formBuilder/commit/28b1a6f0215c39c76e68da819d6747a5d1d7d13e))
 * Use the i18n translated label for boolean typeUserAttrs. Fixes [#1391](https://github.com/kevinchappell/formBuilder/issues/1391) ([bc04612](https://github.com/kevinchappell/formBuilder/commit/bc04612ee32d6fe69dc9db37b12cd66faa20df85))
 
 ## [3.9.10](https://github.com/kevinchappell/formBuilder/compare/v3.9.9...v3.9.10) (2023-08-27)
@@ -430,7 +430,7 @@
 ### Bug Fixes
 
 * Ensure that default selected checkboxes are unselected when loading userData that doesn't contain them. ([2d284c9](https://github.com/kevinchappell/formBuilder/commit/2d284c95114235b2a541f96611e25f47ea4c0086))
-* The major browsers handle new lines in contenteditable blocks by inserting <div> tags. This causes invalid HTML when inserting the content into a <p> with the paragraph control and when constructing <label> tags. Setting display: inline-block forces the browsers to use a <br> tag instead for new lines. ([5b700cb](https://github.com/kevinchappell/formBuilder/commit/5b700cbd757643dce55f343bda2ed91d34e98336))
+* The major browsers handle new lines in content editable blocks by inserting <div> tags. This causes invalid HTML when inserting the content into a <p> with the paragraph control and when constructing <label> tags. Setting display: inline-block forces the browsers to use a <br> tag instead for new lines. ([5b700cb](https://github.com/kevinchappell/formBuilder/commit/5b700cbd757643dce55f343bda2ed91d34e98336))
 
 ## [3.9.9](https://github.com/kevinchappell/formBuilder/compare/v3.9.8...v3.9.9) (2023-08-20)
 
@@ -1078,21 +1078,21 @@ Note: the next major release will drop xml support completely
 - v1.7.0 - Feature: Added sub-types to the `text` input for `password`, `color`, and `email` html5 inputs.
 - v1.6.8 - Bugfix: Description and required not rendered in formRender
 - v1.6.7 - Bugfix: fields are not sortable
-- v1.6.6 - Bugfix: change should be triggered when hidden textarea updated
+- v1.6.6 - Bugfix: change should be triggered when hidden text is updated
 - v1.6.5 - Feature: Make rendered fields targetable
 - v1.6.4 - Bugfix: User options should be deep copied with `$.extend`
 - v1.6.3 - Bugfix: Remove `max-length` attribute for hidden fields, Update preview and label for `textarea`
 - v1.6.2 - Bugfix: Option text not rendered in IE #39
 - v1.6.1 - Bugfix: required attribute should not be rendered when false.
 - v1.6.0 - Feature: Hidden input field type added
-- v1.5.4 - update gulp to autopush tags
+- v1.5.4 - update gulp to auto push tags
 - v1.5.3 - Bugfix: multiple formBuilder on one page.
 - v1.5.2 - Bugfix: formRender radio-group invalid name property
 - v1.5.1 - Bugfix: Add minimal Bootstrap styling for `formRender`
-- v1.5 - Feature: checkbox inputs can now be made into toggle switch. [details here](https://github.com/kevinchappell/formBuilder/pull/24)
+- v1.5 - Feature: checkbox inputs can now be made into toggle switches. [details here](https://github.com/kevinchappell/formBuilder/pull/24)
 - v1.4.0 - Feature: `formRender` is a companion plugin to render saved formData into a usable form. [details here](https://github.com/kevinchappell/formBuilder/pull/20)
 - v1.3.5 - Bugfix: XML parse and save
-  + This fix brings a slight update in XML markup for multiple value fields, specifically the `<option>` node. The changes is to move away from the proprietary XML parser formBuilder was made for.
+  + This fix brings a slight update in XML markup for multiple value fields, specifically the `<option>` node. The change is to move away from the proprietary XML parser formBuilder was made for.
 
   **This**:
   ```
@@ -1108,9 +1108,9 @@ Note: the next major release will drop xml support completely
       <option value="option-2">Option 2</option>
     </field>
   ```
-- v1.3.4 - Bugfix: fix self closing xml for radio-group field
+- v1.3.4 - Bugfix: fix self-closing xml for radio-group field
 - v1.3.3 - Bugfix: preview not toggling correctly
 - v1.3.2 - Bugfix: preview for Multiple fields not updating
 - v1.3.1 - Bugfix: multiple value fields not saving XML
 - v1.3.0 - Live previews, icon font
-- v1.2.0 - Add default fields, and call-to-action text
+- v1.2.0 - Add default fields and call-to-action text
