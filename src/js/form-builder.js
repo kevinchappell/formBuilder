@@ -587,11 +587,6 @@ function FormBuilder(opts, element, $) {
         useDefaultAttr.push(!typeDisabledAttrs.includes(attr))
       }
 
-      if (typeClass.definition.hasOwnProperty('disabledAttrs')) {
-        const userDisabledAttrs = typeClass.definition.disabledAttrs
-        useDefaultAttr.push(!userDisabledAttrs.includes(attr))
-      }
-
       if (typeClass.definition.hasOwnProperty('defaultAttrs')) {
         const userAttrs = Object.keys(typeClass.definition.defaultAttrs)
         useDefaultAttr.push(!userAttrs.includes(attr))

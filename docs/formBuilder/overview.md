@@ -99,19 +99,7 @@ static get definition() {
   }
 }
 ```
-
-* `disabledAttrs` - used primarily by control plugins. This allows you to disable default attrs for a control plugin where attributes are not used by the plugin or serve no purpose.
-```javascript
-static get definition() {
-  return {
-    disabledAttrs: [
-      'description',
-      'placeholder',
-    ],
-  }
-}
-```  
-
+  
 The label for a control in the list of form builder controls should be defined as the translation for the `type`. E.g. if you want to rename the label for a textarea, you would update the mi18n translation for `textarea`, or define an override in the `i18n` property.
 
 # Layouts
