@@ -879,3 +879,7 @@
   position: fixed !important;
   left: -100px !important;
 }
+
+ol.options-no-select input[type=radio]{
+  display: none;
+}

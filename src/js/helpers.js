@@ -198,7 +198,6 @@ export default class Helpers {
    */
   prepData(form) {
     const formData = []
-    const d = this.d
     const _this = this
     const config = this.config
 
@@ -282,11 +281,10 @@ export default class Helpers {
 
             fieldData = trimObj(fieldData)
 
-            const multipleField = fieldData.type && fieldData.type.match(d.optionFieldsRegEx)
-
-            if (multipleField) {
-              fieldData.values = _this.fieldOptionData($field)
-            }
+            $field.find('.form-group.field-options').each((_, attribute) => {
+                const attributeName = attribute.getAttribute('name')
+                fieldData[attributeName] = _this.fieldOptionData(attribute)
+            })
 
             formData.push(fieldData)
           }
@@ -396,7 +394,6 @@ export default class Helpers {
    */
   updatePreview($field) {
     const _this = this
-    const d = this.d
     const fieldClass = $field.attr('class')
     const field = $field[0]
     if (fieldClass.includes('input-control')) {
@@ -407,19 +404,10 @@ export default class Helpers {
     const $prevHolder = $('.prev-holder', field)
     let previewData = Object.assign({}, _this.getAttrVals(field), { type: fieldType })
 
-    if (fieldType.match(d.optionFieldsRegEx)) {
-      previewData.values = []
-      previewData.multiple = $('[name="multiple"]', field).is(':checked')
-
-      $('.sortable-options li', field).each(function (i, $option) {
-        const option = {
-          selected: $('.option-selected', $option).is(':checked'),
-          value: $('.option-value', $option).val(),
-          label: $('.option-label', $option).val(),
-        }
-        previewData.values.push(option)
-      })
-    }
+    $field.find('.form-group.field-options').each((_, attribute) => {
+      const attributeName = attribute.getAttribute('name')
+      previewData[attributeName] = _this.fieldOptionData(attribute)
+    })
 
     previewData = trimObj(previewData, true)
 
