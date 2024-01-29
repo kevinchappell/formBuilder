@@ -17,3 +17,9 @@ console.error = (...params) => {
     originalConsoleError(...params)
   }
 }
+
+import { webcrypto } from 'node:crypto'
+
+Object.defineProperty(global, 'crypto', {
+  value: webcrypto,
+})
