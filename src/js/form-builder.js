@@ -363,14 +363,17 @@ function FormBuilder(opts, element, $) {
   /**
    * Add data for field with options [select, checkbox-group, radio-group]
    *
+   * @param {string} fieldName
    * @param  {Object} fieldData
    * @return {string} field options markup
    */
-  const fieldOptions = function (fieldData) {
+  const fieldOptions = function (fieldName, fieldData) {
     const { type, values } = fieldData
     let fieldValues
     const optionActions = [m('a', mi18n.get('addOption'), { className: 'add add-opt' })]
-    const fieldOptions = [m('label', mi18n.get('selectOptions'), { className: 'false-label' })]
+    const fieldLabel = fieldName === 'values' ? mi18n.get('selectOptions') : i18n[fieldName]
+    const fieldOptions = [m('label', fieldLabel, { className: 'false-label' })]
+    const optionsNoSelect = fieldData['noSelect'] ?? false
     const isMultiple = fieldData.multiple || type === 'checkbox-group'
     const optionDataTemplate = count => {
       const label = mi18n.get('optionCount', count)
@@ -393,27 +396,29 @@ function FormBuilder(opts, element, $) {
         firstOption.selected = true
       }
     } else {
-      // ensure option data is has all required keys
+      // ensure option data contains all required keys
       fieldValues = values.map(option => Object.assign({}, { selected: false }, option))
     }
-
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
+    const optionGroupName = window.crypto.randomUUID() + '-options'
     const options = m(
       'ol',
-      fieldValues.map((option, index, _, fieldName = fieldData.name) => {
+      fieldValues.map((option, index) => {
         const optionData = config.opts.onAddOption(option, { type, index, isMultiple })
-        const optionGroupName = fieldName + '-options'
+        if (optionsNoSelect) {
+          optionData.selected = false
+        }
         return selectFieldOptions(optionGroupName, optionData, isMultiple)
       }),
       {
-        className: 'sortable-options',
+        className: 'sortable-options' + (optionsNoSelect ? ' options-no-select' : ''),
       },
     )
     const optionsWrap = m('div', [options, optionActionsWrap], { className: 'sortable-options-wrap' })
 
     fieldOptions.push(optionsWrap)
 
-    return m('div', fieldOptions, { className: 'form-group field-options' }).outerHTML
+    return m('div', fieldOptions, { name: fieldName, className: 'form-group field-options' }).outerHTML
   }
 
   const defaultFieldAttrs = type => {
@@ -540,7 +545,7 @@ function FormBuilder(opts, element, $) {
           first: mi18n.get('enableOther'),
           second: mi18n.get('enableOtherMsg'),
         }),
-      options: () => fieldOptions(values),
+      options: () => fieldOptions('values', values),
       requireValidOption: () =>
         boolAttribute('requireValidOption', values, {
           first: ' ',
@@ -636,6 +641,7 @@ function FormBuilder(opts, element, $) {
       [
         ['array', ({ options }) => !!options],
         ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
+        ['options', ({ type }) => type === 'options'],
         [typeof attrData.value, () => true], // string, number,
       ].find(typeCondition => typeCondition[1](attrData))[0]
     )
@@ -674,6 +680,7 @@ function FormBuilder(opts, element, $) {
         }
         return boolAttribute(attr, { ...attrData, [attr]: isChecked }, { first: i18n[attr] })
       },
+      options: fieldOptions,
     }
 
     for (const attribute in typeUserAttr) {
