@@ -50,7 +50,7 @@ export default class control {
       control.controlConfig = {}
     }
     const classId = this.subtype ? this.type + '.' + this.subtype : this.type
-    this.classConfig = jQuery.extend({}, control.controlConfig[classId] || {})
+    this.classConfig = jQuery.extend({}, control.controlConfig[this.type] || {}, control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
     if (this.subtype) {
