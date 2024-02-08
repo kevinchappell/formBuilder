@@ -146,7 +146,7 @@ class FormRender {
    * @return {Object} sanitized field object
    */
   sanitizeField(field, instanceIndex) {
-    const sanitizedField = Object.assign({}, field)
+    let sanitizedField = Object.assign({}, field)
     if (instanceIndex) {
       sanitizedField.id = field.id && `${field.id}-${instanceIndex}`
       sanitizedField.name = field.name && `${field.name}-${instanceIndex}`
@@ -158,7 +158,11 @@ class FormRender {
     if (field.values) {
       field.values = field.values.map(option => utils.trimObj(option))
     }
-    return utils.trimObj(sanitizedField)
+    sanitizedField = utils.trimObj(sanitizedField)
+    if (Array.isArray(field.userData) && field.userData.length === 0) {
+      sanitizedField.userData = [] //Special handler for allowing userData to be empty
+    }
+    return sanitizedField
   }
 
   /**

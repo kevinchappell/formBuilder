@@ -114,7 +114,7 @@ describe('Form Rendering', () => {
     expect(textarea).not.toHaveLength(0)
   })
 
-  test('check userData when no value set', () => {
+  test('check userData returned when no default value set', () => {
     const container = $('<div>')
     const formData = [
       {type: 'textarea', name: 'input-textarea'},
@@ -136,6 +136,31 @@ describe('Form Rendering', () => {
     expect(userData['input-text']).toStrictEqual([''])
     expect(userData['input-checkbox-group']).toStrictEqual([])
     expect(userData['input-radio-group']).toStrictEqual([])
+    expect(userData['input-select']).toStrictEqual([])
+    expect(userData['input-select-multiple']).toStrictEqual([])
+  })
+
+  test('check default values can be overridden by no value userData', () => {
+    const container = $('<div>')
+    const formData = [
+      {type: 'textarea', name: 'input-textarea', value: 'default', userData: ['']},
+      {type: 'text', name: 'input-text', value: 'default', userData: ['']},
+      {type: 'checkbox-group', name: 'input-checkbox-group', 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': true }, ], userData: []},
+      //@Note Radio-buttons cannot be deselected, userData: [] should only be seen when no radio selected
+      {type: 'select', name: 'input-select', placeholder: 'Select...', 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': true }, ], userData: []},
+      {type: 'select', name: 'input-select-multiple', placeholder: 'Select...', multiple: true, 'values': [ { 'label': 'O', 'value': 'option-1', 'selected': true }, ], userData: []},
+    ]
+    container.formRender({ formData })
+
+    const userData = {}
+
+    container.formRender('userData').forEach(elem => {
+      userData[elem.name] = elem.userData
+    })
+
+    expect(userData['input-textarea']).toStrictEqual([''])
+    expect(userData['input-text']).toStrictEqual([''])
+    expect(userData['input-checkbox-group']).toStrictEqual([])
     expect(userData['input-select']).toStrictEqual([])
     expect(userData['input-select-multiple']).toStrictEqual([])
   })
