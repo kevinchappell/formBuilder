@@ -156,7 +156,7 @@ class FormRender {
       : field.className || field.class || null
     delete sanitizedField.class
     if (field.values) {
-      field.values = field.values.map(option => utils.trimObj(option))
+      sanitizedField.values = field.values.map(option => utils.trimObj(option))
     }
     sanitizedField = utils.trimObj(sanitizedField)
     if (Array.isArray(field.userData) && field.userData.length === 0) {
