@@ -1,3 +1,10 @@
+# [3.19.0](https://github.com/kevinchappell/formBuilder/compare/v3.18.0...v3.19.0) (2024-02-09)
+
+
+### Features
+
+* allow hierarchically defined controlConfig for type and subtype ([5d7ff8f](https://github.com/kevinchappell/formBuilder/commit/5d7ff8f9fd8cca19e4af7f09ad0d4e98cfc0f031))
+
 # [3.18.0](https://github.com/kevinchappell/formBuilder/compare/v3.17.3...v3.18.0) (2024-01-19)
 
 
