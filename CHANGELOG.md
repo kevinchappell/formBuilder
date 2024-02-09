@@ -1,3 +1,11 @@
+## [3.19.1](https://github.com/kevinchappell/formBuilder/compare/v3.19.0...v3.19.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* do not remove valid empty userData from field data struct ([1e64c69](https://github.com/kevinchappell/formBuilder/commit/1e64c691de680909c3b09e380f83ecb8a5e2ae2c))
+* store result of trimmed values config to the sanitizedField ([1504849](https://github.com/kevinchappell/formBuilder/commit/1504849b910200a8cc054f1707247e1f3b70282c))
+
 # [3.19.0](https://github.com/kevinchappell/formBuilder/compare/v3.18.0...v3.19.0) (2024-02-09)
 
 
