@@ -3,8 +3,9 @@
 Programmatically render or re-render a formRender instance with new data
 
 Arguments
+
 | Arg  | Type | Value(s) | Default |
-| ------------- | ------------- |------------- |------------- |
+|-------------|-------------|-------------|-------------|
 | formData | {Array|String} | `[{}]`, `'<>'`, `'[{}]'` | null |
 | options | {Object} | override options for new render | {} |
 
