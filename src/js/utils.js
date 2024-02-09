@@ -14,7 +14,7 @@ window.fbEditors = {
 }
 
 /**
- * Remove null or undefined values from an object, original object is not modified
+ * Remove null, undefined, empty string or empty array values from an object, original object is not modified
  * @param  {Object} obj {attrName: attrValue}
  * @param {boolean} [removeFalse=false] Remove values === false
  * @return {Object} Object trimmed of null or undefined values
