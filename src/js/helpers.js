@@ -1045,6 +1045,7 @@ export default class Helpers {
       config.opts.notify.warning('Removing last field since no ID was supplied.')
       config.opts.notify.warning('Available IDs: ' + availableIds.join(', '))
       fieldID = form.lastChild.id
+      fieldID = availableIds[availableIds.length-1]
     }
 
     const field = document.getElementById(fieldID)
