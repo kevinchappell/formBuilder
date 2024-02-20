@@ -10,7 +10,7 @@ import Helpers from './helpers'
 import {
   defaultOptions,
   defaultI18n,
-  config,
+  instanceConfig,
   styles,
   gridClassNames,
   defaultTimeout,
@@ -55,6 +55,7 @@ function FormBuilder(opts, element, $) {
   const formID = `frmb-${Date.now()}`
   const data = new Data(formID)
   const d = new Dom(formID)
+  const config = instanceConfig[formID] = {}
 
   /** @var formRows Allocated rows IDs in the builder */
   let formRows = []
@@ -2470,7 +2471,6 @@ function FormBuilder(opts, element, $) {
 const pluginInit = function(options,elem) {
   const _this = this
   const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
-  config.opts = opts
   this.i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
 
   const notInitialised = () => {

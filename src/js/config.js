@@ -106,7 +106,7 @@ export const defaultI18n = {
   location: 'assets/lang/',
 }
 
-export const config = {}
+export const instanceConfig = {}
 
 export const gridClassNames = {
   rowWrapperClass: 'rowWrapper',
