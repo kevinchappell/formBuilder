@@ -468,6 +468,9 @@
     padding: 0;
 
     > li {
+      display: flex!important;
+      flex-wrap: wrap;
+
       cursor: move;
       margin: 1px;
 
@@ -475,20 +478,21 @@
       background-color: $white;
 
       &:nth-child(1) .remove {
-        display: none;
+        opacity: 0;
+        pointer-events: none;
       }
 
       .remove {
-        position: relative;
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         opacity: 1;
-        float: right;
-        right: 14px;
-        height: 18px;
         width: 18px;
-        top: 8px;
         font-size: 12px;
         padding: 0;
         color: $error;
+        margin-left: 3px;
         &::before {
           margin: 0;
         }
@@ -502,12 +506,15 @@
     }
 
     .option-selected {
-      margin: 0;
-      width: 5%;
+      margin: 0 3px 0 0;
+      flex: none;
     }
 
     input[type='text'] {
-      width: calc(44.5% - 17px);
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: auto;
+      width: 100px;
       margin: 0 3px;
       float: none;
     }
