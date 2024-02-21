@@ -404,7 +404,7 @@ function FormBuilder(opts, element, $) {
     const options = m(
       'ol',
       fieldValues.map((option, index) => {
-        const optionData = config.opts.onAddOption(option, { type, index, isMultiple })
+        const optionData = config.opts.onAddOption(option, { type, index, isMultiple, fieldName })
         if (optionsNoSelect) {
           optionData.selected = false
         }
@@ -2372,6 +2372,7 @@ function FormBuilder(opts, element, $) {
   $stage.on('click', '.add-opt', function (e) {
     e.preventDefault()
     const type = $(e.target).closest('.form-field').attr('type')
+    const fieldName = $(e.target).closest('.form-group.field-options').attr('name')
     const $optionWrap = $(e.target).closest('.field-options')
     const $multiple = $('[name="multiple"]', $optionWrap)
     const $firstOption = $('.option-selected:eq(0)', $optionWrap)
@@ -2383,6 +2384,7 @@ function FormBuilder(opts, element, $) {
       type,
       index: $sortableOptions.children().length,
       isMultiple,
+      fieldName,
     })
     $sortableOptions.append(selectFieldOptions($firstOption.attr('name'), optionData, isMultiple))
   })
