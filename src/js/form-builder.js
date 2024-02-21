@@ -1723,7 +1723,7 @@ function FormBuilder(opts, element, $) {
 
   $stage.on('dblclick', 'li.form-field', e => {
     if (
-      ['select', 'input', 'label', 'textarea'].includes(e.target.tagName.toLowerCase()) ||
+      ['select', 'input', 'label', 'textarea', 'a',].includes(e.target.tagName.toLowerCase()) ||
       e.target.isContentEditable === true
     ) {
       return
