@@ -17,23 +17,6 @@ describe('FormBuilder Stage Setup', () => {
 })
 
 describe('FormBuilder Add/Remove from Stage', () => {
-  test('fieldAdded callback called after adding field', async () => {
-    const fbWrap = $('<div>')
-    const cb = jest.fn()
-    const fb = await $(fbWrap).formBuilder({'onAddField': cb}).promise
-    const field = {
-      type: 'text',
-      class: 'form-control',
-      name: 'on-add-test'
-    }
-    fb.actions.addField(field)
-    expect(cb.mock.calls).toHaveLength(1)
-    expect(cb.mock.calls[0]).toHaveLength(2)
-    expect(typeof cb.mock.calls[0][0]).toBe('string')
-    expect(typeof cb.mock.calls[0][1]).toBe('object')
-    expect(cb.mock.calls[0][1].name).toBe('on-add-test')
-  })
-  
   test('fieldsRemovedOnClean', async() => {
     const config = {
       formData: [
@@ -808,5 +791,118 @@ describe('FormBuilder disabling attributes', () => {
     expect(fbWrap.find('.form-field[type="textarea"] .subtype-wrap')).toHaveLength(1)
     expect(fbWrap.find('.form-field[type="textarea"] .label-wrap')).toHaveLength(1)
     expect(fbWrap.find('.form-field[type="textarea"] .description-wrap')).toHaveLength(1)
+  })
+})
+
+describe('FormBuilder option attributes', () => {
+  test('default rendered options', async () => {
+    const fbWrap = $('<div>')
+    const fb = await $(fbWrap).formBuilder({ }).promise
+    const field = {
+      type: 'select',
+      class: 'form-control'
+    }
+    fb.actions.addField(field)
+    expect(fbWrap.find('.field-options')).toHaveLength(1)
+
+    const defaultOptions = [
+      {
+        'label': 'Option 1',
+        'value': 'option-1',
+        'selected': true
+      },
+      {
+        'label': 'Option 2',
+        'value': 'option-2',
+        'selected': false
+      },
+      {
+        'label': 'Option 3',
+        'value': 'option-3',
+        'selected': false
+      }
+    ]
+    expect(fb.actions.getData('js')[0].values).toEqual(defaultOptions)
+  })
+})
+
+describe('FormBuilder callbacks', () => {
+  test('onAddField callback called after adding field', async () => {
+    const fbWrap = $('<div>')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({'onAddField': cb}).promise
+    const field = {
+      type: 'text',
+      class: 'form-control',
+      name: 'on-add-test'
+    }
+    fb.actions.addField(field)
+    expect(cb.mock.calls).toHaveLength(1)
+    expect(cb.mock.calls[0]).toHaveLength(2)
+    expect(typeof cb.mock.calls[0][0]).toBe('string')
+    expect(typeof cb.mock.calls[0][1]).toBe('object')
+    expect(cb.mock.calls[0][1].name).toBe('on-add-test')
+  })
+
+  test('onAddFieldAfter callback called after adding field', async () => {
+    const fbWrap = $('<div>')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({'onAddFieldAfter': cb}).promise
+    const field = {
+      type: 'text',
+      class: 'form-control',
+      name: 'on-add-test'
+    }
+    fb.actions.addField(field)
+    expect(cb.mock.calls).toHaveLength(1)
+    expect(cb.mock.calls[0]).toHaveLength(2)
+    expect(typeof cb.mock.calls[0][0]).toBe('string')
+    expect(typeof cb.mock.calls[0][1]).toBe('object')
+    expect(cb.mock.calls[0][1].name).toBe('on-add-test')
+  })
+
+  test('onSave callback called after save', async () => {
+    const fbWrap = $('<div>')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({'onSave': cb}).promise
+
+    //Calling Save action
+    fb.actions.save()
+    expect(cb.mock.calls).toHaveLength(1)
+    expect(cb.mock.calls[0]).toHaveLength(2)
+    expect(cb.mock.calls[0][0]).toBeUndefined()
+    expect(typeof cb.mock.calls[0][1]).toBe('object')
+    expect(cb.mock.calls[0][1]).toHaveLength(0)
+
+    const field = {
+      type: 'text',
+      class: 'form-control',
+    }
+    fb.actions.addField(field)
+    $('button.save-template', fbWrap).click()
+    expect(cb.mock.calls).toHaveLength(2)
+    expect(cb.mock.calls[1]).toHaveLength(2)
+    expect(typeof cb.mock.calls[1][0]).toBe('object')
+    expect(typeof cb.mock.calls[1][1]).toBe('object')
+    expect(cb.mock.calls[1][1]).toHaveLength(1)
+  })
+
+  test('onAddOption callback called after clicking .add-opt', async () => {
+    const fbWrap = $('<div>')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({'onAddOption': cb}).promise
+
+    const field = {
+      type: 'select',
+      class: 'form-control',
+      name: 'on-add-test'
+    }
+    fb.actions.addField(field)
+
+    expect(cb.mock.calls).toHaveLength(3)
+    expect(typeof cb.mock.calls[0][0]).toBe('object')
+    expect(typeof cb.mock.calls[0][1]).toBe('object')
+    expect(Object.keys(cb.mock.calls[0][0])).toHaveLength(3)
+    expect(Object.keys(cb.mock.calls[0][1])).toHaveLength(4)
   })
 })
