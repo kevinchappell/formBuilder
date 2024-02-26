@@ -535,26 +535,6 @@ export default class Helpers {
   }
 
   /**
-   * Returns the layout data based on controlPosition option
-   * @param  {string} controlPosition 'left' or 'right'
-   * @return {Object} layout object
-   */
-  editorLayout(controlPosition) {
-    const layoutMap = {
-      left: {
-        stage: 'pull-right',
-        controls: 'pull-left',
-      },
-      right: {
-        stage: 'pull-left',
-        controls: 'pull-right',
-      },
-    }
-
-    return layoutMap[controlPosition] || ''
-  }
-
-  /**
    * Adds overlay to the page. Used for modals.
    * @return {HTMLElement} DOM Object
    */
@@ -956,58 +936,6 @@ export default class Helpers {
   }
 
   /**
-   * Controls follow scroll to the bottom of the editor
-   */
-  stickyControls() {
-    const { controls, stage } = this.d
-    const $cbWrap = $(controls).parent()
-    const cbPosition = controls.getBoundingClientRect()
-    const { top: stageTop } = stage.getBoundingClientRect()
-
-    $(window).scroll(function (evt) {
-      const scrollTop = $(evt.target).scrollTop()
-      const offsetDefaults = {
-        top: 5,
-        bottom: 'auto',
-        right: 'auto',
-        left: cbPosition.left,
-      }
-
-      const offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset)
-
-      if (scrollTop > stageTop) {
-        const style = {
-          position: 'sticky',
-        }
-
-        const cbStyle = Object.assign(style, offset)
-
-        const cbPosition = controls.getBoundingClientRect()
-        const stagePosition = stage.getBoundingClientRect()
-        const cbBottom = cbPosition.top + cbPosition.height
-        const stageBottom = stagePosition.top + stagePosition.height
-        const atBottom = cbBottom === stageBottom && cbPosition.top > scrollTop
-
-        if (cbBottom > stageBottom && cbPosition.top !== stagePosition.top) {
-          $cbWrap.css({
-            position: 'absolute',
-            top: 'auto',
-            bottom: 0,
-            right: 0,
-            left: 'auto',
-          })
-        }
-
-        if (cbBottom < stageBottom || atBottom) {
-          $cbWrap.css(cbStyle)
-        }
-      } else {
-        controls.parentElement.removeAttribute('style')
-      }
-    })
-  }
-
-  /**
    * Open a dialog with the form's data
    */
   showData() {
@@ -1172,20 +1100,23 @@ export default class Helpers {
   /**
    * Generate stage and controls dom elements
    * @param  {string} formID
+   * @param  {string} controlPosition
    */
-  editorUI(formID) {
+  editorUI(formID, controlPosition) {
     const d = this.d
     const data = this.data
     const id = formID || data.formID
 
+    const controlPositionClass = (controlPosition || '') === 'left' ? 'controls-left' : 'controls-right'
+
     d.editorWrap = m('div', null, {
       id: `${data.formID}-form-wrap`,
-      className: `form-wrap form-builder formbuilder-embedded-bootstrap ${mobileClass()}`,
+      className: `form-wrap form-builder formbuilder-embedded-bootstrap ${mobileClass()} ${controlPositionClass}`,
     })
 
     d.stage = m('ul', null, {
       id,
-      className: `frmb stage-wrap ${data.layout.stage}`,
+      className: 'frmb stage-wrap',
     })
 
     // Create container for controls
