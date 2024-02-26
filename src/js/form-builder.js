@@ -1303,6 +1303,7 @@ function FormBuilder(opts, element, $) {
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
+      distance: 3,
       tolerance: 'pointer',
       helper: function (e, el) {
         //Shrink the control a little while dragging so it's not in the way as much
