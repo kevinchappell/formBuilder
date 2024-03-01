@@ -18,7 +18,7 @@ import {
   getAllGridRelatedClasses,
 } from './utils'
 import events from './events'
-import { config, defaultTimeout, styles } from './config'
+import { instanceConfig, defaultTimeout, styles } from './config'
 import control from './control'
 import storageAvailable from 'storage-available'
 
@@ -35,6 +35,7 @@ export default class Helpers {
   constructor(formId, layout, formBuilder) {
     this.data = instanceData[formId]
     this.d = instanceDom[formId]
+    this.config = instanceConfig[formId]
     this.doCancel = false
     this.layout = layout
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -82,7 +83,7 @@ export default class Helpers {
    */
   beforeStop(event, ui) {
     const _this = this
-    const opts = config.opts
+    const opts = this.config.opts
     const form = _this.d.stage
     const lastIndex = form.childNodes.length - 1
     const cancelArray = []
@@ -196,6 +197,7 @@ export default class Helpers {
     const formData = []
     const d = this.d
     const _this = this
+    const config = this.config
 
     if (form.childNodes.length !== 0) {
       const fields = []
@@ -302,7 +304,7 @@ export default class Helpers {
     const data = this.data
 
     if (!formData) {
-      formData = config.opts.formData
+      formData = this.config.opts.formData
     }
 
     if (!formData) {
@@ -319,7 +321,7 @@ export default class Helpers {
       },
     }
 
-    data.formData = setData[config.opts.dataType](formData) || []
+    data.formData = setData[this.config.opts.dataType](formData) || []
 
     return data.formData
   }
@@ -339,7 +341,7 @@ export default class Helpers {
     }
 
     // save action for current `dataType`
-    data.formData = doSave[config.opts.dataType](minify)
+    data.formData = doSave[this.config.opts.dataType](minify)
 
     // trigger formSaved event
     document.dispatchEvent(events.formSaved)
@@ -365,6 +367,7 @@ export default class Helpers {
    * @return {Object} fieldData
    */
   getAttrVals(field) {
+    const config = this.config
     const fieldData = Object.create(null)
     const attrs = field.querySelectorAll('[class*="fld-"]')
     forEach(attrs, index => {
@@ -671,6 +674,7 @@ export default class Helpers {
    */
   confirmRemoveAll(e) {
     const _this = this
+    const config = this.config
     const formID = e.target.id.match(/frmb-\d{13}/)[0]
     const stage = document.getElementById(formID)
     const i18n = mi18n.current
@@ -703,7 +707,7 @@ export default class Helpers {
 
   addDefaultFields() {
     // Load default fields if none are set
-    config.opts.defaultFields.forEach(field => this.formBuilder.prepFieldVars(field))
+    this.config.opts.defaultFields.forEach(field => this.formBuilder.prepFieldVars(field))
     this.d.stage.classList.remove('empty')
   }
 
@@ -714,7 +718,7 @@ export default class Helpers {
    */
   removeAllFields(stage) {
     const i18n = mi18n.current
-    const opts = config.opts
+    const opts = this.config.opts
     const fields = stage.querySelectorAll(this.formBuilder.fieldSelector)
     const markEmptyArray = []
 
@@ -761,7 +765,7 @@ export default class Helpers {
    * @return {Array|false} fieldOrder
    */
   setFieldOrder($cbUL) {
-    if (!config.opts.sortableControls) {
+    if (!this.config.opts.sortableControls) {
       return false
     }
     const JSON = window.JSON
@@ -859,7 +863,7 @@ export default class Helpers {
 
     this.removeContainerProtection(rowContainer.attr('id'))
 
-    config.opts.onCloseFieldEdit($editPanel[0])
+    this.config.opts.onCloseFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditClosed)
 
     const prevHolder = liContainer.find('.prev-holder')
@@ -929,7 +933,7 @@ export default class Helpers {
     liContainer.insertAfter(rowWrapper)
 
     this.formBuilder.currentEditPanel = $editPanel[0]
-    config.opts.onOpenFieldEdit($editPanel[0])
+    this.config.opts.onOpenFieldEdit($editPanel[0])
     document.dispatchEvent(events.fieldEditOpened)
 
     $(document).trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
@@ -959,6 +963,7 @@ export default class Helpers {
    * Controls follow scroll to the bottom of the editor
    */
   stickyControls() {
+    const config = this.config
     const { controls, stage } = this.d
     const $cbWrap = $(controls).parent()
     const cbPosition = controls.getBoundingClientRect()
@@ -1011,10 +1016,10 @@ export default class Helpers {
    * Open a dialog with the form's data
    */
   showData() {
-    const formData = escapeHtml(this.getFormData(config.opts.dataType, true))
+    const formData = escapeHtml(this.getFormData(this.config.opts.dataType, true))
 
     const code = m('code', formData, {
-      className: `formData-${config.opts.dataType}`,
+      className: `formData-${this.config.opts.dataType}`,
     })
 
     this.dialog(m('pre', code), false, 'data-dialog')
@@ -1033,7 +1038,7 @@ export default class Helpers {
     const fields = form.getElementsByClassName('form-field')
 
     if (!fields.length) {
-      config.opts.notify.warning('No fields to remove')
+      this.config.opts.notify.warning('No fields to remove')
       return false
     }
 
@@ -1041,15 +1046,15 @@ export default class Helpers {
       const availableIds = [].slice.call(fields).map(field => {
         return field.id
       })
-      config.opts.notify.warning('fieldID required to remove specific fields.')
-      config.opts.notify.warning('Removing last field since no ID was supplied.')
-      config.opts.notify.warning('Available IDs: ' + availableIds.join(', '))
-      fieldID = form.lastChild.id
+      this.config.opts.notify.warning('fieldID required to remove specific fields.')
+      this.config.opts.notify.warning('Removing last field since no ID was supplied.')
+      this.config.opts.notify.warning('Available IDs: ' + availableIds.join(', '))
+      fieldID = availableIds[availableIds.length-1]
     }
 
     const field = document.getElementById(fieldID)
     if (!field) {
-      config.opts.notify.warning('Field not found')
+      this.config.opts.notify.warning('Field not found')
       return false
     }
 
@@ -1067,7 +1072,7 @@ export default class Helpers {
       }
     })
 
-    const userEvents = Object.assign({}, config.opts.typeUserEvents['*'], config.opts.typeUserEvents[field.type])
+    const userEvents = Object.assign({}, this.config.opts.typeUserEvents['*'], this.config.opts.typeUserEvents[field.type])
 
     if (userEvents && userEvents.onremove) {
       userEvents.onremove(field)
@@ -1131,7 +1136,7 @@ export default class Helpers {
    * @return {Array} subtypes
    */
   processSubtypes(subtypeOpts) {
-    const disabledSubtypes = config.opts.disabledSubtypes
+    const disabledSubtypes = this.config.opts.disabledSubtypes
     // first register any passed subtype options against the appropriate type control class
     for (const fieldType in subtypeOpts) {
       if (subtypeOpts.hasOwnProperty(fieldType)) {
@@ -1205,7 +1210,7 @@ export default class Helpers {
    * @return {HTMLElement[]} formActions btn-group
    */
   formActionButtons() {
-    const opts = config.opts
+    const opts = this.config.opts
     return opts.actionButtons
       .map(btnData => {
         if (btnData.id && opts.disabledActionButtons.indexOf(btnData.id) === -1) {
@@ -1252,7 +1257,7 @@ export default class Helpers {
         events: {
           click: evt => {
             _this.save()
-            config.opts.onSave(evt, _this.data.formData)
+            _this.config.opts.onSave(evt, _this.data.formData)
           },
         },
       },
@@ -1265,8 +1270,8 @@ export default class Helpers {
       // html labels are not available using xml dataType
       opts.disableHTMLLabels = true
     }
-    config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
-    return config.opts
+    _this.config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
+    return _this.config.opts
   }
 
   /**
