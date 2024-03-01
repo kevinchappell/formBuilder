@@ -1,3 +1,12 @@
+## [3.19.4](https://github.com/kevinchappell/formBuilder/compare/v3.19.3...v3.19.4) (2024-03-01)
+
+
+### Bug Fixes
+
+* allow browser to break words in labels, headers, and paragraphs instead over overflowing ([e8bc802](https://github.com/kevinchappell/formBuilder/commit/e8bc802187b7a321cf1fa477440d00580e9213ae))
+* clicking field controls while using trackpad may trigger drag instead of click ([6c7e3a6](https://github.com/kevinchappell/formBuilder/commit/6c7e3a690a0375ffe4220ed0a7dca027303906ea))
+* use flexbox instead of floats for stage and control layout ([d25693a](https://github.com/kevinchappell/formBuilder/commit/d25693a1cf11ae849e9f03f705ab1d55054d06e2))
+
 ## [3.19.3](https://github.com/kevinchappell/formBuilder/compare/v3.19.2...v3.19.3) (2024-03-01)
 
 
