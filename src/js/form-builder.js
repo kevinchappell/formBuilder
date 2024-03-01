@@ -81,8 +81,7 @@ function FormBuilder(opts, element, $) {
   const h = new Helpers(formID, layoutEngine, formBuilder)
   const m = markup
   opts = h.processOptions(opts)
-  data.layout = h.editorLayout(opts.controlPosition)
-  h.editorUI(formID)
+  h.editorUI(formID, opts.controlPosition)
   data.formID = formID
   data.lastID = `${data.formID}-fld-0`
   const controls = new Controls(opts, d)
@@ -205,9 +204,29 @@ function FormBuilder(opts, element, $) {
 
   $('<div class="snackbar">').appendTo($editorWrap)
 
+  // If option set, controls will remain in view in editor
+  let cbClasses = 'cb-wrap'
+  let cbStyle = ''
+  if (opts.stickyControls.enable) {
+    cbClasses += ' sticky-controls'
+    const offsetDefaults = {
+      top: 0,
+      bottom: 'auto',
+      right: 'auto',
+      left: 'auto',
+    }
+
+    const offset = Object.assign({}, offsetDefaults, config.opts.stickyControls.offset)
+
+    if (offset.top !== 0) {
+      cbStyle = `top: ${offset.top}px`
+    }
+  }
+
   const cbWrap = m('div', d.controls, {
     id: `${data.formID}-cb-wrap`,
-    className: `cb-wrap ${data.layout.controls}`,
+    className: cbClasses,
+    style: cbStyle,
   })
 
   if (opts.showActionButtons) {
@@ -1312,6 +1331,7 @@ function FormBuilder(opts, element, $) {
       cursor: 'move',
       opacity: 0.9,
       revert: 150,
+      distance: 3,
       tolerance: 'pointer',
       helper: function (e, el) {
         //Shrink the control a little while dragging so it's not in the way as much
@@ -2465,10 +2485,6 @@ function FormBuilder(opts, element, $) {
     // Ensure style has loaded
     const onRenderTimeout = setTimeout(() => {
       d.stage.style.minHeight = `${d.controls.clientHeight}px`
-      // If option set, controls will remain in view in editor
-      if (opts.stickyControls.enable) {
-        h.stickyControls($stage)
-      }
       clearTimeout(onRenderTimeout)
     }, 0)
   })
