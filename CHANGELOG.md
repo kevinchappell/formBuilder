@@ -1,3 +1,10 @@
+## [3.19.2](https://github.com/kevinchappell/formBuilder/compare/v3.19.1...v3.19.2) (2024-03-01)
+
+
+### Bug Fixes
+
+* provide the value for a number attribute in the tUA array ([76db433](https://github.com/kevinchappell/formBuilder/commit/76db4331a648a926fb963de2e90ca1a0eeaa22f5))
+
 ## [3.19.1](https://github.com/kevinchappell/formBuilder/compare/v3.19.0...v3.19.1) (2024-02-09)
 
 
