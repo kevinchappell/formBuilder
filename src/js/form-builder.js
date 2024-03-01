@@ -10,7 +10,7 @@ import Helpers from './helpers'
 import {
   defaultOptions,
   defaultI18n,
-  config,
+  instanceConfig,
   styles,
   gridClassNames,
   defaultTimeout,
@@ -33,7 +33,7 @@ import {
   safename,
   forceNumber,
   getContentType,
-  generateSelectorClassNames,
+  generateSelectorClassNames, firstNumberOrUndefined,
 } from './utils'
 import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
 import fontConfig from '../fonts/config.json'
@@ -55,6 +55,7 @@ function FormBuilder(opts, element, $) {
   const formID = `frmb-${Date.now()}`
   const data = new Data(formID)
   const d = new Dom(formID)
+  const config = instanceConfig[formID] = {}
 
   /** @var formRows Allocated rows IDs in the builder */
   let formRows = []
@@ -701,8 +702,16 @@ function FormBuilder(opts, element, $) {
         if (attrValType !== 'undefined') {
           const orig = mi18n.get(attribute)
           const tUA = typeUserAttr[attribute]
-          const origValue = attrValType === 'boolean' ? tUA.value : (tUA.value || '')
-          tUA.value = values[attribute] || origValue
+          let origValue = tUA.value
+          if (attrValType === 'boolean') {
+            origValue = tUA.value
+            tUA[attribute] ??= tUA.value
+          } else if (attrValType === 'number') {
+            tUA[attribute] ??= firstNumberOrUndefined(values[attribute], origValue)
+          } else {
+            origValue ??= ''
+            tUA[attribute] ??= values[attribute] || origValue
+          }
 
           if (tUA.label) {
             i18n[attribute] = Array.isArray(tUA.label) ? mi18n.get(...tUA.label) || tUA.label[0] : tUA.label
@@ -890,7 +899,7 @@ function FormBuilder(opts, element, $) {
    */
   const numberAttribute = (attribute, values) => {
     const { class: classname, className, ...attrs } = values
-    const attrVal = (isNaN(attrs[attribute])) ? undefined : attrs[attribute]
+    const attrVal = (Number.isNaN(attrs[attribute])) ? undefined : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
 
@@ -2486,7 +2495,6 @@ function FormBuilder(opts, element, $) {
 const pluginInit = function(options,elem) {
   const _this = this
   const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
-  config.opts = opts
   this.i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
 
   const notInitialised = () => {

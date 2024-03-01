@@ -1,3 +1,18 @@
+## [3.19.3](https://github.com/kevinchappell/formBuilder/compare/v3.19.2...v3.19.3) (2024-03-01)
+
+
+### Bug Fixes
+
+* ensure that config is per instance of formBuilder ([c44dbc4](https://github.com/kevinchappell/formBuilder/commit/c44dbc46fd757cffeef96c3b7752d5749d712237))
+* selecting last field id when running in advanced bootstrap mode ([8153745](https://github.com/kevinchappell/formBuilder/commit/8153745f73e1dea2d599bdcfdf762930e2290a26))
+
+## [3.19.2](https://github.com/kevinchappell/formBuilder/compare/v3.19.1...v3.19.2) (2024-03-01)
+
+
+### Bug Fixes
+
+* provide the value for a number attribute in the tUA array ([76db433](https://github.com/kevinchappell/formBuilder/commit/76db4331a648a926fb963de2e90ca1a0eeaa22f5))
+
 ## [3.19.1](https://github.com/kevinchappell/formBuilder/compare/v3.19.0...v3.19.1) (2024-02-09)
 
 

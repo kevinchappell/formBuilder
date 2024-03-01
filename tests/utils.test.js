@@ -1,7 +1,7 @@
 const utils = require('./../src/js/utils.js')
 const { safeAttr, flattenArray, safeAttrName, hyphenCase, camelCase, bindEvents, attrString, nameAttr, markup,
   parsedHtml, escapeAttrs, getScripts, capitalize, addEventListeners, unique, escapeAttr, escapeHtml,
-  getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML
+  getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML, firstNumberOrUndefined
 } = require('../src/js/utils')
 
 describe('Test Util functions', () => {
@@ -142,6 +142,12 @@ describe('Test Util functions', () => {
     expect(subtract([1,2,3],[2])).toEqual([])
     expect(subtract([2],[1,2,3])).toEqual([1,3])
     expect(subtract(['remove-me'],['classA','classB','remove-me','classC'])).toEqual(['classA','classB','classC'])
+  })
+
+  test('firstNumberOrUndefined', () => {
+    expect(firstNumberOrUndefined(1)).toEqual(1)
+    expect(firstNumberOrUndefined(1,2,3)).toEqual(1)
+    expect(firstNumberOrUndefined(undefined,'',2,1)).toEqual(2)
   })
 })
 

@@ -702,6 +702,10 @@ export function titleCase(str) {
   )
 }
 
+export function firstNumberOrUndefined(...options) {
+  return options.find(x => typeof x === 'number')
+}
+
 const utils = {
   addEventListeners,
   attrString,
@@ -733,6 +737,7 @@ const utils = {
   unique,
   validAttr,
   titleCase,
+  firstNumberOrUndefined,
 }
 
 /**
