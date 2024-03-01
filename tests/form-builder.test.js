@@ -199,6 +199,38 @@ describe('FormBuilder stage names translated', () => {
   })
 })
 
+describe('FormBuilder attribute setup', () => {
+  test('number control number attributes do not inherit field value when not set', async() => {
+    const config = {}
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.addField({
+      type: 'number',
+      value: '5.2',
+    })
+    expect(fbWrap.find('.value-wrap input').val()).toBe('5.2')
+    expect(fbWrap.find('.min-wrap input').val()).toBe('')
+    expect(fbWrap.find('.max-wrap input').val()).toBe('')
+    expect(fbWrap.find('.step-wrap input').val()).toBe('')
+  })
+  test('number control number attributes do not inherit field value when set', async() => {
+    const config = {}
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.addField({
+      type: 'number',
+      value: '5.2',
+      min: 2,
+      max: 10,
+      step: 1.0,
+    })
+    expect(fbWrap.find('.value-wrap input').val()).toBe('5.2')
+    expect(fbWrap.find('.min-wrap input').val()).toBe('2')
+    expect(fbWrap.find('.max-wrap input').val()).toBe('10')
+    expect(fbWrap.find('.step-wrap input').val()).toBe('1')
+  })
+
+})
 describe('FormBuilder typeUserAttrs detection', () => {
   test('renders text/string user attribute', async () => {
     const config = {
@@ -243,6 +275,27 @@ describe('FormBuilder typeUserAttrs detection', () => {
         text: {
           testAttribute: {
             label: 'test',
+            value: 10,
+          },
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.addField({
+      type: 'text',
+      value: '1',
+    })
+    const input = fbWrap.find('.testAttribute-wrap input')
+    expect(input.attr('type')).toBe('number')
+    expect(input.val()).toBe('10')
+  })
+  test('renders number user attribute when value is zero', async () => {
+    const config = {
+      typeUserAttrs: {
+        text: {
+          testAttribute: {
+            label: 'test',
             value: 0,
           },
         },
@@ -250,9 +303,13 @@ describe('FormBuilder typeUserAttrs detection', () => {
     }
     const fbWrap = $('<div>')
     const fb = await fbWrap.formBuilder(config).promise
-    fb.actions.addField({ type: 'text'})
+    fb.actions.addField({
+      type: 'text',
+      value: '1',
+    })
     const input = fbWrap.find('.testAttribute-wrap input')
     expect(input.attr('type')).toBe('number')
+    expect(input.val()).toBe('0')
   })
   test('renders select user attribute when options given', async () => {
     const config = {
