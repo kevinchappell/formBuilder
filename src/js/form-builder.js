@@ -704,7 +704,6 @@ function FormBuilder(opts, element, $) {
           const tUA = typeUserAttr[attribute]
           let origValue = tUA.value
           if (attrValType === 'boolean') {
-            origValue = tUA.value
             tUA[attribute] ??= tUA.value
           } else if (attrValType === 'number') {
             tUA[attribute] ??= firstNumberOrUndefined(values[attribute], origValue)
@@ -712,6 +711,7 @@ function FormBuilder(opts, element, $) {
             origValue ??= ''
             tUA[attribute] ??= values[attribute] || origValue
           }
+          tUA.value = tUA[attribute]
 
           if (tUA.label) {
             i18n[attribute] = Array.isArray(tUA.label) ? mi18n.get(...tUA.label) || tUA.label[0] : tUA.label
@@ -750,7 +750,7 @@ function FormBuilder(opts, element, $) {
       name: name,
       type: attrs.type || 'text',
       className: [`fld-${name}`, (classname || className || '').trim()],
-      value: attrs.value || '',
+      value: attrs.hasOwnProperty(name) ? attrs[name] : attrs.value || '',
     }
     const label = `<label for="${textAttrs.id}">${i18n[name] || ''}</label>`
 

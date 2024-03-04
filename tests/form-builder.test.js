@@ -406,6 +406,111 @@ describe('FormBuilder typeUserAttrs detection', () => {
     const auto = fbWrap.find('.form-field[type="autocomplete"] .prev-holder .form-group')
     expect(auto.find('[class*=row-],[class*=col-]')).toHaveLength(0)
   })
+  test('can load formData for string typeUserAttr into stage', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testStringAttribute: {
+            label: 'testString',
+            value: 'default',
+          },
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        testStringAttribute: 'findme',
+      }
+    ])
+
+    const input = fbWrap.find('.text-field .testStringAttribute-wrap input')
+    expect(input.attr('type')).toBe('text')
+    expect(input.val()).toBe('findme')
+  })
+  test('can load formData for number typeUserAttr into stage', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testNumberAttribute: {
+            label: 'testNumber',
+            type: 'number',
+            value: 0,
+          },
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        testNumberAttribute: 2,
+      }
+    ])
+
+    const input = fbWrap.find('.text-field .testNumberAttribute-wrap input')
+    expect(input.attr('type')).toBe('number')
+    expect(input.val()).toBe('2')
+  })
+  test('can load formData for checkbox typeUserAttr into stage', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testCheckboxAttribute: {
+            label: 'readonly',
+            value: false,
+            type: 'checkbox',
+          }
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        testCheckboxAttribute: true,
+      }
+    ])
+
+    const input = fbWrap.find('.text-field .testCheckboxAttribute-wrap input')
+    expect(input.attr('type')).toBe('checkbox')
+    expect(input.prop('checked')).toBeTruthy()
+  })
+  test('can load formData with value for select typeUserAttr into stage', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testSelectAttribute: {
+            label: 'Class', // i18n support by passing and array eg. ['optionCount', {count: 3}]
+            multiple: true, // optional, omitting generates normal <select>
+            options: {
+              'red form-control': 'Red',
+              'green form-control': 'Green',
+              'blue form-control': 'Blue'
+            },
+            style: 'border: 1px solid red',
+            value: 'Red',
+          }
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        testSelectAttribute: 'green form-control',
+      }
+    ])
+
+    const input = fbWrap.find('.text-field .testSelectAttribute-wrap select')
+    expect(input.length).toBe(1)
+    expect(input.val()).toEqual(['green form-control'])
+  })
 })
 
 describe('FormBuilder can return formData', () => {
