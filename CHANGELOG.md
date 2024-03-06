@@ -1,3 +1,10 @@
+## [3.19.5](https://github.com/kevinchappell/formBuilder/compare/v3.19.4...v3.19.5) (2024-03-06)
+
+
+### Bug Fixes
+
+* regression in bfa92e8 caused typeUserAttrs of type string to not load formData ([3f899c8](https://github.com/kevinchappell/formBuilder/commit/3f899c8b5f4d8849d95eb289ce190b4fdfe2420f))
+
 ## [3.19.4](https://github.com/kevinchappell/formBuilder/compare/v3.19.3...v3.19.4) (2024-03-01)
 
 
