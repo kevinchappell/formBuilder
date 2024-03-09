@@ -3,10 +3,6 @@ import controlTinymce from '../../src/js/control/textarea.tinymce'
 import controlQuill from '../../src/js/control/textarea.quill'
 import { getScripts, getStyles, isCached } from '../../src/js/utils'
 
-const sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
-
 const loadResources = async (js, css) => {
   if (css) {
     getStyles(css)
@@ -59,6 +55,7 @@ describe('Test building text variations and subtypes', () => {
         'name': 'tinymce-elem',
         'access': false,
         'subtype': 'tinymce',
+        userData: ['AValue'],
       }, false)
       controlInstance.configure()
       const element = controlInstance.build()
@@ -71,9 +68,21 @@ describe('Test building text variations and subtypes', () => {
 
       expect(window.tinymce).not.toBeUndefined()
       controlInstance.onRender()
-      await sleep(2000)
-      expect(window.tinymce.get('tinymce-elem')).not.toBeNull()
-    })
+      //Await tinymce initialisation, this can take many seconds
+      await (new Promise(resolve => {
+        const timer = setInterval(() => {
+          const tinyInstance = window.tinymce.get('tinymce-elem')
+          if (tinyInstance !== null && tinyInstance.initialized) {
+            clearTimeout(timer)
+            resolve()
+          }
+        }, 500)
+      }))
+      const tinyInstance = window.tinymce.get('tinymce-elem')
+      expect(tinyInstance).not.toBeNull()
+      expect(tinyInstance.initialized).toBeTruthy()
+      expect(tinyInstance.getContent()).toBe('<p>AValue</p>')
+    },20000) //Longer timeout for tinymce initialisation
 
     test('can render Quill', async () => {
       const controlInstance = new controlQuill({
