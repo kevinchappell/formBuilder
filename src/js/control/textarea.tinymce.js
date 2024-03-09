@@ -101,14 +101,14 @@ export default class controlTinymce extends controlTextarea {
     const afterInit = function (inst) {
       // Set userData
       if (copiedData) {
-        inst.setContent(copiedData)
+        inst[0].setContent(copiedData)
       } else if (userData) {
-        inst.setContent(userData)
+        inst[0].setContent(userData)
       }
     }
 
     setTimeout(() => {
-      // initialise the editor
+      // initialise the editor within a timeout so that the main thread can continue while tinymce initialises
       window.tinymce.init(options).then(afterInit)
     }, 0)
   }
