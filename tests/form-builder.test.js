@@ -485,8 +485,39 @@ describe('FormBuilder typeUserAttrs detection', () => {
       typeUserAttrs: {
         '*': {
           testSelectAttribute: {
-            label: 'Class', // i18n support by passing and array eg. ['optionCount', {count: 3}]
-            multiple: true, // optional, omitting generates normal <select>
+            label: 'Test Select',
+            multiple: false,
+            options: {
+              'red form-control': 'Red',
+              'green form-control': 'Green',
+              'blue form-control': 'Blue'
+            },
+            style: 'border: 1px solid red',
+            value: 'red form-control',
+          }
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        testSelectAttribute: 'green form-control',
+      }
+    ])
+
+    const input = fbWrap.find('.text-field .testSelectAttribute-wrap select')
+    expect(input.length).toBe(1)
+    expect(input.val()).toEqual('green form-control')
+  })
+  test('can load formData with value for select typeUserAttr into stage where attribute name is className', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          className: {
+            label: 'Class',
+            multiple: false,
             options: {
               'red form-control': 'Red',
               'green form-control': 'Green',
@@ -503,13 +534,44 @@ describe('FormBuilder typeUserAttrs detection', () => {
     fb.actions.setData([
       {
         type: 'text',
-        testSelectAttribute: 'green form-control',
+        className: 'green form-control',
       }
     ])
 
+    const input = fbWrap.find('.text-field .className-wrap select')
+    expect(input.length).toBe(1)
+    expect(input.val()).toEqual('green form-control')
+  })
+
+  test('can load formData with value for multi select typeUserAttr into stage', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          testSelectAttribute: {
+            label: 'Test Select',
+            multiple: true,
+            options: {
+              'red form-control': 'Red',
+              'green form-control': 'Green',
+              'blue form-control': 'Blue'
+            },
+            style: 'border: 1px solid red',
+            value: 'red form-control',
+          }
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        testSelectAttribute: ['green form-control','blue form-control'],
+      }
+    ])
     const input = fbWrap.find('.text-field .testSelectAttribute-wrap select')
     expect(input.length).toBe(1)
-    expect(input.val()).toEqual(['green form-control'])
+    expect(input.val()).toEqual(['green form-control','blue form-control'])
   })
 })
 
@@ -530,7 +592,7 @@ describe('FormBuilder can return formData', () => {
         'name': 'textarea-1696482495077',
         'required': false,
       }
-      ]
+  ]
 
   test('as JSON', async () => {
     const fbWrap = $('<div>')

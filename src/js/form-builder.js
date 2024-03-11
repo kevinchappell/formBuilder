@@ -784,14 +784,14 @@ function FormBuilder(opts, element, $) {
    */
   function selectUserAttrs(name, fieldData) {
     const { multiple, options, label: labelText, value, class: classname, className, ...restData } = fieldData
+    const selectValues = fieldData.hasOwnProperty(name) ? fieldData[name] : value || []
     const optis = Object.keys(options).map(val => {
       const attrs = { value: val }
       const optionTextVal = options[val]
       const optionText = Array.isArray(optionTextVal) ? mi18n.get(...optionTextVal) || optionTextVal[0] : optionTextVal
-      if (Array.isArray(value) ? value.includes(val) : val === value) {
-        attrs.selected = null
+      if (Array.isArray(selectValues) ? selectValues.includes(val) : val === selectValues) {
+        attrs.selected = true
       }
-
       return m('option', optionText, attrs)
     })
 
