@@ -701,7 +701,7 @@ function FormBuilder(opts, element, $) {
         const attrValType = userAttrType(typeUserAttr[attribute])
         if (attrValType !== 'undefined') {
           const orig = mi18n.get(attribute)
-          const tUA = typeUserAttr[attribute]
+          const tUA = Object.assign({}, typeUserAttr[attribute]) //Ensure we work on a copy of the attributes
           let origValue = tUA.value
           if (attrValType === 'boolean') {
             tUA[attribute] ??= tUA.value
@@ -722,7 +722,6 @@ function FormBuilder(opts, element, $) {
           }
 
           i18n[attribute] = orig
-          tUA.value = origValue
         } else if (attrValType === 'undefined' && hasSubType(values, attribute)) {
           advField.push(processTypeUserAttrs(typeUserAttr[attribute], values))
         } else {

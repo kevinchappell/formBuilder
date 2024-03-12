@@ -524,7 +524,7 @@ describe('FormBuilder typeUserAttrs detection', () => {
               'blue form-control': 'Blue'
             },
             style: 'border: 1px solid red',
-            value: 'Red',
+            value: 'red form-control',
           }
         },
       },
@@ -541,6 +541,43 @@ describe('FormBuilder typeUserAttrs detection', () => {
     const input = fbWrap.find('.text-field .className-wrap select')
     expect(input.length).toBe(1)
     expect(input.val()).toEqual('green form-control')
+  })
+
+  test('fix GH-1534', async() => {
+    const config = {
+      typeUserAttrs: {
+        '*': {
+          className: {
+            label: 'Class',
+            multiple: false,
+            options: {
+              'red form-control': 'Red',
+              'green form-control': 'Green',
+              'blue form-control': 'Blue'
+            },
+            style: 'border: 1px solid red',
+            value: 'red form-control',
+          }
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+        className: 'green form-control',
+      },
+      {
+        type: 'text',
+        className: 'blue form-control',
+      }
+    ])
+
+    const input = fbWrap.find('.text-field .className-wrap select')
+    expect(input.length).toBe(2)
+    expect($(input.get(0)).val()).toEqual('green form-control')
+    expect($(input.get(1)).val()).toEqual('blue form-control')
   })
 
   test('can load formData with value for multi select typeUserAttr into stage', async() => {
