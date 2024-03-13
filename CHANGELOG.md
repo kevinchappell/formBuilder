@@ -1,3 +1,11 @@
+## [3.19.7](https://github.com/kevinchappell/formBuilder/compare/v3.19.6...v3.19.7) (2024-03-13)
+
+
+### Bug Fixes
+
+* restoring value of typeUserAttr select with attributeName className ([d9d59af](https://github.com/kevinchappell/formBuilder/commit/d9d59af9adc1e48ce8ce1061ef6135e2d066086c))
+* take a copy of typeUserAttr when processing ([7366ddc](https://github.com/kevinchappell/formBuilder/commit/7366ddc327982d85e52685e3c129f47d78361bac))
+
 ## [3.19.6](https://github.com/kevinchappell/formBuilder/compare/v3.19.5...v3.19.6) (2024-03-13)
 
 
