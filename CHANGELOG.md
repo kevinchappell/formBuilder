@@ -1,3 +1,10 @@
+## [3.19.6](https://github.com/kevinchappell/formBuilder/compare/v3.19.5...v3.19.6) (2024-03-13)
+
+
+### Bug Fixes
+
+* loading of userData into tinymce control after initialisation ([842d322](https://github.com/kevinchappell/formBuilder/commit/842d322e6fef6289b7b1a99aa746983f18f5aea8))
+
 ## [3.19.5](https://github.com/kevinchappell/formBuilder/compare/v3.19.4...v3.19.5) (2024-03-06)
 
 
