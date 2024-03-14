@@ -20,7 +20,18 @@ beforeAll(() => {
               'label': 'extracontent',
               'value' : '',
               'type': 'textarea'
-            }
+            },
+            my_list: {
+              label: 'My List',
+              type: 'options',
+              values: [
+                {
+                  'label': 'Option 1',
+                  'value': 'option-1',
+                },
+              ],
+              noSelect: true,
+            },
           }
         }
       }
@@ -93,5 +104,27 @@ describe('controlPlugins', () => {
     fb.actions.addField(field)
 
     expect(fbWrap.find('textarea[name="Extra Content"]')).toHaveLength(1)
+  })
+})
+
+describe('CustomControl additional Option type attributes', () => {
+  test('default rendered options', async () => {
+    const fbWrap = $('<div>')
+    const fb = await $(fbWrap).formBuilder({ }).promise
+    const field = {
+      type: 'testPlugin',
+      class: 'form-control'
+    }
+    fb.actions.addField(field)
+    expect(fbWrap.find('.field-options[name="my_list"]')).toHaveLength(1)
+
+    const defaultOptions = [
+      {
+        'label': 'Option 1',
+        'value': 'option-1',
+        'selected': false
+      },
+    ]
+    expect(fb.actions.getData('js')[0].my_list).toEqual(defaultOptions)
   })
 })
