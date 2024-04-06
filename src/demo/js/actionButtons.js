@@ -114,8 +114,8 @@ export const demoActions = {
     console.log('Can submit: ', form.checkValidity())
     // Display the key/value pairs
     console.log('FormData:')
-    for (var pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`)
+    for (const [key, val] of formData.entries()) {
+      console.log(`${key}: ${val}`)
     }
   },
   resetDemo: () => {
@@ -166,15 +166,15 @@ export const generateActionTable = (actions, columns) => {
     code.appendChild(document.createTextNode(key))
     const action = { content: code }
     let actionDemoTrigger = document.getElementById(key)
-    if (!actionDemoTrigger) {
+    if (!actionDemoTrigger && apiBtns[key]) {
       actionDemoTrigger = document.createElement('button')
       actionDemoTrigger.id = key
       actionDemoTrigger.textContent = titleCase(key)
-      actionDemoTrigger.addEventListener('click', e => apiBtns[key] && apiBtns[key](e))
+      actionDemoTrigger.addEventListener('click', e => apiBtns[key](e))
     } else {
       const trigger = actionDemoTrigger.querySelector('.trigger')
-      if (trigger) {
-        trigger.addEventListener('click', e => apiBtns[key] && apiBtns[key](e))
+      if (trigger && apiBtns[key]) {
+        trigger.addEventListener('click', e => apiBtns[key](e))
       }
     }
     const demo = { content: actionDemoTrigger }

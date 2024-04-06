@@ -33,14 +33,14 @@ import {
   safename,
   forceNumber,
   getContentType,
-  generateSelectorClassNames, firstNumberOrUndefined,
+  generateSelectorClassNames,
+  firstNumberOrUndefined,
 } from './utils'
 import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
 import fontConfig from '../fonts/config.json'
 const css_prefix_text = fontConfig.css_prefix_text
 
-const { rowWrapperClass, colWrapperClass, tmpRowPlaceholderClass, invisibleRowPlaceholderClass } =
-  gridClassNames
+const { rowWrapperClass, colWrapperClass, tmpRowPlaceholderClass, invisibleRowPlaceholderClass } = gridClassNames
 
 const {
   rowWrapperClassSelector,
@@ -55,7 +55,7 @@ function FormBuilder(opts, element, $) {
   const formID = `frmb-${Date.now()}`
   const data = new Data(formID)
   const d = new Dom(formID)
-  const config = instanceConfig[formID] = {}
+  const config = (instanceConfig[formID] = {})
 
   /** @var formRows Allocated rows IDs in the builder */
   let formRows = []
@@ -110,10 +110,10 @@ function FormBuilder(opts, element, $) {
     beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
     start: (evt, ui) => h.startMoving.call(h, evt, ui),
     stop: (evt, ui) => h.stopMoving.call(h, evt, ui),
-    change: function(event, ui) {
+    change: function (event, ui) {
       if (opts.prepend && ui.placeholder.index() < 1) {
         $('li.form-prepend').after(ui.placeholder)
-      } else if (opts.append && ui.placeholder.index() >= ($stage.children('li').length - 1)) {
+      } else if (opts.append && ui.placeholder.index() >= $stage.children('li').length - 1) {
         $('li.form-append').before(ui.placeholder)
       }
     },
@@ -143,10 +143,10 @@ function FormBuilder(opts, element, $) {
     revert: 150,
     beforeStop: (evt, ui) => h.beforeStop.call(h, evt, ui),
     distance: 3,
-    change: function(event, ui) {
+    change: function (event, ui) {
       if (opts.prepend && ui.placeholder.index() < 1) {
         $('li.form-prepend').after(ui.placeholder)
-      } else if (opts.append && ui.placeholder.index() >= ($stage.children('li').length - 1)) {
+      } else if (opts.append && ui.placeholder.index() >= $stage.children('li').length - 1) {
         $('li.form-append').before(ui.placeholder)
       }
     },
@@ -156,8 +156,8 @@ function FormBuilder(opts, element, $) {
       }
 
       if ($(ui.item).closest('.stage-wrap') && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
-          h.doCancel = true
-          processControl(ui.item)
+        h.doCancel = true
+        processControl(ui.item)
       } else {
         if (enhancedBootstrapEnabled()) {
           hideInvisibleRowPlaceholders()
@@ -458,12 +458,12 @@ function FormBuilder(opts, element, $) {
         'options',
       ],
       text: defaultAttrs.concat(['subtype', 'maxlength']),
-      date: defaultAttrs.concat(['subtype','min', 'max', 'step']),
+      date: defaultAttrs.concat(['subtype', 'min', 'max', 'step']),
       file: defaultAttrs.concat(['multiple']),
       header: ['label', 'subtype', 'className', 'access'],
       hidden: ['name', 'value', 'access'],
       paragraph: ['label', 'subtype', 'className', 'access'],
-      number: defaultAttrs.concat(['subtype','min', 'max', 'step']),
+      number: defaultAttrs.concat(['subtype', 'min', 'max', 'step']),
       select: defaultAttrs.concat(['multiple', 'options']),
       textarea: defaultAttrs.concat(['subtype', 'maxlength', 'rows']),
     }
@@ -590,10 +590,11 @@ function FormBuilder(opts, element, $) {
     const numAttrs = ['min', 'max', 'step']
 
     numAttrs.forEach(numAttr => {
-      advFieldMap[numAttr] = type === 'number' ? () => numberAttribute(numAttr, values) :  () => textAttribute(numAttr, values)
+      advFieldMap[numAttr] =
+        type === 'number' ? () => numberAttribute(numAttr, values) : () => textAttribute(numAttr, values)
     })
 
-    const noDisable = ['name', 'className', 'subtype', ]
+    const noDisable = ['name', 'className', 'subtype']
 
     const typeUserAttrs = Object.assign({}, opts.typeUserAttrs['*'], opts.typeUserAttrs[type])
 
@@ -652,13 +653,11 @@ function FormBuilder(opts, element, $) {
    * @return {string} type of user attr
    */
   function userAttrType(attrData) {
-    return (
-      [
-        ['array', ({ options }) => !!options],
-        ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
-        [typeof attrData.value, () => true], // string, number,
-      ].find(typeCondition => typeCondition[1](attrData))[0]
-    )
+    return [
+      ['array', ({ options }) => !!options],
+      ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
+      [typeof attrData.value, () => true], // string, number,
+    ].find(typeCondition => typeCondition[1](attrData))[0]
   }
 
   /**
@@ -898,7 +897,7 @@ function FormBuilder(opts, element, $) {
    */
   const numberAttribute = (attribute, values) => {
     const { class: classname, className, ...attrs } = values
-    const attrVal = (Number.isNaN(attrs[attribute])) ? undefined : attrs[attribute]
+    const attrVal = Number.isNaN(attrs[attribute]) ? undefined : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
 
@@ -1095,7 +1094,7 @@ function FormBuilder(opts, element, $) {
           id: data.lastID + '-sort-lower',
           className: `sort-button sort-button-lower btn ${css_prefix_text}sort-lower`,
           title: 'Move Lower',
-        })
+        }),
       )
     }
 
@@ -1224,12 +1223,12 @@ function FormBuilder(opts, element, $) {
         SetupInvisibleRowPlaceholders(rowWrapperNode)
         if (opts.enableColumnInsertMenu) {
           $(rowWrapperNode).off('mouseenter')
-          $(rowWrapperNode).on('mouseenter', function(e) {
+          $(rowWrapperNode).on('mouseenter', function (e) {
             setupColumnInserts($(e.currentTarget))
           })
 
           $(rowWrapperNode).off('mouseleave')
-          $(rowWrapperNode).on('mouseleave', function(e) {
+          $(rowWrapperNode).on('mouseleave', function (e) {
             hideColumnInsertButtons($(e.currentTarget))
           })
         }
@@ -1288,7 +1287,10 @@ function FormBuilder(opts, element, $) {
   }
 
   function hideInvisibleRowPlaceholders() {
-    $stage.find(tmpRowPlaceholderClassSelector + ':not(:last-child)').css('height','1px').addClass(invisibleRowPlaceholderClass)
+    $stage
+      .find(tmpRowPlaceholderClassSelector + ':not(:last-child)')
+      .css('height', '1px')
+      .addClass(invisibleRowPlaceholderClass)
   }
 
   function SetupInvisibleRowPlaceholders(rowWrapperNode) {
@@ -1450,7 +1452,7 @@ function FormBuilder(opts, element, $) {
 
     const rowId = h.getRowValue(rowWrapperNode.className)
     if (rowId !== '0') {
-      $(rowWrapperNode).attr('data-row-id',rowId)
+      $(rowWrapperNode).attr('data-row-id', rowId)
     }
   }
 
@@ -1480,23 +1482,23 @@ function FormBuilder(opts, element, $) {
 
     const rowColumns = $(rowWrapper).children(colWrapperClassSelector)
     rowColumns.each((i, elem) => {
-        const colWrapper = $(elem)
-        colWrapper.addClass('colWithInsertButtons')
+      const colWrapper = $(elem)
+      colWrapper.addClass('colWithInsertButtons')
 
-        if (rowColumns.index(colWrapper) === 0) {
-          $(
-            `<button type="button" class="formbuilder-icon-plus btnAddControl ${h.getRowClass(
-              colWrapper.parent().attr('class'),
-            )}" prepend="true" style='visibility: ${(hide ? 'hidden' : 'visible')}'></button>`,
-          ).insertBefore(colWrapper)
-        }
-
+      if (rowColumns.index(colWrapper) === 0) {
         $(
           `<button type="button" class="formbuilder-icon-plus btnAddControl ${h.getRowClass(
             colWrapper.parent().attr('class'),
-          )}" appendAfter="${colWrapper.attr('id')}" style='visibility: ${(hide ? 'hidden' : 'visible')}'></button>`,
-        ).insertAfter(colWrapper)
-      })
+          )}" prepend="true" style='visibility: ${hide ? 'hidden' : 'visible'}'></button>`,
+        ).insertBefore(colWrapper)
+      }
+
+      $(
+        `<button type="button" class="formbuilder-icon-plus btnAddControl ${h.getRowClass(
+          colWrapper.parent().attr('class'),
+        )}" appendAfter="${colWrapper.attr('id')}" style='visibility: ${hide ? 'hidden' : 'visible'}'></button>`,
+      ).insertAfter(colWrapper)
+    })
   }
 
   function removeColumnInsertButtons(rowWrapper) {
@@ -1524,8 +1526,10 @@ function FormBuilder(opts, element, $) {
         if (formRows.length === 0) {
           nextRow = 1
         } else {
-          const numericalRows = formRows.filter(value => !isNaN(value) && !isNaN(parseInt(value))).map(str => parseInt(str))
-          nextRow = (Math.max(...numericalRows, 0) + 1)
+          const numericalRows = formRows
+            .filter(value => !isNaN(value) && !isNaN(parseInt(value)))
+            .map(str => parseInt(str))
+          nextRow = Math.max(...numericalRows, 0) + 1
         }
 
         result.rowUniqueId = nextRow.toString()
@@ -1706,7 +1710,10 @@ function FormBuilder(opts, element, $) {
   })
 
   $stage.on('dblclick', 'li.form-field', e => {
-    if (['select', 'input', 'label','textarea',].includes(e.target.tagName.toLowerCase()) || e.target.isContentEditable === true) {
+    if (
+      ['select', 'input', 'label', 'textarea'].includes(e.target.tagName.toLowerCase()) ||
+      e.target.isContentEditable === true
+    ) {
       return
     }
     e.stopPropagation()
@@ -2192,7 +2199,7 @@ function FormBuilder(opts, element, $) {
           formRows = formRows.filter(x => x !== rowValue)
           $(elem).remove()
         } else {
-          setupColumnInserts($(elem),true)
+          setupColumnInserts($(elem), true)
         }
       })
   }
@@ -2396,7 +2403,7 @@ function FormBuilder(opts, element, $) {
     const $optionWrap = $(e.target).closest('.field-options')
     const $multiple = $('[name="multiple"]', $optionWrap)
     const $firstOption = $('.option-selected:eq(0)', $optionWrap)
-    const isMultiple = ($multiple.length) ? $multiple.prop('checked') : $firstOption.attr('type') === 'checkbox'
+    const isMultiple = $multiple.length ? $multiple.prop('checked') : $firstOption.attr('type') === 'checkbox'
 
     const optionTemplate = { selected: false, label: '', value: '' }
     const $sortableOptions = $('.sortable-options', $optionWrap)
@@ -2491,14 +2498,16 @@ function FormBuilder(opts, element, $) {
   return formBuilder
 }
 
-const pluginInit = function(options,elem) {
+const pluginInit = function (options, elem) {
   const _this = this
   const { i18n, ...opts } = jQuery.extend({}, defaultOptions, options, true)
   this.i18nOpts = jQuery.extend({}, defaultI18n, i18n, true)
 
   const notInitialised = () => {
     console.error('formBuilder is still initialising')
-    console.info('See https://formbuilder.online/docs/formBuilder/actions/getData/#wont-work and https://formbuilder.online/docs/formBuilder/promise/ for more information on formBuilder asynchronous loading')
+    console.info(
+      'See https://formbuilder.online/docs/formBuilder/actions/getData/#wont-work and https://formbuilder.online/docs/formBuilder/promise/ for more information on formBuilder asynchronous loading',
+    )
   }
 
   const actionList = [
@@ -2519,12 +2528,15 @@ const pluginInit = function(options,elem) {
   ]
 
   this.instance = {
-    actions: actionList.reduce((actions, currentAction) => { actions[currentAction] = notInitialised; return actions }, {}),
+    actions: actionList.reduce((actions, currentAction) => {
+      actions[currentAction] = notInitialised
+      return actions
+    }, {}),
     markup,
     get formData() {
       return _this.instance.actions.getData !== notInitialised && _this.instance.actions.getData('json')
     },
-    promise: new Promise(function(resolve, reject) {
+    promise: new Promise(function (resolve, reject) {
       mi18n
         .init(_this.i18nOpts)
         .then(() => {
@@ -2539,7 +2551,7 @@ const pluginInit = function(options,elem) {
           reject(err)
           opts.notify.error(err)
         })
-    })
+    }),
   }
 }
 
