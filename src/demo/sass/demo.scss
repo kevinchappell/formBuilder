@@ -73,3 +73,8 @@ body {
 .form-builder-dialog {
   overflow-y: auto;
 }
+
+label[for='toggleEnhancedBootstrapEnabled'] {
+  margin-left: 1rem;
+  display: none;
+}

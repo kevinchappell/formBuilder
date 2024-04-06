@@ -11,25 +11,12 @@ const changeDataType = ({ target }) => {
   window.sessionStorage.setItem('dataType', target.value)
   demoActions.resetDemo()
 }
-for (let i = 0; i < dataTypes.length; i++) {
-  if (dataType === dataTypes[i].value) {
-    dataTypes[i].checked = true
+for (const dataType of dataTypes) {
+  if (dataType.value === dataType) {
+    dataType.checked = true
   }
-  dataTypes[i].addEventListener('click', changeDataType, false)
+  dataType.addEventListener('click', changeDataType, false)
 }
-
-const toggleBootStrap = ({ target }) => {
-  if (!target.checked) {
-    removeStyle('bootstrap')
-  } else {
-    insertStyle({
-      src: 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
-      id: 'bootstrap',
-    })
-  }
-}
-
-document.getElementById('toggleBootstrap').addEventListener('click', toggleBootStrap, false)
 
 jQuery(function ($) {
   const fields = [
@@ -273,6 +260,11 @@ jQuery(function ($) {
     fbOptions.formData = formData
   }
 
+  const buildWrap = document.querySelector('.build-wrap')
+  const $buildWrap = $(buildWrap)
+  const renderWrap = document.querySelector('.render-wrap')
+  const $renderWrap = $(renderWrap)
+
   /**
    * Toggles the edit mode for the demo
    * @return {Boolean} editMode
@@ -280,20 +272,45 @@ jQuery(function ($) {
   function toggleEdit() {
     document.body.classList.toggle('form-rendered', editing)
     if (!editing) {
-      $('.build-wrap').formBuilder('setData', $('.render-wrap').formRender('userData'))
+      $buildWrap.formBuilder('setData', $renderWrap.formRender('userData'))
     } else {
-      const formRenderData = $('.build-wrap').formBuilder('getData', dataType)
-      $('.render-wrap').formRender({
+      const formRenderData = $buildWrap.formBuilder('getData', dataType)
+      $renderWrap.formRender({
         formData: formRenderData,
         templates: templates,
         dataType,
       })
       window.sessionStorage.setItem('formData', formRenderData)
     }
-    return (editing = !editing)
+    editing = !editing
+    return editing
   }
 
-  const formBuilder = $('.build-wrap').formBuilder(fbOptions)
+  let formBuilder = $buildWrap.formBuilder(fbOptions)
+  const toggleEnhancedBootstrapGrid = document.getElementById('toggleEnhancedBootstrapEnabled')
+  const toggleEnhancedBootstrapGridHandler = ({ target }) => {
+    $buildWrap.empty()
+    formBuilder = $buildWrap.formBuilder({
+      ...fbOptions,
+      formData: formBuilder.formData,
+      enableEnhancedBootstrapGrid: target.checked,
+    })
+  }
+
+  const toggleBootstrap = ({ target }) => {
+    toggleEnhancedBootstrapGrid.parentElement.style.display = target.checked ? 'inline-block' : 'none'
+    if (!target.checked) {
+      removeStyle('bootstrap')
+    } else {
+      insertStyle({
+        src: 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
+        id: 'bootstrap',
+      })
+    }
+  }
+
+  document.getElementById('toggleBootstrap').addEventListener('click', toggleBootstrap, false)
+  toggleEnhancedBootstrapGrid.addEventListener('change', toggleEnhancedBootstrapGridHandler, false)
 
   const fbPromise = formBuilder.promise
 
