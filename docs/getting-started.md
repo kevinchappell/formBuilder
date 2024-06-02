@@ -30,6 +30,8 @@ Once you have the module/plugin installed, include it in your build process for 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
   <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
   <script>
+<script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+  <script>
   jQuery(function($) {
     $(document.getElementById('fb-editor')).formBuilder();
   });
