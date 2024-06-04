@@ -1824,7 +1824,7 @@ function FormBuilder(opts, element, $) {
     }
   })
 
-  $stage.on('blur', 'input.fld-maxlength', e => {
+  $stage.on('blur', 'input.fld-maxlength, input.fld-rows', e => {
     e.target.value = forceNumber(e.target.value)
   })
 
