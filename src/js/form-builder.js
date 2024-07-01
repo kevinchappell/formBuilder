@@ -155,7 +155,7 @@ function FormBuilder(opts, element, $) {
         return false
       }
 
-      if ($(ui.item).closest('.stage-wrap') && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
+      if ($(ui.item).closest('.stage-wrap').length && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
         h.doCancel = true
         processControl(ui.item)
       } else {
