@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "env": {
     "browser": true,
     "node": true,
@@ -16,6 +16,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
+  "root": true,
   "rules": {
     "max-len": 0,
     "linebreak-style": ["error", "unix"],
