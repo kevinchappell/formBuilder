@@ -125,7 +125,7 @@
     "@semantic-release/npm": "^10.0.5",
     "autoprefixer": "^10.4.16",
     "babel-loader": "^8.1.0",
-    "clean-webpack-plugin": "^3.0.0",
+    "clean-webpack-plugin": "^4.0.0",
     "clui": "^0.3.6",
     "colors": "^1.4.0",
     "compression-webpack-plugin": "^10.0.0",

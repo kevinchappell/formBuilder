@@ -107,10 +107,7 @@ const webpackConfig = {
   plugins: [
     new ESLintPlugin({}),
     new CleanWebpackPlugin(
-      { cleanOnceBeforeBuildPatterns: ['dist/*', 'demo/assets/js/form-*'] },
-      {
-        root: join(__dirname, '..'),
-      },
+      { cleanOnceBeforeBuildPatterns: ['dist/*', 'demo/assets/js/demo.*'] },
     ),
     new WrapperPlugin({
       test: /\.js$/, // only wrap output of bundle files with '.js' extension
