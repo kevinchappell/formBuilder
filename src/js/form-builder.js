@@ -155,7 +155,7 @@ function FormBuilder(opts, element, $) {
         return false
       }
 
-      if ($(ui.item).closest('.stage-wrap') && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
+      if ($(ui.item).closest('.stage-wrap').length && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
         h.doCancel = true
         processControl(ui.item)
       } else {
@@ -248,7 +248,7 @@ function FormBuilder(opts, element, $) {
     $(element).replaceWith($editorWrap)
   }
 
-  $(d.controls).on('click', 'li', ({ target }) => {
+  $(d.controls).on('click', 'li.input-control, li.input-set-control', ({ target }) => {
     //Remove initial placeholder if simply clicking to add field into blank stage
     if (h.stageIsEmpty()) {
       $stage.find(tmpRowPlaceholderClassSelector).eq(0).remove()
