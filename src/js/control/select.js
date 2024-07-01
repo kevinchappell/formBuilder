@@ -93,6 +93,7 @@ export default class controlSelect extends control {
           const labelAttrs = { for: optionAttrs.id }
           let output = [input, this.markup('label', labelContents, labelAttrs)]
           if (toggle) {
+            delete labelAttrs.for
             labelAttrs.className = 'kc-toggle'
             labelContents.unshift(input, this.markup('span'))
             output = this.markup('label', labelContents, labelAttrs)
