@@ -157,7 +157,7 @@
     "semver": "^7.3.2",
     "storage-available": "^1.1.0",
     "style-loader": "^1.2.1",
-    "unzipper": "^0.10.11",
+    "unzipper": "^0.12.1",
     "webpack": "^5.88.0",
     "webpack-bundle-analyzer": "^4.9.0",
     "webpack-cli": "^5.1.4",
