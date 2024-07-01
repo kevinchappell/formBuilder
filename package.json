@@ -72,9 +72,9 @@
     ],
     "comments": false,
     "plugins": [
-      "@babel/plugin-proposal-object-rest-spread",
-      "@babel/plugin-proposal-class-properties",
-      "@babel/plugin-proposal-nullish-coalescing-operator"
+      "@babel/plugin-transform-object-rest-spread",
+      "@babel/plugin-transform-class-properties",
+      "@babel/plugin-transform-nullish-coalescing-operator"
     ]
   },
   "scripts": {
@@ -108,16 +108,15 @@
     "jquery-ui-sortable": "*"
   },
   "devDependencies": {
-    "@babel/cli": "^7.22.10",
-    "@babel/core": "^7.22.10",
+    "@babel/cli": "^7.24.7",
+    "@babel/core": "^7.24.7",
     "@babel/eslint-parser": "^7.24.7",
-    "@babel/node": "^7.22.10",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
-    "@babel/plugin-proposal-object-rest-spread": "^7.18.9",
-    "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
-    "@babel/plugin-transform-destructuring": "^7.22.10",
-    "@babel/preset-env": "^7.11.0",
+    "@babel/node": "^7.24.7",
+    "@babel/plugin-transform-class-properties": "^7.24.7",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.24.7",
+    "@babel/plugin-transform-object-rest-spread": "^7.24.7",
+    "@babel/plugin-transform-destructuring": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@semantic-release/changelog": "^6.0.3",
