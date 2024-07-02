@@ -8,6 +8,7 @@ import controlText from './text'
 import controlTextarea from './textarea'
 import controlTinymce from './textarea.tinymce'
 import controlQuill from './textarea.quill'
+import controlSignaturePad from './signaturePad'
 
 export default {
   controlAutocomplete,
@@ -20,4 +21,5 @@ export default {
   controlTextarea,
   controlTinymce,
   controlQuill,
+  controlSignaturePad,
 }
