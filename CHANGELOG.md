@@ -1,3 +1,10 @@
+## [3.19.9](https://github.com/kevinchappell/formBuilder/compare/v3.19.8...v3.19.9) (2024-07-04)
+
+
+### Bug Fixes
+
+* remove label's for attribute when we wrap the input with the label for kc-toggle ([69f33b7](https://github.com/kevinchappell/formBuilder/commit/69f33b732cbb164811feb3070941cce258d4e733))
+
 ## [3.19.8](https://github.com/kevinchappell/formBuilder/compare/v3.19.7...v3.19.8) (2024-07-04)
 
 
