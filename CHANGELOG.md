@@ -1,3 +1,11 @@
+## [3.19.10](https://github.com/kevinchappell/formBuilder/compare/v3.19.9...v3.19.10) (2024-07-04)
+
+
+### Bug Fixes
+
+* add in check for .length to ensure we are within the stage-wrap ([d9695cc](https://github.com/kevinchappell/formBuilder/commit/d9695cc056b81a04dc79f2e59fd9cf8a2990dbfc))
+* make css selectors more specific when identifying form control wrap and input-controls ([44c94f6](https://github.com/kevinchappell/formBuilder/commit/44c94f60f4444f70ddbc3523c43bf2dd5364c8ef))
+
 ## [3.19.9](https://github.com/kevinchappell/formBuilder/compare/v3.19.8...v3.19.9) (2024-07-04)
 
 
