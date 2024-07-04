@@ -75,24 +75,24 @@ export default class customControls {
       // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
         // check that this type is already registered
-        const controlClass = control.getClass(type, field.subtype)
-        if (!controlClass) {
-          super.error(
+        try {
+          const controlClass = control.getClass(type, field.subtype)
+
+          // generate a random key & map the settings against it
+          lookup = field.datatype ? field.datatype : `${type}-${Math.floor(Math.random() * 9000 + 1000)}`
+
+          this.customRegister[lookup] = jQuery.extend(field, {
+            type: type,
+            class: controlClass,
+          })
+        } catch(e) {
+          control.error(
             'Error while registering custom field: ' +
             type +
             (field.subtype ? ':' + field.subtype : '') +
             '. Unable to find any existing defined control or template for rendering.',
           )
-          continue
         }
-
-        // generate a random key & map the settings against it
-        lookup = field.datatype ? field.datatype : `${type}-${Math.floor(Math.random() * 9000 + 1000)}`
-
-        this.customRegister[lookup] = jQuery.extend(field, {
-          type: type,
-          class: controlClass,
-        })
       } else {
         //Map the field definition into the templated control class
         const controlClass = this.templateControlRegister[type]
