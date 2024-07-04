@@ -2139,13 +2139,27 @@ function FormBuilder(opts, element, $) {
     })
   }
 
+  /**
+   * Updates the field's className to include the current wrapping row, removing the previous row if defined
+   * @param fieldID
+   */
   function syncFieldWithNewRow(fieldID) {
     if (fieldID) {
       const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
-      if (inputClassElement.val()) {
-        const oldRow = h.getRowClass(inputClassElement.val())
+      const currentClassName = inputClassElement.val().trim()
+      if (currentClassName) {
+        let currentClasses = currentClassName.split(' ')
+        const oldRow = h.getRowClass(currentClassName)
         const wrapperRow = h.getRowClass(inputClassElement.closest(rowWrapperClassSelector).attr('class'))
-        inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
+        if (oldRow !== wrapperRow) {
+          if (oldRow) {
+            currentClasses = currentClasses.filter(function(obj) {
+              return obj !== oldRow
+            })
+          }
+          currentClasses.push(wrapperRow)
+          inputClassElement.val(currentClasses.join(' '))
+        }
         checkRowCleanup()
       }
     }
