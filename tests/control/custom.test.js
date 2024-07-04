@@ -404,4 +404,32 @@ describe('Test Custom Control', () => {
     expect(fbWrap.find('#starRating-1697591966052-0')[0].outerHTML).toBe('<span id="starRating-1697591966052-0"></span>')
 
   })
+
+  test('custom replacedField with invalid type throws Error', async () => {
+    const fbWrap = $('<div>')
+
+    const replaceFields = [{
+      type: 'nonExistent'
+    }]
+
+    let error
+    await fbWrap.formBuilder({replaceFields}).promise.catch(e => error = e)
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toMatch(/Error while registering custom field:/)
+  })
+
+  test('custom replacedField with missing type throws Error', async () => {
+    const fbWrap = $('<div>')
+
+    const replaceFields = [{
+        value: 1
+    }]
+
+    let error
+    await fbWrap.formBuilder({replaceFields}).promise.catch(e => error = e)
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toMatch(/Ignoring invalid custom field definition. Please specify a type property./)
+  })
 })

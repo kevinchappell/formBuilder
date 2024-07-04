@@ -292,7 +292,9 @@ function FormBuilder(opts, element, $) {
         // check for a custom type
         const custom = controls.custom.lookup(field.type)
         if (custom) {
+          const customType = field.type
           field = Object.assign({}, custom)
+          field.label = controls.custom.label(customType)
         } else {
           const controlClass = controls.getClass(field.type)
           field.label = controlClass.label(field.type)
