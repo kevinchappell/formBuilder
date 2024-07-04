@@ -656,7 +656,7 @@
         border: 1px solid $error;
       }
 
-      &.fld-maxlength {
+      &.fld-maxlength, &.fld-rows {
         width: 75px;
       }
 
