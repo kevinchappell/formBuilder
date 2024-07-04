@@ -1,3 +1,10 @@
+## [3.19.8](https://github.com/kevinchappell/formBuilder/compare/v3.19.7...v3.19.8) (2024-07-04)
+
+
+### Bug Fixes
+
+* ensure rows attribute is forced to a positive integer ([a9ac85d](https://github.com/kevinchappell/formBuilder/commit/a9ac85dc25d2d0c46075f398562abf6cf8d8adf9))
+
 ## [3.19.7](https://github.com/kevinchappell/formBuilder/compare/v3.19.6...v3.19.7) (2024-03-13)
 
 
