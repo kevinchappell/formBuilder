@@ -104,7 +104,7 @@ export default class customControls {
       }
 
       // map label & icon
-      this.def.i18n[locale][lookup] = field.label
+      this.def.i18n[locale][lookup] = Array.isArray(field.label) ? mi18n.get(...field.label) || field.label[0] : field.label
       this.def.icon[lookup] = field.icon
     }
   }
