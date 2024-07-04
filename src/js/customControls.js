@@ -123,7 +123,7 @@ export default class customControls {
      * @param {Object|Number|String} [args] - string or key/val pairs for string lookups with variables
      * @return {String} the translated label
      */
-      const def = this.definition
+      const def = this.def
       let i18n = def.i18n || {}
       const locale = mi18n.locale
       i18n = i18n[locale] || i18n.default || i18n
@@ -158,7 +158,7 @@ export default class customControls {
   icon(type) {
     // @todo - support for `${css_prefix_text}${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
     // https://formbuilder.online/docs/formBuilder/options/inputSets/
-    const def = this.definition
+    const def = this.def
     if (def && typeof def.icon === 'object') {
       return def.icon[type]
     }
