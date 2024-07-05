@@ -70,4 +70,52 @@ describe('Test Boostrap Helper functions', () => {
     expect(helper.changeBootstrapClass('col-md-5 row-1 random-class row col', 7)).toBe('col-md-7 row-1 random-class row col')
   })
 
+  test('syncFieldWithNewRow swaps existing with new', () => {
+    const field = $('<div>')
+    const input = $('<input>', {class: 'fld-className', value: 'prefix-class form-control row-1 col-md-12 suffix-class'})
+    field.append(input)
+    const newRow = $('<div>', {class: 'row-2'})
+
+    expect(input.val()).toEqual('prefix-class form-control row-1 col-md-12 suffix-class')
+    helper.syncFieldWithNewRow(field[0], newRow[0])
+
+    expect(input.val()).toEqual('prefix-class form-control col-md-12 suffix-class row-2')
+  })
+
+  test('syncFieldWithNewRow unsets row class when no new row', () => {
+    const field = $('<div>')
+    const input = $('<input>', {class: 'fld-className', value: 'prefix-class form-control row-1 col-md-12 suffix-class'})
+    field.append(input)
+    const newRow = $('<div>', {})
+
+    expect(input.val()).toEqual('prefix-class form-control row-1 col-md-12 suffix-class')
+    helper.syncFieldWithNewRow(field[0], newRow[0])
+
+    expect(input.val()).toEqual('prefix-class form-control col-md-12 suffix-class')
+  })
+
+  test('syncFieldWithNewRow sets new row when no previous row', () => {
+    const field = $('<div>')
+    const input = $('<input>', {class: 'fld-className', value: 'prefix-class form-control col-md-12 suffix-class'})
+    field.append(input)
+    const newRow = $('<div>', {class: 'row-2'})
+
+    expect(input.val()).toEqual('prefix-class form-control col-md-12 suffix-class')
+    helper.syncFieldWithNewRow(field[0], newRow[0])
+
+    expect(input.val()).toEqual('prefix-class form-control col-md-12 suffix-class row-2')
+  })
+
+  test('syncFieldWithNewRow no change if same row id', () => {
+    const field = $('<div>')
+    const input = $('<input>', {class: 'fld-className', value: 'prefix-class form-control row-2 col-md-12 suffix-class'})
+    field.append(input)
+    const newRow = $('<div>', {class: 'row-2'})
+
+    expect(input.val()).toEqual('prefix-class form-control row-2 col-md-12 suffix-class')
+    helper.syncFieldWithNewRow(field[0], newRow[0])
+
+    expect(input.val()).toEqual('prefix-class form-control row-2 col-md-12 suffix-class')
+  })
+
 })
