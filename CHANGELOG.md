@@ -1,3 +1,13 @@
+## [3.19.11](https://github.com/kevinchappell/formBuilder/compare/v3.19.10...v3.19.11) (2024-07-05)
+
+
+### Bug Fixes
+
+* catch control lookup error so that we can output the custom control specific error ([7aa72ce](https://github.com/kevinchappell/formBuilder/commit/7aa72ce1f7036858a6ab5cf2d10cae8f40ea7e28))
+* fix lookup of label for custom controls when constructing control panel and adding field ([f1b580b](https://github.com/kevinchappell/formBuilder/commit/f1b580bd9a1ac3446241bc85841f22982ae64cc1))
+* translate custom control label if required when setting up the translation map ([a5a7f80](https://github.com/kevinchappell/formBuilder/commit/a5a7f80b0fa6587698e4546a3b3900a636a29726))
+* use correct definition in custom control label and icon lookup ([04a66c2](https://github.com/kevinchappell/formBuilder/commit/04a66c21f18cd3c65e4ca599fb673e3fb20f9d5c))
+
 ## [3.19.10](https://github.com/kevinchappell/formBuilder/compare/v3.19.9...v3.19.10) (2024-07-04)
 
 
