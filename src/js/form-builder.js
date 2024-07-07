@@ -155,7 +155,7 @@ function FormBuilder(opts, element, $) {
         return false
       }
 
-      if ($(ui.item).closest('.stage-wrap') && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
+      if ($(ui.item).closest('.stage-wrap').length && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
         h.doCancel = true
         processControl(ui.item)
       } else {
@@ -248,7 +248,7 @@ function FormBuilder(opts, element, $) {
     $(element).replaceWith($editorWrap)
   }
 
-  $(d.controls).on('click', 'li', ({ target }) => {
+  $(d.controls).on('click', 'li.input-control, li.input-set-control', ({ target }) => {
     //Remove initial placeholder if simply clicking to add field into blank stage
     if (h.stageIsEmpty()) {
       $stage.find(tmpRowPlaceholderClassSelector).eq(0).remove()
@@ -292,7 +292,9 @@ function FormBuilder(opts, element, $) {
         // check for a custom type
         const custom = controls.custom.lookup(field.type)
         if (custom) {
+          const customType = field.type
           field = Object.assign({}, custom)
+          field.label = controls.custom.label(customType)
         } else {
           const controlClass = controls.getClass(field.type)
           field.label = controlClass.label(field.type)
@@ -1824,7 +1826,7 @@ function FormBuilder(opts, element, $) {
     }
   })
 
-  $stage.on('blur', 'input.fld-maxlength', e => {
+  $stage.on('blur', 'input.fld-maxlength, input.fld-rows', e => {
     e.target.value = forceNumber(e.target.value)
   })
 

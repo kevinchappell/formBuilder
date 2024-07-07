@@ -1,3 +1,35 @@
+## [3.19.11](https://github.com/kevinchappell/formBuilder/compare/v3.19.10...v3.19.11) (2024-07-05)
+
+
+### Bug Fixes
+
+* catch control lookup error so that we can output the custom control specific error ([7aa72ce](https://github.com/kevinchappell/formBuilder/commit/7aa72ce1f7036858a6ab5cf2d10cae8f40ea7e28))
+* fix lookup of label for custom controls when constructing control panel and adding field ([f1b580b](https://github.com/kevinchappell/formBuilder/commit/f1b580bd9a1ac3446241bc85841f22982ae64cc1))
+* translate custom control label if required when setting up the translation map ([a5a7f80](https://github.com/kevinchappell/formBuilder/commit/a5a7f80b0fa6587698e4546a3b3900a636a29726))
+* use correct definition in custom control label and icon lookup ([04a66c2](https://github.com/kevinchappell/formBuilder/commit/04a66c21f18cd3c65e4ca599fb673e3fb20f9d5c))
+
+## [3.19.10](https://github.com/kevinchappell/formBuilder/compare/v3.19.9...v3.19.10) (2024-07-04)
+
+
+### Bug Fixes
+
+* add in check for .length to ensure we are within the stage-wrap ([d9695cc](https://github.com/kevinchappell/formBuilder/commit/d9695cc056b81a04dc79f2e59fd9cf8a2990dbfc))
+* make css selectors more specific when identifying form control wrap and input-controls ([44c94f6](https://github.com/kevinchappell/formBuilder/commit/44c94f60f4444f70ddbc3523c43bf2dd5364c8ef))
+
+## [3.19.9](https://github.com/kevinchappell/formBuilder/compare/v3.19.8...v3.19.9) (2024-07-04)
+
+
+### Bug Fixes
+
+* remove label's for attribute when we wrap the input with the label for kc-toggle ([69f33b7](https://github.com/kevinchappell/formBuilder/commit/69f33b732cbb164811feb3070941cce258d4e733))
+
+## [3.19.8](https://github.com/kevinchappell/formBuilder/compare/v3.19.7...v3.19.8) (2024-07-04)
+
+
+### Bug Fixes
+
+* ensure rows attribute is forced to a positive integer ([a9ac85d](https://github.com/kevinchappell/formBuilder/commit/a9ac85dc25d2d0c46075f398562abf6cf8d8adf9))
+
 ## [3.19.7](https://github.com/kevinchappell/formBuilder/compare/v3.19.6...v3.19.7) (2024-03-13)
 
 
