@@ -1,3 +1,11 @@
+## [3.19.12](https://github.com/kevinchappell/formBuilder/compare/v3.19.11...v3.19.12) (2024-07-07)
+
+
+### Bug Fixes
+
+* move syncFieldWithNewRow to Helpers to make the feature directly testable ([670688a](https://github.com/kevinchappell/formBuilder/commit/670688add0a8f11b92e7d3ee90b3659c8121b55e))
+* syncFieldWithNewRow incorrectly replacing row values in field className attribute ([eae8a5f](https://github.com/kevinchappell/formBuilder/commit/eae8a5f146feceeff09b4a0eed999891dc357dce))
+
 ## [3.19.11](https://github.com/kevinchappell/formBuilder/compare/v3.19.10...v3.19.11) (2024-07-05)
 
 
