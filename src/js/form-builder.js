@@ -1399,7 +1399,7 @@ function FormBuilder(opts, element, $) {
             colWrapper.appendTo(rowWrapperNode)
 
             setupSortableRowWrapper(rowWrapperNode)
-            syncFieldWithNewRow(colWrapper.attr('id'))
+            h.syncFieldWithNewRow(colWrapper[0], colWrapper.closest(rowWrapperClassSelector)[0])
           }
         }
 
@@ -1445,10 +1445,11 @@ function FormBuilder(opts, element, $) {
       stop: (event, ui) => {
         $stage.removeClass('__preventColButtons')
         $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
+        checkRowCleanup()
         autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector), true)
       },
       update: (event, ui) => {
-        syncFieldWithNewRow(ui.item.attr('id'))
+        h.syncFieldWithNewRow(ui.item, $(ui.item).closest(rowWrapperClassSelector)[0])
       },
     })
 
@@ -1936,7 +1937,7 @@ function FormBuilder(opts, element, $) {
 
     setupSortableRowWrapper(rowWrapper)
     ResetAllInvisibleRowPlaceholders()
-    syncFieldWithNewRow($clone.attr('id'))
+    h.syncFieldWithNewRow($clone[0], $clone.closest(rowWrapperClassSelector)[0])
   }
 
   // Delete field
@@ -2139,18 +2140,6 @@ function FormBuilder(opts, element, $) {
 
       h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
     })
-  }
-
-  function syncFieldWithNewRow(fieldID) {
-    if (fieldID) {
-      const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
-      if (inputClassElement.val()) {
-        const oldRow = h.getRowClass(inputClassElement.val())
-        const wrapperRow = h.getRowClass(inputClassElement.closest(rowWrapperClassSelector).attr('class'))
-        inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
-        checkRowCleanup()
-      }
-    }
   }
 
   //When mouse moves away a certain distance, cancel grid mode

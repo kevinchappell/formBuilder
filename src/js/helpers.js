@@ -1466,4 +1466,32 @@ export default class Helpers {
       inputClassElement.val(this.changeBootstrapClass(inputClassElement.val(), newValue))
     }
   }
+
+  /**
+   * Updates the field's className to include the current wrapping row, removing the previous row if defined
+   * @param {HTMLElement} field
+   * @param {HTMLElement} wrapperRow
+   */
+   syncFieldWithNewRow(field, wrapperRow) {
+    if (field) {
+      const inputClassElement = $(field).find('.fld-className')
+      const currentClassName = inputClassElement.val()?.trim()
+      if (currentClassName) {
+        let currentClasses = currentClassName.split(' ')
+        const oldRow = this.getRowClass(currentClassName)
+        const newRow = this.getRowClass(wrapperRow?.className ?? '')
+        if (oldRow !== newRow) {
+          if (oldRow) {
+            currentClasses = currentClasses.filter(function(obj) {
+              return obj !== oldRow
+            })
+          }
+          if (newRow) {
+            currentClasses.push(newRow)
+          }
+          inputClassElement.val(currentClasses.join(' '))
+        }
+      }
+    }
+  }
 }
