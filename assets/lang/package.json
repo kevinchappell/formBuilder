@@ -1,6 +1,6 @@
 {
   "name": "formbuilder-languages",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Language files for formBuilder",
   "main": "index.js",
   "files": [
@@ -10,9 +10,10 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint index.js",
+    "lint": "biome lint index.js",
+    "format": "biome check --apply index.js",
     "semantic-release": "semantic-release",
-    "test": "mocha"
+    "test": "node --test --no-warnings"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,7 @@
     "files",
     "i18n"
   ],
-  "author": "Kevin Chappell <kevin.b.chappell@gmail.com> (http://kevin-chappell.com)",
+  "author": "Kevin Chappell <kevin.b.chappell@gmail.com> (https://kevin-chappell.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kevinchappell/formBuilder-languages/issues"
@@ -34,20 +35,13 @@
     "mi18n": "^0.4.8"
   },
   "devDependencies": {
-    "@commitlint/cli": "^7.6.1",
-    "@commitlint/config-angular": "^7.6.0",
-    "@semantic-release/changelog": "^3.0.2",
-    "@semantic-release/git": "^7.0.8",
-    "@semantic-release/npm": "^5.1.9",
-    "eslint": "^5.16.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.17.3",
-    "eslint-plugin-mocha": "^8.0.0",
-    "eslint-plugin-node": "^9.1.0",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "mocha": "^6.1.4",
-    "semantic-release": "^15.13.12"
+    "@biomejs/biome": "1.7.3",
+    "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-angular": "^19.1.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "semantic-release": "^23.1.1"
   },
   "release": {
     "branch": "master",
