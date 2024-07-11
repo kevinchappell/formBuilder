@@ -24,7 +24,7 @@ export default class controlSignaturePad extends control {
    */
   build() {
     this.canvas = this.markup('canvas', null, { className: 'signature-pad' })
-    this.clearButton = this.markup('button', 'Clear', { type: 'button', className: 'clear-button' })
+    this.clearButton = this.markup('button', 'Clear Signature', { type: 'button', className: 'clear-button' })
     this.clearButton.addEventListener('click', () => {
       const context = this.canvas.getContext('2d')
       context.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -33,12 +33,12 @@ export default class controlSignaturePad extends control {
       this.clearCanvas()
 
     })
-    this.labelSpan = this.markup('span', this.config.label || 'Signature', { className: 'form-label' })
+    this.labelSpan = this.markup('span', this.config.label, { className: 'form-label' })
 
-    // Created a container div and wrap the canvas inside it
-    const container = this.markup('div', [this.canvas], { className: 'signature-container' })
+    // Created a container div and wrap the canvas and clear button inside it
+    const container = this.markup('div', [this.canvas, this.clearButton], { className: 'signature-container' })
   
-    return [this.labelSpan, container, this.clearButton]
+    return [this.labelSpan, container]
     
   }
 
@@ -51,6 +51,7 @@ export default class controlSignaturePad extends control {
     context.beginPath() // Start a new path to clear previous strokes
 
     context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+  
   }
 
   /**
@@ -84,5 +85,6 @@ export default class controlSignaturePad extends control {
     })
     return evt
   }
+
 }
 control.register('signaturePad', controlSignaturePad)
