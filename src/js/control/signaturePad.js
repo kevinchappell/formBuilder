@@ -86,5 +86,25 @@ export default class controlSignaturePad extends control {
     return evt
   }
 
+    /**
+ * extend the default events to add a prerender for the signature pad
+ * @param {string} eventType
+ * @return {Function} prerender function
+ */
+    on(eventType) {
+    if (eventType === 'prerender' && this.preview) {
+      return element => {
+        if (this.field) {
+          element = this.field
+        }
+
+        // if this is a preview, stop events bubbling up so the editor preview is clickable (and not draggable)
+        $(element).on('mousedown', e => {
+          e.stopPropagation()
+        })
+      }
+    }
+    return super.on(eventType)
+  }
 }
 control.register('signaturePad', controlSignaturePad)
