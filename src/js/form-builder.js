@@ -155,7 +155,7 @@ function FormBuilder(opts, element, $) {
         return false
       }
 
-      if ($(ui.item).closest('.stage-wrap') && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
+      if ($(ui.item).closest('.stage-wrap').length && $(ui.item).closest(rowWrapperClassSelector).length === 0) {
         h.doCancel = true
         processControl(ui.item)
       } else {
@@ -248,7 +248,7 @@ function FormBuilder(opts, element, $) {
     $(element).replaceWith($editorWrap)
   }
 
-  $(d.controls).on('click', 'li', ({ target }) => {
+  $(d.controls).on('click', 'li.input-control, li.input-set-control', ({ target }) => {
     //Remove initial placeholder if simply clicking to add field into blank stage
     if (h.stageIsEmpty()) {
       $stage.find(tmpRowPlaceholderClassSelector).eq(0).remove()
@@ -292,7 +292,9 @@ function FormBuilder(opts, element, $) {
         // check for a custom type
         const custom = controls.custom.lookup(field.type)
         if (custom) {
+          const customType = field.type
           field = Object.assign({}, custom)
+          field.label = controls.custom.label(customType)
         } else {
           const controlClass = controls.getClass(field.type)
           field.label = controlClass.label(field.type)
@@ -1397,7 +1399,7 @@ function FormBuilder(opts, element, $) {
             colWrapper.appendTo(rowWrapperNode)
 
             setupSortableRowWrapper(rowWrapperNode)
-            syncFieldWithNewRow(colWrapper.attr('id'))
+            h.syncFieldWithNewRow(colWrapper[0], colWrapper.closest(rowWrapperClassSelector)[0])
           }
         }
 
@@ -1443,10 +1445,11 @@ function FormBuilder(opts, element, $) {
       stop: (event, ui) => {
         $stage.removeClass('__preventColButtons')
         $stage.children(tmpRowPlaceholderClassSelector).removeClass('hoverDropStyleInverse')
+        checkRowCleanup()
         autoSizeRowColumns(ui.item.closest(rowWrapperClassSelector), true)
       },
       update: (event, ui) => {
-        syncFieldWithNewRow(ui.item.attr('id'))
+        h.syncFieldWithNewRow(ui.item, $(ui.item).closest(rowWrapperClassSelector)[0])
       },
     })
 
@@ -1824,7 +1827,7 @@ function FormBuilder(opts, element, $) {
     }
   })
 
-  $stage.on('blur', 'input.fld-maxlength', e => {
+  $stage.on('blur', 'input.fld-maxlength, input.fld-rows', e => {
     e.target.value = forceNumber(e.target.value)
   })
 
@@ -1934,7 +1937,7 @@ function FormBuilder(opts, element, $) {
 
     setupSortableRowWrapper(rowWrapper)
     ResetAllInvisibleRowPlaceholders()
-    syncFieldWithNewRow($clone.attr('id'))
+    h.syncFieldWithNewRow($clone[0], $clone.closest(rowWrapperClassSelector)[0])
   }
 
   // Delete field
@@ -2137,18 +2140,6 @@ function FormBuilder(opts, element, $) {
 
       h.syncBootstrapColumnWrapperAndClassProperty(elem.id.replace('-cont', ''), newAutoCalcSizeValue)
     })
-  }
-
-  function syncFieldWithNewRow(fieldID) {
-    if (fieldID) {
-      const inputClassElement = $(`#className-${fieldID.replace('-cont', '')}`)
-      if (inputClassElement.val()) {
-        const oldRow = h.getRowClass(inputClassElement.val())
-        const wrapperRow = h.getRowClass(inputClassElement.closest(rowWrapperClassSelector).attr('class'))
-        inputClassElement.val(inputClassElement.val().replace(oldRow, wrapperRow))
-        checkRowCleanup()
-      }
-    }
   }
 
   //When mouse moves away a certain distance, cancel grid mode

@@ -75,24 +75,24 @@ export default class customControls {
       // if there is no template defined for this type, check if we already have this type/subtype registered
       if (!templates[type]) {
         // check that this type is already registered
-        const controlClass = control.getClass(type, field.subtype)
-        if (!controlClass) {
-          super.error(
+        try {
+          const controlClass = control.getClass(type, field.subtype)
+
+          // generate a random key & map the settings against it
+          lookup = field.datatype ? field.datatype : `${type}-${Math.floor(Math.random() * 9000 + 1000)}`
+
+          this.customRegister[lookup] = jQuery.extend(field, {
+            type: type,
+            class: controlClass,
+          })
+        } catch(e) {
+          control.error(
             'Error while registering custom field: ' +
             type +
             (field.subtype ? ':' + field.subtype : '') +
             '. Unable to find any existing defined control or template for rendering.',
           )
-          continue
         }
-
-        // generate a random key & map the settings against it
-        lookup = field.datatype ? field.datatype : `${type}-${Math.floor(Math.random() * 9000 + 1000)}`
-
-        this.customRegister[lookup] = jQuery.extend(field, {
-          type: type,
-          class: controlClass,
-        })
       } else {
         //Map the field definition into the templated control class
         const controlClass = this.templateControlRegister[type]
@@ -104,7 +104,7 @@ export default class customControls {
       }
 
       // map label & icon
-      this.def.i18n[locale][lookup] = field.label
+      this.def.i18n[locale][lookup] = Array.isArray(field.label) ? mi18n.get(...field.label) || field.label[0] : field.label
       this.def.icon[lookup] = field.icon
     }
   }
@@ -123,7 +123,7 @@ export default class customControls {
      * @param {Object|Number|String} [args] - string or key/val pairs for string lookups with variables
      * @return {String} the translated label
      */
-      const def = this.definition
+      const def = this.def
       let i18n = def.i18n || {}
       const locale = mi18n.locale
       i18n = i18n[locale] || i18n.default || i18n
@@ -158,7 +158,7 @@ export default class customControls {
   icon(type) {
     // @todo - support for `${css_prefix_text}${attr.name}` - is this for inputSets? Doesnt look like it but can't see anything else that sets attr.name?
     // https://formbuilder.online/docs/formBuilder/options/inputSets/
-    const def = this.definition
+    const def = this.def
     if (def && typeof def.icon === 'object') {
       return def.icon[type]
     }

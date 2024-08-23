@@ -108,7 +108,6 @@ export default class control {
     for (const type of types) {
       // '.' is a restricted character for type names
       if (type.indexOf('.') !== -1) {
-        // eslint-disable-next-line max-len
         control.error(`Ignoring type ${type}. Cannot use the character '.' in a type name.`)
         continue
       }

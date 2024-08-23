@@ -10,6 +10,7 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const langFiles = require('formbuilder-languages')
 const path = require('path')
 const WrapperPlugin = require('wrapper-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 // hack for Ubuntu on Windows
 try {
@@ -54,12 +55,6 @@ const webpackConfig = {
   },
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
-      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -110,11 +105,9 @@ const webpackConfig = {
     ],
   },
   plugins: [
+    new ESLintPlugin({}),
     new CleanWebpackPlugin(
-      { cleanOnceBeforeBuildPatterns: ['dist/*', 'demo/assets/js/form-*'] },
-      {
-        root: join(__dirname, '..'),
-      },
+      { cleanOnceBeforeBuildPatterns: ['dist/*', 'demo/assets/js/demo.*'] },
     ),
     new WrapperPlugin({
       test: /\.js$/, // only wrap output of bundle files with '.js' extension

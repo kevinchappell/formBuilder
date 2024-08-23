@@ -66,8 +66,10 @@ export default class Controls {
       // first check if this is a custom control
       let custom = this.custom.lookup(type)
       let controlClass
+      let label
       if (custom) {
         controlClass = custom.class
+        label = this.custom.label(type)
       } else {
         custom = {}
 
@@ -76,9 +78,9 @@ export default class Controls {
         if (!controlClass || !controlClass.active(type)) {
           continue
         }
+        label = controlClass.label(type)
       }
       const icon = custom.icon || controlClass.icon(type)
-      let label = custom.label || controlClass.label(type)
       const iconClassName = !icon ? custom.iconClassName || `${css_prefix_text + type.replace(/-[\d]{4}$/, '')}` : ''
 
       // if the class has specified a custom icon, inject it into the label

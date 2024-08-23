@@ -68,7 +68,7 @@ export default class Helpers {
       if (ui.sender) {
         $(ui.sender).sortable('cancel')
       }
-      this.from.sortable('cancel')
+      this.from.closest('.frmb-control').sortable('cancel')
     }
     _this.save()
     _this.doCancel = false
@@ -90,9 +90,13 @@ export default class Helpers {
     //Find the index within the stage even if the placeholder is not a direct descendant
     _this.stopIndex = ui.placeholder.closest('ul.stage-wrap > *').index() - 1
 
+    //Cancel the sort if sortableControls is disabled and the drop target is the control panel
     if (!opts.sortableControls && ui.item.parent().hasClass('frmb-control')) {
       cancelArray.push(true)
     }
+
+    //Cancel the drop if an element that is not a li.input-control is dropped onto the stage (eg. an input-group container)
+    cancelArray.push(ui.item.is(':not(li.input-control,li.input-set-control)') && !ui.item.parent().hasClass('frmb-control') )
 
     if (opts.prepend) {
       cancelArray.push(_this.stopIndex === 0)
@@ -1460,6 +1464,34 @@ export default class Helpers {
     const inputClassElement = $(`#className-${fieldID}`)
     if (inputClassElement.val()) {
       inputClassElement.val(this.changeBootstrapClass(inputClassElement.val(), newValue))
+    }
+  }
+
+  /**
+   * Updates the field's className to include the current wrapping row, removing the previous row if defined
+   * @param {HTMLElement} field
+   * @param {HTMLElement} wrapperRow
+   */
+   syncFieldWithNewRow(field, wrapperRow) {
+    if (field) {
+      const inputClassElement = $(field).find('.fld-className')
+      const currentClassName = inputClassElement.val()?.trim()
+      if (currentClassName) {
+        let currentClasses = currentClassName.split(' ')
+        const oldRow = this.getRowClass(currentClassName)
+        const newRow = this.getRowClass(wrapperRow?.className ?? '')
+        if (oldRow !== newRow) {
+          if (oldRow) {
+            currentClasses = currentClasses.filter(function(obj) {
+              return obj !== oldRow
+            })
+          }
+          if (newRow) {
+            currentClasses.push(newRow)
+          }
+          inputClassElement.val(currentClasses.join(' '))
+        }
+      }
     }
   }
 }
