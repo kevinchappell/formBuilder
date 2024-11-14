@@ -33,7 +33,7 @@ export default class controlSelect extends control {
       data.name = data.name + '[]'
     }
 
-    if (type === 'checkbox-group' && data.required) {
+    if ((type === 'checkbox-group' || type === 'radio-group') && data.required) {
       const self = this
       const defaultOnRender = this.onRender.bind(this)
       this.onRender = function() {
@@ -153,7 +153,10 @@ export default class controlSelect extends control {
    * setCustomValidity for checkbox-group
    */
   groupRequired() {
-    const checkboxes = this.element.getElementsByTagName('input')
+    const allInputs = this.element.getElementsByTagName('input')
+    const checkboxes = this.element.querySelectorAll('input:not([type=text])')
+    const otherCheckbox = this.element.querySelector('.other-option')
+    const otherValue = this.element.querySelector('.other-val')
     const setValidity = (checkbox, isValid) => {
       const minReq = control.mi18n('minSelectionRequired', 1)
       if (!isValid) {
@@ -162,8 +165,8 @@ export default class controlSelect extends control {
         checkbox.setCustomValidity('')
       }
     }
-    const toggleRequired = (checkboxes, isValid) => {
-      [].forEach.call(checkboxes, cb => {
+    const toggleRequired = (checkboxes, otherCheckbox, otherValue, isValid) => {
+        [].forEach.call(checkboxes, cb => {
         if (isValid) {
           cb.removeAttribute('required')
         } else {
@@ -171,15 +174,23 @@ export default class controlSelect extends control {
         }
         setValidity(cb, isValid)
       })
+
+      if (otherCheckbox) {
+        if (otherCheckbox.checked) {
+          otherValue.setAttribute('required', 'required')
+        } else {
+          otherValue.removeAttribute('required')
+        }
+      }
     }
 
     const toggleValid = () => {
       const isValid = [].some.call(checkboxes, cb => cb.checked)
-      toggleRequired(checkboxes, isValid)
+      toggleRequired(checkboxes, otherCheckbox, otherValue, isValid)
     }
 
-    for (let i = checkboxes.length - 1; i >= 0; i--) {
-      checkboxes[i].addEventListener('change', toggleValid)
+    for (let i = allInputs.length - 1; i >= 0; i--) {
+      allInputs[i].addEventListener('change', toggleValid)
     }
     toggleValid()
   }
