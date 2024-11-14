@@ -388,7 +388,7 @@ function FormBuilder(opts, element, $) {
    * @return {string} field options markup
    */
   const fieldOptions = function (fieldName, fieldData) {
-    const { type, values } = fieldData
+    const { type } = fieldData
     let fieldValues
     const optionActions = [m('a', mi18n.get('addOption'), { className: 'add add-opt' })]
     const fieldLabel = fieldName === 'values' ? mi18n.get('selectOptions') : i18n[fieldName]
@@ -404,6 +404,11 @@ function FormBuilder(opts, element, $) {
       }
     }
 
+    /**
+     * For build-in options attributes the options are stored in the "values" key
+     * For custom options the options will be in the attribute named key when in saved formData or in the values key when coming from field definition
+     */
+    const values = fieldName === 'options' ? fieldData['values'] : (fieldData[fieldName] || fieldData['values'])
     if (!values || !values.length) {
       let defaultOptCount = [1, 2, 3]
       if (['checkbox-group', 'checkbox'].includes(type)) {
