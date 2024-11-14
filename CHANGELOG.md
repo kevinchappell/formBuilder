@@ -1,3 +1,10 @@
+## [3.19.13](https://github.com/kevinchappell/formBuilder/compare/v3.19.12...v3.19.13) (2024-11-14)
+
+
+### Bug Fixes
+
+* ensure that other value is required when other option is selected for radio and checkbox groups ([457a3e3](https://github.com/kevinchappell/formBuilder/commit/457a3e377a0b6f00b58d90526f2fea738d585e3d))
+
 ## [3.19.12](https://github.com/kevinchappell/formBuilder/compare/v3.19.11...v3.19.12) (2024-07-07)
 
 
