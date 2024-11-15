@@ -64,12 +64,13 @@ class FormRender {
     this.options = jQuery.extend(true, defaults, options)
     this.instanceContainers = []
 
+    this.mi18nLoading = null
+    if (!mi18n.current) {
+      this.mi18nLoading = mi18n.init(this.options.i18n)
+    }
+
     //Override any sanitizer configuration
     setSanitizerConfig(this.options.sanitizerOptions)
-
-    if (!mi18n.current) {
-      mi18n.init(this.options.i18n)
-    }
 
     // parse any passed formData
     if (this.options.formData) {
@@ -186,7 +187,7 @@ class FormRender {
    * @param {number} instanceIndex - instance index
    * @return {Object} rendered form
    */
-  render(element = null, instanceIndex = 0) {
+  async render(element = null, instanceIndex = 0) {
     const formRender = this
     const opts = this.options
     element = this.getElement(element)
@@ -195,6 +196,11 @@ class FormRender {
       if (opts.onRender) {
         opts.onRender()
       }
+    }
+
+    if (this.mi18nLoading) {
+      await this.mi18nLoading
+      this.mi18nLoading = null
     }
 
     // Begin the core plugin
