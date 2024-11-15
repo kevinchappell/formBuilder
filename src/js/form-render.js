@@ -290,12 +290,9 @@ class FormRender {
       const userDataMap = $('select, input, textarea', container)
         .serializeArray()
         .reduce((acc, { name, value }) => {
-          name = name.replace('[]', '')
-          if (acc[name]) {
-            acc[name].push(value)
-          } else {
-            acc[name] = [value]
-          }
+          name = name.replace(/\[\w*]/, '')
+          acc[name] ??= []
+          acc[name].push(value)
           return acc
         }, {})
 

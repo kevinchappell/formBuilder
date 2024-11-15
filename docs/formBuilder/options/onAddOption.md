@@ -5,10 +5,26 @@ transform the optionTemplate by return a modified template using the `onAddOptio
 ## Usage
 
 ```javascript
+/**
+ * Callback
+ * @param optionTemplate Template for new option, expect to be modified if required and returned
+ * @param {string} optionTemplate.label Option label
+ * @param {string} optionTemplate.value Option value
+ * @param {bool} optionTemplate.selected Mark option as selected
+ * @param optionInfo Details about the option field
+ * @param {string} optionInfo.type Control type
+ * @param {string} optionInfo.index Index of new option 
+ * @param {bool} optionTemplate.isMultiple Does the attribute have multiple selections allowed
+ * @param {bool} optionTemplate.fieldName Name of the field these options are associated with.
+ */
+onAddOption: (optionTemplate, optionInfo)
+```
+
+```javascript
 const options = {
-  onAddOption: (optionTemplate, optionIndex) => {
-    optionTemplate.label = `Option ${optionIndex + 1}`
-    optionTemplate.value = `option-${optionIndex + 1}`
+  onAddOption: (optionTemplate, optionInfo) => {
+    optionTemplate.label = `Option ${optionInfo.index + 1}`
+    optionTemplate.value = `option-${optionInfo.index + 1}`
     return optionTemplate
   },
 }
@@ -19,10 +35,10 @@ To add additional data with specific options, for example, to use with business 
 
 ```javascript
 const options = {
-   onAddOption: (optionTemplate, optionIndex) => {
-      optionTemplate.label = `Option ${optionIndex.index + 1}`
-      optionTemplate.value = `option-${optionIndex.index + 1}`
-      optionTemplate.minLevel = `min-level-${optionIndex.index + 1}`
+   onAddOption: (optionTemplate, optionInfo) => {
+      optionTemplate.label = `Option ${optionInfo.index + 1}`
+      optionTemplate.value = `option-${optionInfo.index + 1}`
+      optionTemplate.minLevel = `min-level-${optionInfo.index + 1}`
 
       return optionTemplate
     }

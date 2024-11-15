@@ -1,6 +1,7 @@
 require('../setup-fb')
 require('./../../src/js/form-builder.js')
 require('./../../src/js/form-render.js')
+const {errorHandler} = require('../__mocks__/errorHandlers.js')
 
 describe('Test Custom Control', () => {
   test('test add custom field with template', async () => {
@@ -406,6 +407,7 @@ describe('Test Custom Control', () => {
   })
 
   test('custom replacedField with invalid type throws Error', async () => {
+    const errors = [], warnings = [], success = []
     const fbWrap = $('<div>')
 
     const replaceFields = [{
@@ -413,13 +415,15 @@ describe('Test Custom Control', () => {
     }]
 
     let error
-    await fbWrap.formBuilder({replaceFields}).promise.catch(e => error = e)
+    await fbWrap.formBuilder({replaceFields, notify: errorHandler(errors,warnings,success) }).promise.catch(e => error = e)
 
     expect(error).toBeInstanceOf(Error)
     expect(error.message).toMatch(/Error while registering custom field:/)
+    expect(errors).toHaveLength(1)
   })
 
   test('custom replacedField with missing type throws Error', async () => {
+    const errors = [], warnings = [], success = []
     const fbWrap = $('<div>')
 
     const replaceFields = [{
@@ -427,9 +431,10 @@ describe('Test Custom Control', () => {
     }]
 
     let error
-    await fbWrap.formBuilder({replaceFields}).promise.catch(e => error = e)
+    await fbWrap.formBuilder({replaceFields, notify: errorHandler(errors,warnings,success) }).promise.catch(e => error = e)
 
     expect(error).toBeInstanceOf(Error)
     expect(error.message).toMatch(/Ignoring invalid custom field definition. Please specify a type property./)
+    expect(errors).toHaveLength(1)
   })
 })
