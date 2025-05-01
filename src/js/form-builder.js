@@ -1609,8 +1609,7 @@ function FormBuilder(opts, element, $) {
 
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
-    const ts = new Date().getTime()
-    const cloneName = type + '-' + ts
+    const cloneName = nameAttr({type: type})
     const $clone = currentItem.clone()
 
     $('.fld-name', $clone).val(cloneName)
