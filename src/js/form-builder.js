@@ -420,11 +420,11 @@ function FormBuilder(opts, element, $) {
     }
 
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
+    const optionGroupName = nameAttr({type: 'grp-options'}) + '-options'
     const options = m(
       'ol',
-      fieldValues.map((option, index, _, fieldName = fieldData.name) => {
+      fieldValues.map((option, index) => {
         const optionData = config.opts.onAddOption(option, { type, index, isMultiple })
-        const optionGroupName = fieldName + '-options'
         return selectFieldOptions(optionGroupName, optionData, isMultiple)
       }),
       {
