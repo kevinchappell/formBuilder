@@ -1632,7 +1632,9 @@ function FormBuilder(opts, element, $) {
     $clone.attr('id', data.lastID)
     $clone.attr('name', cloneName)
     $clone.addClass('cloned')
-    $('.sortable-options', $clone).sortable()
+    const sortableOptions = $('.sortable-options', $clone)
+    sortableOptions.find('.option-selected').attr('name', nameAttr({type: 'grp-options'}) + '-options')
+    sortableOptions.sortable()
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
       opts.typeUserEvents[type].onclone($clone[0])
