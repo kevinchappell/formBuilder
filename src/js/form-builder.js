@@ -420,11 +420,11 @@ function FormBuilder(opts, element, $) {
     }
 
     const optionActionsWrap = m('div', optionActions, { className: 'option-actions' })
+    const optionGroupName = nameAttr({type: 'grp-options'}) + '-options'
     const options = m(
       'ol',
-      fieldValues.map((option, index, _, fieldName = fieldData.name) => {
+      fieldValues.map((option, index) => {
         const optionData = config.opts.onAddOption(option, { type, index, isMultiple })
-        const optionGroupName = fieldName + '-options'
         return selectFieldOptions(optionGroupName, optionData, isMultiple)
       }),
       {
@@ -1609,8 +1609,7 @@ function FormBuilder(opts, element, $) {
 
     const currentId = currentItem.attr('id')
     const type = currentItem.attr('type')
-    const ts = new Date().getTime()
-    const cloneName = type + '-' + ts
+    const cloneName = nameAttr({type: type})
     const $clone = currentItem.clone()
 
     $('.fld-name', $clone).val(cloneName)
@@ -1633,7 +1632,9 @@ function FormBuilder(opts, element, $) {
     $clone.attr('id', data.lastID)
     $clone.attr('name', cloneName)
     $clone.addClass('cloned')
-    $('.sortable-options', $clone).sortable()
+    const sortableOptions = $('.sortable-options', $clone)
+    sortableOptions.find('.option-selected').attr('name', nameAttr({type: 'grp-options'}) + '-options')
+    sortableOptions.sortable()
 
     if (opts.typeUserEvents[type] && opts.typeUserEvents[type].onclone) {
       opts.typeUserEvents[type].onclone($clone[0])
