@@ -1161,7 +1161,7 @@ function FormBuilder(opts, element, $) {
       $stage.append($li)
     }
 
-    $('.sortable-options', $li).sortable({ update: () => h.updatePreview($li) })
+    $('.sortable-options', $li).sortable({ update: () => UpdatePreviewAndSave($li) })
 
     // generate the control, insert it into the list item & add it to the stage
     h.updatePreview($li)
@@ -2404,6 +2404,7 @@ function FormBuilder(opts, element, $) {
       isMultiple,
     })
     $sortableOptions.append(selectFieldOptions($firstOption.attr('name'), optionData, isMultiple))
+    UpdatePreviewAndSave($(e.target).parents('.form-field:eq(0)'))
   })
 
   $stage.on('mouseover mouseout', '.remove, .del-button', e => $(e.target).closest('li').toggleClass('delete'))
