@@ -1657,7 +1657,7 @@ function FormBuilder(opts, element, $) {
     }
   }
 
-  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
+  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea', '.form-elements [contenteditable]'].join(', ')
 
   // Save field on change
   $stage.on('input', previewSelectors, throttle(saveAndUpdate, defaultTimeout, { leading: false }))
