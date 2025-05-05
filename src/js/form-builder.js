@@ -2356,6 +2356,7 @@ function FormBuilder(opts, element, $) {
     }
 
     h.toggleHighlight(currentItem)
+    h.save.call(h)
   })
 
   // Update button style selection
