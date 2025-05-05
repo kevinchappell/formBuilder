@@ -4,7 +4,6 @@ import Dom from './dom'
 import { remove } from './dom'
 import { Data } from './data'
 import mi18n from 'mi18n'
-import events from './events'
 import layout from './layout'
 import Helpers from './helpers'
 import {
@@ -337,7 +336,7 @@ function FormBuilder(opts, element, $) {
 
     if (isNew) {
       const eventTimeout = setTimeout(() => {
-        document.dispatchEvent(events.fieldAdded)
+        $stage[0].dispatchEvent(new Event('fieldAdded', { bubbles: true, cancelable: false} ))
         clearTimeout(eventTimeout)
       }, 10)
     }
@@ -2417,7 +2416,7 @@ function FormBuilder(opts, element, $) {
     d.editorWrap.classList.remove('formbuilder-embedded-bootstrap')
   }
 
-  document.dispatchEvent(events.loaded)
+  $stage[0].dispatchEvent(new Event('loaded', { bubbles: true, cancelable: false} ))
 
   // Make actions accessible
   formBuilder.actions = {
