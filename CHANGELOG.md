@@ -1,3 +1,12 @@
+## [3.19.14](https://github.com/kevinchappell/formBuilder/compare/v3.19.13...v3.19.14) (2025-05-05)
+
+
+### Bug Fixes
+
+* generate unique name for options group ([fd93411](https://github.com/kevinchappell/formBuilder/commit/fd93411fa62436cdd8d179981042346dee0d08d5))
+* regenerate unique options group name on clone ([f6a5bc7](https://github.com/kevinchappell/formBuilder/commit/f6a5bc70800087555827df8886a093f11cd1dcec))
+* use nameAttr when generating clone item name ([3e52fa0](https://github.com/kevinchappell/formBuilder/commit/3e52fa010fda40f9379eadc0f7cfcd1ca293fc68))
+
 ## [3.19.13](https://github.com/kevinchappell/formBuilder/compare/v3.19.12...v3.19.13) (2024-11-14)
 
 
