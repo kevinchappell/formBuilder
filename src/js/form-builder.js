@@ -4,7 +4,6 @@ import Dom from './dom'
 import { remove } from './dom'
 import { Data } from './data'
 import mi18n from 'mi18n'
-import events from './events'
 import layout from './layout'
 import Helpers from './helpers'
 import {
@@ -28,7 +27,6 @@ import {
   attrString,
   capitalize,
   parsedHtml,
-  addEventListeners,
   closest,
   safename,
   forceNumber,
@@ -337,7 +335,7 @@ function FormBuilder(opts, element, $) {
 
     if (isNew) {
       const eventTimeout = setTimeout(() => {
-        document.dispatchEvent(events.fieldAdded)
+        $stage[0].dispatchEvent(new Event('fieldAdded', { bubbles: true, cancelable: false} ))
         clearTimeout(eventTimeout)
       }, 10)
     }
@@ -1162,7 +1160,7 @@ function FormBuilder(opts, element, $) {
       $stage.append($li)
     }
 
-    $('.sortable-options', $li).sortable({ update: () => h.updatePreview($li) })
+    $('.sortable-options', $li).sortable({ update: () => UpdatePreviewAndSave($li) })
 
     // generate the control, insert it into the list item & add it to the stage
     h.updatePreview($li)
@@ -1660,10 +1658,10 @@ function FormBuilder(opts, element, $) {
     }
   }
 
-  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
+  const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea', '.form-elements [contenteditable]'].join(', ')
 
   // Save field on change
-  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, defaultTimeout, { leading: false }))
+  $stage.on('input', previewSelectors, throttle(saveAndUpdate, defaultTimeout, { leading: false }))
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {
@@ -1777,8 +1775,7 @@ function FormBuilder(opts, element, $) {
   })
 
   // update preview to label
-  addEventListeners(d.stage, 'keyup change', ({ target }) => {
-    if (!target.classList.contains('fld-label')) return
+  $stage.on('input','.fld-label',({ target }) => {
     const value = target.value || target.innerHTML
     const label = closest(target, '.form-field').querySelector('.field-label')
     setElementContent(label, parsedHtml(value), config.opts.disableHTMLLabels)
@@ -2358,6 +2355,7 @@ function FormBuilder(opts, element, $) {
     }
 
     h.toggleHighlight(currentItem)
+    h.save.call(h)
   })
 
   // Update button style selection
@@ -2405,6 +2403,7 @@ function FormBuilder(opts, element, $) {
       isMultiple,
     })
     $sortableOptions.append(selectFieldOptions($firstOption.attr('name'), optionData, isMultiple))
+    UpdatePreviewAndSave($(e.target).parents('.form-field:eq(0)'))
   })
 
   $stage.on('mouseover mouseout', '.remove, .del-button', e => $(e.target).closest('li').toggleClass('delete'))
@@ -2418,7 +2417,7 @@ function FormBuilder(opts, element, $) {
     d.editorWrap.classList.remove('formbuilder-embedded-bootstrap')
   }
 
-  document.dispatchEvent(events.loaded)
+  $stage[0].dispatchEvent(new Event('loaded', { bubbles: true, cancelable: false} ))
 
   // Make actions accessible
   formBuilder.actions = {

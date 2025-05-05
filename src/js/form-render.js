@@ -1,7 +1,6 @@
 import mi18n from 'mi18n'
 import utils, { parseXML, forEach } from './utils'
 import { remove } from './dom'
-import events from './events'
 import layout from './layout'
 import control from './control'
 import './control/index'
@@ -121,7 +120,7 @@ class FormRender {
             renderedFormWrap.appendChild(field)
           }
 
-          field.dispatchEvent(events.fieldRendered)
+          field.dispatchEvent(new Event('fieldRendered', { bubbles: true, cancelable: false} ))
         })
       }
     }
