@@ -27,7 +27,6 @@ import {
   attrString,
   capitalize,
   parsedHtml,
-  addEventListeners,
   closest,
   safename,
   forceNumber,
@@ -1661,7 +1660,7 @@ function FormBuilder(opts, element, $) {
   const previewSelectors = ['.form-elements input', '.form-elements select', '.form-elements textarea'].join(', ')
 
   // Save field on change
-  $stage.on('change blur keyup click', previewSelectors, throttle(saveAndUpdate, defaultTimeout, { leading: false }))
+  $stage.on('input', previewSelectors, throttle(saveAndUpdate, defaultTimeout, { leading: false }))
 
   // delete options
   $stage.on('click touchstart', '.remove', e => {
@@ -1775,8 +1774,7 @@ function FormBuilder(opts, element, $) {
   })
 
   // update preview to label
-  addEventListeners(d.stage, 'keyup change', ({ target }) => {
-    if (!target.classList.contains('fld-label')) return
+  $stage.on('input','.fld-label',({ target }) => {
     const value = target.value || target.innerHTML
     const label = closest(target, '.form-field').querySelector('.field-label')
     setElementContent(label, parsedHtml(value), config.opts.disableHTMLLabels)
