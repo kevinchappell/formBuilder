@@ -451,7 +451,7 @@
     }
   }
 
-  .radio-group-field {
+  .radio-group-field, .select-field {
     .sortable-options li:nth-child(2) .remove {
       display: none;
     }
