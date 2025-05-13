@@ -17,7 +17,6 @@ import {
   bootstrapColumnRegex,
   getAllGridRelatedClasses,
 } from './utils'
-import events from './events'
 import { instanceConfig, defaultTimeout, styles } from './config'
 import control from './control'
 import storageAvailable from 'storage-available'
@@ -348,7 +347,7 @@ export default class Helpers {
     data.formData = doSave[this.config.opts.dataType](minify)
 
     // trigger formSaved event
-    document.dispatchEvent(events.formSaved)
+    stage.dispatchEvent(new Event('formSaved', { bubbles: true, cancelable: false} ))
     return data.formData
   }
 
@@ -436,7 +435,7 @@ export default class Helpers {
 
     empty($prevHolder[0])
     $prevHolder[0].appendChild(preview)
-    preview.dispatchEvent(events.fieldRendered)
+    preview.dispatchEvent(new Event('fieldRendered', { bubbles: true, cancelable: false} ))
   }
 
   /**
@@ -526,7 +525,7 @@ export default class Helpers {
     }
     dialog && remove(dialog)
     document.removeEventListener('keydown', this.handleKeyDown, false)
-    document.dispatchEvent(events.modalClosed)
+    document.dispatchEvent(new Event('modalClosed', { bubbles: true, cancelable: false} ))
   }
 
   /**
@@ -643,10 +642,10 @@ export default class Helpers {
 
     document.body.appendChild(miniModal)
 
-    document.dispatchEvent(events.modalOpened)
+    document.dispatchEvent(new Event('modalOpened', { bubbles: true, cancelable: false} ))
 
     if (className.indexOf('data-dialog') !== -1) {
-      document.dispatchEvent(events.viewData)
+      document.dispatchEvent(new Event('viewData', { bubbles: true, cancelable: false} ))
     }
 
     return miniModal
@@ -731,7 +730,7 @@ export default class Helpers {
    */
   emptyStage(stage) {
     empty(stage).classList.remove('removing')
-    stage.dispatchEvent(events.stageEmptied)
+    stage.dispatchEvent(new Event('stageEmptied', { bubbles: true, cancelable: false} ))
     this.save()
   }
 
@@ -848,7 +847,7 @@ export default class Helpers {
     this.removeContainerProtection(rowContainer.attr('id'))
 
     this.config.opts.onCloseFieldEdit($editPanel[0])
-    document.dispatchEvent(events.fieldEditClosed)
+    this.d.stage.dispatchEvent(new Event('fieldEditClosed', { bubbles: true, cancelable: false} ))
 
     const prevHolder = liContainer.find('.prev-holder')
     const resultsTimeout = setTimeout(() => {
@@ -918,7 +917,7 @@ export default class Helpers {
 
     this.formBuilder.currentEditPanel = $editPanel[0]
     this.config.opts.onOpenFieldEdit($editPanel[0])
-    document.dispatchEvent(events.fieldEditOpened)
+    this.d.stage.dispatchEvent(new Event('fieldEditOpened', { bubbles: true, cancelable: false} ))
 
     $(document).trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
 
@@ -1009,7 +1008,7 @@ export default class Helpers {
       userEvents.onremove(field)
     }
 
-    document.dispatchEvent(events.fieldRemoved)
+    this.d.stage.dispatchEvent(new Event('fieldRemoved', { bubbles: true, cancelable: false} ))
 
     if (fieldRowWrapper.length) {
       this.removeContainerProtection(`${fieldID}-cont`)
