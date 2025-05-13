@@ -1,3 +1,16 @@
+## [3.19.15](https://github.com/kevinchappell/formBuilder/compare/v3.19.14...v3.19.15) (2025-05-13)
+
+
+### Bug Fixes
+
+* call save after changing field position via stage sort buttons ([3d74bfd](https://github.com/kevinchappell/formBuilder/commit/3d74bfdb1c083e9b5bc5647a9abd491b9d9330bc))
+* call updateAndSave after adding or changing order of options ([4e1ee88](https://github.com/kevinchappell/formBuilder/commit/4e1ee88827f94c3f7c3192c0d9752f8c60761124))
+* dispatch new Bubbling events from the stage ([dcce01e](https://github.com/kevinchappell/formBuilder/commit/dcce01edacd4d2ab3cab459b09e6c01fbc772b73))
+* ensure modifications to label and content editable attributes are saved ([ea60e6a](https://github.com/kevinchappell/formBuilder/commit/ea60e6aa6ce66195c905f8b514da410ee7acedfd))
+* hide second sortable-options remove button for select fields ([1533af2](https://github.com/kevinchappell/formBuilder/commit/1533af2f9c7994995e1c06ae51fc3aba07890b50))
+* remove tests for removed events.js ([61a6e34](https://github.com/kevinchappell/formBuilder/commit/61a6e34d9c721503e410e8191e6a8ef662e8853a))
+* use input event on modern browsers to save attribute modifications ([ec242b0](https://github.com/kevinchappell/formBuilder/commit/ec242b00f291a11e425c676b663b75ce8ae2c229))
+
 ## [3.19.14](https://github.com/kevinchappell/formBuilder/compare/v3.19.13...v3.19.14) (2025-05-05)
 
 
