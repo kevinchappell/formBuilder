@@ -96,7 +96,7 @@ class FormRender {
         if (!Array.isArray(fields)) {
           fields = [fields]
         }
-        const renderedFormWrap = utils.markup('div', fields, {
+        const renderedFormWrap = utils.markup('div', null, {
           className: 'rendered-form formbuilder-embedded-bootstrap',
         })
         this.appendChild(renderedFormWrap)
