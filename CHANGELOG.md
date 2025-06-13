@@ -1,3 +1,23 @@
+# [3.20.0](https://github.com/kevinchappell/formBuilder/compare/v3.19.15...v3.20.0) (2025-06-13)
+
+
+### Bug Fixes
+
+* add fieldName as a 4th field to the onAddOption callback optionInfo parameter ([6142fb5](https://github.com/kevinchappell/formBuilder/commit/6142fb5c545d378f95a453cf3fba492bed4165b8))
+* allow an array index to be included in input name ([50bc40c](https://github.com/kevinchappell/formBuilder/commit/50bc40ca4d4bdfe1da5adce24ac2a7a3ed9e48cd))
+* don't append fields twice to the container causing unnecessary dom churn ([9d7abf0](https://github.com/kevinchappell/formBuilder/commit/9d7abf06d142a109d47bb921e972349cc64bbee5))
+* exclude double clicks on anchors from triggering stage closure ([5f3b46e](https://github.com/kevinchappell/formBuilder/commit/5f3b46eca267ab091a97e8cb276049a8b499640e))
+* improve documentation for onAddOption ([84bccf0](https://github.com/kevinchappell/formBuilder/commit/84bccf0c0949274e3308087e19bda56e4dde1644))
+* improve the layout for stage options using flexbox ([b809a57](https://github.com/kevinchappell/formBuilder/commit/b809a577d96bc41d6ffff65a2e2f42fc58909123))
+* label.field-label needs to be inline to ensure required and help icon are on same line ([42dd570](https://github.com/kevinchappell/formBuilder/commit/42dd57067b6c09056480c5d6f07953bb1c42320f))
+* options attribute is stored in 'values' key, custom options are stored in attribute name key ([76de3f0](https://github.com/kevinchappell/formBuilder/commit/76de3f0c645d9a4317db2d84c84a8795b12c7ec7))
+* remove extra brace from demo doc ([a0d4938](https://github.com/kevinchappell/formBuilder/commit/a0d4938cc785573a5409955565257b245cfffc7f))
+
+
+### Features
+
+* Allow custom controls to add one or more Option based attributes ([431519c](https://github.com/kevinchappell/formBuilder/commit/431519cb50bc1c29f4592d9228a968ed88086f70))
+
 ## [3.19.15](https://github.com/kevinchappell/formBuilder/compare/v3.19.14...v3.19.15) (2025-05-13)
 
 
