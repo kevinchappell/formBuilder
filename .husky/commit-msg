@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-if [ "$CI" = true ] ; then
-  echo 'Skipping commit-msg hook'
-  exit 0
-fi
-
-npx --no -- commitlint --edit "$1"
