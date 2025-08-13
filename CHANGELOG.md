@@ -1,3 +1,10 @@
+## [3.20.1](https://github.com/kevinchappell/formBuilder/compare/v3.20.0...v3.20.1) (2025-08-13)
+
+
+### Bug Fixes
+
+* husky install errors ([c265865](https://github.com/kevinchappell/formBuilder/commit/c26586569bffa4e2e113ec320a8bbc3ace7dbe0d))
+
 # [3.20.0](https://github.com/kevinchappell/formBuilder/compare/v3.19.15...v3.20.0) (2025-06-13)
 
 
