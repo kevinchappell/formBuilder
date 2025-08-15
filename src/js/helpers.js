@@ -123,7 +123,7 @@ export default class Helpers {
     if (subtype !== types.type) {
       types.subtype = subtype
     }
-
+    
     return types
   }
 
@@ -409,7 +409,7 @@ export default class Helpers {
     const _this = this
     const fieldClass = $field.attr('class')
     const field = $field[0]
-    if (fieldClass.includes('input-control')) {
+    if (!field || fieldClass.includes('input-control')) {
       return
     }
 

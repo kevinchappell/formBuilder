@@ -658,6 +658,8 @@
 
     .input-group-wrap {
       display: flex;
+      gap: 2em;
+
       label {
         width: auto;
         display: block;
@@ -666,6 +668,7 @@
 
       .form-group {
         flex-direction: column;
+        width: auto;
       }
 
       .input-wrap {

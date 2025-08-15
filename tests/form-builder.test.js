@@ -593,6 +593,43 @@ describe('FormBuilder typeUserAttrs detection', () => {
     expect(input.length).toBe(1)
     expect(input.val()).toEqual(['green form-control','blue form-control'])
   })
+
+
+  test('can add typeUserAttr to custom subtype', async() => {
+    const config = {
+      fields: [
+        {
+          type: 'text',
+          subtype: 'custom',
+        }
+      ],
+      typeUserAttrs: {
+        'text-custom': {
+          testInput: {
+            label: 'Test Input',
+            value: 'hello',
+          }
+        },
+      },
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    fb.actions.setData([
+      {
+        type: 'text',
+      },
+      {
+        type: 'text',
+        subtype: 'custom',
+      }
+    ])
+
+    
+    const formFields = fbWrap.find('.form-field')
+    const input = formFields.find('.testInput-wrap')
+    expect(formFields.length).toBe(2)
+    expect(input.length).toBe(1)
+  })
 })
 
 describe('FormBuilder can return formData', () => {
