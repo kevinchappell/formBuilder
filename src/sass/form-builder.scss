@@ -37,10 +37,14 @@
   }
 
   .form-elements,
-  .form-group,
   .multi-row span,
   textarea {
     display: block;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: row;
   }
 
   .form-elements::after,

@@ -131,7 +131,8 @@ export const safeAttrName = name => {
  */
 export const hyphenCase = str => {
   // eslint-disable-next-line no-useless-escape
-  str = str.replace(/[^\w\s\-]/gi, '')
+  str = str.replace(/[^\w\s\-\[\]]/gi, '')
+  str = str.replace(/\[([^\]]+)\]/g, '-$1')
   str = str.replace(/([A-Z])/g, function ($1) {
     return '-' + $1.toLowerCase()
   })
@@ -196,7 +197,7 @@ export const getContentType = content => {
   return [
     ['array', content => Array.isArray(content)],
     ['node', content => content instanceof window.Node || content instanceof window.HTMLElement],
-    ['component', () => content && content.dom],
+    ['component', () => content?.dom],
     [typeof content, () => true],
   ].find(typeCondition => typeCondition[1](content))[0]
 }

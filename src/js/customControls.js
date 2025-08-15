@@ -28,6 +28,12 @@ export default class customControls {
    * @param {Array} fields
    */
   register(templates = {}, fields = []) {
+    fields.forEach(field => {
+      if (field.template) {
+        const fieldType = field.type || field.attrs?.type
+        templates[fieldType] = field.template
+      }
+    })
     // prepare i18n locale definition
     const locale = mi18n.locale
     if (!this.def.i18n[locale]) {

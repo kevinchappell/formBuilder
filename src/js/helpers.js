@@ -95,7 +95,7 @@ export default class Helpers {
     }
 
     //Cancel the drop if an element that is not a li.input-control is dropped onto the stage (eg. an input-group container)
-    cancelArray.push(ui.item.is(':not(li.input-control,li.input-set-control)') && !ui.item.parent().hasClass('frmb-control') )
+    cancelArray.push(ui.item.is(':not(li.input-control,li.input-set-control)') && !ui.item.parent().hasClass('frmb-control'))
 
     if (opts.prepend) {
       cancelArray.push(_this.stopIndex === 0)
@@ -282,8 +282,8 @@ export default class Helpers {
             fieldData = trimObj(fieldData)
 
             $field.find('.form-group.field-options').each((_, attribute) => {
-                const attributeName = attribute.getAttribute('name')
-                fieldData[attributeName] = _this.fieldOptionData(attribute)
+              const attributeName = attribute.getAttribute('name')
+              fieldData[attributeName] = _this.fieldOptionData(attribute)
             })
 
             formData.push(fieldData)
@@ -345,7 +345,7 @@ export default class Helpers {
     data.formData = doSave[this.config.opts.dataType](minify)
 
     // trigger formSaved event
-    stage.dispatchEvent(new Event('formSaved', { bubbles: true, cancelable: false} ))
+    stage.dispatchEvent(new Event('formSaved', { bubbles: true, cancelable: false }))
     return data.formData
   }
 
@@ -374,7 +374,8 @@ export default class Helpers {
     forEach(attrs, index => {
       const attr = attrs[index]
       const name = camelCase(attr.getAttribute('name'))
-      fieldData[name] = [
+
+      const attrVal = [
         [
           attr.attributes.contenteditable,
           () => (config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML),
@@ -384,6 +385,18 @@ export default class Helpers {
         [attr.attributes.multiple, () => $(attr).val()],
         [true, () => attr.value],
       ].find(([condition]) => !!condition)[1]()
+
+      // Check if name contains square brackets notation
+      const regex = /^([^[]+)\[([^[\]]+)\]$/
+      const matches = regex.exec(name)
+      if (matches) {
+        const [, objName, propName] = matches
+        // Create nested object if needed and set the property
+        fieldData[objName] ??= {}
+        fieldData[objName][propName] = attrVal
+      } else {
+        fieldData[name] = attrVal
+      }
     })
     return fieldData
   }
@@ -423,7 +436,7 @@ export default class Helpers {
 
     empty($prevHolder[0])
     $prevHolder[0].appendChild(preview)
-    preview.dispatchEvent(new Event('fieldRendered', { bubbles: true, cancelable: false} ))
+    preview.dispatchEvent(new Event('fieldRendered', { bubbles: true, cancelable: false }))
   }
 
   /**
@@ -513,7 +526,7 @@ export default class Helpers {
     }
     dialog && remove(dialog)
     document.removeEventListener('keydown', this.handleKeyDown, false)
-    document.dispatchEvent(new Event('modalClosed', { bubbles: true, cancelable: false} ))
+    document.dispatchEvent(new Event('modalClosed', { bubbles: true, cancelable: false }))
   }
 
   /**
@@ -630,10 +643,10 @@ export default class Helpers {
 
     document.body.appendChild(miniModal)
 
-    document.dispatchEvent(new Event('modalOpened', { bubbles: true, cancelable: false} ))
+    document.dispatchEvent(new Event('modalOpened', { bubbles: true, cancelable: false }))
 
     if (className.indexOf('data-dialog') !== -1) {
-      document.dispatchEvent(new Event('viewData', { bubbles: true, cancelable: false} ))
+      document.dispatchEvent(new Event('viewData', { bubbles: true, cancelable: false }))
     }
 
     return miniModal
@@ -718,7 +731,7 @@ export default class Helpers {
    */
   emptyStage(stage) {
     empty(stage).classList.remove('removing')
-    stage.dispatchEvent(new Event('stageEmptied', { bubbles: true, cancelable: false} ))
+    stage.dispatchEvent(new Event('stageEmptied', { bubbles: true, cancelable: false }))
     this.save()
   }
 
@@ -835,7 +848,7 @@ export default class Helpers {
     this.removeContainerProtection(rowContainer.attr('id'))
 
     this.config.opts.onCloseFieldEdit($editPanel[0])
-    this.d.stage.dispatchEvent(new Event('fieldEditClosed', { bubbles: true, cancelable: false} ))
+    this.d.stage.dispatchEvent(new Event('fieldEditClosed', { bubbles: true, cancelable: false }))
 
     const prevHolder = liContainer.find('.prev-holder')
     const resultsTimeout = setTimeout(() => {
@@ -905,7 +918,7 @@ export default class Helpers {
 
     this.formBuilder.currentEditPanel = $editPanel[0]
     this.config.opts.onOpenFieldEdit($editPanel[0])
-    this.d.stage.dispatchEvent(new Event('fieldEditOpened', { bubbles: true, cancelable: false} ))
+    this.d.stage.dispatchEvent(new Event('fieldEditOpened', { bubbles: true, cancelable: false }))
 
     $(document).trigger('fieldOpened', [{ rowWrapperID: rowWrapper.attr('id') }])
 
@@ -967,7 +980,7 @@ export default class Helpers {
       this.config.opts.notify.warning('fieldID required to remove specific fields.')
       this.config.opts.notify.warning('Removing last field since no ID was supplied.')
       this.config.opts.notify.warning('Available IDs: ' + availableIds.join(', '))
-      fieldID = availableIds[availableIds.length-1]
+      fieldID = availableIds[availableIds.length - 1]
     }
 
     const field = document.getElementById(fieldID)
@@ -996,7 +1009,7 @@ export default class Helpers {
       userEvents.onremove(field)
     }
 
-    this.d.stage.dispatchEvent(new Event('fieldRemoved', { bubbles: true, cancelable: false} ))
+    this.d.stage.dispatchEvent(new Event('fieldRemoved', { bubbles: true, cancelable: false }))
 
     if (fieldRowWrapper.length) {
       this.removeContainerProtection(`${fieldID}-cont`)
@@ -1191,7 +1204,11 @@ export default class Helpers {
       // html labels are not available using xml dataType
       opts.disableHTMLLabels = true
     }
-    _this.config.opts = Object.assign({}, { actionButtons: mergedActionButtons }, { fieldEditContainer }, opts)
+    _this.config.opts = {
+      actionButtons: mergedActionButtons,
+      fieldEditContainer,
+      ...opts
+    }
     return _this.config.opts
   }
 
@@ -1243,8 +1260,8 @@ export default class Helpers {
         const parseResult = _this.tryParseColumnInfo($field[0])
 
         //tmpCleanColumnInfo may be called multiple times, remove previous work to ensure we don't keep appending tmp- to class names
-        $field.attr('class', $field.attr('class').replace('__fb-tmp-col-', 'col-' ))
-        $field.attr('class', $field.attr('class').replace('__fb-tmp-row-', 'row-' ))
+        $field.attr('class', $field.attr('class').replace('__fb-tmp-col-', 'col-'))
+        $field.attr('class', $field.attr('class').replace('__fb-tmp-row-', 'row-'))
         $field.attr('class', $field.attr('class').replace('col-', '__fb-tmp-col-'))
         $field.attr('class', $field.attr('class').replace('row-', '__fb-tmp-row-'))
 
@@ -1459,7 +1476,7 @@ export default class Helpers {
    * @param {HTMLElement} field
    * @param {HTMLElement} wrapperRow
    */
-   syncFieldWithNewRow(field, wrapperRow) {
+  syncFieldWithNewRow(field, wrapperRow) {
     if (field) {
       const inputClassElement = $(field).find('.fld-className')
       const currentClassName = inputClassElement.val()?.trim()
@@ -1469,7 +1486,7 @@ export default class Helpers {
         const newRow = this.getRowClass(wrapperRow?.className ?? '')
         if (oldRow !== newRow) {
           if (oldRow) {
-            currentClasses = currentClasses.filter(function(obj) {
+            currentClasses = currentClasses.filter(function (obj) {
               return obj !== oldRow
             })
           }
