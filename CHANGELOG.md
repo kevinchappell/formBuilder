@@ -1,3 +1,11 @@
+## [3.20.2](https://github.com/kevinchappell/formBuilder/compare/v3.20.1...v3.20.2) (2025-08-15)
+
+
+### Bug Fixes
+
+* Fix styling, use opacity instead of remove to ensure elements line up correctly ([7a28265](https://github.com/kevinchappell/formBuilder/commit/7a2826573a03efc3bf29b020427793f45896dc5c))
+* Sortable options may have other controls like type=color that are missed by the fieldOptionData collection ([4dff353](https://github.com/kevinchappell/formBuilder/commit/4dff353ae16a06d9c62efa6c38abb24903ee0d18))
+
 ## [3.20.1](https://github.com/kevinchappell/formBuilder/compare/v3.20.0...v3.20.1) (2025-08-13)
 
 
