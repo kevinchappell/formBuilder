@@ -138,7 +138,7 @@ export default class Helpers {
 
     $options.each(i => {
       const option = $options[i]
-      const stringAttrs = option.querySelectorAll('input[type=text], input[type=number], select')
+      const stringAttrs = option.querySelectorAll('input:not([type=checkbox]):not([type=radio]), select')
       const boolAttrs = option.querySelectorAll('input[type=checkbox], input[type=radio]')
       const attrs = {}
 
