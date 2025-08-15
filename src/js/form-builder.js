@@ -730,8 +730,7 @@ function FormBuilder(opts, element, $) {
         return boolAttribute(attrName, { ...attrData, [attrName]: isChecked }, { first: i18n[attrName] })
       },
       options: fieldOptions,
-      object: (attrName, { [attrName]: value, ...restVals }) => {
-        console.log(attrName, value, restVals)
+      object: (attrName, { [attrName]: value, label, className }) => {
         const id = `${attrName}-${data.lastID}`
 
         const userAttrs = Object.entries(value).reduce((acc, [name, val]) => {
@@ -744,10 +743,10 @@ function FormBuilder(opts, element, $) {
           return acc
         }, {})
 
-        const label = m('label', i18n[attrName])
+        const labelDom = m('label', label || i18n[attrName])
         const inputWrap = m('div', processTypeUserAttrs(userAttrs, values), { id, className: 'input-group-wrap' })
 
-        return m('div', [label, inputWrap], { className: 'form-group' })
+        return m('div', [labelDom, inputWrap], { className: ['form-group', `${safeClassName(attrName)}-wrap`, className] })
       }
     }
 

@@ -913,3 +913,10 @@
 ol.options-no-select input[type='radio'] {
   display: none;
 }
+
+.hidden {
+  display: none !important;
+}
+.flex {
+  display: flex !important;
+}
