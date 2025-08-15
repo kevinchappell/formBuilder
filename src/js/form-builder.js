@@ -33,6 +33,7 @@ import {
   getContentType,
   generateSelectorClassNames,
   firstNumberOrUndefined,
+  safeClassName,
 } from './utils'
 import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
 import fontConfig from '../fonts/config.json'
@@ -820,7 +821,7 @@ function FormBuilder(opts, element, $) {
       title: attrs.description || attrs.label || name.toUpperCase(),
       name: name,
       type: attrs.type || 'text',
-      className: [hyphenCase(`fld-${name}`), (classname || className || '').trim()],
+      className: [safeClassName(`fld-${name}`), (classname || className || '').trim()],
       value: attrs.hasOwnProperty(name) ? attrs[name] : attrs.value || '',
     }
     const label = m('label', i18n[name] || '', { for: textAttrs.id })
@@ -843,7 +844,7 @@ function FormBuilder(opts, element, $) {
     })()
 
     const inputWrap = m('div', textInput, { className: 'input-wrap' })
-    return m('div', [label, inputWrap], { className: `form-group ${hyphenCase(name)}-wrap` })
+    return m('div', [label, inputWrap], { className: `form-group ${safeClassName(name)}-wrap` })
   }
 
   /**
@@ -885,7 +886,7 @@ function FormBuilder(opts, element, $) {
 
     const select = m('select', optis, selectAttrs)
     const inputWrap = m('div', select, { className: 'input-wrap' })
-    return m('div', [label, inputWrap], { className: `form-group ${hyphenCase(name)}-wrap` })
+    return m('div', [label, inputWrap], { className: `form-group ${safeClassName(name)}-wrap` })
   }
 
   const boolAttribute = (name, values, labels = {}) => {
@@ -919,7 +920,7 @@ function FormBuilder(opts, element, $) {
     right = m('div', right, { className: 'input-wrap' })
 
     return m('div', left.concat(right), {
-      className: `form-group ${hyphenCase(name)}-wrap`,
+      className: `form-group ${safeClassName(name)}-wrap`,
     })
   }
 
@@ -972,7 +973,7 @@ function FormBuilder(opts, element, $) {
       value: attrVal,
       name: attribute,
       placeholder,
-      className: [hyphenCase(`fld-${attribute}`), 'form-control', (classname || className || '').trim()],
+      className: [safeClassName(`fld-${attribute}`), 'form-control', (classname || className || '').trim()],
       id: `${attribute}-${data.lastID}`,
     }
     const numberAttribute = h.input(trimObj(inputConfig))
@@ -980,7 +981,7 @@ function FormBuilder(opts, element, $) {
     const inputLabel = m('label', attrLabel, { for: inputConfig.id })
 
     return m('div', [inputLabel, inputWrap], {
-      className: `form-group ${hyphenCase(attribute)}-wrap`,
+      className: `form-group ${safeClassName(attribute)}-wrap`,
     })
   }
 
@@ -1075,11 +1076,7 @@ function FormBuilder(opts, element, $) {
         className: `form-group ${attribute}-wrap`,
       }
 
-      if (isHidden) {
-        fieldAttrs.style = 'visibility: hidden'
-      }
-
-      if (attribute === 'value' && values.subtype === 'quill') {
+      if (attribute === 'value' && values.subtype === 'quill' || isHidden) {
         fieldAttrs.style = 'display: none'
       }
 

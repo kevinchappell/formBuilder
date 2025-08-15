@@ -140,6 +140,8 @@ export const hyphenCase = str => {
   return str.replace(/\s/g, '-').replace(/^-+/g, '')
 }
 
+export const safeClassName = className => className.replace(/\[([^\]]+)\]/g, '-$1')
+
 /**
  * convert a hyphenated string to camelCase
  * @param  {string} str
@@ -217,7 +219,7 @@ export const markup = function (tag, content = '', attributes = {}) {
 
   const appendContent = {
     string: content => {
-      setElementContent(field,field.innerHTML + content)
+      setElementContent(field, field.innerHTML + content)
     },
     object: config => {
       const { tag, content, ...data } = config
@@ -237,7 +239,7 @@ export const markup = function (tag, content = '', attributes = {}) {
       contentType = getContentType(content)
       appendContent[contentType](content)
     },
-    undefined: () => {},
+    undefined: () => { },
   }
 
   for (const attr in attrs) {
@@ -452,7 +454,7 @@ export const removeFromArray = (val, arr) => {
  * @param  {String} [path='']   optional to load form
  * @return {Promise}       a promise
  */
-export const getScripts = (scriptScr, path= '') => {
+export const getScripts = (scriptScr, path = '') => {
   const $ = jQuery
   let _arr = []
 
@@ -493,7 +495,7 @@ export const isCached = (src, type = 'js') => {
  * @param  {String} [path='']
  * @return {void}
  */
-export const getStyles = (scriptScr, path= '') => {
+export const getStyles = (scriptScr, path = '') => {
   if (!Array.isArray(scriptScr)) {
     scriptScr = [scriptScr]
   }
@@ -587,15 +589,15 @@ export const closest = (el, cls) => {
  */
 export const mobileClass = () => {
   let mobileClass = ''
-  ;(a => {
-    if (
-      /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
-        a,
-      )
-    ) {
-      mobileClass = 'formbuilder-mobile'
-    }
-  })(navigator.userAgent || navigator.vendor || window.opera)
+    ; (a => {
+      if (
+        /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+          a,
+        )
+      ) {
+        mobileClass = 'formbuilder-mobile'
+      }
+    })(navigator.userAgent || navigator.vendor || window.opera)
   return mobileClass
 }
 
