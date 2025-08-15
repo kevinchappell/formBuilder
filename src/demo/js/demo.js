@@ -45,7 +45,7 @@ jQuery(function ($) {
     },
     {
       type: 'checkbox-group',
-      subtype: 'custom-group',
+      subtype: 'custom',
       label: 'Custom Checkbox Group w/Sub Type',
       required: true,
       values: [{ label: 'Option 1' }, { label: 'Option 2' }],
@@ -180,13 +180,11 @@ jQuery(function ($) {
         max: 11,
       },
     },
-    'checkbox-group': {
-      'custom-group': {
-        customInput: {
-          label: 'Custom Text Field',
-          value: 'This field is added only to checkbox with specific subtype',
-          type: 'text',
-        },
+    'checkbox-group-custom': {
+      customInput: {
+        label: 'Custom Text Field',
+        value: 'This field is added only to checkbox with specific subtype',
+        type: 'text',
       },
     },
   }
@@ -214,7 +212,6 @@ jQuery(function ($) {
     dataType,
     subtypes: {
       text: ['datetime-local'],
-      'checkbox-group': ['custom-group'],
     },
     onSave: toggleEdit,
     onAddField: fieldId => {

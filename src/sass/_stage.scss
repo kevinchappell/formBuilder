@@ -47,7 +47,9 @@
 
       border-color: #66afe9;
       outline: 0;
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(102, 175, 233, 0.6);
+      box-shadow:
+        inset 0 1px 1px rgba(0, 0, 0, 0.1),
+        0 0 8px rgba(102, 175, 233, 0.6);
 
       li {
         :hover {
@@ -64,7 +66,9 @@
     margin-left: 0;
     margin-bottom: 3px;
     background-color: $white;
-    transition: background-color 250ms ease-in-out, margin-top 400ms;
+    transition:
+      background-color 250ms ease-in-out,
+      margin-top 400ms;
 
     &.hidden-field {
       background-color: $hidden-field-bgcolor;
@@ -451,7 +455,8 @@
     }
   }
 
-  .radio-group-field, .select-field {
+  .radio-group-field,
+  .select-field {
     .sortable-options li:nth-child(2) .remove {
       opacity: 0;
       pointer-events: none;
@@ -469,7 +474,7 @@
     padding: 0;
 
     > li {
-      display: flex!important;
+      display: flex !important;
       flex-wrap: wrap;
 
       cursor: move;
@@ -559,10 +564,10 @@
     margin: 0;
     border: 1px solid $input-border-color;
 
-    .input-wrap {
+    .input-wrap,
+    .input-group-wrap {
       width: 81.33333333%;
       margin-left: 2%;
-      float: left;
 
       > input[type='checkbox'] {
         margin-top: 8px;
@@ -603,16 +608,11 @@
       .input-wrap {
         width: 100%;
         margin-left: 0;
-        float: none;
       }
     }
 
     input[type='number'] {
       width: auto;
-    }
-
-    .btn-group {
-      margin-left: 2%;
     }
 
     .false-label,
@@ -628,7 +628,6 @@
         margin-bottom: 0;
         text-align: right;
         font-weight: 700;
-        float: left;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -637,7 +636,6 @@
         @include breakpoint('phone-lrg') {
           display: block;
           width: auto;
-          float: none;
           text-align: left;
 
           &.empty-label {
@@ -652,10 +650,29 @@
       &.roles-label,
       &.other-label {
         text-align: left;
-        float: none;
         margin-bottom: -3px;
         font-weight: 400;
         width: calc(81.3333% - 23px);
+      }
+    }
+
+    .input-group-wrap {
+      display: flex;
+      gap: 2em;
+
+      label {
+        width: auto;
+        display: block;
+        text-align: left;
+      }
+
+      .form-group {
+        flex-direction: column;
+        width: auto;
+      }
+
+      .input-wrap {
+        margin: 0;
       }
     }
 
@@ -664,7 +681,8 @@
         border: 1px solid $error;
       }
 
-      &.fld-maxlength, &.fld-rows {
+      &.fld-maxlength,
+      &.fld-rows {
         width: 75px;
       }
 
@@ -744,8 +762,12 @@
 
 .snackbar.show {
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  -webkit-animation:
+    fadein 0.5s,
+    fadeout 0.5s 2.5s;
+  animation:
+    fadein 0.5s,
+    fadeout 0.5s 2.5s;
 }
 
 @-webkit-keyframes fadein {
@@ -888,6 +910,13 @@
   left: -100px !important;
 }
 
-ol.options-no-select input[type=radio]{
+ol.options-no-select input[type='radio'] {
   display: none;
+}
+
+.hidden {
+  display: none !important;
+}
+.flex {
+  display: flex !important;
 }

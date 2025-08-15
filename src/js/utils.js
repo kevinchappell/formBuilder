@@ -124,6 +124,19 @@ export const safeAttrName = name => {
 }
 
 /**
+ * Converts a className string to a safe CSS class name by replacing bracket notation with hyphens.
+ * Transforms square bracket notation (e.g., "class[name]") to hyphen-separated format (e.g., "class-name").
+ * 
+ * @param {string} className - The className string to be sanitized
+ * @returns {string} The sanitized className with brackets replaced by hyphens
+ * 
+ * @example
+ * safeClassName('form[field]') // returns 'form-field'
+ * safeClassName('input[name][value]') // returns 'input-name-value'
+ */
+export const safeClassName = className => className.replace(/\[([^\]]+)\]/g, '-$1')
+
+/**
  * Convert strings into lowercase-hyphen
  *
  * @param  {string} str
@@ -131,7 +144,8 @@ export const safeAttrName = name => {
  */
 export const hyphenCase = str => {
   // eslint-disable-next-line no-useless-escape
-  str = str.replace(/[^\w\s\-]/gi, '')
+  str = str.replace(/[^\w\s\-\[\]]/gi, '')
+  str = safeClassName(str)
   str = str.replace(/([A-Z])/g, function ($1) {
     return '-' + $1.toLowerCase()
   })
@@ -196,7 +210,7 @@ export const getContentType = content => {
   return [
     ['array', content => Array.isArray(content)],
     ['node', content => content instanceof window.Node || content instanceof window.HTMLElement],
-    ['component', () => content && content.dom],
+    ['component', () => content?.dom],
     [typeof content, () => true],
   ].find(typeCondition => typeCondition[1](content))[0]
 }
@@ -216,7 +230,7 @@ export const markup = function (tag, content = '', attributes = {}) {
 
   const appendContent = {
     string: content => {
-      setElementContent(field,field.innerHTML + content)
+      setElementContent(field, field.innerHTML + content)
     },
     object: config => {
       const { tag, content, ...data } = config
@@ -236,7 +250,7 @@ export const markup = function (tag, content = '', attributes = {}) {
       contentType = getContentType(content)
       appendContent[contentType](content)
     },
-    undefined: () => {},
+    undefined: () => { },
   }
 
   for (const attr in attrs) {
@@ -451,7 +465,7 @@ export const removeFromArray = (val, arr) => {
  * @param  {String} [path='']   optional to load form
  * @return {Promise}       a promise
  */
-export const getScripts = (scriptScr, path= '') => {
+export const getScripts = (scriptScr, path = '') => {
   const $ = jQuery
   let _arr = []
 
@@ -492,7 +506,7 @@ export const isCached = (src, type = 'js') => {
  * @param  {String} [path='']
  * @return {void}
  */
-export const getStyles = (scriptScr, path= '') => {
+export const getStyles = (scriptScr, path = '') => {
   if (!Array.isArray(scriptScr)) {
     scriptScr = [scriptScr]
   }
@@ -586,15 +600,15 @@ export const closest = (el, cls) => {
  */
 export const mobileClass = () => {
   let mobileClass = ''
-  ;(a => {
-    if (
-      /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
-        a,
-      )
-    ) {
-      mobileClass = 'formbuilder-mobile'
-    }
-  })(navigator.userAgent || navigator.vendor || window.opera)
+    ; (a => {
+      if (
+        /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+          a,
+        )
+      ) {
+        mobileClass = 'formbuilder-mobile'
+      }
+    })(navigator.userAgent || navigator.vendor || window.opera)
   return mobileClass
 }
 

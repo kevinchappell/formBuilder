@@ -42,7 +42,7 @@ export default class Controls {
     control.loadCustom(opts.controls)
     // register any passed custom templates & fields
     this.custom =  new customControls(opts.templates, opts.fields)
-
+    
     // retrieve a full list of loaded controls
     const registeredControls = control.getRegistered()
     const customFields = this.custom.getRegistered()

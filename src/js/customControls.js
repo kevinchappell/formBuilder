@@ -28,6 +28,12 @@ export default class customControls {
    * @param {Array} fields
    */
   register(templates = {}, fields = []) {
+    fields.forEach(field => {
+      if (field.template) {
+        const fieldType = field.type || field.attrs?.type
+        templates[fieldType] = field.template
+      }
+    })
     // prepare i18n locale definition
     const locale = mi18n.locale
     if (!this.def.i18n[locale]) {
@@ -36,18 +42,18 @@ export default class customControls {
 
     const _this = this
     Object.keys(templates).forEach(templateName => {
-      const templateControl = function(config, preview) {
+      const templateControl = function (config, preview) {
         this.customControl = new controlCustom(config, preview, templates[templateName])
 
         /**
          * build a custom control defined in the templates option
          * @return {{field: any, layout: any}} DOM Element to be injected into the form.
          */
-        this.build = function() {
+        this.build = function () {
           return this.customControl.build()
         }
 
-        this.on = function(eventType) {
+        this.on = function (eventType) {
           return this.customControl.on(eventType)
         }
       }
@@ -85,7 +91,7 @@ export default class customControls {
             type: type,
             class: controlClass,
           })
-        } catch(e) {
+        } catch (e) {
           control.error(
             'Error while registering custom field: ' +
             type +
@@ -114,7 +120,7 @@ export default class customControls {
    * @param {String} type
    * @return {String} translated control
    */
-   label(type) {
+  label(type) {
     /**
      * Retrieve a translated string
      * By default looks for translations defined against the class (for plugin controls)
@@ -123,27 +129,27 @@ export default class customControls {
      * @param {Object|Number|String} [args] - string or key/val pairs for string lookups with variables
      * @return {String} the translated label
      */
-      const def = this.def
-      let i18n = def.i18n || {}
-      const locale = mi18n.locale
-      i18n = i18n[locale] || i18n.default || i18n
-      const lookupCamel = control.camelCase(type)
+    const def = this.def
+    let i18n = def.i18n || {}
+    const locale = mi18n.locale
+    i18n = i18n[locale] || i18n.default || i18n
+    const lookupCamel = control.camelCase(type)
 
-      // if translation is defined in the control, return it
-      const value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[type] : i18n
-      if (value) {
-        return value
-      } else {
-        // otherwise check the mi18n object - allow for mapping a lookup to a custom mi18n lookup
-        let mapped = def.mi18n
-        if (typeof mapped === 'object') {
-          mapped = mapped[lookupCamel] || mapped[type]
-        }
-        if (!mapped) {
-          mapped = lookupCamel
-        }
-        return mi18n.get(mapped)
+    // if translation is defined in the control, return it
+    const value = typeof i18n == 'object' ? i18n[lookupCamel] || i18n[type] : i18n
+    if (value) {
+      return value
+    } else {
+      // otherwise check the mi18n object - allow for mapping a lookup to a custom mi18n lookup
+      let mapped = def.mi18n
+      if (typeof mapped === 'object') {
+        mapped = mapped[lookupCamel] || mapped[type]
       }
+      if (!mapped) {
+        mapped = lookupCamel
+      }
+      return mi18n.get(mapped)
+    }
   }
 
   get definition() {
@@ -184,7 +190,7 @@ export default class customControls {
    * a class mapped to this subtype. If none found, fall back to the type.
    * @return {Class} control subclass as defined in the call to register
    */
-   getClass(type) {
+  getClass(type) {
     return this.templateControlRegister[type] ?? undefined
   }
 
