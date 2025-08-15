@@ -559,7 +559,6 @@ function FormBuilder(opts, element, $) {
               value: key,
               id: roleId,
               className: 'roles-field',
-              label: 'test'
             }
             if (roles.includes(key)) {
               cbAttrs.checked = 'checked'
@@ -625,9 +624,9 @@ function FormBuilder(opts, element, $) {
 
     const tuaLookup = [type, subtype].filter(Boolean).join('-')
     const typeUserAttrs = {
-      ...(opts.typeUserAttrs['*'] || {}),
-      ...(opts.typeUserAttrs[tuaLookup] || {}),
-      ...(typeClass?.definition?.userAttrs || {}),
+      ...(opts.typeUserAttrs['*'] ?? {}),
+      ...(opts.typeUserAttrs[tuaLookup] ?? {}),
+      ...(typeClass?.definition?.userAttrs ?? {}),
     }
 
     Object.keys(fieldAttrs).forEach(index => {
