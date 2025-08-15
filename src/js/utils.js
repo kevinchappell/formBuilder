@@ -124,6 +124,19 @@ export const safeAttrName = name => {
 }
 
 /**
+ * Converts a className string to a safe CSS class name by replacing bracket notation with hyphens.
+ * Transforms square bracket notation (e.g., "class[name]") to hyphen-separated format (e.g., "class-name").
+ * 
+ * @param {string} className - The className string to be sanitized
+ * @returns {string} The sanitized className with brackets replaced by hyphens
+ * 
+ * @example
+ * safeClassName('form[field]') // returns 'form-field'
+ * safeClassName('input[name][value]') // returns 'input-name-value'
+ */
+export const safeClassName = className => className.replace(/\[([^\]]+)\]/g, '-$1')
+
+/**
  * Convert strings into lowercase-hyphen
  *
  * @param  {string} str
@@ -132,15 +145,13 @@ export const safeAttrName = name => {
 export const hyphenCase = str => {
   // eslint-disable-next-line no-useless-escape
   str = str.replace(/[^\w\s\-\[\]]/gi, '')
-  str = str.replace(/\[([^\]]+)\]/g, '-$1')
+  str = safeClassName(str)
   str = str.replace(/([A-Z])/g, function ($1) {
     return '-' + $1.toLowerCase()
   })
 
   return str.replace(/\s/g, '-').replace(/^-+/g, '')
 }
-
-export const safeClassName = className => className.replace(/\[([^\]]+)\]/g, '-$1')
 
 /**
  * convert a hyphenated string to camelCase

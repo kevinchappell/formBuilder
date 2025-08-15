@@ -1,7 +1,7 @@
 const utils = require('./../src/js/utils.js')
 const { safeAttr, flattenArray, safeAttrName, hyphenCase, camelCase, bindEvents, attrString, nameAttr, markup,
   parsedHtml, escapeAttrs, getScripts, capitalize, addEventListeners, unique, escapeAttr, escapeHtml,
-  getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML, firstNumberOrUndefined
+  getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML, firstNumberOrUndefined, safeClassName
 } = require('../src/js/utils')
 
 describe('Test Util functions', () => {
@@ -58,14 +58,14 @@ describe('Test Util functions', () => {
 
   test('attrString', () => {
     //@TODO Test some invalid values. Passing a number for an attribute value will trigger an error with trim()
-    expect(attrString({type: 'number', min: '0', max: '10', class: 'input-control input-lg', 'data-target': 'someValue'}))
+    expect(attrString({ type: 'number', min: '0', max: '10', class: 'input-control input-lg', 'data-target': 'someValue' }))
       .toBe('type="number" min="0" max="10" class="input-control input-lg" data-target="someValue"')
   })
 
   test.todo('safeAttr')
 
   test('flattenArray', () => {
-    expect(flattenArray([[1,2],[3,[4,[5]]]])).toStrictEqual([ 1, 2, 3, 4, 5 ])
+    expect(flattenArray([[1, 2], [3, [4, [5]]]])).toStrictEqual([1, 2, 3, 4, 5])
   })
 
   test('safeAttrName', () => {
@@ -76,6 +76,12 @@ describe('Test Util functions', () => {
   test('hyphenCase', () => {
     expect(hyphenCase('dataTarget')).toBe('data-target')
     expect(hyphenCase('dataElementName')).toBe('data-element-name')
+    expect(hyphenCase('dataElement[size]')).toBe('data-element-size')
+  })
+
+  test('safeClassName', () => {
+    expect(safeClassName('form[field]')).toBe('form-field')
+    expect(safeClassName('input[name][value]')).toBe('input-name-value')
   })
 
   test('camelCase', () => {
@@ -90,7 +96,7 @@ describe('Test Util functions', () => {
   })
 
   test('unique', () => {
-    expect(unique(['orange','blue','orange','pink','red','red'])).toStrictEqual(['orange','blue','pink','red'])
+    expect(unique(['orange', 'blue', 'orange', 'pink', 'red', 'red'])).toStrictEqual(['orange', 'blue', 'pink', 'red'])
   })
 
   test.todo('closest')
@@ -98,7 +104,7 @@ describe('Test Util functions', () => {
   test('bindEvents', () => {
     const cb = jest.fn()
     const el = document.createElement('input')
-    bindEvents(el, {'change': cb, 'input': cb})
+    bindEvents(el, { 'change': cb, 'input': cb })
     el.dispatchEvent(new Event('input'))
     expect(cb.mock.calls).toHaveLength(1)
     el.dispatchEvent(new Event('change'))
@@ -139,15 +145,15 @@ describe('Test Util functions', () => {
   test.todo('merge')
 
   test('subtract', () => {
-    expect(subtract([1,2,3],[2])).toEqual([])
-    expect(subtract([2],[1,2,3])).toEqual([1,3])
-    expect(subtract(['remove-me'],['classA','classB','remove-me','classC'])).toEqual(['classA','classB','classC'])
+    expect(subtract([1, 2, 3], [2])).toEqual([])
+    expect(subtract([2], [1, 2, 3])).toEqual([1, 3])
+    expect(subtract(['remove-me'], ['classA', 'classB', 'remove-me', 'classC'])).toEqual(['classA', 'classB', 'classC'])
   })
 
   test('firstNumberOrUndefined', () => {
     expect(firstNumberOrUndefined(1)).toEqual(1)
-    expect(firstNumberOrUndefined(1,2,3)).toEqual(1)
-    expect(firstNumberOrUndefined(undefined,'',2,1)).toEqual(2)
+    expect(firstNumberOrUndefined(1, 2, 3)).toEqual(1)
+    expect(firstNumberOrUndefined(undefined, '', 2, 1)).toEqual(2)
   })
 })
 
@@ -155,7 +161,7 @@ describe('Test XML functions', () => {
   test('parseXml', () => {
     const xml = '<form-template xmlns="http://www.w3.org/1999/xhtml"><fields><field type="header" subtype="h1" label="Header" class-name="my-class"></field><field type="number" required="true" label="Number" class-name="form-control myClass" name="number-1696560201856-0" min="1" max="100" step="1" value="2"></field><field type="select" required="false" label="Select" class-name="form-control" name="select-1696560229465-0" multiple="false"><option label="Option 1" value="option-1" selected="selected">Option 1</option><option label="Option 2" value="option-2">Option 2</option><option label="Option 3" value="option-3">Option 3</option></field></fields></form-template>'
     const parsed = parseXML(xml)
-    expect(parsed).toEqual([{'className': 'my-class', 'label': 'Header', 'subtype': 'h1', 'type': 'header'}, {'className': 'form-control myClass', 'label': 'Number', 'max': '100', 'min': '1', 'name': 'number-1696560201856-0', 'required': true, 'step': '1', 'type': 'number', value: '2'}, {'className': 'form-control', 'label': 'Select', 'name': 'select-1696560229465-0', 'type': 'select', 'values': [{'label': 'Option 1', 'selected': 'selected', 'value': 'option-1'}, {'label': 'Option 2', 'value': 'option-2'}, {'label': 'Option 3', 'value': 'option-3'}]}])
+    expect(parsed).toEqual([{ 'className': 'my-class', 'label': 'Header', 'subtype': 'h1', 'type': 'header' }, { 'className': 'form-control myClass', 'label': 'Number', 'max': '100', 'min': '1', 'name': 'number-1696560201856-0', 'required': true, 'step': '1', 'type': 'number', value: '2' }, { 'className': 'form-control', 'label': 'Select', 'name': 'select-1696560229465-0', 'type': 'select', 'values': [{ 'label': 'Option 1', 'selected': 'selected', 'value': 'option-1' }, { 'label': 'Option 2', 'value': 'option-2' }, { 'label': 'Option 3', 'value': 'option-3' }] }])
   })
 
   test.todo('xmlParseAttrs')
@@ -165,13 +171,13 @@ describe('Test XML functions', () => {
 
 describe('Test markup function', () => {
   test('markup input with attributes', () => {
-    const input = markup('input', null, {type: 'text', 'value': 'simple input'})
+    const input = markup('input', null, { type: 'text', 'value': 'simple input' })
     expect(input).toBeInstanceOf(HTMLElement)
     expect(input.value).toBe('simple input')
   })
 
   test('markup span with text', () => {
-    const span = markup('span', 'Example span text', {class: 'small'})
+    const span = markup('span', 'Example span text', { class: 'small' })
     expect(span).toBeInstanceOf(HTMLElement)
     expect(span.tagName).toBe('SPAN')
     expect(span.textContent).toBe('Example span text')
@@ -179,7 +185,7 @@ describe('Test markup function', () => {
   })
 
   test('markup div with child span', () => {
-    const div = markup('div', {tag: 'span', content:'Example span text', class: 'small' }, {class: 'content'})
+    const div = markup('div', { tag: 'span', content: 'Example span text', class: 'small' }, { class: 'content' })
     expect(div).toBeInstanceOf(HTMLElement)
     expect(div.tagName).toBe('DIV')
     expect(div.classList).toContain('content')
@@ -190,17 +196,17 @@ describe('Test markup function', () => {
   })
 
   test('markup input with boolean attribute', () => {
-    const input = markup('input', null, {required: true,})
+    const input = markup('input', null, { required: true, })
     expect(input.getAttribute('required')).toBe('required')
-    const input2 = markup('input', null, {required: false,})
+    const input2 = markup('input', null, { required: false, })
     expect(input2.getAttribute('required')).toBeNull()
-    const textarea = markup('textarea', null, {contenteditable: true,})
+    const textarea = markup('textarea', null, { contenteditable: true, })
     expect(textarea.getAttribute('contenteditable')).toBe('true')
   })
 
   test('markup input with bound events', () => {
     const cb = jest.fn()
-    const input = markup('input', null, {type: 'text', 'events': {'change': cb, 'input': cb}})
+    const input = markup('input', null, { type: 'text', 'events': { 'change': cb, 'input': cb } })
     input.dispatchEvent(new Event('input'))
     expect(cb.mock.calls).toHaveLength(1)
     input.dispatchEvent(new Event('change'))
