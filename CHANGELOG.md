@@ -1,3 +1,15 @@
+# [3.21.0](https://github.com/kevinchappell/formBuilder/compare/v3.20.2...v3.21.0) (2025-08-15)
+
+
+### Bug Fixes
+
+* tests, improved classNames ([fd39d4f](https://github.com/kevinchappell/formBuilder/commit/fd39d4f99af6a6fdbecef6c3371b066c8bcffe24))
+
+
+### Features
+
+* typeUserAttrs can be specified directly in the field definition ([c44573e](https://github.com/kevinchappell/formBuilder/commit/c44573e63d5de15e820e4b6dd402cb91c0fb92d2))
+
 ## [3.20.2](https://github.com/kevinchappell/formBuilder/compare/v3.20.1...v3.20.2) (2025-08-15)
 
 
