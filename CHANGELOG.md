@@ -1,3 +1,10 @@
+## [3.21.1](https://github.com/kevinchappell/formBuilder/compare/v3.21.0...v3.21.1) (2025-08-22)
+
+
+### Bug Fixes
+
+* class is an actual Class ([8e6a94b](https://github.com/kevinchappell/formBuilder/commit/8e6a94b44fd6a69565e96ddb1a93117e1cd1be5e))
+
 # [3.21.0](https://github.com/kevinchappell/formBuilder/compare/v3.20.2...v3.21.0) (2025-08-15)
 
 
