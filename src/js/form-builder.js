@@ -951,7 +951,7 @@ function FormBuilder(opts, element, $) {
       value: attrVal,
       name: attribute,
       placeholder,
-      className: [safeClassName(`fld-${attribute}`), 'form-control', className.trim()],
+      className: [safeClassName(`fld-${attribute}`), 'form-control', `${className}`.trim()],
       id: `${attribute}-${data.lastID}`,
     }
     const numberAttribute = h.input(trimObj(inputConfig))
