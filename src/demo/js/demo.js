@@ -44,6 +44,12 @@ jQuery(function ($) {
       icon: '🌟',
     },
     {
+      label: 'Email',
+      type: 'text',
+      subtype: 'email',
+      icon: '✉'
+    },
+    {
       type: 'checkbox-group',
       subtype: 'custom',
       label: 'Custom Checkbox Group w/Sub Type',

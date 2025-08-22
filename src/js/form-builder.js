@@ -941,7 +941,7 @@ function FormBuilder(opts, element, $) {
    * @return {string} markup for number attribute
    */
   const numberAttribute = (attribute, values) => {
-    const { class: classname, className, ...attrs } = values
+    const { className = '', ...attrs } = values
     const attrVal = Number.isNaN(attrs[attribute]) ? undefined : attrs[attribute]
     const attrLabel = mi18n.get(attribute) || attribute
     const placeholder = mi18n.get(`placeholder.${attribute}`)
@@ -951,7 +951,7 @@ function FormBuilder(opts, element, $) {
       value: attrVal,
       name: attribute,
       placeholder,
-      className: [safeClassName(`fld-${attribute}`), 'form-control', (classname || className || '').trim()],
+      className: [safeClassName(`fld-${attribute}`), 'form-control', `${className}`.trim()],
       id: `${attribute}-${data.lastID}`,
     }
     const numberAttribute = h.input(trimObj(inputConfig))
