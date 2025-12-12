@@ -123,7 +123,7 @@ export default class Helpers {
     if (subtype !== types.type) {
       types.subtype = subtype
     }
-    
+
     return types
   }
 
@@ -1018,6 +1018,9 @@ export default class Helpers {
         $(document).trigger('checkRowCleanup', [{ rowWrapperID: fieldRowWrapper.attr('id') }])
       }, defaultTimeout)
     }
+
+    const fieldData = $field.data('fieldData') || {}
+    this.config.opts.onRemoveField(fieldID, fieldData, field)
 
     return fieldRemoved
   }

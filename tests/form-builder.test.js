@@ -898,6 +898,34 @@ describe('FormBuilder callbacks', () => {
     expect(cb.mock.calls[0][1].name).toBe('on-add-test')
   })
 
+  test('onRemoveField callback called after removing field', async () => {
+    const fbWrap = $('<div>').appendTo('body')
+    const cb = jest.fn()
+    const fb = await $(fbWrap).formBuilder({'onRemoveField': cb}).promise
+    const field = {
+      type: 'text',
+      class: 'form-control',
+      name: 'on-remove-test'
+    }
+    fb.actions.addField(field)
+    expect(fb.actions.getData()).toHaveLength(1)
+    
+    const fieldElement = $('.frmb.stage-wrap li.form-field', fbWrap)[0]
+    expect(fieldElement).toBeTruthy()
+    const fieldId = fieldElement.id
+    expect(fieldId).toBeTruthy()
+    fb.actions.removeField(fieldId)
+    
+    expect(cb.mock.calls).toHaveLength(1)
+    expect(cb.mock.calls[0]).toHaveLength(3)
+    expect(typeof cb.mock.calls[0][0]).toBe('string')
+    expect(typeof cb.mock.calls[0][1]).toBe('object')
+    expect(typeof cb.mock.calls[0][2]).toBe('object')
+    expect(cb.mock.calls[0][0]).toBe(fieldId)
+    
+    fbWrap.remove()
+  })
+
   test.failing('onSave callback called after save', async () => {
     const fbWrap = $('<div>')
     const cb = jest.fn()
