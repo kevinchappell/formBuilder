@@ -1,3 +1,10 @@
+# [3.22.0](https://github.com/kevinchappell/formBuilder/compare/v3.21.1...v3.22.0) (2025-12-12)
+
+
+### Features
+
+* onRemoveField ([9db30e1](https://github.com/kevinchappell/formBuilder/commit/9db30e11cd9c382342ac1e3bd4731bfa5d140002))
+
 ## [3.21.1](https://github.com/kevinchappell/formBuilder/compare/v3.21.0...v3.21.1) (2025-08-22)
 
 
