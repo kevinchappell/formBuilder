@@ -58,6 +58,7 @@ export const defaultOptions = {
   onClearAll: noop,
   onCloseFieldEdit: noop,
   onOpenFieldEdit: noop,
+  onRemoveField: noop,
   /**
    * @param {Object} evt
    * @param {Object} formData

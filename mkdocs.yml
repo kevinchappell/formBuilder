@@ -73,6 +73,7 @@ nav:
   - onClearAll: formBuilder/options/onClearAll.md
   - onCloseFieldEdit: formBuilder/options/onCloseFieldEdit.md
   - onOpenFieldEdit: formBuilder/options/onOpenFieldEdit.md
+  - onRemoveField: formBuilder/options/onRemoveField.md
   - onSave: formBuilder/options/onSave.md
   - persistDefaultFields: formBuilder/options/persistDefaultFields.md
   - replaceFields: formBuilder/options/replaceFields.md

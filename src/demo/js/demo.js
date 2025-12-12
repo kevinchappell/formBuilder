@@ -233,6 +233,9 @@ jQuery(function ($) {
     stickyControls: {
       enable: true,
     },
+    onRemoveField: (fieldId, fieldData) => {
+      console.log(`Field with ID: ${fieldId} has been removed`, fieldData)
+    },
     sortableControls: true,
     fields: fields,
     templates: templates,
