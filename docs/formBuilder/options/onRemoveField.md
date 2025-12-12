@@ -1,6 +1,6 @@
 # onRemoveField
 
-Callback for when fields are removed from the stage. Good as a catch-all action for anything that needs to happen before a field is removed from the stage. Possible to modify the field's configuration before it's removed by returning a fieldData object eg:
+Callback for when fields are removed from the stage. Good as a catch-all action for anything that needs to happen during the field removal process—specifically, after the removal process has started (such as after the slideUp animation is triggered and the removal event is dispatched), but before the animation completes and the field is fully removed from the stage. Possible to modify the field's configuration before it's removed by returning a fieldData object eg:
 
 ```javascript
 	{
