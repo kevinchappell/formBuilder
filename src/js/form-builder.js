@@ -536,7 +536,6 @@ function FormBuilder(opts, element, $) {
             const curAdvFields = evt.target.closest('.form-elements-inner')
             const newAdvFields = generateAdvFields({ ...values, subtype: value })
             curAdvFields.replaceWith(newAdvFields)
-            debugger
           }
         }
         return selectAttribute('subtype', { events, ...values }, subtypes[type], isHidden)
