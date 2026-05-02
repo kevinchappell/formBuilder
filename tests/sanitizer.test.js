@@ -103,6 +103,7 @@ describe('Sanitizer API backend', () => {
     capturedSanitizerConfig = null
     mockSanitizerConstructor = jest.fn(function (config) {
       capturedSanitizerConfig = config
+      return this
     })
     window.Sanitizer = mockSanitizerConstructor
 
@@ -184,9 +185,14 @@ describe('Sanitizer API backend', () => {
     setElementContentLocal(el, '<p>test</p>', false)
     expect(freshSetHTML).not.toHaveBeenCalled()
 
-    // Restore for subsequent tests
+    // Restore for subsequent tests and re-require so module state is consistent
     window.Sanitizer = mockSanitizerConstructor
     Element.prototype.setHTML = mockSetHTML
+    jest.resetModules()
+    const restoredMod = require('./../src/js/sanitizer.js')
+    setElementContentSanitizer = restoredMod.setElementContent
+    setSanitizerConfigSanitizer = restoredMod.setSanitizerConfig
+    setSanitizerConfigSanitizer({ backendOrder: ['sanitizer'] })
   })
 })
 
