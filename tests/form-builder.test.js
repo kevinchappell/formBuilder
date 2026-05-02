@@ -183,6 +183,31 @@ describe('FormBuilder stage names translated', () => {
 })
 
 describe('FormBuilder attribute setup', () => {
+  test('changing subtype preserves unsaved label edits after label blur', async() => {
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder({}).promise
+
+    fb.actions.addField({
+      type: 'text',
+      label: 'Saved Label',
+    })
+    fb.actions.toggleFieldEdit(0)
+
+    const field = fbWrap.find('.form-field[type="text"]')
+    const labelInput = field.find('.fld-label')
+    labelInput.text('Current Label').trigger('input').trigger('blur')
+
+    const subtypeInput = field.find('.fld-subtype')
+    subtypeInput.val('email').trigger('change')
+
+    expect(field.find('.fld-label').text()).toBe('Current Label')
+    expect(field.find('.field-label').text()).toBe('Current Label')
+    expect(fb.actions.getData()[0]).toEqual(expect.objectContaining({
+      label: 'Current Label',
+      subtype: 'email',
+    }))
+  })
+
   test('number control number attributes do not inherit field value when not set', async() => {
     const config = {}
     const fbWrap = $('<div>')
