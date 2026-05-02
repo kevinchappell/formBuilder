@@ -533,8 +533,9 @@ function FormBuilder(opts, element, $) {
         const events = {
           change: evt => {
             const { value } = evt.target
+            const field = closest(evt.target, '.form-field')
             const curAdvFields = evt.target.closest('.form-elements-inner')
-            const newAdvFields = generateAdvFields({ ...values, subtype: value })
+            const newAdvFields = generateAdvFields({ ...values, ...h.getAttrVals(field), subtype: value })
             curAdvFields.replaceWith(newAdvFields)
           }
         }
@@ -1828,10 +1829,6 @@ function FormBuilder(opts, element, $) {
     const value = target.value || target.innerHTML
     const label = closest(target, '.form-field').querySelector('.field-label')
     setElementContent(label, parsedHtml(value), config.opts.disableHTMLLabels)
-  })
-
-  $stage.on('blur', '.fld-*', () => {
-    h.save.call(h)
   })
 
   // remove error styling when users tries to correct mistake

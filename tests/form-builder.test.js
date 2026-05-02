@@ -183,7 +183,7 @@ describe('FormBuilder stage names translated', () => {
 })
 
 describe('FormBuilder attribute setup', () => {
-  test('changing subtype preserves unsaved label edits after label blur', async() => {
+  test('changing subtype preserves unsaved label edits', async() => {
     const fbWrap = $('<div>')
     const fb = await fbWrap.formBuilder({}).promise
 
@@ -195,7 +195,7 @@ describe('FormBuilder attribute setup', () => {
 
     const field = fbWrap.find('.form-field[type="text"]')
     const labelInput = field.find('.fld-label')
-    labelInput.text('Current Label').trigger('input').trigger('blur')
+    labelInput.text('Current Label').trigger('input')
 
     const subtypeInput = field.find('.fld-subtype')
     subtypeInput.val('email').trigger('change')
