@@ -91,6 +91,105 @@ backends.forEach(backend => {
   })
 })
 
+describe('Sanitizer API backend', () => {
+  let setElementContentSanitizer
+  let setSanitizerConfigSanitizer
+  let mockSanitizerConstructor
+  let capturedSanitizerConfig
+  let mockSetHTML
+
+  beforeAll(() => {
+    // Capture the config passed to the Sanitizer constructor
+    capturedSanitizerConfig = null
+    mockSanitizerConstructor = jest.fn(function (config) {
+      capturedSanitizerConfig = config
+    })
+    window.Sanitizer = mockSanitizerConstructor
+
+    // Provide a setHTML implementation on Element.prototype so the sanitizer
+    // backend callback can call element.setHTML(content, { sanitizer })
+    mockSetHTML = jest.fn(function (content) {
+      this.innerHTML = content
+    })
+    Element.prototype.setHTML = mockSetHTML
+
+    // Re-require the module after mocking so the IIFE picks up window.Sanitizer
+    jest.resetModules()
+    const mod = require('./../src/js/sanitizer.js')
+    setElementContentSanitizer = mod.setElementContent
+    setSanitizerConfigSanitizer = mod.setSanitizerConfig
+
+    setSanitizerConfigSanitizer({ backendOrder: ['sanitizer'] })
+  })
+
+  afterAll(() => {
+    delete window.Sanitizer
+    delete Element.prototype.setHTML
+    jest.resetModules()
+  })
+
+  test('instantiates Sanitizer with a form element allowlist', () => {
+    expect(mockSanitizerConstructor).toHaveBeenCalledTimes(1)
+    const elements = capturedSanitizerConfig.elements
+    expect(elements).toContain('input')
+    expect(elements).toContain('select')
+    expect(elements).toContain('textarea')
+    expect(elements).toContain('label')
+    expect(elements).toContain('button')
+  })
+
+  test('instantiates Sanitizer with a form attribute allowlist', () => {
+    const attributes = capturedSanitizerConfig.attributes
+    expect(attributes).toContain('type')
+    expect(attributes).toContain('name')
+    expect(attributes).toContain('value')
+    expect(attributes).toContain('checked')
+  })
+
+  test('uses setHTML when the Sanitizer backend is active', () => {
+    const el = document.createElement('div')
+    setElementContentSanitizer(el, '<input type="checkbox">', false)
+    expect(mockSetHTML).toHaveBeenCalled()
+  })
+
+  test('preserves form elements via the Sanitizer backend', () => {
+    mockSetHTML.mockImplementation(function (content) {
+      // Simulate a Sanitizer that keeps all allowed elements
+      this.innerHTML = content
+    })
+    const el = document.createElement('div')
+    setElementContentSanitizer(el, '<label><input type="checkbox" checked> Accept</label>', false)
+    expect(el.innerHTML).toContain('<input')
+    expect(el.innerHTML).toContain('<label')
+  })
+
+  test('falls back to false when Sanitizer constructor throws', () => {
+    // Temporarily replace Sanitizer with one that throws
+    const throwingSanitizer = jest.fn(() => {
+      throw new Error('Unsupported config')
+    })
+    window.Sanitizer = throwingSanitizer
+    jest.resetModules()
+    const mod = require('./../src/js/sanitizer.js')
+    const setSanitizerConfigLocal = mod.setSanitizerConfig
+    const setElementContentLocal = mod.setElementContent
+    setSanitizerConfigLocal({ backendOrder: ['sanitizer'] })
+
+    // With sanitizer backend returning false, setHTML should NOT be called
+    const freshSetHTML = jest.fn(function (content) {
+      this.innerHTML = content
+    })
+    Element.prototype.setHTML = freshSetHTML
+    const el = document.createElement('div')
+    setElementContentLocal(el, '<p>test</p>', false)
+    expect(freshSetHTML).not.toHaveBeenCalled()
+
+    // Restore for subsequent tests
+    window.Sanitizer = mockSanitizerConstructor
+    Element.prototype.setHTML = mockSetHTML
+  })
+})
+
 describe('Potentially dangerous attributes', () => {
   test('onerror attribute is dangerous', () => {
     expect(isPotentiallyDangerousAttribute('onerror', 'alert("")')).toBe(true)

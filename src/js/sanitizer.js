@@ -10,25 +10,32 @@ const sanitizerConfig = {
   },
   backendOrder: ['dompurify', 'sanitizer', 'fallback'],
   backends: {
-    sanitizer: typeof window['Sanitizer'] === 'function' ? new window.Sanitizer({
-      // Explicitly allow form elements and common HTML elements to prevent
-      // Firefox 148+ Sanitizer API from stripping <input>, <select>, etc.
-      // See: https://github.com/kevinchappell/formBuilder/issues/1634
-      elements: [
-        'div', 'p', 'br', 'span', 'strong', 'em', 'b', 'i', 'u',
-        'ul', 'ol', 'li', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-        'form', 'label', 'input', 'select', 'option', 'textarea', 'button',
-        'fieldset', 'legend', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      ],
-      attributes: [
-        'class', 'id', 'title', 'contenteditable', 'href', 'target', 'rel',
-        'src', 'alt', 'width', 'height', 'type', 'name', 'value', 'checked',
-        'disabled', 'placeholder', 'required', 'for', 'selected', 'rows',
-        'cols', 'multiple', 'method', 'action', 'tabindex', 'readonly',
-        'minlength', 'maxlength', 'pattern', 'autocomplete', 'autofocus',
-      ],
-      dataAttributes: true,
-    }) : false,
+    sanitizer: (() => {
+      if (typeof window['Sanitizer'] !== 'function') return false
+      try {
+        // Explicitly allow form elements and common HTML elements to prevent
+        // Firefox 148+ Sanitizer API from stripping <input>, <select>, etc.
+        // See: https://github.com/kevinchappell/formBuilder/issues/1634
+        return new window.Sanitizer({
+          elements: [
+            'div', 'p', 'br', 'span', 'strong', 'em', 'b', 'i', 'u',
+            'ul', 'ol', 'li', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'form', 'label', 'input', 'select', 'option', 'textarea', 'button',
+            'fieldset', 'legend', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+          ],
+          attributes: [
+            'class', 'id', 'title', 'contenteditable', 'href', 'target', 'rel',
+            'src', 'alt', 'width', 'height', 'type', 'name', 'value', 'checked',
+            'disabled', 'placeholder', 'required', 'for', 'selected', 'rows',
+            'cols', 'multiple', 'method', 'action', 'tabindex', 'readonly',
+            'minlength', 'maxlength', 'pattern', 'autocomplete', 'autofocus',
+          ],
+          dataAttributes: true,
+        })
+      } catch (e) {
+        return false
+      }
+    })(),
     dompurify: window.DOMPurify ? (purify => {
       purify.setConfig({
         //USE_PROFILES: { html: true }, //Only process HTML (exclude SVG and MATHML)
