@@ -96,9 +96,9 @@
     "lint": "eslint ./src || true",
     "lint:fix": "eslint ./src --fix",
     "semantic-release": "semantic-release",
-    "start:devServer": "webpack-dev-server --mode development --config tools/webpack.config",
-    "prestart": "run-p build:vendor copy:lang",
+    "start:devServer": "run-p build:vendor copy:lang && webpack-dev-server --mode development --config tools/webpack.config",
     "start": "npm run start:devServer",
+    "dev": "npm run start",
     "test": "jest --coverage",
     "prepare": "[ \"$NODE_ENV\" = production ] && exit 0; husky install",
     "pre-commit": "lint-staged"
