@@ -95,14 +95,10 @@ describe('Sanitizer API backend', () => {
   let setElementContentSanitizer
   let setSanitizerConfigSanitizer
   let mockSanitizerConstructor
-  let capturedSanitizerConfig
   let mockSetHTML
 
   beforeAll(() => {
-    // Capture the config passed to the Sanitizer constructor
-    capturedSanitizerConfig = null
-    mockSanitizerConstructor = jest.fn(function (config) {
-      capturedSanitizerConfig = config
+    mockSanitizerConstructor = jest.fn(function () {
       return this
     })
     window.Sanitizer = mockSanitizerConstructor
@@ -130,21 +126,20 @@ describe('Sanitizer API backend', () => {
   })
 
   test('instantiates Sanitizer with a form element allowlist', () => {
-    expect(mockSanitizerConstructor).toHaveBeenCalledTimes(1)
-    const elements = capturedSanitizerConfig.elements
-    expect(elements).toContain('input')
-    expect(elements).toContain('select')
-    expect(elements).toContain('textarea')
-    expect(elements).toContain('label')
-    expect(elements).toContain('button')
+    const config = mockSanitizerConstructor.mock.calls[0][0]
+    expect(config.elements).toContain('input')
+    expect(config.elements).toContain('select')
+    expect(config.elements).toContain('textarea')
+    expect(config.elements).toContain('label')
+    expect(config.elements).toContain('button')
   })
 
   test('instantiates Sanitizer with a form attribute allowlist', () => {
-    const attributes = capturedSanitizerConfig.attributes
-    expect(attributes).toContain('type')
-    expect(attributes).toContain('name')
-    expect(attributes).toContain('value')
-    expect(attributes).toContain('checked')
+    const config = mockSanitizerConstructor.mock.calls[0][0]
+    expect(config.attributes).toContain('type')
+    expect(config.attributes).toContain('name')
+    expect(config.attributes).toContain('value')
+    expect(config.attributes).toContain('checked')
   })
 
   test('uses setHTML when the Sanitizer backend is active', () => {
@@ -164,35 +159,36 @@ describe('Sanitizer API backend', () => {
     expect(el.innerHTML).toContain('<label')
   })
 
-  test('falls back to false when Sanitizer constructor throws', () => {
-    // Temporarily replace Sanitizer with one that throws
-    const throwingSanitizer = jest.fn(() => {
-      throw new Error('Unsupported config')
-    })
-    window.Sanitizer = throwingSanitizer
-    jest.resetModules()
-    const mod = require('./../src/js/sanitizer.js')
-    const setSanitizerConfigLocal = mod.setSanitizerConfig
-    const setElementContentLocal = mod.setElementContent
-    setSanitizerConfigLocal({ backendOrder: ['sanitizer'] })
+  describe('when Sanitizer constructor throws', () => {
+    let setElementContentLocal
 
-    // With sanitizer backend returning false, setHTML should NOT be called
-    const freshSetHTML = jest.fn(function (content) {
-      this.innerHTML = content
+    beforeAll(() => {
+      window.Sanitizer = jest.fn(function () {
+        throw new Error('Unsupported config')
+      })
+      jest.resetModules()
+      const mod = require('./../src/js/sanitizer.js')
+      setElementContentLocal = mod.setElementContent
+      mod.setSanitizerConfig({ backendOrder: ['sanitizer'] })
     })
-    Element.prototype.setHTML = freshSetHTML
-    const el = document.createElement('div')
-    setElementContentLocal(el, '<p>test</p>', false)
-    expect(freshSetHTML).not.toHaveBeenCalled()
 
-    // Restore for subsequent tests and re-require so module state is consistent
-    window.Sanitizer = mockSanitizerConstructor
-    Element.prototype.setHTML = mockSetHTML
-    jest.resetModules()
-    const restoredMod = require('./../src/js/sanitizer.js')
-    setElementContentSanitizer = restoredMod.setElementContent
-    setSanitizerConfigSanitizer = restoredMod.setSanitizerConfig
-    setSanitizerConfigSanitizer({ backendOrder: ['sanitizer'] })
+    afterAll(() => {
+      // Restore the outer mock so the outer afterAll clean-up is consistent
+      window.Sanitizer = mockSanitizerConstructor
+      jest.resetModules()
+    })
+
+    test('falls back to false and does not call setHTML', () => {
+      const freshSetHTML = jest.fn(function (content) {
+        this.innerHTML = content
+      })
+      Element.prototype.setHTML = freshSetHTML
+      const el = document.createElement('div')
+      setElementContentLocal(el, '<p>test</p>', false)
+      expect(freshSetHTML).not.toHaveBeenCalled()
+      // Restore prototype for outer describe clean-up
+      Element.prototype.setHTML = mockSetHTML
+    })
   })
 })
 
