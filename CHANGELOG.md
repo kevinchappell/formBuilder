@@ -1,3 +1,15 @@
+## [3.22.1](https://github.com/kevinchappell/formBuilder/compare/v3.22.0...v3.22.1) (2026-05-08)
+
+
+### Bug Fixes
+
+* configure Sanitizer API to preserve form elements in Firefox 148+ ([046747b](https://github.com/kevinchappell/formBuilder/commit/046747bf06edff79434836db7e099a01d7f9eb42)), closes [#1634](https://github.com/kevinchappell/formBuilder/issues/1634)
+* deployment ([2006664](https://github.com/kevinchappell/formBuilder/commit/200666446d178453b8804423e74e2775bd11b9b4))
+* field label reset when changing the subtype without saving ([93a101a](https://github.com/kevinchappell/formBuilder/commit/93a101a3bf8cb28e10395de1d8da3aae4c933010)), closes [#1635](https://github.com/kevinchappell/formBuilder/issues/1635)
+* isolate new behavior to subtype change ([b4953ec](https://github.com/kevinchappell/formBuilder/commit/b4953ec8b847bb94bc570463b797f59e2800915b))
+* radio not displaying inline ([e0cd836](https://github.com/kevinchappell/formBuilder/commit/e0cd8362d0bf912cc5a03b0744cfc12c9f7257b1))
+* vendor assets missing on first npm start ([3a47195](https://github.com/kevinchappell/formBuilder/commit/3a47195d6cc099cfb35f17407a804b909309e44d))
+
 # [3.22.0](https://github.com/kevinchappell/formBuilder/compare/v3.21.1...v3.22.0) (2025-12-12)
 
 
