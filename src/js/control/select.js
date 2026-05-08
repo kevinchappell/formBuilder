@@ -36,7 +36,7 @@ export default class controlSelect extends control {
     if ((type === 'checkbox-group' || type === 'radio-group') && data.required) {
       const self = this
       const defaultOnRender = this.onRender.bind(this)
-      this.onRender = function() {
+      this.onRender = function () {
         defaultOnRender()
         self.groupRequired()
       }
@@ -141,10 +141,14 @@ export default class controlSelect extends control {
     }
 
     // build & return the DOM elements
-    if (type == 'select') {
+    if (type === 'select') {
       this.dom = this.markup(optionType, options, trimObj(data, true))
     } else {
-      this.dom = this.markup('div', options, { className: type })
+      let className = type
+      if (inline) {
+        className += ` ${className}--inline`
+      }
+      this.dom = this.markup('div', options, { className })
     }
     return this.dom
   }
@@ -159,14 +163,14 @@ export default class controlSelect extends control {
     const otherValue = this.element.querySelector('.other-val')
     const setValidity = (checkbox, isValid) => {
       const minReq = control.mi18n('minSelectionRequired', 1)
-      if (!isValid) {
-        checkbox.setCustomValidity(minReq)
-      } else {
+      if (isValid) {
         checkbox.setCustomValidity('')
+      } else {
+        checkbox.setCustomValidity(minReq)
       }
     }
     const toggleRequired = (checkboxes, otherCheckbox, otherValue, isValid) => {
-        [].forEach.call(checkboxes, cb => {
+      Array.prototype.forEach.call(checkboxes, cb => {
         if (isValid) {
           cb.removeAttribute('required')
         } else {
