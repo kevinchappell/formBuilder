@@ -533,8 +533,9 @@ function FormBuilder(opts, element, $) {
         const events = {
           change: evt => {
             const { value } = evt.target
+            const field = closest(evt.target, '.form-field')
             const curAdvFields = evt.target.closest('.form-elements-inner')
-            const newAdvFields = generateAdvFields({ ...values, subtype: value })
+            const newAdvFields = generateAdvFields({ ...values, ...h.getAttrVals(field), subtype: value })
             curAdvFields.replaceWith(newAdvFields)
           }
         }
@@ -690,7 +691,7 @@ function FormBuilder(opts, element, $) {
         ['array', ({ options }) => !!options],
         ['boolean', ({ type }) => type === 'checkbox'], // automatic bool if checkbox
         ['options', ({ type }) => type === 'options'],
-        [typeof value, () => true], // string, number, 
+        [typeof value, () => true], // string, number,
       ].find(typeCondition => typeCondition[1](attrData))[0]
     )
   }
@@ -2289,8 +2290,8 @@ function FormBuilder(opts, element, $) {
   function buildGridModeHelp() {
     $(gridModeHelp).html(`
     <div style='padding:5px'>
-      <h3 class="text text-center">Grid Mode</h3>    
-      
+      <h3 class="text text-center">Grid Mode</h3>
+
       <table style='border-spacing:7px;border-collapse: separate'>
         <thead>
           <tr>
@@ -2302,13 +2303,13 @@ function FormBuilder(opts, element, $) {
           <tr>
             <td><kbd>MOUSEWHEEL</kbd></td>
             <td>Adjust the field column size</td>
-          </tr>    
+          </tr>
           <tr>
-            <td><kbd>W or &#x2191;</kbd></td> 
+            <td><kbd>W or &#x2191;</kbd></td>
             <td>Move entire row up</td>
           </tr>
           <tr>
-              <td><kbd>S or &#x2193;</kbd></td> 
+              <td><kbd>S or &#x2193;</kbd></td>
               <td>Move entire row down</td>
           </tr>
           <tr>
@@ -2316,25 +2317,25 @@ function FormBuilder(opts, element, $) {
               <td>Move field left within the row</td>
           </tr>
           <tr>
-              <td><kbd>D or &#x2192;</kbd></td> 
+              <td><kbd>D or &#x2192;</kbd></td>
               <td>Move field right within the row</td>
           </tr>
           <tr>
-            <td><kbd>R</kbd></td> 
+            <td><kbd>R</kbd></td>
             <td>Resize all fields within the row to be maximally equal</td>
           </tr>
           <tr>
-        </tbody> 
+        </tbody>
       </table>
 
-      <h5 class="text text-center" style='padding-top:10px'>Current Row Fields</h5>    
-      
+      <h5 class="text text-center" style='padding-top:10px'>Current Row Fields</h5>
+
       <table class='gridHelpCurrentRow'>
         <colgroup>
           <col width="100%" />
           <col width="0%" />
         </colgroup>
-        
+
         <thead>
           <tr>
             <th>Field</th>
@@ -2343,9 +2344,9 @@ function FormBuilder(opts, element, $) {
         </thead>
 
         <tbody>
-        </tbody> 
+        </tbody>
       </table>
-      
+
     </div>
     `)
 
