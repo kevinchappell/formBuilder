@@ -40,6 +40,7 @@ const bannerTemplate = ({ chunk }) => {
 }
 
 const webpackConfig = {
+  name: 'main',
   node: {
     global: false,
   },
@@ -157,4 +158,43 @@ if (ANALYZE) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
-module.exports = webpackConfig
+// Production also emits unminified builds of formBuilder and formRender alongside
+// the minified bundles. Minification is compilation-wide, so this runs as a second
+// compiler (multi-compiler array) that reuses the loaders/resolve but disables
+// minimization. It depends on 'main' so the CleanWebpackPlugin pass runs first and
+// does not wipe these outputs.
+const unminifiedConfig = {
+  name: 'unminified',
+  dependencies: ['main'],
+  node: {
+    global: false,
+  },
+  context: outputDir,
+  entry: {
+    'dist/form-builder': resolve(__dirname, '../', pkg.config.files.formBuilder.js),
+    'dist/form-render': resolve(__dirname, '../', pkg.config.files.formRender.js),
+  },
+  output: {
+    path: root,
+    filename: '[name].js',
+  },
+  module: webpackConfig.module,
+  resolve: webpackConfig.resolve,
+  optimization: {
+    minimize: false,
+  },
+  devtool: false,
+  plugins: [
+    new WrapperPlugin({
+      test: /\.js$/, // only wrap output of bundle files with '.js' extension
+      header: '(function ($) { "use strict";\n',
+      footer: '\n})(jQuery);',
+    }),
+    new DefinePlugin({
+      FB_EN_US: JSON.stringify(langFiles['en-US']),
+    }),
+    new BannerPlugin({ banner: bannerTemplate, test: /\.js$/ }),
+  ],
+}
+
+module.exports = PRODUCTION ? [webpackConfig, unminifiedConfig] : webpackConfig

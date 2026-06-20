@@ -1,7 +1,14 @@
 const fs = require('fs')
 const { resolve } = require('path')
 const pkg = require('../package.json')
-const webpackConfig = require('./webpack.config')
+const exportedConfig = require('./webpack.config')
+
+// webpack.config exports a multi-compiler array ([main, unminified]) in production
+// and a single config object in development. The plugins build only extends the
+// main/minified base, so resolve to that config regardless of export shape.
+const webpackConfig = Array.isArray(exportedConfig)
+  ? exportedConfig.find(config => config.name === 'main')
+  : exportedConfig
 
 const root = resolve(__dirname, '../')
 const pluginsDir = resolve(__dirname, '../', pkg.config.files.pluginsDir)
