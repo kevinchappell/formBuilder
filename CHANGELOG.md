@@ -1,3 +1,11 @@
+## [3.22.2](https://github.com/kevinchappell/formBuilder/compare/v3.22.1...v3.22.2) (2026-06-20)
+
+
+### Bug Fixes
+
+* failing shape test ([dff528c](https://github.com/kevinchappell/formBuilder/commit/dff528cdcb82e075d5338055296579b290812866))
+* include unminified in the build ([aa80d6b](https://github.com/kevinchappell/formBuilder/commit/aa80d6b01e3e94924b2d4acd12d0c5adaec1c113))
+
 ## [3.22.1](https://github.com/kevinchappell/formBuilder/compare/v3.22.0...v3.22.1) (2026-05-08)
 
 
