@@ -347,33 +347,54 @@ class FormRender {
 
 ;(function ($) {
   let formRenderForms
+
+  // Resolve the FormRender instance for the element(s) a method is invoked on, so multiple forms
+  // on a page — including nested forms rendered by container controls — don't clobber each other.
+  // Falls back to the most-recently created instance for backwards compatibility.
+  const instanceFor = context =>
+    (context && context.data && context.data('formRenderInstance')) || methods.instance
+
   const methods = {
     init: (forms, options = {}) => {
       formRenderForms = forms
-      methods.instance = new FormRender(options)
-      forms.each(index => methods.instance.render(forms[index], index))
+      const instance = new FormRender(options)
+      instance.forms = forms
+      forms.data('formRenderInstance', instance)
+      methods.instance = instance
+      forms.each(index => instance.render(forms[index], index))
 
-      return methods.instance
+      return instance
     },
-    userData: () => methods.instance && methods.instance.userData,
-    clear: () => methods.instance && methods.instance.clear(),
-    setData: formData => {
-      if (methods.instance) {
-        const instance = methods.instance
+    userData: function () {
+      const instance = instanceFor(this)
+      return instance && instance.userData
+    },
+    clear: function () {
+      const instance = instanceFor(this)
+      return instance && instance.clear()
+    },
+    setData: function (formData) {
+      const instance = instanceFor(this)
+      if (instance) {
         instance.options.formData = instance.parseFormData(formData)
       }
     },
-    render: (formData, options = {}) => {
-      if (methods.instance) {
-        const instance = methods.instance
+    render: function (formData, options = {}) {
+      const instance = instanceFor(this)
+      if (instance) {
         if (!formData) {
           formData = instance.options.formData
         }
         instance.options = Object.assign({}, instance.options, options, { formData: instance.parseFormData(formData) })
-        formRenderForms.each(index => methods.instance.render(formRenderForms[index], index))
+        const forms = instance.forms || formRenderForms
+        forms.each(index => instance.render(forms[index], index))
       }
     },
-    html: () => formRenderForms.map(index => formRenderForms[index]).html(),
+    html: function () {
+      const instance = instanceFor(this)
+      const forms = (instance && instance.forms) || formRenderForms
+      return forms.map(index => forms[index]).html()
+    },
   }
 
   $.fn.formRender = function (methodOrOptions = {}, ...args) {
