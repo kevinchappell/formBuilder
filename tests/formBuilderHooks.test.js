@@ -1,6 +1,5 @@
 require('./setup-fb')
 require('../src/js/form-builder.js')
-import control from '../src/js/control'
 
 describe('formBuilder edit-panel hook', () => {
   test('exposes generateAdvFields returning a DOM node with a name input', async () => {
