@@ -36,6 +36,7 @@ import {
   safeClassName,
 } from './utils'
 import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
+import control from './control'
 import fontConfig from '../fonts/config.json'
 const css_prefix_text = fontConfig.css_prefix_text
 
@@ -342,6 +343,7 @@ function FormBuilder(opts, element, $) {
       }, 10)
     }
 
+    control.stringifyJsonAttrs(fieldArg)
     opts.onAddField(data.lastID, field)
     appendNewField(field, isNew)
     opts.onAddFieldAfter(data.lastID, field)
