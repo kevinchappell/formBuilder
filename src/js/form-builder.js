@@ -343,7 +343,7 @@ function FormBuilder(opts, element, $) {
       }, 10)
     }
 
-    control.stringifyJsonAttrs(fieldArg)
+    control.stringifyJsonAttrs(field)
     opts.onAddField(data.lastID, field)
     appendNewField(field, isNew)
     opts.onAddFieldAfter(data.lastID, field)
