@@ -373,3 +373,33 @@ export default class control {
     return camelCase(str)
   }
 }
+
+control.jsonAttrs = new Map()
+
+control.parseJsonAttrs = field => {
+  const attrs = control.jsonAttrs.get(field?.type)
+  if (attrs) {
+    attrs.forEach(attr => {
+      if (typeof field[attr] === 'string') {
+        try {
+          field[attr] = JSON.parse(field[attr])
+        } catch {
+          /* leave malformed string untouched */
+        }
+      }
+    })
+  }
+  return field
+}
+
+control.stringifyJsonAttrs = field => {
+  const attrs = control.jsonAttrs.get(field?.type)
+  if (attrs) {
+    attrs.forEach(attr => {
+      if (field[attr] != null && typeof field[attr] !== 'string') {
+        field[attr] = JSON.stringify(field[attr])
+      }
+    })
+  }
+  return field
+}

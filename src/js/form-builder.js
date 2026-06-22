@@ -36,6 +36,7 @@ import {
   safeClassName,
 } from './utils'
 import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
+import control from './control'
 import fontConfig from '../fonts/config.json'
 const css_prefix_text = fontConfig.css_prefix_text
 
@@ -89,6 +90,7 @@ function FormBuilder(opts, element, $) {
   const subtypes = (config.subtypes = h.processSubtypes(opts.subtypes))
 
   const $stage = $(d.stage)
+  d.stage.fbInstance = formBuilder
   const $cbUL = $(d.controls)
 
   let insertingNewControl = false
@@ -341,6 +343,7 @@ function FormBuilder(opts, element, $) {
       }, 10)
     }
 
+    control.stringifyJsonAttrs(field)
     opts.onAddField(data.lastID, field)
     appendNewField(field, isNew)
     opts.onAddFieldAfter(data.lastID, field)
@@ -349,6 +352,9 @@ function FormBuilder(opts, element, $) {
   }
 
   formBuilder.prepFieldVars = prepFieldVars
+  formBuilder.generateAdvFields = values => generateAdvFields(control.stringifyJsonAttrs({ ...values }))
+  formBuilder.getAttrVals = node => h.getAttrVals(node)
+  formBuilder.updatePreview = $node => h.updatePreview($node)
 
   // Parse saved XML template data
   const loadFields = function (formData) {
@@ -2493,6 +2499,9 @@ function FormBuilder(opts, element, $) {
     },
     removeField: h.removeField.bind(h),
     getData: h.getFormData.bind(h),
+    generateAdvFields: values => generateAdvFields(control.stringifyJsonAttrs({ ...values })),
+    getAttrVals: node => h.getAttrVals(node),
+    updatePreview: $node => h.updatePreview($node),
     setData: formData => {
       h.stopIndex = undefined
       h.removeAllFields(d.stage)

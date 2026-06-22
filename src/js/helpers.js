@@ -280,6 +280,7 @@ export default class Helpers {
             }
 
             fieldData = trimObj(fieldData)
+            control.parseJsonAttrs(fieldData)
 
             $field.find('.form-group.field-options').each((_, attribute) => {
               const attributeName = attribute.getAttribute('name')
