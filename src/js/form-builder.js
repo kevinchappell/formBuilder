@@ -352,7 +352,7 @@ function FormBuilder(opts, element, $) {
   }
 
   formBuilder.prepFieldVars = prepFieldVars
-  formBuilder.generateAdvFields = values => generateAdvFields(values)
+  formBuilder.generateAdvFields = values => generateAdvFields(control.stringifyJsonAttrs({ ...values }))
   formBuilder.getAttrVals = node => h.getAttrVals(node)
   formBuilder.updatePreview = $node => h.updatePreview($node)
 
@@ -2499,7 +2499,7 @@ function FormBuilder(opts, element, $) {
     },
     removeField: h.removeField.bind(h),
     getData: h.getFormData.bind(h),
-    generateAdvFields: values => generateAdvFields(values),
+    generateAdvFields: values => generateAdvFields(control.stringifyJsonAttrs({ ...values })),
     getAttrVals: node => h.getAttrVals(node),
     updatePreview: $node => h.updatePreview($node),
     setData: formData => {
