@@ -1,7 +1,7 @@
 (function ($) { "use strict";
 /*!
  * jQuery formBuilder: https://formbuilder.online/
- * Version: 3.22.1
+ * Version: 3.22.2
  * Author: Kevin Chappell <kevin.b.chappell@gmail.com>
  */
 /******/ (function() { // webpackBootstrap
@@ -2262,6 +2262,31 @@ class control {
     return camelCase(str);
   }
 }
+control.jsonAttrs = new Map();
+control.parseJsonAttrs = field => {
+  const attrs = control.jsonAttrs.get(field?.type);
+  if (attrs) {
+    attrs.forEach(attr => {
+      if (typeof field[attr] === 'string') {
+        try {
+          field[attr] = JSON.parse(field[attr]);
+        } catch {}
+      }
+    });
+  }
+  return field;
+};
+control.stringifyJsonAttrs = field => {
+  const attrs = control.jsonAttrs.get(field?.type);
+  if (attrs) {
+    attrs.forEach(attr => {
+      if (field[attr] != null && typeof field[attr] !== 'string') {
+        field[attr] = JSON.stringify(field[attr]);
+      }
+    });
+  }
+  return field;
+};
 ;// ../src/js/layout.js
 
 
@@ -2677,6 +2702,7 @@ class Helpers {
               }
             }
             fieldData = trimObj(fieldData);
+            control.parseJsonAttrs(fieldData);
             $field.find('.form-group.field-options').each((_, attribute) => {
               const attributeName = attribute.getAttribute('name');
               fieldData[attributeName] = _this.fieldOptionData(attribute);
@@ -4547,6 +4573,7 @@ function form_builder_toPrimitive(t, r) { if ("object" != typeof t || !t) return
 
 
 
+
 const form_builder_css_prefix_text = fonts_config_namespaceObject.fn;
 const {
   rowWrapperClass,
@@ -4591,6 +4618,7 @@ function FormBuilder(opts, element, $) {
   formBuilder.controls = controls;
   const subtypes = config.subtypes = h.processSubtypes(opts.subtypes);
   const $stage = $(d.stage);
+  d.stage.fbInstance = formBuilder;
   const $cbUL = $(d.controls);
   let insertingNewControl = false;
   let insertTargetIsRow = false;
@@ -4802,12 +4830,16 @@ function FormBuilder(opts, element, $) {
         clearTimeout(eventTimeout);
       }, 10);
     }
+    control.stringifyJsonAttrs(field);
     opts.onAddField(data.lastID, field);
     appendNewField(field, isNew);
     opts.onAddFieldAfter(data.lastID, field);
     d.stage.classList.remove('empty');
   };
   formBuilder.prepFieldVars = prepFieldVars;
+  formBuilder.generateAdvFields = values => generateAdvFields(control.stringifyJsonAttrs(form_builder_objectSpread({}, values)));
+  formBuilder.getAttrVals = node => h.getAttrVals(node);
+  formBuilder.updatePreview = $node => h.updatePreview($node);
   const loadFields = function (formData) {
     formData = h.getData(formData);
     if (formData && formData.length) {
@@ -6602,6 +6634,9 @@ function FormBuilder(opts, element, $) {
     },
     removeField: h.removeField.bind(h),
     getData: h.getFormData.bind(h),
+    generateAdvFields: values => generateAdvFields(control.stringifyJsonAttrs(form_builder_objectSpread({}, values))),
+    getAttrVals: node => h.getAttrVals(node),
+    updatePreview: $node => h.updatePreview($node),
     setData: formData => {
       h.stopIndex = undefined;
       h.removeAllFields(d.stage);

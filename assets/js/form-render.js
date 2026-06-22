@@ -1,7 +1,7 @@
 (function ($) { "use strict";
 /*!
  * jQuery formRender: https://formbuilder.online/
- * Version: 3.22.1
+ * Version: 3.22.2
  * Author: Kevin Chappell <kevin.b.chappell@gmail.com>
  */
 /******/ (function() { // webpackBootstrap
@@ -1438,6 +1438,31 @@ class control {
     return camelCase(str);
   }
 }
+control.jsonAttrs = new Map();
+control.parseJsonAttrs = field => {
+  const attrs = control.jsonAttrs.get(field?.type);
+  if (attrs) {
+    attrs.forEach(attr => {
+      if (typeof field[attr] === 'string') {
+        try {
+          field[attr] = JSON.parse(field[attr]);
+        } catch {}
+      }
+    });
+  }
+  return field;
+};
+control.stringifyJsonAttrs = field => {
+  const attrs = control.jsonAttrs.get(field?.type);
+  if (attrs) {
+    attrs.forEach(attr => {
+      if (field[attr] != null && typeof field[attr] !== 'string') {
+        field[attr] = JSON.stringify(field[attr]);
+      }
+    });
+  }
+  return field;
+};
 ;// ../src/js/layout.js
 
 
@@ -2799,34 +2824,49 @@ class FormRender {
 ;
 (function ($) {
   let formRenderForms;
+  const instanceFor = context => context && context.data && context.data('formRenderInstance') || methods.instance;
   const methods = {
     init: (forms, options = {}) => {
       formRenderForms = forms;
-      methods.instance = new FormRender(options);
-      forms.each(index => methods.instance.render(forms[index], index));
-      return methods.instance;
+      const instance = new FormRender(options);
+      instance.forms = forms;
+      forms.data('formRenderInstance', instance);
+      methods.instance = instance;
+      forms.each(index => instance.render(forms[index], index));
+      return instance;
     },
-    userData: () => methods.instance && methods.instance.userData,
-    clear: () => methods.instance && methods.instance.clear(),
-    setData: formData => {
-      if (methods.instance) {
-        const instance = methods.instance;
+    userData: function () {
+      const instance = instanceFor(this);
+      return instance && instance.userData;
+    },
+    clear: function () {
+      const instance = instanceFor(this);
+      return instance && instance.clear();
+    },
+    setData: function (formData) {
+      const instance = instanceFor(this);
+      if (instance) {
         instance.options.formData = instance.parseFormData(formData);
       }
     },
-    render: (formData, options = {}) => {
-      if (methods.instance) {
-        const instance = methods.instance;
+    render: function (formData, options = {}) {
+      const instance = instanceFor(this);
+      if (instance) {
         if (!formData) {
           formData = instance.options.formData;
         }
         instance.options = Object.assign({}, instance.options, options, {
           formData: instance.parseFormData(formData)
         });
-        formRenderForms.each(index => methods.instance.render(formRenderForms[index], index));
+        const forms = instance.forms || formRenderForms;
+        forms.each(index => instance.render(forms[index], index));
       }
     },
-    html: () => formRenderForms.map(index => formRenderForms[index]).html()
+    html: function () {
+      const instance = instanceFor(this);
+      const forms = instance && instance.forms || formRenderForms;
+      return forms.map(index => forms[index]).html();
+    }
   };
   $.fn.formRender = function (methodOrOptions = {}, ...args) {
     if (methods[methodOrOptions]) {
