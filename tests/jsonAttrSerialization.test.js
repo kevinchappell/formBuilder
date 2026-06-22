@@ -5,6 +5,10 @@ describe('control JSON attribute helpers', () => {
     control.jsonAttrs = new Map()
     control.jsonAttrs.set('group', ['fields'])
   })
+
+  afterEach(() => {
+    control.jsonAttrs = new Map()
+  })
   it('parses a registered attr from string to array', () => {
     const out = control.parseJsonAttrs({ type: 'group', name: 'g', fields: '[{"type":"text","name":"a"}]' })
     expect(out.fields).toEqual([{ type: 'text', name: 'a' }])
