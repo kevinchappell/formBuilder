@@ -1,3 +1,16 @@
+# [3.23.0](https://github.com/kevinchappell/formBuilder/compare/v3.22.2...v3.23.0) (2026-06-22)
+
+
+### Bug Fixes
+
+* resolve formRender instance per-element, not via a global singleton ([a878842](https://github.com/kevinchappell/formBuilder/commit/a8788429a11b3ea4457694c97454e6df26c67cb3))
+
+
+### Features
+
+* expose edit-panel hook for container plugins ([8ba61a9](https://github.com/kevinchappell/formBuilder/commit/8ba61a91a7d7c0bb25d69ed1aade5fbf9c93e38e))
+* JSON attribute (de)serialization for container plugins ([49838bf](https://github.com/kevinchappell/formBuilder/commit/49838bf3a02dd5d8761e576314965f292c4f33b3))
+
 ## [3.22.2](https://github.com/kevinchappell/formBuilder/compare/v3.22.1...v3.22.2) (2026-06-20)
 
 
