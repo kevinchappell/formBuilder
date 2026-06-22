@@ -1,7 +1,7 @@
 (function ($) { "use strict";
 /*!
  * jQuery formBuilder: https://formbuilder.online/
- * Version: 3.22.2
+ * Version: 3.23.0
  * Author: Kevin Chappell <kevin.b.chappell@gmail.com>
  */
 /******/ (function() { // webpackBootstrap
