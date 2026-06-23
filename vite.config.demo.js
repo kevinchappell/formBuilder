@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import fs from 'fs'
 import langFiles from 'formbuilder-languages'
 import { root, getBaseConfig } from './vite.config.base.js'
 
@@ -10,10 +11,29 @@ const langOptions = Object.entries(langFiles).map(([locale, data]) => ({
 
 const isDev = process.env.NODE_ENV !== 'production'
 
+function moveDemoHtmlPlugin() {
+  return {
+    name: 'move-demo-html',
+    writeBundle() {
+      const src = resolve(root, 'demo/src/demo/index.html')
+      const dest = resolve(root, 'demo/index.html')
+      if (fs.existsSync(src)) {
+        fs.mkdirSync(resolve(root, 'demo'), { recursive: true })
+        let html = fs.readFileSync(src, 'utf8')
+        html = html.replace(/src=\"\.\.\/\.\.\/assets\//g, 'src="assets/')
+        html = html.replace(/href=\"\.\.\/\.\.\/assets\//g, 'href="assets/')
+        fs.writeFileSync(dest, html)
+        fs.rmSync(resolve(root, 'demo/src'), { recursive: true, force: true })
+      }
+    },
+  }
+}
+
 export default defineConfig({
   ...getBaseConfig(),
   root,
-  publicDir: 'demo',
+  base: './',
+  publicDir: false,
   build: {
     outDir: resolve(root, 'demo'),
     emptyOutDir: false,
@@ -21,6 +41,7 @@ export default defineConfig({
       input: resolve(root, 'src/demo/index.html'),
       output: {
         entryFileNames: 'assets/js/demo.min.js',
+        assetFileNames: 'assets/css/[name][extname]',
       },
     },
   },
@@ -35,15 +56,19 @@ export default defineConfig({
         return html
           .replace('<!-- LANG_OPTIONS -->', optionsHtml)
           .replace(
-            'FORM_BUILDER_SCRIPT',
-            isDev ? '/src/js/form-builder.js' : 'assets/js/form-builder.min.js',
+            '<!-- VENDOR_SCRIPT -->',
+            `<script type="text/javascript" src="${isDev ? '/demo/assets/js/vendor.js' : 'assets/js/vendor.js'}"></script>`,
           )
           .replace(
-            'FORM_RENDER_SCRIPT',
-            isDev ? '/src/js/form-render.js' : 'assets/js/form-render.min.js',
+            '<!-- FORM_BUILDER_SCRIPT -->',
+            `<script type="text/javascript" src="${isDev ? '/src/js/form-builder.js' : 'assets/js/form-builder.min.js'}"></script>`,
           )
-          .replace('DEMO_SCRIPT', isDev ? '/src/demo/js/demo.js' : 'assets/js/demo.min.js')
+          .replace(
+            '<!-- FORM_RENDER_SCRIPT -->',
+            `<script type="text/javascript" src="${isDev ? '/src/js/form-render.js' : 'assets/js/form-render.min.js'}"></script>`,
+          )
       },
     },
+    moveDemoHtmlPlugin(),
   ],
 })
