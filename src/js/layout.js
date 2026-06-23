@@ -1,7 +1,7 @@
 // LAYOUT.JS
-import utils from './utils'
-import { getAllGridRelatedClasses } from './utils'
-import control from './control'
+import utils from './utils.js'
+import { getAllGridRelatedClasses } from './utils.js'
+import control from './control.js'
 
 const processClassName = (data, field) => {
   // wrap the output in a form-group div & return

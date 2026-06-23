@@ -1,4 +1,4 @@
-import control from '../control'
+import control from '../control.js'
 
 /**
  * Button class

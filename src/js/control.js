@@ -1,5 +1,5 @@
 // CONTROL.JS
-import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils'
+import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils.js'
 import mi18n from 'mi18n'
 
 /**

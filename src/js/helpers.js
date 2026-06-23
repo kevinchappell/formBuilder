@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
-import { instanceDom, empty, remove, optionFields } from './dom'
-import { instanceData } from './data'
+import { instanceDom, empty, remove, optionFields } from './dom.js'
+import { instanceData } from './data.js'
 import {
   mobileClass,
   markup as m,
@@ -16,9 +16,9 @@ import {
   flattenArray,
   bootstrapColumnRegex,
   getAllGridRelatedClasses,
-} from './utils'
-import { instanceConfig, defaultTimeout, styles } from './config'
-import control from './control'
+} from './utils.js'
+import { instanceConfig, defaultTimeout, styles } from './config.js'
+import control from './control.js'
 import storageAvailable from 'storage-available'
 
 /**

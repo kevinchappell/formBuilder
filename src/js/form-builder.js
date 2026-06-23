@@ -1,11 +1,11 @@
 import '../sass/form-builder.scss'
 import throttle from 'lodash/throttle'
-import Dom from './dom'
-import { remove } from './dom'
-import { Data } from './data'
+import Dom from './dom.js'
+import { remove } from './dom.js'
+import { Data } from './data.js'
 import mi18n from 'mi18n'
-import layout from './layout'
-import Helpers from './helpers'
+import layout from './layout.js'
+import Helpers from './helpers.js'
 import {
   defaultOptions,
   defaultI18n,
@@ -14,8 +14,8 @@ import {
   gridClassNames,
   defaultTimeout,
   defaultFieldSelector,
-} from './config'
-import Controls from './controls'
+} from './config.js'
+import Controls from './controls.js'
 import {
   subtract,
   hyphenCase,
@@ -34,9 +34,9 @@ import {
   generateSelectorClassNames,
   firstNumberOrUndefined,
   safeClassName,
-} from './utils'
-import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
-import control from './control'
+} from './utils.js'
+import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer.js'
+import control from './control.js'
 import fontConfig from '../fonts/config.json'
 const css_prefix_text = fontConfig.css_prefix_text
 

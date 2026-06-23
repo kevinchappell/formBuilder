@@ -97,7 +97,7 @@ describe('Sanitizer API backend', () => {
   let mockSanitizerConstructor
   let mockSetHTML
 
-  beforeAll(() => {
+  beforeAll(async () => {
     mockSanitizerConstructor = jest.fn(function () {
       return this
     })
@@ -110,9 +110,9 @@ describe('Sanitizer API backend', () => {
     })
     Element.prototype.setHTML = mockSetHTML
 
-    // Re-require the module after mocking so the IIFE picks up window.Sanitizer
+    // Re-import the module after mocking so the IIFE picks up window.Sanitizer
     jest.resetModules()
-    const mod = require('./../src/js/sanitizer.js')
+    const mod = await import('./../src/js/sanitizer.js')
     setElementContentSanitizer = mod.setElementContent
     setSanitizerConfigSanitizer = mod.setSanitizerConfig
 

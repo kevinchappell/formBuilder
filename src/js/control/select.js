@@ -1,5 +1,5 @@
-import control from '../control'
-import { trimObj } from '../utils'
+import control from '../control.js'
+import { trimObj } from '../utils.js'
 
 /**
  * Text input class

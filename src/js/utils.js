@@ -1,4 +1,4 @@
-import { setElementContent, sanitizeNamedAttribute, isPotentiallyDangerousAttribute } from './sanitizer'
+import { setElementContent, sanitizeNamedAttribute, isPotentiallyDangerousAttribute } from './sanitizer.js'
 /**
  * Cross file utilities for working with arrays,
  * sorting and other fun stuff
