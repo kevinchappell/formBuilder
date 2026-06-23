@@ -10,6 +10,24 @@ if (typeof globalThis.jest === 'undefined') {
   globalThis.jest = vi
 }
 
+// Load optional external libraries used by control plugin / textarea tests
+// so they run in jsdom without fetching from a CDN.
+try {
+  require('rateyo')
+} catch {
+  // ignore
+}
+try {
+  require('tinymce/tinymce')
+} catch {
+  // ignore
+}
+try {
+  require('quill/dist/quill')
+} catch {
+  // ignore
+}
+
 // Patch CommonJS require resolution so legacy tests can require source files
 // that use extensionless / directory imports and SCSS imports.
 const Module = require('module')
