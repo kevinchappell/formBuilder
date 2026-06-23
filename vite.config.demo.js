@@ -76,11 +76,15 @@ export default defineConfig({
           )
           .replace(
             '<!-- FORM_BUILDER_SCRIPT -->',
-            `<script type="text/javascript" src="${isDev ? '/src/js/form-builder.js' : 'assets/js/form-builder.min.js'}"></script>`,
+            isDev
+              ? '<script type="module" src="/src/js/form-builder.js"></script>'
+              : '<script type="text/javascript" src="assets/js/form-builder.min.js"></script>',
           )
           .replace(
             '<!-- FORM_RENDER_SCRIPT -->',
-            `<script type="text/javascript" src="${isDev ? '/src/js/form-render.js' : 'assets/js/form-render.min.js'}"></script>`,
+            isDev
+              ? '<script type="module" src="/src/js/form-render.js"></script>'
+              : '<script type="text/javascript" src="assets/js/form-render.min.js"></script>',
           )
       },
     },
