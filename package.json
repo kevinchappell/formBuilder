@@ -75,9 +75,11 @@
   },
   "scripts": {
     "build:analyze": "vite-bundle-visualizer --config vite.config.lib.js",
-    "build:plugins": "vite build --config vite.config.plugins.js",
+    "build:plugins": "babel-node tools/build-plugins.js",
     "build:vendor": "babel-node tools/build-vendor",
-    "build": "vite build --config vite.config.lib.js && vite build --mode unminified --config vite.config.lib.js && npm run compress",
+    "build": "npm run build:lib:min && npm run build:lib:unmin && npm run compress",
+    "build:lib:min": "LIB_ENTRY=form-builder vite build --config vite.config.lib.js && LIB_ENTRY=form-render vite build --config vite.config.lib.js",
+    "build:lib:unmin": "LIB_ENTRY=form-builder vite build --mode unminified --config vite.config.lib.js && LIB_ENTRY=form-render vite build --mode unminified --config vite.config.lib.js",
     "build:all": "run-s build:plugins build:vendor build copy",
     "compress": "babel-node tools/compress.js",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && npm run copy:lang",

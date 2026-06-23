@@ -34,13 +34,14 @@ export function getBaseConfig() {
   }
 }
 
-export function getLibraryOutput(minify) {
+export function getLibraryOutput(minify, name) {
+  const cleanName = name.replace(/^dist\//, '').replace(/\.min$/, '')
   return {
     dir: resolve(root, 'dist'),
     entryFileNames: `[name]${minify ? '.min' : ''}.js`,
-    name: chunk => `jQuery${camelCase(chunk.name.replace(/^dist\//, '').replace(/\.min$/, ''))}`,
+    name: `jQuery${camelCase(cleanName)}`,
     globals: { jquery: 'jQuery' },
-    banner: chunk => `(function ($) { "use strict";\n/*\n * ${banner(chunk.name)}\n */`,
-    footer: () => '\n})(jQuery);',
+    banner: `(function ($) { "use strict";\n/*!\n * ${banner(cleanName)}\n */`,
+    footer: '\n})(jQuery);',
   }
 }

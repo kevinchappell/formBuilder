@@ -1,19 +1,15 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import fs from 'fs'
-import { root, camelCase, getBaseConfig } from './vite.config.base.js'
+import { camelCase, getBaseConfig } from './vite.config.base.js'
 
-const pluginsDir = resolve(root, 'src/js/control_plugins')
+const root = resolve(__dirname)
+const pluginEntry = process.env.PLUGIN_ENTRY
 
-function getEntries() {
-  const files = fs.readdirSync(pluginsDir).filter(f => f.endsWith('.js'))
-  const entries = {}
-  for (const file of files) {
-    const name = file.replace(/\.js$/, '')
-    entries[`dist/control_plugins/${name}`] = resolve(pluginsDir, file)
-  }
-  return entries
+if (!pluginEntry) {
+  throw new Error('PLUGIN_ENTRY environment variable is required')
 }
+
+const pluginName = pluginEntry.replace(/^dist\/control_plugins\//, '')
 
 export default defineConfig({
   ...getBaseConfig(),
@@ -21,17 +17,19 @@ export default defineConfig({
     emptyOutDir: false,
     minify: true,
     lib: {
-      entry: getEntries(),
+      entry: resolve(root, 'src/js/control_plugins', `${pluginName}.js`),
       formats: ['umd'],
+      name: pluginName,
     },
     rollupOptions: {
       external: ['jquery'],
       output: {
-        entryFileNames: '[name].min.js',
-        name: chunk => `jQuery${camelCase(chunk.name.replace(/^dist\/control_plugins\//, ''))}`,
+        dir: resolve(root, 'dist'),
+        entryFileNames: 'control_plugins/[name].min.js',
+        name: `jQuery${camelCase(pluginName)}`,
         globals: { jquery: 'jQuery' },
-        banner: chunk => `(function ($) { "use strict";\n`,
-        footer: () => '\n})(jQuery);',
+        banner: `(function ($) { "use strict";\n`,
+        footer: '\n})(jQuery);',
       },
     },
   },
