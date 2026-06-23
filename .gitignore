@@ -8,3 +8,7 @@ site
 yarn-error.log
 .idea
 .jest
+
+.agents/
+.claude/
+skills-lock.json
