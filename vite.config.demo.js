@@ -11,6 +11,21 @@ const langOptions = Object.entries(langFiles).map(([locale, data]) => ({
 
 const isDev = process.env.NODE_ENV !== 'production'
 
+function serveDemoAtRootPlugin() {
+  return {
+    name: 'serve-demo-at-root',
+    enforce: 'pre',
+    configureServer(server) {
+      server.middlewares.use('/', (req, res, next) => {
+        if (req.url === '/' || req.url === '/index.html') {
+          req.url = '/src/demo/index.html'
+        }
+        next()
+      })
+    },
+  }
+}
+
 function moveDemoHtmlPlugin() {
   return {
     name: 'move-demo-html',
@@ -69,6 +84,7 @@ export default defineConfig({
           )
       },
     },
+    serveDemoAtRootPlugin(),
     moveDemoHtmlPlugin(),
   ],
 })
