@@ -1,5 +1,5 @@
-import control from '../control.js'
-import utils from '../utils.js'
+import control from '../control'
+import utils from '../utils'
 /**
  * Text input class
  * Output a <input type="text" ... /> form element

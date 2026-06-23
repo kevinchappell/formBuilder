@@ -1,4 +1,4 @@
-import control from '../control.js'
+import control from '../control'
 
 /**
  * Hidden input class

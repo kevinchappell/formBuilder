@@ -1,6 +1,6 @@
 import control from '../../src/js/control.js'
-require('../../src/js/control/custom.js')
-require('../../src/js/control_plugins/starRating.js')
+import '../../src/js/control/custom.js'
+import '../../src/js/control_plugins/starRating.js'
 
 let controlStarRating
 describe('Initialise Custom Control', () => {

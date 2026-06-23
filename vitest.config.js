@@ -1,53 +1,26 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, coverageConfigDefaults } from 'vitest/config'
 import { resolve } from 'path'
-import fs from 'fs'
-import { getBaseConfig } from './vite.config.base.js'
+import { root, getBaseConfig } from './vite.config.base.js'
 
+// SCSS/CSS imports in source exist only for the bundler's style injection; in
+// tests we stub them out so the modules import without the style pipeline. The
+// `find` regex must match the whole import id (not just the extension) because
+// Vite resolves aliases via `id.replace(find, replacement)`.
 const styleMock = resolve(__dirname, 'tests/__mocks__/styleMock.js')
-
-function nodeCompatibleResolve() {
-  return {
-    name: 'node-compatible-resolve',
-    enforce: 'pre',
-    resolveId(id, importer) {
-      console.log('RESOLVE', id, 'from', importer)
-      if (/\.(css|scss|sass|less)(\?.*)?$/i.test(id)) {
-        return styleMock
-      }
-
-      if (!importer || !id.startsWith('.')) return null
-
-      const baseDir = resolve(importer, '..')
-
-      for (const ext of ['', '.js']) {
-        const candidate = resolve(baseDir, `${id}${ext}`)
-        try {
-          if (fs.statSync(candidate).isFile()) return candidate
-        } catch {
-          // continue
-        }
-      }
-
-      const dirCandidate = resolve(baseDir, id)
-      try {
-        if (fs.statSync(dirCandidate).isDirectory()) {
-          const indexFile = resolve(dirCandidate, 'index.js')
-          if (fs.existsSync(indexFile)) return indexFile
-        }
-      } catch {
-        // continue
-      }
-
-      return null
-    },
-  }
-}
+const base = getBaseConfig()
 
 export default defineConfig({
-  ...getBaseConfig(),
-  plugins: [nodeCompatibleResolve()],
+  define: base.define,
+  resolve: {
+    alias: [
+      { find: '@', replacement: resolve(root, 'src/js') },
+      { find: /.*\.(css|less|sass|scss)(\?.*)?$/, replacement: styleMock },
+    ],
+  },
   test: {
     environment: 'jsdom',
+    // Mirror the original Jest testEnvironmentOptions so control plugins that
+    // load editors (TinyMCE/Quill) from a CDN behave as they did under Jest.
     environmentOptions: {
       jsdom: {
         resources: 'usable',
@@ -56,11 +29,10 @@ export default defineConfig({
     },
     globals: true,
     setupFiles: ['./tests/setup-vitest.js'],
-    css: false,
     coverage: {
       provider: 'v8',
-      directory: '.vitest/coverage',
-      exclude: ['tests/', 'src/js/control/index.js'],
+      reportsDirectory: '.vitest/coverage',
+      exclude: [...coverageConfigDefaults.exclude, 'tests/**', 'src/js/control/index.js', 'tools/**'],
     },
   },
 })

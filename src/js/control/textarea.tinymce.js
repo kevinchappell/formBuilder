@@ -1,4 +1,4 @@
-import controlTextarea from './textarea.js'
+import controlTextarea from './textarea'
 
 /**
  * TinyMCE editor element

@@ -1,6 +1,6 @@
 import mi18n from 'mi18n'
-import control from './control.js'
-import controlCustom from './control/custom.js'
+import control from './control'
+import controlCustom from './control/custom'
 
 /**
  * customControls serves as a register for two types of custom fields supported by formBuilder

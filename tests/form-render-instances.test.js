@@ -1,4 +1,4 @@
-require('./../src/js/form-render.js')
+import './../src/js/form-render.js'
 
 describe('formRender per-element instances', () => {
   // Regression: the jQuery plugin kept the active instance in a module-level singleton

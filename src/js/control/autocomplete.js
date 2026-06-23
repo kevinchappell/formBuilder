@@ -1,5 +1,5 @@
-import control from '../control.js'
-import { filter } from '../dom.js'
+import control from '../control'
+import { filter } from '../dom'
 /**
  * Autocomplete class
  * Output an autocomplete form element

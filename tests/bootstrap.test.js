@@ -1,5 +1,5 @@
-require('./setup-fb')
-require('./../src/js/form-builder.js')
+import './setup-fb.js'
+import './../src/js/form-builder.js'
 import layout from '../src/js/layout.js'
 import Helpers from '../src/js/helpers.js'
 

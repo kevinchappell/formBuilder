@@ -1,5 +1,5 @@
-import controlTextarea from './textarea.js'
-import utils from '../utils.js'
+import controlTextarea from './textarea'
+import utils from '../utils'
 
 /**
  * Quill rich text editor element

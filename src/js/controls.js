@@ -1,8 +1,8 @@
-import './control/index.js'
-import control from './control.js'
-import customControls from './customControls.js'
-import { unique, hyphenCase, markup as m } from './utils.js'
-import { empty } from './dom.js'
+import './control/index'
+import control from './control'
+import customControls from './customControls'
+import { unique, hyphenCase, markup as m } from './utils'
+import { empty } from './dom'
 import fontConfig from '../fonts/config.json'
 import storageAvailable from 'storage-available'
 

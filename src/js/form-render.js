@@ -1,13 +1,13 @@
 import mi18n from 'mi18n'
-import utils, { parseXML, forEach } from './utils.js'
-import { remove } from './dom.js'
-import layout from './layout.js'
-import control from './control.js'
-import './control/index.js'
-import { defaultI18n } from './config.js'
+import utils, { parseXML, forEach } from './utils'
+import { remove } from './dom'
+import layout from './layout'
+import control from './control'
+import './control/index'
+import { defaultI18n } from './config'
 import '../sass/form-render.scss'
-import { setSanitizerConfig } from './sanitizer.js'
-import customControls from './customControls.js'
+import { setSanitizerConfig } from './sanitizer'
+import customControls from './customControls'
 
 /**
  * FormRender Class
