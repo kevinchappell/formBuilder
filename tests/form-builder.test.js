@@ -2,7 +2,7 @@ require('./setup-fb')
 require('./../src/js/form-builder.js')
 const { defaultOptions } = require('../src/js/config')
 const {errorHandler} = require('./__mocks__/errorHandlers.js')
-import control from '../src/js/control'
+import control from '../src/js/control.js'
 
 describe('FormBuilder Stage Setup', () => {
   test('stage will initialise with default values', async () => {

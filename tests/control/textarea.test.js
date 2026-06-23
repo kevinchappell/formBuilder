@@ -1,7 +1,7 @@
 import controlTextarea from '../../src/js/control/textarea.js'
 import controlTinymce from '../../src/js/control/textarea.tinymce'
 import controlQuill from '../../src/js/control/textarea.quill'
-import { getScripts, getStyles, isCached } from '../../src/js/utils'
+import { getScripts, getStyles, isCached } from '../../src/js/utils.js'
 
 const loadResources = async (js, css) => {
   if (css) {

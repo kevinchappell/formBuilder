@@ -1,7 +1,7 @@
 require('./setup-fb')
 require('./../src/js/form-builder.js')
-import layout from '../src/js/layout'
-import Helpers from '../src/js/helpers'
+import layout from '../src/js/layout.js'
+import Helpers from '../src/js/helpers.js'
 
 describe('Test Boostrap Helper functions', () => {
   let helper

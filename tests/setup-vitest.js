@@ -2,6 +2,12 @@ import $ from 'jquery'
 import langFiles from 'formbuilder-languages'
 import { vi } from 'vitest'
 
+// Make jQuery available both on Node's global and on jsdom's window
+// so external scripts loaded by tests can find it.
+if (typeof window !== 'undefined') {
+  window.$ = $
+  window.jQuery = $
+}
 globalThis.$ = $
 globalThis.jQuery = $
 globalThis.FB_EN_US = langFiles['en-US']
