@@ -79,7 +79,7 @@
     "build:vendor": "babel-node tools/build-vendor",
     "build": "vite build --config vite.config.lib.js && vite build --mode unminified --config vite.config.lib.js && npm run compress",
     "build:all": "run-s build:plugins build:vendor build copy",
-    "compress": "vite-plugin-compression2 --config vite.config.lib.js",
+    "compress": "babel-node tools/compress.js",
     "copy": "cp -a dist/* demo/assets/js/ && cp CONTRIBUTING.md docs/contributing.md && cp LICENSE docs/license.md && npm run copy:lang",
     "copy:lang": "babel-node tools/copy-language-files",
     "deploy:all": "run-s deploy:demo deploy:site",
