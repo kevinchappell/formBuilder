@@ -149,7 +149,6 @@
     "unzipper": "^0.12.1",
     "vite": "^8.0.16",
     "vite-bundle-visualizer": "^1.2.1",
-    "vite-plugin-compression2": "^2.5.3",
     "vite-plugin-css-injected-by-js": "5.0.1",
     "vitest": "^4.1.9"
   },
