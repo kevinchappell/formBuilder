@@ -39,6 +39,7 @@ export function getLibraryOutput(minify, name) {
   return {
     dir: resolve(root, 'dist'),
     entryFileNames: `[name]${minify ? '.min' : ''}.js`,
+    assetFileNames: '[name][extname]',
     name: `jQuery${camelCase(cleanName)}`,
     globals: { jquery: 'jQuery' },
     banner: `(function ($) { "use strict";\n/*!\n * ${banner(cleanName)}\n */`,

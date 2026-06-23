@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite'
 import { entries, getBaseConfig, getLibraryOutput } from './vite.config.base.js'
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
+  const { default: cssInjectedByJsPlugin } = await import('vite-plugin-css-injected-by-js')
   const minify = mode !== 'unminified'
   const entryName = process.env.LIB_ENTRY || 'form-builder'
   const entry = entries[entryName]
@@ -10,9 +11,11 @@ export default defineConfig(({ mode }) => {
   }
   return {
     ...getBaseConfig(),
+    plugins: [cssInjectedByJsPlugin()],
     build: {
       emptyOutDir: false,
       minify,
+      cssCodeSplit: false,
       lib: {
         entry,
         formats: ['umd'],
