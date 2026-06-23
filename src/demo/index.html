@@ -25,9 +25,7 @@
     <div>
       Language:
       <select id="setLanguage">
-        <% _.forEach(htmlWebpackPlugin.options.langFiles, function(langFile) { %>
-          <option value="<%- langFile.locale %>"><%- langFile.nativeName %></option>
-          <% }); %>
+          <!-- LANG_OPTIONS -->
       </select>
     </div>
   </header>
@@ -54,9 +52,9 @@
   <div id="formbuilder-options"></div>
   <script src="assets/js/vendor.js"></script>
 
-  <script src="<%= htmlWebpackPlugin.options.formBuilder %>"></script>
-  <script src="<%= htmlWebpackPlugin.options.formRender %>"></script>
-  <script src="<%= htmlWebpackPlugin.options.demo %>"></script>
+  <script src="FORM_BUILDER_SCRIPT"></script>
+  <script src="FORM_RENDER_SCRIPT"></script>
+  <script src="DEMO_SCRIPT"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.1/jquery.rateyo.min.js"></script>
 </body>
 
