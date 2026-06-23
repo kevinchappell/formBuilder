@@ -12,4 +12,5 @@ yarn-error.log
 
 .agents/
 .claude/
+docs/superpowers
 skills-lock.json
