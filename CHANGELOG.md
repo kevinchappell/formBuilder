@@ -1,3 +1,11 @@
+## [3.23.1](https://github.com/kevinchappell/formBuilder/compare/v3.23.0...v3.23.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* demo ([023be5b](https://github.com/kevinchappell/formBuilder/commit/023be5b4a185e2a81f38f75fb92613dce8616b0c))
+* tests ([47328fc](https://github.com/kevinchappell/formBuilder/commit/47328fc4870973dd0a455392fe942aa192144682))
+
 # [3.23.0](https://github.com/kevinchappell/formBuilder/compare/v3.22.2...v3.23.0) (2026-06-22)
 
 
