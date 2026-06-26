@@ -1,5 +1,5 @@
-require('./setup-fb')
-require('./../src/js/form-builder.js')
+import './setup-fb.js'
+import './../src/js/form-builder.js'
 
 const LANGUAGE_LOCATION = 'https://raw.githubusercontent.com/kevinchappell/formBuilder-languages/master/'
 

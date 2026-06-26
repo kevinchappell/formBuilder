@@ -8,3 +8,9 @@ site
 yarn-error.log
 .idea
 .jest
+.vitest
+
+.agents/
+.claude/
+docs/superpowers
+skills-lock.json

@@ -1,8 +1,8 @@
-require('./setup-fb')
-require('./../src/js/form-builder.js')
-const { defaultOptions } = require('../src/js/config')
-const {errorHandler} = require('./__mocks__/errorHandlers.js')
-import control from '../src/js/control'
+import './setup-fb.js'
+import './../src/js/form-builder.js'
+import { defaultOptions } from '../src/js/config.js'
+import { errorHandler } from './__mocks__/errorHandlers.js'
+import control from '../src/js/control.js'
 
 describe('FormBuilder Stage Setup', () => {
   test('stage will initialise with default values', async () => {
@@ -951,7 +951,7 @@ describe('FormBuilder callbacks', () => {
     fbWrap.remove()
   })
 
-  test.failing('onSave callback called after save', async () => {
+  test.fails('onSave callback called after save', async () => {
     const fbWrap = $('<div>')
     const cb = jest.fn()
     const fb = await $(fbWrap).formBuilder({'onSave': cb}).promise

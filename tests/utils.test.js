@@ -1,8 +1,8 @@
-const utils = require('./../src/js/utils.js')
-const { safeAttr, flattenArray, safeAttrName, hyphenCase, camelCase, bindEvents, attrString, nameAttr, markup,
+import utils from './../src/js/utils.js'
+import { safeAttr, flattenArray, safeAttrName, hyphenCase, camelCase, bindEvents, attrString, nameAttr, markup,
   parsedHtml, escapeAttrs, getScripts, capitalize, addEventListeners, unique, escapeAttr, escapeHtml,
   getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML, firstNumberOrUndefined, safeClassName
-} = require('../src/js/utils')
+} from '../src/js/utils.js'
 
 describe('Test Util functions', () => {
   test('trimObj', () => {

@@ -1,7 +1,7 @@
-require('../setup-fb')
-require('./../../src/js/form-builder.js')
-require('./../../src/js/form-render.js')
-const {errorHandler} = require('../__mocks__/errorHandlers.js')
+import '../setup-fb.js'
+import './../../src/js/form-builder.js'
+import './../../src/js/form-render.js'
+import { errorHandler } from '../__mocks__/errorHandlers.js'
 
 describe('Test Custom Control', () => {
   test('test add custom field with template', async () => {

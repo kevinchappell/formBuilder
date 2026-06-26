@@ -1,5 +1,5 @@
-require('./../src/js/form-render.js')
-const {errorHandler} = require('./__mocks__/errorHandlers.js')
+import './../src/js/form-render.js'
+import { errorHandler } from './__mocks__/errorHandlers.js'
 
 const basicTextAreaDef = {
   'type': 'textarea',
