@@ -1,3 +1,10 @@
+## [3.23.2](https://github.com/kevinchappell/formBuilder/compare/v3.23.1...v3.23.2) (2026-10-29)
+
+
+### Bug Fixes
+
+* normalize repository url in package.json ([#1668](https://github.com/kevinchappell/formBuilder/issues/1668)) ([e827fd4](https://github.com/kevinchappell/formBuilder/commit/e827fd43b3bbbcc07c717f72d2e0ed2a156d8939))
+
 ## [3.23.1](https://github.com/kevinchappell/formBuilder/compare/v3.23.0...v3.23.1) (2026-06-26)
 
 
