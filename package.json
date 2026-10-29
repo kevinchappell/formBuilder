@@ -145,7 +145,7 @@
     "semantic-release": "25.0.3",
     "semver": "^7.3.2",
     "storage-available": "^1.1.0",
-    "tinymce": "8.6.0",
+    "tinymce": "8.9.3",
     "unzipper": "^0.12.1",
     "vite": "^8.0.16",
     "vite-bundle-visualizer": "^1.2.1",
