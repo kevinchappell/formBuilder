@@ -1,4 +1,5 @@
-import mi18n from 'mi18n'
+import mi18n from '@draggable/i18n'
+import { initI18n } from './i18n'
 import utils, { parseXML, forEach } from './utils'
 import { remove } from './dom'
 import layout from './layout'
@@ -67,7 +68,7 @@ class FormRender {
     setSanitizerConfig(this.options.sanitizerOptions)
 
     if (!mi18n.current) {
-      mi18n.init(this.options.i18n)
+      initI18n(this.options.i18n)
     }
 
     // parse any passed formData

@@ -1,4 +1,4 @@
-import mi18n from 'mi18n'
+import mi18n from '@draggable/i18n'
 import { instanceDom, empty, remove, optionFields } from './dom'
 import { instanceData } from './data'
 import {

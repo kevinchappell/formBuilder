@@ -3,7 +3,8 @@ import throttle from 'lodash/throttle'
 import Dom from './dom'
 import { remove } from './dom'
 import { Data } from './data'
-import mi18n from 'mi18n'
+import mi18n from '@draggable/i18n'
+import { initI18n, setLocale } from './i18n'
 import layout from './layout'
 import Helpers from './helpers'
 import {
@@ -2508,7 +2509,7 @@ function FormBuilder(opts, element, $) {
       loadFields(formData)
     },
     setLang: locale => {
-      return mi18n.setCurrent.call(mi18n, locale).then(() => {
+      return setLocale(locale).then(() => {
         d.stage.dataset.content = mi18n.get('getStarted')
         controls.init()
         d.empty(d.formActions)
@@ -2592,8 +2593,7 @@ const pluginInit = function (options, elem) {
       return _this.instance.actions.getData !== notInitialised && _this.instance.actions.getData('json')
     },
     promise: new Promise(function (resolve, reject) {
-      mi18n
-        .init(_this.i18nOpts)
+      initI18n(_this.i18nOpts)
         .then(() => {
           const formBuilder = new FormBuilder(opts, elem[0], jQuery)
           jQuery(elem[0]).data('formBuilder', formBuilder)

@@ -34,7 +34,7 @@ The following methods are static methods designed to be called on the class. E.g
   * `getRegistered` - used to retrieve an array of registered `types` (or `subtypes` of a specified `type`)
   * Child methods - these class level methods only rea lly make sense being called on individual child control classes. Those are grouped below. E.g. `let textLabel = control.getClass('text').label('text');`
     * `get definition` - child method - a getter method to define a static property for each `control` class. This method returns an object containing information about that types it represents, accessible through the `controlClass.definition` property. See '[Control definitions](#control-definitions)' below for more detail. 
-    * `mi18n` - child method - a wrapper to the `mi18n` that retrieves the translation for a specified lookup key - but checks i18n overrides or mi18n lookup key mapping in the class definition. (See [Control definitions](#control-definitions) below for more details).
+    * `mi18n` - child method - a wrapper to the [`@draggable/i18n`](https://github.com/Draggable/i18n) instance that retrieves the translation for a specified lookup key - but checks i18n overrides or mi18n lookup key mapping in the class definition. (See [Control definitions](#control-definitions) below for more details).
     * `label` - retrieves the label for a specified type
     * `active` - ensure the specified type is not defined as inactive
     * `icon` - retrieve the icon for this type
@@ -49,7 +49,7 @@ To define information about this control, `static get definition()` method will 
 
   * `mi18n` - this property allows you to map a lookup (generally the `type` or `subtype`) to a defined mi18n lookup. By default `form-builder` will look use the type or subtype to look up translations, but this property allows you to map those to different lookup keys. See `control/text.js` for an example.
 
-  * `i18n` - used primarily by control plugins. This allows you to encapsulate the translations within the plugin itself. While best practice is to use the mi18n library, a control plugin will generally need to be self contained. If any translations cannot be found defined here, `control.js` will fall back to looking up the `mi18n` object.
+  * `i18n` - used primarily by control plugins. This allows you to encapsulate the translations within the plugin itself. While best practice is to use the [@draggable/i18n](https://github.com/Draggable/i18n) library, a control plugin will generally need to be self contained. If any translations cannot be found defined here, `control.js` will fall back to looking up the `@draggable/i18n` instance.
 
 ```javascript
 // option 1 - define multiple translations

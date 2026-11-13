@@ -1,6 +1,6 @@
 // CONTROL.JS
 import { camelCase, parsedHtml, markup, getStyles, getScripts, isCached } from './utils'
-import mi18n from 'mi18n'
+import mi18n from '@draggable/i18n'
 
 /**
  * Base class for all control classes
