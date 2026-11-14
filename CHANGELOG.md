@@ -1,3 +1,10 @@
+## [3.23.4](https://github.com/kevinchappell/formBuilder/compare/v3.23.3...v3.23.4) (2026-11-14)
+
+
+### Bug Fixes
+
+* build demo page for GitHub Pages deploy ([#1673](https://github.com/kevinchappell/formBuilder/issues/1673)) ([7844009](https://github.com/kevinchappell/formBuilder/commit/7844009b9911a69b0a77580248a13234f3153f95))
+
 ## [3.23.3](https://github.com/kevinchappell/formBuilder/compare/v3.23.2...v3.23.3) (2026-11-14)
 
 
