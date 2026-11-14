@@ -1799,7 +1799,7 @@
 				if (!control.controlConfig) control.controlConfig = {};
 				const classId = this.subtype ? this.type + "." + this.subtype : this.type;
 				this.classConfig = jQuery.extend({}, control.controlConfig[this.type] || {}, control.controlConfig[classId] || {});
-				if (this.subtype) config.type = this.subtype;
+				if (this.subtype && !this.type.endsWith("-group")) config.type = this.subtype;
 				if (this.required) {
 					config["required"] = "required";
 					config["aria-required"] = "true";
@@ -5203,6 +5203,7 @@
 				if (type in controls.registeredSubtypes && !(type in typeAttrsMap)) typeAttrsMap[type] = defaultAttrs.concat(["subtype"]);
 				typeAttrsMap["checkbox-group"] = typeAttrsMap.checkbox;
 				typeAttrsMap["radio-group"] = typeAttrsMap.checkbox;
+				if (subtypes[type] && typeAttrsMap[type] && !typeAttrsMap[type].includes("subtype")) typeAttrsMap[type] = typeAttrsMap[type].concat(["subtype"]);
 				const typeAttrs = typeAttrsMap[type];
 				if (type === "radio-group") removeFromArray("toggle", typeAttrs);
 				if ([
