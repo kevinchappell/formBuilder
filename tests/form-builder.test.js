@@ -996,3 +996,35 @@ describe('FormBuilder callbacks', () => {
     expect(Object.keys(cb.mock.calls[0][1])).toHaveLength(4)
   })
 })
+
+describe('Subtype preservation for types without a registered subtype', () => {
+  test('subtype from config.subtypes is kept on checkbox-group when saved', async () => {
+    const config = {
+      subtypes: {
+        'checkbox-group': ['custom-group'],
+      },
+      formData: [
+        {
+          type: 'checkbox-group',
+          subtype: 'custom-group',
+          label: 'Custom Checkbox Group w/Sub Type',
+          name: 'checkbox-group-1415',
+          values: [{ label: 'Option 1' }, { label: 'Option 2' }],
+        },
+      ],
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    expect(fb.actions.getData()[0].subtype).toBe('custom-group')
+
+    // reload the saved data and make sure the group still renders as checkboxes
+    const saved = fb.actions.getData()
+    const reloadWrap = $('<div>')
+    const reloaded = await reloadWrap.formBuilder(config).promise
+    reloaded.actions.setData(saved)
+    expect(reloaded.actions.getData()[0].subtype).toBe('custom-group')
+    const inputs = reloadWrap.find('.prev-holder input')
+    expect(inputs.length).toBe(2)
+    inputs.each((_, input) => expect(input.getAttribute('type')).toBe('checkbox'))
+  })
+})

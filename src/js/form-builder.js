@@ -494,6 +494,11 @@ function FormBuilder(opts, element, $) {
     typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox
     typeAttrsMap['radio-group'] = typeAttrsMap.checkbox
 
+    // allow the subtype attribute for types that only have subtypes defined via the subtypes option
+    if (subtypes[type] && typeAttrsMap[type] && !typeAttrsMap[type].includes('subtype')) {
+      typeAttrsMap[type] = typeAttrsMap[type].concat(['subtype'])
+    }
+
     const typeAttrs = typeAttrsMap[type]
 
     if (type === 'radio-group') {
