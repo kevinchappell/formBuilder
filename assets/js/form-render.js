@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formRender: https://formbuilder.online/
-	Version: 3.23.2
+	Version: 3.23.3
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
