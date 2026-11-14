@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import controlTextarea from '../../src/js/control/textarea.js'
 import controlTinymce from '../../src/js/control/textarea.tinymce'
 import controlQuill from '../../src/js/control/textarea.quill'
@@ -42,6 +43,57 @@ describe('Test Text Control', () => {
     expect(element.value).toBe('')
     controlInstance.onRender()
     expect(element.value).toBe('loadedValue')
+  })
+})
+
+describe('TinyMCE plugins option', () => {
+  const originalTinymce = window.tinymce
+
+  afterEach(() => {
+    window.tinymce = originalTinymce
+    vi.useRealTimers()
+  })
+
+  const renderWithPlugins = (plugins, majorVersion = '6') => {
+    vi.useFakeTimers()
+    const init = vi.fn(() => Promise.resolve([{ setContent: vi.fn() }]))
+    window.tinymce = { majorVersion, get: vi.fn(() => null), remove: vi.fn(), init }
+    const controlInstance = new controlTinymce({
+      type: 'textarea',
+      subtype: 'tinymce',
+      name: 'tinymce-plugins-elem',
+    }, false)
+    controlInstance.configure()
+    if (plugins !== undefined) {
+      controlInstance.classConfig.plugins = plugins
+    }
+    controlInstance.build()
+    expect(() => controlInstance.onRender()).not.toThrow()
+    vi.runAllTimers()
+    expect(init).toHaveBeenCalledTimes(1)
+    return init.mock.calls[0][0].plugins
+  }
+
+  test('filters removed plugins from the default array', () => {
+    const plugins = renderWithPlugins(undefined)
+    expect(Array.isArray(plugins)).toBe(true)
+    expect(plugins).toContain('lists')
+    expect(plugins).not.toContain('contextmenu')
+    expect(plugins).not.toContain('paste')
+    expect(plugins).not.toContain('print')
+  })
+
+  test('filters removed plugins from a user supplied array', () => {
+    expect(renderWithPlugins(['link', 'paste', 'table'])).toEqual(['link', 'table'])
+  })
+
+  test('accepts plugins as a space separated string', () => {
+    expect(renderWithPlugins('preview searchreplace  print link paste table'))
+      .toEqual(['preview', 'searchreplace', 'link', 'table'])
+  })
+
+  test('accepts plugins as a comma separated string', () => {
+    expect(renderWithPlugins('preview, contextmenu,link,table', '5')).toEqual(['preview', 'link', 'table'])
   })
 })
 
