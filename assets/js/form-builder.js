@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formBuilder: https://formbuilder.online/
-	Version: 3.23.5
+	Version: 3.23.6
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -1799,7 +1799,7 @@
 				if (!control.controlConfig) control.controlConfig = {};
 				const classId = this.subtype ? this.type + "." + this.subtype : this.type;
 				this.classConfig = jQuery.extend({}, control.controlConfig[this.type] || {}, control.controlConfig[classId] || {});
-				if (this.subtype && !this.type.endsWith("-group")) config.type = this.subtype;
+				if (this.subtype) config.type = this.subtype;
 				if (this.required) {
 					config["required"] = "required";
 					config["aria-required"] = "true";
@@ -2506,7 +2506,7 @@
 			*/
 			getTypes($field) {
 				const types = { type: $field.attr("type") };
-				const subtype = $(".fld-subtype", $field).val();
+				const subtype = $(".fld-subtype", $field).val() ?? $field.attr("subtype");
 				if (subtype !== types.type) types.subtype = subtype;
 				return types;
 			}
@@ -2710,9 +2710,8 @@
 				const fieldClass = $field.attr("class");
 				const field = $field[0];
 				if (!field || fieldClass.includes("input-control")) return;
-				const fieldType = $field.attr("type");
 				const $prevHolder = $(".prev-holder", field);
-				let previewData = Object.assign({}, _this.getAttrVals(field), { type: fieldType });
+				let previewData = Object.assign({}, _this.getAttrVals(field), _this.getTypes($field));
 				$field.find(".form-group.field-options").each((_, attribute) => {
 					const attributeName = attribute.getAttribute("name");
 					previewData[attributeName] = _this.fieldOptionData(attribute);
@@ -3908,7 +3907,9 @@
 			*/
 			build() {
 				const options = [];
-				const { values, value, placeholder, type, inline, other, toggle, ...data } = this.config;
+				const { values, value, placeholder, inline, other, toggle, ...data } = this.config;
+				const type = this.type;
+				delete data.type;
 				const optionType = type.replace("-group", "");
 				const isSelect = type === "select";
 				if (data.multiple || type === "checkbox-group") data.name = data.name + "[]";
@@ -4031,9 +4032,9 @@
 			onRender() {
 				if (this.config.userData) {
 					const selectedOptions = this.config.userData.slice();
-					if (this.config.type === "select") $(this.dom).val(selectedOptions).prop("selected", true);
-					else if (this.config.type.endsWith("-group")) {
-						if (this.config.type === "checkbox-group") this.dom.querySelectorAll("input[type=checkbox]").forEach((input) => {
+					if (this.type === "select") $(this.dom).val(selectedOptions).prop("selected", true);
+					else if (this.type.endsWith("-group")) {
+						if (this.type === "checkbox-group") this.dom.querySelectorAll("input[type=checkbox]").forEach((input) => {
 							input.removeAttribute("checked");
 						});
 						this.dom.querySelectorAll("input").forEach((input) => {
@@ -4850,6 +4851,11 @@
 			const controls = new Controls(opts, d);
 			formBuilder.controls = controls;
 			const subtypes = config.subtypes = h.processSubtypes(opts.subtypes);
+			const optionalSubtypeTypes = [
+				"select",
+				"checkbox-group",
+				"radio-group"
+			];
 			const $stage = $(d.stage);
 			d.stage.fbInstance = formBuilder;
 			const $cbUL = $(d.controls);
@@ -5203,7 +5209,7 @@
 				if (type in controls.registeredSubtypes && !(type in typeAttrsMap)) typeAttrsMap[type] = defaultAttrs.concat(["subtype"]);
 				typeAttrsMap["checkbox-group"] = typeAttrsMap.checkbox;
 				typeAttrsMap["radio-group"] = typeAttrsMap.checkbox;
-				if (subtypes[type] && typeAttrsMap[type] && !typeAttrsMap[type].includes("subtype")) typeAttrsMap[type] = typeAttrsMap[type].concat(["subtype"]);
+				if (optionalSubtypeTypes.includes(type) && subtypes[type]?.length) typeAttrsMap[type] = typeAttrsMap[type].concat(["subtype"]);
 				const typeAttrs = typeAttrsMap[type];
 				if (type === "radio-group") removeFromArray("toggle", typeAttrs);
 				if ([
@@ -5237,20 +5243,32 @@
 					label: () => textAttribute("label", values),
 					description: () => textAttribute("description", values),
 					subtype: (isHidden) => {
+						const events = { change: (evt) => {
+							const { value } = evt.target;
+							const field = closest(evt.target, ".form-field");
+							const curAdvFields = evt.target.closest(".form-elements-inner");
+							const newAdvFields = generateAdvFields({
+								...values,
+								...h.getAttrVals(field),
+								subtype: value
+							});
+							curAdvFields.replaceWith(newAdvFields);
+						} };
+						let subtypeOptions = subtypes[type];
+						if (optionalSubtypeTypes.includes(type)) {
+							subtypeOptions = [{
+								label: "",
+								value: ""
+							}, ...subtypeOptions];
+							if (subtype && !subtypeOptions.some(({ value }) => value === subtype)) subtypeOptions.push({
+								label: subtype,
+								value: subtype
+							});
+						}
 						return selectAttribute("subtype", {
-							events: { change: (evt) => {
-								const { value } = evt.target;
-								const field = closest(evt.target, ".form-field");
-								const curAdvFields = evt.target.closest(".form-elements-inner");
-								const newAdvFields = generateAdvFields({
-									...values,
-									...h.getAttrVals(field),
-									subtype: value
-								});
-								curAdvFields.replaceWith(newAdvFields);
-							} },
+							events,
 							...values
-						}, subtypes[type], isHidden);
+						}, subtypeOptions, isHidden);
 					},
 					style: () => btnStyles(values.style),
 					placeholder: () => textAttribute("placeholder", values),

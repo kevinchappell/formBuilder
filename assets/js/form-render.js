@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formRender: https://formbuilder.online/
-	Version: 3.23.5
+	Version: 3.23.6
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -1138,7 +1138,7 @@
 				if (!control.controlConfig) control.controlConfig = {};
 				const classId = this.subtype ? this.type + "." + this.subtype : this.type;
 				this.classConfig = jQuery.extend({}, control.controlConfig[this.type] || {}, control.controlConfig[classId] || {});
-				if (this.subtype && !this.type.endsWith("-group")) config.type = this.subtype;
+				if (this.subtype) config.type = this.subtype;
 				if (this.required) {
 					config["required"] = "required";
 					config["aria-required"] = "true";
@@ -1917,7 +1917,9 @@
 			*/
 			build() {
 				const options = [];
-				const { values, value, placeholder, type, inline, other, toggle, ...data } = this.config;
+				const { values, value, placeholder, inline, other, toggle, ...data } = this.config;
+				const type = this.type;
+				delete data.type;
 				const optionType = type.replace("-group", "");
 				const isSelect = type === "select";
 				if (data.multiple || type === "checkbox-group") data.name = data.name + "[]";
@@ -2040,9 +2042,9 @@
 			onRender() {
 				if (this.config.userData) {
 					const selectedOptions = this.config.userData.slice();
-					if (this.config.type === "select") $(this.dom).val(selectedOptions).prop("selected", true);
-					else if (this.config.type.endsWith("-group")) {
-						if (this.config.type === "checkbox-group") this.dom.querySelectorAll("input[type=checkbox]").forEach((input) => {
+					if (this.type === "select") $(this.dom).val(selectedOptions).prop("selected", true);
+					else if (this.type.endsWith("-group")) {
+						if (this.type === "checkbox-group") this.dom.querySelectorAll("input[type=checkbox]").forEach((input) => {
 							input.removeAttribute("checked");
 						});
 						this.dom.querySelectorAll("input").forEach((input) => {
