@@ -32,9 +32,11 @@ The package name is case-sensitive: `formBuilder`. The built files are in `dist/
 ### CDN (jsDelivr)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/formBuilder@3.23.3/dist/form-builder.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/formBuilder@3.23.3/dist/form-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/formBuilder@3/dist/form-builder.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/formBuilder@3/dist/form-render.min.js"></script>
 ```
+
+`formBuilder@3` loads the latest 3.x release. For production, pin an exact version such as `formBuilder@3.23.5`.
 
 ### Dependencies
 
@@ -53,7 +55,7 @@ CSS is injected by the scripts, so you don't need a separate stylesheet.
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/formBuilder@3.23.3/dist/form-builder.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/formBuilder@3/dist/form-builder.min.js"></script>
 <script>
   jQuery(($) => {
     const fbPromise = $('#fb-editor').formBuilder({
@@ -77,7 +79,7 @@ formBuilder starts up asynchronously, so `actions` aren't ready the moment you c
 <div id="fb-render"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/formBuilder@3.23.3/dist/form-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/formBuilder@3/dist/form-render.min.js"></script>
 <script>
   jQuery(($) => {
     const formData = '[{"type":"text","label":"Full Name","name":"full-name","subtype":"text"}]'

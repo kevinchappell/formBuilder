@@ -1,9 +1,5 @@
 'use strict';
 
-((window.gitter = {}).chat = {}).options = {
-  room: 'kevinchappell/formBuilder'
-};
-
 const toast = opts => {
   opts = Object.assign({ type: 'success', msg: '' }, opts)
   const toast = document.createElement('div')

@@ -116,4 +116,3 @@ extra_javascript:
   - '//cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js'
   - 'js/scripts.js'
   - '//production-assets.codepen.io/assets/embed/ei.js'
-  - '//sidecar.gitter.im/dist/sidecar.v1.js'
