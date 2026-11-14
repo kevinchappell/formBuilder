@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formRender: https://formbuilder.online/
-	Version: 3.23.3
+	Version: 3.23.4
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -2252,7 +2252,9 @@
 				const removedPlugins = [];
 				if (Number(window.tinymce.majorVersion) >= 5) removedPlugins.push("contextmenu");
 				if (Number(window.tinymce.majorVersion) >= 6) removedPlugins.push("paste", "print");
-				options.plugins = options.plugins.filter((plugin) => {
+				let plugins = options.plugins || [];
+				if (typeof plugins === "string") plugins = plugins.split(/[\s,]+/).filter(Boolean);
+				options.plugins = plugins.filter((plugin) => {
 					return removedPlugins.indexOf(plugin) === -1;
 				});
 				const userData = this.config.userData ? this.parsedHtml(this.config.userData[0]) : void 0;
