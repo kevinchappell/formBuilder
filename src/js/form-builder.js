@@ -89,6 +89,8 @@ function FormBuilder(opts, element, $) {
   formBuilder.controls = controls
 
   const subtypes = (config.subtypes = h.processSubtypes(opts.subtypes))
+  // option based types have no built-in subtypes, one can only be defined via the subtypes option and is optional
+  const optionalSubtypeTypes = ['select', 'checkbox-group', 'radio-group']
 
   const $stage = $(d.stage)
   d.stage.fbInstance = formBuilder
@@ -494,8 +496,8 @@ function FormBuilder(opts, element, $) {
     typeAttrsMap['checkbox-group'] = typeAttrsMap.checkbox
     typeAttrsMap['radio-group'] = typeAttrsMap.checkbox
 
-    // allow the subtype attribute for types that only have subtypes defined via the subtypes option
-    if (subtypes[type] && typeAttrsMap[type] && !typeAttrsMap[type].includes('subtype')) {
+    // option based types only get a subtype select when the subtypes option defines subtypes for them
+    if (optionalSubtypeTypes.includes(type) && subtypes[type]?.length) {
       typeAttrsMap[type] = typeAttrsMap[type].concat(['subtype'])
     }
 
@@ -551,7 +553,15 @@ function FormBuilder(opts, element, $) {
             curAdvFields.replaceWith(newAdvFields)
           }
         }
-        return selectAttribute('subtype', { events, ...values }, subtypes[type], isHidden)
+        let subtypeOptions = subtypes[type]
+        if (optionalSubtypeTypes.includes(type)) {
+          // allow 'no subtype' and keep a subtype that is not listed in the subtypes option
+          subtypeOptions = [{ label: '', value: '' }, ...subtypeOptions]
+          if (subtype && !subtypeOptions.some(({ value }) => value === subtype)) {
+            subtypeOptions.push({ label: subtype, value: subtype })
+          }
+        }
+        return selectAttribute('subtype', { events, ...values }, subtypeOptions, isHidden)
       },
       style: () => btnStyles(values.style),
       placeholder: () => textAttribute('placeholder', values),

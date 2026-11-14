@@ -165,3 +165,29 @@ describe('Form Rendering', () => {
     expect(userData['input-select-multiple']).toStrictEqual([])
   })
 })
+describe('FormRender option based types with a subtype (#1415)', () => {
+  const values = [
+    { label: 'Option 1', value: 'option-1', selected: true },
+    { label: 'Option 2', value: 'option-2' },
+  ]
+
+  test.each([
+    ['checkbox-group', 'checkbox', 'group-1415[]'],
+    ['radio-group', 'radio', 'group-1415'],
+  ])('%s renders %s inputs', (type, inputType, name) => {
+    const container = $('<div>')
+    container.formRender({ formData: [{ type, subtype: 'custom-group', name: 'group-1415', label: 'Group', values }] })
+    const inputs = container.find('input')
+    expect(inputs.map((_, i) => i.getAttribute('type')).get()).toEqual([inputType, inputType])
+    expect(inputs.attr('name')).toBe(name)
+    expect(container.find(`.${type}`).length).toBe(1)
+    expect(container.formRender('userData')[0].userData).toEqual(['option-1'])
+  })
+
+  test('select renders a select element', () => {
+    const container = $('<div>')
+    container.formRender({ formData: [{ type: 'select', subtype: 'fancy-select', name: 'select-1415', label: 'Select', values }] })
+    expect(container.find('select#select-1415 option').length).toBe(2)
+    expect(container.find('input').length).toBe(0)
+  })
+})

@@ -1028,3 +1028,104 @@ describe('Subtype preservation for types without a registered subtype', () => {
     inputs.each((_, input) => expect(input.getAttribute('type')).toBe('checkbox'))
   })
 })
+
+describe('FormBuilder subtypes for option based types (#1415)', () => {
+  const groupField = (type = 'checkbox-group', subtype = 'custom-group') => ({
+    type,
+    subtype,
+    label: 'Custom Group',
+    name: `${type}-1415`,
+    values: [
+      { label: 'Option 1', value: 'option-1' },
+      { label: 'Option 2', value: 'option-2' },
+    ],
+  })
+  const subtypeOptions = fbWrap => $('.fld-subtype option', fbWrap).map((_, o) => o.value).get()
+
+  // subtypes from the subtypes option are registered globally, don't leak them into other tests
+  afterEach(() => {
+    Object.keys(control.classRegister)
+      .filter(key => /^(select|checkbox-group|radio-group)\./.test(key))
+      .forEach(key => delete control.classRegister[key])
+  })
+
+  test.each(['checkbox-group', 'radio-group'])('%s keeps a subtype defined in the subtypes option', async type => {
+    const config = { subtypes: { [type]: ['custom-group'] }, formData: [groupField(type)] }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    expect($('.fld-subtype', fbWrap).val()).toBe('custom-group')
+
+    const saved = fb.actions.getData()
+    expect(saved[0].subtype).toBe('custom-group')
+
+    // preview still renders checkboxes/radios
+    const optionType = type.replace('-group', '')
+    const previewTypes = $('.prev-holder input', fbWrap).map((_, i) => i.type).get()
+    expect(previewTypes).toEqual([optionType, optionType])
+
+    // save -> reload -> save round trip
+    const reloadWrap = $('<div>')
+    const reloaded = await reloadWrap.formBuilder({ ...config, formData: saved }).promise
+    expect(reloaded.actions.getData()[0].subtype).toBe('custom-group')
+  })
+
+  test('subtype is optional, new group fields do not get a subtype', async () => {
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder({ subtypes: { 'checkbox-group': ['custom-group'] } }).promise
+    fb.actions.addField({ type: 'checkbox-group', label: 'Plain', values: [{ label: 'a', value: 'a' }] })
+
+    expect(subtypeOptions(fbWrap)).toEqual(['', 'custom-group'])
+    expect(fb.actions.getData()[0]).not.toHaveProperty('subtype')
+
+    $('.fld-subtype', fbWrap).val('custom-group').trigger('change')
+    expect(fb.actions.getData()[0].subtype).toBe('custom-group')
+
+    $('.fld-subtype', fbWrap).val('').trigger('change')
+    expect(fb.actions.getData()[0]).not.toHaveProperty('subtype')
+  })
+
+  test('a subtype not listed in the subtypes option is kept', async () => {
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder({
+      subtypes: { 'radio-group': ['fancy', 'plain'] },
+      formData: [groupField('radio-group', 'legacy')],
+    }).promise
+    expect(subtypeOptions(fbWrap)).toEqual(['', 'fancy', 'plain', 'legacy'])
+    expect(fb.actions.getData()[0].subtype).toBe('legacy')
+  })
+
+  test('subtype without a subtypes option is kept along with its typeUserAttrs', async () => {
+    const config = {
+      typeUserAttrs: {
+        'radio-group-custom': {
+          customInput: { label: 'Custom Text Field', value: 'default', type: 'text' },
+        },
+      },
+      formData: [groupField('radio-group', 'custom')],
+    }
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder(config).promise
+    expect($('.fld-subtype', fbWrap).length).toBe(0)
+    $('.fld-customInput', fbWrap).val('changed')
+
+    const saved = fb.actions.getData()
+    expect(saved[0].subtype).toBe('custom')
+    expect(saved[0].customInput).toBe('changed')
+
+    const reloadWrap = $('<div>')
+    const reloaded = await reloadWrap.formBuilder({ ...config, formData: saved }).promise
+    expect($('.fld-customInput', reloadWrap).val()).toBe('changed')
+    expect(reloaded.actions.getData()[0]).toMatchObject({ subtype: 'custom', customInput: 'changed' })
+  })
+
+  test('select with a subtype renders as a select', async () => {
+    const fbWrap = $('<div>')
+    const fb = await fbWrap.formBuilder({ subtypes: { select: ['fancy-select'] } }).promise
+    fb.actions.addField({ type: 'select', label: 'Select', values: [{ label: 'a', value: 'a' }] })
+    expect(fb.actions.getData()[0]).not.toHaveProperty('subtype')
+
+    $('.fld-subtype', fbWrap).val('fancy-select').trigger('change')
+    expect(fb.actions.getData()[0].subtype).toBe('fancy-select')
+    expect($('.prev-holder select', fbWrap).length).toBe(1)
+  })
+})

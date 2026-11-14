@@ -118,7 +118,8 @@ export default class Helpers {
     const types = {
       type: $field.attr('type'),
     }
-    const subtype = $('.fld-subtype', $field).val()
+    // fall back to the subtype the field was created with if there is no subtype select in its edit panel
+    const subtype = $('.fld-subtype', $field).val() ?? $field.attr('subtype')
 
     if (subtype !== types.type) {
       types.subtype = subtype
@@ -414,9 +415,8 @@ export default class Helpers {
       return
     }
 
-    const fieldType = $field.attr('type')
     const $prevHolder = $('.prev-holder', field)
-    let previewData = Object.assign({}, _this.getAttrVals(field), { type: fieldType })
+    let previewData = Object.assign({}, _this.getAttrVals(field), _this.getTypes($field))
 
     $field.find('.form-group.field-options').each((_, attribute) => {
       const attributeName = attribute.getAttribute('name')

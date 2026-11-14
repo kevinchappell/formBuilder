@@ -53,8 +53,7 @@ export default class control {
     this.classConfig = jQuery.extend({}, control.controlConfig[this.type] || {}, control.controlConfig[classId] || {})
 
     // if subtype, update the config type for injecting into DOM elements
-    // (group types keep their type, the subtype only tags the field)
-    if (this.subtype && !this.type.endsWith('-group')) {
+    if (this.subtype) {
       config.type = this.subtype
     }
 
