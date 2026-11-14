@@ -91,7 +91,12 @@ export default class controlTinymce extends controlTextarea {
     if (Number(window.tinymce.majorVersion) >= 6) {
       removedPlugins.push('paste','print')
     }
-    options.plugins = options.plugins.filter(plugin => {
+    // TinyMCE accepts plugins as an array or a space/comma separated string, normalise to an array
+    let plugins = options.plugins || []
+    if (typeof plugins === 'string') {
+      plugins = plugins.split(/[\s,]+/).filter(Boolean)
+    }
+    options.plugins = plugins.filter(plugin => {
       return (removedPlugins.indexOf(plugin) === -1)
     })
 
