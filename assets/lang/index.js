@@ -1,6 +1,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
-const { default: mi18n } = require('mi18n')
+const { I18N: mi18n } = require('@draggable/i18n')
 
 /**
  * Represents a collection of language files.

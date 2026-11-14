@@ -47,6 +47,7 @@ maxlength = Longitud máxima
 minOptionMessage = Este campo necesita al menos 2 opciones
 name = Nombre
 no = No
+noFieldsToClear = No hay campos para borrar
 number = Número
 off = Desactivado
 on = Activo

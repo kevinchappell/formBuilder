@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formBuilder: https://formbuilder.online/
-	Version: 3.23.1
+	Version: 3.23.2
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -681,767 +681,260 @@
 				instanceData[formID] = this;
 			}
 		};
-		/*!
-		* mi18n - https://github.com/Draggable/mi18n
-		* Version: 0.4.7
-		* Author: Kevin Chappell <kevin.b.chappell@gmail.com> (http://kevin-chappell.com)
+		//#endregion
+		//#region node_modules/@draggable/i18n/dist/i18n.es.min.js
+		/**
+		@draggable/i18n - https://github.com/Draggable/i18n
+		Version: 1.2.1
+		Author: Draggable https://draggable.io
 		*/
-		/*!
-		* Determine if an object is a Buffer
+		Object.freeze({
+			method: "GET",
+			body: ""
+		});
+		var t = {
+			extension: ".lang",
+			location: "assets/lang/",
+			langs: ["en-US"],
+			locale: "en-US",
+			override: {}
+		}, e = null, n = (t, e) => Object.prototype.hasOwnProperty.call(t, e), s = (t, e) => {
+			Array.isArray(t) && !t.includes(e) && t.push(e);
+		}, l = (t, e) => e ? null != t : Boolean(t), a = /* @__PURE__ */ new Map(), i = (t, e) => {
+			const n = /* @__PURE__ */ new Set();
+			return 0 === t && n.add("zero"), n.add(((t, e) => {
+				const n = 1 === e ? "one" : "other";
+				if ("undefined" == typeof Intl || "function" != typeof Intl.PluralRules) return n;
+				if (!a.has(t)) {
+					let e = null;
+					try {
+						e = new Intl.PluralRules(String(t).replaceAll("_", "-"));
+					} catch {}
+					a.set(t, e);
+				}
+				const s = a.get(t);
+				return s ? s.select(e) : n;
+			})(e, t)), n.add("other"), [...n];
+		}, o = new Proxy(class a {
+			constructor(e = t) {
+				this.langs = Object.create(null), this.loaded = [], this.processConfig(e);
+			}
+			processConfig(e) {
+				const { location: n, ...s } = {
+					...t,
+					...e
+				}, l = n.endsWith("/") ? n : `${n}/`;
+				Array.isArray(s.langs) && (s.langs = [...new Set(s.langs)]), this.config = {
+					location: l,
+					...s
+				};
+				const { preloaded: a = {}, override: i = {} } = this.config, o = /* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(i)]);
+				for (const t of o) {
+					const e = {
+						...a[t] || {},
+						...i[t] || {}
+					};
+					this.applyLanguage(t, e);
+				}
+				this.locale = this.config.locale || this.config.langs[0];
+			}
+			init(t) {
+				this.processConfig({
+					...this.config,
+					...t
+				});
+				const e = this.getFallbackLocales().filter((t) => !this.loaded.includes(t));
+				return e.length ? Promise.all([this.setCurrent(this.locale), ...e.map((t) => this.loadLang(t))]).then(([t]) => t) : this.setCurrent(this.locale);
+			}
+			addLanguage(t, e = {}) {
+				e = "string" == typeof e ? a.processFile(e) : e, this.applyLanguage(t, e), s(this.loaded, t), s(this.config.langs, t);
+			}
+			getFallbackLocales() {
+				const { fallbackLocale: t } = this.config;
+				return [].concat(t ?? []).filter((t) => "string" == typeof t && t);
+			}
+			getLocaleChain(t = this.locale) {
+				const e = [t], n = String(t).split(/[-_]/)[0];
+				return n && this.langs[n] && e.push(n), e.push(...this.getFallbackLocales()), [...new Set(e)];
+			}
+			getValue(t, e = this.locale) {
+				if (!this.config.fallbackLocale) return this.langs[e]?.[t] || this.getFallbackValue(t);
+				for (const s of this.getLocaleChain(e)) {
+					const e = this.langs[s];
+					if (e && n(e, t) && l(e[t], !0)) return e[t];
+				}
+			}
+			getPluralValue(t, e, s = this.locale) {
+				const a = Boolean(this.config.fallbackLocale), o = a ? this.getLocaleChain(s) : /* @__PURE__ */ new Set([s, ...Object.keys(this.langs)]);
+				for (const r of o) {
+					const s = this.langs[r];
+					if (s) for (const o of i(e, r)) {
+						const e = `${t}.${o}`;
+						if (n(s, e) && l(s[e], a)) return s[e];
+					}
+				}
+			}
+			handleMissing(t) {
+				const { onMissing: e } = this.config;
+				if ("function" == typeof e) {
+					const n = e(t);
+					if ("string" == typeof n) return n;
+				}
+			}
+			getFallbackValue(t) {
+				return Object.values(this.langs).find((e) => e[t])?.[t];
+			}
+			makeSafe(t) {
+				const e = {
+					"{": String.raw`\{`,
+					"}": String.raw`\}`,
+					"|": String.raw`\|`
+				}, n = t.replaceAll(/[{}|]/g, (t) => e[t]);
+				return new RegExp(n, "g");
+			}
+			put(t, e, n) {
+				let s;
+				return s = void 0 === n ? this.current || (this.langs[this.locale] ??= {}) : this.langs[n] ??= {}, s[t] = e, e;
+			}
+			get(t, e, n = this.locale) {
+				const s = Boolean(this.config.fallbackLocale);
+				let a = this.getValue(t, n);
+				if (!l(a, s)) {
+					const s = ((t) => "number" == typeof t ? t : t && "object" == typeof t && "number" == typeof t.count ? t.count : void 0)(e);
+					a = void 0 === s ? void 0 : this.getPluralValue(t, s, n);
+				}
+				if (!l(a, s)) return this.handleMissing({
+					key: t,
+					locale: n,
+					type: "key"
+				});
+				if (!e && 0 !== e) return a;
+				const i = a.match(/\{[^}]+?\}/g);
+				if (!i) return a;
+				if ("object" == typeof e) for (const l of i) {
+					const s = l.slice(1, -1);
+					let i = e[s];
+					i ??= this.handleMissing({
+						key: t,
+						locale: n,
+						type: "arg",
+						arg: s
+					}) ?? "", a = a.replace(this.makeSafe(l), i);
+				}
+				else a = a.replaceAll(/\{[^}]+?\}/g, e);
+				return a;
+			}
+			t(t, e, n) {
+				const s = this.get(t, e, n);
+				return void 0 === s ? t : s;
+			}
+			forLocale(t) {
+				return (e, n) => this.t(e, n, t);
+			}
+			static processFile(t) {
+				return o.fromFile(t);
+			}
+			static fromFile(t) {
+				const e = String(t).replaceAll("\r\n", "\n").split("\n"), n = {}, s = /^(.+?) *?= *?([^\n]+)/, l = (t) => {
+					const e = s.exec(t), l = e?.[1].trim();
+					l && (n[l] = e[2].trim());
+				};
+				let a = null;
+				for (const i of e) {
+					let t = i;
+					if (null !== a) t = a + i.trimStart(), a = null;
+					else if (/^\s*[#;]/.test(i)) continue;
+					/(^|[^\\])\\$/.test(t) ? a = t.slice(0, -1) : l(t);
+				}
+				return null !== a && l(a), n;
+			}
+			static parse(t) {
+				return o.processFile(t);
+			}
+			static getInstance(t) {
+				return e || (e = new a(t)), e;
+			}
+			static resetInstance() {
+				e = null;
+			}
+			async loadLang(t, e = !0) {
+				if (this.loaded.includes(t) && e) return this.langs[t];
+				const n = `${this.config.location}${t}${this.config.extension}`;
+				try {
+					const e = await async function(t) {
+						try {
+							const e = await fetch(t);
+							if (!e.ok) throw new Error(`HTTP error! status: ${e.status}`);
+							return await e[t.endsWith(".lang") ? "text" : "json"]();
+						} catch (e) {
+							throw e;
+						}
+					}(n), s = "string" == typeof e ? a.processFile(e) : e;
+					return this.applyLanguage(t, s), this.langs[t];
+				} catch (s) {
+					return this.applyLanguage(t);
+				}
+			}
+			applyLanguage(t, e = {}) {
+				const n = this.config.override[t] || {}, l = this.langs[t] || {};
+				return this.langs[t] = {
+					...l,
+					...e,
+					...n
+				}, this.current && t === this.locale && (this.current = this.langs[t]), s(this.loaded, t), this.langs[t];
+			}
+			get getLangs() {
+				return this.config.langs;
+			}
+			async setCurrent(t = "en-US") {
+				return this.loaded.includes(t) || await this.loadLang(t), this.locale = t, this.current = this.langs[t], this.current;
+			}
+		}, {
+			apply: (t, e, n) => t.getInstance(...n),
+			construct: (t, e) => new t(...e),
+			get: (t, e) => t[e]
+		}), r = o.getInstance();
+		//#endregion
+		//#region src/js/i18n.js
+		/**
+		* Language file loading for formBuilder and formRender.
 		*
-		* @author   Feross Aboukhadijeh <https://feross.org>
-		* @license  MIT
+		* `@draggable/i18n` treats a locale as loaded once it has any strings, eg. the built in en-US strings added in
+		* config.js or the keys from an `i18n.override`, and then never fetches `${location}${locale}${extension}`.
+		* mi18n, which formBuilder used before, still fetched the file and merged it under the overrides. These helpers
+		* keep that behaviour so existing `i18n` options load the same strings: each language file is fetched once,
+		* a failed fetch keeps the strings already available.
 		*/
+		var requests = /* @__PURE__ */ new Map();
+		var loadLangFile = (locale) => {
+			const { location, extension } = r.config;
+			const url = `${location}${locale}${extension}`;
+			if (!requests.has(url)) requests.set(url, r.loadLang(locale, false));
+			return requests.get(url);
+		};
+		/**
+		* Load the language file for a locale (once) and make it the current language
+		* @param {string} locale
+		* @return {Promise<Object>} current language strings
+		*/
+		var setLocale = async (locale = "en-US") => {
+			await loadLangFile(locale);
+			return r.setCurrent(locale);
+		};
+		/**
+		* Apply `i18n` options and load the current locale
+		* @param {Object} options locale, location, extension, override
+		* @return {Promise<Object>} current language strings
+		*/
+		var initI18n = (options) => {
+			r.processConfig({
+				...r.config,
+				...options
+			});
+			return setLocale(r.locale);
+		};
 		//#endregion
 		//#region src/js/sanitizer.js
-		var import_mi18n_min = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
-			module.exports = function(e) {
-				var t = {};
-				function n(r) {
-					if (t[r]) return t[r].exports;
-					var o = t[r] = {
-						i: r,
-						l: !1,
-						exports: {}
-					};
-					return e[r].call(o.exports, o, o.exports, n), o.l = !0, o.exports;
-				}
-				return n.m = e, n.c = t, n.d = function(e, t, r) {
-					n.o(e, t) || Object.defineProperty(e, t, {
-						enumerable: !0,
-						get: r
-					});
-				}, n.r = function(e) {
-					"undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(e, "__esModule", { value: !0 });
-				}, n.t = function(e, t) {
-					if (1 & t && (e = n(e)), 8 & t) return e;
-					if (4 & t && "object" == typeof e && e && e.__esModule) return e;
-					var r = Object.create(null);
-					if (n.r(r), Object.defineProperty(r, "default", {
-						enumerable: !0,
-						value: e
-					}), 2 & t && "string" != typeof e) for (var o in e) n.d(r, o, function(t) {
-						return e[t];
-					}.bind(null, o));
-					return r;
-				}, n.n = function(e) {
-					var t = e && e.__esModule ? function() {
-						return e.default;
-					} : function() {
-						return e;
-					};
-					return n.d(t, "a", t), t;
-				}, n.o = function(e, t) {
-					return Object.prototype.hasOwnProperty.call(e, t);
-				}, n.p = "", n(n.s = 7);
-			}([
-				function(e, t, n) {
-					"use strict";
-					var r = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(e) {
-						return typeof e;
-					} : function(e) {
-						return e && "function" == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? "symbol" : typeof e;
-					}, o = n(2), i = n(10), s = Object.prototype.toString;
-					function a(e) {
-						return "[object Array]" === s.call(e);
-					}
-					function u(e) {
-						return null !== e && "object" === (void 0 === e ? "undefined" : r(e));
-					}
-					function c(e) {
-						return "[object Function]" === s.call(e);
-					}
-					function f(e, t) {
-						if (null !== e && void 0 !== e) if ("object" !== (void 0 === e ? "undefined" : r(e)) && (e = [e]), a(e)) for (var n = 0, o = e.length; n < o; n++) t.call(null, e[n], n, e);
-						else for (var i in e) Object.prototype.hasOwnProperty.call(e, i) && t.call(null, e[i], i, e);
-					}
-					e.exports = {
-						isArray: a,
-						isArrayBuffer: function(e) {
-							return "[object ArrayBuffer]" === s.call(e);
-						},
-						isBuffer: i,
-						isFormData: function(e) {
-							return "undefined" != typeof FormData && e instanceof FormData;
-						},
-						isArrayBufferView: function(e) {
-							return "undefined" != typeof ArrayBuffer && ArrayBuffer.isView ? ArrayBuffer.isView(e) : e && e.buffer && e.buffer instanceof ArrayBuffer;
-						},
-						isString: function(e) {
-							return "string" == typeof e;
-						},
-						isNumber: function(e) {
-							return "number" == typeof e;
-						},
-						isObject: u,
-						isUndefined: function(e) {
-							return void 0 === e;
-						},
-						isDate: function(e) {
-							return "[object Date]" === s.call(e);
-						},
-						isFile: function(e) {
-							return "[object File]" === s.call(e);
-						},
-						isBlob: function(e) {
-							return "[object Blob]" === s.call(e);
-						},
-						isFunction: c,
-						isStream: function(e) {
-							return u(e) && c(e.pipe);
-						},
-						isURLSearchParams: function(e) {
-							return "undefined" != typeof URLSearchParams && e instanceof URLSearchParams;
-						},
-						isStandardBrowserEnv: function() {
-							return ("undefined" == typeof navigator || "ReactNative" !== navigator.product) && "undefined" != typeof window && "undefined" != typeof document;
-						},
-						forEach: f,
-						merge: function e() {
-							var t = {};
-							function n(n, o) {
-								"object" === r(t[o]) && "object" === (void 0 === n ? "undefined" : r(n)) ? t[o] = e(t[o], n) : t[o] = n;
-							}
-							for (var o = 0, i = arguments.length; o < i; o++) f(arguments[o], n);
-							return t;
-						},
-						extend: function(e, t, n) {
-							return f(t, function(t, r) {
-								e[r] = n && "function" == typeof t ? o(t, n) : t;
-							}), e;
-						},
-						trim: function(e) {
-							return e.replace(/^\s*/, "").replace(/\s*$/, "");
-						}
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					(function(t) {
-						var r = n(0), o = n(13), i = { "Content-Type": "application/x-www-form-urlencoded" };
-						function s(e, t) {
-							!r.isUndefined(e) && r.isUndefined(e["Content-Type"]) && (e["Content-Type"] = t);
-						}
-						var a = {
-							adapter: function() {
-								var e;
-								return "undefined" != typeof XMLHttpRequest ? e = n(3) : void 0 !== t && (e = n(3)), e;
-							}(),
-							transformRequest: [function(e, t) {
-								return o(t, "Content-Type"), r.isFormData(e) || r.isArrayBuffer(e) || r.isBuffer(e) || r.isStream(e) || r.isFile(e) || r.isBlob(e) ? e : r.isArrayBufferView(e) ? e.buffer : r.isURLSearchParams(e) ? (s(t, "application/x-www-form-urlencoded;charset=utf-8"), e.toString()) : r.isObject(e) ? (s(t, "application/json;charset=utf-8"), JSON.stringify(e)) : e;
-							}],
-							transformResponse: [function(e) {
-								if ("string" == typeof e) try {
-									e = JSON.parse(e);
-								} catch (e) {}
-								return e;
-							}],
-							timeout: 0,
-							xsrfCookieName: "XSRF-TOKEN",
-							xsrfHeaderName: "X-XSRF-TOKEN",
-							maxContentLength: -1,
-							validateStatus: function(e) {
-								return e >= 200 && e < 300;
-							},
-							headers: { common: { Accept: "application/json, text/plain, */*" } }
-						};
-						r.forEach([
-							"delete",
-							"get",
-							"head"
-						], function(e) {
-							a.headers[e] = {};
-						}), r.forEach([
-							"post",
-							"put",
-							"patch"
-						], function(e) {
-							a.headers[e] = r.merge(i);
-						}), e.exports = a;
-					}).call(this, n(12));
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = function(e, t) {
-						return function() {
-							for (var n = new Array(arguments.length), r = 0; r < n.length; r++) n[r] = arguments[r];
-							return e.apply(t, n);
-						};
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0), o = n(14), i = n(16), s = n(17), a = n(18), u = n(4), c = "undefined" != typeof window && window.btoa && window.btoa.bind(window) || n(19);
-					e.exports = function(e) {
-						return new Promise(function(t, f) {
-							var l = e.data, p = e.headers;
-							r.isFormData(l) && delete p["Content-Type"];
-							var d = new XMLHttpRequest(), h = "onreadystatechange", g = !1;
-							if ("undefined" == typeof window || !window.XDomainRequest || "withCredentials" in d || a(e.url) || (d = new window.XDomainRequest(), h = "onload", g = !0, d.onprogress = function() {}, d.ontimeout = function() {}), e.auth) {
-								var m = e.auth.username || "", y = e.auth.password || "";
-								p.Authorization = "Basic " + c(m + ":" + y);
-							}
-							if (d.open(e.method.toUpperCase(), i(e.url, e.params, e.paramsSerializer), !0), d.timeout = e.timeout, d[h] = function() {
-								if (d && (4 === d.readyState || g) && (0 !== d.status || d.responseURL && 0 === d.responseURL.indexOf("file:"))) {
-									var n = "getAllResponseHeaders" in d ? s(d.getAllResponseHeaders()) : null;
-									o(t, f, {
-										data: e.responseType && "text" !== e.responseType ? d.response : d.responseText,
-										status: 1223 === d.status ? 204 : d.status,
-										statusText: 1223 === d.status ? "No Content" : d.statusText,
-										headers: n,
-										config: e,
-										request: d
-									}), d = null;
-								}
-							}, d.onerror = function() {
-								f(u("Network Error", e, null, d)), d = null;
-							}, d.ontimeout = function() {
-								f(u("timeout of " + e.timeout + "ms exceeded", e, "ECONNABORTED", d)), d = null;
-							}, r.isStandardBrowserEnv()) {
-								var v = n(20), w = (e.withCredentials || a(e.url)) && e.xsrfCookieName ? v.read(e.xsrfCookieName) : void 0;
-								w && (p[e.xsrfHeaderName] = w);
-							}
-							if ("setRequestHeader" in d && r.forEach(p, function(e, t) {
-								void 0 === l && "content-type" === t.toLowerCase() ? delete p[t] : d.setRequestHeader(t, e);
-							}), e.withCredentials && (d.withCredentials = !0), e.responseType) try {
-								d.responseType = e.responseType;
-							} catch (t) {
-								if ("json" !== e.responseType) throw t;
-							}
-							"function" == typeof e.onDownloadProgress && d.addEventListener("progress", e.onDownloadProgress), "function" == typeof e.onUploadProgress && d.upload && d.upload.addEventListener("progress", e.onUploadProgress), e.cancelToken && e.cancelToken.promise.then(function(e) {
-								d && (d.abort(), f(e), d = null);
-							}), void 0 === l && (l = null), d.send(l);
-						});
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(15);
-					e.exports = function(e, t, n, o, i) {
-						return r(new Error(e), t, n, o, i);
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = function(e) {
-						return !(!e || !e.__CANCEL__);
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					function r(e) {
-						this.message = e;
-					}
-					r.prototype.toString = function() {
-						return "Cancel" + (this.message ? ": " + this.message : "");
-					}, r.prototype.__CANCEL__ = !0, e.exports = r;
-				},
-				function(e, t, n) {
-					"use strict";
-					t.__esModule = !0, t.I18N = void 0;
-					var r = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(e) {
-						return typeof e;
-					} : function(e) {
-						return e && "function" == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? "symbol" : typeof e;
-					}, o = function() {
-						function e(e, t) {
-							for (var n = 0; n < t.length; n++) {
-								var r = t[n];
-								r.enumerable = r.enumerable || !1, r.configurable = !0, "value" in r && (r.writable = !0), Object.defineProperty(e, r.key, r);
-							}
-						}
-						return function(t, n, r) {
-							return n && e(t.prototype, n), r && e(t, r), t;
-						};
-					}(), i = n(8), s = {
-						extension: ".lang",
-						location: "assets/lang/",
-						langs: ["en-US"],
-						locale: "en-US",
-						override: {}
-					};
-					t.default = new (t.I18N = (function() {
-						function e() {
-							var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : s;
-							(function(e, t) {
-								if (!(e instanceof t)) throw new TypeError("Cannot call a class as a function");
-							})(this, e), this.langs = Object.create(null), this.loaded = [], this.processConfig(t);
-						}
-						return e.prototype.processConfig = function(e) {
-							var t = this, n = Object.assign({}, s, e), r = n.location, o = function(e, t) {
-								var n = {};
-								for (var r in e) t.indexOf(r) >= 0 || Object.prototype.hasOwnProperty.call(e, r) && (n[r] = e[r]);
-								return n;
-							}(n, ["location"]), i = r.replace(/\/?$/, "/");
-							this.config = Object.assign({}, { location: i }, o);
-							var a = this.config, u = a.override, c = a.preloaded, f = void 0 === c ? {} : c, l = Object.entries(this.langs).concat(Object.entries(u || f));
-							this.langs = l.reduce(function(e, n) {
-								var r = n[0], o = n[1];
-								return e[r] = t.applyLanguage.call(t, r, o), e;
-							}, {}), this.locale = this.config.locale || this.config.langs[0];
-						}, e.prototype.init = function(e) {
-							return this.processConfig.call(this, Object.assign({}, this.config, e)), this.setCurrent(this.locale);
-						}, e.prototype.addLanguage = function(e) {
-							var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-							t = "string" == typeof t ? this.processFile.call(this, t) : t, this.applyLanguage.call(this, e, t), this.config.langs.push("locale");
-						}, e.prototype.getValue = function(e) {
-							var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : this.locale;
-							return this.langs[t] && this.langs[t][e] || this.getFallbackValue(e);
-						}, e.prototype.getFallbackValue = function(e) {
-							var t = Object.values(this.langs).find(function(t) {
-								return t[e];
-							});
-							return t && t[e];
-						}, e.prototype.makeSafe = function(e) {
-							var t = {
-								"{": "\\{",
-								"}": "\\}",
-								"|": "\\|"
-							};
-							return e = e.replace(/\{|\}|\|/g, function(e) {
-								return t[e];
-							}), new RegExp(e, "g");
-						}, e.prototype.put = function(e, t) {
-							return this.current[e] = t;
-						}, e.prototype.get = function(e, t) {
-							var n = this.getValue(e);
-							if (n) {
-								var o = n.match(/\{[^}]+?\}/g), i = void 0;
-								if (t && o) if ("object" === (void 0 === t ? "undefined" : r(t))) for (var s = 0; s < o.length; s++) i = o[s].substring(1, o[s].length - 1), n = n.replace(this.makeSafe(o[s]), t[i] || "");
-								else n = n.replace(/\{[^}]+?\}/g, t);
-								return n;
-							}
-						}, e.prototype.fromFile = function(e) {
-							for (var t, n = e.split("\n"), r = {}, o = 0; o < n.length; o++) (t = n[o].match(/^(.+?) *?= *?([^\n]+)/)) && (r[t[1]] = t[2].replace(/^\s+|\s+$/, ""));
-							return r;
-						}, e.prototype.processFile = function(e) {
-							return this.fromFile(e.replace(/\n\n/g, "\n"));
-						}, e.prototype.loadLang = function(e) {
-							var t = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1], n = this;
-							return new Promise(function(r, o) {
-								if (-1 !== n.loaded.indexOf(e) && t) return n.applyLanguage.call(n, n.langs[e]), r(n.langs[e]);
-								var s = [
-									n.config.location,
-									e,
-									n.config.extension
-								].join("");
-								return (0, i.get)(s).then(function(t) {
-									var o = t.data, i = n.processFile(o);
-									return n.applyLanguage.call(n, e, i), n.loaded.push(e), r(n.langs[e]);
-								}).catch(function() {
-									r(n.applyLanguage.call(n, e));
-								});
-							});
-						}, e.prototype.applyLanguage = function(e) {
-							var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}, n = this.config.override[e] || {}, r = this.langs[e] || {};
-							return this.langs[e] = Object.assign({}, r, t, n), this.langs[e];
-						}, e.prototype.setCurrent = function() {
-							var e = this, t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "en-US";
-							return this.loadLang(t).then(function() {
-								return e.locale = t, e.current = e.langs[t], e.current;
-							});
-						}, o(e, [{
-							key: "getLangs",
-							get: function() {
-								return this.config.langs;
-							}
-						}]), e;
-					}()))();
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = n(9);
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0), o = n(2), i = n(11), s = n(1);
-					function a(e) {
-						var t = new i(e), n = o(i.prototype.request, t);
-						return r.extend(n, i.prototype, t), r.extend(n, t), n;
-					}
-					var u = a(s);
-					u.Axios = i, u.create = function(e) {
-						return a(r.merge(s, e));
-					}, u.Cancel = n(6), u.CancelToken = n(26), u.isCancel = n(5), u.all = function(e) {
-						return Promise.all(e);
-					}, u.spread = n(27), e.exports = u, e.exports.default = u;
-				},
-				function(e, t, n) {
-					"use strict";
-					function r(e) {
-						return !!e.constructor && "function" == typeof e.constructor.isBuffer && e.constructor.isBuffer(e);
-					}
-					e.exports = function(e) {
-						return null != e && (r(e) || function(e) {
-							return "function" == typeof e.readFloatLE && "function" == typeof e.slice && r(e.slice(0, 0));
-						}(e) || !!e._isBuffer);
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(1), o = n(0), i = n(21), s = n(22);
-					function a(e) {
-						this.defaults = e, this.interceptors = {
-							request: new i(),
-							response: new i()
-						};
-					}
-					a.prototype.request = function(e) {
-						"string" == typeof e && (e = o.merge({ url: arguments[0] }, arguments[1])), (e = o.merge(r, { method: "get" }, this.defaults, e)).method = e.method.toLowerCase();
-						var t = [s, void 0], n = Promise.resolve(e);
-						for (this.interceptors.request.forEach(function(e) {
-							t.unshift(e.fulfilled, e.rejected);
-						}), this.interceptors.response.forEach(function(e) {
-							t.push(e.fulfilled, e.rejected);
-						}); t.length;) n = n.then(t.shift(), t.shift());
-						return n;
-					}, o.forEach([
-						"delete",
-						"get",
-						"head",
-						"options"
-					], function(e) {
-						a.prototype[e] = function(t, n) {
-							return this.request(o.merge(n || {}, {
-								method: e,
-								url: t
-							}));
-						};
-					}), o.forEach([
-						"post",
-						"put",
-						"patch"
-					], function(e) {
-						a.prototype[e] = function(t, n, r) {
-							return this.request(o.merge(r || {}, {
-								method: e,
-								url: t,
-								data: n
-							}));
-						};
-					}), e.exports = a;
-				},
-				function(e, t, n) {
-					"use strict";
-					var r, o, i = e.exports = {};
-					function s() {
-						throw new Error("setTimeout has not been defined");
-					}
-					function a() {
-						throw new Error("clearTimeout has not been defined");
-					}
-					function u(e) {
-						if (r === setTimeout) return setTimeout(e, 0);
-						if ((r === s || !r) && setTimeout) return r = setTimeout, setTimeout(e, 0);
-						try {
-							return r(e, 0);
-						} catch (t) {
-							try {
-								return r.call(null, e, 0);
-							} catch (t) {
-								return r.call(this, e, 0);
-							}
-						}
-					}
-					(function() {
-						try {
-							r = "function" == typeof setTimeout ? setTimeout : s;
-						} catch (e) {
-							r = s;
-						}
-						try {
-							o = "function" == typeof clearTimeout ? clearTimeout : a;
-						} catch (e) {
-							o = a;
-						}
-					})();
-					var c, f = [], l = !1, p = -1;
-					function d() {
-						l && c && (l = !1, c.length ? f = c.concat(f) : p = -1, f.length && h());
-					}
-					function h() {
-						if (!l) {
-							var e = u(d);
-							l = !0;
-							for (var t = f.length; t;) {
-								for (c = f, f = []; ++p < t;) c && c[p].run();
-								p = -1, t = f.length;
-							}
-							c = null, l = !1, function(e) {
-								if (o === clearTimeout) return clearTimeout(e);
-								if ((o === a || !o) && clearTimeout) return o = clearTimeout, clearTimeout(e);
-								try {
-									o(e);
-								} catch (t) {
-									try {
-										return o.call(null, e);
-									} catch (t) {
-										return o.call(this, e);
-									}
-								}
-							}(e);
-						}
-					}
-					function g(e, t) {
-						this.fun = e, this.array = t;
-					}
-					function m() {}
-					i.nextTick = function(e) {
-						var t = new Array(arguments.length - 1);
-						if (arguments.length > 1) for (var n = 1; n < arguments.length; n++) t[n - 1] = arguments[n];
-						f.push(new g(e, t)), 1 !== f.length || l || u(h);
-					}, g.prototype.run = function() {
-						this.fun.apply(null, this.array);
-					}, i.title = "browser", i.browser = !0, i.env = {}, i.argv = [], i.version = "", i.versions = {}, i.on = m, i.addListener = m, i.once = m, i.off = m, i.removeListener = m, i.removeAllListeners = m, i.emit = m, i.prependListener = m, i.prependOnceListener = m, i.listeners = function(e) {
-						return [];
-					}, i.binding = function(e) {
-						throw new Error("process.binding is not supported");
-					}, i.cwd = function() {
-						return "/";
-					}, i.chdir = function(e) {
-						throw new Error("process.chdir is not supported");
-					}, i.umask = function() {
-						return 0;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0);
-					e.exports = function(e, t) {
-						r.forEach(e, function(n, r) {
-							r !== t && r.toUpperCase() === t.toUpperCase() && (e[t] = n, delete e[r]);
-						});
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(4);
-					e.exports = function(e, t, n) {
-						var o = n.config.validateStatus;
-						n.status && o && !o(n.status) ? t(r("Request failed with status code " + n.status, n.config, null, n.request, n)) : e(n);
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = function(e, t, n, r, o) {
-						return e.config = t, n && (e.code = n), e.request = r, e.response = o, e;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0);
-					function o(e) {
-						return encodeURIComponent(e).replace(/%40/gi, "@").replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
-					}
-					e.exports = function(e, t, n) {
-						if (!t) return e;
-						var i;
-						if (n) i = n(t);
-						else if (r.isURLSearchParams(t)) i = t.toString();
-						else {
-							var s = [];
-							r.forEach(t, function(e, t) {
-								null !== e && void 0 !== e && (r.isArray(e) ? t += "[]" : e = [e], r.forEach(e, function(e) {
-									r.isDate(e) ? e = e.toISOString() : r.isObject(e) && (e = JSON.stringify(e)), s.push(o(t) + "=" + o(e));
-								}));
-							}), i = s.join("&");
-						}
-						return i && (e += (-1 === e.indexOf("?") ? "?" : "&") + i), e;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0), o = [
-						"age",
-						"authorization",
-						"content-length",
-						"content-type",
-						"etag",
-						"expires",
-						"from",
-						"host",
-						"if-modified-since",
-						"if-unmodified-since",
-						"last-modified",
-						"location",
-						"max-forwards",
-						"proxy-authorization",
-						"referer",
-						"retry-after",
-						"user-agent"
-					];
-					e.exports = function(e) {
-						var t, n, i, s = {};
-						return e ? (r.forEach(e.split("\n"), function(e) {
-							if (i = e.indexOf(":"), t = r.trim(e.substr(0, i)).toLowerCase(), n = r.trim(e.substr(i + 1)), t) {
-								if (s[t] && o.indexOf(t) >= 0) return;
-								s[t] = "set-cookie" === t ? (s[t] ? s[t] : []).concat([n]) : s[t] ? s[t] + ", " + n : n;
-							}
-						}), s) : s;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0);
-					e.exports = r.isStandardBrowserEnv() ? function() {
-						var e, t = /(msie|trident)/i.test(navigator.userAgent), n = document.createElement("a");
-						function o(e) {
-							var r = e;
-							return t && (n.setAttribute("href", r), r = n.href), n.setAttribute("href", r), {
-								href: n.href,
-								protocol: n.protocol ? n.protocol.replace(/:$/, "") : "",
-								host: n.host,
-								search: n.search ? n.search.replace(/^\?/, "") : "",
-								hash: n.hash ? n.hash.replace(/^#/, "") : "",
-								hostname: n.hostname,
-								port: n.port,
-								pathname: "/" === n.pathname.charAt(0) ? n.pathname : "/" + n.pathname
-							};
-						}
-						return e = o(window.location.href), function(t) {
-							var n = r.isString(t) ? o(t) : t;
-							return n.protocol === e.protocol && n.host === e.host;
-						};
-					}() : function() {
-						return !0;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					function r() {
-						this.message = "String contains an invalid character";
-					}
-					r.prototype = /* @__PURE__ */ new Error(), r.prototype.code = 5, r.prototype.name = "InvalidCharacterError", e.exports = function(e) {
-						for (var t, n, o = String(e), i = "", s = 0, a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="; o.charAt(0 | s) || (a = "=", s % 1); i += a.charAt(63 & t >> 8 - s % 1 * 8)) {
-							if ((n = o.charCodeAt(s += .75)) > 255) throw new r();
-							t = t << 8 | n;
-						}
-						return i;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0);
-					e.exports = r.isStandardBrowserEnv() ? {
-						write: function(e, t, n, o, i, s) {
-							var a = [];
-							a.push(e + "=" + encodeURIComponent(t)), r.isNumber(n) && a.push("expires=" + new Date(n).toGMTString()), r.isString(o) && a.push("path=" + o), r.isString(i) && a.push("domain=" + i), !0 === s && a.push("secure"), document.cookie = a.join("; ");
-						},
-						read: function(e) {
-							var t = document.cookie.match(new RegExp("(^|;\\s*)(" + e + ")=([^;]*)"));
-							return t ? decodeURIComponent(t[3]) : null;
-						},
-						remove: function(e) {
-							this.write(e, "", Date.now() - 864e5);
-						}
-					} : {
-						write: function() {},
-						read: function() {
-							return null;
-						},
-						remove: function() {}
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0);
-					function o() {
-						this.handlers = [];
-					}
-					o.prototype.use = function(e, t) {
-						return this.handlers.push({
-							fulfilled: e,
-							rejected: t
-						}), this.handlers.length - 1;
-					}, o.prototype.eject = function(e) {
-						this.handlers[e] && (this.handlers[e] = null);
-					}, o.prototype.forEach = function(e) {
-						r.forEach(this.handlers, function(t) {
-							null !== t && e(t);
-						});
-					}, e.exports = o;
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0), o = n(23), i = n(5), s = n(1), a = n(24), u = n(25);
-					function c(e) {
-						e.cancelToken && e.cancelToken.throwIfRequested();
-					}
-					e.exports = function(e) {
-						return c(e), e.baseURL && !a(e.url) && (e.url = u(e.baseURL, e.url)), e.headers = e.headers || {}, e.data = o(e.data, e.headers, e.transformRequest), e.headers = r.merge(e.headers.common || {}, e.headers[e.method] || {}, e.headers || {}), r.forEach([
-							"delete",
-							"get",
-							"head",
-							"post",
-							"put",
-							"patch",
-							"common"
-						], function(t) {
-							delete e.headers[t];
-						}), (e.adapter || s.adapter)(e).then(function(t) {
-							return c(e), t.data = o(t.data, t.headers, e.transformResponse), t;
-						}, function(t) {
-							return i(t) || (c(e), t && t.response && (t.response.data = o(t.response.data, t.response.headers, e.transformResponse))), Promise.reject(t);
-						});
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(0);
-					e.exports = function(e, t, n) {
-						return r.forEach(n, function(n) {
-							e = n(e, t);
-						}), e;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = function(e) {
-						return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(e);
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = function(e, t) {
-						return t ? e.replace(/\/+$/, "") + "/" + t.replace(/^\/+/, "") : e;
-					};
-				},
-				function(e, t, n) {
-					"use strict";
-					var r = n(6);
-					function o(e) {
-						if ("function" != typeof e) throw new TypeError("executor must be a function.");
-						var t;
-						this.promise = new Promise(function(e) {
-							t = e;
-						});
-						var n = this;
-						e(function(e) {
-							n.reason || (n.reason = new r(e), t(n.reason));
-						});
-					}
-					o.prototype.throwIfRequested = function() {
-						if (this.reason) throw this.reason;
-					}, o.source = function() {
-						var e;
-						return {
-							token: new o(function(t) {
-								e = t;
-							}),
-							cancel: e
-						};
-					}, e.exports = o;
-				},
-				function(e, t, n) {
-					"use strict";
-					e.exports = function(e) {
-						return function(t) {
-							return e.apply(null, t);
-						};
-					};
-				}
-			]);
-		})))());
 		/**
 		* Sanitizer utility for handling untrusted HTML
 		*/
@@ -2413,7 +1906,7 @@
 			static mi18n(lookup, args) {
 				const def = this.definition;
 				let i18n = def.i18n || {};
-				const locale = import_mi18n_min.default.locale;
+				const locale = r.locale;
 				i18n = i18n[locale] || i18n.default || i18n;
 				const lookupCamel = this.camelCase(lookup);
 				const value = typeof i18n == "object" ? i18n[lookupCamel] || i18n[lookup] : i18n;
@@ -2421,7 +1914,7 @@
 				let mapped = def.mi18n;
 				if (typeof mapped === "object") mapped = mapped[lookupCamel] || mapped[lookup];
 				if (!mapped) mapped = lookupCamel;
-				return import_mi18n_min.default.get(mapped, args);
+				return r.get(mapped, args);
 			}
 			/**
 			* Should this control type appear in the list of form controls
@@ -2703,7 +2196,7 @@
 		//#region src/js/config.js
 		/* istanbul ignore next */
 		var noop = () => null;
-		import_mi18n_min.default.addLanguage("en-US", {
+		r.addLanguage("en-US", {
 			"NATIVE_NAME": "English (US)",
 			"ENGLISH_NAME": "English",
 			"addOption": "Add Option +",
@@ -3253,7 +2746,7 @@
 				const disabledFields = stage.querySelectorAll(".disabled-field");
 				forEach(disabledFields, (index) => {
 					const field = disabledFields[index];
-					const title = import_mi18n_min.default.get("fieldNonEditable");
+					const title = r.get("fieldNonEditable");
 					if (title) {
 						const tt = markup("p", title, { className: "frmb-tt" });
 						field.appendChild(tt);
@@ -3343,7 +2836,7 @@
 			*/
 			confirm(message, yesAction, coords = false, className = "") {
 				const _this = this;
-				const i18n = import_mi18n_min.default.current;
+				const i18n = r.current;
 				const overlay = _this.showOverlay();
 				const yes = markup("button", i18n.yes, { className: "yes btn btn-success btn-sm" });
 				const no = markup("button", i18n.no, { className: "no btn btn-danger btn-sm" });
@@ -3414,7 +2907,7 @@
 				const config = this.config;
 				const formID = e.target.id.match(/frmb-\d{13}/)[0];
 				const stage = document.getElementById(formID);
-				const i18n = import_mi18n_min.default.current;
+				const i18n = r.current;
 				const fields = $("li.form-field", stage);
 				const buttonPosition = e.target.getBoundingClientRect();
 				const bodyRect = document.body.getBoundingClientRect();
@@ -3440,7 +2933,7 @@
 			* @return {void}
 			*/
 			removeAllFields(stage) {
-				const i18n = import_mi18n_min.default.current;
+				const i18n = r.current;
 				const opts = this.config.opts;
 				const fields = stage.querySelectorAll(this.formBuilder.fieldSelector);
 				const markEmptyArray = [];
@@ -3652,7 +3145,7 @@
 					_this.save();
 					if (!form.childNodes.length) {
 						form.classList.add("empty");
-						form.dataset.content = import_mi18n_min.default.current.getStarted;
+						form.dataset.content = r.current.getStarted;
 					}
 				});
 				const userEvents = Object.assign({}, this.config.opts.typeUserEvents["*"], this.config.opts.typeUserEvents[field.type]);
@@ -3681,9 +3174,9 @@
 				const { label, events, ...attrs } = buttonData;
 				let labelText = label;
 				const data = this.data;
-				if (!labelText) if (attrs.id) labelText = import_mi18n_min.default.current[attrs.id] || capitalize(attrs.id);
+				if (!labelText) if (attrs.id) labelText = r.current[attrs.id] || capitalize(attrs.id);
 				else labelText = "";
-				else labelText = import_mi18n_min.default.current[labelText] || labelText;
+				else labelText = r.current[labelText] || labelText;
 				if (!attrs.id) attrs.id = `${data.formID}-action-${Math.round(Math.random() * 1e3)}`;
 				else attrs.id = `${data.formID}-${attrs.id}-action`;
 				const button = markup("button", labelText, attrs);
@@ -4872,7 +4365,7 @@
 						templates[fieldType] = field.template;
 					}
 				});
-				const locale = import_mi18n_min.default.locale;
+				const locale = r.locale;
 				if (!this.def.i18n[locale]) this.def.i18n[locale] = {};
 				const _this = this;
 				Object.keys(templates).forEach((templateName) => {
@@ -4923,7 +4416,7 @@
 							class: controlClass
 						});
 					}
-					this.def.i18n[locale][lookup] = Array.isArray(field.label) ? import_mi18n_min.default.get(...field.label) || field.label[0] : field.label;
+					this.def.i18n[locale][lookup] = Array.isArray(field.label) ? r.get(...field.label) || field.label[0] : field.label;
 					this.def.icon[lookup] = field.icon;
 				}
 			}
@@ -4943,7 +4436,7 @@
 				*/
 				const def = this.def;
 				let i18n = def.i18n || {};
-				const locale = import_mi18n_min.default.locale;
+				const locale = r.locale;
 				i18n = i18n[locale] || i18n.default || i18n;
 				const lookupCamel = control.camelCase(type);
 				const value = typeof i18n == "object" ? i18n[lookupCamel] || i18n[type] : i18n;
@@ -4952,7 +4445,7 @@
 					let mapped = def.mi18n;
 					if (typeof mapped === "object") mapped = mapped[lookupCamel] || mapped[type];
 					if (!mapped) mapped = lookupCamel;
-					return import_mi18n_min.default.get(mapped);
+					return r.get(mapped);
 				}
 			}
 			get definition() {
@@ -5331,7 +4824,7 @@
 		var { rowWrapperClassSelector, colWrapperClassSelector, tmpRowPlaceholderClassSelector, invisibleRowPlaceholderClassSelector } = generateSelectorClassNames(gridClassNames);
 		function FormBuilder(opts, element, $) {
 			const formBuilder = this;
-			const i18n = import_mi18n_min.default.current;
+			const i18n = r.current;
 			const formID = `frmb-${Date.now()}`;
 			const data = new Data(formID);
 			const d = new Dom(formID);
@@ -5562,7 +5055,7 @@
 					h.addDefaultFields();
 				} else if (!opts.prepend && !opts.append) {
 					d.stage.classList.add("empty");
-					d.stage.dataset.content = import_mi18n_min.default.get("getStarted");
+					d.stage.dataset.content = r.get("getStarted");
 				}
 				if (nonEditableFields()) d.stage.classList.remove("empty");
 				h.save();
@@ -5581,12 +5074,12 @@
 			const fieldOptions = function(fieldName, fieldData) {
 				const { type } = fieldData;
 				let fieldValues;
-				const optionActions = [m("a", import_mi18n_min.default.get("addOption"), { className: "add add-opt" })];
-				const fieldOptions = [m("label", fieldName === "values" ? import_mi18n_min.default.get("selectOptions") : i18n[fieldName], { className: "false-label" })];
+				const optionActions = [m("a", r.get("addOption"), { className: "add add-opt" })];
+				const fieldOptions = [m("label", fieldName === "values" ? r.get("selectOptions") : i18n[fieldName], { className: "false-label" })];
 				const optionsNoSelect = fieldData["noSelect"] ?? false;
 				const isMultiple = fieldData.multiple || type === "checkbox-group";
 				const optionDataTemplate = (count) => {
-					const label = import_mi18n_min.default.get("optionCount", count);
+					const label = r.get("optionCount", count);
 					return {
 						selected: false,
 						label,
@@ -5731,11 +5224,11 @@
 				const fieldAttrs = defaultFieldAttrs(type);
 				const advFieldMap = {
 					required: () => requiredField(values),
-					toggle: () => boolAttribute("toggle", values, { first: import_mi18n_min.default.get("toggle") }),
+					toggle: () => boolAttribute("toggle", values, { first: r.get("toggle") }),
 					inline: () => {
 						return boolAttribute("inline", values, {
-							first: import_mi18n_min.default.get("inline"),
-							second: import_mi18n_min.default.get("inlineDesc", type.replace("-group", ""))
+							first: r.get("inline"),
+							second: r.get("inlineDesc", type.replace("-group", ""))
 						});
 					},
 					label: () => textAttribute("label", values),
@@ -5784,19 +5277,19 @@
 							style: rolesDisplay
 						});
 						return boolAttribute("access", values, {
-							first: import_mi18n_min.default.get("roles"),
-							second: import_mi18n_min.default.get("limitRole"),
+							first: r.get("roles"),
+							second: r.get("limitRole"),
 							content: availableRolesDiv
 						});
 					},
 					other: () => boolAttribute("other", values, {
-						first: import_mi18n_min.default.get("enableOther"),
-						second: import_mi18n_min.default.get("enableOtherMsg")
+						first: r.get("enableOther"),
+						second: r.get("enableOtherMsg")
 					}),
 					options: () => fieldOptions("values", values),
 					requireValidOption: () => boolAttribute("requireValidOption", values, {
 						first: " ",
-						second: import_mi18n_min.default.get("requireValidOption")
+						second: r.get("requireValidOption")
 					}),
 					multiple: () => {
 						const typeLabels = {
@@ -5805,12 +5298,12 @@
 								second: "set multiple attribute"
 							},
 							file: {
-								first: import_mi18n_min.default.get("multipleFiles"),
-								second: import_mi18n_min.default.get("allowMultipleFiles")
+								first: r.get("multipleFiles"),
+								second: r.get("allowMultipleFiles")
 							},
 							select: {
 								first: " ",
-								second: import_mi18n_min.default.get("selectionsMessage")
+								second: r.get("selectionsMessage")
 							}
 						};
 						return boolAttribute("multiple", values, typeLabels[type] || typeLabels.default);
@@ -5937,7 +5430,7 @@
 				for (const attribute in typeUserAttr) if (typeUserAttr.hasOwnProperty(attribute)) {
 					const attrValType = userAttrType(typeUserAttr[attribute]);
 					if (attrValType !== "undefined") {
-						const orig = import_mi18n_min.default.get(attribute);
+						const orig = r.get(attribute);
 						const { [attribute]: value, ...tUA } = typeUserAttr[attribute];
 						let origValue = tUA.value;
 						if (attrValType === "boolean") tUA[attribute] ??= tUA.value;
@@ -5947,7 +5440,7 @@
 							tUA[attribute] ??= values[attribute] || origValue;
 						}
 						tUA.value = value;
-						if (tUA.label) i18n[attribute] = Array.isArray(tUA.label) ? import_mi18n_min.default.get(...tUA.label) || tUA.label[0] : tUA.label;
+						if (tUA.label) i18n[attribute] = Array.isArray(tUA.label) ? r.get(...tUA.label) || tUA.label[0] : tUA.label;
 						if (attrTypeMap[attrValType]) advField.push(attrTypeMap[attrValType](attribute, tUA));
 						i18n[attribute] = orig;
 					} else if (attrValType === "undefined" && hasSubType(values, attribute)) advField.push(processTypeUserAttrs(typeUserAttr[attribute], values));
@@ -6003,7 +5496,7 @@
 				const optis = Object.keys(options).map((val) => {
 					const attrs = { value: val };
 					const optionTextVal = options[val];
-					const optionText = Array.isArray(optionTextVal) ? import_mi18n_min.default.get(...optionTextVal) || optionTextVal[0] : optionTextVal;
+					const optionText = Array.isArray(optionTextVal) ? r.get(...optionTextVal) || optionTextVal[0] : optionTextVal;
 					if (Array.isArray(selectValues) ? selectValues.includes(val) : val === selectValues) attrs.selected = true;
 					return m("option", optionText, attrs);
 				});
@@ -6048,7 +5541,7 @@
 						`btn-${btnStyle}`
 					];
 					if (style === btnStyle) classList.push("selected");
-					return m("button", import_mi18n_min.default.get(`styles.btn.${btnStyle}`), {
+					return m("button", r.get(`styles.btn.${btnStyle}`), {
 						value: btnStyle,
 						type: "button",
 						className: classList.join(" ")
@@ -6073,12 +5566,12 @@
 			const numberAttribute = (attribute, values) => {
 				const { className = "", ...attrs } = values;
 				const attrVal = Number.isNaN(attrs[attribute]) ? void 0 : attrs[attribute];
-				const attrLabel = import_mi18n_min.default.get(attribute) || attribute;
+				const attrLabel = r.get(attribute) || attribute;
 				const inputConfig = {
 					type: "number",
 					value: attrVal,
 					name: attribute,
-					placeholder: import_mi18n_min.default.get(`placeholder.${attribute}`),
+					placeholder: r.get(`placeholder.${attribute}`),
 					className: [
 						safeClassName(`fld-${attribute}`),
 						"form-control",
@@ -6113,7 +5606,7 @@
 					className: `fld-${attribute} form-control`,
 					events
 				};
-				return m("div", [m("label", import_mi18n_min.default.get(attribute) || capitalize(attribute) || "", { for: selectAttrs.id }), m("div", m("select", selectOptions, selectAttrs), { className: "input-wrap" })], {
+				return m("div", [m("label", r.get(attribute) || capitalize(attribute) || "", { for: selectAttrs.id }), m("div", m("select", selectOptions, selectAttrs), { className: "input-wrap" })], {
 					className: `form-group ${selectAttrs.name}-wrap`,
 					style: isHidden && "display: none"
 				});
@@ -6128,10 +5621,10 @@
 			const textAttribute = (attribute, values, isHidden = false) => {
 				const textArea = ["paragraph"];
 				let attrVal = values[attribute] || "";
-				let attrLabel = import_mi18n_min.default.get(attribute) || attribute;
-				if (attribute === "label") if (textArea.includes(values.type)) attrLabel = import_mi18n_min.default.get("content");
+				let attrLabel = r.get(attribute) || attribute;
+				if (attribute === "label") if (textArea.includes(values.type)) attrLabel = r.get("content");
 				else attrVal = parsedHtml(attrVal);
-				const placeholder = import_mi18n_min.default.get(`placeholders.${attribute}`) || "";
+				const placeholder = r.get(`placeholders.${attribute}`) || "";
 				let attributefield;
 				if (![].some((elem) => elem === true)) {
 					const inputConfig = {
@@ -6167,34 +5660,34 @@
 				const noMake = [];
 				let requireField = "";
 				if (noRequire.includes(type)) noMake.push(true);
-				if (!noMake.some((elem) => elem === true)) requireField = boolAttribute("required", fieldData, { first: import_mi18n_min.default.get("required") });
+				if (!noMake.some((elem) => elem === true)) requireField = boolAttribute("required", fieldData, { first: r.get("required") });
 				return requireField;
 			};
 			const appendNewField = function(values, isNew = true) {
 				const columnData = prepareFieldRow(values);
 				data.lastID = h.incrementId(data.lastID);
 				const { type = "text", subtype } = values;
-				let label = values.label || (isNew ? i18n[type] || import_mi18n_min.default.get("label") : "");
-				if (type === "hidden" || label === "") label = `${import_mi18n_min.default.get(type) ?? type}: ${values.name}`;
+				let label = values.label || (isNew ? i18n[type] || r.get("label") : "");
+				if (type === "hidden" || label === "") label = `${r.get(type) ?? type}: ${values.name}`;
 				const disabledFieldButtons = opts.disabledFieldButtons[type] || values.disabledFieldButtons;
 				let fieldButtons = [
 					m("a", null, {
 						type: "remove",
 						id: "del_" + data.lastID,
 						className: `del-button btn ${css_prefix_text}cancel delete-confirm`,
-						title: import_mi18n_min.default.get("removeMessage")
+						title: r.get("removeMessage")
 					}),
 					m("a", null, {
 						type: "edit",
 						id: data.lastID + "-edit",
 						className: `toggle-form btn ${css_prefix_text}pencil`,
-						title: import_mi18n_min.default.get("hide")
+						title: r.get("hide")
 					}),
 					m("a", null, {
 						type: "copy",
 						id: data.lastID + "-copy",
 						className: `copy-button btn ${css_prefix_text}copy`,
-						title: import_mi18n_min.default.get("copyButtonTooltip")
+						title: r.get("copyButtonTooltip")
 					})
 				];
 				if (enhancedBootstrapEnabled()) fieldButtons.push(m("a", null, {
@@ -6233,7 +5726,7 @@
 					dataFieldId: data.lastID
 				});
 				liContents.push(prevHolder);
-				const editPanel = m("div", m("div", [generateAdvFields(values), m("a", import_mi18n_min.default.get("close"), { className: "close-field" })], { className: "form-elements" }), {
+				const editPanel = m("div", m("div", [generateAdvFields(values), m("a", r.get("close"), { className: "close-field" })], { className: "form-elements" }), {
 					id: `${data.lastID}-holder`,
 					className: "frm-holder",
 					dataFieldId: data.lastID
@@ -6538,7 +6031,7 @@
 						{
 							value,
 							type: "text",
-							placeholder: import_mi18n_min.default.get(`placeholder.${prop}`) || ""
+							placeholder: r.get(`placeholder.${prop}`) || ""
 						}
 					],
 					array: (values) => ["select", values.map(({ label, value }) => m("option", label, { value }))],
@@ -6561,7 +6054,7 @@
 				});
 				const removeAttrs = {
 					className: `remove btn ${css_prefix_text}cancel`,
-					title: import_mi18n_min.default.get("removeMessage")
+					title: r.get("removeMessage")
 				};
 				optionInputs.push(m("a", null, removeAttrs));
 				return m("li", optionInputs);
@@ -6614,7 +6107,7 @@
 				const type = field.getAttribute("type");
 				const $option = $(e.target.parentElement);
 				e.preventDefault();
-				if (field.querySelector(".sortable-options").childNodes.length <= 2 && !type.includes("checkbox")) opts.notify.error("Error: " + import_mi18n_min.default.get("minOptionMessage"));
+				if (field.querySelector(".sortable-options").childNodes.length <= 2 && !type.includes("checkbox")) opts.notify.error("Error: " + r.get("minOptionMessage"));
 				else $option.slideUp("250", () => {
 					$option.remove();
 					UpdatePreviewAndSave($field);
@@ -6725,7 +6218,7 @@
 			});
 			$stage.on("blur", "input.fld-name", function(e) {
 				e.target.value = safename(e.target.value);
-				if (e.target.value === "") $(e.target).addClass("field-error").attr("placeholder", import_mi18n_min.default.get("cannotBeEmpty"));
+				if (e.target.value === "") $(e.target).addClass("field-error").attr("placeholder", r.get("cannotBeEmpty"));
 				else $(e.target).removeClass("field-error");
 			});
 			$stage.on("blur", "input.fld-maxlength, input.fld-rows", (e) => {
@@ -6815,8 +6308,8 @@
 					$field.removeClass("deleting");
 				}, false);
 				if (opts.fieldRemoveWarn) {
-					const warnH3 = m("h3", import_mi18n_min.default.get("warning"));
-					const warnMessage = m("p", import_mi18n_min.default.get("fieldRemoveWarning"));
+					const warnH3 = m("h3", r.get("warning"));
+					const warnMessage = m("p", r.get("fieldRemoveWarning"));
 					h.confirm([warnH3, warnMessage], () => h.removeField(deleteID), coords);
 					$field.addClass("deleting");
 				} else h.removeField(deleteID);
@@ -7175,8 +6668,8 @@
 					loadFields(formData);
 				},
 				setLang: (locale) => {
-					return import_mi18n_min.default.setCurrent.call(import_mi18n_min.default, locale).then(() => {
-						d.stage.dataset.content = import_mi18n_min.default.get("getStarted");
+					return setLocale(locale).then(() => {
+						d.stage.dataset.content = r.get("getStarted");
 						controls.init();
 						d.empty(d.formActions);
 						h.formActionButtons().forEach((button) => d.formActions.appendChild(button));
@@ -7243,7 +6736,7 @@
 					return _this.instance.actions.getData !== notInitialised && _this.instance.actions.getData("json");
 				},
 				promise: new Promise(function(resolve, reject) {
-					import_mi18n_min.default.init(_this.i18nOpts).then(() => {
+					initI18n(_this.i18nOpts).then(() => {
 						const formBuilder = new FormBuilder(opts, elem[0], jQuery);
 						jQuery(elem[0]).data("formBuilder", formBuilder);
 						Object.assign(_this.instance, formBuilder.actions);
