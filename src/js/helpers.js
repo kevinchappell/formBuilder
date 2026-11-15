@@ -380,7 +380,11 @@ export default class Helpers {
       const attrVal = [
         [
           attr.attributes.contenteditable,
-          () => (config.opts.dataType === 'xml' ? escapeHtml(attr.innerHTML) : attr.innerHTML),
+          // Firefox appends a trailing <br> to contenteditable elements after editing
+          () => {
+            const html = attr.innerHTML.replace(/<br\s*\/?>$/i, '')
+            return config.opts.dataType === 'xml' ? escapeHtml(html) : html
+          },
         ],
         [attr.type === 'checkbox', () => attr.checked],
         [attr.type === 'number' && attr.value !== '', () => Number(attr.value)],
