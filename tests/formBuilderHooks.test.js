@@ -18,6 +18,17 @@ describe('formBuilder edit-panel hook', () => {
     expect(vals.name).toBe('a')
   })
 
+  test('does not keep a trailing <br> added by contenteditable labels', async () => {
+    const fbWrap = $('<div>')
+    const fb = await $(fbWrap).formBuilder().promise
+    const node = fb.actions.generateAdvFields({ type: 'text', name: 'a', label: 'A' })
+    document.body.appendChild(node)
+    const labelEl = node.querySelector('.fld-label')
+    labelEl.innerHTML = 'Name<br>'
+    const vals = fb.actions.getAttrVals(node)
+    expect(vals.label).toBe('Name')
+  })
+
   test('stashes a usable instance on the stage element', async () => {
     const fbWrap = $('<div>')
     await $(fbWrap).formBuilder().promise
