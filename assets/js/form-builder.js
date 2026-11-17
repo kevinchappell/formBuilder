@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formBuilder: https://formbuilder.online/
-	Version: 3.23.6
+	Version: 3.23.7
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -2686,7 +2686,10 @@
 					const attr = attrs[index];
 					const name = camelCase(attr.getAttribute("name"));
 					const attrVal = [
-						[attr.attributes.contenteditable, () => config.opts.dataType === "xml" ? escapeHtml(attr.innerHTML) : attr.innerHTML],
+						[attr.attributes.contenteditable, () => {
+							const html = attr.innerHTML.replace(/<br\s*\/?>$/i, "");
+							return config.opts.dataType === "xml" ? escapeHtml(html) : html;
+						}],
 						[attr.type === "checkbox", () => attr.checked],
 						[attr.type === "number" && attr.value !== "", () => Number(attr.value)],
 						[attr.attributes.multiple, () => $(attr).val()],
