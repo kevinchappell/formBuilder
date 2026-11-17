@@ -405,6 +405,13 @@ export const escapeHtml = html => {
   return escapeElement.innerHTML
 }
 
+/**
+ * Remove the single trailing <br> browsers leave in contenteditable elements
+ * @param  {string} html markup from a contenteditable element
+ * @return {string}      markup without one trailing <br>
+ */
+export const stripTrailingBr = html => html.replace(/<br[^>]*>$/i, '')
+
 // Escape an attribute
 export const escapeAttr = str => {
   const match = {
@@ -729,6 +736,7 @@ const utils = {
   escapeAttr,
   escapeAttrs,
   escapeHtml,
+  stripTrailingBr,
   forceNumber,
   forEach,
   getScripts,

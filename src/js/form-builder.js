@@ -35,6 +35,7 @@ import {
   generateSelectorClassNames,
   firstNumberOrUndefined,
   safeClassName,
+  stripTrailingBr,
 } from './utils'
 import { attributeWillClobber, setElementContent, setSanitizerConfig } from './sanitizer'
 import control from './control'
@@ -1848,7 +1849,8 @@ function FormBuilder(opts, element, $) {
 
   // update preview to label
   $stage.on('input', '.fld-label', ({ target }) => {
-    const value = target.value || target.innerHTML
+    // contenteditable labels may keep a placeholder <br>, which would push the required '*' onto a new line
+    const value = target.hasAttribute('contenteditable') ? stripTrailingBr(target.innerHTML) : target.value
     const label = closest(target, '.form-field').querySelector('.field-label')
     setElementContent(label, parsedHtml(value), config.opts.disableHTMLLabels)
   })
