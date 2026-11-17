@@ -1,3 +1,10 @@
+## [3.23.8](https://github.com/kevinchappell/formBuilder/compare/v3.23.7...v3.23.8) (2026-11-17)
+
+
+### Bug Fixes
+
+* strip trailing <br> from contenteditable labels ([#1679](https://github.com/kevinchappell/formBuilder/issues/1679)) ([6ab484b](https://github.com/kevinchappell/formBuilder/commit/6ab484bb796a966571dc90383f7d32ed08b59a37)), closes [#1156](https://github.com/kevinchappell/formBuilder/issues/1156)
+
 ## [3.23.7](https://github.com/kevinchappell/formBuilder/compare/v3.23.6...v3.23.7) (2026-11-14)
 
 
