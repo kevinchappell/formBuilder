@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formRender: https://formbuilder.online/
-	Version: 3.23.7
+	Version: 3.23.8
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -792,6 +792,12 @@
 			escapeElement.textContent = html;
 			return escapeElement.innerHTML;
 		};
+		/**
+		* Remove the single trailing <br> browsers leave in contenteditable elements
+		* @param  {string} html markup from a contenteditable element
+		* @return {string}      markup without one trailing <br>
+		*/
+		var stripTrailingBr = (html) => html.replace(/<br[^>]*>$/i, "");
 		var escapeAttr = (str) => {
 			const match = {
 				"\"": "&quot;",
@@ -1015,6 +1021,7 @@
 			escapeAttr,
 			escapeAttrs,
 			escapeHtml,
+			stripTrailingBr,
 			forceNumber,
 			forEach,
 			getScripts,

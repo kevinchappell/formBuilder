@@ -3,7 +3,7 @@
 	"use strict";
 	/*!
 	* jQuery formBuilder: https://formbuilder.online/
-	Version: 3.23.7
+	Version: 3.23.8
 	Author: Kevin Chappell <kevin.b.chappell@gmail.com>
 	*/
 	(function(factory) {
@@ -1482,6 +1482,12 @@
 			escapeElement.textContent = html;
 			return escapeElement.innerHTML;
 		};
+		/**
+		* Remove the single trailing <br> browsers leave in contenteditable elements
+		* @param  {string} html markup from a contenteditable element
+		* @return {string}      markup without one trailing <br>
+		*/
+		var stripTrailingBr = (html) => html.replace(/<br[^>]*>$/i, "");
 		var escapeAttr = (str) => {
 			const match = {
 				"\"": "&quot;",
@@ -1705,6 +1711,7 @@
 			escapeAttr,
 			escapeAttrs,
 			escapeHtml,
+			stripTrailingBr,
 			forceNumber,
 			forEach,
 			getScripts,
@@ -2687,7 +2694,7 @@
 					const name = camelCase(attr.getAttribute("name"));
 					const attrVal = [
 						[attr.attributes.contenteditable, () => {
-							const html = attr.innerHTML.replace(/<br\s*\/?>$/i, "");
+							const html = stripTrailingBr(attr.innerHTML);
 							return config.opts.dataType === "xml" ? escapeHtml(html) : html;
 						}],
 						[attr.type === "checkbox", () => attr.checked],
@@ -6212,7 +6219,7 @@
 				h.save.call(h);
 			});
 			$stage.on("input", ".fld-label", ({ target }) => {
-				const value = target.value || target.innerHTML;
+				const value = target.hasAttribute("contenteditable") ? stripTrailingBr(target.innerHTML) : target.value;
 				setElementContent(closest(target, ".form-field").querySelector(".field-label"), parsedHtml(value), config.opts.disableHTMLLabels);
 			});
 			$stage.on("keyup", "input.error", ({ target }) => $(target).removeClass("error"));
