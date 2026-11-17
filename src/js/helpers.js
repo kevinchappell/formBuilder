@@ -7,6 +7,7 @@ import {
   forEach,
   camelCase,
   escapeHtml,
+  stripTrailingBr,
   trimObj,
   subtract,
   parseXML,
@@ -380,9 +381,9 @@ export default class Helpers {
       const attrVal = [
         [
           attr.attributes.contenteditable,
-          // Firefox appends a trailing <br> to contenteditable elements after editing
+          // Browsers may leave a trailing <br> in contenteditable elements after editing
           () => {
-            const html = attr.innerHTML.replace(/<br\s*\/?>$/i, '')
+            const html = stripTrailingBr(attr.innerHTML)
             return config.opts.dataType === 'xml' ? escapeHtml(html) : html
           },
         ],

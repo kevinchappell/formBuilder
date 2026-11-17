@@ -1,7 +1,8 @@
 import utils from './../src/js/utils.js'
 import { safeAttr, flattenArray, safeAttrName, hyphenCase, camelCase, bindEvents, attrString, nameAttr, markup,
   parsedHtml, escapeAttrs, getScripts, capitalize, addEventListeners, unique, escapeAttr, escapeHtml,
-  getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML, firstNumberOrUndefined, safeClassName
+  getAllGridRelatedClasses, subtract, safename, xmlParseAttrs, parseXML, firstNumberOrUndefined, safeClassName,
+  stripTrailingBr
 } from '../src/js/utils.js'
 
 describe('Test Util functions', () => {
@@ -289,5 +290,29 @@ describe('enhancedBootstrap feature utils', () => {
 
   test('getAllGridRelatedClasses', () => {
     expect(getAllGridRelatedClasses('test row-1 col-md-6')).toEqual(['row-1', 'col-md-6'])
+  })
+})
+
+describe('stripTrailingBr', () => {
+  test('removes a single trailing <br> in any form', () => {
+    expect(stripTrailingBr('Name<br>')).toBe('Name')
+    expect(stripTrailingBr('Name<br/>')).toBe('Name')
+    expect(stripTrailingBr('Name<br />')).toBe('Name')
+    expect(stripTrailingBr('Name<BR>')).toBe('Name')
+    expect(stripTrailingBr('<br>')).toBe('')
+  })
+
+  test('removes only one trailing <br>', () => {
+    expect(stripTrailingBr('Name<br><br>')).toBe('Name<br>')
+  })
+
+  test('keeps <br> that is not at the end', () => {
+    expect(stripTrailingBr('Na<br>me')).toBe('Na<br>me')
+    expect(stripTrailingBr('Name')).toBe('Name')
+    expect(stripTrailingBr('')).toBe('')
+  })
+
+  test('is exposed on the default utils export', () => {
+    expect(utils.stripTrailingBr).toBe(stripTrailingBr)
   })
 })
