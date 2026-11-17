@@ -1,3 +1,10 @@
+## [3.23.9](https://github.com/kevinchappell/formBuilder/compare/v3.23.8...v3.23.9) (2026-11-17)
+
+
+### Bug Fixes
+
+* strip trailing <br> from field header label while editing ([#1680](https://github.com/kevinchappell/formBuilder/issues/1680)) ([57fee7d](https://github.com/kevinchappell/formBuilder/commit/57fee7d58821adc8ef28bfee51f8225f6b7d9301)), closes [#1156](https://github.com/kevinchappell/formBuilder/issues/1156)
+
 ## [3.23.8](https://github.com/kevinchappell/formBuilder/compare/v3.23.7...v3.23.8) (2026-11-17)
 
 
